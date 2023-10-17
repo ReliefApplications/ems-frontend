@@ -693,7 +693,7 @@ export class ApplicationService {
               ...application,
               pages: application.pages?.map((x) => {
                 if (x.id === page.id) {
-                  x = { ...x, visible: !page.visible };
+                  x = { ...x, visible: data.editPage.visible };
                 }
                 return x;
               }),

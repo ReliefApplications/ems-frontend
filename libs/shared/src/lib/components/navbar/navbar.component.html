@@ -94,14 +94,14 @@
               class="flex flex-row items-center"
               *ngIf="item.action || item.orderable || (item.visible===false)"
             >
-              <ui-button
+              <ui-icon
+                variant="grey"
                 class="eye-icon"
-                [isIcon]="true"
-                size="small"
+                [size]="18"
                 *ngIf="!item.visible"
                 icon="visibility_off"
               >
-              </ui-button>
+              </ui-icon>
               <ui-button
                 [variant]="!vertical ? 'danger' : 'primary'"
                 class="hide-icons hover:text-primary-600"
