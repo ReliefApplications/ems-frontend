@@ -37,11 +37,4 @@ export class AddRoleComponent {
   ) {
     this.title = data.title;
   }
-
-  /**
-   * Close the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

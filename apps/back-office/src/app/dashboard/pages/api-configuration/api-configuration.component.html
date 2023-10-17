@@ -140,7 +140,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.tokenUrl' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.authTargetUrl')"
             />
           </div>
           <!-- Client id -->
@@ -154,7 +154,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.clientId' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.apiClientID')"
             />
           </div>
           <!-- Client secret -->
@@ -168,7 +168,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.secret' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.safeSecret')"
             />
           </div>
           <!-- Token scope -->
@@ -182,7 +182,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.scope' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.scope')"
             />
           </div>
         </div>
@@ -201,7 +201,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.token' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.token')"
             />
           </div>
         </div>

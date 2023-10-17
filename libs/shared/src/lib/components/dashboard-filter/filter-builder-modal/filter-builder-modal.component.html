@@ -1,4 +1,4 @@
-<ui-dialog [closable]="true" size="fullscreen">
+<ui-dialog size="fullscreen">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">{{ 'components.application.dashboard.filter.title' | translate }}</h3>
     <ui-alert [showIcon]="true" class="mb-6">
@@ -11,5 +11,10 @@
         <survey-creator [model]="surveyCreator"></survey-creator>
       </div>
     </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
+      {{ 'common.close' | translate }}
+    </ui-button>
   </ng-container>
 </ui-dialog>

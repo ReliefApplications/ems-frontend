@@ -32,16 +32,18 @@
           [uiTooltip]="'common.settings' | translate"
         ></ui-button>
       </div>
+      <ui-button *ngIf="canUpdate" icon="add" (click)="onAddStep()">{{
+        'models.step.new' | translate
+      }}</ui-button>
     </div>
   </ng-container>
 </ng-container>
 <!-- STEPS -->
 <shared-workflow-stepper
-  class="-mx-6 my-4 block"
+  class="-mx-6 block"
   [loading]="loading"
   [steps]="steps"
   [canUpdate]="canUpdate"
-  (add)="onAddStep()"
   (openStep)="onOpenStep($event)"
   (delete)="onDeleteStep($event)"
   (reorderSteps)="onReorderSteps($event)"

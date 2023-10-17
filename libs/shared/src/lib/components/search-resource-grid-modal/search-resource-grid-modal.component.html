@@ -1,4 +1,4 @@
-<ui-dialog [closable]="true">
+<ui-dialog>
   <ng-container ngProjectAs="header">
     <h3 *ngIf="selectable" class="font-semibold">
       {{
@@ -20,7 +20,7 @@
     </shared-core-grid>
   </ng-container>
   <ng-container ngProjectAs="actions" *ngIf="selectable">
-    <ui-button uiDialogClose (click)="closeModal(false)" variant="default">
+    <ui-button uiDialogClose variant="default">
       {{ 'common.cancel' | translate }}
     </ui-button>
     <ui-button
