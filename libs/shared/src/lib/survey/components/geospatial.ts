@@ -6,6 +6,7 @@ import {
   ALL_FIELDS,
   GeofieldsListboxComponent,
 } from '../../components/geofields-listbox/geofields-listbox.component';
+import { BASEMAPS } from '../../components/ui/map/const/baseMaps';
 
 /**
  * Extract geofields from question ( to match with latest version of the available ones )
@@ -70,6 +71,48 @@ export const init = (Survey: any, domService: DomService): void => {
         // dependsOn: ['geometry'],
         // visibleIf: (obj: null | any) => !!obj && obj.geometry === 'POINT',
       });
+
+      // Base map
+      serializer.addProperty('geospatial', {
+        name: 'BaseMap',
+        type: 'dropdown',
+        category: 'Map Properties',
+        visibleIndex: 3,
+        default: 'streets',
+        choices: BASEMAPS,
+      });
+
+      // Default zoom
+      serializer.addProperty('geospatial', {
+        name: 'DefaultZoom',
+        type: 'number',
+        category: 'Map Properties',
+        visibleIndex: 4,
+        default: 0,
+      });
+
+      // Latitude
+      serializer.addProperty('geospatial', {
+        name: 'Latitude',
+        type: 'number',
+        minValue: -90,
+        maxValue: 90,
+        category: 'Map Properties',
+        visibleIndex: 5,
+        default: 0,
+      });
+
+      // Longitude
+      serializer.addProperty('geospatial', {
+        name: 'Longitude',
+        type: 'number',
+        category: 'Map Properties',
+        minValue: -180,
+        maxValue: 180,
+        visibleIndex: 6,
+        default: 0,
+      });
+
       // Tagbox
       const listBoxEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
@@ -105,9 +148,45 @@ export const init = (Survey: any, domService: DomService): void => {
       // Set geo fields
       instance.fields = getGeoFields(question);
 
+      // Set base map
+      instance.mapSettings.basemap = question.BaseMap;
+
+      // Set default zoom
+      instance.mapSettings.initialState = {
+        viewpoint: {
+          center: {
+            latitude: question.Latitude,
+            longitude: question.Longitude,
+          },
+          zoom: question.DefaultZoom,
+        },
+      };
+
       // Listen to change on geofields
       question.registerFunctionOnPropertyValueChanged('geoFields', () => {
         instance.fields = question.geoFields;
+      });
+
+      // Listen to change on base map
+      question.registerFunctionOnPropertyValueChanged('BaseMap', () => {
+        instance.mapSettings.basemap = question.BaseMap;
+      });
+
+      // Listen to change on default zoom
+      question.registerFunctionOnPropertyValueChanged('DefaultZoom', () => {
+        instance.mapSettings.initialState.viewpoint.zoom = question.DefaultZoom;
+      });
+
+      // Listen to change on latitude
+      question.registerFunctionOnPropertyValueChanged('Latitude', () => {
+        instance.mapSettings.initialState.viewpoint.center.latitude =
+          question.Latitude;
+      });
+
+      // Listen to change on longitude
+      question.registerFunctionOnPropertyValueChanged('Longitude', () => {
+        instance.mapSettings.initialState.viewpoint.center.longitude =
+          question.Longitude;
       });
 
       // updates the question value when the map changes
