@@ -61,6 +61,14 @@
       display: block;
     }
   }
+  .eye-icon {
+    display: block;
+  }
+  &:hover {
+    .eye-icon {
+      display: none;
+    }
+  }
 }
 
 .nav-item-handle {
