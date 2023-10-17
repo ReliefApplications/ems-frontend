@@ -414,6 +414,7 @@ export const EDIT_APPLICATION = gql`
         id
         icon
         name
+        visible
         createdAt
         type
         content
