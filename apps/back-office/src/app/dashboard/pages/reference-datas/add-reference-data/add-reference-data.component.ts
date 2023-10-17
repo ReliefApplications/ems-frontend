@@ -31,11 +31,4 @@ export class AddReferenceDataComponent {
     private fb: FormBuilder,
     public dialogRef: DialogRef<AddReferenceDataComponent>
   ) {}
-
-  /**
-   * Close the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

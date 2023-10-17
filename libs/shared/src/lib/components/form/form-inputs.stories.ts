@@ -40,6 +40,12 @@ class MockAuthService {
   });
 }
 
+/**
+ * Initialize app
+ *
+ * @param formService Form Service
+ * @returns Initialized app
+ */
 const initializeApp =
   (formService: FormService): any =>
   () => {
@@ -132,6 +138,12 @@ const sharedForm = {
   canCreateRecords: true,
 };
 
+/**
+ * Shared Questions
+ *
+ * @param args Extended form component
+ * @returns Shared questions structure
+ */
 const sharedQuestion = (args: ExtendedFormComponent) => ({
   title: args.title,
   titleLocation: args.titleLocation,
@@ -159,6 +171,40 @@ export const Radio: Story = {
                 elements: [
                   {
                     type: 'radiogroup',
+                    name: 'question1',
+                    ...sharedQuestion(args),
+                    choices: ['Item 1', 'Item 2', 'Item 3'],
+                  },
+                ],
+              },
+            ],
+            showQuestionNumbers: 'off',
+          }),
+        },
+      },
+    };
+  },
+};
+
+/**
+ * Default inputs Dropdown
+ */
+export const Dropdown: Story = {
+  args: {
+    title: 'Dropdown question',
+  },
+  render: (args) => {
+    return {
+      props: {
+        form: {
+          ...sharedForm,
+          structure: JSON.stringify({
+            pages: [
+              {
+                name: 'page1',
+                elements: [
+                  {
+                    type: 'dropdown',
                     name: 'question1',
                     ...sharedQuestion(args),
                     choices: ['Item 1', 'Item 2', 'Item 3'],
@@ -276,7 +322,10 @@ export const Date: Story = {
  * Default inputs Color
  */
 export const Color: Story = {
-  render: () => ({
+  args: {
+    title: 'Color',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -288,8 +337,8 @@ export const Color: Story = {
                 {
                   type: 'text',
                   name: 'question1',
-                  title: 'Color',
                   inputType: 'color',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -301,10 +350,13 @@ export const Color: Story = {
   }),
 };
 /**
- * Default inputs Color
+ * Default inputs Date time
  */
 export const DateTime: Story = {
-  render: () => ({
+  args: {
+    title: 'Date and Time',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -316,8 +368,8 @@ export const DateTime: Story = {
                 {
                   type: 'text',
                   name: 'question1',
-                  title: 'Date and Time',
                   inputType: 'datetime-local',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -332,7 +384,10 @@ export const DateTime: Story = {
  * Default inputs Month
  */
 export const Month: Story = {
-  render: () => ({
+  args: {
+    title: 'Month',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -344,8 +399,8 @@ export const Month: Story = {
                 {
                   type: 'text',
                   name: 'question1',
-                  title: 'Month',
                   inputType: 'month',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -360,7 +415,10 @@ export const Month: Story = {
  * Default inputs Number
  */
 export const Number: Story = {
-  render: () => ({
+  args: {
+    title: 'Number',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -371,8 +429,8 @@ export const Number: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'Number',
                   inputType: 'number',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -387,7 +445,10 @@ export const Number: Story = {
  * Default inputs Password
  */
 export const Password: Story = {
-  render: () => ({
+  args: {
+    title: 'Password',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -398,8 +459,8 @@ export const Password: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'Password',
                   inputType: 'password',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -414,7 +475,10 @@ export const Password: Story = {
  * Default inputs Range
  */
 export const Range: Story = {
-  render: () => ({
+  args: {
+    title: 'Range',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -425,8 +489,8 @@ export const Range: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'Range',
                   inputType: 'range',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -441,7 +505,10 @@ export const Range: Story = {
  * Default inputs Telephone
  */
 export const Telephone: Story = {
-  render: () => ({
+  args: {
+    title: 'Telephone',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -452,8 +519,8 @@ export const Telephone: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'Telephone',
                   inputType: 'tel',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -468,7 +535,10 @@ export const Telephone: Story = {
  * Default inputs Text
  */
 export const Text: Story = {
-  render: () => ({
+  args: {
+    title: 'Text',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -479,7 +549,7 @@ export const Text: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'Text',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -494,7 +564,10 @@ export const Text: Story = {
  * Default inputs Time
  */
 export const Time: Story = {
-  render: () => ({
+  args: {
+    title: 'Time',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -505,8 +578,8 @@ export const Time: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'Time',
                   inputType: 'time',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -521,7 +594,10 @@ export const Time: Story = {
  * Default inputs URL
  */
 export const URL: Story = {
-  render: () => ({
+  args: {
+    title: 'URL',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -532,8 +608,8 @@ export const URL: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'URL',
                   inputType: 'url',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -548,7 +624,10 @@ export const URL: Story = {
  * Default inputs Week
  */
 export const Week: Story = {
-  render: () => ({
+  args: {
+    title: 'Week',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -559,8 +638,8 @@ export const Week: Story = {
               elements: [
                 {
                   type: 'text',
-                  title: 'Week',
                   inputType: 'week',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -575,7 +654,8 @@ export const Week: Story = {
  * Default inputs SingleSelectMatrix
  */
 export const SingleSelectMatrix: Story = {
-  render: () => ({
+  args: {},
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -589,6 +669,7 @@ export const SingleSelectMatrix: Story = {
                   name: 'Single-Select Matrix',
                   columns: ['Column 1', 'Column 2', 'Column 3'],
                   rows: ['Row 1', 'Row 2'],
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -604,7 +685,8 @@ export const SingleSelectMatrix: Story = {
  * Default inputs MultiSelectMatrix
  */
 export const MultiSelectMatrix: Story = {
-  render: () => ({
+  args: {},
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -615,7 +697,7 @@ export const MultiSelectMatrix: Story = {
               elements: [
                 {
                   type: 'matrixdropdown',
-                  name: 'question1',
+                  name: 'Multi-Select Matrix',
                   columns: [
                     {
                       name: 'Column 1',
@@ -629,6 +711,7 @@ export const MultiSelectMatrix: Story = {
                   ],
                   choices: [1, 2, 3, 4, 5],
                   rows: ['Row 1', 'Row 2'],
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -640,10 +723,11 @@ export const MultiSelectMatrix: Story = {
   }),
 };
 /**
- * Default inputs DinamicMatrix
+ * Default inputs DynamicMatrix
  */
-export const DinamicMatrix: Story = {
-  render: () => ({
+export const DynamicMatrix: Story = {
+  args: {},
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -654,7 +738,7 @@ export const DinamicMatrix: Story = {
               elements: [
                 {
                   type: 'matrixdynamic',
-                  name: 'question1',
+                  name: 'Dynamic-Select Matrix',
                   columns: [
                     {
                       name: 'Column 1',
@@ -667,6 +751,7 @@ export const DinamicMatrix: Story = {
                     },
                   ],
                   choices: [1, 2, 3, 4, 5],
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -681,7 +766,10 @@ export const DinamicMatrix: Story = {
  * Default inputs RatingScale
  */
 export const RatingScale: Story = {
-  render: () => ({
+  args: {
+    title: 'Rating Scale',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -692,7 +780,7 @@ export const RatingScale: Story = {
               elements: [
                 {
                   type: 'rating',
-                  title: 'Rating Scale',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -707,7 +795,10 @@ export const RatingScale: Story = {
  * Default inputs CheckBox
  */
 export const CheckBox: Story = {
-  render: () => ({
+  args: {
+    title: 'CheckBox',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -718,7 +809,7 @@ export const CheckBox: Story = {
               elements: [
                 {
                   type: 'checkbox',
-                  title: 'CheckBox',
+                  ...sharedQuestion(args),
                   choices: ['Item 1', 'Item 2', 'Item 3'],
                 },
               ],
@@ -734,7 +825,10 @@ export const CheckBox: Story = {
  * Default inputs MultiSelectDropdown
  */
 export const MultiSelectDropdown: Story = {
-  render: () => ({
+  args: {
+    title: 'Multi-Select Dropdown',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -745,7 +839,7 @@ export const MultiSelectDropdown: Story = {
               elements: [
                 {
                   type: 'tagbox',
-                  title: 'Multi-Select Dropdown',
+                  ...sharedQuestion(args),
                   choices: ['Item 1', 'Item 2', 'Item 3'],
                 },
               ],

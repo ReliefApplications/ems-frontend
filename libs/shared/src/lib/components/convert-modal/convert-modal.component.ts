@@ -118,11 +118,4 @@ export class ConvertModalComponent
         }
       });
   }
-
-  /**
-   * Closes the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

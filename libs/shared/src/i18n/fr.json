@@ -1241,6 +1241,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"goTo": "Aller à la page",
 					"history": "Voir l'historique"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
@@ -1302,6 +1303,7 @@
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"displayMap": "Afficher la carte",
+					"openPage": "Aller à la page",
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
@@ -1385,11 +1387,21 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"navigateToPage": "Accédez à la page",
+						"pageUrl": {
+							"label": "Url de la source de la page",
+							"placeholder": "Entrez l'id de la page"
+						},
+						"pageUrlTitle": {
+							"label": "Nom de la colonne",
+							"placeholder": "Entrez un nom pour la colonne..."
+						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
-						"update": "Modifier les enregistrements"
+						"update": "Modifier les enregistrements",
+						"useRecordId": "Injecter l'identifiant comme paramètre de navigation"
 					},
 					"aggregations": {
 						"add": {
@@ -1444,6 +1456,7 @@
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
+							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
@@ -1468,7 +1481,8 @@
 						"title": "Mise en page de la grille"
 					},
 					"tooltip": {
-						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
+						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
 					}
 				},
 				"iconPicker": {
@@ -1695,6 +1709,10 @@
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
+						},
+						"gridActions": {
+							"title": "Actions de grille",
+							"tooltip": "Actions de grille activées"
 						},
 						"preview": {
 							"title": "Prévisualisation"

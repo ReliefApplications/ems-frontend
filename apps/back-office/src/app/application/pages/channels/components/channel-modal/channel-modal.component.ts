@@ -62,9 +62,4 @@ export class ChannelModalComponent {
       channel: Channel;
     }
   ) {}
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

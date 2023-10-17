@@ -1226,6 +1226,7 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"goTo": "******",
 					"history": "******"
 				},
 				"errors": {
@@ -1286,6 +1287,7 @@
 				"openSettings": "******",
 				"tooltip": {
 					"displayMap": "******",
+					"openPage": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
@@ -1369,11 +1371,21 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"navigateToPage": "******",
+						"pageUrl": {
+							"label": "******",
+							"placeholder": "******"
+						},
+						"pageUrlTitle": {
+							"label": "******",
+							"placeholder": "******"
+						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
-						"update": "******"
+						"update": "******",
+						"useRecordId": "******"
 					},
 					"aggregations": {
 						"add": {
@@ -1428,6 +1440,7 @@
 							"delete": "******",
 							"export": "******",
 							"inline": "******",
+							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
 							"update": "******"
@@ -1452,7 +1465,8 @@
 						"title": "******"
 					},
 					"tooltip": {
-						"template": "******"
+						"template": "******",
+						"useRecordId": "******"
 					}
 				},
 				"iconPicker": {
@@ -1679,6 +1693,10 @@
 							"tooltip": {
 								"datasource": "******"
 							}
+						},
+						"gridActions": {
+							"title": "******",
+							"tooltip": "******"
 						},
 						"preview": {
 							"title": "******"

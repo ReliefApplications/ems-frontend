@@ -107,11 +107,10 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       .pipe(startWith(this.tabs), takeUntil(this.destroy$))
       .subscribe((tabs: QueryList<TabComponent>) => {
         this.cdr.detectChanges();
-        if (tabs.length !== this.previousTabsLength) {
-          this.reorder$.next();
-          this.previousTabsLength = tabs.length;
-          this.subscribeToOpenTabEvents();
-        }
+        this.reorder$.next();
+        this.previousTabsLength = tabs.length;
+        this.subscribeToOpenTabEvents();
+        this.setSelectedTab();
       });
   }
 
