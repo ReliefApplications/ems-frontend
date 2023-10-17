@@ -1,4 +1,3 @@
-import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -35,7 +34,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Workflow page.
    *
-   * @param apollo Apollo client
    * @param route Angular current route
    * @param snackBar Shared snackbar service
    * @param router Angular router
@@ -43,7 +41,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    * @param workflowService Shared workflow service
    */
   constructor(
-    private apollo: Apollo,
     private route: ActivatedRoute,
     private snackBar: SnackbarService,
     private router: Router,
@@ -69,7 +66,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         this.goToNextStep();
       });
 
-    this.workflowService.workflow$.subscribe({
+    this.workflowService.workflow$.pipe(takeUntil(this.destroy$)).subscribe({
       next: (workflow) => {
         if (workflow) {
           this.workflow = workflow;
