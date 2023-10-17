@@ -9,13 +9,14 @@
       *ngIf="value"
       [style.color]="color"
       class="{{ value | sharedIconDisplay : fontFamily }} mr-2"
-    ></i
+    >
+    </i
     >{{ value }}
   </ng-container>
 </div>
 
 <ng-template #defaultTemplate>
-  <div class="text-gray-400">{{ placeholder }}</div>
+  <div class="text-gray-400 text-sm">{{ placeholder }}</div>
 </ng-template>
 
 <ng-template
