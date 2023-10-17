@@ -13,6 +13,7 @@ import {
   FixedWrapperModule,
 } from '@oort-front/ui';
 import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Application settings module.
@@ -33,6 +34,7 @@ import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
     FixedWrapperModule,
     AccessModule,
     StatusOptionsComponent,
+    AbilityModule,
   ],
 })
 export class SettingsModule {}

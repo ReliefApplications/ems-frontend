@@ -808,7 +808,7 @@ export class DashboardComponent
             'common.' + this.isStep ? 'step' : 'page' + '.one'
           ),
         },
-        canEditAccess: this.dashboard?.page
+        canUpdate: this.dashboard?.page
           ? this.dashboard?.page.canUpdate
           : this.dashboard?.step
           ? this.dashboard?.step.canUpdate

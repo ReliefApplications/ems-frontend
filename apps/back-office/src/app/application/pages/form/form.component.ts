@@ -273,7 +273,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             'common.' + this.isStep ? 'step' : 'page' + '.one'
           ),
         },
-        canEditAccess:
+        canUpdate:
           !this.formActive &&
           (this.page
             ? this.page.canUpdate
