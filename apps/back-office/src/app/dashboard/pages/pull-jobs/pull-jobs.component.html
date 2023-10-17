@@ -111,6 +111,7 @@
 </ng-template>
 
 <ui-paginator
+  *ngIf="pullJobs.length"
   [disabled]="loading"
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"

@@ -112,11 +112,11 @@ export class ApplicationComponent
                 path: './settings/distribution-lists',
                 icon: 'mail',
               },
-              // {
-              //   name: this.translate.instant('common.customNotification.few'),
-              //   path: './settings/notifications',
-              //   icon: 'schedule_send',
-              // },
+              {
+                name: this.translate.instant('common.customNotification.few'),
+                path: './settings/notifications',
+                icon: 'schedule_send',
+              },
               {
                 name: this.translate.instant('common.user.few'),
                 path: './settings/users',

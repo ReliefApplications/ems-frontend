@@ -178,6 +178,7 @@
 </ng-container>
 <!-- Pagination -->
 <ui-paginator
+  *ngIf="!empty"
   [disabled]="loading"
   [pageSize]="pageInfo.pageSize"
   [totalItems]="pageInfo.length"
