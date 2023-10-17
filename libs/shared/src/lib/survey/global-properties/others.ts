@@ -84,6 +84,7 @@ export const init = (Survey: any, environment: any): void => {
     visibleIndex: 4,
     default: false,
   });
+
   // Adds a property to the survey settings to open the form on a specific page using the question value
   // of the selected question (the value must be a page name)
   serializer.addProperty('survey', {
