@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
+    "git-version": "node .scripts/git-version.js",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui --verbose",

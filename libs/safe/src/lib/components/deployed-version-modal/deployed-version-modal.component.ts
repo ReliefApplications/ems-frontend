@@ -61,7 +61,7 @@ export class DeployedVersionModalComponent implements AfterViewInit {
   /** retrieves the commit hash from json file */
   getCommitHash() {
     this.http.get('/assets/git-version.json').subscribe((data: any) => {
-      this.frontEndCommitHash = { short: data.shortSHA, long: data.SHA };
+      this.frontEndCommitHash = { short: data.SHA.slice(0, 9), long: data.SHA };
     });
     this.apollo
       .query<{ latestCommitHash: string }>({
