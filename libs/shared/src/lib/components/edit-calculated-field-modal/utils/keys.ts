@@ -95,6 +95,9 @@ const calcFunctions: Record<string, { signature: string }> = {
   toInt: {
     signature: 'toInt( value )',
   },
+  length: {
+    signature: 'length( value )',
+  },
   toLong: {
     signature: 'toLong( value )',
   },
