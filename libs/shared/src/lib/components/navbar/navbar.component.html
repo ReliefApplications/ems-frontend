@@ -92,7 +92,7 @@
             </a>
             <div
               class="flex flex-row items-center"
-              *ngIf="item.action || item.orderable || !item.visible"
+              *ngIf="item.action || item.orderable || (item.visible===false)"
             >
               <ui-button
                 class="eye-icon"
