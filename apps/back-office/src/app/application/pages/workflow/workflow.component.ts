@@ -419,7 +419,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
           application: this.applicationId,
           objectTypeName: this.translate.instant('common.page.one'),
         },
-        canEditAccess: this.workflow?.page?.canUpdate || false,
+        canUpdate: this.workflow?.page?.canUpdate || false,
       },
     });
     // Subscribes to settings updates

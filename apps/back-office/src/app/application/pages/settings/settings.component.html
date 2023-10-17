@@ -74,13 +74,22 @@
 </form>
 <!-- Actions -->
 <div
-  *ngIf="application && (application.canUpdate || application.canDelete)"
+  *ngIf="
+    application &&
+    (application.canUpdate || application.canDelete || 'create'
+      | able : 'Application')
+  "
   class="mt-2"
 >
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <ui-button category="secondary" variant="primary" (click)="onOpenStyle()">
+    <ui-button
+      *ngIf="application.canUpdate"
+      category="secondary"
+      variant="primary"
+      (click)="onOpenStyle()"
+    >
       {{ 'components.application.customStyling' | translate }}
     </ui-button>
     <ui-button
@@ -88,7 +97,7 @@
       category="tertiary"
       variant="primary"
       (click)="onDuplicate()"
-      *ngIf="application.canUpdate"
+      *ngIf="'create' | able : 'Application'"
     >
       {{ 'common.duplicate' | translate }}
     </ui-button>

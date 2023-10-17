@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewSettingsModalComponent } from './view-settings.component';
+import { ViewSettingsModalComponent } from './view-settings-modal.component';
 
 describe('ViewSettingsModalComponent', () => {
   let component: ViewSettingsModalComponent;
