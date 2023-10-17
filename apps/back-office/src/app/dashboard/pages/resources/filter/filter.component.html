@@ -7,10 +7,7 @@
   ></shared-list-filter>
   <!-- Advanced filters -->
   <ng-template #expandedFilter>
-    <div
-      *ngIf="show"
-      class="flex flex-wrap gap-2 self-start items-end"
-    >
+    <div *ngIf="show" class="flex flex-wrap gap-2 self-start items-end">
       <!-- Date range filter -->
       <div uiFormFieldDirective [defaultMargin]="false">
         <label>{{ 'common.input.dateRange' | translate }}</label>

@@ -7,16 +7,11 @@
   ></shared-list-filter>
   <!-- Advanced filters -->
   <ng-template #expandedFilter>
-    <div
-      class="flex flex-wrap gap-2 self-start items-end"
-      *ngIf="show"
-    >
+    <div class="flex flex-wrap gap-2 self-start items-end" *ngIf="show">
       <!-- Title filter -->
       <div uiFormFieldDirective class="w-44" [defaultMargin]="false">
         <label>{{ 'common.title' | translate }}</label>
-        <ui-select-menu
-          formControlName="roleFilter"
-        >
+        <ui-select-menu formControlName="roleFilter">
           <ui-select-option>-</ui-select-option>
           <ui-select-option [value]="role.title" *ngFor="let role of roles">
             {{ role.title }}
@@ -24,12 +19,9 @@
         </ui-select-menu>
       </div>
       <!-- Clear filters -->
-      <ui-button
-        class="max-sm:!w-auto"
-        variant="danger"
-        (click)="clear()"
-        >{{ 'common.filter.clear' | translate }}</ui-button
-      >
+      <ui-button class="max-sm:!w-auto" variant="danger" (click)="clear()">{{
+        'common.filter.clear' | translate
+      }}</ui-button>
     </div>
   </ng-template>
 </div>
