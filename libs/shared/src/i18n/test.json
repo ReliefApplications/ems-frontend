@@ -1334,7 +1334,7 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
-						"needConfirmation": "******",
+						"requireConfirmation": "******",
 						"title": "******",
 						"tooltip": {
 							"attach": "******",

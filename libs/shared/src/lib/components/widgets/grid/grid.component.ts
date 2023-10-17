@@ -532,9 +532,9 @@ export class GridWidgetComponent
           { error: true }
         );
       } else {
-        if (options.needConfirmation) {
-          this.confirmService
-            .openConfirmModal({
+        if (options.requireConfirmation) {
+          const confirm = await firstValueFrom(
+            this.confirmService.openConfirmModal({
               title: this.translate.instant(
                 'components.widget.settings.chart.grid.buttons.modifySelectedRows.confirmation'
               ),
@@ -542,28 +542,22 @@ export class GridWidgetComponent
                 'components.confirmModal.confirm'
               ),
               confirmVariant: 'primary',
-            })
-            .closed.pipe(takeUntil(this.destroy$))
-            .subscribe(async (confirm: any) => {
-              if (confirm) {
-                await this.promisedRowsModifications(
-                  options.modifications,
-                  this.grid.selectedRows
-                );
-                this.grid.reloadData();
-              }
-            });
+            }).closed
+          );
+
+          if (confirm) {
+            await this.promisedRowsModifications(
+              options.modifications,
+              this.grid.selectedRows
+            );
+          }
         } else {
           await this.promisedRowsModifications(
             options.modifications,
             this.grid.selectedRows
           );
-          this.grid.reloadData();
         }
       }
-
-      // We need this return to avoid the grid to reload and miss selected rows when modal is open
-      return;
     }
 
     this.grid.reloadData();
