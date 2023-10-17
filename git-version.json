@@ -1,9 +1,0 @@
-{
-  "shortSHA": "057ed0c29",
-  "SHA": "057ed0c29b331d48ce2093b7f38b58ae4960e435",
-  "branch": "2.x.x",
-  "lastCommitAuthor": "Antoine Hurard",
-  "lastCommitTime": "Mon Oct 9 16:17:37 2023 +0200",
-  "lastCommitMessage": "fix build sit environment",
-  "lastCommitNumber": "7530"
-}
