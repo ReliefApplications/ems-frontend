@@ -27,10 +27,9 @@
             <span>{{ 'common.general' | translate }}</span>
           </ng-container>
           <!-- Tab content -->
-          <div class="flex gap-4 flex-col" *ngIf="this.settingsForm">
+          <div class="flex gap-4 flex-col" *ngIf="settingsForm">
             <!-- Page / step icon -->
             <app-view-icon-selector
-              *ngIf="('update' | able : 'Application')"
               [iconControl]="this.settingsForm.controls.icon"
               [ngClass]="{
                 '-mb-4': data.type === 'page'
@@ -45,43 +44,48 @@
                 </ng-container>
               </ui-toggle>
               <div>
-                <h4>{{ 'components.application.pages.settings.actions' | translate }}</h4>
+                <h4>
+                  {{
+                    'components.application.pages.settings.actions' | translate
+                  }}
+                </h4>
                 <!-- Duplicate page  -->
-                <ui-button
-                  variant="primary"
-                  category="tertiary"
-                  icon="file_copy"
-                  (click)="onAppSelection()"
-                  cdkOverlayOrigin
-                  #appMenuTrigger="cdkOverlayOrigin"
-                  [disabled]="!('read' | able : 'Application')"
-                >
-                  {{ 'common.duplicate' | translate }}
-                </ui-button>
-                <ng-template #searchMenuHeaderTemplate>
-                  <ui-alert [closable]="true">
-                    {{ 'models.page.tooltip.duplicate' | translate }}
-                  </ui-alert>
-                </ng-template>
-                <ng-template
-                  cdkConnectedOverlay
-                  [cdkConnectedOverlayOrigin]="appMenuTrigger"
-                  [cdkConnectedOverlayOpen]="showDuplicateMenu"
-                >
-                  <shared-search-menu
-                    [headerTemplate]="searchMenuHeaderTemplate"
-                    [currentApplicationId]="data.applicationId"
-                    [applications]="applications"
-                    (close)="showDuplicateMenu = false"
-                    (open)="onDuplicate($event)"
-                  ></shared-search-menu>
-                </ng-template>
+                <ng-container *ngIf="'create' | able : 'Application'">
+                  <ui-button
+                    variant="primary"
+                    category="tertiary"
+                    icon="file_copy"
+                    (click)="onAppSelection()"
+                    cdkOverlayOrigin
+                    #appMenuTrigger="cdkOverlayOrigin"
+                  >
+                    {{ 'common.duplicate' | translate }}
+                  </ui-button>
+                  <ng-template #searchMenuHeaderTemplate>
+                    <ui-alert [closable]="true">
+                      {{ 'models.page.tooltip.duplicate' | translate }}
+                    </ui-alert>
+                  </ng-template>
+                  <ng-template
+                    cdkConnectedOverlay
+                    [cdkConnectedOverlayOrigin]="appMenuTrigger"
+                    [cdkConnectedOverlayOpen]="showDuplicateMenu"
+                  >
+                    <shared-search-menu
+                      [headerTemplate]="searchMenuHeaderTemplate"
+                      [currentApplicationId]="data.applicationId"
+                      [applications]="applications"
+                      (close)="showDuplicateMenu = false"
+                      (open)="onDuplicate($event)"
+                    ></shared-search-menu>
+                  </ng-template>
+                </ng-container>
               </div>
             </ng-container>
           </div>
         </ui-tab>
         <!-- Access (visibility) settings -->
-        <ui-tab *ngIf="data.canEditAccess">
+        <ui-tab *ngIf="data.canUpdate">
           <ng-container ngProjectAs="label">
             <ui-icon
               icon="visibility"
