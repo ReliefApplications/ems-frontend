@@ -1,5 +1,5 @@
+import { FaIconName } from '@oort-front/ui';
 import { Gradient } from '../components/gradient-picker/gradient-picker.component';
-import { IconName } from '../components/icon-picker/icon-picker.const';
 import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
 
 /**
@@ -17,7 +17,7 @@ export type LayerSymbolOutline = {
 export type LayerSymbol = {
   color: string;
   size: number;
-  style: IconName;
+  style: FaIconName;
   outline?: LayerSymbolOutline;
 };
 

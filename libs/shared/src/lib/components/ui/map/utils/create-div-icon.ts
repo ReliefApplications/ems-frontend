@@ -1,10 +1,14 @@
 import Color from 'color';
-import { IconName } from '../../../icon-picker/icon-picker.const';
 import * as L from 'leaflet';
 import { LayerSymbol } from '../../../../models/layer.model';
+import {
+  IconName,
+  icon as createIcon,
+} from '@fortawesome/fontawesome-svg-core';
+import { FaIconName, getIconDefinition } from '@oort-front/ui';
 
 export type MarkerIconOptions = {
-  icon: IconName | 'leaflet_default';
+  icon: FaIconName | 'leaflet_default';
   color: string;
   size: number;
   opacity: number;
@@ -44,11 +48,17 @@ const createFontAwesomeIcon = (
   span.style.opacity = opacity.toString();
 
   // create an i element for the icon
-  const i = document.createElement('i');
-  i.className = `fa fa-${icon}`;
-
+  const iconDef = getIconDefinition(icon as IconName);
+  const i = createIcon(iconDef, {
+    styles: {
+      height: `${size}px`,
+      width: `${size}px`,
+      'line-height': `${size}px`,
+      'font-size': `${size}px`,
+    },
+  });
   // append the i element to the span element
-  span.appendChild(i);
+  span.appendChild(i.node[0]);
 
   return span;
 };

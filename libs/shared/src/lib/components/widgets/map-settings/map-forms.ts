@@ -17,13 +17,13 @@ import {
   PopupElementType,
   UniqueValueInfo,
 } from '../../../models/layer.model';
-import { IconName } from '../../icon-picker/icon-picker.const';
 import {
   GeometryType,
   LayerType,
 } from '../../ui/map/interfaces/layer-settings.type';
 import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
+import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -301,13 +301,17 @@ export const createSymbolForm = (
   value: any,
   geometryType: GeometryType = 'Point'
 ): FormGroup => {
+  // If there was any previous configuration using v4 fa icons, we mapped them to the v6 equivalent if so
+  // If there is no need, we keep the original value
+  const style = get(value, 'style', 'location-dot');
+  const styleFinalValue = faV4toV6Mapper[style] ?? style;
   return fb.group({
     color: [
       get(value, 'color', DEFAULT_MARKER_ICON_OPTIONS.color),
       Validators.required,
     ],
     size: [get(value, 'size', 24)],
-    style: new FormControl<IconName>(get(value, 'style', 'location-dot')),
+    style: new FormControl<FaIconName>(styleFinalValue),
     ...(geometryType === 'Polygon' && {
       outline: fb.group({
         color: [
