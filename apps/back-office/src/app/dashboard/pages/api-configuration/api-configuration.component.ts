@@ -103,9 +103,8 @@ export class ApiConfigurationComponent
                 this.apiConfiguration.name as string
               );
               this.apiForm = this.createApiForm(data.apiConfiguration);
-              this.apiForm
-                .get('authType')
-                ?.valueChanges.pipe(takeUntil(this.destroy$))
+              this.apiForm.controls.authType?.valueChanges
+                .pipe(takeUntil(this.destroy$))
                 .subscribe((value) => {
                   this.resetFormSettings(value);
                 });
@@ -162,9 +161,9 @@ export class ApiConfigurationComponent
    * @param authType current auth type of the API configuration
    */
   private resetFormSettings(authType: string) {
-    this.apiForm.controls.settings.clearValidators();
-    this.apiForm.controls.settings = this.buildSettingsForm(authType);
-    this.apiForm.controls.settings.updateValueAndValidity();
+    (this.apiForm as any).removeControl('settings', { emitEvent: false });
+    this.apiForm.addControl('settings', this.buildSettingsForm(authType));
+    this.apiForm.updateValueAndValidity();
   }
 
   /**
