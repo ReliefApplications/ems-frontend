@@ -11,14 +11,17 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
  * actions for that widget.
  */
 @Component({
-  selector: 'shared-floating-options',
-  templateUrl: './floating-options.component.html',
-  styleUrls: ['./floating-options.component.scss'],
+  selector: 'shared-widget-actions',
+  templateUrl: './widget-actions.component.html',
+  styleUrls: ['./widget-actions.component.scss'],
 })
-export class FloatingOptionsComponent extends UnsubscribeComponent {
+export class WidgetActionsComponent extends UnsubscribeComponent {
   // === WIDGET ===
   @Input() widget: any;
-  @Input() canExpand = true;
+  /** Can user edit widget */
+  @Input() canUpdate = false;
+  /** Collapse actions into a single button */
+  @Input() collapsed = true;
 
   // === EMIT ACTION SELECTED ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -49,12 +52,14 @@ export class FloatingOptionsComponent extends UnsubscribeComponent {
    *
    * @param action action
    */
-  async onClick(action: any): Promise<void> {
-    if (action === 'Settings') {
-      const { TileDataComponent } = await import(
-        './menu/tile-data/tile-data.component'
+  async onClick(
+    action: 'settings' | 'expand' | 'style' | 'delete'
+  ): Promise<void> {
+    if (action === 'settings') {
+      const { EditWidgetModalComponent } = await import(
+        '../edit-widget-modal/edit-widget-modal.component'
       );
-      const dialogRef = this.dialog.open(TileDataComponent, {
+      const dialogRef = this.dialog.open(EditWidgetModalComponent, {
         disableClose: true,
         data: {
           tile: this.widget,
@@ -67,13 +72,13 @@ export class FloatingOptionsComponent extends UnsubscribeComponent {
         }
       });
     }
-    if (action === 'Expand') {
+    if (action === 'expand') {
       this.expand.emit({ id: this.widget.id });
     }
-    if (action === 'Style') {
+    if (action === 'style') {
       this.style.emit({ widget: this.widget });
     }
-    if (action === 'Delete') {
+    if (action === 'delete') {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('models.widget.delete.title'),
         content: this.translate.instant(
