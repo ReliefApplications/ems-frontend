@@ -105,7 +105,7 @@ export class IconPickerPopupComponent
       const iconDef = getIconDefinition(icon as IconName);
       const i = iconCreator(iconDef, {
         styles: {
-          color: this.color,
+          ...(this.color && { color: this.color }),
         },
       });
       this.svgIcons[icon] = i.html[0];

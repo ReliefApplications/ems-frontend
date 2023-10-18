@@ -56,6 +56,8 @@ export class IconPickerComponent
   @Input() color: string = this.primaryColor;
   /** Boolean to control the visibility of the list. */
   public showList = false;
+  /** Timeout listener */
+  private setIconTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Gets the value
@@ -292,8 +294,14 @@ export class IconPickerComponent
   public setIcon(icon?: string) {
     this.showList = false;
     if (icon) {
-      this.appendIconSvgToDOM(icon);
       this.value = icon;
+      // In order to render the value container after it contains value we set the timeout
+      if (this.setIconTimeoutListener) {
+        clearTimeout(this.setIconTimeoutListener);
+      }
+      this.setIconTimeoutListener = setTimeout(() => {
+        this.appendIconSvgToDOM(icon);
+      }, 0);
       this.onTouched();
     }
   }
@@ -309,10 +317,9 @@ export class IconPickerComponent
       this.renderer.removeChild(wrapper, wrapper.children[0]);
     }
     const iconDef = getIconDefinition(icon as IconName);
-
     const i = iconCreator(iconDef, {
       styles: {
-        color: this.color,
+        ...(this.color && { color: this.color }),
       },
     });
     this.renderer.appendChild(wrapper, i.node[0]);
@@ -357,5 +364,8 @@ export class IconPickerComponent
   /** Function to handle component destruction. */
   ngOnDestroy(): void {
     this.stateChanges.complete();
+    if (this.setIconTimeoutListener) {
+      clearTimeout(this.setIconTimeoutListener);
+    }
   }
 }
