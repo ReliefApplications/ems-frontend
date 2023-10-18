@@ -23,13 +23,17 @@ import {
 } from '../../../models/layer.model';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
-import { IconDisplayPipe } from '../../../pipes/icon-display/icon-display.pipe';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
 import centroid from '@turf/centroid';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import {
+  IconName,
+  icon as iconCreator,
+} from '@fortawesome/fontawesome-svg-core';
+import { getIconDefinition } from '@oort-front/ui';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -988,7 +992,6 @@ export class Layer implements LayerModel {
                   24
                 ),
               };
-              const pipe = new IconDisplayPipe();
               // Cluster legend
               const clusterSymbol: LayerSymbol = get(
                 this.layerDefinition,
@@ -996,9 +999,18 @@ export class Layer implements LayerModel {
                 symbol
               );
               html += `<div>${this.name} clusters</div>`;
-              html += `<i style="color: ${
-                clusterSymbol.color
-              }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
+              const iconDef = getIconDefinition('circle');
+              const i = iconCreator(iconDef, {
+                styles: {
+                  height: '1rem',
+                  width: '1rem',
+                  color: clusterSymbol.color,
+                  'line-height': '1rem',
+                  'font-size': '1rem',
+                  'padding-left': '.5rem',
+                },
+              });
+              html += i.html[0];
               break;
             }
             default: {
@@ -1035,7 +1047,6 @@ export class Layer implements LayerModel {
     label?: string
   ): string {
     if (symbol) {
-      const pipe = new IconDisplayPipe();
       switch (type) {
         case 'Polygon': {
           // We avoid stroke width to be too important
@@ -1059,11 +1070,23 @@ export class Layer implements LayerModel {
         }
         default:
         case 'Point': {
-          return `<span class="flex gap-2 items-center"><i style="color: ${
-            symbol.color
-          }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
-            label || ''
-          }</span>`;
+          const wrapper = this.renderer.createElement('span');
+          ['flex', 'gap-2', 'items-center'].forEach((classProp) => {
+            this.renderer.addClass(wrapper, classProp);
+          });
+          const iconDef = getIconDefinition(symbol.style as IconName);
+          const i = iconCreator(iconDef, {
+            styles: {
+              height: '1rem',
+              width: '1rem',
+              color: symbol.color,
+              'line-height': '1rem',
+              'font-size': '1rem',
+              'padding-left': '.5rem',
+            },
+          });
+          this.renderer.appendChild(wrapper, i.node[0]);
+          return wrapper.outerHTML;
         }
       }
     } else {
