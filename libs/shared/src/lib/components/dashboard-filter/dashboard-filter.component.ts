@@ -52,8 +52,9 @@ export class DashboardFilterComponent
   extends UnsubscribeComponent
   implements OnDestroy, OnChanges, AfterViewInit
 {
-  // Filter
+  /** Current position of filter */
   position!: FilterPosition;
+  /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
     FilterPosition.TOP,
@@ -64,9 +65,9 @@ export class DashboardFilterComponent
   /** Has the translation for the tooltips of each button */
   public FilterPositionTooltips: Record<FilterPosition, string> = {
     [FilterPosition.LEFT]:
-      'components.application.dashboard.filter.filterPosition.top',
-    [FilterPosition.TOP]:
       'components.application.dashboard.filter.filterPosition.left',
+    [FilterPosition.TOP]:
+      'components.application.dashboard.filter.filterPosition.top',
     [FilterPosition.BOTTOM]:
       'components.application.dashboard.filter.filterPosition.bottom',
     [FilterPosition.RIGHT]:
