@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostBinding,
@@ -7,16 +8,25 @@ import {
   Input,
   OnDestroy,
   Optional,
+  Renderer2,
   Self,
   forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { FA_ICONS, IconName } from './icon-picker.const';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { FormControlComponent } from '@oort-front/ui';
+import {
+  FA_ICONS,
+  FaIconName,
+  FormControlComponent,
+  getIconDefinition,
+} from '@oort-front/ui';
+import {
+  IconName,
+  icon as iconCreator,
+} from '@fortawesome/fontawesome-svg-core';
 
-type FormFieldValue = IconName | null;
+type FormFieldValue = FaIconName | null;
 
 /**
  * Icon picker that loads the icon list with the given font family to display those icons as a grid
@@ -34,7 +44,7 @@ type FormFieldValue = IconName | null;
 })
 export class IconPickerComponent
   extends FormControlComponent
-  implements ControlValueAccessor, OnDestroy
+  implements ControlValueAccessor, OnDestroy, AfterViewInit
 {
   /** Static variable to keep track of id increment. */
   static nextId = 0;
@@ -61,8 +71,7 @@ export class IconPickerComponent
     this.onChange(val);
     this.stateChanges.next();
   }
-  /** Input decorator for fontFamily */
-  @Input() fontFamily = 'fa';
+
   /** Subject to emit state changes. */
   public stateChanges = new Subject<void>();
   /** HostBinding decorator for id. */
@@ -186,11 +195,13 @@ export class IconPickerComponent
    * Icon picker component
    *
    * @param environment platform environment
-   * @param elementRef shared element ref service
-   * @param ngControl form control shared service
+   * @param {Renderer2} renderer Renderer2 to safely manipulate DOM
+   * @param {ElementRef<HTMLElement>} elementRef shared element ref service
+   * @param {NgControl} ngControl form control shared service
    */
   constructor(
     @Inject('environment') environment: any,
+    private renderer: Renderer2,
     private elementRef: ElementRef<HTMLElement>,
     @Optional() @Self() public ngControl: NgControl
   ) {
@@ -211,6 +222,12 @@ export class IconPickerComponent
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   onChange = (_: any) => {};
+
+  ngAfterViewInit(): void {
+    if (this.value) {
+      this.appendIconSvgToDOM(this.value);
+    }
+  }
 
   /**
    * Sets element ids that should be used for the aria-describedby attribute of your control
@@ -271,9 +288,30 @@ export class IconPickerComponent
   public setIcon(icon?: string) {
     this.showList = false;
     if (icon) {
+      this.appendIconSvgToDOM(icon);
       this.value = icon;
       this.onTouched();
     }
+  }
+
+  /**
+   * Creates an svg with the given fa icon and inserts it in the DOM
+   *
+   * @param {string} icon Icon from where to create the icon definition for the svg to insert
+   */
+  private appendIconSvgToDOM(icon: string) {
+    const wrapper = this.elementRef.nativeElement.querySelector('span');
+    if (wrapper?.children.length) {
+      this.renderer.removeChild(wrapper, wrapper.children[0]);
+    }
+    const iconDef = getIconDefinition(icon as IconName);
+
+    const i = iconCreator(iconDef, {
+      styles: {
+        color: this.color,
+      },
+    });
+    this.renderer.appendChild(wrapper, i.node[0]);
   }
 
   /**
