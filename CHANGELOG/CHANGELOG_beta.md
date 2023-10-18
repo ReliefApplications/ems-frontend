@@ -1,3 +1,12 @@
+# [2.2.0-beta.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.3...v2.2.0-beta.4) (2023-10-18)
+
+
+### Bug Fixes
+
+* incorrect indicator for pagination of records-tab in resource ([#1960](https://github.com/ReliefApplications/oort-frontend/issues/1960)) ([862c899](https://github.com/ReliefApplications/oort-frontend/commit/862c899e88a7de9f7e815b533480935904860227))
+* ui lib storybook could not compile due to recent changes ([bedbdc7](https://github.com/ReliefApplications/oort-frontend/commit/bedbdc716987ddb772c709450b25b96d5e7f286e))
+* visibility icon would not appear for hidden pages ([#1967](https://github.com/ReliefApplications/oort-frontend/issues/1967)) ([00e07d4](https://github.com/ReliefApplications/oort-frontend/commit/00e07d4de77fa687afeba7624a220dd8bcb70439))
+
 # [2.2.0-beta.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.2...v2.2.0-beta.3) (2023-10-16)
 
 
