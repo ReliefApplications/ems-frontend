@@ -75,7 +75,6 @@ const initializeAuthAndTranslations =
     oauth.configure(environment.authConfig);
     formService.initialize();
     // Add fa icon font to check in the application
-    library.add(fas, fab);
     // Make sure that all translations are available before the app initializes
     return new Promise<any>((resolve: any) => {
       const locationInitialized = injector.get(
