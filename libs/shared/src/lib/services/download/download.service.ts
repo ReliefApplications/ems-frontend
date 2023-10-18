@@ -73,6 +73,7 @@ export class DownloadService {
 
     return { snackBarRef, headers };
   }
+
   /**
    * Downloads file from the server
    *

@@ -325,6 +325,7 @@ export class FormBuilderComponent implements OnInit {
       },
     });
   }
+
   /**
    * Available in previous version to change the template.
    *

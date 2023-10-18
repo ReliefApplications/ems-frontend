@@ -90,6 +90,7 @@ export class AppPreviewComponent
    * Is large device.
    */
   public largeDevice: boolean;
+
   /**
    * Main component of Application preview capacity.
    *

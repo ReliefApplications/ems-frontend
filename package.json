@@ -159,7 +159,7 @@
     "concat": "^1.0.3",
     "cypress": "^12.2.0",
     "esbuild": "^0.17.5",
-    "eslint": "~8.15.0",
+    "eslint": "~8.51.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-jsdoc": "^40.1.0",

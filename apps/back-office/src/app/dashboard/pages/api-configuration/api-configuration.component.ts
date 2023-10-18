@@ -155,6 +155,7 @@ export class ApiConfigurationComponent
       graphQLEndpoint: api.graphQLEndpoint,
     });
   }
+
   /**
    * Reset settings configuration form with the given API configuration
    *

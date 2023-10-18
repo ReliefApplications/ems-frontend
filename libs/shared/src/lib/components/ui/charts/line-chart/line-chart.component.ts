@@ -79,6 +79,7 @@ export class LineChartComponent implements OnChanges {
   public chartData: ChartData<'line'> = {
     datasets: [],
   };
+
   /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.showValueLabels = get(this.options, 'labels.showValue', false);

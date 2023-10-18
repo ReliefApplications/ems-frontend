@@ -28,6 +28,7 @@ export class SidenavControlsMenuBasemapComponent implements OnInit {
     if (this.basemap.layer)
       this.checked = this.map.hasLayer(this.basemap.layer);
   }
+
   /**
    * updates the basemap
    */

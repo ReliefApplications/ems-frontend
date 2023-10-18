@@ -45,6 +45,7 @@ export class MapLayersComponent
   public mapLayers: Array<LayerModel> = new Array<LayerModel>();
   public displayedColumns = ['name', 'actions'];
   public loading = true;
+
   /**
    * Layers configuration component of Map Widget.
    *

@@ -111,6 +111,7 @@ export class WidgetGridComponent
       this.isBackOffice = true;
     }
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);

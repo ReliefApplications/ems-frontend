@@ -35,6 +35,7 @@ export class TabLayoutPreviewComponent
 {
   @Input() data: LayoutPreviewData | null = null;
   public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
+
   /**
    * The constructor for the preview of the grid widget
    */

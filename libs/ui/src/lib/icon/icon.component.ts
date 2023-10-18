@@ -24,6 +24,7 @@ export class IconComponent {
   @Input() isOutlined = false;
   /** Font library */
   @Input() fontFamily: 'material' | 'fa' = 'material';
+
   /**
    * Formats the size input adding a 'px' suffix
    *
@@ -32,6 +33,7 @@ export class IconComponent {
   get fontSize(): string {
     return this.size + 'px';
   }
+
   /** @returns font awesome icon name */
   private get fontAwesomeIcon(): string {
     return `fa-${this.icon}`;

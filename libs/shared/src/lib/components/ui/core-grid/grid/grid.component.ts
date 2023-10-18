@@ -281,6 +281,7 @@ export class GridComponent
     super();
     this.environment = environment.module || 'frontoffice';
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.setSelectedItems();
@@ -304,6 +305,7 @@ export class GridComponent
   ngOnChanges(): void {
     this.statusMessage = this.getStatusMessage();
   }
+
   /** OnAfterViewInit lifecycle hook. */
   ngAfterViewInit(): void {
     this.setSelectedItems();

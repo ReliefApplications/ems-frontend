@@ -16,6 +16,7 @@ import { DOCUMENT } from '@angular/common';
 @Injectable({ providedIn: 'root' })
 export class FormService {
   private environment: any;
+
   /**
    * Shared survey service.
    * Initializes the additional code we made on top of the default logic of the library.

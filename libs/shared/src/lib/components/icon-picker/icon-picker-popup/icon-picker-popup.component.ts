@@ -53,6 +53,7 @@ export class IconPickerPopupComponent implements OnInit {
     this.close.emit(icon);
     this.show = false;
   }
+
   // this.filteredIcons.next(this.icons);
   ngOnInit(): void {
     this.searchControl.valueChanges.subscribe((value) => {
