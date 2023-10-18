@@ -63,6 +63,7 @@
         uiCell
         *cdkCellDef="let element"
         [attr.colspan]="displayedColumns.length"
+        [ngClass]="element.id === openedWorkflowId? '' : 'hidden'"
       >
         <div
           class="overflow-hidden flex justify-center"
