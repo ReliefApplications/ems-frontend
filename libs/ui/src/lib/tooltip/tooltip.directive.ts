@@ -18,11 +18,13 @@ export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
   selector: '[uiTooltip]',
 })
 export class TooltipDirective implements OnDestroy {
+  /** Tooltip text */
   @Input() uiTooltip = '';
+  /** Is tooltip disabled */
   @Input() tooltipDisabled = false;
-
+  /** Tooltip html element */
   private elToolTip!: HTMLSpanElement;
-  // Distance from tooltip and the host element
+  /** Distance from tooltip and the host element in px ( when possible ) */
   private tooltipSeparation = 5;
 
   // Default classes to render the tooltip
@@ -46,7 +48,7 @@ export class TooltipDirective implements OnDestroy {
   private position!: TooltipPosition;
 
   /**
-   * Constructor of the directive
+   * Tooltip directive.
    *
    * @param document current DOCUMENT
    * @param elementRef Tooltip host reference
