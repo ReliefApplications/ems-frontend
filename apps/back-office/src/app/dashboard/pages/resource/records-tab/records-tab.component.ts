@@ -205,6 +205,7 @@ export class RecordsTabComponent
       this.fetchRecords(true);
     }
   }
+
   /**
    * Restores an archived record.
    *
@@ -277,6 +278,7 @@ export class RecordsTabComponent
       .concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }
+
   /**
    * Downloads the list of records of the resource.
    *

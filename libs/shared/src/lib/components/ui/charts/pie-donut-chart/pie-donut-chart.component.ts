@@ -61,6 +61,7 @@ export class PieDonutChartComponent implements OnChanges {
   public chartData: ChartData<'doughnut' | 'pie' | 'polarArea' | 'radar'> = {
     datasets: [],
   };
+
   /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.showCategoryLabel = get(this.options, 'labels.showCategory', false);

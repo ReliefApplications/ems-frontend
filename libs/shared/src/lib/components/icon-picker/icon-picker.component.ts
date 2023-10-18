@@ -94,6 +94,7 @@ export class IconPickerComponent
     this.ePlaceholder = plh;
     this.stateChanges.next();
   }
+
   /** Private variable for placeholder. */
   private ePlaceholder = '';
   /** Boolean to track focus state. */
@@ -138,6 +139,7 @@ export class IconPickerComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+
   /** Private variable to track if the field is required. */
   private isRequired = false;
 
@@ -169,6 +171,7 @@ export class IconPickerComponent
     // return this.ngControl.invalid && this.touched;
     // return this.selected.invalid && this.touched;
   }
+
   /** The type of control. */
   public controlType = 'shared-icon-picker';
   /** Input decorator for aria-describedby. */
@@ -211,6 +214,7 @@ export class IconPickerComponent
       this.ngControl.valueAccessor = this;
     }
   }
+
   /** Function to handle touch events. */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
@@ -349,6 +353,7 @@ export class IconPickerComponent
       this.stateChanges.next();
     }
   }
+
   /** Function to handle component destruction. */
   ngOnDestroy(): void {
     this.stateChanges.complete();

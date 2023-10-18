@@ -38,6 +38,7 @@ export class TextareaComponent implements ControlValueAccessor {
   @Input() placeholder = '';
   /** Name of the textarea. */
   @Input() name!: string;
+
   /**
    * Set minimal rows for the textarea
    *
@@ -54,6 +55,7 @@ export class TextareaComponent implements ControlValueAccessor {
       }
     }
   }
+
   /** Maximum number of rows that the textarea can display. */
   @Input() maxRows = 5;
 
@@ -64,6 +66,7 @@ export class TextareaComponent implements ControlValueAccessor {
    * @param kendoFocus FocusableDirective
    */
   constructor(@Self() @Optional() public kendoFocus: FocusableDirective) {}
+
   /** The minimum number of rows in the textarea. */
   minRowsNumber = 2;
   /** Event emitter for value changes. */

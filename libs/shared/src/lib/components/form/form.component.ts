@@ -101,6 +101,7 @@ export class FormComponent
   ) {
     super();
   }
+
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
     addCustomFunctions(this.authService, this.record);
@@ -397,6 +398,7 @@ export class FormComponent
       }
     });
   }
+
   /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();

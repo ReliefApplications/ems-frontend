@@ -94,6 +94,7 @@ export class MapComponent
   private basemap: any;
   private currentBasemapKey!: string;
   private esriApiKey!: string;
+
   /**
    * Update map settings and redraw it with those
    */

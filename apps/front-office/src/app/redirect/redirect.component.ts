@@ -19,6 +19,7 @@ import { takeUntil } from 'rxjs';
 export class RedirectComponent extends UnsubscribeComponent implements OnInit {
   /** List of accessible applications */
   applications: Application[] = [];
+
   /** @returns True if applications is empty */
   get empty(): boolean {
     return this.applications.length === 0;

@@ -31,6 +31,7 @@ export class UserDetailsComponent implements OnInit {
       this.form?.get('email')?.disable();
     }
   }
+
   public form!: UntypedFormGroup;
   public attributes: { text: string; value: string }[] = [];
 

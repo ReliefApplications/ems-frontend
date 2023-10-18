@@ -120,6 +120,7 @@ import { GraphQLError } from 'graphql';
 export class ApplicationService {
   /** Current application */
   public application = new BehaviorSubject<Application | null>(null);
+
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -144,6 +145,7 @@ export class ApplicationService {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
+
   /** @returns Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;
@@ -180,6 +182,7 @@ export class ApplicationService {
   get distributionLists(): DistributionList[] {
     return this.application.value?.distributionLists || [];
   }
+
   /**
    * Creates an instance of ApplicationService.
    *
