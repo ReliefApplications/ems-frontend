@@ -19,6 +19,7 @@ import {
   Output,
   EventEmitter,
   Inject,
+  TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -66,6 +67,7 @@ export class GridWidgetComponent
   // === TEMPLATE REFERENCE ===
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   // === DATA ===
   @Input() widget: any;

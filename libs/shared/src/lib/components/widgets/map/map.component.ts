@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 
 /** Component for the map widget */
 @Component({
@@ -9,4 +9,5 @@ import { Component, Input } from '@angular/core';
 export class MapWidgetComponent {
   @Input() header = true;
   @Input() settings: any;
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 }

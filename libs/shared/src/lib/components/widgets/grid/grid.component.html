@@ -1,30 +1,4 @@
 <div class="h-full flex flex-col">
-  <!-- CLASSIC VIEW -->
-  <kendo-tilelayout-item-header
-    *ngIf="header"
-    class="widget-header border-b"
-    [ngClass]="{
-      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
-    }"
-  >
-    <span class="widget-title" [title]="settings.title">{{
-      settings.title
-    }}</span>
-    <!-- Sort selector -->
-    <ng-container *ngIf="sortFields.length > 0">
-      <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
-    </ng-container>
-    <!-- Core grid actions -->
-    <ng-container *ngIf="aggregations.length === 0">
-      <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
-      <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
-    </ng-container>
-    <!-- Aggregation grid actions -->
-    <ng-container *ngIf="aggregations.length > 0">
-      <ng-container *ngTemplateOutlet="aggregationsTemplate"></ng-container>
-    </ng-container>
-  </kendo-tilelayout-item-header>
   <!-- Core grid display -->
   <ng-container *ngIf="aggregations.length === 0">
     <!-- FULL WINDOW VIEW -->
@@ -41,6 +15,26 @@
     <ng-container *ngTemplateOutlet="aggregationGridTemplate"></ng-container>
   </ng-container>
 </div>
+
+<!-- Header -->
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings.title">{{
+    settings.title
+  }}</span>
+  <!-- Sort selector -->
+  <ng-container *ngIf="sortFields.length > 0">
+    <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
+  </ng-container>
+  <!-- Core grid actions -->
+  <ng-container *ngIf="aggregations.length === 0">
+    <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
+    <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
+  </ng-container>
+  <!-- Aggregation grid actions -->
+  <ng-container *ngIf="aggregations.length > 0">
+    <ng-container *ngTemplateOutlet="aggregationsTemplate"></ng-container>
+  </ng-container>
+</ng-template>
 
 <!-- Core Grid ( data query / layout )-->
 <ng-template #coreGridTemplate>
