@@ -2,6 +2,8 @@
 	"common": {
 		"access": "Accès",
 		"accessDenied": "Accès refusé",
+		"account": "Compte",
+		"actions": "Actions",
 		"add": "Ajouter",
 		"adminField": "Champ administrateur",
 		"aggregation": {
@@ -336,6 +338,7 @@
 			"none": "Aucune référence de données",
 			"one": "Référence de données"
 		},
+		"remove": "Retirer",
 		"resource": {
 			"few": "Ressources",
 			"none": "Aucune ressource",
@@ -511,6 +514,12 @@
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"filterPosition": {
+						"bottom": "Afficher le filtre en bas",
+						"left": "Afficher le filtre à gauche",
+						"right": "Afficher le filtre à droite",
+						"top": "Afficher le filtre en haut"
+					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
 				},

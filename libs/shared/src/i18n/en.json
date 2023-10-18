@@ -2,6 +2,8 @@
 	"common": {
 		"access": "Access",
 		"accessDenied": "Access denied",
+		"account": "Account",
+		"actions": "Actions",
 		"add": "Add",
 		"adminField": "Admin field",
 		"aggregation": {
@@ -336,6 +338,7 @@
 			"none": "No Reference Data",
 			"one": "Reference Data"
 		},
+		"remove": "Remove",
 		"resource": {
 			"few": "Resources",
 			"none": "No resource",
@@ -511,6 +514,12 @@
 				"empty": "No content available. Wait for your administrator to build some.",
 				"filter": {
 					"empty": "No filters have been defined by the administrators",
+					"filterPosition": {
+						"bottom": "Show filter on the bottom",
+						"left": "Show filter on the left",
+						"right": "Show filter on the right",
+						"top": "Show filter on the top"
+					},
 					"info": "Dashboard filters can be used between pages to filter their content.",
 					"title": "Dashboard filters configuration"
 				},

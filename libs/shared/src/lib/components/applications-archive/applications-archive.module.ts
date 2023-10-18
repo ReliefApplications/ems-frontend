@@ -7,6 +7,7 @@ import {
   FormWrapperModule,
   IconModule,
   DividerModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { DateModule } from '../../pipes/date/date.module';
@@ -35,6 +36,7 @@ import { ListFilterComponent } from '../list-filter/list-filter.component';
     TranslateModule,
     DividerModule,
     ListFilterComponent,
+    TooltipModule,
   ],
   exports: [ApplicationsArchiveComponent],
 })

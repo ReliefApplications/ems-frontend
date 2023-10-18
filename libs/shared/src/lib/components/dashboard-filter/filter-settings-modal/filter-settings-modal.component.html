@@ -14,6 +14,7 @@
           icon="{{ position + '_panel_open' }}"
           [isOutlined]="true"
           (click)="setDefaultPosition(position)"
+          [uiTooltip]="positionTooltips[position] | translate"
         ></ui-button>
       </ng-container>
     </div>
