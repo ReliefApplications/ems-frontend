@@ -2,6 +2,8 @@
 	"common": {
 		"access": "******",
 		"accessDenied": "******",
+		"account": "******",
+		"actions": "******",
 		"add": "******",
 		"adminField": "******",
 		"aggregation": {
@@ -336,6 +338,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"remove": "******",
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -511,6 +514,12 @@
 				"empty": "******",
 				"filter": {
 					"empty": "******",
+					"filterPosition": {
+						"bottom": "******",
+						"left": "******",
+						"right": "******",
+						"top": "******"
+					},
 					"info": "******",
 					"title": "******"
 				},
