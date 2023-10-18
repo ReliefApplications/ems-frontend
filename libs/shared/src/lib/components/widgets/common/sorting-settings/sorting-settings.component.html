@@ -1,0 +1,121 @@
+<div class="flex justify-between">
+  <h2>{{ 'models.widget.sorting.management' | translate }}</h2>
+
+  <ui-button
+    class="mb-6"
+    category="secondary"
+    variant="primary"
+    (click)="addRow()"
+  >
+    {{ 'models.widget.sorting.add' | translate }}
+  </ui-button>
+</div>
+
+<shared-empty
+  *ngIf="formGroup.get('sortFields')!.value.length === 0"
+  [title]="'models.widget.sorting.empty' | translate"
+></shared-empty>
+
+<form
+  [formGroup]="formGroup"
+  *ngIf="formGroup.get('sortFields')!.value.length > 0"
+>
+  <table
+    cdk-table
+    uiTableWrapper
+    [dataSource]="data"
+    formArrayName="sortFields"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+  >
+    <ng-container cdkColumnDef="field">
+      <th uiCellHeader *cdkHeaderCellDef>
+        {{ 'models.widget.sorting.field' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <div uiFormFieldDirective class="!m-0">
+          <ui-select-menu formControlName="field">
+            <ui-select-option
+              *ngFor="let option of fields"
+              [value]="option.name"
+            >
+              {{ option.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="order">
+      <th uiCellHeader *cdkHeaderCellDef>
+        {{ 'models.widget.sorting.order' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <div uiFormFieldDirective class="!m-0">
+          <ui-select-menu formControlName="order">
+            <ui-select-option
+              *ngFor="let option of orderList"
+              [value]="option.value"
+            >
+              {{ option.text }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="label">
+      <th uiCellHeader *cdkHeaderCellDef>
+        {{ 'models.widget.sorting.label' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <div uiFormFieldDirective class="!m-0">
+          <input formControlName="label" />
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="actions">
+      <th uiCellHeader *cdkHeaderCellDef></th>
+      <td uiCell *cdkCellDef="let element; let rowIndex = index">
+        <div class="flex gap-2 text-neutral-500 justify-end">
+          <ui-button
+            variant="danger"
+            [isIcon]="true"
+            icon="delete"
+            (click)="removeRow(rowIndex)"
+            [uiTooltip]="'models.widget.sorting.delete' | translate"
+          >
+          </ui-button>
+          <ui-button
+            (mouseenter)="dragEnabled = true"
+            (mouseleave)="dragEnabled = false"
+            cdkDragHandle
+            [isIcon]="true"
+            icon="drag_indicator"
+            class="nav-item-handle"
+            [uiTooltip]="'models.page.tooltip.drag' | translate"
+          >
+          </ui-button>
+        </div>
+      </td>
+    </ng-container>
+    <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsApps"></tr>
+    <tr
+      cdk-row
+      *cdkRowDef="let row; columns: displayedColumnsApps"
+      cdkDrag
+      [cdkDragDisabled]="!dragEnabled"
+      class="bg-white"
+    ></tr>
+  </table>
+</form>

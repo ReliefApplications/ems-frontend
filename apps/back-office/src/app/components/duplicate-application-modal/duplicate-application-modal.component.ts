@@ -1,11 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { DUPLICATE_APPLICATION } from './graphql/mutations';
 import {
+  Application,
   DuplicateApplicationMutationResponse,
-  DUPLICATE_APPLICATION,
-} from './graphql/mutations';
-import { Application } from '@oort-front/safe';
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -110,12 +110,5 @@ export class DuplicateApplicationModalComponent {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
-  }
-
-  /**
-   * Close dialog.
-   */
-  onCancel(): void {
-    this.dialogRef.close();
   }
 }

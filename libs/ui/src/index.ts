@@ -1,5 +1,3 @@
-export * from './lib/ui.module';
-
 // === TAILWIND COMPONENTS === //
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
@@ -38,9 +36,12 @@ export * from './lib/date/date.module';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
 export * from './lib/error-message/error-message.module';
+export * from './lib/fixed-wrapper/fixed-wrapper.module';
+export * from './lib/cron-editor/cron-editor.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';
+export * from './lib/sidenav/layout/layout.service';
 
 // === TYPES === //
 export * from './lib/types/variant';
@@ -65,3 +66,6 @@ export * from './lib/snackbar/snackbar.token';
 
 // === MODULE === //
 export * from './lib/ui.module';
+
+// === HELPER METHODS === //
+export * from './lib/table/handle-pagination-event';

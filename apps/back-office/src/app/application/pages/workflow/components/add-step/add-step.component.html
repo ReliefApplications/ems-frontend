@@ -3,11 +3,11 @@
     <!-- Selection of type of content -->
     <ng-container *ngSwitchCase="1">
       <h2>{{ 'pages.workflow.addStep.selectType' | translate }}</h2>
-      <safe-content-choice
+      <shared-content-choice
         class="mt-8"
         formControlName="type"
         [contentTypes]="contentTypes"
-      ></safe-content-choice>
+      ></shared-content-choice>
     </ng-container>
     <!-- Form selection -->
     <ng-container *ngSwitchCase="2">

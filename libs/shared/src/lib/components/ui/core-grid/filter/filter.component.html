@@ -1,0 +1,38 @@
+<ng-container *ngIf="isNotArray; else multiSelectTmpl">
+  <kendo-dropdownlist
+    [filterable]="true"
+    [data]="choices"
+    [popupSettings]="{ width: 'auto' }"
+    (valueChange)="onChange($event)"
+    [value]="selectedValue"
+    [valuePrimitive]="true"
+    [textField]="textField"
+    [valueField]="valueField"
+    (filterChange)="handleFilter($event)"
+  >
+  </kendo-dropdownlist>
+</ng-container>
+<ng-template #multiSelectTmpl>
+  <kendo-multiselect
+    [filterable]="true"
+    [data]="choices"
+    (valueChange)="onChange($event)"
+    [value]="selectedValue"
+    [valuePrimitive]="true"
+    [textField]="textField"
+    [valueField]="valueField"
+    (filterChange)="handleFilter($event)"
+    [clearButton]="false"
+  >
+  </kendo-multiselect>
+</ng-template>
+<div class="flex flex-row">
+  <kendo-dropdownbutton
+    [data]="op"
+    icon="filter"
+    (itemClick)="onChangeOperator($event)"
+  ></kendo-dropdownbutton>
+  <button kendoButton *ngIf="selectedValue" (click)="onClear()">
+    <span class="k-icon k-i-filter-clear"></span>
+  </button>
+</div>

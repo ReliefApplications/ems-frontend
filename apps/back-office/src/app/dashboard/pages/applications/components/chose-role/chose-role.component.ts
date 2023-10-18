@@ -1,8 +1,8 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
-import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
-import { Role } from '@oort-front/safe';
+import { GET_ROLES } from '../../graphql/queries';
+import { Role, RolesQueryResponse } from '@oort-front/shared';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /**
@@ -23,7 +23,7 @@ export class ChoseRoleComponent implements OnInit {
     role: [null, Validators.required],
   });
   /** GraphQL roles query */
-  public rolesQuery!: QueryRef<GetRolesQueryResponse>;
+  public rolesQuery!: QueryRef<RolesQueryResponse>;
 
   /**
    * Chose role component, to preview application with selected role.
@@ -45,7 +45,7 @@ export class ChoseRoleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.rolesQuery = this.apollo.watchQuery<GetRolesQueryResponse>({
+    this.rolesQuery = this.apollo.watchQuery<RolesQueryResponse>({
       query: GET_ROLES,
       variables: {
         application: this.data.application,
@@ -55,10 +55,5 @@ export class ChoseRoleComponent implements OnInit {
     this.rolesQuery.valueChanges.subscribe(({ loading }) => {
       this.loading = loading;
     });
-  }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
   }
 }

@@ -1,0 +1,323 @@
+@import 'variables.scss';
+
+::ng-deep .sv-boolean:not(.sv-boolean--checked) {
+  .sv-boolean__switch {
+    background-color: rgba(64, 64, 64, 0.5) !important;
+  }
+}
+::ng-deep .sv_q {
+  padding-bottom: 0.5em !important;
+}
+
+::ng-deep .sv_q_required_text {
+  color: red;
+}
+
+// === QUESTION CONTENT ===
+::ng-deep .sd-question__content {
+  .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
+    background-color: transparent;
+    border: none;
+    order: 2;
+    padding: 0 0 0 8px !important;
+    margin: 8px 0 !important;
+  }
+
+  // === DATE / TIME INPUTS ===
+  .k-datepicker,
+  .k-timepicker,
+  .k-datetimepicker {
+    width: 100%;
+
+    .k-dateinput {
+      .k-input-inner {
+        height: 100% !important;
+      }
+    }
+  }
+}
+
+::ng-deep svd-property-editor {
+  // === DATE / TIME INPUTS ===
+  .k-datepicker,
+  .k-timepicker,
+  .k-datetimepicker {
+    width: 100%;
+
+    .k-dateinput {
+      .k-input-inner {
+        height: 100% !important;
+      }
+    }
+  }
+}
+
+::ng-deep .sv_row {
+  div {
+    min-width: 0px !important;
+  }
+}
+
+::ng-deep survey .sv-title-actions {
+  display: block !important;
+}
+
+::ng-deep survey shared-core-grid {
+  height: 410px;
+
+  .sv_row div {
+    min-width: unset;
+  }
+}
+
+::ng-deep .survey-title__tooltip {
+  background-color: var(--primary);
+  padding: 0 0.35rem;
+  border-radius: 100%;
+  color: white;
+  margin-left: 0.25rem;
+  font-size: 0.75rem !important;
+  font-weight: bold;
+}
+
+::ng-deep .sd-matrixdropdown.sd-table,
+::ng-deep .sd-table.sd-matrixdynamic {
+  padding: 0.5rem 0 1rem 0;
+}
+
+::ng-deep survey {
+  .sv-radio--allowhover:hover .sv-radio__svg {
+    fill: var(--primary, rgba(64, 64, 64, 0.5)) !important;
+  }
+
+  .sv-page__title {
+    padding-left: 0 !important;
+    margin-bottom: calc(var(--font-size) / 2) !important;
+    padding-bottom: calc(var(--font-size) / 2);
+    border-bottom: 1px solid var(--primary);
+  }
+
+  .sv-body__page {
+    margin: 0 !important;
+  }
+}
+
+::ng-deep survey,
+::ng-deep survey-creator {
+  .sd-input {
+    padding: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px)))
+      calc(2 * var(--sjs-base-unit, var(--base-unit, 8px)));
+  }
+  .k-combobox,
+  .k-multiselect,
+  .sd-input,
+  .k-timepicker,
+  .k-datetimepicker,
+  .k-datepicker {
+    @apply focus-within:ring-2
+      focus-within:ring-inset
+      focus-within:ring-primary-600
+      shadow-sm
+      rounded-md
+      border-0
+      ring-1
+      ring-inset
+      ring-gray-300
+      bg-white
+      items-center
+      w-full
+      border-0;
+  }
+  // .sd-text {
+  //   @apply text-sm h-10;
+  // }
+  .k-multiselect {
+    .k-clear-value {
+      padding-right: 18px !important;
+    }
+
+    .k-input-loading-icon {
+      margin-right: 14px !important;
+    }
+
+    .k-chip-list {
+      padding-left: 12px !important;
+    }
+
+    .k-chip {
+      min-width: fit-content;
+
+      .k-chip-action {
+        background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="800" height="800" viewBox="-6 -6 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" class="jam jam-close"><path d="m7.314 5.9 3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"/></svg>') !important;
+        background-size: 16px 16px;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.5;
+        margin-right: -4px;
+
+        .k-icon {
+          opacity: 0;
+        }
+      }
+
+      @apply will-change-transform
+        inline-flex
+        items-center
+        gap-x-1.5
+        px-2
+        py-1
+        text-xs
+        font-medium
+        justify-between
+        rounded-[16px]
+        cursor-pointer
+        bg-gray-300
+        hover:bg-gray-400
+        text-gray-500;
+    }
+  }
+  .k-timepicker,
+  .k-datetimepicker,
+  .k-datepicker,
+  .k-combobox {
+    .k-input-inner {
+      padding-left: 16px !important;
+    }
+    .k-input-button {
+      width: 20px !important;
+      height: 20px !important;
+      margin-right: 15px !important;
+      background-color: white !important;
+      border: none !important;
+      border-radius: 4px !important;
+      background-image: none !important;
+    }
+  }
+  .k-combobox {
+    .k-input-button {
+      background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="800" height="800" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" transform="rotate(90)"><path d="M9.71 6.29a1 1 0 0 0-1.42 0l-5 5a1 1 0 0 0 0 1.42l5 5a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42L5.41 12l4.3-4.29a1 1 0 0 0 0-1.42Zm11 5-5-5a1 1 0 0 0-1.42 1.42l4.3 4.29-4.3 4.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l5-5a1 1 0 0 0 0-1.42Z"/></svg>') !important;
+      background-size: 17px 17px;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.5;
+
+      .k-icon {
+        display: none;
+      }
+    }
+  }
+  .k-list-ul {
+    @apply shadow-lg
+      ring-black
+      ring-opacity-5
+      focus:outline-none
+      sm:text-sm
+      ease-in-out
+      duration-100
+      w-full
+      overflow-auto
+      rounded-md
+      bg-white
+      text-base
+      max-h-36
+      py-1;
+  }
+  // dropdown/tagbox item
+  .k-list-item {
+    @apply px-2
+      w-full
+      justify-between
+      cursor-pointer
+      hover:bg-primary-200
+      hover:text-white
+      items-center
+      text-gray-900
+      py-[5px]
+      text-sm;
+  }
+  .k-popup,
+  .k-list {
+    @apply rounded-md;
+  }
+
+  .sd-root-modern {
+    --sd-base-vertical-padding: 10px !important; //Reduces space between questions
+  }
+
+  // File upload file wrapper
+  .sd-file__wrapper {
+    // File upload choose button
+    .sd-file__choose-btn {
+      @apply hover:bg-primary-500
+        bg-primary-400
+        focus-visible:outline
+        focus-visible:outline-2
+        focus-visible:outline-offset-2
+        focus-visible:outline-indigo-600
+        rounded-md
+        shadow-sm
+        text-sm
+        font-semibold
+        text-white;
+    }
+  }
+
+  // Checkbox
+  .sd-checkbox {
+    padding: 12px 0 !important;
+
+    label {
+      display: flex;
+      align-items: center;
+
+      .sd-checkbox__decorator {
+        margin-top: unset !important;
+        border: solid 1px lightgray !important;
+        @apply h-6
+          w-6
+          focus-within:ring-2
+          focus-within:ring-inset
+          focus-within:ring-primary-600
+          shadow-sm
+          rounded-md;
+      }
+    }
+  }
+  // Submit button in preview
+  .sd-navigation__complete-btn {
+    @apply hover:bg-primary-600;
+  }
+
+  // Radio
+  .sd-item--checked .sd-item__decorator {
+    @apply bg-primary-400;
+  }
+  .sd-radio__decorator {
+    border: solid 1px lightgray !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  // Boolean
+  .sd-boolean {
+    @apply bg-gray-200 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2;
+  }
+}
+
+// On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible
+// The background white would solve this
+::ng-deep survey-creator {
+  .svc-question__content-actions {
+    background-color: white !important;
+    bottom: 0 !important;
+  }
+}
+::ng-deep .sv_custom_header {
+  display: none;
+}
+
+::ng-deep .sd-body .sd-body__page {
+  min-width: 0 !important;
+}
+
+::ng-deep .sd-body.sd-body--static {
+  max-width: unset;
+}

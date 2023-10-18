@@ -13,6 +13,7 @@ import { Breadcrumb } from './interfaces/breadcrumb.interface';
 import { isEqual } from 'lodash';
 /**
  * UI Breadcrumbs Component
+ * Breadcrumbs are a secondary navigation scheme that allows the user to see where the current page is in relation to the Web site's hierarchy.
  */
 @Component({
   selector: 'ui-breadcrumbs',
@@ -20,15 +21,20 @@ import { isEqual } from 'lodash';
   styleUrls: ['./breadcrumbs.component.scss'],
 })
 export class BreadcrumbsComponent implements OnChanges {
+  /** Array of Breadcrumb objects. */
   @Input() breadcrumbs: Breadcrumb[] = [];
+  /** Separator between breadcrumbs. */
   @Input() separator: BreadcrumbSeparator = 'slash';
+  /** Display style of breadcrumbs. */
   @Input() display: BreadcrumbDisplay = 'simple';
-
+  /** Reference to the breadcrumb list element. */
   @ViewChild('breadcrumbList', { static: true, read: ElementRef })
   breadcrumbList!: ElementRef<HTMLOListElement>;
-
+  /** Boolean indicating if breadcrumb is off limits. */
   isBreadcrumbOffLimits = false;
+  /** Width of the expanded breadcrumb. */
   expandedWidth = 0;
+  /** Method to update off limit value when breadcrumbs change. */
 
   ngOnChanges(changes: SimpleChanges): void {
     if (

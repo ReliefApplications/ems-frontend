@@ -5,12 +5,10 @@ import {
   ContentType,
   Step,
   Workflow,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import {
-  GetWorkflowByIdQueryResponse,
-  GET_WORKFLOW_BY_ID,
-} from './graphql/queries';
+  UnsubscribeComponent,
+  WorkflowQueryResponse,
+} from '@oort-front/shared';
+import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -23,10 +21,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   /** Loading state of the page */
   public loading = true;
   /** Current workflow id */
@@ -65,13 +60,14 @@ export class WorkflowComponent
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .watchQuery<GetWorkflowByIdQueryResponse>({
+        .watchQuery<WorkflowQueryResponse>({
           query: GET_WORKFLOW_BY_ID,
           variables: {
             id: this.id,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             if (data.workflow) {
               this.workflow = data.workflow;

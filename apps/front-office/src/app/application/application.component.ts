@@ -5,12 +5,12 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   User,
-  SafeAuthService,
-  SafeApplicationService,
+  AuthService,
+  ApplicationService,
   ContentType,
-  SafeUnsubscribeComponent,
+  UnsubscribeComponent,
   AppAbility,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 
@@ -23,7 +23,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Application title */
@@ -58,8 +58,8 @@ export class ApplicationComponent
    * @param ability user ability
    */
   constructor(
-    private authService: SafeAuthService,
-    private applicationService: SafeApplicationService,
+    private authService: AuthService,
+    private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
@@ -177,7 +177,8 @@ export class ApplicationComponent
               x.type === ContentType.form
                 ? `./${x.type}/${x.id}`
                 : `./${x.type}/${x.content}`,
-            icon: this.getNavIcon(x.type || ''),
+            icon: x.icon || this.getNavIcon(x.type || ''),
+            fontFamily: x.icon ? 'fa' : 'material',
             visible: x.visible,
           })),
       },

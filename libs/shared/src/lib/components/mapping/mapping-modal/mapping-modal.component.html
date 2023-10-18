@@ -1,0 +1,69 @@
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h3 *ngIf="isNew" class="font-semibold">
+      {{ 'models.mapping.add' | translate }}
+    </h3>
+    <h3 *ngIf="!isNew" class="font-semibold">
+      {{ 'models.mapping.edit' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form class="flex flex-col" [formGroup]="form" class="form-group">
+      <div class="form-group-row">
+        <div uiFormFieldDirective>
+          <label>{{ 'components.mapping.field' | translate }}</label>
+          <input
+            formControlName="field"
+            type="text"
+            [placeholder]="'components.mapping.field' | translate"
+          />
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'components.mapping.path' | translate }}</label>
+          <input
+            formControlName="path"
+            type="text"
+            [placeholder]="'components.mapping.path' | translate"
+          />
+        </div>
+      </div>
+      <div class="form-group-row">
+        <div uiFormFieldDirective>
+          <label>{{ 'components.mapping.value' | translate }}</label>
+          <input
+            formControlName="value"
+            type="text"
+            [placeholder]="'components.mapping.value' | translate"
+          />
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'components.mapping.text' | translate }}</label>
+          <input
+            formControlName="text"
+            type="text"
+            [placeholder]="'components.mapping.text' | translate"
+          />
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="form.value"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      <ng-container *ngIf="isNew">{{
+        'common.create' | translate
+      }}</ng-container>
+      <ng-container *ngIf="!isNew">{{
+        'common.edit' | translate
+      }}</ng-container>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

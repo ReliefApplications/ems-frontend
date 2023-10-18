@@ -1,0 +1,13 @@
+<div class="flex flex-col">
+  <ui-alert class="mb-4">
+    {{ 'components.form.layout.update.preview.description' | translate }}
+  </ui-alert>
+  <shared-core-grid
+    class="h-96"
+    [defaultLayout]="data?.defaultLayout || {}"
+    [settings]="gridSettings"
+    (layoutChanged)="onGridLayoutChange($event)"
+    (pageSizeChanged)="onPageSizeChange($event)"
+  >
+  </shared-core-grid>
+</div>

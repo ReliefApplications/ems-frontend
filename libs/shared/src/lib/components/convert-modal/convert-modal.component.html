@@ -1,0 +1,62 @@
+<ui-dialog>
+  <ng-container *ngIf="loading" ngProjectAs="header">
+    <h3 class="font-semibold">{{ data.title }}</h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <ui-spinner *ngIf="loading"></ui-spinner>
+    <form *ngIf="!loading" [formGroup]="convertForm">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'components.record.convert.select' | translate }}</label>
+          <ui-select-menu formControlName="targetForm">
+            <ui-select-option
+              *ngFor="let form of availableForms"
+              [value]="form"
+            >
+              {{ form.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div
+          class="flex flex-col mb-5 gap-1"
+          formControlName="copyRecord"
+          uiRadioGroupDirective="copyRecordOptions"
+        >
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{ 'components.record.convert.choice.copy' | translate }}
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{ 'components.record.convert.choice.overwrite' | translate }}
+            </ng-container>
+          </ui-radio>
+        </div>
+      </div>
+    </form>
+    <div *ngIf="convertForm.controls.targetForm.value && !loading">
+      <ng-container *ngIf="ignoredFields.length > 0">
+        <a>{{ 'components.record.convert.result.force' | translate }}</a> <br />
+        <span *ngFor="let field of ignoredFields">{{ field.name }}, </span>
+      </ng-container>
+      <ng-container *ngIf="ignoredFields.length === 0">
+        <a>{{ 'components.record.convert.result.smooth' | translate }}</a>
+      </ng-container>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions" *ngIf="!loading">
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="convertForm.value"
+      cdkFocusInitial
+      [disabled]="!convertForm.valid"
+    >
+      {{ 'models.record.convert' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

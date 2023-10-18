@@ -5,12 +5,12 @@
     <h1 class="page-title">
       {{ referenceData.name }}
     </h1>
-    <safe-access
+    <shared-access
       [access]="referenceData.permissions"
       [objectTypeName]="'common.referenceData.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="referenceData?.canUpdate"
-    ></safe-access>
+    ></shared-access>
   </div>
   <!-- Form -->
   <form [formGroup]="referenceForm" class="flex flex-col mb-8">
@@ -212,14 +212,16 @@
       </kendo-grid>
     </div>
   </form>
-  <!-- Submit button -->
-  <ui-button
-    class="!w-auto"
-    category="secondary"
-    variant="primary"
-    (click)="onSave()"
-    [disabled]="referenceForm.invalid || !referenceForm.dirty"
-  >
-    {{ 'common.save' | translate }}
-  </ui-button>
+  <!-- Floating div for actions buttons -->
+  <ui-fixed-wrapper>
+    <!-- Submit button -->
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSave()"
+      [disabled]="referenceForm.invalid || !referenceForm.dirty"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
 </ng-container>

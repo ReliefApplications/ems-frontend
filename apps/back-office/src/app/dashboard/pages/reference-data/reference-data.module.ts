@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { SafeAccessModule } from '@oort-front/safe';
+import { AccessModule } from '@oort-front/shared';
 import { GraphQLSelectModule, IconModule, SpinnerModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import {
   SelectMenuModule,
   TextareaModule,
   FormWrapperModule,
+  FixedWrapperModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
@@ -25,7 +26,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
   imports: [
     CommonModule,
     ReferenceDataRoutingModule,
-    SafeAccessModule,
+    AccessModule,
     SpinnerModule,
     ReactiveFormsModule,
     TranslateModule,
@@ -39,6 +40,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     SelectMenuModule,
     FormWrapperModule,
     MonacoEditorModule,
+    FixedWrapperModule,
     FormsModule,
   ],
 })

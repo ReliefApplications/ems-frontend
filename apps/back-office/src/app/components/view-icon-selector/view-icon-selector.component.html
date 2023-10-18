@@ -1,0 +1,11 @@
+<div uiFormFieldDirective>
+  <label>
+    {{ 'components.application.pages.settings.selectIcon' | translate }}
+  </label>
+  <shared-icon-picker
+    [formControl]="iconControl"
+    [placeholder]="
+      'components.widget.settings.iconPicker.placeholder' | translate
+    "
+  ></shared-icon-picker>
+</div>

@@ -5,23 +5,24 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  SafeApiProxyService,
+  ApiProxyService,
   status,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  BreadcrumbService,
+  UnsubscribeComponent,
+  ApiConfigurationQueryResponse,
+  EditApiConfigurationMutationResponse,
+} from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { takeUntil } from 'rxjs/operators';
 import { apiValidator } from '../../../utils/nameValidation';
-import {
-  EditApiConfigurationMutationResponse,
-  EDIT_API_CONFIGURATION,
-} from './graphql/mutations';
-import {
-  GetApiConfigurationQueryResponse,
-  GET_API_CONFIGURATION,
-} from './graphql/queries';
+import { EDIT_API_CONFIGURATION } from './graphql/mutations';
+import { GET_API_CONFIGURATION } from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
+
+/**
+ * Default value shown for private settings fields
+ */
+const ENCRYPTED_VALUE = '●●●●●●●●●●●●●';
 
 /**
  * API configuration page component.
@@ -32,19 +33,24 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./api-configuration.component.scss'],
 })
 export class ApiConfigurationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
+  /** Api configuration id */
   public id = '';
+  /** Edited api configuration */
   public apiConfiguration?: ApiConfiguration;
-
-  // === FORM ===
+  /** Api form group */
   public apiForm!: ReturnType<typeof this.createApiForm>;
+  /** Reference to status enum */
   public status = status;
+  /** Available status choices */
   public statusChoices = Object.values(status);
+  /** Reference to auth type enum */
   public authType = authType;
+  /** Available auth types */
   public authTypeChoices = Object.values(authType);
 
   /** @returns API configuration name */
@@ -70,9 +76,9 @@ export class ApiConfigurationComponent
     private snackBar: SnackbarService,
     private router: Router,
     private fb: FormBuilder,
-    private apiProxy: SafeApiProxyService,
+    private apiProxy: ApiProxyService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }
@@ -81,7 +87,7 @@ export class ApiConfigurationComponent
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
-        .watchQuery<GetApiConfigurationQueryResponse>({
+        .watchQuery<ApiConfigurationQueryResponse>({
           query: GET_API_CONFIGURATION,
           variables: {
             id: this.id,
@@ -97,11 +103,12 @@ export class ApiConfigurationComponent
                 this.apiConfiguration.name as string
               );
               this.apiForm = this.createApiForm(data.apiConfiguration);
-              this.apiForm.get('authType')?.valueChanges.subscribe((value) => {
-                this.apiForm.controls.settings.clearValidators();
-                this.apiForm.controls.settings = this.buildSettingsForm(value);
-                this.apiForm.controls.settings.updateValueAndValidity();
-              });
+              this.apiForm
+                .get('authType')
+                ?.valueChanges.pipe(takeUntil(this.destroy$))
+                .subscribe((value) => {
+                  this.resetFormSettings(value);
+                });
               this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
@@ -148,6 +155,16 @@ export class ApiConfigurationComponent
       graphQLEndpoint: api.graphQLEndpoint,
     });
   }
+  /**
+   * Reset settings configuration form with the given API configuration
+   *
+   * @param authType current auth type of the API configuration
+   */
+  private resetFormSettings(authType: string) {
+    this.apiForm.controls.settings.clearValidators();
+    this.apiForm.controls.settings = this.buildSettingsForm(authType);
+    this.apiForm.controls.settings.updateValueAndValidity();
+  }
 
   /**
    * Create the settings form depending on the authType
@@ -161,28 +178,28 @@ export class ApiConfigurationComponent
         authTargetUrl: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.authTargetUrl
-            ? '●●●●●●●●●●●●●'
+            ? ENCRYPTED_VALUE
             : '',
           Validators.required,
         ],
         apiClientID: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.apiClientID
-            ? '●●●●●●●●●●●●●'
+            ? ENCRYPTED_VALUE
             : '',
           Validators.minLength(3),
         ],
         safeSecret: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.safeSecret
-            ? '●●●●●●●●●●●●●'
+            ? ENCRYPTED_VALUE
             : '',
           Validators.minLength(3),
         ],
         scope: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.scope
-            ? '●●●●●●●●●●●●●'
+            ? ENCRYPTED_VALUE
             : '',
           null,
         ],
@@ -192,7 +209,7 @@ export class ApiConfigurationComponent
         token: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.token
-            ? '●●●●●●●●●●●●●'
+            ? ENCRYPTED_VALUE
             : '',
           Validators.required,
         ],
@@ -225,13 +242,12 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-          this.loading = false;
         } else {
           if (data) {
             this.apiConfiguration = data.editApiConfiguration;
-            this.loading = loading;
           }
         }
+        this.loading = loading;
       });
   }
 
@@ -260,8 +276,30 @@ export class ApiConfigurationComponent
       this.apiForm.value.pingUrl !== this.apiConfiguration?.pingUrl && {
         pingUrl: this.apiForm.value.pingUrl,
       },
+      // If settings is touched we will go through each settings param to save only the ones that are not the encrypted display value and that exist
       this.apiForm.controls.settings.touched && {
-        settings: this.apiForm.controls.settings.value,
+        settings: {
+          ...(this.apiForm.value.authType === authType.serviceToService &&
+            this.apiForm.value.settings?.authTargetUrl !== ENCRYPTED_VALUE && {
+              authTargetUrl: this.apiForm.value.settings?.authTargetUrl,
+            }),
+          ...(this.apiForm.value.authType === authType.serviceToService &&
+            this.apiForm.value.settings?.apiClientID !== ENCRYPTED_VALUE && {
+              apiClientID: this.apiForm.value.settings?.apiClientID,
+            }),
+          ...(this.apiForm.value.authType === authType.serviceToService &&
+            this.apiForm.value.settings?.safeSecret !== ENCRYPTED_VALUE && {
+              safeSecret: this.apiForm.value.settings?.safeSecret,
+            }),
+          ...(this.apiForm.value.authType === authType.serviceToService &&
+            this.apiForm.value.settings?.scope !== ENCRYPTED_VALUE && {
+              scope: this.apiForm.value.settings?.scope,
+            }),
+          ...(this.apiForm.value.authType === authType.userToService &&
+            this.apiForm.value.settings?.token !== ENCRYPTED_VALUE && {
+              token: this.apiForm.value.settings?.token,
+            }),
+        },
       }
     );
     this.apollo
@@ -278,15 +316,12 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-          this.loading = false;
         } else {
           this.apiConfiguration = data?.editApiConfiguration;
-          this.apiForm.controls.settings = this.buildSettingsForm(
-            this.apiForm.getRawValue().authType
-          );
-          this.apiForm.markAsPristine();
+          this.resetFormSettings(this.apiConfiguration?.authType as string);
           this.loading = loading || false;
         }
+        this.loading = loading;
       });
   }
 
@@ -328,5 +363,17 @@ export class ApiConfigurationComponent
           );
         }
       );
+  }
+
+  /**
+   * Clear the value of the given control, if not updated by the user
+   *
+   * @param key control key from settings control to clear
+   */
+  clearControl(key: string) {
+    const control = this.apiForm.get(key);
+    if (control && control.pristine) {
+      control.setValue('');
+    }
   }
 }

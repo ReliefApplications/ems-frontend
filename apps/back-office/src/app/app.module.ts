@@ -25,9 +25,10 @@ import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   KendoTranslationService,
-  SafeAuthInterceptorService,
+  AuthInterceptorService,
   AppAbility,
-} from '@oort-front/safe';
+  FormService,
+} from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
@@ -61,17 +62,19 @@ import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular-ivy';
 
 /**
- * Initialize authentication in the platform.
- * Configuration in environment file.
- * Use oAuth
+ * Initialize application.
+ * Setup oAuth configuration.
+ * Initialize form builder.
  *
  * @param oauth OAuth Service
+ * @param formService Shared form service
  * @returns oAuth configuration
  */
-const initializeAuth =
-  (oauth: OAuthService): any =>
+const initializeApp =
+  (oauth: OAuthService, formService: FormService): any =>
   () => {
     oauth.configure(environment.authConfig);
+    formService.initialize();
   };
 
 /**
@@ -115,9 +118,9 @@ export const httpTranslateLoader = (http: HttpClient) =>
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeAuth,
+      useFactory: initializeApp,
       multi: true,
-      deps: [OAuthService],
+      deps: [OAuthService, FormService],
     },
     {
       provide: MessageService,
@@ -134,7 +137,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     // },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
     {

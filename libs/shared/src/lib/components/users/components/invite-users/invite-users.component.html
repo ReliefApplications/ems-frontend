@@ -1,0 +1,122 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.users.invite.confirm' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="mb-6">
+      {{ 'components.users.invite.description' | translate }}
+    </div>
+    <!-- DOWNLOAD TEMPLATE / UPLOAD -->
+    <div class="flex justify-between gap-2 mb-4 flex-wrap items-center">
+      <kendo-upload
+        class="grow"
+        #fileReader
+        name="Upload XLSX"
+        (upload)="onUpload($event)"
+        accept=".xlsx"
+        [multiple]="false"
+      >
+      </kendo-upload>
+      <ui-button (click)="onDownload()" variant="primary" icon="file_download">
+        {{ 'common.downloadTemplate' | translate }}
+      </ui-button>
+    </div>
+    <kendo-grid
+      [data]="gridData"
+      (cellClick)="cellClickHandler($event)"
+      (add)="onAdd()"
+    >
+      <ng-template kendoGridToolbarTemplate>
+        <button kendoGridAddCommand>
+          {{ 'components.users.invite.add' | translate }}
+        </button>
+      </ng-template>
+      <kendo-grid-column
+        field="email"
+        [title]="'common.email.one' | translate"
+      ></kendo-grid-column>
+      <kendo-grid-column field="role" [title]="'common.role.one' | translate">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <kendo-dropdownlist
+            [data]="data.roles"
+            textField="title"
+            valueField="id"
+            [valuePrimitive]="true"
+            [value]="dataItem.role"
+            [disabled]="true"
+          >
+          </kendo-dropdownlist>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+          <kendo-dropdownlist
+            [data]="data.roles"
+            textField="title"
+            valueField="id"
+            [valuePrimitive]="true"
+            [formControl]="formGroup.get('role')"
+          ></kendo-dropdownlist>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column-group
+        title="Attributes"
+        *ngIf="
+          data.positionAttributeCategories &&
+          data.positionAttributeCategories.length > 0
+        "
+      >
+        <ng-container
+          *ngFor="
+            let attribute of data.positionAttributeCategories;
+            let index = index
+          "
+        >
+          <kendo-grid-column [title]="attribute.title || ''">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{ dataItem.positionAttributes[index].value }}
+            </ng-template>
+            <ng-template kendoGridEditTemplate>
+              <ng-container *ngIf="positionAttributes">
+                <ui-textarea
+                  [formControl]="
+                    $any(positionAttributes.at(index).get('value'))
+                  "
+                  [minRows]="2"
+                  [maxRows]="2"
+                  kendoGridFocusable
+                >
+                </ui-textarea>
+              </ng-container>
+            </ng-template>
+          </kendo-grid-column>
+        </ng-container>
+      </kendo-grid-column-group>
+      <kendo-grid-column [width]="56">
+        <ng-template kendoGridCellTemplate let-idx="rowIndex">
+          <button
+            kendoButton
+            class="text-center"
+            icon="delete"
+            [look]="'flat'"
+            (click)="onRemove(idx)"
+          ></button>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="gridData.data.length === 0"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

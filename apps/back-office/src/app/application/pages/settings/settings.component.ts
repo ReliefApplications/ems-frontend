@@ -1,23 +1,21 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import {
   Application,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-  SafeLayoutService,
-} from '@oort-front/safe';
-import { Dialog } from '@angular/cdk/dialog';
-import {
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
   DeleteApplicationMutationResponse,
-  DELETE_APPLICATION,
-} from './graphql/mutations';
+  status,
+} from '@oort-front/shared';
+import { Dialog } from '@angular/cdk/dialog';
+import { DELETE_APPLICATION } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 
 /**
  * Application settings page component.
@@ -27,15 +25,17 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public applications = new Array<Application>();
-  public settingsForm!: ReturnType<typeof this.createSettingsForm>;
+  public settingsForm!: UntypedFormGroup;
+  public statusChoices = Object.values(status);
+  /** Current application */
   public application?: Application;
+  /** Current user */
   public user: any;
+  /** Is application locked for edition */
   public locked: boolean | undefined = undefined;
+  /** Is application locked for edition by current user */
   public lockedByUser: boolean | undefined = undefined;
 
   /**
@@ -49,18 +49,18 @@ export class SettingsComponent
    * @param confirmService Shared confirm service
    * @param dialog Dialog service
    * @param translate Angular translate service
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    */
   constructor(
     private fb: FormBuilder,
     private apollo: Apollo,
     private router: Router,
     private snackBar: SnackbarService,
-    private applicationService: SafeApplicationService,
-    private confirmService: SafeConfirmService,
+    private applicationService: ApplicationService,
+    private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
-    private layoutService: SafeLayoutService
+    private layoutService: UILayoutService
   ) {
     super();
   }
@@ -161,7 +161,7 @@ export class SettingsComponent
                 },
               })
               .subscribe({
-                next: ({ errors, data }) => {
+                next: ({ errors }) => {
                   if (errors) {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
@@ -186,9 +186,6 @@ export class SettingsComponent
                         }
                       )
                     );
-                    this.applications = this.applications.filter(
-                      (x) => x.id !== data?.deleteApplication.id
-                    );
                   }
                 },
                 error: (err) => {
@@ -207,5 +204,14 @@ export class SettingsComponent
       component: CustomStyleComponent,
     });
     this.layoutService.closeRightSidenav = false;
+  }
+
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e permissions.
+   */
+  saveAccess(e: any): void {
+    this.applicationService.editPermissions(e);
   }
 }

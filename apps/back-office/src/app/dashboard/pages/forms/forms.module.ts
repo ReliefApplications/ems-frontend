@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
+import {
+  SkeletonTableModule,
+  DateModule as SharedDateModule,
+  ListFilterComponent,
+  StatusOptionsComponent,
+} from '@oort-front/shared';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
@@ -22,6 +27,7 @@ import {
   ChipModule,
   DateModule,
   PaginatorModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /** Forms page module */
@@ -37,16 +43,19 @@ import {
     DividerModule,
     PaginatorModule,
     TranslateModule,
-    SafeSkeletonTableModule,
-    SafeDateModule,
+    SkeletonTableModule,
+    SharedDateModule,
     AbilityModule,
     ButtonModule,
     FormWrapperModule,
     IconModule,
     SelectMenuModule,
     TableModule,
+    StatusOptionsComponent,
     ChipModule,
     DateModule,
+    TooltipModule,
+    ListFilterComponent,
   ],
   exports: [FormsComponent],
 })

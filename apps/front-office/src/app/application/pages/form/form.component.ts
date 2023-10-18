@@ -5,13 +5,13 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  UnsubscribeComponent,
+  StepQueryResponse,
+  FormQueryResponse,
+  PageQueryResponse,
+} from '@oort-front/shared';
 import {
-  GetFormByIdQueryResponse,
-  GetPageByIdQueryResponse,
-  GetStepByIdQueryResponse,
   GET_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
@@ -29,10 +29,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
+export class FormComponent extends UnsubscribeComponent implements OnInit {
   /** View reference of Shared form component */
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
   /** Loading state of the page */
   public loading = true;
   /** Current form id */
@@ -87,7 +87,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       }
       if (this.isStep) {
         this.querySubscription = this.apollo
-          .query<GetStepByIdQueryResponse>({
+          .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
@@ -96,43 +96,15 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap((res) => {
               this.step = res.data.step;
-              return this.apollo.query<GetFormByIdQueryResponse>({
-                query: GET_FORM_BY_ID,
-                variables: {
-                  id: this.step.content,
-                },
-              });
+              return this.getFormQuery(this.step.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            if (data) {
-              this.form = data.form;
-            }
-            if (
-              !this.form ||
-              this.form.status !== 'active' ||
-              !this.form.canCreateRecords
-            ) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.form.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.canCreateRecords = true;
-            }
-            this.loading = loading;
+            this.handleApplicationLoadResponse(data, loading);
           });
       } else {
         this.querySubscription = this.apollo
-          .query<GetPageByIdQueryResponse>({
+          .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
@@ -141,42 +113,60 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap((res) => {
               this.page = res.data.page;
-              return this.apollo.query<GetFormByIdQueryResponse>({
-                query: GET_FORM_BY_ID,
-                variables: {
-                  id: this.page.content,
-                },
-              });
+              return this.getFormQuery(this.page.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            if (data) {
-              this.form = data.form;
-            }
-            if (
-              !this.form ||
-              this.form.status !== 'active' ||
-              !this.form.canCreateRecords
-            ) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.form.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.canCreateRecords = true;
-            }
-            this.loading = loading;
+            this.handleApplicationLoadResponse(data, loading);
           });
       }
     });
+  }
+
+  /**
+   * Returns a form query stream for the given id
+   *
+   * @param {string} id form id to fetch
+   * @returns a query stream
+   */
+  private getFormQuery(id: string) {
+    return this.apollo.query<FormQueryResponse>({
+      query: GET_FORM_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Handles the response for the given form query response data and loading state
+   *
+   * @param {FormQueryResponse} data data retrieved from the form query
+   * @param {boolean} loading loadin state
+   */
+  private handleApplicationLoadResponse(
+    data: FormQueryResponse,
+    loading: boolean
+  ) {
+    if (data) {
+      this.form = data.form;
+    }
+    if (
+      !this.form ||
+      this.form.status !== 'active' ||
+      !this.form.canCreateRecords
+    ) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.accessNotProvided', {
+          type: this.translate.instant('common.form.one').toLowerCase(),
+          error: '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.canCreateRecords = true;
+    }
+    this.loading = loading;
   }
 
   /**
