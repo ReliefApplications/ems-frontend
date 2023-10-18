@@ -12,6 +12,7 @@ export class SanitizeHtmlPipe implements PipeTransform {
    * @param {DomSanitizer} _sanitizer Dom sanitizer used to sanitize html value
    */
   constructor(private _sanitizer: DomSanitizer) {}
+
   /**
    * Transform given string value into a valid sanitized html value
    *
