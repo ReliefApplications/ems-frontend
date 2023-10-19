@@ -8,6 +8,7 @@ import {
   OnDestroy,
   Inject,
 } from '@angular/core';
+import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 
 /**
  * Directive that allows to display a tooltip on a given html element
@@ -48,21 +49,15 @@ export class TooltipDirective implements OnDestroy {
    * @param document current DOCUMENT
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
+   * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host in order to correctly insert tooltips
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private elementRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    shadowDomService: ShadowDomService
   ) {
-    const isShadowRoot = Array.from(
-      this.document.getElementsByTagName('*')
-    ).filter((element) => element.shadowRoot);
-
-    this.currentHost =
-      isShadowRoot instanceof Array && isShadowRoot.length
-        ? isShadowRoot[0].shadowRoot?.children[1]
-        : this.document.body;
-
+    this.currentHost = shadowDomService.currentHost;
     // Creation of the tooltip element
     this.createTooltipElement();
   }

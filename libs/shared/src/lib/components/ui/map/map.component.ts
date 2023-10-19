@@ -63,6 +63,7 @@ import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { ShadowDomService } from '@oort-front/ui';
 
 /** Component for the map widget */
 @Component({
@@ -167,6 +168,7 @@ export class MapComponent
   /**
    * Map widget component
    *
+   * @param document document
    * @param environment platform environment
    * @param translate Angular translate service
    * @param mapControlsService Map controls handler service
@@ -176,9 +178,10 @@ export class MapComponent
    * @param contextService The context service
    * @param platform Platform
    * @param injector Injector containing all needed providers
-   * @param document document
+   * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    */
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private mapControlsService: MapControlsService,
@@ -188,7 +191,7 @@ export class MapComponent
     private contextService: ContextService,
     private platform: Platform,
     public injector: Injector,
-    @Inject(DOCUMENT) private document: Document
+    private shadowDomService: ShadowDomService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -383,30 +386,26 @@ export class MapComponent
     if (initMap) {
       // If the map is initiated in a web element, we will used directly the html element
       // As leaflet cannot fetch the element in shadow doms with just the id
-      const isShadowRoot = Array.from(
-        document.getElementsByTagName('*')
-      ).filter((element) => element.shadowRoot);
-
-      const shadowRootMapHolder =
-        isShadowRoot instanceof Array && isShadowRoot.length
-          ? isShadowRoot[0].shadowRoot?.getElementById(this.mapId)
-          : null;
 
       // Create leaflet map
-      this.map = L.map(shadowRootMapHolder ?? this.mapId, {
-        zoomControl,
-        maxBounds: maxBounds
-          ? L.latLngBounds(
-              L.latLng(maxBounds[0][0], maxBounds[0][1]),
-              L.latLng(maxBounds[1][0], maxBounds[1][1])
-            )
-          : undefined,
-        minZoom,
-        maxZoom,
-        worldCopyJump,
-        // timeDimension: true,
-        disableAutoPan: true,
-      } as any).setView(
+      this.map = L.map(
+        this.shadowDomService.currentHost.getElementById(this.mapId) ??
+          this.mapId,
+        {
+          zoomControl,
+          maxBounds: maxBounds
+            ? L.latLngBounds(
+                L.latLng(maxBounds[0][0], maxBounds[0][1]),
+                L.latLng(maxBounds[1][0], maxBounds[1][1])
+              )
+            : undefined,
+          minZoom,
+          maxZoom,
+          worldCopyJump,
+          // timeDimension: true,
+          disableAutoPan: true,
+        } as any
+      ).setView(
         L.latLng(
           initialState.viewpoint.center.latitude,
           initialState.viewpoint.center.longitude

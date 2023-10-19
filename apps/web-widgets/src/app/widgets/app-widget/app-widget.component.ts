@@ -8,17 +8,7 @@ import {
   SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  ApplicationDropdownComponent,
-  AuthService,
-  GeofieldsListboxComponent,
-  ReferenceDataDropdownComponent,
-  ResourceAvailableFieldsComponent,
-  ResourceCustomFiltersComponent,
-  ResourceDropdownComponent,
-  ResourceSelectTextComponent,
-  TestServiceDropdownComponent,
-} from '@oort-front/shared';
+import { AuthService } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
@@ -32,17 +22,6 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class AppWidgetComponent implements OnInit, OnChanges {
-  // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
-  static declaration = [
-    ApplicationDropdownComponent,
-    GeofieldsListboxComponent,
-    ReferenceDataDropdownComponent,
-    ResourceAvailableFieldsComponent,
-    ResourceCustomFiltersComponent,
-    ResourceDropdownComponent,
-    ResourceSelectTextComponent,
-    TestServiceDropdownComponent,
-  ];
   // @Input() id = '';
   @Input() id = '63c9610ec7dee6439fe33604';
   @Input() displaySideNav = true;
