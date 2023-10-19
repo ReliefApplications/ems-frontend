@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -65,6 +66,7 @@ export class SummaryCardComponent
   @Input() header = true;
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   public gridSettings: any = null;
 

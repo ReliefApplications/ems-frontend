@@ -18,7 +18,7 @@
     [columns]="colsNumber"
     [rowHeight]="200"
     [resizable]="canUpdate"
-    [reorderable]="canUpdate"
+    [reorderable]="true"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)"
     class="-m-4"
@@ -41,44 +41,45 @@
         'hover:!border-gray-400 hover:!shadow-sm': isBackOffice
       }"
     >
-      <!-- Settings -->
-      <shared-floating-options
-        *ngIf="canUpdate"
-        class="absolute top-0 right-0 z-[1100]"
-        [widget]="widget"
-        [canExpand]="!(widget.component === 'map')"
-        (edit)="onEditWidget($event)"
-        (delete)="onDeleteWidget($event)"
-        (expand)="onExpandWidget($event)"
-        (style)="onStyleWidget($event)"
-      >
-      </shared-floating-options>
       <shared-widget
+        #widgetElement
         [widget]="widget"
         (changeStep)="changeStep.emit($event)"
         [id]="'widget-' + widget.id"
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"
+        [headerLeftTemplate]="headerLeftTemplate"
+        [headerRightTemplate]="headerRightTemplate"
+        class="flex flex-col flex-1 h-full w-full"
       ></shared-widget>
-      <!-- Move widget -->
-      <ui-icon
-        *ngIf="canUpdate"
-        icon="drag_indicator"
-        class="absolute cursor-grab top-2 left-2 z-[1100] pointer-events-none"
-        variant="grey"
-      >
-      </ui-icon>
-      <!-- Expand button -->
-      <ui-button
-        *ngIf="!canUpdate && !(widget.component === 'map')"
-        [isIcon]="true"
-        icon="open_in_full"
-        variant="grey"
-        class="absolute top-0 right-0 z-[1100]"
-        (click)="onExpandWidget(widget)"
-        [uiTooltip]="'common.openFullScreen' | translate"
-      >
-      </ui-button>
+      <!-- Left header template -->
+      <ng-template #headerLeftTemplate>
+        <!-- Drag n drop indicator -->
+        <ui-button
+          *ngIf="canUpdate"
+          icon="drag_indicator"
+          class="cursor-grab -ml-3 pointer-events-none"
+          variant="grey"
+          [isIcon]="true"
+          [uiTooltip]="'models.page.tooltip.drag' | translate"
+        >
+        </ui-button>
+      </ng-template>
+      <!-- Right header template -->
+      <ng-template #headerRightTemplate>
+        <!-- Widget actions -->
+        <shared-widget-actions
+          [canUpdate]="canUpdate"
+          class="-mr-3"
+          [collapsed]="widgetElement.elementRef.nativeElement.clientWidth < 500"
+          [widget]="widget"
+          (edit)="onEditWidget($event)"
+          (delete)="onDeleteWidget($event)"
+          (expand)="onExpandWidget($event)"
+          (style)="onStyleWidget($event)"
+        >
+        </shared-widget-actions>
+      </ng-template>
     </kendo-tilelayout-item>
   </kendo-tilelayout>
 </div>
