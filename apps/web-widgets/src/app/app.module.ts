@@ -230,6 +230,7 @@ export class AppModule implements DoBootstrap {
       'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
       'https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined',
       'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0',
+      'https://unpkg.com/@progress/kendo-font-icons/dist/index.css',
     ];
     // Make sure that the needed fonts are always available wherever the web component is placed
     fonts.forEach((font) => {

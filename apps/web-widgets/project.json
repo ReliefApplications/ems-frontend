@@ -43,10 +43,7 @@
             "output": "/"
           }
         ],
-        "styles": [
-          "apps/web-widgets/src/styles.scss",
-          "node_modules/@progress/kendo-font-icons/dist/index.css"
-        ],
+        "styles": ["apps/web-widgets/src/styles.scss"],
         "scripts": [
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"

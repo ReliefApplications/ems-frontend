@@ -10,11 +10,15 @@ build = async () => {
   const files = fs
     .readdirSync(directory)
     // We dont want the generated .html file
-    .filter((name) => !name.endsWith('.html'));
+    .filter((name) => !name.endsWith('.html') && !name.endsWith('.css'));
   // All js files generated after the build
   const jsFiles = files.filter((name) => name.endsWith('.js'));
   // All no js files generated after the build
   const notJsFiles = files.filter((name) => !name.endsWith('.js'));
+  await fs.removeSync(path.join(__dirname, '../widgets'), {
+    recursive: true,
+    force: true,
+  });
   await fs.ensureDir('widgets');
   // Build the main js file for the web component
   await concat(
@@ -27,7 +31,7 @@ build = async () => {
     const destinationPath = path.join(__dirname, '../widgets', file);
     fs.rename(currentPath, destinationPath, function (err) {
       if (err) {
-        throw err;
+        console.log(err);
       }
     });
   });
