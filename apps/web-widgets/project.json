@@ -36,11 +36,6 @@
             "glob": "**/*",
             "input": "libs/shared/src/i18n/tinymce/",
             "output": "/tinymce/langs"
-          },
-          {
-            "glob": "**/*",
-            "input": "node_modules/leaflet/dist/images/",
-            "output": "/assets/"
           }
         ],
         "styles": ["apps/web-widgets/src/styles.scss"],
@@ -95,7 +90,7 @@
               "with": "apps/web-widgets/src/environments/environment.azure.uat.ts"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "none"
         },
         "oort-dev": {
           "budgets": [
@@ -122,7 +117,7 @@
               "with": "apps/web-widgets/src/environments/environment.oort.dev.ts"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "none"
         },
         "development": {
           "buildOptimizer": false,
