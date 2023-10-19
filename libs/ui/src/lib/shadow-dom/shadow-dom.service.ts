@@ -24,9 +24,10 @@ export class ShadowDomService {
     if (isShadowRoot instanceof Array && isShadowRoot.length) {
       this.isShadowRoot = true;
     }
+    document.body.id;
     this.currentHost =
       isShadowRoot instanceof Array && isShadowRoot.length
         ? isShadowRoot[0].shadowRoot
-        : document.body;
+        : document;
   }
 }
