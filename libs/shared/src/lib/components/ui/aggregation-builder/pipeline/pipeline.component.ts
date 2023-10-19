@@ -33,6 +33,14 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public initialFields: any[] = [];
   /** Array to hold the fields per stage. */
   public fieldsPerStage: any[] = [];
+  /** Enabled drag behavior, needed to set the drag on run time so cdkDragHandle directive works in the table */
+  public dragEnabled = false;
+  /** Monaco editor options */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: true,
+  };
 
   /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
@@ -59,7 +67,9 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500))
       .pipe(takeUntil(this.destroy$))
-      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
+      .subscribe((pipeline: any[]) => {
+        this.updateFieldsPerStage(pipeline);
+      });
   }
 
   /**

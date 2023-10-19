@@ -1,24 +1,39 @@
 <cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
   <ui-expansion-panel
-    cdkDrag
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
     [index]="index"
     class="bg-white"
+    cdkDrag
+    [cdkDragDisabled]="!dragEnabled"
   >
     <ng-container ngProjectAs="title">
-      {{
-        'components.aggregationBuilder.stages.' + stageForm.value.type
-          | translate
-      }}
-      <ui-icon
-        icon="info_outline"
-        variant="grey"
-        [size]="18"
-        [uiTooltip]="
-          'components.aggregationBuilder.tooltip.' + stageForm.value.type
+      <div class="flex items-center">
+        <p>{{
+          'components.aggregationBuilder.stages.' + stageForm.value.type
             | translate
-        "
-      ></ui-icon>
+        }}</p>
+        <ui-icon
+        class="ml-0.5"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'components.aggregationBuilder.tooltip.' + stageForm.value.type
+              | translate
+          "
+        ></ui-icon>
+        <ui-button
+          (mouseenter)="dragEnabled = true"
+          cdkDragHandle
+          (mouseleave)="dragEnabled = false"
+          [isIcon]="true"
+          variant="grey"
+          icon="drag_indicator"
+          class="nav-item-handle"
+          [uiTooltip]="'models.page.tooltip.drag' | translate"
+        >
+        </ui-button>
+      </div>
     </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">
@@ -52,14 +67,12 @@
         ></shared-field-dropdown>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
-        <div uiFormFieldDirective>
-          <label>{{ 'common.input.rawJson' | translate }}</label>
-          <ui-textarea
+        <div class="h-[400px]">
+          <ngx-monaco-editor
+            class="min-h-[400px]"
             [formControl]="$any(stageForm).controls.form.controls.raw"
-            [minRows]="4"
-            [maxRows]="20"
-          >
-          </ui-textarea>
+            [options]="editorOptions"
+          ></ngx-monaco-editor>
         </div>
       </ng-container>
     </ng-container>
@@ -74,6 +87,8 @@
     </div>
   </ui-expansion-panel>
 </cdk-accordion>
+
+
 <div class="flex justify-center">
   <ui-button
     icon="add"
