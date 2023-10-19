@@ -61,6 +61,7 @@ export class GroupStageComponent
   constructor(private aggregationBuilder: AggregationBuilderService) {
     super();
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.getDateFields(this.groupBy.value);

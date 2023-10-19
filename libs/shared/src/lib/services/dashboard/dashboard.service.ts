@@ -30,6 +30,7 @@ export class DashboardService {
   public availableWidgets = WIDGET_TYPES;
   /** Current dashboard */
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
+
   /** @returns Current dashboard as observable */
   get dashboard$(): Observable<Dashboard | null> {
     return this.dashboard.asObservable();

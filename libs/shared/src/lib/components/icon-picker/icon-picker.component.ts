@@ -56,6 +56,8 @@ export class IconPickerComponent
   @Input() color: string = this.primaryColor;
   /** Boolean to control the visibility of the list. */
   public showList = false;
+  /** Timeout listener */
+  private setIconTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Gets the value
@@ -94,6 +96,7 @@ export class IconPickerComponent
     this.ePlaceholder = plh;
     this.stateChanges.next();
   }
+
   /** Private variable for placeholder. */
   private ePlaceholder = '';
   /** Boolean to track focus state. */
@@ -138,6 +141,7 @@ export class IconPickerComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+
   /** Private variable to track if the field is required. */
   private isRequired = false;
 
@@ -169,6 +173,7 @@ export class IconPickerComponent
     // return this.ngControl.invalid && this.touched;
     // return this.selected.invalid && this.touched;
   }
+
   /** The type of control. */
   public controlType = 'shared-icon-picker';
   /** Input decorator for aria-describedby. */
@@ -211,6 +216,7 @@ export class IconPickerComponent
       this.ngControl.valueAccessor = this;
     }
   }
+
   /** Function to handle touch events. */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
@@ -290,6 +296,13 @@ export class IconPickerComponent
     if (icon) {
       this.appendIconSvgToDOM(icon);
       this.value = icon;
+      // In order to render the value container after it contains value we set the timeout
+      if (this.setIconTimeoutListener) {
+        clearTimeout(this.setIconTimeoutListener);
+      }
+      this.setIconTimeoutListener = setTimeout(() => {
+        this.appendIconSvgToDOM(icon);
+      }, 0);
       this.onTouched();
     }
   }
@@ -305,10 +318,9 @@ export class IconPickerComponent
       this.renderer.removeChild(wrapper, wrapper.children[0]);
     }
     const iconDef = getIconDefinition(icon as IconName);
-
     const i = iconCreator(iconDef, {
       styles: {
-        color: this.color,
+        ...(this.color && { color: this.color }),
       },
     });
     this.renderer.appendChild(wrapper, i.node[0]);
@@ -349,8 +361,12 @@ export class IconPickerComponent
       this.stateChanges.next();
     }
   }
+
   /** Function to handle component destruction. */
   ngOnDestroy(): void {
     this.stateChanges.complete();
+    if (this.setIconTimeoutListener) {
+      clearTimeout(this.setIconTimeoutListener);
+    }
   }
 }

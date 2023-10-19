@@ -67,6 +67,7 @@ export class BarChartComponent implements OnChanges {
   public chartData: ChartData<'bar'> = {
     datasets: [],
   };
+
   /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     const isBar = this.orientation === 'horizontal';

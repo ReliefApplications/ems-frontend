@@ -13,7 +13,6 @@ import {
   TabsModule,
   ToggleModule,
 } from '@oort-front/ui';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardModule } from '../summary-card/summary-card.module';
@@ -23,6 +22,7 @@ import { SummaryCardSettingsComponent } from './summary-card-settings.component'
 import { TextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
 import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
+import { TabActionsModule } from '../grid-settings/tab-actions/tab-actions.module';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -37,7 +37,6 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    LayoutModule,
     TooltipModule,
     MenuModule,
     IconModule,
@@ -51,6 +50,7 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     ToggleModule,
     SortingSettingsModule,
     ContextualFiltersSettingsComponent,
+    TabActionsModule,
   ],
   exports: [SummaryCardSettingsComponent],
 })

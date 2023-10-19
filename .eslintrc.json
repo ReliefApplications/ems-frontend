@@ -40,9 +40,7 @@
         "@typescript-eslint/naming-convention": [
           1,
           {
-            "selector": [
-              "enumMember"
-            ],
+            "selector": ["enumMember"],
             "format": ["camelCase", "UPPER_CASE"]
           }
         ],
@@ -70,7 +68,17 @@
         "jsdoc/require-property-type": 0,
         "jsdoc/require-description": 1,
         "jsdoc/require-returns-type": 0,
-        "@typescript-eslint/no-unused-vars": 2
+        "@typescript-eslint/no-unused-vars": 2,
+        "jsdoc/tag-lines": ["warn", "any", { "startLines": 1 }],
+        "lines-between-class-members": [
+          "error",
+          {
+            "enforce": [
+              { "blankLine": "always", "prev": "*", "next": "method" },
+              { "blankLine": "always", "prev": "method", "next": "*" }
+            ]
+          }
+        ]
         // "deprecation/deprecation": "warn"
       }
     },

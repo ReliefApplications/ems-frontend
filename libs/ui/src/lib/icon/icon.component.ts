@@ -117,11 +117,11 @@ export class IconComponent implements OnChanges {
         this.renderer.removeChild(this.el.nativeElement, isPreviousIcon);
       }
       const wrapper = this.renderer.createElement('span');
-      [...this.iconVariantAndCategory, 'inline-flex', 'align-middle'].forEach(
-        (classProp) => {
+      [...this.iconVariantAndCategory, 'inline-flex', 'align-middle']
+        .filter((classProp) => !!classProp)
+        .forEach((classProp) => {
           this.renderer.addClass(wrapper, classProp);
-        }
-      );
+        });
       this.renderer.appendChild(wrapper, i.node[0]);
       if (wrapper) {
         this.renderer.appendChild(this.el.nativeElement, wrapper);

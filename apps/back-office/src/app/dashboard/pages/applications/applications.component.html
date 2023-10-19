@@ -89,7 +89,7 @@
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
-              [uiTooltip]="'common.options' | translate"
+              [uiTooltip]="'common.actions' | translate"
             >
             </ui-button>
             <ui-menu #menu>
@@ -107,7 +107,7 @@
               <button
                 uiMenuItem
                 (click)="onClone(element)"
-                *ngIf="element.canDelete"
+                *ngIf="'create' | able : 'Application'"
               >
                 <ui-icon icon="file_copy" variant="grey"></ui-icon>
                 {{ 'common.duplicate' | translate }}

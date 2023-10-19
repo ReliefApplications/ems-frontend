@@ -14,9 +14,9 @@ import { DialogSize } from './types/dialog-size';
 export class DialogComponent implements OnChanges, OnInit {
   /** Boolean indicating whether the dialog is closable. */
   @Input() closable = false;
-  /** Boolean indicating whether the dialog has padding. */
+  /** Should display padding around dialog */
   @Input() padding = true;
-  /** The size of the dialog. */
+  /** Size of the dialog: small - medium - big - fullscreen */
   @Input() size!: DialogSize;
 
   /** Close Dialog. */

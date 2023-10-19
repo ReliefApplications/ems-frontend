@@ -55,6 +55,7 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
   constructor() {
     super();
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.choices$.pipe(takeUntil(this.destroy$)).subscribe((choices: any[]) => {

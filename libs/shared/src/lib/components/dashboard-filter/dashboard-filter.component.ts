@@ -52,14 +52,29 @@ export class DashboardFilterComponent
   extends UnsubscribeComponent
   implements OnDestroy, OnChanges, AfterViewInit
 {
-  // Filter
+  /** Current position of filter */
   position!: FilterPosition;
+  /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
     FilterPosition.TOP,
     FilterPosition.BOTTOM,
     FilterPosition.RIGHT,
   ] as const;
+
+  /** Has the translation for the tooltips of each button */
+  public FilterPositionTooltips: Record<FilterPosition, string> = {
+    [FilterPosition.LEFT]:
+      'components.application.dashboard.filter.filterPosition.left',
+    [FilterPosition.TOP]:
+      'components.application.dashboard.filter.filterPosition.top',
+    [FilterPosition.BOTTOM]:
+      'components.application.dashboard.filter.filterPosition.bottom',
+    [FilterPosition.RIGHT]:
+      'components.application.dashboard.filter.filterPosition.right',
+  };
+
+  /** Current drawer state */
   public isDrawerOpen = false;
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
@@ -334,7 +349,10 @@ export class DashboardFilterComponent
     import('./filter-settings-modal/filter-settings-modal.component').then(
       ({ FilterSettingsModalComponent }) => {
         const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
-          data: { positionList: this.positionList },
+          data: {
+            positionList: this.positionList,
+            positionTooltips: this.FilterPositionTooltips,
+          },
         });
         dialogRef.closed
           .pipe(takeUntil(this.destroy$))

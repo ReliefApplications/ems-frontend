@@ -32,10 +32,12 @@ export class SeriesMappingComponent
   constructor() {
     super();
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.setControlListeners();
   }
+
   /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.setControlListeners();

@@ -12,6 +12,7 @@ declare namespace Intl {
      * @param options The options
      */
     constructor(locales?: string | string[], options?: any);
+
     public of: (lang: string) => string;
   }
 }

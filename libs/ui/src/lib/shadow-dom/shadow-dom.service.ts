@@ -20,13 +20,13 @@ export class ShadowDomService {
     const isShadowRoot = Array.from(document.getElementsByTagName('*')).filter(
       (element) => element.shadowRoot
     );
-    //If shadow root exits, that would be the current document host, else the document from the Angular injection token
+    //If shadow root exits, that would be the current document host, else the document body from the Angular injection token
     if (isShadowRoot instanceof Array && isShadowRoot.length) {
       this.isShadowRoot = true;
     }
     this.currentHost =
       isShadowRoot instanceof Array && isShadowRoot.length
         ? isShadowRoot[0].shadowRoot
-        : document;
+        : document.body;
   }
 }

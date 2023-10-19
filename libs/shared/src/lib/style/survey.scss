@@ -1,4 +1,4 @@
-@import "variables.scss";
+@import 'variables.scss';
 
 ::ng-deep .sv-boolean:not(.sv-boolean--checked) {
   .sv-boolean__switch {
@@ -15,7 +15,7 @@
 
 // === QUESTION CONTENT ===
 ::ng-deep .sd-question__content {
-  .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
+  .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
     background-color: transparent;
     border: none;
     order: 2;
@@ -105,7 +105,8 @@
 ::ng-deep survey,
 ::ng-deep survey-creator {
   .sd-input {
-    padding: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px))) calc(2 * var(--sjs-base-unit, var(--base-unit, 8px)));
+    padding: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px)))
+      calc(2 * var(--sjs-base-unit, var(--base-unit, 8px)));
   }
   .k-combobox,
   .k-multiselect,

@@ -1,9 +1,14 @@
-<ui-dialog [closable]="true" size="fullscreen">
+<ui-dialog size="fullscreen">
   <ng-container ngProjectAs="content">
     <shared-widget
       [widget]="data.widget"
       [header]="false"
       (changeStep)="changeStep.emit($event)"
     ></shared-widget>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
+      {{ 'common.close' | translate }}
+    </ui-button>
   </ng-container>
 </ui-dialog>

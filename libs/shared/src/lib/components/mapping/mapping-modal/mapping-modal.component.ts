@@ -52,6 +52,7 @@ export class MappingModalComponent implements OnInit {
     @Inject(DIALOG_DATA) public data: MappingDialogData,
     private dialogRef: DialogRef<MappingModalComponent>
   ) {}
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     if (this.data && this.data.mapping) {
@@ -60,10 +61,5 @@ export class MappingModalComponent implements OnInit {
       this.form = createFormGroup(null);
       this.isNew = true;
     }
-  }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
   }
 }

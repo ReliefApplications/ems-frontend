@@ -123,7 +123,12 @@
                 *ngIf="field.type.kind !== 'SCALAR'"
                 >{{ field.type.kind }}</span
               >
-              <ui-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
+              <ui-button
+                [isIcon]="true"
+                icon="edit"
+                (click)="onEdit(index)"
+                [uiTooltip]="'common.edit' | translate"
+              >
               </ui-button>
             </div>
           </div>
@@ -150,6 +155,7 @@
           [isIcon]="true"
           icon="arrow_back"
           (click)="onCloseField()"
+          [uiTooltip]="'common.back' | translate"
         ></ui-button>
         <!-- Field name (static) -->
         <div uiFormFieldDirective>

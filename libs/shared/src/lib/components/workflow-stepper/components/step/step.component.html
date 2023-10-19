@@ -1,39 +1,45 @@
-<div
-  class="shared-step"
-  [style.background-color]="active ? type?.color : ''"
-  [ngClass]="{ active: active }"
->
-  <div class="step-actions" *ngIf="canUpdate">
-    <!-- Delete action -->
-    <ui-button
-      [isIcon]="true"
-      icon="delete_outline"
-      category="primary"
-      variant="danger"
-      [uiTooltip]="
-        'common.deleteObject'
-          | translate : { name: 'common.step.one' | translate }
-      "
-      (click)="onDelete($event)"
-      [uiTooltip]="'common.delete' | translate"
-    >
-    </ui-button>
-    <!-- Duplicate action ( disabled ) -->
-    <ui-button
-      [isIcon]="true"
-      icon="content_copy"
-      category="primary"
-      variant="primary"
-      [disabled]="true"
-      [uiTooltip]="'common.copy' | translate"
-    >
-    </ui-button>
+<div class="flex h-8">
+  <div class="flex items-center show-icons">
+    <div class="flex flex-row gap-x-3">
+      <!-- Step icon -->
+      <ui-icon
+        [icon]="step.icon || defaultIcon"
+        [fontFamily]="step.icon ? 'fa' : 'material'"
+        [size]="18"
+      ></ui-icon>
+      <!-- Step name -->
+      <span class="truncate" [uiTooltip]="step.name || ''"
+        >{{ step.name }}
+      </span>
+    </div>
+    <div class="flex flex-row items-center" *ngIf="canUpdate">
+      <!-- Delete step -->
+      <ui-button
+        class="hide-icons"
+        [isIcon]="true"
+        size="small"
+        icon="delete"
+        category="primary"
+        variant="danger"
+        [uiTooltip]="
+          'common.deleteObject'
+            | translate : { name: 'common.step.one' | translate }
+        "
+        (click)="onDelete($event)"
+        [uiTooltip]="'common.delete' | translate"
+      >
+      </ui-button>
+      <!-- Reorder -->
+      <ui-button
+        variant="grey"
+        [isIcon]="true"
+        size="small"
+        cdkDragHandle
+        icon="drag_indicator"
+        class="draggable"
+        [uiTooltip]="'models.page.tooltip.drag' | translate"
+      >
+      </ui-button>
+    </div>
   </div>
-  <img class="h-9 mt-5" [src]="type?.img" />
-  <span>{{ step.name | titlecase }}</span>
-  <div
-    *ngIf="active"
-    [style.background]="type?.focusColor"
-    class="w-full h-1 absolute bottom-0"
-  ></div>
 </div>

@@ -95,7 +95,11 @@ import {
   UpdateCustomNotificationMutationResponse,
 } from '../../models/custom-notification.model';
 import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UILayoutService,
+  faV4toV6Mapper,
+} from '@oort-front/ui';
 import {
   AddPositionAttributeCategoryMutationResponse,
   DeletePositionAttributeCategoryMutationResponse,
@@ -120,6 +124,7 @@ import { GraphQLError } from 'graphql';
 export class ApplicationService {
   /** Current application */
   public application = new BehaviorSubject<Application | null>(null);
+
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -144,6 +149,7 @@ export class ApplicationService {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
+
   /** @returns Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;
@@ -180,6 +186,7 @@ export class ApplicationService {
   get distributionLists(): DistributionList[] {
     return this.application.value?.distributionLists || [];
   }
+
   /**
    * Creates an instance of ApplicationService.
    *
@@ -232,8 +239,18 @@ export class ApplicationService {
       })
       .subscribe(async ({ data }) => {
         // extend user abilities for application
-        if (data.application)
+        if (data.application) {
+          // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
+          data.application.pages = (data.application.pages ?? []).map(
+            (page: Page) => {
+              if (faV4toV6Mapper[page.icon as string]) {
+                (page as Page).icon = faV4toV6Mapper[page.icon as string];
+              }
+              return page;
+            }
+          );
           this.authService.extendAbilityForApplication(data.application);
+        }
         await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
@@ -693,7 +710,7 @@ export class ApplicationService {
               ...application,
               pages: application.pages?.map((x) => {
                 if (x.id === page.id) {
-                  x = { ...x, visible: !page.visible };
+                  x = { ...x, visible: data.editPage.visible };
                 }
                 return x;
               }),

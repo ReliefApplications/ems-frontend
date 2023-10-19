@@ -159,7 +159,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     from: 'step' | 'page'
   ) {
     this.form = data.form;
-    this.canEditName = this.page?.canUpdate || false;
+    this.canEditName = this.form?.canUpdate ?? false;
     this.applicationId =
       (from === 'step'
         ? this.step?.workflow?.page?.application?.id
@@ -273,7 +273,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             'common.' + this.isStep ? 'step' : 'page' + '.one'
           ),
         },
-        canEditAccess:
+        canUpdate:
           !this.formActive &&
           (this.page
             ? this.page.canUpdate

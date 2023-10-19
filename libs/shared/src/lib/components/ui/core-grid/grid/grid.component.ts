@@ -5,6 +5,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   Renderer2,
@@ -69,7 +70,7 @@ const matches = (el: any, selector: any) =>
 })
 export class GridComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, OnDestroy, AfterViewInit, OnChanges
 {
   /** Array of multi-select types. */
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
@@ -137,6 +138,12 @@ export class GridComponent
     convert: false,
     export: false,
     showDetails: false,
+    navigateToPage: false,
+    navigateSettings: {
+      useRecordId: false,
+      pageUrl: '',
+      title: '',
+    },
     remove: false,
   };
   /** Input decorator */
@@ -244,6 +251,9 @@ export class GridComponent
   /** Snackbar reference */
   private snackBarRef!: any;
 
+  /** Timeout listeners */
+  private columnChangeTimeoutListener!: NodeJS.Timeout;
+
   /**
    * Constructor of the grid component
    *
@@ -271,13 +281,18 @@ export class GridComponent
     super();
     this.environment = environment.module || 'frontoffice';
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.setSelectedItems();
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(
+        debounceTime(2000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
@@ -286,17 +301,24 @@ export class GridComponent
       mode: this.multiSelect ? 'multiple' : 'single',
     };
   }
-  /** OnChanges lifecycle hook. */
+
   ngOnChanges(): void {
     this.statusMessage = this.getStatusMessage();
   }
+
   /** OnAfterViewInit lifecycle hook. */
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe(() =>
-      setTimeout(() => this.columnChange.emit(), 500)
-    );
+    this.grid?.columnReorder.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.columnChangeTimeoutListener) {
+        clearTimeout(this.columnChangeTimeoutListener);
+      }
+      this.columnChangeTimeoutListener = setTimeout(
+        () => this.columnChange.emit(),
+        500
+      );
+    });
   }
 
   // === DATA ===
@@ -841,10 +863,10 @@ export class GridComponent
    * Emit an event to open settings window
    */
   public async openSettings(): Promise<void> {
-    const { TileDataComponent } = await import(
-      '../../../widget-grid/floating-options/menu/tile-data/tile-data.component'
+    const { EditWidgetModalComponent } = await import(
+      '../../../widget-grid/edit-widget-modal/edit-widget-modal.component'
     );
-    const dialogRef = this.dialog.open(TileDataComponent, {
+    const dialogRef = this.dialog.open(EditWidgetModalComponent, {
       disableClose: true,
       data: {
         tile: this.widget,
@@ -914,18 +936,22 @@ export class GridComponent
         `components.widget.grid.errors.invalid.${this.environment}`
       );
     }
-    if (this.loadingSettings)
+    if (this.loadingSettings) {
       return this.translate.instant('components.widget.grid.loading.settings');
-    if (this.blank && this.environment === 'backoffice')
+    }
+    if (this.blank && this.environment === 'backoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.missingDataset'
       );
-    if (this.blank && this.environment === 'frontoffice')
+    }
+    if (this.blank && this.environment === 'frontoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.invalid.frontoffice'
       );
-    if (this.loadingRecords)
+    }
+    if (this.loadingRecords) {
       return this.translate.instant('components.widget.grid.loading.records');
+    }
     return this.translate.instant('kendo.grid.noRecords');
   }
 
@@ -941,5 +967,12 @@ export class GridComponent
       item: dataItem,
       field,
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.columnChangeTimeoutListener) {
+      clearTimeout(this.columnChangeTimeoutListener);
+    }
   }
 }

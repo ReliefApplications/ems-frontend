@@ -95,6 +95,7 @@ export class MapComponent
   private basemap: any;
   private currentBasemapKey!: string;
   private esriApiKey!: string;
+
   /**
    * Update map settings and redraw it with those
    */
@@ -389,8 +390,9 @@ export class MapComponent
 
       // Create leaflet map
       this.map = L.map(
-        this.shadowDomService.currentHost.getElementById(this.mapId) ??
-          this.mapId,
+        this.shadowDomService.isShadowRoot
+          ? this.shadowDomService.currentHost.getElementById(this.mapId)
+          : this.mapId,
         {
           zoomControl,
           maxBounds: maxBounds
@@ -566,7 +568,7 @@ export class MapComponent
    * Add / remove map controls according to the settings
    *
    * @param {MapControls} controls map controls values
-   * @param {boolean} [initMap=false] if initializing map to add the fixed controls
+   * @param {boolean} initMap if initializing map to add the fixed controls
    */
   private setMapControls(controls: MapControls, initMap = false) {
     // Add leaflet measure control

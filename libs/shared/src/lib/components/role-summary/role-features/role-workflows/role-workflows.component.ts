@@ -176,6 +176,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
         },
       });
   }
+
   /**
    * Emits an event with the changes in permission for a given workflow page
    *

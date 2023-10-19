@@ -1,6 +1,8 @@
-<ui-dialog [closable]="true" [size]="'medium'">
+<ui-dialog [size]="'medium'">
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">{{ 'components.preferences.title' | translate }}</h3>
+    <h3 class="font-semibold">
+      {{ 'components.preferences.title' | translate }}
+    </h3>
   </ng-container>
 
   <ng-container ngProjectAs="content">
@@ -48,7 +50,9 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose variant="default">{{ 'common.cancel' | translate }}</ui-button>
+    <ui-button uiDialogClose variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

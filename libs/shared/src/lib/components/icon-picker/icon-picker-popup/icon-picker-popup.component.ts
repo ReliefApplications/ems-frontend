@@ -69,6 +69,7 @@ export class IconPickerPopupComponent
     this.close.emit(icon);
     this.show = false;
   }
+
   // this.filteredIcons.next(this.icons);
   ngOnInit(): void {
     this.searchControl.valueChanges
@@ -103,7 +104,7 @@ export class IconPickerPopupComponent
       const iconDef = getIconDefinition(icon as IconName);
       const i = iconCreator(iconDef, {
         styles: {
-          color: this.color,
+          ...(this.color && { color: this.color }),
         },
       });
       this.svgIcons[icon] = i.html[0];

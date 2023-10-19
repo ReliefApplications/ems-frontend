@@ -95,14 +95,18 @@
                   icon="more_vert"
                   [uiMenuTriggerFor]="recMenu"
                   (click)="$event.stopPropagation()"
-                  [uiTooltip]="'common.options' | translate"
+                  [uiTooltip]="'common.actions' | translate"
                 >
                 </ui-button>
                 <ui-menu #recMenu>
                   <button
                     uiMenuItem
                     [routerLink]="['update', element.id]"
-                    [uiTooltip]="('components.records.editAs' | translate) + ' ' + element.form.name"
+                    [uiTooltip]="
+                      ('components.records.editAs' | translate) +
+                      ' ' +
+                      element.form.name
+                    "
                     [tooltipDisabled]="(resource.forms?.length || 0) <= 1"
                   >
                     <ui-icon icon="edit" variant="grey"></ui-icon>
@@ -164,14 +168,6 @@
         </table>
       </div>
     </div>
-    <!-- Pagination -->
-    <ui-paginator
-      [disabled]="loading"
-      [pageSize]="pageInfo.pageSize"
-      [totalItems]="pageInfo.length"
-      [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
-      (pageChange)="onPage($event)"
-    ></ui-paginator>
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
@@ -180,6 +176,15 @@
     ></shared-empty>
   </ng-template>
 </ng-container>
+<!-- Pagination -->
+<ui-paginator
+  *ngIf="!empty"
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+></ui-paginator>
 <ng-template #loadingTmpl>
   <shared-skeleton-table [columns]="displayedColumnsRecords" [actions]="true">
   </shared-skeleton-table>

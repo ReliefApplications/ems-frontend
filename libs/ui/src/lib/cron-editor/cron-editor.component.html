@@ -228,7 +228,9 @@
                 <!-- Specific day -->
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.masculine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.masculine' | translate
+                    }}</span>
                     <ng-container *ngIf="options.cronFlavor === 'quartz'">
                       <div uiFormFieldDirective>
                         <label>{{ 'common.cronEditor.day' | translate }}</label>
@@ -295,7 +297,9 @@
                 <!-- Specific Week day -->
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.feminine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.feminine' | translate
+                    }}</span>
                     <div uiFormFieldDirective>
                       <label>{{ 'common.cronEditor.week' | translate }}</label>
                       <ui-select-menu
@@ -383,7 +387,9 @@
               >
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.masculine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.masculine' | translate
+                    }}</span>
 
                     <div
                       uiFormFieldDirective
@@ -443,7 +449,9 @@
               >
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.feminine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.feminine' | translate
+                    }}</span>
 
                     <div uiFormFieldDirective>
                       <label>{{ 'common.cronEditor.week' | translate }}</label>
@@ -514,7 +522,9 @@
         <div class="px-2">
           <div [formGroup]="allForm">
             <div uiFormFieldDirective>
-              <label>{{ 'components.calculatedFields.expression' | translate }}</label>
+              <label>{{
+                'components.calculatedFields.expression' | translate
+              }}</label>
               <input type="text" formControlName="expression" />
             </div>
           </div>
