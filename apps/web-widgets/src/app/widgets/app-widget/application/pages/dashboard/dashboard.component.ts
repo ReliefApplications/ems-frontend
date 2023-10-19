@@ -176,7 +176,9 @@ export class DashboardComponent
           } else {
             // Don't use template, and directly load the dashboard from router's params
             this.showName = false;
-            this.loadDashboard(id).then(() => (this.loading = false));
+            this.loadDashboard(id).then(() => {
+              this.loading = false;
+            });
           }
         }
       });

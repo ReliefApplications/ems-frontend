@@ -11,8 +11,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { AppOverlayContainer } from '../../utils/overlay-container';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
-import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
+import { UILayoutService } from '@oort-front/ui';
+import { ShadowRootExtendedHostClass } from '../../utils/shadow-root-extended-host.component';
 
 /** Form web widget component */
 @Component({
@@ -21,7 +21,10 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class FormWidgetComponent implements AfterViewInit {
+export class FormWidgetComponent
+  extends ShadowRootExtendedHostClass
+  implements AfterViewInit
+{
   @Input() id = '626b96227ad4dd0c96f3b8a1';
   // @Input() id = '642061d1b7109549fa3035e8';
 
@@ -35,20 +38,16 @@ export class FormWidgetComponent implements AfterViewInit {
    *
    * @param layoutService UI layout service
    * @param overlayContainer Angular overlay container
-   * @param snackBarService SnackbarService,
    * @param el ElementRef
    * @param injector Injector
    */
   constructor(
     private layoutService: UILayoutService,
     private overlayContainer: OverlayContainer,
-    private snackBarService: SnackbarService,
     el: ElementRef,
     injector: Injector
   ) {
-    const kendoPopupHost = injector.get(POPUP_CONTAINER);
-    kendoPopupHost.nativeElement = el.nativeElement.shadowRoot;
-    this.snackBarService.shadowDom = el.nativeElement.shadowRoot;
+    super(el, injector);
   }
 
   ngAfterViewInit(): void {

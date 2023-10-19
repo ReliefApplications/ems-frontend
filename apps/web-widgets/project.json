@@ -36,9 +36,17 @@
             "glob": "**/*",
             "input": "libs/shared/src/i18n/tinymce/",
             "output": "/tinymce/langs"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/leaflet/dist/images/",
+            "output": "/"
           }
         ],
-        "styles": ["apps/web-widgets/src/styles.scss"],
+        "styles": [
+          "apps/web-widgets/src/styles.scss",
+          "node_modules/@progress/kendo-font-icons/dist/index.css"
+        ],
         "scripts": [
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
