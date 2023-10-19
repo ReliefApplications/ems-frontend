@@ -71,7 +71,11 @@
             element.id === openedWorkflowId ? 'expanded' : 'collapsed'
           "
         >
-          <div class="m-4 w-full overflow-x-auto shadow border pt-2 sm:rounded-lg bg-gray-50">
+          <!-- Table of steps -->
+          <div
+            *ngIf="filteredSteps.length; else emptyTemplate"
+            class="m-4 w-full overflow-x-auto shadow border pt-2 sm:rounded-lg bg-gray-50"
+          >
             <table
               class="mx-0 min-w-full divide-y divide-gray-300"
               cdk-table
@@ -122,14 +126,21 @@
               </ng-container>
 
               <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-              <tr class ="border-gray-200 border-y" *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+              <tr
+                class="border-gray-200 border-y"
+                *cdkRowDef="let row; columns: displayedColumns"
+                cdk-row
+              ></tr>
             </table>
           </div>
-          <shared-empty
-            *ngIf="filteredSteps.length === 0"
-            [title]="'components.role.summary.noSteps' | translate"
-          >
-          </shared-empty>
+          <!-- When no steps are available -->
+          <ng-template #emptyTemplate>
+            <shared-empty
+              class="py-3"
+              [title]="'components.role.summary.noSteps' | translate"
+            >
+            </shared-empty>
+          </ng-template>
         </div>
       </td>
     </ng-container>
