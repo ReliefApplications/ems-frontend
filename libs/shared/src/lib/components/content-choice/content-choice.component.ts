@@ -41,6 +41,7 @@ export class ContentChoiceComponent implements ControlValueAccessor {
     this.selected = value;
     this.onChanged(value);
   }
+
   /**
    * Write value of control.
    *

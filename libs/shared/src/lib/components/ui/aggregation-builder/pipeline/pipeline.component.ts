@@ -45,6 +45,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   constructor(private aggregationBuilder: AggregationBuilderService) {
     super();
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.fields$.subscribe((fields: any[]) => {

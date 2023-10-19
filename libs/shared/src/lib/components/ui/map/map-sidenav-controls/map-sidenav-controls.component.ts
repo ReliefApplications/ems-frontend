@@ -27,6 +27,7 @@ export class MapSidenavControlsComponent {
    * @param layoutService shared layout service
    */
   constructor(private layoutService: UILayoutService) {}
+
   /** Opens the layers menu */
   openLayersMenu() {
     this.openSidenavMenu(true);

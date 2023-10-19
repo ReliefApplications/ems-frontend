@@ -41,6 +41,7 @@ export class ExpressionsComponent
   constructor() {
     super();
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     if (this.displayField) {
@@ -60,6 +61,7 @@ export class ExpressionsComponent
         });
     }
   }
+
   /**
    * OnChanges lifecycle hook.
    *

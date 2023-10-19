@@ -13,7 +13,6 @@ import {
   TabsModule,
   ToggleModule,
 } from '@oort-front/ui';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardModule } from '../summary-card/summary-card.module';
@@ -38,7 +37,6 @@ import { TabActionsModule } from '../grid-settings/tab-actions/tab-actions.modul
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    LayoutModule,
     TooltipModule,
     MenuModule,
     IconModule,

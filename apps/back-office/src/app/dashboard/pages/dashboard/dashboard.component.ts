@@ -531,6 +531,7 @@ export class DashboardComponent
       this.formActive = !this.formActive;
     }
   }
+
   /**
    * Update the name of the dashboard and the step or page linked to it.
    *

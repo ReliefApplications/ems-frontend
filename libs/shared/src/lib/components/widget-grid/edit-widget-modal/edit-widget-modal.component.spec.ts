@@ -11,15 +11,15 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { ChartSettingsComponent } from '../../../../widgets/chart-settings/chart-settings.component';
+import { ChartSettingsComponent } from '../../widgets/chart-settings/chart-settings.component';
 import { HttpClientModule } from '@angular/common/http';
 import { environment } from 'projects/back-office/src/environments/environment';
 
-import { TileDataComponent } from './tile-data.component';
+import { EditWidgetModalComponent } from './edit-widget-modal.component';
 
-describe('TileDataComponent', () => {
-  let component: TileDataComponent;
-  let fixture: ComponentFixture<sharedTileDataComponent>;
+describe('EditWidgetModalComponent', () => {
+  let component: EditWidgetModalComponent;
+  let fixture: ComponentFixture<EditWidgetModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -36,7 +36,7 @@ describe('TileDataComponent', () => {
         UntypedFormBuilder,
         { provide: 'environment', useValue: environment },
       ],
-      declarations: [TileDataComponent],
+      declarations: [EditWidgetModalComponent],
       imports: [
         DialogCdkModule,
         TranslateModule.forRoot({
@@ -51,7 +51,7 @@ describe('TileDataComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TileDataComponent);
+    fixture = TestBed.createComponent(EditWidgetModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

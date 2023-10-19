@@ -7,17 +7,16 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { WidgetActionsComponent } from './widget-actions.component';
 
-import { FloatingOptionsComponent } from './floating-options.component';
-
-describe('FloatingOptionsComponent', () => {
-  let component: FloatingOptionsComponent;
-  let fixture: ComponentFixture<sharedFloatingOptionsComponent>;
+describe('WidgetActionsComponent', () => {
+  let component: WidgetActionsComponent;
+  let fixture: ComponentFixture<WidgetActionsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [TranslateService],
-      declarations: [FloatingOptionsComponent],
+      declarations: [WidgetActionsComponent],
       imports: [
         DialogCdkModule,
         TranslateModule.forRoot({
@@ -32,7 +31,7 @@ describe('FloatingOptionsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FloatingOptionsComponent);
+    fixture = TestBed.createComponent(WidgetActionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

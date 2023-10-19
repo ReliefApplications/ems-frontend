@@ -37,6 +37,7 @@ export class ResourceDropdownComponent
 
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   private destroy$: Subject<void> = new Subject<void>();
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created

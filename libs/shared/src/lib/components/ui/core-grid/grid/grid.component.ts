@@ -281,6 +281,7 @@ export class GridComponent
     super();
     this.environment = environment.module || 'frontoffice';
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.setSelectedItems();
@@ -304,6 +305,7 @@ export class GridComponent
   ngOnChanges(): void {
     this.statusMessage = this.getStatusMessage();
   }
+
   /** OnAfterViewInit lifecycle hook. */
   ngAfterViewInit(): void {
     this.setSelectedItems();
@@ -861,10 +863,10 @@ export class GridComponent
    * Emit an event to open settings window
    */
   public async openSettings(): Promise<void> {
-    const { TileDataComponent } = await import(
-      '../../../widget-grid/floating-options/menu/tile-data/tile-data.component'
+    const { EditWidgetModalComponent } = await import(
+      '../../../widget-grid/edit-widget-modal/edit-widget-modal.component'
     );
-    const dialogRef = this.dialog.open(TileDataComponent, {
+    const dialogRef = this.dialog.open(EditWidgetModalComponent, {
       disableClose: true,
       data: {
         tile: this.widget,

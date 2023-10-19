@@ -60,6 +60,9 @@ import {
 // Sentry
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular-ivy';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { library } from '@fortawesome/fontawesome-svg-core';
 
 /**
  * Initialize application.
@@ -75,6 +78,8 @@ const initializeApp =
   () => {
     oauth.configure(environment.authConfig);
     formService.initialize();
+    // Add fa icon font to check in the application
+    library.add(fas, fab);
   };
 
 /**

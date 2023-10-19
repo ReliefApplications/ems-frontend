@@ -58,6 +58,7 @@ export class ListFilterComponent implements OnInit, OnDestroy {
   @Output() showFilters = new EventEmitter<boolean>();
 
   parentFormContainer = inject(ControlContainer);
+
   /**
    * Get components parent form control
    *
@@ -66,6 +67,7 @@ export class ListFilterComponent implements OnInit, OnDestroy {
   get parentForm() {
     return this.parentFormContainer?.control as FormGroup;
   }
+
   showSignal = false;
 
   ngOnInit(): void {

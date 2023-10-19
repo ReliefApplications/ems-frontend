@@ -73,6 +73,7 @@ export class GradientPickerComponent
     this.ePlaceholder = plh;
     this.stateChanges.next();
   }
+
   private ePlaceholder = '';
   public focused = false;
   public touched = false;
@@ -114,6 +115,7 @@ export class GradientPickerComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+
   private isRequired = false;
 
   /**

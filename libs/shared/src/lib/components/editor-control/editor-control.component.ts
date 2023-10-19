@@ -88,6 +88,7 @@ export class EditorControlComponent
     this.ePlaceholder = placeholder;
     this.stateChanges.next();
   }
+
   private ePlaceholder = '';
   public focused = false;
   public touched = false;
@@ -128,6 +129,7 @@ export class EditorControlComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+
   private isRequired = false;
 
   /**
@@ -166,6 +168,7 @@ export class EditorControlComponent
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
   private destroy$ = new Subject<void>();
+
   /**
    * Component for using TinyMCE editor with formControl
    *

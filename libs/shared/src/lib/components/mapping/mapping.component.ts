@@ -29,6 +29,7 @@ export class MappingComponent extends UnsubscribeComponent implements OnInit {
   constructor(private dialog: Dialog) {
     super();
   }
+
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.dataSource = [...this.mappingForm.value];
