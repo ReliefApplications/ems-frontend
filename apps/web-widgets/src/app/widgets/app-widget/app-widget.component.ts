@@ -7,7 +7,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { AuthService } from '@oort-front/shared';
-import { ShadowRootExtendedHostClass } from '../../utils/shadow-root-extended-host.component';
+import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extended-host.component';
 
 /**
  * Main component of Front-office.
@@ -19,7 +19,7 @@ import { ShadowRootExtendedHostClass } from '../../utils/shadow-root-extended-ho
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class AppWidgetComponent
-  extends ShadowRootExtendedHostClass
+  extends ShadowRootExtendedHostComponent
   implements OnInit
 {
   // @Input() id = '';

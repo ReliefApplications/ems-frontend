@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 import { UILayoutService } from '@oort-front/ui';
-import { ShadowRootExtendedHostClass } from '../../utils/shadow-root-extended-host.component';
+import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extended-host.component';
 
 /** Form web widget component */
 @Component({
@@ -22,7 +22,7 @@ import { ShadowRootExtendedHostClass } from '../../utils/shadow-root-extended-ho
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class FormWidgetComponent
-  extends ShadowRootExtendedHostClass
+  extends ShadowRootExtendedHostComponent
   implements AfterViewInit
 {
   @Input() id = '626b96227ad4dd0c96f3b8a1';

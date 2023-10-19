@@ -7,7 +7,7 @@ import { settings } from 'survey-core';
  * Component for shared extended features inside component hosted in shadow dom
  */
 @Component({ template: '' })
-export class ShadowRootExtendedHostClass implements OnInit {
+export class ShadowRootExtendedHostComponent implements OnInit {
   snackBarService: SnackbarService = inject(SnackbarService);
 
   /**
