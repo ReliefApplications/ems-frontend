@@ -28,7 +28,7 @@ import { takeUntil } from 'rxjs/operators';
  * Front-office Application component.
  */
 @Component({
-  selector: 'app-application',
+  selector: 'oort-app-application',
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
@@ -106,7 +106,6 @@ export class ApplicationComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     if (changes['appID'].currentValue) {
       this.loading = true;
       this.applicationService.loadApplication(changes['appID'].currentValue);
@@ -137,18 +136,18 @@ export class ApplicationComponent
             const firstPage = get(application, 'pages', [])[0];
             // If a page is configured and it's applications first load, and not a reload
             // We load the applications first page
-            const pagesRegex = new RegExp('(/dashboard/)|(/form/)', 'gmi');
+            const pagesRegex = new RegExp(
+              '(/dashboard/)|(/form/)|(/workflow/)',
+              'gmi'
+            );
             if (!location.pathname.match(pagesRegex) && firstPage) {
-              this.router.navigate(
-                [
-                  `./${firstPage.type}/${
-                    firstPage.type === ContentType.form
-                      ? firstPage.id
-                      : firstPage.content
-                  }`,
-                ],
-                { relativeTo: this.route }
-              );
+              this.router.navigate([
+                `./${firstPage.type}/${
+                  firstPage.type === ContentType.form
+                    ? firstPage.id
+                    : firstPage.content
+                }`,
+              ]);
             } else {
               this.router.navigate([`./${location.pathname}`], {
                 relativeTo: this.route,
@@ -271,7 +270,6 @@ export class ApplicationComponent
         icon: 'schedule_send',
       });
     }
-    console.log(this.adminNavItems);
   }
 
   override ngOnDestroy(): void {
@@ -285,6 +283,7 @@ export class ApplicationComponent
    * @param application Application to open
    */
   onOpenApplication(application: Application): void {
+    this.router.navigate([`/`]);
     this.openApplication.emit(application.id);
   }
 

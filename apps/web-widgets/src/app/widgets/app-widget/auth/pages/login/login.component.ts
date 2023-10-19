@@ -6,7 +6,7 @@ import { AuthService } from '@oort-front/shared';
  * Login Page component.
  */
 @Component({
-  selector: 'app-login',
+  selector: 'oort-app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

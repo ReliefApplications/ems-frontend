@@ -53,6 +53,7 @@ export class IconPickerPopupComponent
     }
     this.show = false;
   }
+
   /**
    * Constructor of the IconPickerPopupComponent in order to extend the UnsubscribeComponent class
    */

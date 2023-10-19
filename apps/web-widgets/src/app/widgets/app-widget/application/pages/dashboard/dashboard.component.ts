@@ -33,7 +33,7 @@ import { DOCUMENT } from '@angular/common';
  * Dashboard page.
  */
 @Component({
-  selector: 'app-dashboard',
+  selector: 'oort-app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -66,7 +66,11 @@ export class DashboardComponent
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
 
-  /** @returns type of context element */
+  /**
+   * Get context type
+   *
+   * @returns type of context element
+   */
   get contextType() {
     if (this.dashboard?.page?.context) {
       return 'resource' in this.dashboard.page.context ? 'record' : 'element';

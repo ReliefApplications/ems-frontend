@@ -12,14 +12,19 @@ import { takeUntil } from 'rxjs';
  * Redirect page of front-office.
  */
 @Component({
-  selector: 'app-redirect',
+  selector: 'oort-app-redirect',
   templateUrl: './redirect.component.html',
   styleUrls: ['./redirect.component.scss'],
 })
 export class RedirectComponent extends UnsubscribeComponent implements OnInit {
   /** List of accessible applications */
   applications: Application[] = [];
-  /** @returns True if applications is empty */
+
+  /**
+   * Check if applications content is empty
+   *
+   * @returns True if applications is empty
+   */
   get empty(): boolean {
     return this.applications.length === 0;
   }

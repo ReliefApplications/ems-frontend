@@ -16,7 +16,7 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
 /** Form web widget component */
 @Component({
-  selector: 'form-widget',
+  selector: 'oort-form-widget',
   templateUrl: './form-widget.component.html',
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,

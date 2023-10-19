@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
  * Displays shared module.
  */
 @Component({
-  selector: 'app-roles',
+  selector: 'oort-app-roles',
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss'],
 })

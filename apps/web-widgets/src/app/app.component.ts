@@ -14,7 +14,7 @@ import {
  * Root component of Web Widgets project.
  */
 @Component({
-  selector: 'app-root',
+  selector: 'oort-app-root',
   templateUrl: './app.component.html',
 })
 export class AppComponent {

@@ -218,7 +218,7 @@ export class AppModule implements DoBootstrap {
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
-    customElements.define('form-widget', form);
+    customElements.define('oort-form-widget', form);
 
     // Form
     const application = createCustomElement(AppWidgetComponent, {

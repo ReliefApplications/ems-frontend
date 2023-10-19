@@ -15,7 +15,7 @@ platformBrowserDynamic()
     const body = document.getElementById('bodyPlaceholder');
     if (body) {
       // Form web widget
-      // const formWidget = document.createElement('form-widget');
+      // const formWidget = document.createElement('oort-form-widget');
       // body.appendChild(formWidget);
       // Application web widget
       const appWidget = document.createElement('oort-application-widget');

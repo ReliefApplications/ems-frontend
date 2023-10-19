@@ -25,7 +25,7 @@ import { SnackbarService } from '@oort-front/ui';
  * Form page.
  */
 @Component({
-  selector: 'app-form',
+  selector: 'oort-app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
