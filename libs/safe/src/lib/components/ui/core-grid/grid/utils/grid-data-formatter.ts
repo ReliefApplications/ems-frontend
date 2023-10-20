@@ -66,51 +66,50 @@ export function formatGridRowData(
   const valueObj = {
     value: {},
   };
-  fields.forEach((field) => {
-    // Format styling for each field
-    Object.assign(styleObj.style, {
-      [field.name]: getStyle(rowData, field.name),
-    });
-    // Format text for each field
-    if (!(field.type === 'JSON' && field.meta.type === 'file')) {
-      // Format text text for each field
-      const text = getFieldText(rowData, field, safeDatePipe);
-      Object.assign(textObj.text, {
-        [field.name]: text,
+  fields
+    .filter((field) => !!rowData[field.name])
+    .forEach((field) => {
+      // Format styling for each field
+      Object.assign(styleObj.style, {
+        [field.name]: getStyle(rowData, field.name),
       });
-    } else {
-      // Format url if exists for each field
-      if (['url'].includes(field.meta.type)) {
-        const url = getUrl(getPropertyValue(rowData, field));
-        Object.assign(urlObj.url, {
-          [field.name]: url,
-        });
-      }
-      // Format value for email and telephone if exists for each field
-      if (
-        ['email'].includes(field.meta.type) ||
-        ['tel'].includes(field.meta.type)
-      ) {
-        const value = getPropertyValue(rowData, field);
-        Object.assign(valueObj.value, {
-          [field.name]: value,
-        });
-      }
-      // Format files name and icons for each field
-      rowData[field.name].forEach((file: { name: string }) => {
-        const text = applyFieldFormat(removeFileExtension(file.name), field);
+      // Format text for each field
+      if (!(field.type === 'JSON' && field.meta.type === 'file')) {
+        // Format text text for each field
+        const text = getFieldText(rowData, field, safeDatePipe);
         Object.assign(textObj.text, {
-          [field.name]: {
-            [file.name]: text,
-          },
+          [field.name]: text,
         });
-        const icon = 'k-icon ' + getFileIcon(file.name);
-        Object.assign(iconObj.icon, {
-          [file.name]: icon,
+        // Format url if exists for each field
+        if (field.meta.type === 'url') {
+          const url = getUrl(getPropertyValue(rowData, field));
+          Object.assign(urlObj.url, {
+            [field.name]: url,
+          });
+        }
+        // Format value for email and telephone if exists for each field
+        if (field.meta.type === 'email' || field.meta.type === 'tel') {
+          const value = getPropertyValue(rowData, field);
+          Object.assign(valueObj.value, {
+            [field.name]: value,
+          });
+        }
+      } else {
+        // Format files name and icons for each field
+        rowData[field.name].forEach((file: { name: string }) => {
+          const text = applyFieldFormat(removeFileExtension(file.name), field);
+          Object.assign(textObj.text, {
+            [field.name]: {
+              [file.name]: text,
+            },
+          });
+          const icon = 'k-icon ' + getFileIcon(file.name);
+          Object.assign(iconObj.icon, {
+            [file.name]: icon,
+          });
         });
-      });
-    }
-  });
+      }
+    });
   // General properties
   Object.assign(rowData, styleObj);
   Object.assign(rowData, textObj);

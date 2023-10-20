@@ -42,7 +42,7 @@ import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection, isNil } from 'lodash';
+import { get, intersection, isEqual, isNil } from 'lodash';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -129,17 +129,8 @@ export class SafeGridComponent
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();
 
-  /** @returns A boolean indicating if actions are enabled */
-  get hasEnabledActions(): boolean {
-    return (
-      intersection(
-        Object.keys(this.actions).filter((key: string) =>
-          get(this.actions, key, false)
-        ),
-        this.rowActions
-      ).length > 0
-    );
-  }
+  /** A boolean indicating if actions are enabled */
+  hasEnabledActions = false;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -246,6 +237,20 @@ export class SafeGridComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
+    if (
+      !isEqual(
+        changes['actions']?.previousValue,
+        changes['actions']?.currentValue
+      )
+    ) {
+      this.hasEnabledActions =
+        intersection(
+          Object.keys(this.actions).filter((key: string) =>
+            get(this.actions, key, false)
+          ),
+          this.rowActions
+        ).length > 0;
+    }
     if (
       (changes['data']?.currentValue?.data.length || this.data.data.length) &&
       (changes['fields']?.currentValue?.length || this.fields.length)
