@@ -4,7 +4,7 @@ import { ApplicationNotificationsComponent } from './application-notifications.c
 
 describe('ApplicationNotificationsComponent', () => {
   let component: ApplicationNotificationsComponent;
-  let fixture: ComponentFixture<sharedApplicationNotificationsComponent>;
+  let fixture: ComponentFixture<ApplicationNotificationsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

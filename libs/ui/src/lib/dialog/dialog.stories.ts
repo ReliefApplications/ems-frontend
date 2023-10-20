@@ -26,6 +26,7 @@ class LaunchDialogComponent implements OnDestroy {
   @Input() animal = '';
   @Input() size: DialogSize = 'medium';
   private destroy$ = new Subject<void>();
+
   /**
    * Constructor for the launchDialog component
    *

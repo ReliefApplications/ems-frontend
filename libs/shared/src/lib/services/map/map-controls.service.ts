@@ -48,6 +48,7 @@ export class MapControlsService {
   private sidenavControlWheelListener!: any;
   private downloadControlClickListener!: any;
   private downloadControlWheelListener!: any;
+
   /**
    * Shared map control service
    *

@@ -1,5 +1,5 @@
 <!-- Add new tab -->
-<div class="flex justify-end">
+<div class="flex justify-end mb-4">
   <ui-button
     (click)="onAddTab($event)"
     category="secondary"
@@ -43,9 +43,11 @@
         </div>
       </div>
     </ng-container>
-    <shared-tab-settings
-      [tabGroup]="$any(tab)"
-      (delete)="onDeleteTab(i)"
-    ></shared-tab-settings>
+    <ng-template uiTabContent>
+      <shared-tab-settings
+        [tabGroup]="$any(tab)"
+        (delete)="onDeleteTab(i)"
+      ></shared-tab-settings>
+    </ng-template>
   </ui-tab>
 </ui-tabs>

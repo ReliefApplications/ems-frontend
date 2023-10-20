@@ -122,6 +122,7 @@ export class EditLayerModalComponent
   // layer related updates are done in order to avoid multiple mismatches and duplications between
   // a property change, layer data retrieval and form update
   private triggerFormChange = new BehaviorSubject(true);
+
   /**
    * Get the overlay tree object of the current map
    *

@@ -7,26 +7,21 @@ survey-creator {
   --main-color: #{rgb($primary_500)};
   --main-hover-color: #{rgb($primary_600)};
   --primary: #{rgb($primary_500)};
+  --primary-light: #{rgb($primary_100)};
   --secondary: #{rgb($primary_500)};
   --progress-buttons-color: #{rgb($primary_500)};
   --radio-checked-color: #{rgb($primary_500)};
   --header-background-color: transparent;
   --answer-background-color: transparent;
-  // --primary-text-color: #676a6c;
-  // --secondary-text-color: #a7a7a7;
-  // --inverted-text-color: #ffffff;
   --primary-hover: #{rgb($primary_600)};
   --selection-border: #{rgb($primary_500)};
-  // --primary-icon-color: #3d4d5d;
-  // --primary-bg-color: #fff;
-  // --secondary-bg-color: #f4f4f4;
-  // --primary-border-color: #e7eaec;
-  // --secondary-border-color: #ddd;
-  // --error-color: #ed5565;
-}
-
-survey {
-  --sjs-base-unit: 0.66em;
+  --sjs-font-questiontitle-size: 14px;
+  --sjs-font-size: 14px;
+  --sjs-base-unit: 0.5rem;
+  --sjs-font-editorfont-size: 14px;
+  --sjs-font-pagetitle-size: 16px;
+  --sjs-font-surveytitle-size: 16px;
+  --sd-base-vertical-padding: #{10px !important};
 }
 
 // Checkbox
@@ -54,7 +49,7 @@ ui-checkbox {
   color: black;
   text-align: left;
   line-height: 40px;
-  padding: 0 40px !important;
+  padding: 0 12px !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

@@ -27,43 +27,48 @@ import Color from 'color';
   styleUrls: ['./bar-chart.component.scss'],
 })
 export class BarChartComponent implements OnChanges {
+  /** Array of plugins. */
   public plugins: Plugin[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
     whiteBackgroundPlugin,
   ];
+  /** Boolean to track if percentage is used. */
   private usePercentage = false;
+  /** Variable to track the display of value labels. */
   private showValueLabels: false | 'percentage' | 'value' = false;
-
+  /** Input decorator for orientation. */
   @Input() orientation: 'vertical' | 'horizontal' = 'horizontal';
-
+  /** Input decorator for title. */
   @Input() title: ChartTitle | undefined;
-
+  /** Input decorator for legend. */
   @Input() legend: ChartLegend | undefined;
-
+  /** Input decorator for series. */
   @Input() series: any[] = [];
-
+  /** Input decorator for options. */
   @Input() options: any = {
     palette: DEFAULT_PALETTE,
     stack: false,
   };
-
+  /** Input decorator for gap. */
   @Input() gap = 2;
-
+  /** Input decorator for spacing. */
   @Input() spacing = 0.25;
-
+  /** ViewChild decorator for chart. */
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
-
+  /** Options for the chart configuration. */
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
   };
+  /** Type of the chart.   */
   public chartType: ChartType = 'bar';
-
+  /** Data for the chart. */
   public chartData: ChartData<'bar'> = {
     datasets: [],
   };
 
+  /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     const isBar = this.orientation === 'horizontal';
     this.usePercentage = get(this.options, 'stack', {}).type === '100%';

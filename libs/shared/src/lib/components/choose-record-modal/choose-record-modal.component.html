@@ -1,4 +1,4 @@
-<ui-dialog size="medium" [closable]="true">
+<ui-dialog size="medium">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
       {{
@@ -46,7 +46,9 @@
     >
       {{ (isSearchActivated ? 'common.select' : 'common.search') | translate }}
     </ui-button>
-    <ui-button (click)="onClose()" variant="default">{{ 'common.cancel' | translate }}</ui-button>
+    <ui-button uiDialogClose variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

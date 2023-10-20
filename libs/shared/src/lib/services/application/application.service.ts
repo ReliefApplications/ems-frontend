@@ -95,7 +95,11 @@ import {
   UpdateCustomNotificationMutationResponse,
 } from '../../models/custom-notification.model';
 import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UILayoutService,
+  faV4toV6Mapper,
+} from '@oort-front/ui';
 import {
   AddPositionAttributeCategoryMutationResponse,
   DeletePositionAttributeCategoryMutationResponse,
@@ -109,6 +113,7 @@ import {
 import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
+import { GraphQLError } from 'graphql';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -119,6 +124,7 @@ import { DOCUMENT } from '@angular/common';
 export class ApplicationService {
   /** Current application */
   public application = new BehaviorSubject<Application | null>(null);
+
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -143,6 +149,7 @@ export class ApplicationService {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
+
   /** @returns Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;
@@ -179,6 +186,7 @@ export class ApplicationService {
   get distributionLists(): DistributionList[] {
     return this.application.value?.distributionLists || [];
   }
+
   /**
    * Creates an instance of ApplicationService.
    *
@@ -231,8 +239,16 @@ export class ApplicationService {
       })
       .subscribe(async ({ data }) => {
         // extend user abilities for application
-        if (data.application)
+        if (data.application) {
+          // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
+          data.application.pages?.map((page: Page) => {
+            if (faV4toV6Mapper[page.icon as string]) {
+              (page as Page).icon = faV4toV6Mapper[page.icon as string];
+            }
+            return page;
+          });
           this.authService.extendAbilityForApplication(data.application);
+        }
         await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
@@ -362,23 +378,12 @@ export class ApplicationService {
           },
         })
         .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.application.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate
-                  .instant('common.application.one')
-                  .toLowerCase(),
-                value: value.name,
-              })
-            );
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.application.one'),
+            value.name
+          );
+          if (!errors && data && data.editApplication) {
             if (data?.editApplication) {
               const newApplication = {
                 ...application,
@@ -387,7 +392,6 @@ export class ApplicationService {
                 sideMenu: value.sideMenu,
                 status: data.editApplication.status,
               };
-
               this.application.next(newApplication);
             }
           }
@@ -413,33 +417,17 @@ export class ApplicationService {
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.access'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectUpdated', {
-                    type: this.translate.instant('common.access').toLowerCase(),
-                    value: application?.name,
-                  })
-                );
-                if (data?.editApplication) {
-                  const newApplication = {
-                    ...application,
-                    permissions: data.editApplication.permissions,
-                  };
-                  this.application.next(newApplication);
-                }
-              }
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.access'),
+              application?.name
+            );
+            if (!errors && data?.editApplication) {
+              const newApplication = {
+                ...application,
+                permissions: data.editApplication.permissions,
+              };
+              this.application.next(newApplication);
             }
           },
           error: (err) => {
@@ -670,34 +658,23 @@ export class ApplicationService {
           },
         })
         .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one').toLowerCase(),
-                error: errors[0].message,
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.page.one'),
+            page.name
+          );
+          if (!errors && data) {
+            const newApplication = {
+              ...application,
+              pages: application.pages?.map((x) => {
+                if (x.id === page.id) {
+                  x = { ...x, name: page.name };
+                }
+                return x;
               }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.page.one').toLowerCase(),
-                  value: page.name,
-                })
-              );
-              const newApplication = {
-                ...application,
-                pages: application.pages?.map((x) => {
-                  if (x.id === page.id) {
-                    x = { ...x, name: page.name };
-                  }
-                  return x;
-                }),
-              };
-              this.application.next(newApplication);
-              if (callback) callback();
-            }
+            };
+            this.application.next(newApplication);
+            if (callback) callback();
           }
         });
     }
@@ -718,38 +695,26 @@ export class ApplicationService {
           mutation: EDIT_PAGE,
           variables: {
             id: page.id,
-            visible: !page.visible,
+            visible: page.visible,
           },
         })
         .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one'),
-                error: errors ? errors[0].message : '',
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.page.one')
+          );
+          if (!errors && data) {
+            const newApplication = {
+              ...application,
+              pages: application.pages?.map((x) => {
+                if (x.id === page.id) {
+                  x = { ...x, visible: data.editPage.visible };
+                }
+                return x;
               }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.page.one'),
-                  value: '',
-                })
-              );
-              const newApplication = {
-                ...application,
-                pages: application.pages?.map((x) => {
-                  if (x.id === page.id) {
-                    x = { ...x, visible: !page.visible };
-                  }
-                  return x;
-                }),
-              };
-              this.application.next(newApplication);
-              if (callback) callback();
-            }
+            };
+            this.application.next(newApplication);
+            if (callback) callback();
           }
         });
     }
@@ -774,34 +739,22 @@ export class ApplicationService {
           },
         })
         .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one'),
-                error: errors ? errors[0].message : '',
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.page.one')
+          );
+          if (!errors && data) {
+            const newApplication = {
+              ...application,
+              pages: application.pages?.map((x) => {
+                if (x.id === page.id) {
+                  x = { ...x, icon: data.editPage.icon };
+                }
+                return x;
               }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.page.one'),
-                  value: '',
-                })
-              );
-              const newApplication = {
-                ...application,
-                pages: application.pages?.map((x) => {
-                  if (x.id === page.id) {
-                    x = { ...x, icon: data.editPage.icon };
-                  }
-                  return x;
-                }),
-              };
-              this.application.next(newApplication);
-              if (callback) callback();
-            }
+            };
+            this.application.next(newApplication);
+            if (callback) callback();
           }
         });
     }
@@ -866,10 +819,12 @@ export class ApplicationService {
    * @param content content to duplicate
    * @param content.stepId id of step to duplicate
    * @param content.pageId id of page to duplicate
+   * @param callback additional callback
    */
   duplicatePage(
     applicationId: string,
-    content: { stepId?: string; pageId?: string }
+    content: { stepId?: string; pageId?: string },
+    callback: any
   ): void {
     this.apollo
       .mutate<DuplicatePageMutationResponse>({
@@ -907,6 +862,7 @@ export class ApplicationService {
             this.router.navigate([
               `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
             ]);
+            if (callback) callback();
           }
         }
       });
@@ -989,62 +945,44 @@ export class ApplicationService {
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.role.one'),
-                    error: errors ? errors[0].message : '',
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.role.one'),
+              role.title
+            );
+            if (!errors && data) {
+              const newApplication: Application = {
+                ...application,
+                roles: application.roles?.map((x) => {
+                  if (x.id === role.id) {
+                    x = {
+                      ...x,
+                      permissions: data?.editRole.permissions,
+                      channels: data?.editRole.channels,
+                    };
                   }
-                ),
-                { error: true }
-              );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectUpdated', {
-                    type: this.translate
-                      .instant('common.role.one')
-                      .toLowerCase(),
-                    value: role.title,
-                  })
-                );
-                const newApplication: Application = {
-                  ...application,
-                  roles: application.roles?.map((x) => {
-                    if (x.id === role.id) {
-                      x = {
-                        ...x,
-                        permissions: data?.editRole.permissions,
-                        channels: data?.editRole.channels,
-                      };
-                    }
-                    return x;
-                  }),
-                  channels: application.channels?.map((x) => {
-                    if (value.channels.includes(x.id)) {
-                      x = {
-                        ...x,
-                        subscribedRoles: x.subscribedRoles?.concat([role]),
-                      };
-                    } else if (
-                      x.subscribedRoles?.some(
-                        (subRole) => subRole.id === role.id
-                      )
-                    ) {
-                      x = {
-                        ...x,
-                        subscribedRoles: x.subscribedRoles.filter(
-                          (subRole) => subRole.id !== role.id
-                        ),
-                      };
-                    }
-                    return x;
-                  }),
-                };
-                this.application.next(newApplication);
-              }
+                  return x;
+                }),
+                channels: application.channels?.map((x) => {
+                  if (value.channels.includes(x.id)) {
+                    x = {
+                      ...x,
+                      subscribedRoles: x.subscribedRoles?.concat([role]),
+                    };
+                  } else if (
+                    x.subscribedRoles?.some((subRole) => subRole.id === role.id)
+                  ) {
+                    x = {
+                      ...x,
+                      subscribedRoles: x.subscribedRoles.filter(
+                        (subRole) => subRole.id !== role.id
+                      ),
+                    };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
             }
           },
           error: (err) => {
@@ -1438,35 +1376,22 @@ export class ApplicationService {
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.channel.one'),
-                error: errors ? errors[0].message : '',
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.channel.one'),
+            title
+          );
+          if (!errors && data) {
+            const newApplication: Application = {
+              ...application,
+              channels: application?.channels?.map((x) => {
+                if (x.id === channel.id) {
+                  x = { ...x, title: data?.editChannel.title };
+                }
+                return x;
               }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate
-                    .instant('common.channel.one')
-                    .toLowerCase(),
-                  value: title,
-                })
-              );
-              const newApplication: Application = {
-                ...application,
-                channels: application?.channels?.map((x) => {
-                  if (x.id === channel.id) {
-                    x = { ...x, title: data?.editChannel.title };
-                  }
-                  return x;
-                }),
-              };
-              this.application.next(newApplication);
-            }
+            };
+            this.application.next(newApplication);
           }
         },
         error: (err) => {
@@ -1671,39 +1596,23 @@ export class ApplicationService {
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.subscription.one'),
-                    error: errors ? errors[0].message : '',
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.subscription.one'),
+              value.title
+            );
+            if (!errors && data) {
+              const subscription = data.editSubscription;
+              const newApplication = {
+                ...application,
+                subscriptions: application.subscriptions?.map((sub) => {
+                  if (sub.routingKey === previousSubscription) {
+                    sub = subscription;
                   }
-                ),
-                { error: true }
-              );
-            } else {
-              if (data) {
-                const subscription = data.editSubscription;
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectUpdated', {
-                    type: this.translate
-                      .instant('common.subscription.one')
-                      .toLowerCase(),
-                    value: value.title,
-                  })
-                );
-                const newApplication = {
-                  ...application,
-                  subscriptions: application.subscriptions?.map((sub) => {
-                    if (sub.routingKey === previousSubscription) {
-                      sub = subscription;
-                    }
-                    return sub;
-                  }),
-                };
-                this.application.next(newApplication);
-              }
+                  return sub;
+                }),
+              };
+              this.application.next(newApplication);
             }
           },
           error: (err) => {
@@ -2071,5 +1980,80 @@ export class ApplicationService {
         this.snackBar.openSnackBar(err.message, { error: true });
       })
       .finally(() => (this.customStyleEdited = false));
+  }
+
+  /**
+   * Handle mutations messages response from the application, pages and steps
+   *
+   * @param errors errors from the access mutation response if any
+   * @param type content type
+   * @param value value of the content edited
+   */
+  handleEditionMutationResponse(
+    errors: readonly GraphQLError[] | undefined,
+    type: string,
+    value?: string
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type,
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type,
+          value: value ?? '',
+        })
+      );
+    }
+  }
+
+  /**
+   * Update application page permissions, by sending a mutation to the back-end.
+   *
+   * @param page Edited page
+   * @param permissions new permissions
+   * @param callback callback method, allow the component calling the service to do some logic.
+   */
+  updatePagePermissions(page: Page, permissions: any, callback?: any): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: page.id,
+            permissions,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.page.one')
+          );
+          if (!errors && data) {
+            const newApplication = {
+              ...application,
+              pages: application.pages?.map((x) => {
+                if (x.id === page.id) {
+                  x = {
+                    ...x,
+                    canSee: data.editPage.permissions.canSee,
+                    canDelete: data.editPage.permissions.canDelete,
+                    canUpdate: data.editPage.permissions.canUpdate,
+                  };
+                }
+                return x;
+              }),
+            };
+            this.application.next(newApplication);
+            if (callback) callback(data.editPage.permissions);
+          }
+        });
+    }
   }
 }

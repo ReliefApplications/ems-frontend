@@ -1,3 +1,4 @@
+<ng-container *ngIf="loading"><ui-spinner></ui-spinner></ng-container>
 <ng-container *ngIf="!loading && form && canCreateRecords">
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">

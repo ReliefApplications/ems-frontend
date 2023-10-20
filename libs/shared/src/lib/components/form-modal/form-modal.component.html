@@ -1,4 +1,4 @@
-<ui-dialog size="big" [closable]="true">
+<ui-dialog size="big">
   <ng-container ngProjectAs="header">
     <ng-container *ngIf="!loading">
       <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
@@ -41,9 +41,9 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()" variant="danger">{{
-      'common.cancel' | translate
-    }}</ui-button>
+    <ui-button uiDialogClose>
+      {{ 'common.close' | translate }}
+    </ui-button>
     <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
       <ui-button
         category="secondary"

@@ -1,49 +1,41 @@
 <div [formGroup]="form" class="flex flex-col gap-x-4">
-	<!-- Default filter -->
-	<shared-list-filter
-		[hasSiblingFilters]="true"
-		[loading]="loading"
-		(showFilters)="show = $event"
-	></shared-list-filter>
-	<!-- Advanced filters -->
-	<ng-template #expandedFilter>
-		<div
-			*ngIf="show"
-			class="flex flex-wrap gap-2 items-end"
-		>
-				<!-- Status filter -->
-				<div
-					uiFormFieldDirective
-					[outline]="false"
-					class="w-44"
-					[defaultMargin]="false"
-				>
-					<label>{{ 'common.status' | translate }}</label>
-					<ui-select-menu
-							formControlName="statusFilter"
-							[placeholder]="'common.selectStatus' | translate"
-					>
-							<ui-select-option>-</ui-select-option>
-							<ui-select-option value="active">
-								{{ 'common.status_active' | translate }}
-							</ui-select-option>
-							<ui-select-option value="pending">
-								{{ 'common.status_pending' | translate }}
-							</ui-select-option>
-							<ui-select-option value="archived">
-								{{ 'common.status_archived' | translate }}
-							</ui-select-option>
-					</ui-select-menu>
-				</div>
-			<!-- Clear filters -->
-			<ui-button
-				variant="danger"
-				(click)="clear()"
-				class="max-sm:!w-auto"
-			>
-				{{ 'common.filter.clear' | translate }}
-			</ui-button>
-		</div>
-	</ng-template>
+  <!-- Default filter -->
+  <shared-list-filter
+    [hasSiblingFilters]="true"
+    [loading]="loading"
+    (showFilters)="show = $event"
+  ></shared-list-filter>
+  <!-- Advanced filters -->
+  <ng-template #expandedFilter>
+    <div *ngIf="show" class="flex flex-wrap gap-2 items-end">
+      <!-- Status filter -->
+      <div
+        uiFormFieldDirective
+        [outline]="false"
+        class="w-44"
+        [defaultMargin]="false"
+      >
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu
+          formControlName="statusFilter"
+          [placeholder]="'common.selectStatus' | translate"
+        >
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option value="active">
+            {{ 'common.status_active' | translate }}
+          </ui-select-option>
+          <ui-select-option value="pending">
+            {{ 'common.status_pending' | translate }}
+          </ui-select-option>
+          <ui-select-option value="archived">
+            {{ 'common.status_archived' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Clear filters -->
+      <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">
+        {{ 'common.filter.clear' | translate }}
+      </ui-button>
+    </div>
+  </ng-template>
 </div>
-  

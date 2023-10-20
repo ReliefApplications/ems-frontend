@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FilterPosition } from '../enums/dashboard-filters.enum';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { ButtonModule, DialogModule, TooltipModule } from '@oort-front/ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 /**
@@ -10,6 +10,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
  */
 interface SettingsData {
   positionList: FilterPosition[];
+  positionTooltips: Record<FilterPosition, string>;
 }
 
 /**
@@ -20,10 +21,20 @@ interface SettingsData {
   selector: 'shared-filter-settings-modal',
   templateUrl: './filter-settings-modal.component.html',
   styleUrls: ['./filter-settings-modal.component.scss'],
-  imports: [DialogModule, ButtonModule, CommonModule, TranslateModule],
+  imports: [
+    DialogModule,
+    ButtonModule,
+    CommonModule,
+    TranslateModule,
+    TooltipModule,
+  ],
 })
 export class FilterSettingsModalComponent implements OnInit {
+  /** List with all the available filter positions */
   public positionList: FilterPosition[] = [];
+  /** Translations for tooltips of each of the positions */
+  public positionTooltips!: Record<FilterPosition, string>;
+  /** Default position of the filter */
   private defaultPosition: FilterPosition = FilterPosition.BOTTOM;
 
   /**
@@ -39,6 +50,7 @@ export class FilterSettingsModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.positionList = this.data.positionList;
+    this.positionTooltips = this.data.positionTooltips;
   }
 
   /**

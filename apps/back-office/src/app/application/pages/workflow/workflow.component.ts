@@ -12,11 +12,10 @@ import {
   AuthService,
   Application,
   UnsubscribeComponent,
-  EditPageMutationResponse,
   DeleteStepMutationResponse,
   EditWorkflowMutationResponse,
 } from '@oort-front/shared';
-import { EDIT_PAGE, DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
+import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -182,78 +181,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         callback
       );
     }
-  }
-
-  /**
-   * Edits the permissions layer.
-   *
-   * @param e permission event.
-   */
-  saveAccess(e: any): void {
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          permissions: e,
-        },
-      })
-      .subscribe({
-        next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.page.one'),
-                value: '',
-              })
-            );
-            this.workflow = {
-              ...this.workflow,
-              permissions: data?.editPage.permissions,
-            };
-          }
-        },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        },
-      });
-  }
-
-  /**
-   * Duplicate page, in a new ( or same ) application
-   *
-   * @param event duplication event
-   */
-  public onDuplicate(event: any): void {
-    if (this.workflow?.page?.id) {
-      this.applicationService.duplicatePage(event.id, {
-        pageId: this.workflow?.page?.id,
-      });
-    }
-  }
-
-  /**
-   * Show or hide application selector.
-   * Get applications.
-   */
-  public onAppSelection(): void {
-    this.showAppMenu = !this.showAppMenu;
-    const authSubscription = this.authService.user$.subscribe(
-      (user: any | null) => {
-        if (user) {
-          this.applications = user.applications;
-        }
-      }
-    );
-    authSubscription.unsubscribe();
   }
 
   /**
@@ -474,58 +401,45 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Toggle page visibility.
+   * Open settings modal.
    */
-  togglePageVisibility() {
-    const callback = () => {
-      this.workflow = {
-        ...this.workflow,
-        page: {
-          ...this.workflow?.page,
-          visible: !this.workflow?.page?.visible,
-        },
-      };
-    };
-    this.applicationService.togglePageVisibility(
-      {
-        id: this.workflow?.page?.id,
-        visible: this.workflow?.page?.visible,
-      },
-      callback
+  public async onOpenSettings(): Promise<void> {
+    const { ViewSettingsModalComponent } = await import(
+      '../../../components/view-settings-modal/view-settings-modal.component'
     );
-  }
-
-  /**
-   * Handle icon change.
-   * Open icon modal settings, and save changes if icon is updated.
-   */
-  public async onChangeIcon(): Promise<void> {
-    const { IconModalComponent } = await import(
-      '../../../components/icon-modal/icon-modal.component'
-    );
-    const dialogRef = this.dialog.open(IconModalComponent, {
+    const dialogRef = this.dialog.open(ViewSettingsModalComponent, {
       data: {
+        type: 'page',
+        applicationId: this.applicationId,
+        page: this.workflow?.page,
         icon: this.workflow?.page?.icon,
+        visible: this.workflow?.page?.visible,
+        accessData: {
+          access: this.workflow?.permissions,
+          application: this.applicationId,
+          objectTypeName: this.translate.instant('common.page.one'),
+        },
+        canUpdate: this.workflow?.page?.canUpdate || false,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
-      if (icon) {
-        const callback = () => {
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updates: any) => {
+        if (updates) {
           this.workflow = {
             ...this.workflow,
+            ...(updates.permissions && updates),
             page: {
               ...this.workflow?.page,
-              icon,
+              ...(!updates.permissions && updates),
             },
           };
-        };
-        this.workflow?.page &&
-          this.applicationService.changePageIcon(
-            this.workflow.page,
-            icon,
-            callback
-          );
-      }
+        }
+      });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
     });
   }
 }

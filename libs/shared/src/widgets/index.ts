@@ -8,7 +8,7 @@
 // === SERVICES ===
 export * from '../lib/services/auth/auth.service';
 export * from '../lib/services/form/form.service';
-export * from '../lib/services/layout/layout.service';
+//export * from '../lib/services/layout/layout.service';
 export * from '../lib/services/kendo-translation/kendo-translation.service';
 export * from '../lib/services/auth-interceptor/auth-interceptor.service';
 

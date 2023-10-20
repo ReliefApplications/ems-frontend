@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChildren,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
@@ -72,6 +73,9 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   /** Reference to the TabBodyHostDirective. */
   @ViewChild(TabBodyHostDirective)
   tabBodyHost!: TabBodyHostDirective;
+  /** Refenrece to tab list element */
+  @ViewChild('tabList')
+  tabList!: ElementRef<any>;
 
   previousTabsLength = 0;
   triggerAnimation = false;
@@ -107,11 +111,10 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       .pipe(startWith(this.tabs), takeUntil(this.destroy$))
       .subscribe((tabs: QueryList<TabComponent>) => {
         this.cdr.detectChanges();
-        if (tabs.length !== this.previousTabsLength) {
-          this.reorder$.next();
-          this.previousTabsLength = tabs.length;
-          this.subscribeToOpenTabEvents();
-        }
+        this.reorder$.next();
+        this.previousTabsLength = tabs.length;
+        this.subscribeToOpenTabEvents();
+        this.setSelectedTab();
       });
   }
 

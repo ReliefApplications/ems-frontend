@@ -35,34 +35,37 @@ import { cloneDeep, isNil } from 'lodash';
 @Component({
   selector: 'shared-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form.component.scss'],
 })
 export class FormComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** Form input */
   @Input() form!: Form;
+  /** Record input, optional */
   @Input() record?: RecordModel;
+  /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
   }> = new EventEmitter();
-
-  // === SURVEYJS ===
+  /** Survey model */
   public survey!: SurveyModel;
+  /** Indicates whether the search is active */
   public surveyActive = true;
+  /** Temporary storage for files */
   public temporaryFilesStorage: Record<string, Array<File>> = {};
-
+  /** Reference to the form container element */
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  // === MODIFIED AT ===
+  /** Date when the form was last modified */
   public modifiedAt: Date | null = null;
-
-  // === LOCALE STORAGE ===
+  /** ID for local storage */
   private storageId = '';
+  /** Date of local storage */
   public storageDate?: Date;
+  /** indicates whether the data is from the cache */
   public isFromCacheData = false;
-
   /** Selected page index */
   public selectedPageIndex: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
@@ -99,6 +102,7 @@ export class FormComponent
     super();
   }
 
+  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
     addCustomFunctions(this.authService, this.record);
 
@@ -395,6 +399,7 @@ export class FormComponent
     });
   }
 
+  /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);

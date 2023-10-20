@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { TabsComponent } from './tabs.component';
 import { ButtonModule, TabsModule as UITabsModule } from '@oort-front/ui';
 import { TabModule } from './tab/tab.module';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { TranslateModule } from '@ngx-translate/core';
+import { PortalModule } from '@angular/cdk/portal';
 
 /**
  * Tabs widget module.
@@ -15,9 +15,9 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     UITabsModule,
     TabModule,
-    LayoutModule,
     TranslateModule,
     ButtonModule,
+    PortalModule,
   ],
   exports: [TabsComponent],
 })

@@ -40,11 +40,6 @@
           },
           {
             "glob": "**/*",
-            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
-            "output": "/assets/webfonts/"
-          },
-          {
-            "glob": "**/*",
             "input": "node_modules/leaflet/dist/images/",
             "output": "/"
           }
@@ -112,7 +107,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -136,7 +131,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -160,12 +155,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/shared/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-dev": {
@@ -184,7 +179,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -208,7 +203,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -232,7 +227,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -256,7 +251,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -280,7 +275,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -304,7 +299,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -328,7 +323,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -352,7 +347,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
@@ -376,7 +371,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "12kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",

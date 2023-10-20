@@ -46,7 +46,9 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions" *ngIf="!loading">
-    <ui-button (click)="onClose()" variant="default">{{ 'common.close' | translate }}</ui-button>
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

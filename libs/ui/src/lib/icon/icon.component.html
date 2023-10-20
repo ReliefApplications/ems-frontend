@@ -1,13 +1,14 @@
-<i
-  [ngClass]="iconVariantAndCategory"
-  [ngStyle]="{
-    height: fontSize,
-    width: fontSize,
-    'line-height': fontSize,
-    'font-size': fontSize
-  }"
-  class="inline-flex align-middle"
-  ><ng-container *ngIf="fontFamily !== 'fa'">
+<ng-container *ngIf="fontFamily !== 'fa'">
+  <i
+    [ngClass]="iconVariantAndCategory"
+    [ngStyle]="{
+      height: fontSize,
+      width: fontSize,
+      'line-height': fontSize,
+      'font-size': fontSize
+    }"
+    class="inline-flex align-middle"
+  >
     {{ icon }}
-  </ng-container></i
->
+  </i>
+</ng-container>

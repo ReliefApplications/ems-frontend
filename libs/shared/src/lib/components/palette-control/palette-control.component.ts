@@ -24,15 +24,19 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class PaletteControlComponent implements ControlValueAccessor {
+  /** Input decorator for formControl. */
   @Input() formControl!: UntypedFormControl;
-
+  /** Input decorator for formControlName. */
   @Input() formControlName!: string;
-
+  /** Private function to handle touch events. */
   private onTouched!: () => void;
+  /** Private function to handle change events. */
   private onChanged!: (value: string[]) => void;
-
+  /** Array to hold the value. */
   public value: string[] = [];
+  /** Array to hold the colors. */
   public colors: string[] = [];
+  /** Boolean to track the disabled state of the control. */
   public disabled = false;
 
   /**

@@ -5,6 +5,7 @@ import { StorybookTranslateModule } from '../../../storybook-translate/storybook
 
 export default {
   component: AddStepComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [WorkflowStepperModule, StorybookTranslateModule],
@@ -21,7 +22,7 @@ export default {
  * @param args Properties
  * @returns A story component
  */
-const TEMPLATE: StoryFn<sharedAddStepComponent> = (args) => ({
+const TEMPLATE: StoryFn<AddStepComponent> = (args) => ({
   props: {
     ...args,
   },

@@ -1,5 +1,3 @@
-export * from './lib/ui.module';
-
 // === TAILWIND COMPONENTS === //
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
@@ -55,6 +53,7 @@ export * from './lib/divider/types/divider-position';
 export * from './lib/divider/types/divider-orientation';
 export * from './lib/breadcrumbs/types/breadcrumb-display';
 export * from './lib/breadcrumbs/types/breadcrumb-separator';
+export * from './lib/icon/icon.list';
 
 // === INTERFACES === //
 export * from './lib/table/interfaces/table-column.interface';

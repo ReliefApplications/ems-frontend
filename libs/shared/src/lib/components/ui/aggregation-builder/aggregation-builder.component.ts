@@ -31,7 +31,7 @@ export class AggregationBuilderComponent
 
   // === FIELDS ===
   private fields = new BehaviorSubject<any[]>([]);
-  public fields$!: Observable<any[]>;
+  public fields$ = this.fields.asObservable();
   private selectedFields = new BehaviorSubject<any[]>([]);
   public selectedFields$!: Observable<any[]>;
   private metaFields = new BehaviorSubject<any[]>([]);
@@ -62,10 +62,16 @@ export class AggregationBuilderComponent
   }
 
   ngOnInit(): void {
-    this.initFields();
+    // Fixes issue where sometimes we try to load the fields before the queries are loaded
+    this.queryBuilder.availableQueries$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((queryList) => {
+        if (queryList.length > 0) {
+          this.initFields();
+        }
+      });
 
     // Fields query
-    this.fields$ = this.fields.asObservable();
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields) => {
       fields.forEach((field) => {
         field['used'] = this.pipelineForm.value.some((x: any) => {

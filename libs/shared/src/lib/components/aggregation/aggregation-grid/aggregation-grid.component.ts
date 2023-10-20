@@ -100,20 +100,12 @@ export class AggregationGridComponent
   }
 
   ngOnInit(): void {
-    this.getAggregationData();
-    this.getAggregationFields();
-
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.getAggregationData();
       });
-
-    this.contextService.isFilterEnabled$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.getAggregationData();
-      });
+    this.getAggregationFields();
   }
 
   ngOnChanges(): void {
@@ -278,6 +270,9 @@ export class AggregationGridComponent
             //     'components.widget.grid.errors.metaQueryBuildFailed'
             //   ),
             // };
+            this.status = {
+              error: false,
+            };
           }
         },
         error: (err: any) => {

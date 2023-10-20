@@ -26,6 +26,7 @@ export class NotificationService {
   /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
   private cachedNotifications: Notification[] = [];
+
   /** @returns Current notifications as observable */
   get notifications$(): Observable<Notification[]> {
     return this.notifications.asObservable();
@@ -36,6 +37,7 @@ export class NotificationService {
 
   /** Is there more notifications to load */
   private hasNextPage = new BehaviorSubject<boolean>(true);
+
   /** @returns Is there more notifcations to load as observable */
   get hasNextPage$(): Observable<boolean> {
     return this.hasNextPage.asObservable();

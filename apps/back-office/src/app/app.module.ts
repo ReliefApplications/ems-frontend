@@ -27,6 +27,7 @@ import {
   KendoTranslationService,
   AuthInterceptorService,
   AppAbility,
+  FormService,
 } from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -59,19 +60,26 @@ import {
 // Sentry
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular-ivy';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { library } from '@fortawesome/fontawesome-svg-core';
 
 /**
- * Initialize authentication in the platform.
- * Configuration in environment file.
- * Use oAuth
+ * Initialize application.
+ * Setup oAuth configuration.
+ * Initialize form builder.
  *
  * @param oauth OAuth Service
+ * @param formService Shared form service
  * @returns oAuth configuration
  */
-const initializeAuth =
-  (oauth: OAuthService): any =>
+const initializeApp =
+  (oauth: OAuthService, formService: FormService): any =>
   () => {
     oauth.configure(environment.authConfig);
+    formService.initialize();
+    // Add fa icon font to check in the application
+    library.add(fas, fab);
   };
 
 /**
@@ -115,9 +123,9 @@ export const httpTranslateLoader = (http: HttpClient) =>
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeAuth,
+      useFactory: initializeApp,
       multi: true,
-      deps: [OAuthService],
+      deps: [OAuthService, FormService],
     },
     {
       provide: MessageService,

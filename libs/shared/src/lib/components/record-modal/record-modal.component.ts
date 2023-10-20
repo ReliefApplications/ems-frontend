@@ -61,7 +61,7 @@ interface DialogData {
   ],
   selector: 'shared-record-modal',
   templateUrl: './record-modal.component.html',
-  styleUrls: ['./record-modal.component.scss'],
+  styleUrls: ['../../style/survey.scss', './record-modal.component.scss'],
 })
 export class RecordModalComponent
   extends UnsubscribeComponent
@@ -256,13 +256,6 @@ export class RecordModalComponent
    */
   public onEdit(): void {
     this.dialogRef.close(true as any);
-  }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
   }
 
   /**
