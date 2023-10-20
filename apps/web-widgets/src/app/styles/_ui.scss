@@ -50,8 +50,7 @@
 
 // Even if the fonts are loaded in the document, the class should be explicitly placed inside the shadow dom in order to make the icons work
 // https://github.com/google/material-design-icons/issues/1165#issuecomment-1030705931
-.material-icons {
-  font-family: 'Material Icons';
+i.material-element {
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
@@ -63,4 +62,13 @@
   word-wrap: normal;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
+  &.material-icons {
+    font-family: 'Material Icons';
+  }
+  &.material-icons-outlined {
+    font-family: 'Material Icons Outlined';
+  }
+  &.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+  }
 }
