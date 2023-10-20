@@ -22,3 +22,8 @@
 .material-icons-outlined {
   overflow: hidden;
 }
+
+// add to host class
+:host, i {
+  @apply flex items-center;
+}
