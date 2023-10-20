@@ -158,9 +158,13 @@ export class FilterRowComponent
         /** If type undefined, use as default 'eq' operator and not undefined. */
         this.form
           .get('operator')
-          ?.setValue(type?.defaultOperator ?? FILTER_OPERATORS[0].value);
+          ?.setValue(type?.defaultOperator ?? FILTER_OPERATORS[0].value, {
+            emitEvent: false,
+          });
       } else {
-        this.form.get('operator')?.setValue(this.form.value.operator);
+        this.form
+          .get('operator')
+          ?.setValue(this.form.value.operator, { emitEvent: false });
       }
       // set operator template
       this.setEditor(this.field);

@@ -7,6 +7,7 @@ import {
   ViewChild,
   Renderer2,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 import {
   trigger,
@@ -44,7 +45,7 @@ import { CdkAccordionItem } from '@angular/cdk/accordion';
     ]),
   ],
 })
-export class ExpansionPanelComponent implements AfterViewInit {
+export class ExpansionPanelComponent implements AfterViewInit, OnDestroy {
   /** Boolean indicating whether to display an icon. */
   @Input() displayIcon = true;
   /** Boolean indicating whether the component is disabled. */
@@ -59,6 +60,8 @@ export class ExpansionPanelComponent implements AfterViewInit {
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
   /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
+
+  private expansionCloseTimeoutListener!: NodeJS.Timeout;
 
   /**
    * UI Panel Expansion constructor
@@ -77,7 +80,10 @@ export class ExpansionPanelComponent implements AfterViewInit {
    * Function detects on close and emit
    */
   onClosed() {
-    setTimeout(() => {
+    if (this.expansionCloseTimeoutListener) {
+      clearTimeout(this.expansionCloseTimeoutListener);
+    }
+    this.expansionCloseTimeoutListener = setTimeout(() => {
       this.renderer.addClass(this.contentContainer.nativeElement, 'hidden');
     }, 100);
     this.closePanel.emit(true);
@@ -90,5 +96,11 @@ export class ExpansionPanelComponent implements AfterViewInit {
   onOpened() {
     this.renderer.removeClass(this.contentContainer.nativeElement, 'hidden');
     this.renderer.addClass(this.contentContainer.nativeElement, 'block');
+  }
+
+  ngOnDestroy(): void {
+    if (this.expansionCloseTimeoutListener) {
+      clearTimeout(this.expansionCloseTimeoutListener);
+    }
   }
 }
