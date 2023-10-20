@@ -210,7 +210,7 @@
         <!-- === AXES PARAMETERS === -->
         <ui-expansion-panel
           formGroupName="axes"
-          *ngIf="['bar', 'column'].includes(type.name)"
+          *ngIf="['bar', 'column', 'line'].includes(type.name)"
           [index]="4"
         >
           <ng-container ngProjectAs="title">
@@ -251,7 +251,7 @@
           <!-- === Y AXIS PARAMETERS === -->
           <ng-container
             formGroupName="y"
-            *ngIf="['column'].includes(type.name)"
+            *ngIf="['column', 'line'].includes(type.name)"
           >
             <h3>
               {{ 'components.widget.settings.chart.yAxis' | translate }}
@@ -268,6 +268,16 @@
                   [placeholder]="'common.auto' | translate"
                 />
               </div>
+              <div *ngIf="['line'].includes(type.name)" uiFormFieldDirective>
+                <label>Steps</label>
+                <ui-select-menu formControlName="minSteps">
+                  <ui-select-option
+                    [value]="50"
+                  >
+                    10
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
             </div>
             <div class="axis-container">
               <ui-toggle formControlName="enableMax"></ui-toggle>
@@ -280,6 +290,16 @@
                   type="number"
                   [placeholder]="'common.auto' | translate"
                 />
+              </div>
+              <div *ngIf="['line'].includes(type.name)" uiFormFieldDirective>
+                <label>Steps</label>
+                <ui-select-menu formControlName="maxSteps">
+                  <ui-select-option
+                    [value]="50"
+                  >
+                    50
+                  </ui-select-option>
+                </ui-select-menu>
               </div>
             </div>
           </ng-container>

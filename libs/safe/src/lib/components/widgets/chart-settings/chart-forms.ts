@@ -124,11 +124,27 @@ export const createChartForm = (value: any) => {
             disabled: !get(axes, 'y.enableMin', false),
           },
         ],
+        minSteps: [
+          {
+            value: get(axes, 'y.enableMin', false)
+              ? get(axes, 'y.minSteps', null)
+              : null,
+            disabled: !get(axes, 'y.enableMin', false),
+          },
+        ],
         enableMax: [get(axes, 'y.enableMax', false)],
         max: [
           {
             value: get(axes, 'y.enableMax', false)
               ? get(axes, 'y.max', null)
+              : null,
+            disabled: !get(axes, 'y.enableMax', false),
+          },
+        ],
+        maxSteps: [
+          {
+            value: get(axes, 'y.enableMax', false)
+              ? get(axes, 'y.maxSteps', null)
               : null,
             disabled: !get(axes, 'y.enableMax', false),
           },
@@ -205,18 +221,22 @@ export const createChartForm = (value: any) => {
     if (value) {
       formGroup.get('axes.y.min')?.setValue(0);
       formGroup.get('axes.y.min')?.enable();
+      formGroup.get('axes.y.minSteps')?.enable();
     } else {
       formGroup.get('axes.y.min')?.setValue(null);
       formGroup.get('axes.y.min')?.disable();
+      formGroup.get('axes.y.minSteps')?.disable();
     }
   });
   formGroup.get('axes.y.enableMax')?.valueChanges.subscribe((value) => {
     if (value) {
       formGroup.get('axes.y.max')?.setValue(100);
       formGroup.get('axes.y.max')?.enable();
+      formGroup.get('axes.y.maxSteps')?.enable();
     } else {
       formGroup.get('axes.y.max')?.setValue(null);
       formGroup.get('axes.y.max')?.disable();
+      formGroup.get('axes.y.maxSteps')?.disable();
     }
   });
 
