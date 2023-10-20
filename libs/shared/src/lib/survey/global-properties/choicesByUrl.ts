@@ -1,10 +1,11 @@
-import { isNil, set } from 'lodash';
-import jsonpath from 'jsonpath';
 import {
   ChoicesRestful,
   QuestionSelectBase,
+  Serializer,
   SurveyModel,
-} from 'survey-angular';
+} from 'survey-core';
+import { isNil, set } from 'lodash';
+import jsonpath from 'jsonpath';
 
 type ExtendedChoicesRestful = ChoicesRestful & {
   /** If the request should be a POST request */
@@ -35,6 +36,7 @@ const DEFAULT_PROPERTIES = [
 /** Class used internally by surveyJS, but not exported */
 class XmlParser {
   private parser = new DOMParser();
+
   // eslint-disable-next-line jsdoc/require-jsdoc
   public assignValue(target: any, name: string, value: any) {
     if (Array.isArray(target[name])) {
@@ -51,6 +53,7 @@ class XmlParser {
       target[name] = value;
     }
   }
+
   // eslint-disable-next-line jsdoc/require-jsdoc
   public xml2Json(xmlNode: any, result: any) {
     if (xmlNode.children && xmlNode.children.length > 0) {
@@ -64,6 +67,7 @@ class XmlParser {
       this.assignValue(result, xmlNode.nodeName, xmlNode.textContent);
     }
   }
+
   // eslint-disable-next-line jsdoc/require-jsdoc
   public parseXmlString(xmlString: string) {
     const xmlRoot = this.parser.parseFromString(xmlString, 'text/xml');
@@ -76,10 +80,9 @@ class XmlParser {
 /**
  * Overwrite some ChoicesRestful methods to allow POST requests
  *
- * @param Survey Survey instance
  */
-export const init = (Survey: any): void => {
-  Survey.Serializer.addProperty('selectBase', {
+export const init = (): void => {
+  Serializer.addProperty('selectBase', {
     name: 'detectionHelper:expression',
     category: 'choicesByUrl',
     visible: false,
@@ -103,19 +106,19 @@ export const init = (Survey: any): void => {
     },
   });
 
-  Survey.Serializer.addProperty('selectBase', {
+  Serializer.addProperty('selectBase', {
     name: 'usePost:boolean',
     displayName: 'Use POST',
     category: 'choicesByUrl',
   });
 
-  Survey.Serializer.addProperty('selectBase', {
+  Serializer.addProperty('selectBase', {
     name: 'isGraphQL:boolean',
     displayName: 'Is GraphQL query',
     category: 'choicesByUrl',
   });
 
-  Survey.Serializer.addProperty('selectBase', {
+  Serializer.addProperty('selectBase', {
     name: 'requestBody:text',
     displayName: 'Body or query',
     category: 'choicesByUrl',
@@ -143,7 +146,7 @@ export const init = (Survey: any): void => {
    *
    * @param json Input json
    */
-  Survey.ChoicesRestful.prototype.setData = function (json: any) {
+  ChoicesRestful.prototype.setData = function (json: any) {
     this.clear();
 
     const properties = (this.getCustomPropertiesNames() ?? []).concat(
@@ -156,8 +159,12 @@ export const init = (Survey: any): void => {
     }
   };
 
-  /** @returns ChoicesRestful data, including new properties */
-  Survey.ChoicesRestful.prototype.getData = function () {
+  /**
+   * Get choices restful data
+   *
+   * @returns ChoicesRestful data, including new properties
+   */
+  (ChoicesRestful.prototype as any).getData = function () {
     if (this.isEmpty) return null;
     const res = {} as any;
     const properties = (this.getCustomPropertiesNames() ?? []).concat(
@@ -172,7 +179,7 @@ export const init = (Survey: any): void => {
   };
 
   /** Overwrites clear method, to also clear requestBody and usePost */
-  Survey.ChoicesRestful.prototype.clear = function () {
+  (ChoicesRestful.prototype as any).clear = function () {
     this.requestBody = '';
     this.usePost = false;
 
@@ -196,7 +203,9 @@ export const init = (Survey: any): void => {
    * @param result Result fetched from API
    * @returns Result after path is applied
    */
-  Survey.ChoicesRestful.prototype.getResultAfterPath = function (result: any) {
+  (ChoicesRestful.prototype as any).getResultAfterPath = function (
+    result: any
+  ) {
     if (!result) return result;
     if (!this.processedPath) return result;
     const paths = this.getPathes();
@@ -208,7 +217,7 @@ export const init = (Survey: any): void => {
   };
 
   /** Overwrites sendRequest to be able to make POST requests */
-  Survey.ChoicesRestful.prototype.sendRequest = function () {
+  (ChoicesRestful.prototype as any).sendRequest = function () {
     this.error = null;
 
     // Checks if the request body depends on other questions that have not been answered yet
@@ -230,7 +239,7 @@ export const init = (Survey: any): void => {
         : 'application/x-www-form-urlencoded'
     );
 
-    const options: RequestInit = {
+    const options: any = {
       headers,
     };
 
@@ -242,8 +251,8 @@ export const init = (Survey: any): void => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
-    if (Survey.ChoicesRestful.onBeforeSendRequest) {
-      Survey.ChoicesRestful.onBeforeSendRequest(this, { request: options });
+    if (ChoicesRestful.onBeforeSendRequest) {
+      ChoicesRestful.onBeforeSendRequest(this, { request: options });
     }
     this.beforeSendRequest();
 
@@ -270,7 +279,7 @@ export const init = (Survey: any): void => {
    * @param response Response from API
    * @returns Parsed response
    */
-  Survey.ChoicesRestful.prototype.parseResponse = function (response: any) {
+  (ChoicesRestful.prototype as any).parseResponse = function (response: any) {
     let parsedResponse;
     if (
       !!response &&

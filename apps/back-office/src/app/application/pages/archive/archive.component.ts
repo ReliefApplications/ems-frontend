@@ -35,7 +35,7 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
    * Workflow page component for application preview
    *
    * @param apollo Apollo service
-   * @param applicationService SafeApplicationService
+   * @param applicationService Shared ApplicationService
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param previewService Shared preview service

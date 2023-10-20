@@ -2,10 +2,13 @@
   <ui-tab>
     <ng-container ngProjectAs="label">
       <ui-icon icon="tab" [size]="24" uiTooltip="Tabs"> </ui-icon>
-      <span>Tabs</span>
+      <span>{{ 'common.tabs' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-main [formGroup]="widgetForm"></shared-tab-main>
+      <shared-tab-main
+        class="flex flex-col h-full"
+        [formGroup]="widgetForm"
+      ></shared-tab-main>
     </ng-template>
   </ui-tab>
   <ui-tab>

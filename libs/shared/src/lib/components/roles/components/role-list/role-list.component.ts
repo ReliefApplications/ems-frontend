@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { FormBuilder } from '@angular/forms';
 
 /**
  * This component is used to display the back-office roles tab
@@ -38,11 +39,8 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
   // === FILTERS ===
-  public filters = [
-    { id: 'title', value: '' },
-    { id: 'usersCount', value: '' },
-  ];
   public showFilters = false;
+  form = this.fb.group({});
   public searchText = '';
   public usersFilter = '';
 
@@ -62,6 +60,7 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
    * translate the text in the application.
    * @param router Angular router
    * @param activatedRoute Current Angular route
+   * @param fb Angular form builder
    */
   constructor(
     public dialog: Dialog,
@@ -71,7 +70,8 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -251,18 +251,13 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Applies filters to the list of roles on event
    *
-   * @param column Name of the column where the filtering happens
-   * @param event The event
+   * @param event event
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'usersCount') {
-      this.usersFilter = event.target
-        ? event.target.value.trim().toLowerCase()
-        : '';
+  applyFilter(event: any): void {
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
     } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
+      this.searchText = '';
     }
     this.filterPredicate();
   }
@@ -271,9 +266,8 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
    * Clear all the filters
    */
   clearAllFilters(): void {
-    this.searchText = '';
     this.usersFilter = '';
-    this.applyFilter('', null);
+    this.form.reset();
   }
 
   /**

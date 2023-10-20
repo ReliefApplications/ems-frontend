@@ -23,10 +23,15 @@ export class GroupStageComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Input decorator for form. */
   @Input() form!: AbstractControl;
+  /** Input decorator for fields. */
   @Input() fields: any[] = [];
+  /** Public variable for operators. */
   public operators = Accumulators;
+  /** Public variable for date operators. */
   public dateOperators = DateOperators;
+  /** Array to hold the used date fields. */
   public usedDateFields: string[] = [];
 
   /** @returns this for as form group */
@@ -57,6 +62,7 @@ export class GroupStageComponent
     super();
   }
 
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.getDateFields(this.groupBy.value);
     this.groupBy.valueChanges

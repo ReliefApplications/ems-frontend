@@ -10,15 +10,18 @@ import {
   Renderer2,
   ViewChild,
   ViewChildren,
+  ViewContainerRef,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { SidenavDirective } from './sidenav.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { filter } from 'rxjs/operators';
+import { UILayoutService } from './layout/layout.service';
 
 /**
  * UI Sidenav component
+ * Sidenav is a UI component that displays a drawer on the side of the screen.
  */
 @Component({
   selector: 'ui-sidenav-container',
@@ -26,17 +29,31 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./sidenav-container.component.scss'],
 })
 export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
+  /** A list of SidenavDirective children. */
   @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
+  /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
+  /** A list of side navigation menus. */
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
+  /** Reference to the content wrapper. */
   @ViewChild('contentWrapper') contentWrapper!: ElementRef;
+  @ViewChild('fixedWrapperActions', { read: ViewContainerRef })
+  fixedWrapperActions?: ViewContainerRef;
 
+  /** Array indicating whether each side navigation menu should be shown. */
   public showSidenav: boolean[] = [];
+  /** Array indicating the mode of each side navigation menu. */
   public mode: SidenavTypes[] = [];
+  /** Array indicating the position of each side navigation menu. */
   public position: SidenavPositionTypes[] = [];
+  /** Array indicating whether each side navigation menu is visible. */
   public visible: boolean[] = [];
+  /** Subject to emit when the component is destroyed. */
   private destroy$ = new Subject<void>();
+  /** Array of classes for animations. */
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
+  /** Should display fixed wrapper at bottom */
+  fixedWrapperActionExist = false;
 
   /** @returns height of element */
   get height() {
@@ -63,15 +80,30 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * @param cdr ChangeDetectorRef
    * @param el elementRef
    * @param router Angular router
+   * @param layoutService Layout service that handles view injection of the fixed wrapper actions if exists
    */
   constructor(
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
     public el: ElementRef,
-    private router: Router
+    private router: Router,
+    private layoutService: UILayoutService
   ) {}
 
   ngAfterViewInit() {
+    this.layoutService.fixedWrapperActions$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((view) => {
+        if (view && this.fixedWrapperActions) {
+          this.fixedWrapperActionExist = true;
+          this.fixedWrapperActions.createEmbeddedView(view);
+        } else {
+          if (this.fixedWrapperActions) {
+            this.fixedWrapperActionExist = false;
+            this.fixedWrapperActions.clear();
+          }
+        }
+      });
     // Listen to router events to auto scroll to top of the view
     this.router.events
       .pipe(
@@ -133,6 +165,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       );
     }
   }
+
   /**
    * Resolve sidenav classes by given properties
    *

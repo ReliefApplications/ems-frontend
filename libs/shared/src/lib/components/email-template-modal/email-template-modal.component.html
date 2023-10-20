@@ -1,8 +1,8 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{ 'components.templates.select.email' | translate }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
@@ -20,7 +20,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button uiDialogClose variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

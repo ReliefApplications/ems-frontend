@@ -1,14 +1,14 @@
-import * as SurveyCreator from 'survey-creator';
+import { QuestionSelectBase, Question } from '../types';
 import {
-  JsonMetadata,
-  SurveyModel,
-  Serializer,
   ItemValue,
-} from 'survey-angular';
-import { DomService } from '../../services/dom/dom.service';
+  JsonMetadata,
+  Serializer,
+  SurveyModel,
+  surveyLocalization,
+} from 'survey-core';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
-import { ReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
-import { Question, QuestionSelectBase } from '../types';
+import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
+import { registerCustomPropertyEditor } from '../components/utils/component-register';
 
 /**
  * Check if a question is of select type
@@ -22,26 +22,24 @@ const isSelectQuestion = (question: Question): boolean =>
 /**
  * Add support for custom properties to the survey
  *
- * @param Survey Survey library
- * @param domService Dom service.
  * @param referenceDataService Reference data service
  */
-export const init = (
-  Survey: any,
-  domService: DomService,
-  referenceDataService: ReferenceDataService
-): void => {
+export const init = (referenceDataService: ReferenceDataService): void => {
   // declare the serializer
-  const serializer: JsonMetadata = Survey.Serializer;
+  const serializer: JsonMetadata = Serializer;
 
   for (const type of ['tagbox', 'dropdown']) {
     // add properties
     serializer.addProperty(type, {
       name: 'referenceData',
       category: 'Choices from Reference data',
-      type: 'referenceDataDropdown',
+      type: CustomPropertyGridComponentTypes.referenceDataDropdown,
       visibleIndex: 1,
     });
+
+    registerCustomPropertyEditor(
+      CustomPropertyGridComponentTypes.referenceDataDropdown
+    );
 
     serializer.addProperty(type, {
       displayName: 'Display field',
@@ -91,9 +89,9 @@ export const init = (
         obj: null | QuestionSelectBase,
         choicesCallback: (choices: any[]) => void
       ) => {
-        const defaultOption = new Survey.ItemValue(
+        const defaultOption = new ItemValue(
           '',
-          SurveyCreator.localization.getString('pe.conditionSelectQuestion')
+          surveyLocalization.getString('pe.conditionSelectQuestion')
         );
         const survey = obj?.survey as SurveyModel;
         if (!survey) return choicesCallback([defaultOption]);
@@ -104,7 +102,7 @@ export const init = (
           .filter((question) => question.referenceData);
         const qItems = questions.map((q) => {
           const text = q.locTitle.renderedHtml || q.name;
-          return new Survey.ItemValue(q.name, text);
+          return new ItemValue(q.name, text);
         });
         qItems.sort((el1, el2) => el1.text.localeCompare(el2.text));
         qItems.unshift(defaultOption);
@@ -188,26 +186,6 @@ export const init = (
       },
     });
   }
-
-  // custom editor for the reference data dropdown
-  const referenceDataEditor = {
-    render: (editor: any, htmlElement: HTMLElement) => {
-      const question = editor.object as QuestionSelectBase;
-      const dropdown = domService.appendComponentToBody(
-        ReferenceDataDropdownComponent,
-        htmlElement
-      );
-      const instance: ReferenceDataDropdownComponent = dropdown.instance;
-      instance.referenceData = question.referenceData || '';
-      instance.control.valueChanges.subscribe((value) =>
-        editor.onChanged(value)
-      );
-    },
-  };
-  SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-    'referenceDataDropdown',
-    referenceDataEditor
-  );
 };
 
 /**

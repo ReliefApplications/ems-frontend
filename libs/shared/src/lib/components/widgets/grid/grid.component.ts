@@ -19,6 +19,7 @@ import {
   Output,
   EventEmitter,
   Inject,
+  TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -66,6 +67,7 @@ export class GridWidgetComponent
   // === TEMPLATE REFERENCE ===
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   // === DATA ===
   @Input() widget: any;
@@ -551,6 +553,7 @@ export class GridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @returns Promise resolving when execution done
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],

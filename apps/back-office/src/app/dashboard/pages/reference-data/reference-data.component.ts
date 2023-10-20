@@ -33,6 +33,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
 import { SnackbarService, TextareaComponent } from '@oort-front/ui';
+import { GraphQLError } from 'graphql';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -123,7 +124,11 @@ export class ReferenceDataComponent
     super();
   }
 
-  /** @returns the reference data group form */
+  /**
+   * Build Reference data form group
+   *
+   * @returns Reference data form group
+   */
   private getRefDataForm() {
     const form = new FormGroup({
       name: new FormControl(this.referenceData?.name, Validators.required),
@@ -318,41 +323,51 @@ export class ReferenceDataComponent
       })
       .subscribe({
         next: ({ errors, data, loading }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant(
-                    'common.referenceData.one'
-                  ),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant(
-                      'common.referenceData.one'
-                    ),
-                    value: '',
-                  }
-                )
-              );
-              this.referenceData = data.editReferenceData;
-              this.loading = loading;
-            }
-          }
+          this.handleEditReferenceDataResponse(data, errors, loading);
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handles the reference data mutation response
+   *
+   * @param {EditReferenceDataMutationResponse} data save mutation data
+   * @param {GraphQLError[]} errors save mutation errors
+   * @param {boolean} loading save mutation loading state
+   * @param {boolean} usingForm if saved data comes from the reference data form
+   */
+  private handleEditReferenceDataResponse(
+    data: EditReferenceDataMutationResponse | null | undefined,
+    errors: readonly GraphQLError[] | undefined,
+    loading: boolean,
+    usingForm: boolean = false
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translateService.instant('common.notifications.objectNotUpdated', {
+          type: this.translateService.instant('common.referenceData.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      if (data) {
+        this.snackBar.openSnackBar(
+          this.translateService.instant('common.notifications.objectUpdated', {
+            type: this.translateService.instant('common.referenceData.one'),
+            value: '',
+          })
+        );
+        this.referenceData = data.editReferenceData;
+      }
+      if (usingForm) {
+        this.referenceForm.markAsPristine();
+      }
+    }
+    this.loading = loading;
   }
 
   /**
@@ -408,25 +423,7 @@ export class ReferenceDataComponent
       })
       .subscribe({
         next: ({ errors, data, loading }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant(
-                    'common.referenceData.one'
-                  ),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
-              { error: true }
-            );
-            this.loading = false;
-          } else {
-            this.referenceData = data?.editReferenceData;
-            this.referenceForm.markAsPristine();
-            this.loading = loading || false;
-          }
+          this.handleEditReferenceDataResponse(data, errors, loading, true);
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -459,9 +456,7 @@ export class ReferenceDataComponent
           valueFieldsCopy.push(value.trim());
           this.valueFields = valueFieldsCopy;
         }
-        this.referenceForm?.get('fields')?.setValue(this.valueFields);
-        this.referenceForm?.get('fields')?.updateValueAndValidity();
-        this.referenceForm?.markAsDirty();
+        this.setReferenceFormValue();
         // Reset the input value
         if (input) {
           input.value = '';
@@ -469,6 +464,15 @@ export class ReferenceDataComponent
       },
       event.type === 'focusout' ? 500 : 0
     );
+  }
+
+  /**
+   * Update reference form value programmatically with the current value fields
+   */
+  private setReferenceFormValue() {
+    this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    this.referenceForm?.get('fields')?.updateValueAndValidity();
+    this.referenceForm?.markAsDirty();
   }
 
   /**
@@ -484,9 +488,7 @@ export class ReferenceDataComponent
       valueFieldsCopy.splice(index, 1);
       this.valueFields = valueFieldsCopy;
     }
-    this.referenceForm?.get('fields')?.setValue(this.valueFields);
-    this.referenceForm?.get('fields')?.updateValueAndValidity();
-    this.referenceForm?.markAsDirty();
+    this.setReferenceFormValue();
   }
 
   /**

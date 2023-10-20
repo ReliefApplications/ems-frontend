@@ -1,28 +1,34 @@
 import { DomService } from '../../services/dom/dom.service';
-import {
-  DatePickerComponent,
-  DateTimePickerComponent,
-  TimePickerComponent,
-} from '@progress/kendo-angular-dateinputs';
-import * as SurveyCreator from 'survey-creator';
+
 import { EmbeddedViewRef } from '@angular/core';
-import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
-
-type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
+import {
+  CustomWidgetCollection,
+  JsonMetadata,
+  Serializer,
+  SurveyModel,
+} from 'survey-core';
+import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
+import { registerCustomPropertyEditor } from '../components/utils/component-register';
+import {
+  DateInputFormat,
+  createPickerInstance,
+  getDateDisplay,
+  setDateValue,
+} from '../components/utils/create-picker-instance';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
  *
- * @param Survey Survey library
  * @param domService Shared DOM service
+ * @param customWidgetCollectionInstance CustomWidgetCollection * @param document Document
  * @param document Document
  */
 export const init = (
-  Survey: any,
   domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
   const widget = {
@@ -30,7 +36,7 @@ export const init = (
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'text',
     init: (): void => {
-      const serializer: JsonMetadata = Survey.Serializer;
+      const serializer: JsonMetadata = Serializer;
       // hide the min and max property for date, datetime and time types
       serializer.getProperty('text', 'min').visibleIf = (obj: QuestionText) =>
         ['number', 'month', 'week'].includes(obj.inputType || '');
@@ -39,7 +45,7 @@ export const init = (
       // create new min and max properties for date, datetime and time types
       serializer.addProperty('text', {
         name: 'dateMin',
-        type: 'date',
+        type: CustomPropertyGridComponentTypes.dateTypeDisplayer,
         category: 'general',
         visibleIndex: 8,
         dependsOn: 'inputType',
@@ -59,7 +65,7 @@ export const init = (
       });
       serializer.addProperty('text', {
         name: 'dateMax',
-        type: 'date',
+        type: CustomPropertyGridComponentTypes.dateTypeDisplayer,
         category: 'general',
         visibleIndex: 9,
         dependsOn: 'inputType',
@@ -78,50 +84,8 @@ export const init = (
         },
       });
       // register the editor for type "date" with kendo date picker
-      const dateEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const question = editor.object as QuestionText;
-          let pickerDiv: HTMLDivElement | null = null;
-          const updatePickerInstance = () => {
-            if (pickerDiv) {
-              pickerDiv.remove();
-            }
-            htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
-            pickerDiv = document.createElement('div');
-            const pickerInstance = createPickerInstance(
-              question.inputType as DateInputFormat,
-              pickerDiv
-            );
-            if (pickerInstance) {
-              if (question[editor.property.name as keyof QuestionText]) {
-                pickerInstance.value = getDateDisplay(
-                  question[editor.property.name as keyof QuestionText],
-                  question.inputType
-                );
-              }
-              pickerInstance.registerOnChange((value: Date | null) => {
-                if (value) {
-                  editor.onChanged(setDateValue(value, question.inputType));
-                } else {
-                  editor.onChanged(null);
-                }
-              });
-            }
-            htmlElement.appendChild(pickerDiv);
-          };
-          question.registerFunctionOnPropertyValueChanged(
-            'inputType',
-            updatePickerInstance,
-            // eslint-disable-next-line no-underscore-dangle
-            editor.property_.name // a unique key to distinguish multiple date properties
-          );
-          // Init
-          updatePickerInstance();
-        },
-      };
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'date',
-        dateEditor
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.dateTypeDisplayer
       );
     },
     isDefaultRender: true,
@@ -130,7 +94,6 @@ export const init = (
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
         el.parentElement?.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
-
         // Remove the picker div whenever we switch question type, so it is not duplicated
         if (pickerDiv) {
           pickerDiv.remove();
@@ -141,9 +104,11 @@ export const init = (
           )
         ) {
           pickerDiv = document.createElement('div');
+          pickerDiv.classList.add('flex', 'min-h-[36px]');
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
-            pickerDiv
+            pickerDiv,
+            domService
           );
 
           if (pickerInstance) {
@@ -157,7 +122,9 @@ export const init = (
               '!outline-none',
               '!hidden',
               '!min-w-0',
-              '!px-2'
+              '!px-2',
+              'top-0',
+              'bottom-0'
             );
 
             const icon = domService.appendComponentToBody(
@@ -239,6 +206,7 @@ export const init = (
             );
           }
         } else {
+          el.classList.add('flex-1', 'min-h-[36px]');
           el.style.display = 'initial';
         }
       };
@@ -328,89 +296,5 @@ export const init = (
     },
   };
 
-  /**
-   * Get date for input display.
-   *
-   * @param value question value
-   * @param inputType question input type
-   * @returns formatted date
-   */
-  const getDateDisplay = (value: any, inputType: string): Date => {
-    const date = new Date(value);
-    if (inputType === 'time') {
-      return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-    } else {
-      return date;
-    }
-  };
-
-  /**
-   * Set date for question / parameter value
-   *
-   * @param value input value
-   * @param inputType question input type
-   * @returns formatted date
-   */
-  const setDateValue = (value: Date, inputType: string): Date | string => {
-    if (inputType === 'time') {
-      // for time fields, translate the date to UTC
-      return new Date(
-        Date.UTC(1970, 0, 1, value.getHours(), value.getMinutes())
-      );
-    } else {
-      return value.toISOString();
-    }
-  };
-
-  /**
-   * It creates a date, datetime or time picker instance based on the input type
-   *
-   * @param inputType - The type of the input element.
-   * @param element - The element that the directive is attached to.
-   * @returns The picker instance, or null if the type is not allowed
-   */
-  const createPickerInstance = (
-    inputType: DateInputFormat,
-    element: any
-  ):
-    | DatePickerComponent
-    | DateTimePickerComponent
-    | TimePickerComponent
-    | null => {
-    switch (inputType) {
-      case 'date':
-        const datePicker = domService.appendComponentToBody(
-          DatePickerComponent,
-          element
-        );
-        const datePickerInstance: DatePickerComponent = datePicker.instance;
-        datePickerInstance.format = 'dd/MM/yyyy';
-        return datePickerInstance;
-      case 'datetime':
-      case 'datetime-local':
-        const dateTimePicker = domService.appendComponentToBody(
-          DateTimePickerComponent,
-          element
-        );
-        const dateTimePickerInstance: DateTimePickerComponent =
-          dateTimePicker.instance;
-        dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
-        return dateTimePickerInstance;
-      case 'time':
-        const timePicker = domService.appendComponentToBody(
-          TimePickerComponent,
-          element
-        );
-        const timePickerInstance: TimePickerComponent = timePicker.instance;
-        timePickerInstance.format = 'HH:mm';
-        return timePickerInstance;
-      default:
-        return null;
-    }
-  };
-
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

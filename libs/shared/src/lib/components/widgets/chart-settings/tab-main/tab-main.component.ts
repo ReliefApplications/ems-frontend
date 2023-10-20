@@ -40,6 +40,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
 
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
+
   /**
    * Get the selected chart type object
    *

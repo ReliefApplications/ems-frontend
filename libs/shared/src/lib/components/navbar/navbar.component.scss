@@ -61,6 +61,14 @@
       display: block;
     }
   }
+  .eye-icon {
+    display: flex;
+  }
+  &:hover {
+    .eye-icon {
+      display: none;
+    }
+  }
 }
 
 .nav-item-handle {
@@ -68,8 +76,8 @@
 }
 
 .app-sidenav-add-page {
-  // Subtracts topbar, sub-topbar, header and add-page height
-  max-height: calc(100vh - 64px - 60px - 48px - 84px);
+  // Subtracts topbar, header and add-page height
+  max-height: calc(100vh - 64px - 48px - 84px);
   overflow: auto;
 }
 
@@ -80,8 +88,8 @@
 }
 
 .app-sidenav {
-  // Subtracts topbar, sub-topbar, header height
-  max-height: calc(100vh - 64px - 60px - 48px);
+  // Subtracts topbar, header height
+  max-height: calc(100vh - 64px - 48px);
   overflow: hidden;
 }
 

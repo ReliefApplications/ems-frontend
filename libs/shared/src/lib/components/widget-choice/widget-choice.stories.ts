@@ -7,6 +7,7 @@ import { StorybookTranslateModule } from '../storybook-translate/storybook-trans
 
 export default {
   component: WidgetChoiceComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [
@@ -32,7 +33,7 @@ export default {
  * @param args Parameters
  * @returns A story component
  */
-const TEMPLATE: StoryFn<sharedWidgetChoiceComponent> = (args) => ({
+const TEMPLATE: StoryFn<WidgetChoiceComponent> = (args) => ({
   props: {
     ...args,
   },

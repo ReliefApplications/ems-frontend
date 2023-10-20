@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { LegendDefinition } from '../interfaces/layer-legend.type';
-import { IconDisplayModule } from '../../../../pipes/icon-display/icon-display.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, IconModule, TooltipModule } from '@oort-front/ui';
 
@@ -15,7 +14,6 @@ import { ButtonModule, IconModule, TooltipModule } from '@oort-front/ui';
     CommonModule,
     IconModule,
     ButtonModule,
-    IconDisplayModule,
     TranslateModule,
     TooltipModule,
   ],

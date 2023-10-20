@@ -1,13 +1,13 @@
 <ui-dialog size="medium">
   <!-- Modal header -->
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         data.pullJob
           ? ('models.pullJob.edit' | translate)
           : ('models.pullJob.new' | translate)
       }}
-    </h1>
+    </h3>
   </ng-container>
 
   <!-- Modal content -->
@@ -262,7 +262,9 @@
   </ng-container>
   <!-- Modal actions -->
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
@@ -278,15 +280,5 @@
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <div uiChipList>
-    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
-      {{ 'common.status_active' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
-      {{ 'common.status_pending' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
-      {{ 'common.status_archived' | translate | titlecase }}
-    </ui-chip>
-  </div>
+  <shared-status-options [status]="status"></shared-status-options>
 </ng-template>

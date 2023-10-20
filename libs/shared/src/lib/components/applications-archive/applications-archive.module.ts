@@ -7,6 +7,7 @@ import {
   FormWrapperModule,
   IconModule,
   DividerModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { DateModule } from '../../pipes/date/date.module';
@@ -14,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule, MenuModule } from '@oort-front/ui';
+import { ListFilterComponent } from '../list-filter/list-filter.component';
 
 /**
  * Shared Applications Archive module
@@ -33,6 +35,8 @@ import { ButtonModule, MenuModule } from '@oort-front/ui';
     DateModule,
     TranslateModule,
     DividerModule,
+    ListFilterComponent,
+    TooltipModule,
   ],
   exports: [ApplicationsArchiveComponent],
 })

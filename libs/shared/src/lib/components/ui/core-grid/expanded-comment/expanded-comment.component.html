@@ -1,7 +1,7 @@
-<ui-dialog size="medium" [closable]="true">
+<ui-dialog size="medium">
   <!-- Title of the field -->
   <ng-container ngProjectAs="header">
-    <h1>{{ data.title }}</h1>
+    <h3 class="font-semibold">{{ data.title }}</h3>
   </ng-container>
   <!-- Edition of the field ( if available ), else, display of the value -->
   <ng-container ngProjectAs="content">
@@ -11,7 +11,7 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button [uiDialogClose]="null">
+    <ui-button [uiDialogClose]="null" variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

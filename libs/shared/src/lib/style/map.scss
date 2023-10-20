@@ -23,18 +23,16 @@
 ::ng-deep .leaflet-data-cluster {
   div {
     display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100%;
     border-radius: 50%;
     span {
       // display: block;
-      // position: absolute;
+      position: absolute;
       // inset: 0;
-      font-size: 14px;
       margin: auto;
-      color: white;
-      font-weight: 600;
-      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
-        1px 1px 0 #000;
+      // font-weight: 600;
       // text-align: center;
     }
   }

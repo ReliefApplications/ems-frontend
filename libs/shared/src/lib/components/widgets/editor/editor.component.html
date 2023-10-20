@@ -1,27 +1,4 @@
 <div class="h-full flex flex-col">
-  <kendo-tilelayout-item-header
-    *ngIf="header"
-    class="widget-header border-b"
-    [ngClass]="{
-      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
-    }"
-  >
-    <span class="widget-title" [title]="settings.title">{{
-      settings.title
-    }}</span>
-    <div class="flex">
-      <!-- Data source button -->
-      <ui-button
-        variant="primary"
-        icon="open_in_new"
-        (click)="openDataSource()"
-        *ngIf="settings.showDataSourceLink || false"
-      >
-        {{ 'components.widget.summaryCard.dataSource' | translate }}
-      </ui-button>
-    </div>
-  </kendo-tilelayout-item-header>
   <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
     <div class="w-full h-fit" (click)="onClick($event)">
       <shared-html-widget-content
@@ -31,3 +8,19 @@
     </div>
   </div>
 </div>
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings.title">{{
+    settings.title
+  }}</span>
+  <div class="flex">
+    <!-- Data source button -->
+    <ui-button
+      variant="primary"
+      icon="open_in_new"
+      (click)="openDataSource()"
+      *ngIf="settings.showDataSourceLink || false"
+    >
+      {{ 'components.widget.summaryCard.dataSource' | translate }}
+    </ui-button>
+  </div>
+</ng-template>

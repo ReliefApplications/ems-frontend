@@ -79,10 +79,10 @@ export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
    * Create a new channel linked to this application on close.
    */
   async onAdd(): Promise<void> {
-    const { AddChannelModalComponent } = await import(
-      './components/add-channel-modal/add-channel-modal.component'
+    const { ChannelModalComponent } = await import(
+      './components/channel-modal/channel-modal.component'
     );
-    const dialogRef = this.dialog.open(AddChannelModalComponent);
+    const dialogRef = this.dialog.open(ChannelModalComponent);
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addChannel(value);
@@ -96,10 +96,10 @@ export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
    * @param channel channel to edit
    */
   async onEdit(channel: Channel): Promise<void> {
-    const { EditChannelModalComponent } = await import(
-      './components/edit-channel-modal/edit-channel-modal.component'
+    const { ChannelModalComponent } = await import(
+      './components/channel-modal/channel-modal.component'
     );
-    const dialogRef = this.dialog.open(EditChannelModalComponent, {
+    const dialogRef = this.dialog.open(ChannelModalComponent, {
       data: {
         channel,
       },

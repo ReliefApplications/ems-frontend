@@ -78,17 +78,20 @@ export const EDIT_PAGE = gql`
   mutation editPage(
     $id: ID!
     $name: String
+    $icon: String
     $permissions: JSON
     $visible: Boolean
   ) {
     editPage(
       id: $id
       name: $name
+      icon: $icon
       permissions: $permissions
       visible: $visible
     ) {
       id
       name
+      icon
       visible
       permissions {
         canSee {
@@ -409,7 +412,9 @@ export const EDIT_APPLICATION = gql`
       status
       pages {
         id
+        icon
         name
+        visible
         createdAt
         type
         content

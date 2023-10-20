@@ -17,6 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 type CronType =
   | 'minutely'
@@ -84,6 +85,7 @@ function* range(start: number, end: number) {
 
 /**
  * UI CronEditor Component
+ * CronEditor is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.
  */
 @Component({
   selector: 'ui-cron-editor',
@@ -93,22 +95,30 @@ function* range(start: number, end: number) {
 export class CronEditorComponent
   implements OnInit, OnDestroy, ControlValueAccessor
 {
+  /** Subject to emit when the component is destroyed. */
   destroy$: Subject<boolean> = new Subject<boolean>();
+  /** Arrays representing seconds */
   public seconds = [...range(0, 59)];
+  /** Arrays representing minutes */
   public minutes = [...range(0, 59)];
+  /** Arrays representing hours */
   public hours = [...range(0, 23)];
-
+  /** Boolean indicating whether the component is disabled. */
   @Input() public disabled = false;
+  /** Options for the cron editor. */
   @Input() public options: CronOptions = DefaultCronOptions;
-
+  /** Event emitter for cron validation. */
   @Output() cronValidEmitter: EventEmitter<boolean> =
     new EventEmitter<boolean>();
-
+  /** The current value of the cron expression. */
   public value: string | undefined | null;
+  /** The currently active tab in the cron editor. */
   public activeTab!: string;
+  /** Options for select inputs in the cron editor. */
   public selectOptions = this.getSelectOptions();
-
+  /** Boolean indicating whether the component has been touched. */
   touched = false;
+  /** Form group for all form controls in the cron editor. */
   allForm = this.fb.group({
     cronType: [<CronType>'unknown', Validators.required],
     seconds: [0],
@@ -177,10 +187,12 @@ export class CronEditorComponent
    * Ui CronEditor constructor
    *
    * @param fb FormBuilder
+   * @param translate angular Translate service
    * @param ngControl Current control
    */
   constructor(
     private fb: FormBuilder,
+    private translate: TranslateService,
     @Optional() @Self() public ngControl: NgControl
   ) {
     if (this.ngControl != null) {
@@ -396,7 +408,7 @@ export class CronEditorComponent
    * @returns Days
    */
   public dayDisplay(day: string): string {
-    return Days[day];
+    return this.translate.instant(Days[day]);
   }
 
   /**
@@ -406,7 +418,7 @@ export class CronEditorComponent
    * @returns MonthWeeks
    */
   public monthWeekDisplay(monthWeekNumber: string): string {
-    return MonthWeeks[monthWeekNumber];
+    return this.translate.instant(MonthWeeks[monthWeekNumber]);
   }
 
   /**
@@ -416,7 +428,7 @@ export class CronEditorComponent
    * @returns Month
    */
   public monthDisplay(month: number): string {
-    return Months[month];
+    return this.translate.instant(Months[month]);
   }
 
   /**
@@ -427,11 +439,11 @@ export class CronEditorComponent
    */
   public monthDayDisplay(month: string): string {
     if (month === 'L') {
-      return 'Last Day';
+      return this.translate.instant('common.cronEditor.lastDay');
     } else if (month === 'LW') {
-      return 'Last Weekday';
+      return this.translate.instant('common.cronEditor.lastWeekDay');
     } else if (month === '1W') {
-      return 'First Weekday';
+      return this.translate.instant('common.cronEditor.firstWeekDay');
     } else {
       return `${month}${this.getOrdinalSuffix(month)}`;
     }

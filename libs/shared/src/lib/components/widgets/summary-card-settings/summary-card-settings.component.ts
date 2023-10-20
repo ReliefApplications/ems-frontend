@@ -27,6 +27,7 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_GRID_RESOURCE_META, GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 import { Form } from '../../../models/form.model';
+import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 
 // todo: put in common
 /** Default context filter value. */
@@ -76,23 +77,8 @@ const createSummaryCardForm = (def: any) => {
     contextFilters: new FormControl(
       get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
+    actions: createGridActionsFormGroup(settings),
     at: new FormControl(get(settings, 'at', '')),
-    actions: new FormGroup({
-      delete: new FormControl<boolean>(get(settings, 'actions.delete', true)),
-      history: new FormControl<boolean>(get(settings, 'actions.history', true)),
-      convert: new FormControl<boolean>(get(settings, 'actions.convert', true)),
-      update: new FormControl<boolean>(get(settings, 'actions.update', true)),
-      inlineEdition: new FormControl<boolean>(
-        get(settings, 'actions.inlineEdition', true)
-      ),
-      addRecord: new FormControl<boolean>(
-        get(settings, 'actions.addRecord', false)
-      ),
-      export: new FormControl<boolean>(get(settings, 'actions.export', true)),
-      showDetails: new FormControl<boolean>(
-        get(settings, 'actions.showDetails', true)
-      ),
-    }),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);

@@ -39,6 +39,7 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
 
   private tableWrapperElement!: HTMLDivElement;
   private destroy$ = new Subject<void>();
+
   /**
    * UI Table wrapper directive constructor
    *

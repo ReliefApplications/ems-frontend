@@ -22,11 +22,17 @@ export class ExpressionsComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Input decorator for form. */
   @Input() form!: UntypedFormGroup;
+  /** Input decorator for fields. */
   @Input() fields: any[] = [];
+  /** Input decorator for operators. */
   @Input() operators: any = DEFAULT_OPERATORS;
+  /** Input decorator for display field. */
   @Input() displayField = true;
+  /** Array to hold the list of operators. */
   public operatorsList: string[] = Object.values(this.operators);
+  /** Array to hold the list of no field operators. */
   public noFieldOperators = NO_FIELD_OPERATORS;
 
   /**
@@ -36,6 +42,7 @@ export class ExpressionsComponent
     super();
   }
 
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     if (this.displayField) {
       this.form
@@ -55,6 +62,11 @@ export class ExpressionsComponent
     }
   }
 
+  /**
+   * OnChanges lifecycle hook.
+   *
+   * @param changes SimpleChanges
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.operators && changes.operators.currentValue) {
       this.operatorsList = Object.values(this.operators);

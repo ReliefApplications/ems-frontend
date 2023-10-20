@@ -25,6 +25,7 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
+import { GraphQLError } from 'graphql';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -102,9 +103,11 @@ export class RecordsTabComponent
           showDeletedRecords: this.showDeletedRecords,
         },
       });
-    this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.recordsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -156,27 +159,51 @@ export class RecordsTabComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.record.one'),
-              })
-            );
-            this.fetchRecords(true);
-          }
+          this.handleRecordMutationResponse(
+            {
+              success: 'common.notifications.objectDeleted',
+              error: 'common.notifications.objectNotDeleted',
+            },
+            errors
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handle record mutation response
+   *
+   * @param messageKeys Message keys containing success or error response messages
+   * @param messageKeys.success success message key
+   * @param messageKeys.error error message key
+   * @param {GraphQLError[] | undefined} errors error array response if any
+   */
+  private handleRecordMutationResponse(
+    messageKeys: {
+      success: string;
+      error: string;
+    },
+    errors: readonly GraphQLError[] | undefined
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.error, {
+          value: this.translate.instant('common.record.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.success, {
+          value: this.translate.instant('common.record.one'),
+        })
+      );
+      this.fetchRecords(true);
+    }
   }
 
   /**
@@ -196,22 +223,13 @@ export class RecordsTabComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotRestored', {
-                type: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectRestored', {
-                type: this.translate.instant('common.record.one'),
-              })
-            );
-            this.fetchRecords(true);
-          }
+          this.handleRecordMutationResponse(
+            {
+              success: 'common.notifications.objectRestored',
+              error: 'common.notifications.objectNotRestored',
+            },
+            errors
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -260,6 +278,7 @@ export class RecordsTabComponent
       .concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }
+
   /**
    * Downloads the list of records of the resource.
    *
@@ -384,8 +403,8 @@ export class RecordsTabComponent
   private fetchRecords(refetch?: boolean): void {
     this.loading = true;
     const variables = {
-      id: this.resource.id,
       first: this.pageInfo.pageSize,
+      id: this.resource.id,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       display: false,
       showDeletedRecords: this.showDeletedRecords,

@@ -27,6 +27,7 @@ import { RadioComponent } from './radio.component';
 })
 class TestingComponent {
   public args: RadioComponent = new RadioComponent();
+
   /**
    * Init args name
    */

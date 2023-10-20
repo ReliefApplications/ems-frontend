@@ -23,5 +23,7 @@ export class TabComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const componentRef = this.content.createComponent(WidgetGridComponent);
     componentRef.setInput('widgets', this.structure);
+    /** To use angular hooks */
+    componentRef.changeDetectorRef.detectChanges();
   }
 }

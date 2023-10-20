@@ -1,7 +1,10 @@
 <!-- Add new tab -->
-<div class="flex justify-end">
-  <ui-button (click)="onAddTab($event)" category="secondary" variant="primary"
-    >Add a new tab</ui-button
+<div class="flex justify-end mb-4">
+  <ui-button
+    (click)="onAddTab($event)"
+    category="secondary"
+    variant="primary"
+    >{{ 'components.widget.settings.tabs.addNewTab' | translate }}</ui-button
   >
 </div>
 <!-- Available tabs -->
@@ -40,9 +43,11 @@
         </div>
       </div>
     </ng-container>
-    <shared-tab-settings
-      [tabGroup]="$any(tab)"
-      (delete)="onDeleteTab(i)"
-    ></shared-tab-settings>
+    <ng-template uiTabContent>
+      <shared-tab-settings
+        [tabGroup]="$any(tab)"
+        (delete)="onDeleteTab(i)"
+      ></shared-tab-settings>
+    </ng-template>
   </ui-tab>
 </ui-tabs>

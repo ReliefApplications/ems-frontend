@@ -1,76 +1,4 @@
 <div class="flex flex-col h-full">
-  <!-- Header -->
-  <kendo-tilelayout-item-header
-    *ngIf="header"
-    class="widget-header border-b h-[45px]"
-    [ngClass]="{
-      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
-    }"
-  >
-    <span class="widget-title" [title]="settings.title">{{
-      settings.title
-    }}</span>
-    <!-- Switch between grid and cards view -->
-    <div class="flex">
-      <!-- Searchbar -->
-      <div
-        *ngIf="
-          settings.widgetDisplay?.searchable &&
-          !settings.card?.aggregation &&
-          displayMode === 'cards'
-        "
-        class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
-      >
-        <kendo-textbox
-          class="!border-0 !shadow-none"
-          [placeholder]="'common.placeholder.search' | translate"
-          [formControl]="searchControl"
-          [clearButton]="true"
-        />
-      </div>
-
-      <!-- Sort selector -->
-      <ng-container *ngIf="sortFields.length > 0">
-        <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
-      </ng-container>
-      <!-- Data source button -->
-      <ui-button
-        class="!flex self-center"
-        variant="primary"
-        icon="open_in_new"
-        (click)="openDataSource()"
-        *ngIf="
-          (settings.card?.showDataSourceLink && displayMode === 'cards') ||
-          false
-        "
-      >
-        {{ 'components.widget.summaryCard.dataSource' | translate }}
-      </ui-button>
-      <ui-button
-        [isIcon]="true"
-        icon="grid_view"
-        [disabled]="displayMode === 'cards'"
-        (click)="changeDisplayMode('cards')"
-        [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
-      ></ui-button>
-      <ui-button
-        [isIcon]="true"
-        icon="view_list"
-        [disabled]="displayMode === 'grid'"
-        (click)="changeDisplayMode('grid')"
-        [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
-      ></ui-button>
-    </div>
-    <ui-button
-      *ngIf="export && displayMode === 'cards'"
-      [isIcon]="true"
-      icon="get_app"
-      class="text-neutral-700"
-      (click)="pdf.saveAs(exportName)"
-      [uiTooltip]="'common.export' | translate"
-    ></ui-button>
-  </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
     <!-- Export -->
@@ -147,4 +75,68 @@
       </ui-select-option>
     </ui-select-menu>
   </div>
+</ng-template>
+
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings.title">{{
+    settings.title
+  }}</span>
+  <!-- Switch between grid and cards view -->
+  <div class="flex">
+    <!-- Searchbar -->
+    <div
+      *ngIf="
+        settings.widgetDisplay?.searchable &&
+        !settings.card?.aggregation &&
+        displayMode === 'cards'
+      "
+      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
+    >
+      <kendo-textbox
+        class="!border-0 !shadow-none"
+        [placeholder]="'common.placeholder.search' | translate"
+        [formControl]="searchControl"
+        [clearButton]="true"
+      />
+    </div>
+
+    <!-- Sort selector -->
+    <ng-container *ngIf="sortFields.length > 0">
+      <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
+    </ng-container>
+    <!-- Data source button -->
+    <ui-button
+      class="!flex self-center"
+      variant="primary"
+      icon="open_in_new"
+      (click)="openDataSource()"
+      *ngIf="
+        (settings.card?.showDataSourceLink && displayMode === 'cards') || false
+      "
+    >
+      {{ 'components.widget.summaryCard.dataSource' | translate }}
+    </ui-button>
+    <ui-button
+      [isIcon]="true"
+      icon="grid_view"
+      [disabled]="displayMode === 'cards'"
+      (click)="changeDisplayMode('cards')"
+      [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
+    ></ui-button>
+    <ui-button
+      [isIcon]="true"
+      icon="view_list"
+      [disabled]="displayMode === 'grid'"
+      (click)="changeDisplayMode('grid')"
+      [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
+    ></ui-button>
+  </div>
+  <ui-button
+    *ngIf="export && displayMode === 'cards'"
+    [isIcon]="true"
+    icon="get_app"
+    class="text-neutral-700"
+    (click)="pdf.saveAs(exportName)"
+    [uiTooltip]="'common.export' | translate"
+  ></ui-button>
 </ng-template>

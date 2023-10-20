@@ -9,8 +9,6 @@ import {
   Inject,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import * as SurveyCreator from 'survey-creator';
-import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { get, uniqBy, difference } from 'lodash';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
@@ -18,7 +16,17 @@ import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import {
+  Action,
+  PageModel,
+  SurveyModel,
+  surveyLocalization,
+} from 'survey-core';
+import { SurveyCreatorModel } from 'survey-creator-core';
+import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Array containing the different types of questions.
@@ -87,15 +95,18 @@ const CORE_FIELD_CLASS = 'core-question';
 @Component({
   selector: 'shared-form-builder',
   templateUrl: './form-builder.component.html',
-  styleUrls: ['./form-builder.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form-builder.component.scss'],
 })
-export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
+export class FormBuilderComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges, OnDestroy
+{
   @Input() form!: Form;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
-  surveyCreator!: SurveyCreator.SurveyCreator;
+  surveyCreator!: SurveyCreatorModel;
   public json: any;
 
   private relatedNames!: string[];
@@ -119,10 +130,11 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document
   ) {
+    super();
     // translate the editor in the same language as the interface
-    SurveyCreator.localization.currentLocale = this.translate.currentLang;
-    this.translate.onLangChange.subscribe(() => {
-      SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    surveyLocalization.currentLocale = this.translate.currentLang;
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      surveyLocalization.currentLocale = this.translate.currentLang;
       this.setFormBuilder(this.surveyCreator.text);
     });
   }
@@ -156,19 +168,15 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
         this.addCustomClassToCoreFields(coreFields);
       }
 
-      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onSetCustomCss(options)
-      );
-
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
+        renderGlobalProperties(this.referenceDataService) as any
       );
     }
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     this.surveyCreator.survey?.dispose();
   }
 
@@ -184,29 +192,37 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
+      allowChangeThemeInPreview: false,
     };
 
-    this.setCustomTheme();
+    this.surveyCreator = new SurveyCreatorModel(creatorOptions);
 
-    this.surveyCreator = new SurveyCreator.SurveyCreator(
-      'surveyCreatorContainer',
-      creatorOptions
-    );
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (_: any, options: any) => {
-        const survey: Survey.SurveyModel = options.survey;
+        const survey: SurveyModel = options.survey;
+        survey.applyTheme({
+          isPanelless: true,
+        });
+        survey.onAfterRenderQuestion.add(
+          this.formHelpersService.addQuestionTooltips
+        );
         this.formHelpersService.addUserVariables(survey);
       }
     );
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
-    this.surveyCreator.showToolbox = 'right';
-    this.surveyCreator.showPropertyGrid = 'right';
-    this.surveyCreator.rightContainerActiveItem('toolbox');
+    this.surveyCreator.showToolbox = true;
+    this.surveyCreator.toolboxLocation = 'right';
+    this.surveyCreator.showSidebar = true;
+    this.surveyCreator.sidebarLocation = 'right';
+
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
+
+    this.surveyCreator.toolbox.forceCompact = false;
+    this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
     this.surveyCreator.toolbox.changeCategories(
       QUESTION_TYPES.map((x) => ({
         name: x,
@@ -217,21 +233,9 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     );
 
     // Notify parent that form structure has changed
-    (this.surveyCreator.onModified as any).add(
-      (survey: SurveyCreator.SurveyCreator) => {
-        this.formChange.emit(survey.text);
-      }
-    );
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
-    );
-    (this.surveyCreator.onTestSurveyCreated as any).add(
-      (sender: any, options: any) => {
-        options.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
-          this.onSetCustomCss(opt2)
-        );
-      }
-    );
+    this.surveyCreator.onModified.add((survey: any) => {
+      this.formChange.emit(survey.text);
+    });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core
@@ -239,7 +243,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       const coreFields =
         this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
       // Remove core fields adorners
-      (this.surveyCreator.onElementAllowOperations as any).add(
+      this.surveyCreator.onElementAllowOperations.add(
         (sender: any, options: any) => {
           const obj = options.obj;
           if (!obj || !obj.page) {
@@ -278,20 +282,17 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Scroll to question when added
-    (this.surveyCreator.onQuestionAdded as any).add(
-      (sender: any, options: any) => {
-        const name = options.question.name;
-        setTimeout(() => {
-          const el = this.document.querySelector('[data-name="' + name + '"]');
-          el?.scrollIntoView({ behavior: 'smooth' });
-          this.surveyCreator.showQuestionEditor(options.question);
-        });
-      }
-    );
+    this.surveyCreator.onQuestionAdded.add((sender: any, options: any) => {
+      const name = options.question.name;
+      setTimeout(() => {
+        const el = this.document.querySelector('[data-name="' + name + '"]');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService) as any
     );
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, options: any) =>
@@ -299,69 +300,73 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
           renderGlobalProperties(this.referenceDataService)
         )
     );
-    // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
+    this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
-    this.surveyCreator.onDefineElementMenuItems.add(
-      (sender: SurveyCreator.SurveyCreator, options: any) => {
-        const clickHandler = (obj: any, movement: 'up' | 'down') => {
-          // get the page index of current question
-          const pageIndex = sender.survey.pages.findIndex(
-            (page: any) => page.questions.indexOf(obj) !== -1
-          );
+    this.addAdorners();
+  }
 
-          // get the index of the current question in the page
-          const questionIndex =
-            sender.survey.pages[pageIndex].questions.indexOf(obj);
-
-          if (
-            (movement === 'down' &&
-              questionIndex ===
-                sender.survey.pages[pageIndex].questions.length - 1) ||
-            (movement === 'up' && questionIndex === 0)
-          ) {
-            return;
-          }
-
-          // remove the element from the current page
-          sender.survey.pages[pageIndex].removeElement(obj);
-
-          // add it back to the page at the previous index
-          const newIndex =
-            movement === 'up' ? questionIndex - 1 : questionIndex + 1;
-          sender.survey.pages[pageIndex].addElement(obj, newIndex);
-        };
-
-        const moveUpButton = {
-          name: 'move-up',
-          text: this.translate.instant('pages.formBuilder.move.up'),
-          onClick: (obj: any) => clickHandler(obj, 'up'),
-        };
-
-        const moveDownButton = {
-          name: 'move-down',
-          text: this.translate.instant('pages.formBuilder.move.down'),
-          onClick: (obj: any) => clickHandler(obj, 'down'),
-        };
-
-        // Find the `delete` action's position.
-        let index = -1;
-        for (let i = 0; i < options.items.length; i++) {
-          if (options.items[i].name === 'delete') {
-            index = i;
-            break;
-          }
-        }
-        // Insert the new action before `delete` or as the last action if `delete` is not found
-        if (index > -1) {
-          options.items.splice(index, 0, moveDownButton);
-          options.items.splice(index, 0, moveUpButton);
-        } else {
-          options.items.push(moveUpButton);
-          options.items.push(moveDownButton);
-        }
+  /**
+   * Add custom actions to the question action items bar
+   */
+  private addAdorners() {
+    this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
+      const element = options.obj;
+      // Only display for questions & panels
+      if (element.isPage) {
+        return;
       }
-    );
+
+      // Add 'up' & 'down' adorners to panels & questions
+      const parent = element.parent;
+      const index = parent.elements.indexOf(element);
+      if (index > 0) {
+        const moveUpAdorner = moveUpButton(element);
+        options.items.push(moveUpAdorner);
+      }
+      if (index < parent.elements.length - 1) {
+        const moveDownAdorner = moveDownButton(element);
+        options.items.push(moveDownAdorner);
+      }
+    });
+
+    const moveUpButton = (element: any) => {
+      return new Action({
+        id: 'moveUpButton',
+        iconName: 'icon-arrow-up',
+        css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
+        title: this.translate.instant('pages.formBuilder.move.up'),
+        action: () => {
+          const parent = element.parent;
+          const index = parent.elements.indexOf(element);
+          if (index > 0) {
+            // Remove from array
+            parent.elements.splice(index, 1)[0];
+            // Move into array
+            parent.elements.splice(index - 1, 0, element);
+          }
+        },
+      });
+    };
+
+    const moveDownButton = (element: any) => {
+      return new Action({
+        id: 'moveDownButton',
+        iconName: 'icon-arrow-down',
+        css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
+        title: this.translate.instant('pages.formBuilder.move.down'),
+        action: () => {
+          const parent = element.parent;
+          const index = parent.elements.indexOf(element);
+          if (index < parent.elements.length - 1) {
+            // Remove from array
+            parent.elements.splice(index, 1)[0];
+            // Move into array
+            parent.elements.splice(index + 1, 0, element);
+          }
+        },
+      });
+    };
   }
 
   /**
@@ -370,21 +375,14 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * @param coreFields list of core fields
    */
   private addCustomClassToCoreFields(coreFields: string[]): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      (survey: Survey.SurveyModel, options: any) => {
-        if (coreFields.includes(options.question.valueName)) {
-          options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
-        }
+    this.surveyCreator.survey.onAfterRenderQuestion.add(((
+      survey: SurveyModel,
+      options: any
+    ) => {
+      if (coreFields.includes(options.question.valueName)) {
+        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
       }
-    );
-  }
-
-  /**
-   * Set a theme for the form builder depending on the environment
-   */
-  setCustomTheme(): void {
-    Survey.StylesManager.applyTheme();
-    SurveyCreator.StylesManager.applyTheme();
+    }) as any);
   }
 
   /**
@@ -412,10 +410,10 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    */
   private async validateValueNames(): Promise<boolean> {
     this.relatedNames = [];
-    const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
-    const canCreate = survey.pages.every((page: Survey.PageModel) => {
-      const verifiedQuestions = page.questions.every(
-        (question: Survey.Question) => this.setQuestionNames(question, page)
+    const survey = new SurveyModel(this.surveyCreator.JSON);
+    const canCreate = survey.pages.every((page: PageModel) => {
+      const verifiedQuestions = page.questions.every((question: Question) =>
+        this.setQuestionNames(question, page)
       );
       if (verifiedQuestions) {
         // If questions verified, search for duplicated value names
@@ -455,10 +453,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * @param page The page of the form
    * @returns if question name and additional required fields are valid
    */
-  private setQuestionNames(
-    question: Survey.Question,
-    page: Survey.PageModel
-  ): boolean {
+  private setQuestionNames(question: Question, page: PageModel): boolean {
     // Create the valueName of the element in snake case.
     const valueNameChecked = this.formHelpersService.setValueName(
       question,
@@ -638,15 +633,5 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     return true;
-  }
-
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += 'shared-qst-content';
   }
 }
