@@ -1,6 +1,4 @@
 :host {
   display: flex;
-  height: calc(
-    100% - 40px
-  ); // we remove the height of the header of widget there
+  height: 100%
 }

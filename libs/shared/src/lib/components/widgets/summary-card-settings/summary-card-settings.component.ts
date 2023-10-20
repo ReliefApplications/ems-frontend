@@ -171,7 +171,16 @@ export class SummaryCardSettingsComponent
           );
           searchableControl?.setValue(false);
           searchableControl?.disable();
-        } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
+          // disable form actions if aggregation selected
+          const actionsGroup = this.tileForm?.get('actions') as FormGroup;
+          Object.keys(actionsGroup.controls).forEach((controlName: any) => {
+            actionsGroup.get(controlName)?.disable();
+          });
+        } else {
+          this.tileForm?.get('widgetDisplay.searchable')?.enable();
+          // enable form actions if aggregation selected
+          this.tileForm?.controls.actions.enable();
+        }
       });
 
     this.initSortFields();

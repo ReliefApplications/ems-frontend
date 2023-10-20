@@ -59,7 +59,7 @@
       </ng-template>
     </ui-tab>
     <!-- Available actions -->
-    <ui-tab>
+    <ui-tab *ngIf="selectedLayout">
       <ng-container ngProjectAs="label">
         <ui-icon
           icon="toggle_on"
