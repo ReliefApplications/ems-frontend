@@ -88,26 +88,6 @@
         <shared-display-tab [form]="tileForm"></shared-display-tab>
       </ng-template>
     </ui-tab>
-    <!-- Card actions -->
-    <ui-tab *ngIf="tileForm">
-      <ng-container ngProjectAs="label">
-        <ui-icon
-          icon="toggle_on"
-          [size]="24"
-          uiTooltip="{{
-            'components.widget.settings.grid.actions.title' | translate
-          }}"
-        ></ui-icon>
-        <span>{{
-          'components.widget.settings.grid.actions.title' | translate
-        }}</span>
-      </ng-container>
-      <ng-template uiTabContent>
-        <shared-tab-actions
-        [formGroup]="tileForm"
-        ></shared-tab-actions>
-      </ng-template>
-    </ui-tab>
     <!-- Context filter settings -->
     <ui-tab>
       <ng-container ngProjectAs="label">
