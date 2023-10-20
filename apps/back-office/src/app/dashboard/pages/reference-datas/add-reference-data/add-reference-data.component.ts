@@ -19,13 +19,17 @@ export class AddReferenceDataComponent implements OnInit {
   // === REACTIVE FORM ===
   referenceForm: UntypedFormGroup = new UntypedFormGroup({});
 
-  /** @returns name of reference data */
+  /**
+   * Reference data name getter
+   *
+   * @returns name of reference data
+   */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
   }
 
   /**
-   * New Refence Data modal.
+   * New Reference Data modal.
    *
    * @param formBuilder Angular form builder
    * @param dialogRef Dialog ref.

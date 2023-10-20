@@ -38,7 +38,11 @@ export class AlertComponent {
     this.host.nativeElement.remove();
   }
 
-  /** @returns icon */
+  /**
+   * icon getter by variant
+   *
+   * @returns icon
+   */
   get resolveIcon(): string {
     switch (this.variant) {
       case 'default':
@@ -54,7 +58,11 @@ export class AlertComponent {
     }
   }
 
-  /** @returns button variant */
+  /**
+   * button getter type by variant
+   *
+   * @returns button variant
+   */
   get resolveButtonVariant(): Variant {
     switch (this.variant) {
       case 'default':
@@ -70,7 +78,11 @@ export class AlertComponent {
     }
   }
 
-  /** @returns get alert classes */
+  /**
+   * Alert class getter by variant
+   *
+   * @returns get alert classes
+   */
   get resolveAlertClasses(): string[] {
     const classes: string[] = [];
     const borderClasses = ['border-l-4'];

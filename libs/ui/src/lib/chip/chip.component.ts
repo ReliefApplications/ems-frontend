@@ -17,7 +17,11 @@ export class ChipComponent {
 
   @Output() removed = new EventEmitter<void>();
 
-  /** @returns general chip classes and variant */
+  /**
+   * Chip class getter by variant
+   *
+   * @returns general chip classes and variant
+   */
   get chipClasses(): string[] {
     const classes = [];
     // Disable state

@@ -27,6 +27,7 @@ export class ErrorMessageDirective implements OnDestroy {
       }
     }
   }
+
   /**
    * Display or remove error message template by the given condition
    */
@@ -39,6 +40,7 @@ export class ErrorMessageDirective implements OnDestroy {
       }
     }
   }
+
   private currentErrorMessage = '';
   private errorMessageTemplate!: HTMLSpanElement;
   private errorMessageClasses = [
@@ -49,6 +51,7 @@ export class ErrorMessageDirective implements OnDestroy {
   ] as const;
   private destroy$ = new Subject<void>();
   private hostIsReady = false;
+
   /**
    * UI Error Message constructor
    *

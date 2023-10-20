@@ -16,7 +16,11 @@ export class SpinnerComponent {
   @Input() variant: Variant = 'default';
   @Input() category: Category = 'primary';
 
-  /** @returns general resolved classes and variant for spinner*/
+  /**
+   * Spinner class getter by variant
+   *
+   * @returns general resolved classes and variant for spinner
+   */
   get resolveSpinnerClasses(): string[] {
     const classes = [];
     classes.push('spinner-' + this.size);

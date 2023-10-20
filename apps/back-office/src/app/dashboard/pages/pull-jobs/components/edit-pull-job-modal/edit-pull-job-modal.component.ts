@@ -115,22 +115,38 @@ export class EditPullJobModalComponent implements OnInit {
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
 
-  /** @returns pull job mapping as form array */
+  /**
+   * Mapping getter
+   *
+   * @returns pull job mapping as form array
+   */
   get mappingArray(): UntypedFormArray {
     return this.formGroup.get('mapping') as UntypedFormArray;
   }
 
-  /** @returns default API configuration */
+  /**
+   * Pulljob API configuration getter
+   *
+   * @returns default API configuration
+   */
   get defaultApiConfiguration(): ApiConfiguration | null {
     return this.data.pullJob?.apiConfiguration || null;
   }
 
-  /** @returns default convert to form */
+  /**
+   * Pulljob default convert to getter
+   *
+   * @returns default convert to form
+   */
   get defaultForm(): Form | null {
     return this.data.pullJob?.convertTo || null;
   }
 
-  /** @returns default channel */
+  /**
+   * Pulljob default channel getter
+   *
+   * @returns default channel
+   */
   get defaultChannel(): Channel | null {
     return this.data.pullJob?.channel || null;
   }
@@ -417,6 +433,7 @@ export class EditPullJobModalComponent implements OnInit {
       }
     }
   }
+
   /**
    * Changes the query according to search text
    *

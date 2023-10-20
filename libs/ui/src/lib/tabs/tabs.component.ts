@@ -84,7 +84,11 @@ export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
    */
   constructor(private cdr: ChangeDetectorRef) {}
 
-  /** @returns general resolved position classes for navigation tabs*/
+  /**
+   * Tab position getter by vertical property
+   *
+   * @returns general resolved position classes for navigation tabs
+   */
   get resolveTabPositionClasses(): string[] {
     const classes = [];
     if (this.vertical) {

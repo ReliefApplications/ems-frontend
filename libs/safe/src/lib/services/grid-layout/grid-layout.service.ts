@@ -41,7 +41,6 @@ export class SafeGridLayoutService {
   /**
    * Gets list of layouts from source
    *
-   *
    * @param source source id
    * @param options query options
    * @param options.ids list of layout id

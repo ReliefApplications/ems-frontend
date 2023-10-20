@@ -20,7 +20,11 @@ export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
   apiForm: UntypedFormGroup = new UntypedFormGroup({});
 
-  /** @returns name for the API configuration */
+  /**
+   * API configuration name getter
+   *
+   * @returns name for the API configuration
+   */
   get name(): AbstractControl | null {
     return this.apiForm.get('name');
   }

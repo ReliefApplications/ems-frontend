@@ -58,7 +58,11 @@ export class ApiConfigurationComponent
   /** Available auth types */
   public authTypeChoices = Object.values(authType);
 
-  /** @returns API configuration name */
+  /**
+   * API configuration name getter
+   *
+   * @returns API configuration name
+   */
   get name(): AbstractControl | null {
     return this.apiForm.get('name');
   }

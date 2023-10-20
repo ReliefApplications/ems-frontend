@@ -34,6 +34,7 @@ export class TextareaComponent implements ControlValueAccessor {
   @Input() value: any = '';
   @Input() placeholder = '';
   @Input() name!: string;
+
   /**
    * Set minimal rows for the textarea
    *
@@ -50,6 +51,7 @@ export class TextareaComponent implements ControlValueAccessor {
       }
     }
   }
+
   @Input() maxRows = 5;
 
   /**

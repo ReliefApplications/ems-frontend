@@ -39,7 +39,11 @@ export class ToggleComponent implements ControlValueAccessor {
   onChange!: (value: boolean) => void;
   onTouch!: () => void;
 
-  /** @returns general toggle classes and variant */
+  /**
+   * Toggle class getter by variant
+   *
+   * @returns general toggle classes and variant
+   */
   get toggleClasses(): string[] {
     const classes = [];
     // Disable state
@@ -63,7 +67,11 @@ export class ToggleComponent implements ControlValueAccessor {
     return classes;
   }
 
-  /** @returns shot toggle classes and variant */
+  /**
+   * Short toggle class getter by variant
+   *
+   * @returns shot toggle classes and variant
+   */
   get shortToggleClasses(): string[] {
     const classes = [];
     if (!this.value) {

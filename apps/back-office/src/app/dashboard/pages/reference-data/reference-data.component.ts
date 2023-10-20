@@ -85,17 +85,29 @@ export class ReferenceDataComponent
     formatOnPaste: true,
   };
 
-  /** @returns the graphqlQuery form control */
+  /**
+   * Reference data query getter
+   *
+   *  @returns the graphqlQuery form control
+   */
   get queryControl() {
     return this.referenceForm.get('query') as FormControl | null;
   }
 
-  /** @returns name of reference model */
+  /**
+   * Reference data name getter
+   *
+   *  @returns name of reference model
+   */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
   }
 
-  /** @returns type of reference model */
+  /**
+   * Reference data type getter
+   *
+   *  @returns type of reference model
+   */
   get type(): string {
     return this.referenceForm.get('type')?.value || '';
   }
@@ -125,7 +137,11 @@ export class ReferenceDataComponent
     super();
   }
 
-  /** @returns the reference data group form */
+  /**
+   * Reference data form getter
+   *
+   * @returns the reference data group form
+   */
   private getRefDataForm() {
     const form = new FormGroup({
       name: new FormControl(this.referenceData?.name, Validators.required),

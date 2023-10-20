@@ -51,7 +51,11 @@ export class AggregationsTabComponent
     endCursor: '',
   };
 
-  /** @returns True if the aggregations tab is empty */
+  /**
+   * Aggregations empty state getter
+   *
+   * @returns True if the aggregations tab is empty
+   */
   get empty(): boolean {
     return !this.loading && this.aggregations.length === 0;
   }

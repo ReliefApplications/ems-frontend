@@ -30,7 +30,11 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
 
   @Output() openTab: EventEmitter<void> = new EventEmitter();
 
-  /** @returns content portal of the tab */
+  /**
+   * Template portal content getter
+   *
+   * @returns content portal of the tab
+   */
   get content(): TemplatePortal | null {
     return this.contentPortal;
   }

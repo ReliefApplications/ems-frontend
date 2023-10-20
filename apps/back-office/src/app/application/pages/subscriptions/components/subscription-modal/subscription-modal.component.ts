@@ -94,7 +94,11 @@ export class SubscriptionModalComponent
   };
   private applicationsLoading = true;
 
-  /** @returns subscription routing key */
+  /**
+   * Subscription form routing key getter
+   *
+   * @returns subscription routing key
+   */
   get routingKey(): string {
     return this.subscriptionForm.value.routingKey;
   }
@@ -106,7 +110,11 @@ export class SubscriptionModalComponent
     this.subscriptionForm.controls.routingKey.setValue(value);
   }
 
-  /** @returns default convert to form */
+  /**
+   * Default convert to getter
+   *
+   * @returns default convert to form
+   */
   get defaultForm(): Form | null {
     return get(this.data, 'subscription.convertTo', null);
   }

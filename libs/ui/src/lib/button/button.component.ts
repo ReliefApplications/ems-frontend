@@ -47,7 +47,11 @@ export class ButtonComponent {
     }
   }
 
-  /** @returns general resolved classes and variant for button*/
+  /**
+   * Button class getter by variant
+   *
+   * @returns general resolved classes and variant for button
+   */
   get resolveButtonClasses(): string[] {
     const classes = [];
     if (this.isBlock) classes.push('flex-1');

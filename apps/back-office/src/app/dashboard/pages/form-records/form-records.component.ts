@@ -73,7 +73,11 @@ export class FormRecordsComponent
     endCursor: '',
   };
 
-  /** @returns True if the layouts tab is empty */
+  /**
+   * Datasource empty state getter
+   *
+   * @returns True if the layouts tab is empty
+   */
   get empty(): boolean {
     return !this.loading && this.dataSource.length === 0;
   }

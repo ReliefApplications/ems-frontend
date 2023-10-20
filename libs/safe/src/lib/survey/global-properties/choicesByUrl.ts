@@ -35,6 +35,7 @@ const DEFAULT_PROPERTIES = [
 /** Class used internally by surveyJS, but not exported */
 class XmlParser {
   private parser = new DOMParser();
+
   // eslint-disable-next-line jsdoc/require-jsdoc
   public assignValue(target: any, name: string, value: any) {
     if (Array.isArray(target[name])) {
@@ -51,6 +52,7 @@ class XmlParser {
       target[name] = value;
     }
   }
+
   // eslint-disable-next-line jsdoc/require-jsdoc
   public xml2Json(xmlNode: any, result: any) {
     if (xmlNode.children && xmlNode.children.length > 0) {
@@ -64,6 +66,7 @@ class XmlParser {
       this.assignValue(result, xmlNode.nodeName, xmlNode.textContent);
     }
   }
+
   // eslint-disable-next-line jsdoc/require-jsdoc
   public parseXmlString(xmlString: string) {
     const xmlRoot = this.parser.parseFromString(xmlString, 'text/xml');

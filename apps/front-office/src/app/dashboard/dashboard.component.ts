@@ -52,10 +52,15 @@ export class DashboardComponent
   /** Is large device */
   public largeDevice: boolean;
 
-  /** @returns True if applications is empty */
+  /**
+   * empty applications state getter
+   *
+   * @returns True if applications is empty
+   */
   get empty(): boolean {
     return this.applications.length === 0;
   }
+
   /**
    * Main component of Front-Office navigation.
    *

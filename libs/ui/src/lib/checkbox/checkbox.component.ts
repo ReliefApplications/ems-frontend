@@ -36,7 +36,11 @@ export class CheckboxComponent implements ControlValueAccessor {
   onChange!: (value: boolean) => void;
   onTouch!: () => void;
 
-  /** @returns shot toggle classes and variant */
+  /**
+   * Checkbox class getter by variant
+   *
+   * @returns shot toggle classes and variant
+   */
   get checkboxClasses(): string[] {
     const classes = [
       this.variant === 'default'

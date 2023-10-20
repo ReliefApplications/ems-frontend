@@ -63,7 +63,11 @@ export class RecordsTabComponent
   public loading = true;
   public showUpload = false;
 
-  /** @returns True if the records tab is empty */
+  /**
+   * Datasource empty state getter
+   *
+   * @returns True if the records tab is empty
+   */
   get empty(): boolean {
     return !this.loading && this.dataSource.length === 0;
   }
@@ -260,6 +264,7 @@ export class RecordsTabComponent
       .concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }
+
   /**
    * Downloads the list of records of the resource.
    *
