@@ -241,14 +241,12 @@ export class ApplicationService {
         // extend user abilities for application
         if (data.application) {
           // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
-          data.application.pages = (data.application.pages ?? []).map(
-            (page: Page) => {
-              if (faV4toV6Mapper[page.icon as string]) {
-                (page as Page).icon = faV4toV6Mapper[page.icon as string];
-              }
-              return page;
+          data.application.pages?.map((page: Page) => {
+            if (faV4toV6Mapper[page.icon as string]) {
+              (page as Page).icon = faV4toV6Mapper[page.icon as string];
             }
-          );
+            return page;
+          });
           this.authService.extendAbilityForApplication(data.application);
         }
         await this.getCustomStyle(data.application);
