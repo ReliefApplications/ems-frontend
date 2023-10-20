@@ -1,5 +1,6 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { AppComponent } from './app.component';
+import { environment } from '../environments/environment';
 
 export default {
   title: 'AppComponent',
@@ -7,6 +8,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [],
+      providers: [{ provide: 'environment', useValue: environment }],
     }),
   ],
 } as Meta<AppComponent>;

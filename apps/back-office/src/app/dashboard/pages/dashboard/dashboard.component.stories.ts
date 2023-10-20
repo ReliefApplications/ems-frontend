@@ -1,5 +1,6 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { DashboardComponent } from './dashboard.component';
+import { Apollo } from 'apollo-angular';
 
 export default {
   title: 'DashboardComponent',
@@ -7,6 +8,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [],
+      providers: [Apollo],
     }),
   ],
 } as Meta<DashboardComponent>;
