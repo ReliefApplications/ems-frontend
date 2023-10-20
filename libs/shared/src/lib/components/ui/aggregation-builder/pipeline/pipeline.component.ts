@@ -22,7 +22,6 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public stageType = PipelineStage;
   /** Array to hold the list of stages. */
   public stageList: string[] = Object.values(PipelineStage);
-
   /** Input decorator for fields$. */
   @Input() public fields$!: Observable<any[]>;
   /** Input decorator for metaFields$. */
@@ -35,13 +34,6 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public fieldsPerStage: any[] = [];
   /** Enabled drag behavior, needed to set the drag on run time so cdkDragHandle directive works in the table */
   public dragEnabled = false;
-  /** Monaco editor options */
-  public editorOptions = {
-    theme: 'vs-dark',
-    language: 'json',
-    fixedOverflowWidgets: true,
-  };
-
   /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
 
@@ -118,6 +110,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
    * @param event positions to move.
    */
   drop(event: CdkDragDrop<string[]>) {
+    console.log('drop');
     const temp = this.pipelineForm.at(event.previousIndex);
 
     this.pipelineForm.removeAt(event.previousIndex);

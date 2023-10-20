@@ -1,4 +1,8 @@
-<cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+<cdk-accordion
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+  cdkDropListOrientation="vertical"
+>
   <ui-expansion-panel
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
     [index]="index"
@@ -8,12 +12,14 @@
   >
     <ng-container ngProjectAs="title">
       <div class="flex items-center">
-        <p>{{
-          'components.aggregationBuilder.stages.' + stageForm.value.type
-            | translate
-        }}</p>
+        <p>
+          {{
+            'components.aggregationBuilder.stages.' + stageForm.value.type
+              | translate
+          }}
+        </p>
         <ui-icon
-        class="ml-0.5"
+          class="ml-0.5"
           icon="info_outline"
           variant="grey"
           [size]="18"
@@ -67,12 +73,15 @@
         ></shared-field-dropdown>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
-        <div class="h-[400px]">
-          <ngx-monaco-editor
-            class="min-h-[400px]"
+        <div uiFormFieldDirective>
+          <label>{{ 'common.input.rawJson' | translate }}</label>
+          <ui-textarea
+            #monacoEditor
+            class="!h-full"
             [formControl]="$any(stageForm).controls.form.controls.raw"
-            [options]="editorOptions"
-          ></ngx-monaco-editor>
+            [minRows]="4"
+            [maxRows]="20"
+          ></ui-textarea>
         </div>
       </ng-container>
     </ng-container>
@@ -87,7 +96,6 @@
     </div>
   </ui-expansion-panel>
 </cdk-accordion>
-
 
 <div class="flex justify-center">
   <ui-button

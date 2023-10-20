@@ -21,7 +21,6 @@ import {
   SelectMenuModule,
   IconModule,
 } from '@oort-front/ui';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /**
  * Aggregation builder pipeline module.
@@ -51,7 +50,6 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
-    MonacoEditorModule,
   ],
   exports: [
     PipelineComponent,
