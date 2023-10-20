@@ -15,26 +15,38 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 })
 export class TagboxComponent extends UnsubscribeComponent implements OnInit {
   // === CHOICES ===
+  /** Observable of choices */
   @Input() public choices$!: Observable<any[]>;
+  /** Display key */
   @Input() public displayKey = 'name';
+  /** Value key */
   @Input() public valueKey = 'name';
+  /** Available choices */
   public availableChoices: any[] = [];
+  /** Selected choices */
   public selectedChoices: any[] = [];
+  /** Filtered choices */
   public filteredChoices: any[] = [];
 
   // === TAGBOX ===
+  /** Label */
   @Input() public label!: any;
+  /** Separator key codes */
   public separatorKeysCodes: number[] = [ENTER, COMMA];
+  /** Text input element reference */
   @ViewChild('textInput') private textInput?: ElementRef<HTMLInputElement>;
-
+  /** Choices empty status */
   public choicesEmpty = false;
+  /** Input control */
   public inputControl: FormControl = new UntypedFormControl({
     value: '',
     disabled: this.choicesEmpty,
   });
+  /** Input visibility status */
   public showInput = false;
 
   // === OUTPUT CONTROL ===
+  /** Output control */
   @Input() control!: FormControl;
 
   /**
@@ -44,6 +56,7 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
     super();
   }
 
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.choices$.pipe(takeUntil(this.destroy$)).subscribe((choices: any[]) => {
       this.choicesEmpty = choices.length === 0;

@@ -1,26 +1,31 @@
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
+import {
+  CustomWidgetCollection,
+  Serializer,
+  SvgRegistry,
+  DropdownMultiSelectListModel,
+} from 'survey-core';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
-import { QuestionTagbox } from 'survey-knockout';
 
 /**
  * Init tagbox question
  *
- * @param Survey Survey instance
  * @param domService Shared dom service
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  * @param document Document
  */
 export const init = (
-  Survey: any,
   domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
   const iconId = 'icon-tagbox';
 
   // registers icon-resources in the SurveyJS library
-  Survey.SvgRegistry.registerIconFromSvg(
+  SvgRegistry.registerIconFromSvg(
     'tagbox',
     '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g><path d="M15,11H0V5h15V11z M1,10h13V6H1V10z"/></g><rect x="2" y="7" width="4" height="2"/><rect x="7" y="7" width="4" height="2"/></svg>'
   );
@@ -39,8 +44,8 @@ export const init = (
       return question.getType() === componentName;
     },
     init: () => {
-      if (Survey.Serializer.findClass(componentName)) return;
-      Survey.Serializer.addClass(
+      if (Serializer.findClass(componentName)) return;
+      Serializer.addClass(
         componentName,
         [
           { name: 'hasOther:boolean', visible: false },
@@ -50,23 +55,26 @@ export const init = (
           { name: 'selectAllText', visible: false },
           { name: 'noneText', visible: false },
         ],
-        null,
+        () => null,
         'checkbox'
       );
-      Survey.Serializer.addProperty(componentName, {
+      Serializer.addProperty(componentName, {
         name: 'placeholder',
         category: 'general',
         default: '',
       });
-      Survey.Serializer.addProperty(componentName, {
+      Serializer.addProperty(componentName, {
         name: 'allowAddNewTag:boolean',
         category: 'general',
         default: false,
       });
     },
     isDefaultRender: false,
-    htmlTemplate: '<div></div>',
-    afterRender: (question: QuestionTagbox, el: HTMLElement): void => {
+    afterRender: (question: any, el: HTMLElement): void => {
+      const defaultTagbox = el.querySelector('sv-ng-tagbox-question');
+      if (defaultTagbox) {
+        el.removeChild(defaultTagbox);
+      }
       const parentQuestion = question.parentQuestion;
       if (
         parentQuestion &&
@@ -78,6 +86,7 @@ export const init = (
       widget.willUnmount(question);
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
+      tagboxDiv.classList.add('flex', 'min-h-[36px]');
       tagboxDiv.id = 'tagbox';
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const tagboxInstance = createTagboxInstance(tagboxDiv, question);
@@ -140,7 +149,7 @@ export const init = (
    */
   const createTagboxInstance = (
     element: any,
-    question: QuestionTagbox
+    question: Question
   ): MultiSelectComponent => {
     const tagbox = domService.appendComponentToBody(
       MultiSelectComponent,
@@ -157,6 +166,7 @@ export const init = (
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
     tagboxInstance.popupSettings = { appendTo: 'component' };
+    tagboxInstance.fillMode = 'none';
     return tagboxInstance;
   };
   // ⚠ danger ⚠
@@ -164,10 +174,10 @@ export const init = (
    * Solution to prevent tagbox to freeze if too many items. We are overriding the surveyjs logic, in order to prevent some built-in methods to be called.
    * Whenever we update surveyjs, we need to check that the logic hasn't changed on their side.
    */
-  Survey.DropdownMultiSelectListModel.prototype.syncFilterStringPlaceholder =
+  (DropdownMultiSelectListModel.prototype as any).syncFilterStringPlaceholder =
     function () {
       this.filterStringPlaceholder = this.question.placeholder;
     };
   // there, we define that we want, with 'customtype', that the widget also appears in the list of questions
-  Survey.CustomWidgetCollection.Instance.add(widget, 'customtype');
+  customWidgetCollectionInstance.add(widget, 'customtype');
 };

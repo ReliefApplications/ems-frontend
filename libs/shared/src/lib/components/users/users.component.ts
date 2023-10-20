@@ -2,9 +2,10 @@ import { Apollo } from 'apollo-angular';
 import {
   Component,
   Input,
-  OnChanges,
-  OnInit,
+  ViewChild,
+  TemplateRef,
   SimpleChanges,
+  OnChanges,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -23,6 +24,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import uniqBy from 'lodash/uniqBy';
+import { FormBuilder } from '@angular/forms';
 
 /**
  * A component to display the list of users
@@ -32,10 +34,7 @@ import uniqBy from 'lodash/uniqBy';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class UsersComponent extends UnsubscribeComponent implements OnChanges {
   // === INPUT DATA ===
   @Input() users: Array<User> = new Array<User>();
   @Input() roles: Role[] = [];
@@ -52,11 +51,16 @@ export class UsersComponent
   ];
 
   // === FILTERS ===
-  public searchText = '';
+  private searchText = '';
+  public form = this.fb.group({});
   public roleFilter = '';
   public showFilters = false;
   public filteredUsers = new Array<User>();
   selection = new SelectionModel<User>(true, []);
+
+  /** Reference to expanded filter template */
+  @ViewChild('expandedFilter')
+  expandedFilter!: TemplateRef<any>;
 
   /**
    * Constructor of the users component
@@ -69,6 +73,7 @@ export class UsersComponent
    * @param translate The translation service
    * @param router Angular router
    * @param activatedRoute Angular active route
+   * @param fb Angular form builder
    */
   constructor(
     private apollo: Apollo,
@@ -78,13 +83,10 @@ export class UsersComponent
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
   ) {
     super();
-  }
-
-  ngOnInit(): void {
-    this.filterPredicate();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -302,16 +304,18 @@ export class UsersComponent
   /**
    * Apply the filters to the list
    *
-   * @param column The column used for filtering
-   * @param event The event triggered on filter action
+   * @param event event value
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'role') {
-      this.roleFilter = event?.trim() ?? '';
+  applyFilter(event: any): void {
+    if (event.roleFilter) {
+      this.roleFilter = event.roleFilter;
     } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
+      this.roleFilter = '';
+    }
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
     }
     this.filterPredicate();
   }
@@ -320,9 +324,8 @@ export class UsersComponent
    * Clear all the filters
    */
   clearAllFilters(): void {
-    this.searchText = '';
     this.roleFilter = '';
-    this.applyFilter('', null);
+    this.form.reset();
   }
 
   /**

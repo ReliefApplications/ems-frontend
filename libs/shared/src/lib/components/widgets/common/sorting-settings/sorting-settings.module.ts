@@ -15,9 +15,11 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { CdkTableModule } from '@angular/cdk/table';
+import { EmptyModule } from '../../../ui/empty/empty.module';
 
 /**
- * Module for the sorting-settings component
+ * Widget sorting settings module.
+ * Used by grid & summary card widgets, to sort the data.
  */
 @NgModule({
   declarations: [SortingSettingsComponent],
@@ -36,6 +38,7 @@ import { CdkTableModule } from '@angular/cdk/table';
     CdkTableModule,
     FormWrapperModule,
     SelectMenuModule,
+    EmptyModule,
   ],
   exports: [SortingSettingsComponent],
 })

@@ -166,11 +166,4 @@ export class ChooseRecordModalComponent
       this.chooseRecordForm.get('record')?.setValue(null);
     }
   }
-
-  /**
-   * Closes the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

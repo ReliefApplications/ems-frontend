@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EditorFormType } from '../editor-settings.component';
 import {
   Resource,
@@ -19,7 +12,6 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { GET_RESOURCES } from '../graphql/queries';
-import { GraphQLSelectComponent } from '@oort-front/ui';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -43,11 +35,7 @@ export class RecordSelectionTabComponent
 
   public selectedRecordID: string | null = null;
 
-  /** Query for resources to be used in graphql-select */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-  /** Reference to resource graphql-select */
-  @ViewChild(GraphQLSelectComponent)
-  private resourceSelect?: GraphQLSelectComponent;
 
   /**
    * Component for the record selection in the editor widget settings
@@ -82,9 +70,10 @@ export class RecordSelectionTabComponent
         if (!resource) this.resourceChange.emit(null);
         else
           this.resourceChange.emit(
-            this.resourceSelect?.elements
-              .getValue()
-              .find((r) => r.id === resource) || null
+            this.resourcesQuery
+              .getCurrentResult()
+              .data.resources.edges.find((r) => r.node.id === resource)?.node ||
+              null
           );
 
         // clear layout and record

@@ -19,6 +19,7 @@ import {
   Output,
   EventEmitter,
   Inject,
+  TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -52,7 +53,6 @@ import {
 import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
-
 /** Component for the grid widget */
 @Component({
   selector: 'shared-grid-widget',
@@ -67,6 +67,7 @@ export class GridWidgetComponent
   // === TEMPLATE REFERENCE ===
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   // === DATA ===
   @Input() widget: any;
@@ -375,6 +376,13 @@ export class GridWidgetComponent
         return;
       }
     }
+    // Auto modify the selected rows
+    if (options.modifySelectedRows) {
+      await this.promisedRowsModifications(
+        options.modifications,
+        this.grid.selectedRows
+      );
+    }
     const promises: Promise<any>[] = [];
     // Notifies on a channel.
     if (options.notify && this.grid.selectedRows.length > 0) {
@@ -544,7 +552,6 @@ export class GridWidgetComponent
               confirmVariant: 'primary',
             }).closed
           );
-
           if (confirm) {
             await this.promisedRowsModifications(
               options.modifications,
@@ -559,7 +566,6 @@ export class GridWidgetComponent
         }
       }
     }
-
     this.grid.reloadData();
   }
 

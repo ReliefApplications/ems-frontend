@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as Survey from 'survey-angular';
+import { Model, SurveyModel, settings } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -105,10 +105,10 @@ export class FormBuilderService {
     structure: string,
     fields: Metadata[] = [],
     record?: RecordModel
-  ): Survey.SurveyModel {
-    Survey.settings.useCachingForChoicesRestful = false;
-    Survey.settings.useCachingForChoicesRestfull = false;
-    const survey = new Survey.Model(structure);
+  ): SurveyModel {
+    settings.useCachingForChoicesRestful = false;
+    settings.useCachingForChoicesRestfull = false;
+    const survey = new Model(structure);
 
     // Add custom variables
     this.formHelpersService.addUserVariables(survey);
@@ -119,6 +119,10 @@ export class FormBuilderService {
     }
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
+    );
+    //Add tooltips to questions if exist
+    survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips
     );
 
     // For each question, if validateOnValueChange is true, we will add a listener to the value change event
@@ -198,6 +202,7 @@ export class FormBuilderService {
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
+    survey.applyTheme({ isPanelless: true });
     return survey;
   }
 
@@ -210,7 +215,7 @@ export class FormBuilderService {
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
@@ -248,10 +253,7 @@ export class FormBuilderService {
     survey.onDownloadFile.add((_, options: any) =>
       this.onDownloadFile(options)
     );
-    survey.onUpdateQuestionCssClasses.add((_, options: any) =>
-      this.onSetCustomCss(options)
-    );
-    survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+    survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
     });
@@ -348,15 +350,6 @@ export class FormBuilderService {
     }
   }
 
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += 'shared-qst-content';
-  }
   /**
    * Updates the field with the specified information.
    *

@@ -31,6 +31,7 @@ type WorkflowContext = {
 export class WorkflowService {
   /** Current workflow */
   private workflow = new BehaviorSubject<Workflow | null>(null);
+
   /** @returns Current workflow as observable */
   get workflow$(): Observable<Workflow | null> {
     return this.workflow.asObservable();
@@ -38,13 +39,14 @@ export class WorkflowService {
 
   /** Emits a value when the user navigates to next/previous step */
   public nextStep = new EventEmitter<void>();
-
   /** Current workflow context */
   private workflowContext = new BehaviorSubject<WorkflowContext>(null);
+
   /** @returns Current workflow context as observable */
   get workflowContext$(): Observable<WorkflowContext> {
     return this.workflowContext.asObservable();
   }
+
   /**
    * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
    *
@@ -158,34 +160,99 @@ export class WorkflowService {
           },
         })
         .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.step.one'),
-                error: errors[0].message,
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.step.one'),
+            step.name
+          );
+          if (!errors && data) {
+            const newWorkflow: Workflow = {
+              ...workflow,
+              steps: workflow.steps?.map((x) => {
+                if (x.id === step.id) {
+                  x = { ...x, name: step.name };
+                }
+                return x;
               }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one').toLowerCase(),
-                  value: step.name,
-                })
-              );
-              const newWorkflow: Workflow = {
-                ...workflow,
-                steps: workflow.steps?.map((x) => {
-                  if (x.id === step.id) {
-                    x = { ...x, name: step.name };
-                  }
-                  return x;
-                }),
-              };
-              this.workflow.next(newWorkflow);
-              if (callback) callback();
-            }
+            };
+            this.workflow.next(newWorkflow);
+            if (callback) callback();
+          }
+        });
+    }
+  }
+
+  /**
+   * Update step icon, sending a mutation to the back-end.
+   *
+   * @param step Edited step
+   * @param icon new icon
+   * @param callback callback method, allow the component calling the service to do some logic.
+   */
+  updateStepIcon(step: Step, icon: string, callback?: any): void {
+    const workflow = this.workflow.getValue();
+    if (workflow) {
+      this.apollo
+        .mutate<EditStepMutationResponse>({
+          mutation: EDIT_STEP,
+          variables: {
+            id: step.id,
+            icon,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.step.one'),
+            step.name
+          );
+          if (!errors && data) {
+            const newWorkflow: Workflow = {
+              ...workflow,
+              steps: workflow.steps?.map((x) => {
+                if (x.id === step.id) {
+                  x = { ...x, icon: data.editStep.icon };
+                }
+                return x;
+              }),
+            };
+            this.workflow.next(newWorkflow);
+            if (callback) callback();
+          }
+        });
+    }
+  }
+
+  /**
+   * Update step permissions, sending a mutation to the back-end.
+   *
+   * @param step Edited step
+   * @param permissions new permissions
+   * @param callback callback method, allow the component calling the service to do some logic.
+   */
+  updateStepPermissions(step: Step, permissions: any, callback?: any): void {
+    const workflow = this.workflow.getValue();
+    if (workflow) {
+      this.apollo
+        .mutate<EditStepMutationResponse>({
+          mutation: EDIT_STEP,
+          variables: {
+            id: step.id,
+            permissions,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.step.one')
+          );
+          if (!errors && data) {
+            const newWorkflow: Workflow = {
+              ...workflow,
+              permissions: data.editStep.permissions,
+            };
+            this.workflow.next(newWorkflow);
+            if (callback) callback(data.editStep.permissions);
           }
         });
     }

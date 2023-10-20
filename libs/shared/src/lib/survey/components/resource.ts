@@ -3,27 +3,28 @@ import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
 } from '../graphql/queries';
-import * as SurveyCreator from 'survey-creator';
+import {
+  ComponentCollection,
+  JsonMetadata,
+  Question,
+  Serializer,
+  SurveyModel,
+  SvgRegistry,
+} from 'survey-core';
 import { resourceConditions } from './resources';
 import { Dialog } from '@angular/cdk/dialog';
-import {
-  FormControl,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
-import { ResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
-import { DomService } from '../../services/dom/dom.service';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import {
   buildSearchButton,
   buildAddButton,
   processNewCreatedRecords,
 } from './utils';
 import get from 'lodash/get';
-import { Question, QuestionResource } from '../types';
-import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { Question as SharedQuestion, QuestionResource } from '../types';
 import { Record } from '../../models/record.model';
-import { TestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
-import { NgZone } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
+import { registerCustomPropertyEditor } from './utils/component-register';
+import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { ResourceQueryResponse } from '../../models/resource.model';
 
 /** Question's temporary records */
@@ -62,26 +63,24 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
     survey.setVariable(`${question.name}.${field}`, data[field]);
   }
 };
+
 /**
  * Inits the resource question component of for survey.
  *
- * @param Survey Survey library
- * @param domService Shared DOM service
- * @param apollo Apollo client
- * @param dialog Dialog
- * @param fb Angular form service
+ * @param injector Parent instance angular injector containing all needed services and directives
+ * @param componentCollectionInstance Survey component collection instance
  * @param ngZone Angular Service to execute code inside Angular environment
  * @param document Document
  */
 export const init = (
-  Survey: any,
-  domService: DomService,
-  apollo: Apollo,
-  dialog: Dialog,
-  fb: UntypedFormBuilder,
+  injector: Injector,
+  componentCollectionInstance: ComponentCollection,
   ngZone: NgZone,
   document: Document
 ): void => {
+  const apollo = injector.get(Apollo);
+  const dialog = injector.get(Dialog);
+
   const getResourceById = (data: { id: string }) =>
     apollo.query<ResourceQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
@@ -127,7 +126,7 @@ export const init = (
   // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
   // registers icon-resource in the SurveyJS library
-  Survey.SvgRegistry.registerIconFromSvg(
+  SvgRegistry.registerIconFromSvg(
     'resource',
     '<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>'
   );
@@ -164,31 +163,17 @@ export const init = (
     resourceFieldsName: [] as any[],
     /** Initiate the resource question component */
     onInit(): void {
-      const serializer: JsonMetadata = Survey.Serializer;
+      const serializer: JsonMetadata = Serializer;
       serializer.addProperty('resource', {
         name: 'resource',
         category: 'Custom Questions',
-        type: 'resourceDropdown',
+        type: CustomPropertyGridComponentTypes.resourcesDropdown,
         visibleIndex: 3,
         required: true,
       });
 
-      const resourceEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const question = editor.object;
-          const dropdown = domService.appendComponentToBody(
-            ResourceDropdownComponent,
-            htmlElement
-          );
-          const instance: ResourceDropdownComponent = dropdown.instance;
-          instance.resource = question.resource;
-          instance.choice.subscribe((res) => editor.onChanged(res));
-        },
-      };
-
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourceDropdown',
-        resourceEditor
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourcesDropdown
       );
 
       serializer.addProperty('resource', {
@@ -228,7 +213,7 @@ export const init = (
       // Build set available grid fields button
       serializer.addProperty('resource', {
         name: 'Search resource table',
-        type: 'resourceFields',
+        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
         isRequired: true,
         category: 'Custom Questions',
         dependsOn: ['resource'],
@@ -236,100 +221,22 @@ export const init = (
         visibleIndex: 5,
       });
 
-      const availableFieldsEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const btn = document.createElement('button');
-          btn.innerText = 'Available grid fields';
-          btn.style.width = '100%';
-          btn.style.border = 'none';
-          btn.style.padding = '10px';
-          htmlElement.appendChild(btn);
-          btn.onclick = () => {
-            const currentQuestion = editor.object;
-            getResourceById({ id: currentQuestion.resource }).subscribe(
-              async ({ data }) => {
-                if (data.resource && data.resource.name) {
-                  const nameTrimmed = data.resource.name
-                    .replace(/\s/g, '')
-                    .toLowerCase();
-                  const { ConfigDisplayGridFieldsModalComponent } =
-                    await import(
-                      '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
-                    );
-                  const dialogRef = dialog.open(
-                    ConfigDisplayGridFieldsModalComponent,
-                    {
-                      data: {
-                        form: !currentQuestion.gridFieldsSettings
-                          ? null
-                          : this.convertFromRawToFormGroup(
-                              currentQuestion.gridFieldsSettings
-                            ),
-                        resourceName: nameTrimmed,
-                      },
-                    }
-                  );
-                  dialogRef.closed.subscribe((res: any) => {
-                    if (res && res.value.fields) {
-                      currentQuestion.gridFieldsSettings = res.getRawValue();
-                    }
-                  });
-                }
-              }
-            );
-          };
-        },
-      };
-
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourceFields',
-        availableFieldsEditor
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourcesAvailableFields
       );
 
       serializer.addProperty('resource', {
         name: 'test service',
+        type: CustomPropertyGridComponentTypes.resourceTestService,
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
         visibleIf: visibleIfResourceAndDisplayField,
-        type: 'resourceTestService',
         visibleIndex: 3,
       });
 
-      const testServiceEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const question = editor.object;
-          let dropdownDiv: HTMLDivElement | null = null;
-          const updateDropdownInstance = () => {
-            if (question.displayField) {
-              if (dropdownDiv) {
-                dropdownDiv.remove();
-              }
-              dropdownDiv = document.createElement('div');
-              const instance = createTestServiceInstance(dropdownDiv);
-              if (instance) {
-                instance.resource = question.resource;
-                instance.record = question['test service'];
-                instance.textField = question.displayField;
-                instance.choice.subscribe((res: any) => editor.onChanged(res));
-              }
-              htmlElement.appendChild(dropdownDiv);
-            }
-          };
-          question.registerFunctionOnPropertyValueChanged(
-            'displayField',
-            updateDropdownInstance,
-            // eslint-disable-next-line no-underscore-dangle
-            editor.property_.name // a unique key to distinguish multiple
-          );
-
-          updateDropdownInstance();
-        },
-      };
-
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourceTestService',
-        testServiceEditor
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourceTestService
       );
 
       serializer.addProperty('resource', {
@@ -361,6 +268,17 @@ export const init = (
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
         visibleIndex: 3,
       });
+      // Build set available grid fields button
+      serializer.addProperty('resource', {
+        name: 'Search resource table',
+        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
+        isRequired: true,
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
+        visibleIndex: 5,
+      });
+
       serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
@@ -406,7 +324,7 @@ export const init = (
             ];
             (obj.survey as SurveyModel)
               .getAllQuestions()
-              .forEach((question: Question) => {
+              .forEach((question: SharedQuestion) => {
                 if (question.id !== obj.id) {
                   questions.push(question.name);
                 }
@@ -466,8 +384,8 @@ export const init = (
       });
       serializer.addProperty('resource', {
         category: 'Filter by Questions',
-        type: 'selectResourceText',
-        name: 'selectResourceText',
+        name: 'selectResourceText:boolean',
+        type: CustomPropertyGridComponentTypes.resourceSelectText,
         displayName: 'Select a resource',
         dependsOn: ['resource', 'displayField'],
         visibleIf: visibleIfResourceAndDisplayField,
@@ -486,22 +404,13 @@ export const init = (
         },
       });
 
-      const selectResourceText = {
-        render: (editor: any, htmlElement: HTMLElement): void => {
-          const text = document.createElement('div');
-          text.innerHTML =
-            'First you have to select a resource before set filters';
-          htmlElement.appendChild(text);
-        },
-      };
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'selectResourceText',
-        selectResourceText
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourceSelectText
       );
 
       serializer.addProperty('resource', {
         category: 'Filter by Questions',
-        type: 'customFilter',
+        type: CustomPropertyGridComponentTypes.resourceCustomFilters,
         name: 'customFilterEl',
         displayName: 'Custom Filter',
         dependsOn: ['resource', 'selectQuestion'],
@@ -510,32 +419,8 @@ export const init = (
         visibleIndex: 3,
       });
 
-      const customFilterElements = {
-        render: (editor: any, htmlElement: HTMLElement): void => {
-          const text = document.createElement('div');
-          text.innerHTML =
-            'You can use curly brackets to get access to the question values.' +
-            '<br><b>field</b>: select the field to be filter by.' +
-            '<br><b>operator</b>: contains, =, !=, >, <, >=, <=' +
-            '<br><b>value:</b> {question1} or static value' +
-            '<br><b>Example:</b>' +
-            '<br>[{' +
-            '<br>"field": "name",' +
-            '<br>"operator":"contains",' +
-            '<br>"value": "Laura"' +
-            '<br>},' +
-            '<br>{' +
-            '<br>"field":"age",' +
-            '<br>"operator": ">",' +
-            '<br>"value": "{question1}"' +
-            '<br>}]';
-          htmlElement.appendChild(text);
-        },
-      };
-
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'customFilter',
-        customFilterElements
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourceCustomFilters
       );
 
       serializer.addProperty('resource', {
@@ -549,27 +434,27 @@ export const init = (
         visibleIndex: 4,
       });
 
-      Survey.Serializer.addProperty('resource', {
+      serializer.addProperty('resource', {
         name: 'newCreatedRecords',
         category: 'Custom Questions',
         visible: false,
       });
 
-      Survey.Serializer.addProperty('resource', {
+      serializer.addProperty('resource', {
         name: 'afterRecordCreation',
-        type: 'text',
+        // type: 'expression',
         category: 'logic',
       });
 
-      Survey.Serializer.addProperty('resource', {
+      serializer.addProperty('resource', {
         name: 'afterRecordSelection',
-        type: 'text',
+        // type: 'expression',
         category: 'logic',
       });
 
-      Survey.Serializer.addProperty('resource', {
+      serializer.addProperty('resource', {
         name: 'afterRecordDeselection',
-        type: 'text',
+        // type: 'expression',
         category: 'logic',
       });
     },
@@ -673,15 +558,11 @@ export const init = (
      * @param propertyName The name of the property
      */
     onPropertyChanged(question: QuestionResource, propertyName: string): void {
-      if (propertyName === 'selectQuestion') {
-        question.customFilter = '';
-      }
       if (propertyName === 'resource') {
         question.displayField = null;
         this.filters = [];
         this.resourceFieldsName = [];
         question.addRecord = false;
-        question.alwaysCreateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
@@ -742,7 +623,7 @@ export const init = (
         );
         actionsButtons.appendChild(addBtn);
 
-        const parentElement = el.querySelector('.shared-qst-content');
+        const parentElement = el.querySelector('.sd-question__content');
         if (parentElement) {
           parentElement.insertBefore(actionsButtons, parentElement.firstChild);
         }
@@ -779,18 +660,8 @@ export const init = (
         });
       }
     },
-    convertFromRawToFormGroup: (
-      gridSettingsRaw: any
-    ): UntypedFormGroup | null => {
-      if (!gridSettingsRaw.fields) {
-        return null;
-      }
-      const auxForm = fb.group(gridSettingsRaw);
-      auxForm.controls.fields.setValue(gridSettingsRaw.fields);
-      return auxForm;
-    },
   };
-  Survey.ComponentCollection.Instance.add(component);
+  componentCollectionInstance.add(component);
 
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
@@ -807,22 +678,5 @@ export const init = (
         }
       });
     }
-  };
-
-  /**
-   * Creates the TestServiceDropdownComponent instance for the test service property
-   *
-   * @param htmlElement - The element that the directive is attached to.
-   * @returns The TestServiceDropdownComponent instance
-   */
-  const createTestServiceInstance = (
-    htmlElement: any
-  ): TestServiceDropdownComponent => {
-    const dropdown = domService.appendComponentToBody(
-      TestServiceDropdownComponent,
-      htmlElement
-    );
-    const instance: TestServiceDropdownComponent = dropdown.instance;
-    return instance;
   };
 };

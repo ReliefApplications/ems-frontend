@@ -3,12 +3,19 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { IconName } from '../icon-picker.const';
+import { FaIconName, getIconDefinition } from '@oort-front/ui';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import {
+  IconName,
+  icon as iconCreator,
+} from '@fortawesome/fontawesome-svg-core';
 
 /**
  * Icon picker popup component
@@ -18,16 +25,19 @@ import { IconName } from '../icon-picker.const';
   templateUrl: './icon-picker-popup.component.html',
   styleUrls: ['./icon-picker-popup.component.scss'],
 })
-export class IconPickerPopupComponent implements OnInit {
+export class IconPickerPopupComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<string> = new EventEmitter();
   public searchControl = new FormControl('');
   private show = true;
   @Input() icons!: string[];
   @Input() color!: string;
-  @Input() fontFamily = 'fa';
-  private filteredIcons!: BehaviorSubject<IconName[]>;
-  public filteredIcons$!: Observable<IconName[]>;
+  private filteredIcons!: BehaviorSubject<FaIconName[]>;
+  public filteredIcons$!: Observable<FaIconName[]>;
+  public svgIcons: any = {};
 
   /** Listen to click event on the document */
   @HostListener('click')
@@ -45,6 +55,13 @@ export class IconPickerPopupComponent implements OnInit {
   }
 
   /**
+   * Constructor of the IconPickerPopupComponent in order to extend the UnsubscribeComponent class
+   */
+  constructor() {
+    super();
+  }
+
+  /**
    * Select icon
    *
    * @param icon icon name
@@ -53,20 +70,45 @@ export class IconPickerPopupComponent implements OnInit {
     this.close.emit(icon);
     this.show = false;
   }
+
   // this.filteredIcons.next(this.icons);
   ngOnInit(): void {
-    this.searchControl.valueChanges.subscribe((value) => {
-      if (value) {
-        this.filteredIcons.next(
-          this.icons.filter((icon: string) =>
-            icon.toLowerCase().includes(value.toLowerCase())
-          )
-        );
-      } else {
-        this.filteredIcons.next(this.icons);
-      }
-    });
-    this.filteredIcons = new BehaviorSubject<IconName[]>(this.icons);
+    this.searchControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.filteredIcons.next(
+            this.icons.filter((icon: string) =>
+              icon.toLowerCase().includes(value.toLowerCase())
+            )
+          );
+        } else {
+          this.filteredIcons.next(this.icons);
+        }
+      });
+    this.filteredIcons = new BehaviorSubject<FaIconName[]>(this.icons);
     this.filteredIcons$ = this.filteredIcons.asObservable();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['icons']?.currentValue !== changes['icons']?.previousValue) {
+      this.createIconsSvgs();
+    }
+  }
+
+  /**
+   * Create related svg icons for the given icon list
+   */
+  private createIconsSvgs() {
+    this.svgIcons = {};
+    this.icons.forEach((icon) => {
+      const iconDef = getIconDefinition(icon as IconName);
+      const i = iconCreator(iconDef, {
+        styles: {
+          ...(this.color && { color: this.color }),
+        },
+      });
+      this.svgIcons[icon] = i.html[0];
+    });
   }
 }

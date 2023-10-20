@@ -1,16 +1,6 @@
-<span>{{ data.message }}</span>
-<ui-spinner [size]="'medium'" *ngIf="data.loading"></ui-spinner>
-<ng-container *ngIf="!data.loading">
-  <ui-icon
-    class="h-6"
-    *ngIf="!data.error"
-    icon="check"
-    variant="success"
-  ></ui-icon>
-  <ui-icon
-    class="h-6"
-    *ngIf="data.error"
-    icon="error"
-    variant="danger"
-  ></ui-icon>
+<span>{{ message }}</span>
+<ui-spinner [size]="'medium'" *ngIf="loading"></ui-spinner>
+<ng-container *ngIf="!loading">
+  <ui-icon class="h-6" *ngIf="!error" icon="check" variant="success"></ui-icon>
+  <ui-icon class="h-6" *ngIf="error" icon="error" variant="danger"></ui-icon>
 </ng-container>

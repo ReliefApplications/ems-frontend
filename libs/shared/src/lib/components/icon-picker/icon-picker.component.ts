@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostBinding,
@@ -7,16 +8,25 @@ import {
   Input,
   OnDestroy,
   Optional,
+  Renderer2,
   Self,
   forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { FA_ICONS, IconName } from './icon-picker.const';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { FormControlComponent } from '@oort-front/ui';
+import {
+  FA_ICONS,
+  FaIconName,
+  FormControlComponent,
+  getIconDefinition,
+} from '@oort-front/ui';
+import {
+  IconName,
+  icon as iconCreator,
+} from '@fortawesome/fontawesome-svg-core';
 
-type FormFieldValue = IconName | null;
+type FormFieldValue = FaIconName | null;
 
 /**
  * Icon picker that loads the icon list with the given font family to display those icons as a grid
@@ -34,14 +44,20 @@ type FormFieldValue = IconName | null;
 })
 export class IconPickerComponent
   extends FormControlComponent
-  implements ControlValueAccessor, OnDestroy
+  implements ControlValueAccessor, OnDestroy, AfterViewInit
 {
+  /** Static variable to keep track of id increment. */
   static nextId = 0;
-
+  /** Array of icons. */
   public icons: string[] = FA_ICONS;
+  /** Primary color for the icon. */
   private primaryColor!: string;
+  /** Input decorator for color */
   @Input() color: string = this.primaryColor;
+  /** Boolean to control the visibility of the list. */
   public showList = false;
+  /** Timeout listener */
+  private setIconTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Gets the value
@@ -58,9 +74,9 @@ export class IconPickerComponent
     this.stateChanges.next();
   }
 
-  @Input() fontFamily = 'fa';
-
+  /** Subject to emit state changes. */
   public stateChanges = new Subject<void>();
+  /** HostBinding decorator for id. */
   @HostBinding()
   id = `shared-icon-picker-${IconPickerComponent.nextId++}`;
 
@@ -80,8 +96,12 @@ export class IconPickerComponent
     this.ePlaceholder = plh;
     this.stateChanges.next();
   }
+
+  /** Private variable for placeholder. */
   private ePlaceholder = '';
+  /** Boolean to track focus state. */
   public focused = false;
+  /** Boolean to track touch state. */
   public touched = false;
 
   /**
@@ -121,6 +141,8 @@ export class IconPickerComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+
+  /** Private variable to track if the field is required. */
   private isRequired = false;
 
   /**
@@ -152,8 +174,9 @@ export class IconPickerComponent
     // return this.selected.invalid && this.touched;
   }
 
+  /** The type of control. */
   public controlType = 'shared-icon-picker';
-
+  /** Input decorator for aria-describedby. */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
@@ -177,11 +200,13 @@ export class IconPickerComponent
    * Icon picker component
    *
    * @param environment platform environment
-   * @param elementRef shared element ref service
-   * @param ngControl form control shared service
+   * @param {Renderer2} renderer Renderer2 to safely manipulate DOM
+   * @param {ElementRef<HTMLElement>} elementRef shared element ref service
+   * @param {NgControl} ngControl form control shared service
    */
   constructor(
     @Inject('environment') environment: any,
+    private renderer: Renderer2,
     private elementRef: ElementRef<HTMLElement>,
     @Optional() @Self() public ngControl: NgControl
   ) {
@@ -192,10 +217,23 @@ export class IconPickerComponent
     }
   }
 
+  /** Function to handle touch events. */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
+
+  /**
+   * Function to handle change events.
+   *
+   * @param _ value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   onChange = (_: any) => {};
+
+  ngAfterViewInit(): void {
+    if (this.value) {
+      this.appendIconSvgToDOM(this.value);
+    }
+  }
 
   /**
    * Sets element ids that should be used for the aria-describedby attribute of your control
@@ -257,8 +295,34 @@ export class IconPickerComponent
     this.showList = false;
     if (icon) {
       this.value = icon;
+      // In order to render the value container after it contains value we set the timeout
+      if (this.setIconTimeoutListener) {
+        clearTimeout(this.setIconTimeoutListener);
+      }
+      this.setIconTimeoutListener = setTimeout(() => {
+        this.appendIconSvgToDOM(icon);
+      }, 0);
       this.onTouched();
     }
+  }
+
+  /**
+   * Creates an svg with the given fa icon and inserts it in the DOM
+   *
+   * @param {string} icon Icon from where to create the icon definition for the svg to insert
+   */
+  private appendIconSvgToDOM(icon: string) {
+    const wrapper = this.elementRef.nativeElement.querySelector('span');
+    if (wrapper?.children.length) {
+      this.renderer.removeChild(wrapper, wrapper.children[0]);
+    }
+    const iconDef = getIconDefinition(icon as IconName);
+    const i = iconCreator(iconDef, {
+      styles: {
+        ...(this.color && { color: this.color }),
+      },
+    });
+    this.renderer.appendChild(wrapper, i.node[0]);
   }
 
   /**
@@ -297,7 +361,11 @@ export class IconPickerComponent
     }
   }
 
+  /** Function to handle component destruction. */
   ngOnDestroy(): void {
     this.stateChanges.complete();
+    if (this.setIconTimeoutListener) {
+      clearTimeout(this.setIconTimeoutListener);
+    }
   }
 }

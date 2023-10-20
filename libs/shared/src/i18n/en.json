@@ -2,7 +2,10 @@
 	"common": {
 		"access": "Access",
 		"accessDenied": "Access denied",
+		"account": "Account",
+		"actions": "Actions",
 		"add": "Add",
+		"adminField": "Admin field",
 		"aggregation": {
 			"few": "Aggregations",
 			"none": "No aggregation",
@@ -42,6 +45,7 @@
 				"clear": "Clear search"
 			}
 		},
+		"asc": "Ascending",
 		"attribute": {
 			"few": "Attributes",
 			"none": "No attribute",
@@ -76,6 +80,68 @@
 		"copy": "Copy",
 		"create": "Create",
 		"createdOn": "Created on",
+		"cronEditor": {
+			"advanced": "Advanced",
+			"atTime": "At",
+			"daily": "Daily",
+			"day": "Day",
+			"days": "Day(s)",
+			"every": {
+				"feminine": "Every",
+				"masculine": "Every"
+			},
+			"firstWeekDay": "First week day",
+			"hourly": "Hourly",
+			"hours": "Hour(s)",
+			"lastDay": "Last day",
+			"lastWeekDay": "Last week day",
+			"minutely": "Minutely",
+			"minutes": "Minute(s)",
+			"month": "Month",
+			"monthly": "Monthly",
+			"months": {
+				"april": "April",
+				"august": "August",
+				"december": "December",
+				"february": "February",
+				"january": "January",
+				"july": "July",
+				"june": "June",
+				"march": "March",
+				"may": "May",
+				"november": "November",
+				"october": "October",
+				"september": "September"
+			},
+			"of": "of",
+			"ofEvery": "of every",
+			"onThe": {
+				"feminine": "On the",
+				"masculine": "On the"
+			},
+			"seconds": "Second(s)",
+			"week": "Week",
+			"weekDay": "Week Day (MON-FRI)",
+			"weekDays": {
+				"friday": "Friday",
+				"monday": "Monday",
+				"saturday": "Saturday",
+				"sunday": "Sunday",
+				"thursday": "Thursday",
+				"tuesday": "Tuesday",
+				"wednesday": "Wednesday"
+			},
+			"weekNumber": {
+				"fifth": "Fifth",
+				"first": "First",
+				"fourth": "Fourth",
+				"last": "Last",
+				"second": "Second",
+				"third": "Third"
+			},
+			"weekly": "Weekly",
+			"yearly": "Yearly"
+		},
 		"customNotification": {
 			"few": "Custom notifications",
 			"none": "No Custom notification",
@@ -89,6 +155,7 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
+		"desc": "Descending",
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"distributionList": {
@@ -106,6 +173,7 @@
 			"one": "Email"
 		},
 		"errors": {
+			"few": "Errors",
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
 		"exitFullscreen": "Exit Fullscreen",
@@ -209,10 +277,10 @@
 			"objectNotFound": "{{name}} not found.",
 			"objectNotInvited": "{{name}} invitation failed.",
 			"objectNotReordered": "{{type}} not reordered. {{error}}",
-			"objectNotRestored": "{{type}} not restored. {{error}}",
+			"objectNotRestored": "{{value}} not restored. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
-			"objectRestored": "{{type}} restored.",
+			"objectRestored": "{{value}} restored.",
 			"objectUpdated": "{{value}} {{type}} was successfully edited.",
 			"platformAccessNotGranted": "You don't have a valid access to this platform.",
 			"readAll": "Mark all as read",
@@ -271,6 +339,7 @@
 			"none": "No Reference Data",
 			"one": "Reference Data"
 		},
+		"remove": "Remove",
 		"resource": {
 			"few": "Resources",
 			"none": "No resource",
@@ -310,6 +379,7 @@
 			"none": "No subscription",
 			"one": "Subscription"
 		},
+		"tabs": "Tabs",
 		"template": {
 			"few": "Notification templates",
 			"none": "No template",
@@ -445,6 +515,12 @@
 				"empty": "No content available. Wait for your administrator to build some.",
 				"filter": {
 					"empty": "No filters have been defined by the administrators",
+					"filterPosition": {
+						"bottom": "Show filter on the bottom",
+						"left": "Show filter on the left",
+						"right": "Show filter on the right",
+						"top": "Show filter on the top"
+					},
 					"info": "Dashboard filters can be used between pages to filter their content.",
 					"title": "Dashboard filters configuration"
 				},
@@ -473,6 +549,13 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
+				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Select an icon",
+					"tooltip": {
+						"autoSave": "Changes are automatically saved"
+					}
 				},
 				"show": "Make page visible in nav bar for end-users"
 			},
@@ -672,7 +755,13 @@
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
-			"saveSurvey": "SavingSurvey"
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "Available grid fields",
+					"resourceSelectText": "First you have to select a resource before setting any filters"
+				}
+			},
+			"saveSurvey": "Saving the form"
 		},
 		"formMapProperties": {
 			"geofields": {
@@ -724,6 +813,12 @@
 				"select": "Select a field"
 			},
 			"preview": "Preview and revert"
+		},
+		"icon": {
+			"modal": {
+				"select": "Select an icon",
+				"use": "Use icon"
+			}
 		},
 		"logout": {
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
@@ -922,6 +1017,7 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
+			"editAs": "Edit as",
 			"paginator": {
 				"ariaLabel": "Select page of records"
 			},
@@ -1082,6 +1178,7 @@
 			"invite": {
 				"confirm": "Invite",
 				"role": {
+					"additionalAttributes": "Set additional attributes",
 					"description": "Select the role to assign"
 				}
 			},
@@ -1144,6 +1241,7 @@
 				"actions": {
 					"detail": "Open detail",
 					"downloadReport": "Download",
+					"goTo": "Go to page",
 					"history": "Show history"
 				},
 				"errors": {
@@ -1205,6 +1303,7 @@
 				"openSettings": "Open settings",
 				"tooltip": {
 					"displayMap": "Display map",
+					"openPage": "Navigate to page",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
 					"uploadFailed": "Record not saved. Click to see more details"
@@ -1293,11 +1392,21 @@
 						"delete": "Delete records",
 						"export": "Export records",
 						"inline": "Inline edition",
+						"navigateToPage": "Navigate to page",
+						"pageUrl": {
+							"label": "Target page",
+							"placeholder": "Select a page"
+						},
+						"pageUrlTitle": {
+							"label": "Column name",
+							"placeholder": "Type a title for the column..."
+						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
-						"update": "Update records"
+						"update": "Update records",
+						"useRecordId": "Pass id as query parameter"
 					},
 					"aggregations": {
 						"add": {
@@ -1357,6 +1466,7 @@
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
 							"inline": "If authorized, user can edit records in the grid",
+							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
@@ -1381,12 +1491,13 @@
 						"title": "Grid layouts"
 					},
 					"tooltip": {
-						"template": "Select a template for addition and edition of records"
+						"template": "Select a template for addition and edition of records",
+						"useRecordId": "Url will contain id of the item, in order to redirect to contextual page, if configured"
 					}
 				},
 				"iconPicker": {
 					"default": "Default",
-					"placeholder": "Search an icon"
+					"placeholder": "Click to select an icon"
 				},
 				"map": {
 					"basemap": "Base map",
@@ -1395,11 +1506,16 @@
 					"edit": {
 						"aggregation": "Aggregation",
 						"cluster": {
+							"autoSizeCluster": "Cluster auto-sizing",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
+							"clustering": "Clustering",
 							"fields": "Cluster fields",
+							"font": "Font",
+							"fontSize": "Font size",
 							"high": "High",
 							"label": "Cluster label",
+							"lightMode": "Light mode",
 							"low": "Low",
 							"max": "Max",
 							"min": "Min",
@@ -1417,6 +1533,7 @@
 						"groupLayers": "Group layers",
 						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
+						"layerEdition": "Layer edition",
 						"layerProperties": "Layer properties",
 						"layerStyling": "Layer styling",
 						"popup": "Pop-up",
@@ -1565,6 +1682,10 @@
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"cluster": {
+							"autoSize": "If enabled, size of clusters is automated. Else, you can select one.",
+							"lightMode": "If enabled, label uses white. Else, it displays in black."
+						},
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
 							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
@@ -1599,6 +1720,10 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"gridActions": {
+							"title": "Grid actions",
+							"tooltip": "Enabled grid actions"
+						},
 						"preview": {
 							"title": "Preview"
 						},
@@ -1630,6 +1755,10 @@
 						"ariaLabel": "Select an option"
 					},
 					"static": "Static"
+				},
+				"tabs": {
+					"addNewTab": "Add a new tab",
+					"deleteTab": "Delete tab"
 				}
 			},
 			"styling": "Edit styling",
@@ -2026,6 +2155,7 @@
 			"sorting": {
 				"add": "Add a field",
 				"delete": "Delete sort field",
+				"empty": "No sort field set",
 				"field": "Field",
 				"label": "Label",
 				"management": "Sort fields",

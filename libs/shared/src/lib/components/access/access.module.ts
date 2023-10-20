@@ -13,6 +13,7 @@ import {
   FormWrapperModule,
   DialogModule,
 } from '@oort-front/ui';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * AccessModule is a class used to manage all the modules and components related to the access properties.
@@ -31,7 +32,8 @@ import {
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
+    AbilityModule,
   ],
-  exports: [AccessComponent],
+  exports: [AccessComponent, EditAccessComponent],
 })
 export class AccessModule {}

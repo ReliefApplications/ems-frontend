@@ -1,9 +1,14 @@
 import Color from 'color';
-import { IconName } from '../../../icon-picker/icon-picker.const';
 import * as L from 'leaflet';
+import { LayerSymbol } from '../../../../models/layer.model';
+import {
+  IconName,
+  icon as createIcon,
+} from '@fortawesome/fontawesome-svg-core';
+import { FaIconName, getIconDefinition } from '@oort-front/ui';
 
 export type MarkerIconOptions = {
-  icon: IconName | 'leaflet_default';
+  icon: FaIconName | 'leaflet_default';
   color: string;
   size: number;
   opacity: number;
@@ -43,11 +48,17 @@ const createFontAwesomeIcon = (
   span.style.opacity = opacity.toString();
 
   // create an i element for the icon
-  const i = document.createElement('i');
-  i.className = `fa fa-${icon}`;
-
+  const iconDef = getIconDefinition(icon as IconName);
+  const i = createIcon(iconDef, {
+    styles: {
+      height: `${size}px`,
+      width: `${size}px`,
+      'line-height': `${size}px`,
+      'font-size': `${size}px`,
+    },
+  });
   // append the i element to the span element
-  span.appendChild(i);
+  span.appendChild(i.node[0]);
 
   return span;
 };
@@ -137,30 +148,37 @@ export const createCustomDivIcon = (
 /**
  * Create cluster div icon
  *
- * @param color color to apply
+ * @param symbol cluster symbol
  * @param opacity opacity to apply
  * @param childCount Cluster children count
+ * @param lightMode boolean to set text color to white or black
+ * @param fontSize font size for the number displayed inside of the cluster marker
+ * @param autoSize boolean to auto size cluster
  * @returns leaflet div icon
  */
 export const createClusterDivIcon = (
-  color: string,
+  symbol: LayerSymbol,
   opacity: number,
-  childCount: number
+  childCount: number,
+  lightMode: boolean,
+  fontSize: number,
+  autoSize: boolean
 ) => {
   // const htmlTemplate = document.createElement('label');
   // htmlTemplate.textContent = childCount.toString();
-  const size =
-    (childCount / 50) * (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
-    MIN_CLUSTER_SIZE;
+  const size = autoSize
+    ? (childCount / 50) * (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
+      MIN_CLUSTER_SIZE
+    : symbol.size;
   const mainColor = Color.rgb(
     // eslint-disable-next-line no-extra-boolean-cast
-    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+    Boolean(symbol.color) ? symbol.color : DEFAULT_MARKER_ICON_OPTIONS.color
   )
     .fade(0.2)
     .toString();
   const ringColor = Color.rgb(
     // eslint-disable-next-line no-extra-boolean-cast
-    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+    Boolean(symbol.color) ? symbol.color : DEFAULT_MARKER_ICON_OPTIONS.color
   )
     .fade(0.7)
     .toString();
@@ -168,9 +186,15 @@ export const createClusterDivIcon = (
   background-color: ${mainColor};
   opacity: ${opacity};
   --tw-ring-color: ${ringColor};
+  color: ${lightMode ? 'white' : 'black'};
+  ${
+    lightMode
+      ? 'text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;'
+      : ''
+  }
   `;
   return L.divIcon({
-    html: `<div style="${styles}" class="ring-4"><span>${childCount}</span></div>`,
+    html: `<div style="${styles}" class="ring-4"><span style="font-size: ${fontSize}px">${childCount}</span></div>`,
     className: `leaflet-data-cluster`,
     iconSize: L.point(size, size),
   });

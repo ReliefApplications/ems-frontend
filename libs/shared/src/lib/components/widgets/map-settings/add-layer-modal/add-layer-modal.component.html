@@ -1,8 +1,8 @@
 <ui-dialog size="small">
   <ng-container ngProjectsAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{ 'components.widget.settings.map.layers.chooseLayer' | translate }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form class="flex flex-col">
@@ -21,7 +21,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button [uiDialogClose]="'discard'">{{
+    <ui-button [uiDialogClose]="'discard'" variant="default">{{
       'common.close' | translate
     }}</ui-button>
     <ui-button

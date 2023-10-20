@@ -1,5 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
+import { DELETE_RESOURCE, ADD_FORM } from './graphql/mutations';
+import { GET_RESOURCES_EXTENDED } from './graphql/queries';
 import {
   AddFormMutationResponse,
   DeleteResourceMutationResponse,
@@ -7,7 +9,6 @@ import {
   ConfirmService,
   UnsubscribeComponent,
   ResourcesQueryResponse,
-  DuplicateResourceMutationResponse,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';

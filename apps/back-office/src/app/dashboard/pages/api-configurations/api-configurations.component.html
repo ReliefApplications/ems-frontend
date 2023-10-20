@@ -1,82 +1,23 @@
-<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
-  <!-- Filters -->
-  <div class="flex flex-col gap-x-4">
-    <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
-      <!-- Search text filter -->
-      <div uiFormFieldDirective>
-        <ui-icon icon="search" uiPrefix></ui-icon>
-        <input
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          type="text"
-          [placeholder]="'common.placeholder.search' | translate"
-        />
-      </div>
-      <!-- Toggle advanced filters -->
-      <ui-button
-        class="max-sm:!w-auto"
-        icon="filter_list"
-        category="tertiary"
-        variant="primary"
-        (click)="showFilters = !showFilters"
-      >
-        {{
-          showFilters
-            ? ('common.filter.hide' | translate)
-            : ('common.filter.show' | translate)
-        }}
-      </ui-button>
-    </div>
-    <!-- Advanced filters -->
-    <div
-      *ngIf="showFilters"
-      class="flex flex-wrap gap-x-2 sm:items-center flex-col sm:flex-row"
+<div class="mb-8 flex flex-col gap-2">
+  <div class="flex gap-8 justify-between flex-col sm:flex-row">
+    <app-api-configuration-filter
+      #filter
+      (filter)="applyFilter($event)"
+      [loading]="loading"
     >
-      <!-- Status filter -->
-      <div
-        uiFormFieldDirective
-        [outline]="false"
-        class="w-44"
-        [defaultMargin]="false"
-      >
-        <label>{{ 'common.status' | translate }}</label>
-        <ui-select-menu
-          [ngModel]="statusFilter"
-          (selectedOption)="applyFilter('status', $event)"
-          [placeholder]="'common.selectStatus' | translate"
-        >
-          <ui-select-option>-</ui-select-option>
-          <ui-select-option value="active">
-            {{ 'common.status_active' | translate }}
-          </ui-select-option>
-          <ui-select-option value="pending">
-            {{ 'common.status_pending' | translate }}
-          </ui-select-option>
-          <ui-select-option value="archived">
-            {{ 'common.status_archived' | translate }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
-      <!-- Clear filters -->
-      <ui-button
-        variant="danger"
-        (click)="clearAllFilters()"
-        class="max-sm:!w-auto"
-        >{{ 'common.filter.clear' | translate }}</ui-button
-      >
-    </div>
+    </app-api-configuration-filter>
+    <!-- Actions -->
+    <ui-button
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="onAdd()"
+      *ngIf="'create' | able : 'ApiConfiguration'"
+    >
+      {{ 'pages.apiConfigurations.create' | translate }}
+    </ui-button>
   </div>
-  <!-- Actions -->
-  <ui-button
-    icon="add"
-    category="secondary"
-    variant="primary"
-    (click)="onAdd()"
-    *ngIf="'create' | able : 'ApiConfiguration'"
-  >
-    {{ 'pages.apiConfigurations.create' | translate }}
-  </ui-button>
+  <ng-container *ngTemplateOutlet="filter.expandedFilter"></ng-container>
 </div>
 
 <!-- Table container -->
@@ -112,29 +53,9 @@
           </span>
         </th>
         <td uiCell *cdkCellDef="let element">
-          <div uiChipList="">
-            <ui-chip
-              class="!rounded-lg"
-              variant="success"
-              *ngIf="element.status === 'active'"
-            >
-              {{ 'common.status_active' | translate | titlecase }}
-            </ui-chip>
-            <ui-chip
-              class="!rounded-lg"
-              variant="warning"
-              *ngIf="element.status === 'pending'"
-            >
-              {{ 'common.status_pending' | translate | titlecase }}
-            </ui-chip>
-            <ui-chip
-              class="!rounded-lg"
-              variant="danger"
-              *ngIf="element.status === 'archived'"
-            >
-              {{ 'common.status_archived' | translate | titlecase }}
-            </ui-chip>
-          </div>
+          <shared-status-options
+            [status]="element.status"
+          ></shared-status-options>
         </td>
       </ng-container>
 
@@ -156,7 +77,7 @@
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
-            [uiTooltip]="'common.options' | translate"
+            [uiTooltip]="'common.actions' | translate"
           >
           </ui-button>
           <ui-menu #menu>

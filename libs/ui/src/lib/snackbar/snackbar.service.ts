@@ -28,6 +28,7 @@ const DEFAULT_SNACKBAR = {
 })
 export class SnackbarService {
   public shadowDom!: any;
+
   /**
    * Shared snackbar service.
    * Snackbar is a brief notification that appears for a short time as a popup.
@@ -53,6 +54,7 @@ export class SnackbarService {
     const appendBody = this.shadowDom ?? this.document.body;
     appendBody.appendChild(snackBar.location.nativeElement);
     this.app.attachView(snackBar.hostView);
+    snackBar.changeDetectorRef.detectChanges();
   }
 
   /**

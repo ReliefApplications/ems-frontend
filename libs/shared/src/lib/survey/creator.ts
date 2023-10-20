@@ -1,12 +1,12 @@
-import { JsonMetadata, Question } from 'survey-angular';
+import { JsonMetadata, Serializer } from 'survey-core';
+import { Question } from './types';
 
 /**
  * Edits general settings of the survey builder.
  *
- * @param Survey Survey library
  */
-export const initCreatorSettings = (Survey: any): void => {
-  const serializer: JsonMetadata = Survey.Serializer;
+export const initCreatorSettings = (): void => {
+  const serializer: JsonMetadata = Serializer;
 
   serializer.findProperty('question', 'name').readOnly = true;
   serializer.findProperty('question', 'name').onGetValue = (obj: Question) =>

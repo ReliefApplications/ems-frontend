@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   component: BarChartComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [BarChartModule, BrowserAnimationsModule],
@@ -37,7 +38,7 @@ export default {
  * @param args story arguments
  * @returns storybook template
  */
-const TEMPLATE: StoryFn<sharedBarChartComponent> = (args) => ({
+const TEMPLATE: StoryFn<BarChartComponent> = (args) => ({
   props: {
     ...args,
   },

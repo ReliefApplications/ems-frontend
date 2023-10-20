@@ -41,10 +41,10 @@ export class TabsComponent extends UnsubscribeComponent {
    * Open settings
    */
   async openSettings(): Promise<void> {
-    const { TileDataComponent } = await import(
-      '../../widget-grid/floating-options/menu/tile-data/tile-data.component'
+    const { EditWidgetModalComponent } = await import(
+      '../../widget-grid/edit-widget-modal/edit-widget-modal.component'
     );
-    const dialogRef = this.dialog.open(TileDataComponent, {
+    const dialogRef = this.dialog.open(EditWidgetModalComponent, {
       disableClose: true,
       data: {
         tile: this.widget,

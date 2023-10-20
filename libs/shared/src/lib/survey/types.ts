@@ -1,8 +1,11 @@
-import { Apollo } from 'apollo-angular';
-import * as Survey from 'survey-angular';
-import { Record } from '../models/record.model';
-import { AuthService } from '../services/auth/auth.service';
-import { Form } from '../models/form.model';
+import {
+  QuestionTextModel,
+  Question as SurveyCoreQuestion,
+  QuestionCommentModel,
+  QuestionSelectBase as SurveyCoreQuestionSelectBase,
+  QuestionCustomModel,
+  QuestionDropdownModel,
+} from 'survey-core';
 
 /** Custom global properties definition */
 export interface GlobalProperties {
@@ -12,26 +15,24 @@ export interface GlobalProperties {
 // REWRITING OF EXISTING QUESTION TYPES
 
 /** Type for general question */
-export interface Question extends Survey.Question, GlobalProperties {}
+export interface Question extends SurveyCoreQuestion, GlobalProperties {}
 
 /** Type for text question */
-export interface QuestionText
-  extends Survey.QuestionTextModel,
-    GlobalProperties {
+export interface QuestionText extends QuestionTextModel, GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
 }
 
 /** Type for comment question */
 export interface QuestionComment
-  extends Survey.QuestionCommentModel,
+  extends QuestionCommentModel,
     GlobalProperties {
   allowEdition?: boolean;
 }
 
 /** Type for all select-based questions */
 export interface QuestionSelectBase
-  extends Survey.QuestionSelectBase,
+  extends SurveyCoreQuestionSelectBase,
     GlobalProperties {
   referenceData?: string;
   referenceDataDisplayField?: string;
@@ -46,16 +47,14 @@ export interface QuestionSelectBase
 // TYPES FOR CUSTOM QUESTIONS
 
 /** Type for owner question */
-export interface QuestionOwner
-  extends Survey.QuestionCustomModel,
-    GlobalProperties {
+export interface QuestionOwner extends QuestionCustomModel, GlobalProperties {
   applications?: any;
-  contentQuestion: QuestionSelectBase;
+  contentQuestion: SurveyCoreQuestionSelectBase;
 }
 
 /** Type for resource question */
 export interface QuestionResource
-  extends Survey.QuestionCustomModel,
+  extends QuestionCustomModel,
     GlobalProperties {
   resource?: string;
   displayField: null | string;
@@ -67,7 +66,7 @@ export interface QuestionResource
   placeholder?: string;
   prefillWithCurrentRecord?: boolean;
   selectQuestion?: any;
-  contentQuestion: Survey.QuestionDropdownModel;
+  contentQuestion: QuestionDropdownModel;
   gridFieldsSettings?: any;
   filterCondition: string;
   filterBy: string;

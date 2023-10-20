@@ -17,7 +17,6 @@ import {
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
-
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
   languages: string[];
@@ -45,10 +44,9 @@ interface PreferencesDialogData {
   styleUrls: ['./preferences-modal.component.scss'],
 })
 export class PreferencesModalComponent implements OnInit {
-  // === REACTIVE FORM ===
+  /** Reactive form */
   public preferencesForm!: ReturnType<typeof this.createPreferencesForm>;
-
-  // === DATA ===
+  /** Data */
   languages: { name: string; value: string }[] = [];
   currLang: string;
   dateFormats: { name: string | null; value: string }[] = [];

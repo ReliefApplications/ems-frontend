@@ -1,0 +1,115 @@
+<ui-dialog [closable]="true" [size]="'medium'">
+  <ng-container ngProjectAs="header">
+    <div class="flex flex-row gap-2">
+      <h3>{{ 'common.settings' | translate }}</h3>
+      <ui-icon
+        class="cursor-help"
+        icon="info_outline"
+        [size]="18"
+        variant="grey"
+        [uiTooltip]="
+          'components.application.pages.settings.tooltip.autoSave' | translate
+        "
+      ></ui-icon>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="settingsForm">
+      <ui-tabs [vertical]="true">
+        <!-- General settings -->
+        <ui-tab>
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="settings"
+              [size]="18"
+              uiTooltip="{{ 'common.general' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.general' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex gap-4 flex-col" *ngIf="settingsForm">
+            <!-- Page / step icon -->
+            <app-view-icon-selector
+              [iconControl]="this.settingsForm.controls.icon"
+              [ngClass]="{
+                '-mb-4': data.type === 'page'
+              }"
+            ></app-view-icon-selector>
+            <!-- Features available only for pages -->
+            <ng-container *ngIf="data.type === 'page'">
+              <!-- Visibility -->
+              <ui-toggle formControlName="visible" class="mb-2">
+                <ng-container ngProjectAs="label">
+                  {{ 'components.application.pages.show' | translate }}
+                </ng-container>
+              </ui-toggle>
+              <div>
+                <h4>
+                  {{
+                    'components.application.pages.settings.actions' | translate
+                  }}
+                </h4>
+                <!-- Duplicate page  -->
+                <ng-container *ngIf="'create' | able : 'Application'">
+                  <ui-button
+                    variant="primary"
+                    category="tertiary"
+                    icon="file_copy"
+                    (click)="onAppSelection()"
+                    cdkOverlayOrigin
+                    #appMenuTrigger="cdkOverlayOrigin"
+                  >
+                    {{ 'common.duplicate' | translate }}
+                  </ui-button>
+                  <ng-template #searchMenuHeaderTemplate>
+                    <ui-alert [closable]="true">
+                      {{ 'models.page.tooltip.duplicate' | translate }}
+                    </ui-alert>
+                  </ng-template>
+                  <ng-template
+                    cdkConnectedOverlay
+                    [cdkConnectedOverlayOrigin]="appMenuTrigger"
+                    [cdkConnectedOverlayOpen]="showDuplicateMenu"
+                  >
+                    <shared-search-menu
+                      [headerTemplate]="searchMenuHeaderTemplate"
+                      [currentApplicationId]="data.applicationId"
+                      [applications]="applications"
+                      (close)="showDuplicateMenu = false"
+                      (open)="onDuplicate($event)"
+                    ></shared-search-menu>
+                  </ng-template>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </ui-tab>
+        <!-- Access (visibility) settings -->
+        <ui-tab *ngIf="data.canUpdate">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="visibility"
+              [size]="18"
+              uiTooltip="{{ 'common.access' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.access' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex flex-col">
+            <!-- Edit access -->
+            <shared-edit-access
+              (updateAccess)="onUpdateAccess($event)"
+            ></shared-edit-access>
+          </div>
+        </ui-tab>
+      </ui-tabs>
+    </form>
+  </ng-container>
+
+  <!-- Action buttons -->
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">
+      {{ 'common.cancel' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

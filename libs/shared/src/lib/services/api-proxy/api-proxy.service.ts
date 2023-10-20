@@ -14,6 +14,7 @@ import { ApiConfiguration } from '../../models/api-configuration.model';
 export class ApiProxyService {
   /** API url */
   public baseUrl = '';
+
   /**
    * Shared API Proxy service.
    * The API proxy service contacts the back-end generated proxy, based on the API definitions.
