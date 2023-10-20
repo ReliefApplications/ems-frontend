@@ -90,6 +90,7 @@ export class SummaryCardGeneralComponent
 
   // === DATA ===
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+
   /**
    * Changes display when windows size changes.
    *
