@@ -210,7 +210,7 @@
         <!-- === AXES PARAMETERS === -->
         <ui-expansion-panel
           formGroupName="axes"
-          *ngIf="['bar', 'column'].includes(type.name)"
+          *ngIf="['bar', 'column', 'line'].includes(type.name)"
           [index]="4"
         >
           <ng-container ngProjectAs="title">
@@ -251,7 +251,7 @@
           <!-- === Y AXIS PARAMETERS === -->
           <ng-container
             formGroupName="y"
-            *ngIf="['column'].includes(type.name)"
+            *ngIf="['column', 'line'].includes(type.name)"
           >
             <h3>
               {{ 'components.widget.settings.chart.yAxis' | translate }}
