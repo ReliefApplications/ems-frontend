@@ -1,11 +1,15 @@
 <div class="h-full flex flex-col">
   <ui-tabs
+    [selectedIndex]="selectedIndex"
+    (openedTab)="selectedIndex = $event.index"
     class="h-full overflow-hidden"
     *ngIf="settings.tabs && settings.tabs.length > 0; else empty"
   >
     <ui-tab *ngFor="let tab of settings.tabs">
       <ng-container ngProjectAs="label">{{ tab.label }}</ng-container>
-      <shared-tab [structure]="tab.structure"></shared-tab>
+      <ng-template uiTabContent>
+        <shared-tab [structure]="tab.structure"></shared-tab>
+      </ng-template>
     </ui-tab>
   </ui-tabs>
   <ng-template #empty>
@@ -17,4 +21,8 @@
   </ng-template>
 </div>
 
-<ng-template #headerTemplate></ng-template>
+<ng-template #headerTemplate>
+  <div class="flex-1 overflow-hidden">
+    <ng-template [cdkPortalOutlet]="portal"></ng-template>
+  </div>
+</ng-template>

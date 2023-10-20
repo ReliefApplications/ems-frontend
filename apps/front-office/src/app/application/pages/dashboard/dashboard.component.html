@@ -39,16 +39,16 @@
         </div>
       </div>
     </ng-container>
-    <shared-widget-grid
-      [loading]="loading"
-      [widgets]="widgets"
-      (changeStep)="changeStep.emit($event)"
-    ></shared-widget-grid>
-    <shared-dashboard-filter
-      *ngIf="showFilter && isFullScreen"
-      [isFullScreen]="isFullScreen"
-    ></shared-dashboard-filter>
   </ng-container>
+  <shared-widget-grid
+    [loading]="loading"
+    [widgets]="widgets"
+    (changeStep)="changeStep.emit($event)"
+  ></shared-widget-grid>
+  <shared-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [isFullScreen]="isFullScreen"
+  ></shared-dashboard-filter>
 </div>
 <shared-dashboard-filter
   *ngIf="showFilter && !isFullScreen"

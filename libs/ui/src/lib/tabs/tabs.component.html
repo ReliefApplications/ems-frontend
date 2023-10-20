@@ -1,13 +1,15 @@
 <!-- Wrapper of the component, allows to display content 
      not in the body while not interfering with the list of tabs -->
 <div
+  #tabGroupWrapper
   class="overflow-x-hidden"
   [ngClass]="{ flex: vertical }"
   id="tab-group-wrapper"
 >
   <!-- List of tabs -->
   <div
-    id="tabs"
+    id="tab-list"
+    #tabList
     class="justify-start flex"
     [ngClass]="resolveTabPositionClasses"
   >
@@ -15,6 +17,7 @@
   </div>
   <!-- The directive will display the content here -->
   <div
+    [ngClass]="{ 'overflow-x-hidden': vertical }"
     class="flex-1"
     [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'"
   >

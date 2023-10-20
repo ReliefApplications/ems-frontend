@@ -1,8 +1,18 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { DomPortal } from '@angular/cdk/portal';
+import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
 
 /**
  * Tabs widget component.
@@ -12,7 +22,10 @@ import { takeUntil } from 'rxjs';
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss'],
 })
-export class TabsComponent extends UnsubscribeComponent {
+export class TabsComponent
+  extends UnsubscribeComponent
+  implements AfterViewInit
+{
   /** Should display header */
   @Input() header = true;
   /** Widget settings */
@@ -23,6 +36,15 @@ export class TabsComponent extends UnsubscribeComponent {
   @Input() canUpdate = false;
   /** Widget edit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Header template reference */
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  /** Reference to ui tab group */
+  @ViewChild(UiTabsComponent)
+  tabGroup?: UiTabsComponent;
+  /** CDK portal. Allow to display part of the tab group element in another place */
+  portal?: DomPortal;
+  /** Selected tab index */
+  selectedIndex = 0;
 
   /**
    * Tabs widget component.
@@ -35,6 +57,11 @@ export class TabsComponent extends UnsubscribeComponent {
     private dashboardService: DashboardService
   ) {
     super();
+  }
+
+  ngAfterViewInit(): void {
+    /** Take part of the tab group element to display it in the header template */
+    this.portal = new DomPortal(this.tabGroup?.tabList);
   }
 
   /**
