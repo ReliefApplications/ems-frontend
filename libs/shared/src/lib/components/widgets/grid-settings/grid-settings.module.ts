@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { GridSettingsComponent } from './grid-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { TabActionsModule } from './tab-actions/tab-actions.module';
+import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
 import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import {

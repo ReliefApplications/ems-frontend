@@ -38,6 +38,7 @@ import {
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { GET_RESOURCES } from '../graphql/queries';
+import { Form } from '../../../../models/form.model';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -78,6 +79,7 @@ export class SummaryCardGeneralComponent
   @Input() selectedResource: Resource | null = null;
   @Input() selectedLayout: Layout | null = null;
   @Input() selectedAggregation: Aggregation | null = null;
+  @Input() templates: Form[] = [];
 
   @Output() resourceChange = new EventEmitter<Resource | null>();
   @Output() layoutChange = new EventEmitter<Layout | null>();

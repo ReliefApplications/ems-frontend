@@ -82,6 +82,8 @@ export class SelectMenuComponent
   private clickOutsideListener!: () => void;
   private selectClosingActionsSubscription!: Subscription;
   private overlayRef!: OverlayRef;
+  private applyAnimationTimeoutListener!: NodeJS.Timeout;
+  private closePanelTimeoutListener!: NodeJS.Timeout;
 
   /** Control access value functions */
   onChange!: (value: any) => void;
@@ -317,14 +319,6 @@ export class SelectMenuComponent
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.clickOutsideListener) {
-      this.clickOutsideListener();
-    }
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   /**
    * Map select option list label if exists, otherwise value
    *
@@ -398,7 +392,10 @@ export class SelectMenuComponent
         // Attach it to our overlay
         this.overlayRef.attach(templatePortal);
         // We add the needed classes to create the animation on select display
-        setTimeout(() => {
+        if (this.applyAnimationTimeoutListener) {
+          clearTimeout(this.applyAnimationTimeoutListener);
+        }
+        this.applyAnimationTimeoutListener = setTimeout(() => {
           this.applySelectListDisplayAnimation(true);
         }, 0);
         // Subscribe to all actions that close the select (outside click, item click, any other overlay detach)
@@ -425,7 +422,10 @@ export class SelectMenuComponent
     // We remove the needed classes to create the animation on select close
     this.applySelectListDisplayAnimation(false);
     // Detach the previously created overlay for the select
-    setTimeout(() => {
+    if (this.closePanelTimeoutListener) {
+      clearTimeout(this.closePanelTimeoutListener);
+    }
+    this.closePanelTimeoutListener = setTimeout(() => {
       this.overlayRef.detach();
     }, 100);
   }
@@ -456,5 +456,19 @@ export class SelectMenuComponent
       this.renderer.removeClass(selectList, 'translate-y-0');
       this.renderer.removeClass(selectList, 'opacity-100');
     }
+  }
+
+  ngOnDestroy(): void {
+    if (this.applyAnimationTimeoutListener) {
+      clearTimeout(this.applyAnimationTimeoutListener);
+    }
+    if (this.closePanelTimeoutListener) {
+      clearTimeout(this.closePanelTimeoutListener);
+    }
+    if (this.clickOutsideListener) {
+      this.clickOutsideListener();
+    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

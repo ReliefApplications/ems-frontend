@@ -505,7 +505,7 @@ export class SummaryCardComponent
     const card = this.settings.card;
     if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
     const settings = {
-      template: get(this.settings, 'template', null), //TO MODIFY
+      template: card.template,
       resource: card.resource,
       summaryCard: true,
       actions: {

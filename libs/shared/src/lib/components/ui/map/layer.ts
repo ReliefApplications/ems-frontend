@@ -187,7 +187,11 @@ export class Layer implements LayerModel {
   private zoomListener!: L.LeafletEventHandlerFn;
   private listeners: any[] = [];
 
-  /** @returns the children of the current layer */
+  /**
+   * Get layer children. Await for sub-layers to be loaded first.
+   *
+   * @returns Children of the current layer
+   */
   public async getChildren() {
     await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
     return this._sublayers;

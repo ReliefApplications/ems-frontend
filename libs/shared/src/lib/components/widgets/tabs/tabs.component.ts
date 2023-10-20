@@ -43,6 +43,8 @@ export class TabsComponent
   tabGroup?: UiTabsComponent;
   /** CDK portal. Allow to display part of the tab group element in another place */
   portal?: DomPortal;
+  /** Selected tab index */
+  selectedIndex = 0;
 
   /**
    * Tabs widget component.

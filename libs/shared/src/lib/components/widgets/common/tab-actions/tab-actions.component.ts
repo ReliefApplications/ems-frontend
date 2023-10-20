@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Inject } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { Application } from '../../../../models/application.model';
@@ -24,8 +24,6 @@ export class TabActionsComponent
   public showSelectPage = false;
   /** Available pages from the application */
   public pages: any[] = [];
-  /** Current environment */
-  private environment: any;
   /** Grid actions */
   public actions = [
     {
@@ -78,15 +76,10 @@ export class TabActionsComponent
   /**
    * Constructor of the grid component
    *
-   * @param applicationService Application service,
-   * @param environment environment
+   * @param applicationService Application service
    */
-  constructor(
-    public applicationService: ApplicationService,
-    @Inject('environment') environment: any
-  ) {
+  constructor(public applicationService: ApplicationService) {
     super();
-    this.environment = environment;
   }
 
   ngOnInit(): void {

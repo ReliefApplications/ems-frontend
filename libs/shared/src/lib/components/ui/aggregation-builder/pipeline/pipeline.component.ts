@@ -56,20 +56,17 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
-    this.fields$.subscribe((fields: any[]) => {
+    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields: any[]) => {
       this.initialFields = [...fields];
       this.fieldsPerStage = [];
       this.updateFieldsPerStage(this.pipelineForm.value);
     });
-    this.metaFields$.subscribe((meta: any) => {
+    this.metaFields$.pipe(takeUntil(this.destroy$)).subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
     });
     this.pipelineForm.valueChanges
-      .pipe(debounceTime(500))
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pipeline: any[]) => {
-        this.updateFieldsPerStage(pipeline);
-      });
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
   }
 
   /**

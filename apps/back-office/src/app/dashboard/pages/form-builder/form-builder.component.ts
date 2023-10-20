@@ -314,6 +314,8 @@ export class FormBuilderComponent implements OnInit {
 
   /**
    * Open a modal and returns it's reference
+   *
+   * @returns Status modal
    */
   private async getStatusModalRef() {
     const { StatusModalComponent } = await import('@oort-front/shared');

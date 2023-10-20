@@ -178,7 +178,11 @@ export class EditNotificationModalComponent
     });
   }
 
-  /** @returns the notification form group */
+  /**
+   * Build notification reactive form group.
+   *
+   * @returns Notification form group
+   */
   private getNotificationForm() {
     return this.fb.group({
       name: [get(this.notification, 'name', ''), Validators.required],

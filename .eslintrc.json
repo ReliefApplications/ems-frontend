@@ -66,7 +66,7 @@
         ],
         "jsdoc/require-param-type": 0,
         "jsdoc/require-property-type": 0,
-        "jsdoc/require-description": 1,
+        "jsdoc/require-description": ["warn", { "checkGetters": false }],
         "jsdoc/require-returns-type": 0,
         "@typescript-eslint/no-unused-vars": 2,
         "jsdoc/tag-lines": ["warn", "any", { "startLines": 1 }],
