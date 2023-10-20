@@ -87,7 +87,11 @@ export class SafeCoreGridComponent
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
 
-  /** @returns current grid layout */
+  /**
+   * Layout getter
+   *
+   * @returns current grid layout
+   */
   get layout(): any {
     return this.grid?.layout;
   }
@@ -108,7 +112,11 @@ export class SafeCoreGridComponent
   @Output() selectionChange = new EventEmitter();
   @Output() removeRowIds = new EventEmitter<string[]>();
 
-  /** @returns list of selected items in the grid */
+  /**
+   * selectedItems getter
+   *
+   * @returns list of selected items in the grid
+   */
   get selectedItems(): any[] {
     return this.gridData.data.filter((x) => this.selectedRows.includes(x.id));
   }
@@ -167,7 +175,11 @@ export class SafeCoreGridComponent
   // === SORTING ===
   public sort: SortDescriptor[] = [];
 
-  /** @returns current field used for sorting */
+  /**
+   * sortField getter
+   *
+   * @returns current field used for sorting
+   */
   get sortField(): string | null {
     return this.sort.length > 0 && this.sort[0].dir
       ? this.sort[0].field
@@ -176,14 +188,22 @@ export class SafeCoreGridComponent
       : null;
   }
 
-  /** @returns current sorting order */
+  /**
+   * sortOrder getter
+   *
+   * @returns current sorting order
+   */
   get sortOrder(): string {
     return this.sort.length > 0 && this.sort[0].dir
       ? this.sort[0].dir
       : this.settings.query?.sort?.order || '';
   }
 
-  /** @returns grid styling rules */
+  /**
+   * style getter
+   *
+   * @returns grid styling rules
+   */
   get style(): any {
     return this.settings.query?.style || null;
   }
@@ -193,7 +213,11 @@ export class SafeCoreGridComponent
   public showFilter = false;
   public search = '';
 
-  /** @returns current grid filter, from grid settings and grid layout */
+  /**
+   * queryFilter getter
+   *
+   * @returns current grid filter, from grid settings and grid layout
+   */
   get queryFilter(): CompositeFilterDescriptor {
     const gridFilters = [this.filter];
     if (this.settings?.query?.filter) {
@@ -231,7 +255,11 @@ export class SafeCoreGridComponent
   public editionActive = false;
 
   // === DOWNLOAD ===
-  /** @returns filename, from grid title, or default filename, and current date */
+  /**
+   * fileName getter
+   *
+   * @returns filename, from grid title, or default filename, and current date
+   */
   get fileName(): string {
     const today = new Date();
     const formatDate = `${today.toLocaleString('en-us', {
@@ -243,7 +271,11 @@ export class SafeCoreGridComponent
     } ${formatDate}`;
   }
 
-  /** @returns true if any updated item in the list */
+  /**
+   * hasChanges getter
+   *
+   * @returns true if any updated item in the list
+   */
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
