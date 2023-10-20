@@ -4,8 +4,9 @@
       label
     }}</label>
     <ui-icon
-      class="cursor-pointer ml-2"
-      icon="info"
+      class="cursor-help ml-2"
+      icon="info_outline"
+      [size]="18"
       variant="grey"
       [uiTooltip]="
         'components.aggregationBuilder.tooltip.selectedFields' | translate
@@ -28,7 +29,7 @@
     <!-- Search text control -->
     <input
       type="text"
-      [placeholder]="label"
+      [placeholder]="selectedChoices.length ? '' : 'components.queryBuilder.fields.search' | translate"
       #textInput
       [formControl]="inputControl"
       [uiAutocomplete]="auto"
