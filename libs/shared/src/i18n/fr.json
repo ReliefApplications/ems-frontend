@@ -284,7 +284,17 @@
 		"row": {
 			"few": "Rangées",
 			"none": "Aucune rangée",
-			"one": "Rangée"
+			"one": "Rangée",
+			"update": {
+				"few": {
+					"content": "Souhaitez vous mettre à jour les {{count}} enregistrements?",
+					"title": "Mise à jour des enregistrements"
+				},
+				"one": {
+					"content": "Souhaitez vous mettre à jour l’enregistrement?",
+					"title": "Mise à jour de l’enregistrement"
+				}
+			}
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",

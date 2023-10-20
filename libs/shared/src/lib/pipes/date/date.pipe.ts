@@ -48,6 +48,18 @@ export class DatePipe implements PipeTransform {
   ): string | null {
     try {
       const datePipe = new AngularDatePipe(this.dateTranslate.currentLang);
+      console.log(
+        'this.dateTranslate.currentLang',
+        this.dateTranslate.currentLang
+      );
+      console.log('value', value);
+      console.log('format', format);
+      console.log('timezone', timezone);
+
+      console.log(
+        'datePipe.transform(value, format, timezone)',
+        datePipe.transform(value, format, timezone)
+      );
       return datePipe.transform(value, format, timezone);
     } catch {
       console.warn(

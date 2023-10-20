@@ -284,7 +284,17 @@
 		"row": {
 			"few": "Rows",
 			"none": "No row",
-			"one": "Row"
+			"one": "Row",
+			"update": {
+				"few": {
+					"content": "Do you really want to update {{quantity}} rows?",
+					"title": "Update rows"
+				},
+				"one": {
+					"content": "Do you really want to update this row?",
+					"title": "Update row"
+				}
+			}
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
