@@ -1,15 +1,16 @@
 <div class="flex-1 pb-4">
-  <div class="flex">
+  <div class="flex items-center">
     <label class="block text-sm font-medium leading-6 text-gray-900">{{
       label
     }}</label>
     <ui-icon
-      class="cursor-pointer ml-2"
+      class="cursor-help ml-2"
       icon="info"
       variant="grey"
       [uiTooltip]="
         'components.aggregationBuilder.tooltip.selectedFields' | translate
       "
+      uiTooltipPosition="right"
     ></ui-icon>
   </div>
   <ng-container *ngIf="showInput">
