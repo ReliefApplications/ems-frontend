@@ -2,8 +2,9 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
+  UPDATE_RECORD,
 } from '../graphql/queries';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 import {
   FormControl,
@@ -422,6 +423,13 @@ export const init = (
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'autoSaveChanges:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        visibleIf: (obj: any) => !!obj.resource,
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -833,6 +841,28 @@ export const init = (
                   : 'none';
             });
           }
+        }
+
+        const survey = question.survey as SurveyModel;
+        if (question.autoSaveChanges && survey) {
+          survey.onValueChanged.add(async (_: any, options: any) => {
+            const record = survey.getVariable('record.id');
+            // Can only auto save when updating a records
+            if (options.name === question.name && record) {
+              // Automatically save the changes
+              await firstValueFrom(
+                apollo.mutate({
+                  mutation: UPDATE_RECORD,
+                  variables: {
+                    id: record,
+                    data: {
+                      [question.name]: options.value,
+                    },
+                  },
+                })
+              );
+            }
+          });
         }
       }
     },

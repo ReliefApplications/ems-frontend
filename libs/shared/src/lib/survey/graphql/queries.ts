@@ -76,3 +76,15 @@ export const GET_USERS = gql`
     }
   }
 `;
+
+// === UPDATE RECORD ===
+
+/** Graphql request for updating a record */
+export const UPDATE_RECORD = gql`
+  mutation AutoSaveResourcesValue($id: ID!, $data: JSON!) {
+    editRecord(id: $id, data: $data) {
+      id
+      data
+    }
+  }
+`;
