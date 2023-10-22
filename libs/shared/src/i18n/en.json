@@ -1149,6 +1149,11 @@
 				},
 				"other": "Other"
 			},
+			"display": {
+				"tooltip": {
+					"placeholder": "Enter a value for tooltip"
+				}
+			},
 			"expand": "Expand",
 			"grid": {
 				"actions": {
@@ -2025,7 +2030,8 @@
 				"border": "Show widget border",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
-				"title": "Widget display"
+				"title": "Widget display",
+				"tooltip": "Show tooltip"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",

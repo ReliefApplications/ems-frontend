@@ -1164,6 +1164,11 @@
 				},
 				"other": "Autre"
 			},
+			"display": {
+				"tooltip": {
+					"placeholder": "Entrez une valeur pour l'info-bulle"
+				}
+			},
 			"expand": "Étendre",
 			"grid": {
 				"actions": {
@@ -2041,7 +2046,8 @@
 				"border": "Afficher la bordure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
-				"title": "Affichage des widgets"
+				"title": "Affichage des widgets",
+				"tooltip": "afficher l'info-bulle"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",

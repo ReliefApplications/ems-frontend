@@ -8,6 +8,14 @@
         'models.widget.display.border' | translate
       }}</ng-container>
     </ui-toggle>
+    <ui-toggle formControlName="showTooltip">
+      <ng-container ngProjectAs="label">{{ 'models.widget.display.tooltip' | translate }}</ng-container>
+    </ui-toggle>
+    <ng-container *ngIf="formGroup.get('widgetDisplay.showTooltip')?.value">
+      <ui-textarea formControlName="tooltip" [placeholder]="'components.widget.display.tooltip.placeholder' | translate"
+        [minRows]="1" [maxRows]="3" name="textarea">
+      </ui-textarea>
+    </ng-container>
   </ng-container>
   <!-- Other specific options for each widget type -->
   <ng-content></ng-content>

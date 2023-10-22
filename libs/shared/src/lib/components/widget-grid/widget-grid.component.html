@@ -68,6 +68,15 @@
         variant="grey"
       >
       </ui-icon>
+      <!-- Widget tooltip -->
+      <ui-icon
+        *ngIf="widget.settings?.widgetDisplay?.showTooltip"
+        icon="info"
+        class="absolute top-2 right-10 z-[1100]"
+        variant="grey"
+        [uiTooltip]="widget.settings.widgetDisplay.tooltip"
+      >
+      </ui-icon>
       <!-- Expand button -->
       <ui-button
         *ngIf="!canUpdate && !(widget.component === 'map')"
