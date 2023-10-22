@@ -477,7 +477,23 @@ export class CoreGridComponent
     items.map((x) => {
       for (const [key] of Object.entries(x)) {
         if (dateFields.includes(key) || timeFields.includes(key)) {
-          x[key] = x[key] && new Date(x[key]);
+          if (
+            this.fields.find((f) => f.name === key)?.type === 'Date' &&
+            !isNaN(new Date(x[key])?.getTime())
+          ) {
+            // If it's a date field, we remove the time before converting it
+            const utcDate = new Date(
+              `${x[key].split('T')[0]}T00:00:00.000Z` ?? x[key]
+            );
+            const timezoneOffset = new Date().getTimezoneOffset();
+            const localDate = new Date(
+              utcDate.getTime() + timezoneOffset * 60 * 1000
+            );
+
+            x[key] = localDate;
+          } else {
+            x[key] = x[key] && new Date(x[key]);
+          }
           if (timeFields.includes(key)) {
             x[key] =
               x[key] &&
