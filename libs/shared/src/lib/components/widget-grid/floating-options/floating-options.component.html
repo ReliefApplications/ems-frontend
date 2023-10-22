@@ -1,14 +1,5 @@
 <div class="flex space-x-0">
   <ui-button
-    *ngIf="this.widget.settings.widgetDisplay.showTooltip"
-    [isIcon]="true"
-    icon="info"
-    variant="grey"
-    [uiTooltip]="this.widget.settings.widgetDisplay.tooltip"
-  >
-  </ui-button>
-
-  <ui-button
     [isIcon]="true"
     icon="more_vert"
     [uiMenuTriggerFor]="menu"
