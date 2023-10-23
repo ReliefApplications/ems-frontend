@@ -8,9 +8,11 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  QueryList,
   Renderer2,
   SimpleChanges,
   ViewChild,
+  ViewChildren,
 } from '@angular/core';
 import {
   GridComponent,
@@ -50,6 +52,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { formatGridRowData } from './utils/grid-data-formatter';
 import { SafeDatePipe } from '../../../../pipes/date/date.pipe';
+import { TooltipDirective } from '@oort-front/ui';
 
 /**
  * Test if an element match a css selector
@@ -184,6 +187,7 @@ export class SafeGridComponent
   // === TEMPLATE ===
   @ViewChild(GridComponent)
   public grid?: GridComponent;
+  @ViewChildren(TooltipDirective) tooltips!: QueryList<TooltipDirective>;
 
   // === ADMIN ===
   @Input() admin = false;
@@ -195,6 +199,7 @@ export class SafeGridComponent
 
   // === TIMEOUT LISTENERS === //
   columnChangeTimeoutListener!: NodeJS.Timeout;
+  displayFullScreenButtonTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Constructor of the grid component
@@ -266,6 +271,21 @@ export class SafeGridComponent
       this.data.data.forEach((gridRow) => {
         formatGridRowData(gridRow, this.fields, this.safeDatePipe);
       });
+    }
+    // First load of records, or on page change
+    if (
+      changes['loadingRecords']?.previousValue &&
+      !changes['loadingRecords']?.currentValue &&
+      !this.loadingSettings
+    ) {
+      if (this.displayFullScreenButtonTimeoutListener) {
+        clearTimeout(this.displayFullScreenButtonTimeoutListener);
+      }
+      this.displayFullScreenButtonTimeoutListener = setTimeout(() => {
+        this.grid?.columns.forEach((column) => {
+          this.updateColumnShowFullScreenButton((column as any).field);
+        });
+      }, 0);
     }
   }
 
@@ -450,8 +470,13 @@ export class SafeGridComponent
 
   /**
    * Sets and emits new grid configuration after column resize event.
+   *
+   * @param event Resize event containing the resize origin column
    */
-  onColumnResize(): void {
+  onColumnResize(event: any): void {
+    const columnField = event[0].column.field;
+    // Update the button display for all the cells of this column on resize
+    this.updateColumnShowFullScreenButton(columnField);
     this.columnChange.emit();
   }
 
@@ -533,6 +558,27 @@ export class SafeGridComponent
     this.currentEditedItem = dataItem;
     this.currentEditedRow = rowIndex;
     this.grid?.editRow(rowIndex, this.formGroup);
+  }
+
+  /**
+   * Updates the show full screen button of the given columns cells if cell content is truncated
+   *
+   * @param columnField Related column field from where to check all cells
+   */
+  private updateColumnShowFullScreenButton(columnField: string) {
+    const updatableTooltips = this.tooltips.filter(
+      (tooltip) => tooltip.enableBy !== 'default'
+    );
+    this.data.data.forEach((element) => {
+      const relatedTooltipElement = updatableTooltips.find(
+        (tooltip) => tooltip.uiTooltip === element.text[columnField]
+      );
+      if (relatedTooltipElement) {
+        element.showFullScreenButton[columnField] =
+          relatedTooltipElement.elementRef.nativeElement.offsetWidth <
+          relatedTooltipElement.elementRef.nativeElement.scrollWidth;
+      }
+    });
   }
 
   /**
@@ -627,17 +673,6 @@ export class SafeGridComponent
         this.export.emit(this.exportSettings);
       }
     });
-  }
-
-  // === UTILITIES ===
-  /**
-   * Checks if element overflows
-   *
-   * @param e Component resizing event.
-   * @returns True if overflows.
-   */
-  isEllipsisActive(e: any): boolean {
-    return e.offsetWidth < e.scrollWidth;
   }
 
   /**
@@ -757,6 +792,9 @@ export class SafeGridComponent
     super.ngOnDestroy();
     if (this.columnChangeTimeoutListener) {
       clearTimeout(this.columnChangeTimeoutListener);
+    }
+    if (this.displayFullScreenButtonTimeoutListener) {
+      clearTimeout(this.displayFullScreenButtonTimeoutListener);
     }
   }
 }

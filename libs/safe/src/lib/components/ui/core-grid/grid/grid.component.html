@@ -22,7 +22,7 @@
   [selectable]="selectable && selectableSettings"
   [rowSelected]="isRowSelected"
   (selectionChange)="onSelectionChange($event)"
-  (columnResize)="onColumnResize()"
+  (columnResize)="onColumnResize($event)"
   (columnVisibilityChange)="onColumnVisibilityChange()"
   (cellClick)="cellClickHandler($event)"
 >
@@ -219,16 +219,15 @@
               [style]="dataItem.style[field.name]"
             >
               <div
-                #refSpanTruncate
                 class="truncate"
                 [uiTooltip]="dataItem.text[field.name]"
-                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                tooltipEnableBy="truncate"
               >
                 {{ dataItem.text[field.name] }}
               </div>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpanTruncate)"
+                *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -252,29 +251,9 @@
               [style]="dataItem.style[field.name]"
             >
               <div
-                #refSpanTruncate
                 class="truncate"
-                *ngIf="field.meta.type === 'time'"
                 [uiTooltip]="dataItem.text[field.name]"
-                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
-              >
-                {{ dataItem.text[field.name] }}
-              </div>
-              <div
-                #refSpanTruncate
-                class="truncate"
-                *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
-                [uiTooltip]="dataItem.text[field.name]"
-                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
-              >
-                {{ dataItem.text[field.name] }}
-              </div>
-              <div
-                #refSpanTruncate
-                class="truncate"
-                *ngIf="field.meta.type === 'date'"
-                [uiTooltip]="dataItem.text[field.name]"
-                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                tooltipEnableBy="truncate"
               >
                 {{ dataItem.text[field.name] }}
               </div>
@@ -295,17 +274,16 @@
                 rel="noopener noreferrer"
               >
                 <div
-                  #refSpanTruncate
                   class="truncate"
                   [uiTooltip]="dataItem.text[field.name]"
-                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                  tooltipEnableBy="truncate"
                 >
                   {{ dataItem.text[field.name] }}
                 </div>
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpanTruncate)"
+                *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -327,17 +305,16 @@
                 rel="noopener noreferrer"
               >
                 <div
-                  #refSpanTruncate
                   class="truncate"
                   [uiTooltip]="dataItem.text[field.name]"
-                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                  tooltipEnableBy="truncate"
                 >
                   {{ dataItem.text[field.name] }}
                 </div>
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpanTruncate)"
+                *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -359,17 +336,16 @@
                 rel="noopener noreferrer"
               >
                 <div
-                  #refSpanTruncate
                   class="truncate"
                   [uiTooltip]="dataItem.text[field.name]"
-                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                  tooltipEnableBy="truncate"
                 >
                   {{ dataItem.text[field.name] }}
                 </div>
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpanTruncate)"
+                *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -404,16 +380,15 @@
               [style]="dataItem.style[field.name]"
             >
               <div
-                #refSpanTruncate
                 class="truncate"
                 [uiTooltip]="dataItem.text[field.name]"
-                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                tooltipEnableBy="truncate"
               >
                 {{ dataItem.text[field.name] }}
               </div>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpanTruncate)"
+                *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -474,10 +449,9 @@
           >
             <div class="textbox-container" [style]="dataItem.style[field.name]">
               <div
-                #refSpanTruncate
                 class="truncate"
                 [uiTooltip]="dataItem.text[field.name]"
-                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                tooltipEnableBy="truncate"
               >
                 {{ dataItem.text[field.name] }}
               </div>
@@ -684,10 +658,9 @@
         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <div
-              #refSpanTruncate
               class="truncate"
               [uiTooltip]="dataItem.text[field.name]"
-              [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+              tooltipEnableBy="truncate"
             >
               {{ dataItem.text[field.name] }}
             </div>

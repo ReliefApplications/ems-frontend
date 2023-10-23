@@ -4,7 +4,14 @@ import { SafeDatePipe } from '../../../../../pipes/date/date.pipe';
 import { ICON_EXTENSIONS } from '../grid.constants';
 
 /** Keys added to grid row to display data in the html grid template */
-export const FORMAT_KEYS = ['style', 'text', 'icon', 'urlValue', 'value'];
+export const FORMAT_KEYS = [
+  'style',
+  'text',
+  'icon',
+  'urlValue',
+  'value',
+  'showFullScreenButton',
+];
 
 /**
  * Grid field interface
@@ -69,6 +76,9 @@ export function formatGridRowData(
   const valueObj = {
     value: {},
   };
+  const showFullScreenButtonObj = {
+    showFullScreenButton: {},
+  };
   fields
     .filter((field) => !!rowData[field.name])
     .forEach((field) => {
@@ -97,6 +107,10 @@ export function formatGridRowData(
             [field.name]: value,
           });
         }
+        // Initialize property to display the kendo button used to open the grid cell content in a modal
+        Object.assign(showFullScreenButtonObj.showFullScreenButton, {
+          [field.name]: false,
+        });
       } else {
         // Format files name and icons for each field
         rowData[field.name].forEach((file: { name: string }) => {
@@ -120,6 +134,7 @@ export function formatGridRowData(
   Object.assign(rowData, iconObj);
   Object.assign(rowData, urlObj);
   Object.assign(rowData, valueObj);
+  Object.assign(rowData, showFullScreenButtonObj);
 }
 
 /**
