@@ -1,3 +1,23 @@
+# [2.2.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.4...v2.2.0-beta.5) (2023-10-20)
+
+
+### Bug Fixes
+
+* api configuration edition would sometimes not display correct status for save button ([eac0bd6](https://github.com/ReliefApplications/oort-frontend/commit/eac0bd6f71acb651b12a40565e3e81646fe106df))
+* exiting form builder could create multiple modals if some changes were not saved ([0cad118](https://github.com/ReliefApplications/oort-frontend/commit/0cad1181de097e1ff443fd9ed43907b561801071))
+* icon display when variant and category class are empty ([#1975](https://github.com/ReliefApplications/oort-frontend/issues/1975)) ([b05b722](https://github.com/ReliefApplications/oort-frontend/commit/b05b722316deae9f6124f07078e50ef2947e77ef))
+* incorrect drag / drop for steps in aggregation pipeline ([#1978](https://github.com/ReliefApplications/oort-frontend/issues/1978)) ([8c47de3](https://github.com/ReliefApplications/oort-frontend/commit/8c47de36e9da7622fc5db8aae37a93bf680c641c))
+* incorrect overflow in grid widget settings action view ([e3d9118](https://github.com/ReliefApplications/oort-frontend/commit/e3d911870f3f664890ef5a885d24e1cc062370bf))
+* Incorrect UI for workflow access in application role editor ([#1973](https://github.com/ReliefApplications/oort-frontend/issues/1973)) ([3640be1](https://github.com/ReliefApplications/oort-frontend/commit/3640be100d27346716ae60be71d89d2ff455e9df))
+* infinite re renders of dropdown in filter builder ([#1927](https://github.com/ReliefApplications/oort-frontend/issues/1927)) ([71e1bcd](https://github.com/ReliefApplications/oort-frontend/commit/71e1bcd30c9fa77dc27decc3b850380c0122f1d4))
+* maps in tab widget would not correctly initialize + prevent all tabs to load at same tiem ([33c4745](https://github.com/ReliefApplications/oort-frontend/commit/33c47453d6b220015e2da730bab9c6c3b77fec21))
+* tabs widget would be badly displayed due to changes on dashboard & widgets ([cf3f1ca](https://github.com/ReliefApplications/oort-frontend/commit/cf3f1cac99c40cbcf4cb40843692ccfee0a0e062))
+
+
+### Features
+
+* allow to define grid actions in summary card settings ([#1888](https://github.com/ReliefApplications/oort-frontend/issues/1888)) ([1f90171](https://github.com/ReliefApplications/oort-frontend/commit/1f901714a13ef147d50c96794efd6ae2b264f8ee))
+
 # [2.2.0-beta.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.3...v2.2.0-beta.4) (2023-10-18)
 
 
