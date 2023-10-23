@@ -457,8 +457,8 @@ export class ApplicationsComponent
   }
 
   public exchangeTokens() {
-    const postmanUrl =
-      'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/oauth2/authorize?response_type=code&client_id=021202ac-d23b-4757-83e3-f6ecde12266b&scope=api%3A%2F%2Fb5f3a688-a5e9-491e-8289-ea7248d8a64a%2F.default&redirect_uri=https%3A%2F%2Fwww.getpostman.com%2Foauth2%2Fcallback';
+    // const postmanUrl =
+    //   'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/oauth2/authorize?response_type=code&client_id=021202ac-d23b-4757-83e3-f6ecde12266b&scope=api%3A%2F%2Fb5f3a688-a5e9-491e-8289-ea7248d8a64a%2F.default&redirect_uri=https%3A%2F%2Fwww.getpostman.com%2Foauth2%2Fcallback';
     const config = {
       clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
       authority:
