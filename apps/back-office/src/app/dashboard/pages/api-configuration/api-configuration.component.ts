@@ -219,9 +219,7 @@ export class ApiConfigurationComponent
         ],
       });
     }
-    if (
-      type === authType.serviceToService
-    ) {
+    if (type === authType.serviceToService) {
       return this.fb.group({
         authTargetUrl: [
           this.apiConfiguration?.settings &&
