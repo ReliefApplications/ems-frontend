@@ -43,6 +43,7 @@ export class TabMainComponent
 
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
+
   /**
    * Get the selected chart type object
    *

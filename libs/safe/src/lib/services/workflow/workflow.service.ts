@@ -24,6 +24,7 @@ import { SnackbarService } from '@oort-front/ui';
 export class SafeWorkflowService {
   /** Current workflow */
   private workflow = new BehaviorSubject<Workflow | null>(null);
+
   /** @returns Current workflow as observable */
   get workflow$(): Observable<Workflow | null> {
     return this.workflow.asObservable();

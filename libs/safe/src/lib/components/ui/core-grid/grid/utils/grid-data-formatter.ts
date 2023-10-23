@@ -51,6 +51,7 @@ export interface Permissions {
 
 /**
  * Format given row data to be suitable suitable for the grid
+ *
  * @param rowData Data from grid row
  * @param {GridField[]} fields Grid fields
  * @param {SafeDatePipe} safeDatePipe Pipe to format date/time type fields
