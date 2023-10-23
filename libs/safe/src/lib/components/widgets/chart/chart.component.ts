@@ -178,8 +178,8 @@ export class SafeChartComponent
           max: get(this.settings, 'chart.axes.y.enableMax')
             ? get(this.settings, 'chart.axes.y.max')
             : null,
-          tickSteps: get(this.settings, 'chart.axes.y.tickSteps')
-            ? get(this.settings, 'chart.axes.y.tickSteps')
+          stepSize: get(this.settings, 'chart.axes.y.stepSize')
+            ? get(this.settings, 'chart.axes.y.stepSize')
             : null,
         },
       },

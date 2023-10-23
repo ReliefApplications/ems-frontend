@@ -18,6 +18,7 @@ import { SafeReferenceDataService } from '../reference-data/reference-data.servi
 @Injectable({ providedIn: 'root' })
 export class SafeFormService {
   private environment: any;
+
   /**
    * Shared survey service.
    * Initializes the additional code we made on top of the default logic of the library.

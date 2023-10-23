@@ -5,10 +5,14 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
+  QueryList,
   Renderer2,
+  SimpleChanges,
   ViewChild,
+  ViewChildren,
 } from '@angular/core';
 import {
   GridComponent,
@@ -24,7 +28,6 @@ import {
   MULTISELECT_TYPES,
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
-  ICON_EXTENSIONS,
 } from './grid.constants';
 import {
   CompositeFilterDescriptor,
@@ -42,12 +45,14 @@ import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection, isNil } from 'lodash';
-import { applyLayoutFormat } from '../../../../utils/parser/utils';
+import { get, intersection, isEqual, isNil } from 'lodash';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { formatGridRowData } from './utils/grid-data-formatter';
+import { SafeDatePipe } from '../../../../pipes/date/date.pipe';
+import { TooltipDirective } from '@oort-front/ui';
 
 /**
  * Test if an element match a css selector
@@ -67,6 +72,7 @@ const matches = (el: any, selector: any) =>
   providers: [
     PopupService,
     ResizeBatchService,
+    SafeDatePipe,
     // CalendarDOMService,
     // MonthViewService,
     // WeekNamesService,
@@ -74,7 +80,7 @@ const matches = (el: any, selector: any) =>
 })
 export class SafeGridComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -127,17 +133,8 @@ export class SafeGridComponent
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();
 
-  /** @returns A boolean indicating if actions are enabled */
-  get hasEnabledActions(): boolean {
-    return (
-      intersection(
-        Object.keys(this.actions).filter((key: string) =>
-          get(this.actions, key, false)
-        ),
-        this.rowActions
-      ).length > 0
-    );
-  }
+  /** A boolean indicating if actions are enabled */
+  hasEnabledActions = false;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -190,6 +187,7 @@ export class SafeGridComponent
   // === TEMPLATE ===
   @ViewChild(GridComponent)
   public grid?: GridComponent;
+  @ViewChildren(TooltipDirective) tooltips!: QueryList<TooltipDirective>;
 
   // === ADMIN ===
   @Input() admin = false;
@@ -198,6 +196,10 @@ export class SafeGridComponent
 
   // === SNACKBAR ===
   private snackBarRef!: any;
+
+  // === TIMEOUT LISTENERS === //
+  columnChangeTimeoutListener!: NodeJS.Timeout;
+  displayFullScreenButtonTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Constructor of the grid component
@@ -210,6 +212,7 @@ export class SafeGridComponent
    * @param dashboardService Dashboard service
    * @param translate The translate service
    * @param snackBar The snackbar service
+   * @param {SafeDatePipe} safeDatePipe The safeDatePipe pipe
    */
   constructor(
     @Inject('environment') environment: any,
@@ -219,7 +222,8 @@ export class SafeGridComponent
     private downloadService: SafeDownloadService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private safeDatePipe: SafeDatePipe
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -230,7 +234,11 @@ export class SafeGridComponent
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(
+        debounceTime(2000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
@@ -240,53 +248,61 @@ export class SafeGridComponent
     };
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.data.data);
+    console.log(this.fields);
     this.statusMessage = this.getStatusMessage();
+    if (
+      !isEqual(
+        changes['actions']?.previousValue,
+        changes['actions']?.currentValue
+      )
+    ) {
+      this.hasEnabledActions =
+        intersection(
+          Object.keys(this.actions).filter((key: string) =>
+            get(this.actions, key, false)
+          ),
+          this.rowActions
+        ).length > 0;
+    }
+    if (
+      (changes['data']?.currentValue?.data.length || this.data.data.length) &&
+      (changes['fields']?.currentValue?.length || this.fields.length)
+    ) {
+      this.data.data.forEach((gridRow) => {
+        formatGridRowData(gridRow, this.fields, this.safeDatePipe);
+      });
+    }
+    // First load of records, or on page change
+    if (
+      changes['loadingRecords']?.previousValue &&
+      !changes['loadingRecords']?.currentValue &&
+      !this.loadingSettings
+    ) {
+      if (this.displayFullScreenButtonTimeoutListener) {
+        clearTimeout(this.displayFullScreenButtonTimeoutListener);
+      }
+      this.displayFullScreenButtonTimeoutListener = setTimeout(() => {
+        this.grid?.columns.forEach((column) => {
+          this.updateColumnShowFullScreenButton((column as any).field);
+        });
+      }, 0);
+    }
   }
 
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe(() =>
-      setTimeout(() => this.columnChange.emit(), 500)
-    );
-  }
-
-  // === DATA ===
-  /**
-   * Returns property value in object from path.
-   *
-   * @param item Item to get property of.
-   * @param field parent field
-   * @param subField subfield ( optional, used by reference data)
-   * @returns Value of the property.
-   */
-  public getPropertyValue(item: any, field: any, subField?: any): any {
-    let value = get(item, field.name);
-    const meta = subField ? subField.meta : field.meta;
-    if (meta.choices) {
-      if (Array.isArray(value)) {
-        if (subField) {
-          if (meta.graphQLFieldName) {
-            value = value.map((x) => get(x, meta.graphQLFieldName));
-          }
-        }
-        const text = meta.choices.reduce(
-          (acc: string[], x: any) =>
-            value.includes(x.value) ? acc.concat([x.text]) : acc,
-          []
-        );
-        if (text.length < value.length) {
-          return value;
-        } else {
-          return text;
-        }
-      } else {
-        return meta.choices.find((x: any) => x.value === value)?.text || value;
+    this.grid?.columnReorder.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.columnChangeTimeoutListener) {
+        clearTimeout(this.columnChangeTimeoutListener);
       }
-    } else {
-      return value;
-    }
+      this.columnChangeTimeoutListener = setTimeout(
+        () => this.columnChange.emit(),
+        500
+      );
+    });
   }
 
   // find field with the path name
@@ -320,37 +336,6 @@ export class SafeGridComponent
     const values = get(item, path);
     if (Array.isArray(values)) {
       return values.map((x) => x[attribute]).join(', ');
-    }
-  }
-
-  /**
-   * Returns field style from path.
-   *
-   * @param item Item to get style of.
-   * @param path Path of the property.
-   * @returns Style fo the property.
-   */
-  public getStyle(item: any, path: string): any {
-    const fieldStyle = get(item, `_meta.style.${path}`);
-    const rowStyle = get(item, '_meta.style._row');
-    return fieldStyle ? fieldStyle : rowStyle;
-  }
-
-  /**
-   * Returns full URL value.
-   * TODO: avoid template call
-   *
-   * @param url Initial URL.
-   * @returns full valid URL.
-   */
-  public getUrl(url: string): URL | null {
-    if (url && !(url.startsWith('https://') || url.startsWith('http://'))) {
-      url = 'https://' + url;
-    }
-    try {
-      return new URL(url);
-    } catch {
-      return null;
     }
   }
 
@@ -487,8 +472,13 @@ export class SafeGridComponent
 
   /**
    * Sets and emits new grid configuration after column resize event.
+   *
+   * @param event Resize event containing the resize origin column
    */
-  onColumnResize(): void {
+  onColumnResize(event: any): void {
+    const columnField = event[0].column.field;
+    // Update the button display for all the cells of this column on resize
+    this.updateColumnShowFullScreenButton(columnField);
     this.columnChange.emit();
   }
 
@@ -570,6 +560,27 @@ export class SafeGridComponent
     this.currentEditedItem = dataItem;
     this.currentEditedRow = rowIndex;
     this.grid?.editRow(rowIndex, this.formGroup);
+  }
+
+  /**
+   * Updates the show full screen button of the given columns cells if cell content is truncated
+   *
+   * @param columnField Related column field from where to check all cells
+   */
+  private updateColumnShowFullScreenButton(columnField: string) {
+    const updatableTooltips = this.tooltips.filter(
+      (tooltip) => tooltip.enableBy !== 'default'
+    );
+    this.data.data.forEach((element) => {
+      const relatedTooltipElement = updatableTooltips.find(
+        (tooltip) => tooltip.uiTooltip === element.text[columnField]
+      );
+      if (relatedTooltipElement) {
+        element.showFullScreenButton[columnField] =
+          relatedTooltipElement.elementRef.nativeElement.offsetWidth <
+          relatedTooltipElement.elementRef.nativeElement.scrollWidth;
+      }
+    });
   }
 
   /**
@@ -666,17 +677,6 @@ export class SafeGridComponent
     });
   }
 
-  // === UTILITIES ===
-  /**
-   * Checks if element overflows
-   *
-   * @param e Component resizing event.
-   * @returns True if overflows.
-   */
-  isEllipsisActive(e: any): boolean {
-    return e.offsetWidth < e.scrollWidth;
-  }
-
   /**
    * Expands text in a full window modal.
    *
@@ -757,43 +757,6 @@ export class SafeGridComponent
   }
 
   /**
-   * Gets the kendo class icon for the file extension
-   *
-   * @param name Name of the file with the extension
-   * @returns String with the name of the icon class
-   */
-  public getFileIcon(name: string): string {
-    const fileExt = name.split('.').pop();
-    return fileExt && ICON_EXTENSIONS[fileExt]
-      ? ICON_EXTENSIONS[fileExt]
-      : 'k-i-file';
-  }
-
-  /**
-   * Removes file extension from the file name
-   *
-   * @param name Name of the file with the extension
-   * @returns String with the name of the file without the extension
-   */
-  public removeFileExtension(name: string): string {
-    const fileExt = name.split('.').pop();
-    return fileExt && ICON_EXTENSIONS[fileExt]
-      ? name.slice(0, name.lastIndexOf(fileExt) - 1)
-      : name;
-  }
-
-  /**
-   * Calls layout format from utils.ts to get the formated fields
-   *
-   * @param name Content of the field as a string
-   * @param field Field data
-   * @returns Formatted field content as a string
-   */
-  public applyFieldFormat(name: string | null, field: any): string | null {
-    return applyLayoutFormat(name, field);
-  }
-
-  /**
    * Gets the corresponding status message for the status of the grid
    *
    * @returns string with the status message
@@ -825,5 +788,15 @@ export class SafeGridComponent
     if (this.loadingRecords)
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.columnChangeTimeoutListener) {
+      clearTimeout(this.columnChangeTimeoutListener);
+    }
+    if (this.displayFullScreenButtonTimeoutListener) {
+      clearTimeout(this.displayFullScreenButtonTimeoutListener);
+    }
   }
 }

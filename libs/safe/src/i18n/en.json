@@ -1193,15 +1193,16 @@
 						"title": "Series"
 					},
 					"size": "Size",
+					"stepSize": "Step size",
 					"style": "Style",
 					"text": "Text",
-					"tickSteps": "Ticks step size",
 					"title": {
 						"color": "Title color",
 						"format": "Title format"
 					},
 					"tooltip": {
-						"palette": "Palette provides default colors to chart elements if not manually set."
+						"palette": "Palette provides default colors to chart elements if not manually set.",
+						"stepSize": "Interval between each tick mark on the chart's axis, when possible"
 					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",

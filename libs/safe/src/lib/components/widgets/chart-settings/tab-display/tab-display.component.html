@@ -221,7 +221,7 @@
             <h3>
               {{ 'components.widget.settings.chart.xAxis' | translate }}
             </h3>
-            <div class="axis-container">
+            <div class="flex gap-2 items-center">
               <ui-toggle formControlName="enableMin"></ui-toggle>
               <div uiFormFieldDirective>
                 <label>{{
@@ -234,7 +234,7 @@
                 />
               </div>
             </div>
-            <div class="axis-container">
+            <div class="flex gap-2 items-center">
               <ui-toggle formControlName="enableMax"></ui-toggle>
               <div uiFormFieldDirective floatLabel="always">
                 <label>{{
@@ -256,7 +256,7 @@
             <h3>
               {{ 'components.widget.settings.chart.yAxis' | translate }}
             </h3>
-            <div class="axis-container">
+            <div class="flex gap-2 items-center">
               <ui-toggle formControlName="enableMin"></ui-toggle>
               <div uiFormFieldDirective floatLabel="always">
                 <label>{{
@@ -269,7 +269,7 @@
                 />
               </div>
             </div>
-            <div class="axis-container">
+            <div class="flex gap-2 items-center">
               <ui-toggle formControlName="enableMax"></ui-toggle>
               <div uiFormFieldDirective floatLabel="always">
                 <label>{{
@@ -282,10 +282,26 @@
                 />
               </div>
             </div>
-            <div class="w-56" *ngIf="['line'].includes(type.name)" uiFormFieldDirective>
-              <label>{{ 'components.widget.settings.chart.tickSteps' | translate }}</label>
-              <input 
-                formControlName="tickSteps"
+            <div
+              class="w-56"
+              *ngIf="['line'].includes(type.name)"
+              uiFormFieldDirective
+            >
+              <label
+                >{{ 'components.widget.settings.chart.stepSize' | translate }}
+                <ui-icon
+                  [size]="18"
+                  icon="info_outline"
+                  variant="grey"
+                  class="cursor-help"
+                  [uiTooltip]="
+                    'components.widget.settings.chart.tooltip.stepSize'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input
+                formControlName="stepSize"
                 [placeholder]="'common.auto' | translate"
                 type="number"
               />

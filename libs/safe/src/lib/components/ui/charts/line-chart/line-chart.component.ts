@@ -159,7 +159,7 @@ export class SafeLineChartComponent implements OnChanges {
     const titleColor = get(this.title, 'color', undefined);
     const titleVisible = titleText !== '';
 
-    // log min an max
+    // Configure chartjs options based on widget settings
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
@@ -180,7 +180,7 @@ export class SafeLineChartComponent implements OnChanges {
           min: get(this.options, 'axes.y.min', undefined),
           max: get(this.options, 'axes.y.max', undefined),
           ticks: {
-            stepSize: get(this.options, 'axes.y.tickSteps', undefined),
+            stepSize: get(this.options, 'axes.y.stepSize', undefined),
           },
         },
       },

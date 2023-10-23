@@ -1193,15 +1193,16 @@
 						"title": "******"
 					},
 					"size": "******",
+					"stepSize": "******",
 					"style": "******",
 					"text": "******",
-					"tickSteps": "******",
 					"title": {
 						"color": "******",
 						"format": "******"
 					},
 					"tooltip": {
-						"palette": "******"
+						"palette": "******",
+						"stepSize": "******"
 					},
 					"type": "******",
 					"xAxis": "******",
