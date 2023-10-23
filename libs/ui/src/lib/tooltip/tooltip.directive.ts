@@ -7,7 +7,9 @@ import {
   HostListener,
   OnDestroy,
   Inject,
+  Attribute,
 } from '@angular/core';
+import { TooltipEnableBy } from './types/tooltip-enable-by-list';
 
 /**
  * Directive that allows to display a tooltip on a given html element
@@ -44,14 +46,19 @@ export class TooltipDirective implements OnDestroy {
    * Constructor of the directive
    *
    * @param document current DOCUMENT
+   * @param {TooltipEnableBy} enableBy special cases that enable/disable tooltip display
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private elementRef: ElementRef,
+    @Attribute('tooltipEnableBy') public enableBy: TooltipEnableBy,
+    public elementRef: ElementRef,
     private renderer: Renderer2
   ) {
+    if (!enableBy) {
+      this.enableBy = 'default';
+    }
     // Creation of the tooltip element
     this.createTooltipElement();
   }
@@ -61,6 +68,9 @@ export class TooltipDirective implements OnDestroy {
    */
   @HostListener('mouseenter')
   onMouseEnter() {
+    if (this.enableBy !== 'default') {
+      this.tooltipDisabled = this.disableTooltipByCase();
+    }
     if (this.uiTooltip && !this.tooltipDisabled) {
       this.showHint();
     }
@@ -128,6 +138,26 @@ export class TooltipDirective implements OnDestroy {
     for (const cl of this.tooltipClasses) {
       this.renderer.addClass(this.elToolTip, cl);
     }
+  }
+
+  /**
+   * Update tooltip disable status by the given cases
+   *
+   * @returns disable state of the tooltip
+   */
+  private disableTooltipByCase(): boolean {
+    let isDisabled = this.tooltipDisabled;
+    switch (this.enableBy) {
+      case 'truncate':
+        isDisabled = !(
+          this.elementRef.nativeElement.offsetWidth <
+          this.elementRef.nativeElement.scrollWidth
+        );
+        break;
+      default:
+        break;
+    }
+    return isDisabled;
   }
 
   /**
