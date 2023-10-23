@@ -2,8 +2,8 @@ import { GlobalOptions } from '../types';
 /**
  * Formats date in specified format
  *
- * @param date Date
- * @param format Format, which can be either a locale string or a custom format
+ * @param params The date to format and the format to use.
+ * @returns The formatted date.
  */
 function formatDate(params: any[]) {
   const [date, format] = params;
@@ -16,7 +16,7 @@ function formatDate(params: any[]) {
     const month = dateFormatted.getMonth() + 1;
     const year = dateFormatted.getFullYear();
 
-    let formattedDate = formatFormatted
+    const formattedDate = formatFormatted
       .replace('DD', day.toString().padStart(2, '0'))
       .replace('MM', month.toString().padStart(2, '0'))
       .replace('YYYY', year.toString());
@@ -30,7 +30,9 @@ function formatDate(params: any[]) {
 // }
 /**
  *  Generator for the custom function formatDate.
+ *
  * @param _ Global options
  * @returns The custom function formatDate
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default (_: GlobalOptions) => formatDate;
