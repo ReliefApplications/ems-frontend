@@ -206,6 +206,94 @@
           </div>
         </div>
       </ng-container>
+      <!-- Authorization code connection -->
+      <ng-container
+        *ngIf="apiForm.value.authType === authType.authorizationCode"
+      >
+        <div formGroupName="settings" class="flex flex-col">
+          <!-- Callback url -->
+          <div uiFormFieldDirective>
+            <label>
+              Callback URL
+            </label>
+            <input
+              formControlName="callbackUrl"
+              type="text"
+              (focus)="clearControl('settings.callbackUrl')"
+            />
+          </div>
+          <!-- Auth url -->
+          <div uiFormFieldDirective>
+            <label>
+              Auth URL
+            </label>
+            <input
+              formControlName="authUrl"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.tokenUrl' | translate
+              "
+              (focus)="clearControl('settings.authUrl')"
+            />
+          </div>
+          <!-- Token url -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.tokenUrl' | translate }}
+            </label>
+            <input
+              formControlName="authTargetUrl"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.tokenUrl' | translate
+              "
+              (focus)="clearControl('settings.authTargetUrl')"
+            />
+          </div>
+          <!-- Client id -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.clientId' | translate }}
+            </label>
+            <input
+              formControlName="apiClientID"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.clientId' | translate
+              "
+              (focus)="clearControl('settings.apiClientID')"
+            />
+          </div>
+          <!-- Client secret -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.secret' | translate }}
+            </label>
+            <input
+              formControlName="safeSecret"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.secret' | translate
+              "
+              (focus)="clearControl('settings.safeSecret')"
+            />
+          </div>
+          <!-- Token scope -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.scope' | translate }}
+            </label>
+            <input
+              formControlName="scope"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.scope' | translate
+              "
+              (focus)="clearControl('settings.scope')"
+            />
+          </div>
+        </div>
+      </ng-container>
     </ng-container>
 
     <!-- GraphQL settings -->

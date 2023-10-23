@@ -31,6 +31,11 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { GET_APPLICATIONS } from './graphql/queries';
+import { HttpClient } from '@angular/common/http';
+import {
+  InteractionRequiredAuthError,
+  PublicClientApplication,
+} from '@azure/msal-browser';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -90,7 +95,8 @@ export class ApplicationsComponent
     private snackBar: SnackbarService,
     private previewService: PreviewService,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private http: HttpClient
   ) {
     super();
   }
@@ -448,5 +454,58 @@ export class ApplicationsComponent
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
     this.updating = false;
+  }
+
+  public exchangeTokens() {
+    const postmanUrl =
+      'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/oauth2/authorize?response_type=code&client_id=021202ac-d23b-4757-83e3-f6ecde12266b&scope=api%3A%2F%2Fb5f3a688-a5e9-491e-8289-ea7248d8a64a%2F.default&redirect_uri=https%3A%2F%2Fwww.getpostman.com%2Foauth2%2Fcallback';
+    const config = {
+      clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
+      authority:
+        'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590',
+      redirectUri: 'https://www.getpostman.com/oauth2/callback',
+    };
+    const emssLoginRequest = {
+      scopes: ['api://712b0d0d-f9c5-4b7a-80d6-8a83ee014bca/odata'],
+    };
+    const msalConfig = {
+      auth: {
+        clientId: config.clientId,
+        authority: config.authority,
+        redirectUri: config.redirectUri,
+      },
+      cache: {
+        cacheLocation: 'sessionStorage', // This configures where your cache will be stored
+        storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+      },
+    };
+
+    const myMSALObj = new PublicClientApplication(msalConfig);
+    const username = '';
+
+    console.log(myMSALObj.getAllAccounts(), 'accounts');
+    function getTokenRedirect(request: any) {
+      request.account = myMSALObj.getAccountByUsername(username);
+      return myMSALObj
+        .acquireTokenSilent(request)
+        .then((response: any) => {
+          console.log(response, 'got this fuckin token');
+        })
+        .catch((error: any) => {
+          console.warn(
+            'silent token acquisition fails. acquiring token using redirect'
+          );
+          if (error instanceof InteractionRequiredAuthError) {
+            // fallback to interaction when silent call fails
+            return myMSALObj.acquireTokenRedirect(request);
+          } else {
+            console.warn(error);
+            return;
+          }
+        });
+    }
+    getTokenRedirect(emssLoginRequest).then((response) => {
+      console.log(response, 'response');
+    });
   }
 }
