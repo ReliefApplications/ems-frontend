@@ -74,6 +74,7 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
 
   public selectedResource: Resource | null = null;
   public selectedLayout: Layout | null = null;
+
   /**
    * Modal content for the settings of the editor widgets.
    *

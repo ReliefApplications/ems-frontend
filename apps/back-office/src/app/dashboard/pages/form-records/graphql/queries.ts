@@ -1,4 +1,3 @@
-import { Form } from '@oort-front/shared';
 import { gql } from 'apollo-angular';
 
 /** Graphql query for getting the records of a form */

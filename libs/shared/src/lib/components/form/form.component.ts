@@ -27,7 +27,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
-import { cloneDeep, isNil } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 /**
  * This component is used to display forms

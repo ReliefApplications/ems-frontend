@@ -99,7 +99,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Toggles the accordion for the clicled workflow and fetches its steps
+   * Toggles the accordion for the clicked workflow and fetches its steps
    *
    * @param page The Page element for the workflow to be toggled
    */
@@ -176,6 +176,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
         },
       });
   }
+
   /**
    * Emits an event with the changes in permission for a given workflow page
    *

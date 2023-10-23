@@ -97,6 +97,7 @@ export class SummaryCardComponent
     logic: 'and',
     filters: [],
   };
+
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;

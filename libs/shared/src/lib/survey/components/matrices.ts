@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   // JsonMetadata,
   QuestionFileModel,
@@ -12,7 +13,6 @@ import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
 /**
  * Add support for custom properties to the survey
  *
- * @param Survey Survey library
  * @param domService Dom service
  */
 export const init = (domService: DomService): void => {
