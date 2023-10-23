@@ -16,6 +16,7 @@ import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
+import * as Matrices from './components/matrices';
 import * as OtherProperties from './global-properties/others';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ReferenceDataProperties from './global-properties/reference-data';

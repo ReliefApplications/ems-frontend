@@ -104,8 +104,7 @@ export class FormComponent
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    Survey.StylesManager.applyTheme();
-    addCustomFunctions(Survey, {
+    addCustomFunctions({
       record: this.record,
       authService: this.authService,
       apollo: this.apollo,

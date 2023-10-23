@@ -13,15 +13,12 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
-  EditStepMutationResponse,
-  EditPageMutationResponse,
 } from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
-import { EDIT_STEP, EDIT_PAGE } from './graphql/mutations';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';

@@ -1,11 +1,11 @@
 import {
-  JsonMetadata,
+  // JsonMetadata,
   QuestionFileModel,
   SurveyModel,
   PageModel,
-} from 'survey-angular';
+  // Serializer,
+} from 'survey-core';
 import { Question } from '../types';
-import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom/dom.service';
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
 
@@ -15,55 +15,52 @@ import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
  * @param Survey Survey library
  * @param domService Dom service
  */
-export const init = (Survey: any, domService: DomService): void => {
-  const serializer: JsonMetadata = Survey.Serializer;
-  // Adds a dropdown to the matrix section with all the questions in the form
-  serializer.addProperty('matrix', {
-    name: 'copyToOthers',
-    category: 'rows',
-    type: 'copyToOthers',
-  });
-
-  serializer.addProperty('matrixdropdown', {
-    name: 'copyToOthers',
-    category: 'rows',
-    type: 'copyToOthers',
-  });
-
-  const copyToOthers = {
-    render: (editor: any, htmlElement: HTMLElement) => {
-      const data = getMatrix(
-        editor.object,
-        editor.object.selectedElementInDesign
-      );
-      const tagbox = domService.appendComponentToBody(
-        MultiSelectComponent,
-        htmlElement
-      );
-      const instance: MultiSelectComponent = tagbox.instance;
-      instance.value = editor.value;
-      instance.data = data;
-      instance.valueChange.subscribe((res) => editor.onChanged(res));
-      const btn = document.createElement('input');
-      btn.type = 'button';
-      btn.value = 'Copy';
-      btn.className = 'svd-items-control-footer btn sv-btn btn-primary';
-      htmlElement.appendChild(btn);
-
-      btn.onclick = () => {
-        updateListMatrix(
-          editor.object.selectedElementInDesign as Question,
-          instance,
-          editor.object
-        );
-      };
-    },
-  };
-
-  SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-    'copyToOthers',
-    copyToOthers
-  );
+export const init = (domService: DomService): void => {
+  // @TODO: Update this code to work with new version of SurveyJS
+  // const serializer: JsonMetadata = Serializer;
+  // // Adds a dropdown to the matrix section with all the questions in the form
+  // serializer.addProperty('matrix', {
+  //   name: 'copyToOthers',
+  //   category: 'rows',
+  //   type: 'copyToOthers',
+  // });
+  // serializer.addProperty('matrixdropdown', {
+  //   name: 'copyToOthers',
+  //   category: 'rows',
+  //   type: 'copyToOthers',
+  // });
+  // const copyToOthers = {
+  //   render: (editor: any, htmlElement: HTMLElement) => {
+  //     const data = getMatrix(
+  //       editor.object,
+  //       editor.object.selectedElementInDesign
+  //     );
+  //     const tagbox = domService.appendComponentToBody(
+  //       MultiSelectComponent,
+  //       htmlElement
+  //     );
+  //     const instance: MultiSelectComponent = tagbox.instance;
+  //     instance.value = editor.value;
+  //     instance.data = data;
+  //     instance.valueChange.subscribe((res) => editor.onChanged(res));
+  //     const btn = document.createElement('input');
+  //     btn.type = 'button';
+  //     btn.value = 'Copy';
+  //     btn.className = 'svd-items-control-footer btn sv-btn btn-primary';
+  //     htmlElement.appendChild(btn);
+  //     btn.onclick = () => {
+  //       updateListMatrix(
+  //         editor.object.selectedElementInDesign as Question,
+  //         instance,
+  //         editor.object
+  //       );
+  //     };
+  //   },
+  // };
+  // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+  //   'copyToOthers',
+  //   copyToOthers
+  // );
 };
 
 /**

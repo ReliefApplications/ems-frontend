@@ -4,6 +4,7 @@ import { GET_USERS } from '../graphql/queries';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { UsersQueryResponse } from '../../models/user.model';
+import { uniqWith } from 'lodash';
 
 /**
  * Inits the users component.

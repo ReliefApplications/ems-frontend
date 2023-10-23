@@ -389,16 +389,17 @@ export class FormBuilderComponent
    * Custom SurveyJS method, save the form when edited.
    */
   saveMySurvey = () => {
-    if (this.surveyCreator.survey.deleteUnusedTranslations) {
-      this.surveyCreator.translation.locales
-        .filter(
-          (x: any) =>
-            !this.surveyCreator.translation.getSelectedLocales().includes(x)
-        )
-        .forEach((locale: any) => {
-          removeKeyFromJSON(this.surveyCreator.JSON, locale);
-        });
-    }
+    // @TODO: Update this code to work with new SurveyJS version
+    // if (this.surveyCreator.survey.deleteUnusedTranslations) {
+    //   this.surveyCreator.translation.locales
+    //     .filter(
+    //       (x: any) =>
+    //         !this.surveyCreator.translation.getSelectedLocales().includes(x)
+    //     )
+    //     .forEach((locale: any) => {
+    //       removeKeyFromJSON(this.surveyCreator.JSON, locale);
+    //     });
+    // }
 
     this.validateValueNames()
       .then((canCreate: boolean) => {

@@ -1,4 +1,4 @@
-import { SurveyModel } from 'survey-angular';
+import { SurveyModel } from 'survey-core';
 import { isNil } from 'lodash';
 import { GlobalOptions } from '../types';
 

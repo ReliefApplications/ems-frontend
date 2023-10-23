@@ -1,3 +1,4 @@
+import { Apollo } from 'apollo-angular';
 import {
   QuestionTextModel,
   Question as SurveyCoreQuestion,
@@ -6,6 +7,9 @@ import {
   QuestionCustomModel,
   QuestionDropdownModel,
 } from 'survey-core';
+import { Record } from '../models/record.model';
+import { Form } from '../models/form.model';
+import { AuthService } from '../services/auth/auth.service';
 
 /** Custom global properties definition */
 export interface GlobalProperties {
@@ -78,7 +82,7 @@ export interface QuestionResource
 
 export type GlobalOptions = {
   apollo: Apollo;
-  record: Record | undefined;
-  form: Form | undefined;
   authService: AuthService;
+  record?: Record;
+  form?: Form;
 };

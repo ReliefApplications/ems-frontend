@@ -2,11 +2,13 @@ import {
   ChoicesRestful,
   JsonMetadata,
   QuestionFileModel,
+  QuestionPanelDynamicModel,
   Serializer,
   matrixDropdownColumnTypes,
   settings,
 } from 'survey-core';
 import { Question } from '../types';
+import { SurveyModel, PageModel } from 'survey-core';
 
 /**
  * Add support for custom properties to the survey
@@ -76,7 +78,7 @@ export const init = (environment: any): void => {
   serializer.addProperty('survey', {
     name: 'openOnQuestionValuesPage',
     category: 'pages',
-    choices: (survey: Model, choicesCallback: any) => {
+    choices: (survey: SurveyModel, choicesCallback: any) => {
       let questions: string[] = [''];
       survey.pages.forEach((page: PageModel) => {
         questions = questions.concat(
@@ -90,7 +92,7 @@ export const init = (environment: any): void => {
   serializer.addProperty('survey', {
     name: 'openOnPage',
     category: 'pages',
-    choices: (survey: Model, choicesCallback: any) => {
+    choices: (survey: SurveyModel, choicesCallback: any) => {
       const pages: string[] = [''].concat(
         survey.pages.map((page: PageModel) => page.name)
       );
@@ -123,7 +125,7 @@ export const init = (environment: any): void => {
     visibleIndex: 2,
   });
 
-  // Property to allow custumization of the save button label
+  // Property to allow customization of the save button label
   serializer.addProperty('survey', {
     name: 'saveButtonText',
     type: 'string',

@@ -26,7 +26,7 @@ import { difference } from 'lodash';
  */
 const getUpdateData = (
   op: string,
-  survey: Survey.SurveyModel
+  survey: SurveyModel
 ): Record<string, any> | null => {
   if (!op) return null;
   // Op can either be a stringified JSON object or
