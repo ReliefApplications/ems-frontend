@@ -12,6 +12,7 @@ import {
   DateModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { EditorControlComponent } from '../editor-control/editor-control.component';
 
 /**
  * Composite Filter module.
@@ -28,6 +29,7 @@ import {
     TooltipModule,
     DateModule,
     FormWrapperModule,
+    EditorControlComponent,
   ],
   exports: [FilterComponent],
 })

@@ -17,6 +17,13 @@ import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 // import { ContextService } from '../../../services/context/context.service';
+import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
+import { EditorService } from '../../../services/editor/editor.service';
+import {
+  getCalcKeys,
+  getDataKeys,
+  getInfoKeys,
+} from '../../edit-calculated-field-modal/utils/keys';
 
 /**
  * Composite filter row.
@@ -36,6 +43,9 @@ export class FilterRowComponent
 
   public field?: any;
   public editor?: TemplateRef<any>;
+
+  /** tinymce editor */
+  public editorTinymce: any = INLINE_EDITOR_CONFIG;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -61,8 +71,12 @@ export class FilterRowComponent
   /**
    * Constructor of filter row
    */
-  constructor(/*private contextService: ContextService*/) {
+  constructor(private editorService: EditorService) {
     super();
+    // Set the editor base url based on the environment file
+    this.editorTinymce.base_url = editorService.url;
+    // Set the editor language
+    this.editorTinymce.language = editorService.language;
   }
 
   ngOnInit(): void {
@@ -102,6 +116,16 @@ export class FilterRowComponent
           this.form.get('value')?.enable();
         }
       });
+
+    const keys = [
+      ...getCalcKeys(),
+      ...getInfoKeys(),
+      // ...getDataKeys(this.resourceFields),
+    ];
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.editorTinymce,
+      keys.map((key) => ({ value: key, text: key }))
+    );
   }
 
   ngAfterViewInit(): void {
