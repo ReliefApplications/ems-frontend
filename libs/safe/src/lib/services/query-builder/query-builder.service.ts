@@ -87,6 +87,7 @@ export const REFERENCE_DATA_END = 'Ref';
 export class QueryBuilderService {
   /** Available forms / resources queries */
   private availableQueries = new BehaviorSubject<any[]>([]);
+
   /** @returns Available forms / resources queries as observable */
   get availableQueries$(): Observable<any> {
     return this.availableQueries.asObservable();
@@ -94,10 +95,12 @@ export class QueryBuilderService {
 
   /** Available forms / resources types */
   private availableTypes = new BehaviorSubject<any[]>([]);
+
   /** @returns Available forms / resources types as observable */
   get availableTypes$(): Observable<any> {
     return this.availableTypes.asObservable();
   }
+
   /** User fields */
   private userFields = [];
 
@@ -486,6 +489,7 @@ export class QueryBuilderService {
    * Format fields for filters.
    *
    * @param query custom query.
+   * @returns filter fields as Promise
    */
   public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {

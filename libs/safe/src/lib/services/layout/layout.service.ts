@@ -14,6 +14,7 @@ export class SafeLayoutService {
   public closeRightSidenav = true;
   /** Current right sidenav */
   private rightSidenav = new BehaviorSubject<any>(null);
+
   /** @returns Current right sidenav as observable */
   get rightSidenav$(): Observable<any> {
     return this.rightSidenav.asObservable();

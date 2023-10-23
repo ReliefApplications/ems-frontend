@@ -125,7 +125,11 @@ export class ReferenceDataComponent
     super();
   }
 
-  /** @returns the reference data group form */
+  /**
+   * Build reference data form group
+   *
+   * @returns the reference data group form
+   */
   private getRefDataForm() {
     const form = new FormGroup({
       name: new FormControl(this.referenceData?.name, Validators.required),
