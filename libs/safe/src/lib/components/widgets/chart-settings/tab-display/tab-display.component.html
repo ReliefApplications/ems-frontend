@@ -217,7 +217,10 @@
             {{ 'components.widget.settings.chart.axes' | translate }}
           </ng-container>
           <!-- === X AXIS PARAMETERS === -->
-          <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
+          <ng-container
+            formGroupName="x"
+            *ngIf="['bar'].includes(type.name)"
+          >
             <h3>
               {{ 'components.widget.settings.chart.xAxis' | translate }}
             </h3>
