@@ -27,6 +27,33 @@ export const ADD_RECORD = gql`
   }
 `;
 
+// === ADD DRAFT RECORD ===
+
+/** Graphql request for adding a new draft record to a form */
+export const ADD_DRAFT_RECORD = gql`
+  mutation addDraftRecord($form: ID!, $data: JSON!, $display: Boolean) {
+    addDraftRecord(form: $form, data: $data) {
+      id
+      createdAt
+      modifiedAt
+      createdBy {
+        name
+      }
+      data(display: $display)
+      form {
+        uniqueRecord {
+          id
+          modifiedAt
+          createdBy {
+            name
+          }
+          data
+        }
+      }
+    }
+  }
+`;
+
 // === EDIT RECORD ===
 
 /** Graphql request for editing a record by its id */

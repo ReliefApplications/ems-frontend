@@ -36,6 +36,11 @@ export interface AddRecordMutationResponse {
   addRecord: Record;
 }
 
+/** Model for add draft record graphql mutation response */
+export interface AddDraftRecordMutationResponse {
+  addDraftRecord: Record;
+}
+
 /** Model for edit record graphql mutation response */
 export interface EditRecordMutationResponse {
   editRecord: Record;

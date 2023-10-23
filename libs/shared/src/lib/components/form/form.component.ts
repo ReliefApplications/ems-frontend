@@ -11,11 +11,12 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { SurveyModel } from 'survey-core';
-import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
+import { ADD_RECORD, EDIT_RECORD, ADD_DRAFT_RECORD } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
   EditRecordMutationResponse,
+  AddDraftRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
@@ -237,6 +238,32 @@ export class FormComponent
         { error: true }
       );
     }
+  }
+
+  public saveAsDraft(): void {
+    // Add a new draft record to the database
+    const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+      mutation: ADD_DRAFT_RECORD,
+      variables: {
+        form: this.form.id,
+        data: this.survey.data,
+      },
+    });
+    mutation.subscribe(({ errors, data }: any) => {
+      if (errors) {
+        this.survey.clear(false, true);
+        this.snackBar.openSnackBar(errors[0].message, { error: true });
+      } else {
+        localStorage.removeItem(this.storageId);
+        this.survey.clear(true, true);
+      }
+      this.surveyActive = true;
+      // Emit but stay in record addition mode
+      this.save.emit({
+        completed: false,
+        hideNewRecord: true
+      });
+    });
   }
 
   /**
