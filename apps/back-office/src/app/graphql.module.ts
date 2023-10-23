@@ -43,7 +43,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
       },
     })
   );
-    console.log('authToken', localStorage.getItem('id_token'));
+
   /** Definition for apollo link query definition */
   interface Definition {
     kind: string;
