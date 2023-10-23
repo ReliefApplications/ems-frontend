@@ -5,6 +5,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   Renderer2,
@@ -76,7 +77,7 @@ const matches = (el: any, selector: any) =>
 })
 export class SafeGridComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -192,6 +193,9 @@ export class SafeGridComponent
   // === SNACKBAR ===
   private snackBarRef!: any;
 
+  // === TIMEOUT LISTENERS === //
+  columnChangeTimeoutListener!: NodeJS.Timeout;
+
   /**
    * Constructor of the grid component
    *
@@ -225,7 +229,11 @@ export class SafeGridComponent
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(
+        debounceTime(2000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
@@ -264,9 +272,15 @@ export class SafeGridComponent
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe(() =>
-      setTimeout(() => this.columnChange.emit(), 500)
-    );
+    this.grid?.columnReorder.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.columnChangeTimeoutListener) {
+        clearTimeout(this.columnChangeTimeoutListener);
+      }
+      this.columnChangeTimeoutListener = setTimeout(
+        () => this.columnChange.emit(),
+        500
+      );
+    });
   }
 
   // find field with the path name
@@ -737,5 +751,12 @@ export class SafeGridComponent
     if (this.loadingRecords)
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.columnChangeTimeoutListener) {
+      clearTimeout(this.columnChangeTimeoutListener);
+    }
   }
 }

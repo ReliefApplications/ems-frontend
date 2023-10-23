@@ -3,6 +3,9 @@ import { applyLayoutFormat } from '../../../../../utils/parser/utils';
 import { SafeDatePipe } from '../../../../../pipes/date/date.pipe';
 import { ICON_EXTENSIONS } from '../grid.constants';
 
+/** Keys added to grid row to display data in the html grid template */
+export const FORMAT_KEYS = ['style', 'text', 'icon', 'urlValue', 'value'];
+
 /**
  * Grid field interface
  */
@@ -61,7 +64,7 @@ export function formatGridRowData(
     icon: {},
   };
   const urlObj = {
-    url: {},
+    urlValue: {},
   };
   const valueObj = {
     value: {},
@@ -83,7 +86,7 @@ export function formatGridRowData(
         // Format url if exists for each field
         if (field.meta.type === 'url') {
           const url = getUrl(getPropertyValue(rowData, field));
-          Object.assign(urlObj.url, {
+          Object.assign(urlObj.urlValue, {
             [field.name]: url,
           });
         }
@@ -114,15 +117,9 @@ export function formatGridRowData(
   Object.assign(rowData, styleObj);
   Object.assign(rowData, textObj);
   // Specific types for each field and meta
-  if (Object.keys(iconObj.icon).length) {
-    Object.assign(rowData, iconObj);
-  }
-  if (Object.keys(urlObj.url).length) {
-    Object.assign(rowData, urlObj);
-  }
-  if (Object.keys(valueObj.value).length) {
-    Object.assign(rowData, valueObj);
-  }
+  Object.assign(rowData, iconObj);
+  Object.assign(rowData, urlObj);
+  Object.assign(rowData, valueObj);
 }
 
 /**
