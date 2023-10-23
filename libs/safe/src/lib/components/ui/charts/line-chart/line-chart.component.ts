@@ -177,10 +177,10 @@ export class SafeLineChartComponent implements OnChanges {
           grid: {
             display: get(this.options, 'grid.y.display', true),
           },
-          min: get(this.options, 'axes.y.min', this.min - 0.1 * this.min),
-          max: get(this.options, 'axes.y.max', this.max + 0.1 * this.max),
+          min: get(this.options, 'axes.y.min', undefined),
+          max: get(this.options, 'axes.y.max', undefined),
           ticks: {
-            stepSize: 10,
+            stepSize: get(this.options, 'axes.y.tickSteps', undefined),
           },
         },
       },

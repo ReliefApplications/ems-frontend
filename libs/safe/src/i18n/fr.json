@@ -1202,6 +1202,7 @@
 					"size": "Taille",
 					"style": "Style",
 					"text": "Texte",
+					"tickSteps": "Taille du pas des ticks",
 					"title": {
 						"color": "Couleur",
 						"format": "Format"

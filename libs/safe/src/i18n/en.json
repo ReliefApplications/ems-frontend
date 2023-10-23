@@ -1195,6 +1195,7 @@
 					"size": "Size",
 					"style": "Style",
 					"text": "Text",
+					"tickSteps": "Ticks step size",
 					"title": {
 						"color": "Title color",
 						"format": "Title format"

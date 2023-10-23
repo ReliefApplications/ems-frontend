@@ -268,16 +268,6 @@
                   [placeholder]="'common.auto' | translate"
                 />
               </div>
-              <div *ngIf="['line'].includes(type.name)" uiFormFieldDirective>
-                <label>Steps</label>
-                <ui-select-menu formControlName="minSteps">
-                  <ui-select-option
-                    [value]="50"
-                  >
-                    10
-                  </ui-select-option>
-                </ui-select-menu>
-              </div>
             </div>
             <div class="axis-container">
               <ui-toggle formControlName="enableMax"></ui-toggle>
@@ -291,16 +281,14 @@
                   [placeholder]="'common.auto' | translate"
                 />
               </div>
-              <div *ngIf="['line'].includes(type.name)" uiFormFieldDirective>
-                <label>Steps</label>
-                <ui-select-menu formControlName="maxSteps">
-                  <ui-select-option
-                    [value]="50"
-                  >
-                    50
-                  </ui-select-option>
-                </ui-select-menu>
-              </div>
+            </div>
+            <div class="w-56" *ngIf="['line'].includes(type.name)" uiFormFieldDirective>
+              <label>{{ 'components.widget.settings.chart.tickSteps' | translate }}</label>
+              <input 
+                formControlName="tickSteps"
+                [placeholder]="'common.auto' | translate"
+                type="number"
+              />
             </div>
           </ng-container>
         </ui-expansion-panel>
