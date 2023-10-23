@@ -153,6 +153,7 @@ export class SafeBarChartComponent implements OnChanges {
             autoSkip: isBar,
             maxRotation: 90,
             minRotation: 0,
+            stepSize: get(this.options, 'axes.x.stepSize', undefined),
           },
         },
         y: {

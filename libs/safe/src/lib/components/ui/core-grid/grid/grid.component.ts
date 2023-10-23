@@ -249,8 +249,6 @@ export class SafeGridComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.data.data);
-    console.log(this.fields);
     this.statusMessage = this.getStatusMessage();
     if (
       !isEqual(

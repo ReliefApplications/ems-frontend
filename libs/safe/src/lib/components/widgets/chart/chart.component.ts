@@ -170,6 +170,9 @@ export class SafeChartComponent
           max: get(this.settings, 'chart.axes.x.enableMax')
             ? get(this.settings, 'chart.axes.x.max')
             : null,
+          stepSize: get(this.settings, 'chart.axes.x.stepSize')
+            ? get(this.settings, 'chart.axes.x.stepSize')
+            : null,
         },
         y: {
           min: get(this.settings, 'chart.axes.y.enableMin')
