@@ -287,7 +287,7 @@ export class SafeAggregationGridComponent
    */
   private updateValues(data: AggregationDataQueryResponse, loading: boolean) {
     this.gridData = {
-      data: cloneDeep(data.recordsAggregation.item),
+      data: cloneDeep(data.recordsAggregation.items),
       total: data.recordsAggregation.totalCount,
     };
     this.loading = loading;
