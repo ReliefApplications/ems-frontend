@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SafePermissionGuard } from '@oort-front/safe';
-import { AccessGuard } from '../guards/access.guard';
 import { ApplicationComponent } from './application.component';
 
 /**
