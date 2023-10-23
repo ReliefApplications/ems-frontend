@@ -470,7 +470,7 @@
 				"week": "Semaine",
 				"year": "Année"
 			},
-			"sourceFields": "Sélectionner les champs",
+			"sourceFields": "Choisissez les champs à inclure dans l'agrégation",
 			"stages": {
 				"addFields": "Ajouter des champs",
 				"custom": "Personnaliser",
