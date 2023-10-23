@@ -240,6 +240,9 @@ export class FormComponent
     }
   }
 
+  /**
+   * Saves the current data as a draft record
+   */
   public saveAsDraft(): void {
     // Add a new draft record to the database
     const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
@@ -249,7 +252,7 @@ export class FormComponent
         data: this.survey.data,
       },
     });
-    mutation.subscribe(({ errors, data }: any) => {
+    mutation.subscribe(({ errors }: any) => {
       if (errors) {
         this.survey.clear(false, true);
         this.snackBar.openSnackBar(errors[0].message, { error: true });
@@ -261,7 +264,7 @@ export class FormComponent
       // Emit but stay in record addition mode
       this.save.emit({
         completed: false,
-        hideNewRecord: true
+        hideNewRecord: true,
       });
     });
   }
