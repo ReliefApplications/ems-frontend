@@ -14,12 +14,18 @@ import { FormControl } from '@angular/forms';
 
 type Story = ViewIconSelectorComponent;
 
+/** Provided environment */
 const environment = {
   theme: {
     primary: '#6f51ae',
   },
 };
 
+/**
+ * App initializer
+ *
+ * @returns callback method when initializing app
+ */
 const initializeApp = (): any => () => {
   // Add fa icon font to check in the application
   library.add(fas, fab);
@@ -46,6 +52,11 @@ export default {
   ],
 } as Meta<Story>;
 
+/**
+ * Default story
+ *
+ * @returns StoryFn
+ */
 export const Default: StoryFn<Story> = () => {
   return {
     props: {
@@ -54,6 +65,11 @@ export const Default: StoryFn<Story> = () => {
   };
 };
 
+/**
+ * Story with default value
+ *
+ * @returns StoryFn
+ */
 export const WithValue: StoryFn<Story> = () => {
   return {
     props: {
