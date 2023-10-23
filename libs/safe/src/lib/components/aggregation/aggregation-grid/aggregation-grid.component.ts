@@ -18,6 +18,7 @@ import {
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { createDefaultField } from '../../query-builder/query-builder-forms';
 import { ResourceQueryResponse } from '../../../models/resource.model';
+import { cloneDeep } from 'lodash';
 
 /**
  * Shared aggregation grid component.
@@ -286,7 +287,7 @@ export class SafeAggregationGridComponent
    */
   private updateValues(data: AggregationDataQueryResponse, loading: boolean) {
     this.gridData = {
-      data: data.recordsAggregation.items,
+      data: cloneDeep(data.recordsAggregation.item),
       total: data.recordsAggregation.totalCount,
     };
     this.loading = loading;
