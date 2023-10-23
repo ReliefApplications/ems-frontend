@@ -50,6 +50,7 @@ export class ApplicationComponent
   get empty(): boolean {
     return this.applications.length === 0;
   }
+
   /**
    * Main component of Front-Office navigation.
    *

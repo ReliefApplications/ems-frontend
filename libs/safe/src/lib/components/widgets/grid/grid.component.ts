@@ -506,6 +506,7 @@ export class SafeGridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @returns Attach to record promise
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],

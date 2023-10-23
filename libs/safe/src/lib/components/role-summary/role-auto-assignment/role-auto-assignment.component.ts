@@ -29,6 +29,7 @@ export class RoleAutoAssignmentComponent
   @Input() role!: Role;
   public formArray!: UntypedFormArray;
   @Output() edit = new EventEmitter();
+
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
     if (loading) {
