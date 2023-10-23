@@ -553,6 +553,7 @@ export class GridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @returns Promise resolving when execution done
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],

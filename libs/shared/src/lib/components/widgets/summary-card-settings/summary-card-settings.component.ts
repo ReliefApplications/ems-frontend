@@ -24,8 +24,9 @@ import {
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { GET_RESOURCE } from './graphql/queries';
+import { GET_GRID_RESOURCE_META, GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import { Form } from '../../../models/form.model';
 import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 
 // todo: put in common
@@ -45,6 +46,7 @@ const createCardForm = (value?: any) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
     resource: new FormControl<string>(get(value, 'resource', null)),
+    template: new FormControl<string>(get(value, 'template', null)),
     layout: new FormControl<string>(get(value, 'layout', null)),
     aggregation: new FormControl<string>(get(value, 'aggregation', null)),
     html: new FormControl<string>(get(value, 'html', null)),
@@ -128,6 +130,7 @@ export class SummaryCardSettingsComponent
 
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
+  public templates: Form[] = [];
 
   /**
    * Summary Card Settings component.
@@ -168,10 +171,53 @@ export class SummaryCardSettingsComponent
           );
           searchableControl?.setValue(false);
           searchableControl?.disable();
-        } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
+          // disable form actions if aggregation selected
+          const actionsForm = this.tileForm?.controls.actions;
+          // Prefer disabling all nested controls, so it automatically checks validation
+          if (actionsForm) {
+            Object.keys(actionsForm.controls).forEach((controlName: any) => {
+              actionsForm.get(controlName)?.disable();
+            });
+          }
+        } else {
+          this.tileForm?.get('widgetDisplay.searchable')?.enable();
+          // enable form actions if aggregation selected
+          this.tileForm?.controls.actions.enable();
+        }
       });
 
     this.initSortFields();
+
+    // Subscribe to form resource changes to get the templates on change
+    this.tileForm
+      .get('card.resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.tileForm?.get('card.template')?.setValue(null);
+        this.getTemplates();
+      });
+
+    this.getTemplates();
+  }
+
+  /**
+   * Gets the templates for the selected resource
+   */
+  private getTemplates(): void {
+    if (this.tileForm?.get('card.resource')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_GRID_RESOURCE_META,
+          variables: {
+            resource: this.tileForm?.get('card.resource')?.value,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            this.templates = data.resource.forms || [];
+          }
+        });
+    }
   }
 
   /**

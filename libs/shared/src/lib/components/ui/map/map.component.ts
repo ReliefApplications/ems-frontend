@@ -641,6 +641,7 @@ export class MapComponent
    * Setup and draw layers on map and sets the baseTree.
    *
    * @param layerIds layerIds from saved edit layer info
+   * @returns layers
    */
   private async getLayers(layerIds: string[]) {
     /**

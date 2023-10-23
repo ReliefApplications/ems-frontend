@@ -124,3 +124,69 @@ export const GET_RESOURCE = gql`
     }
   }
 `;
+
+// === GET RELATED FORMS FROM RESOURCE ===
+
+/** Graphql request for getting resource meta date for a grid */
+export const GET_GRID_RESOURCE_META = gql`
+  query GetGridResourceMeta(
+    $resource: ID!
+    $layoutIds: [ID]
+    $firstLayouts: Int
+    $aggregationIds: [ID]
+    $firstAggregations: Int
+  ) {
+    resource(id: $resource) {
+      id
+      name
+      queryName
+      forms {
+        id
+        name
+      }
+      relatedForms {
+        id
+        name
+        fields
+        resource {
+          id
+          queryName
+          name
+          fields
+        }
+      }
+      layouts(ids: $layoutIds, first: $firstLayouts) {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+      aggregations(ids: $aggregationIds, first: $firstAggregations) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
