@@ -69,7 +69,11 @@
           [defaultMargin]="false"
           >
           <label>{{ 'models.form.field.itensLabel' | translate }}</label>
-          <input formControlName="itensLabel" type="text" />
+          <input 
+            formControlName="itensLabel"
+            type="text"
+            [placeholder]="'{{count}}'"
+          />
         </div>
       </div>
     </ng-container>

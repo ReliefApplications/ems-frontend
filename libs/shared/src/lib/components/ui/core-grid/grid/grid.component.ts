@@ -816,6 +816,18 @@ export class GridComponent
     });
   }
 
+  /*
+   * Evaluate the label of the field
+   *
+   * @param field Fields of data item
+   * @param dataItem The data item
+   * @returns The label of the field with evaluated values of {{count}}
+   */
+  public evaluateLabel(field: any, dataItem: any) {
+    const quantityItems = dataItem[field.name].length;
+    return field.itensLabel.replaceAll('{{count}}', quantityItems);
+  }
+
   /**
    * Open a modal to show the errors
    *
