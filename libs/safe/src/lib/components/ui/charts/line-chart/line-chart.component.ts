@@ -179,6 +179,9 @@ export class SafeLineChartComponent implements OnChanges {
           },
           min: get(this.options, 'axes.y.min', undefined),
           max: get(this.options, 'axes.y.max', undefined),
+          ticks: {
+            stepSize: get(this.options, 'axes.y.stepSize', undefined),
+          },
         },
       },
       plugins: {
