@@ -15,7 +15,7 @@ import {
   AfterContentInit,
   Optional,
   Self,
-  OnInit,
+  OnChanges,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
@@ -44,7 +44,7 @@ import { isNil } from 'lodash';
   styleUrls: ['./select-menu.component.scss'],
 })
 export class SelectMenuComponent
-  implements ControlValueAccessor, OnInit, AfterContentInit, OnDestroy
+  implements ControlValueAccessor, OnChanges, AfterContentInit, OnDestroy
 {
   /** Tells if the select menu should allow multi selection */
   @Input() multiselect = false;
@@ -79,6 +79,7 @@ export class SelectMenuComponent
   /* Search control and loading state */
   public searchControl = new FormControl('', { nonNullable: true });
   public loading = false;
+  private searchSubscriptionActive!: Subscription;
 
   /** Array to store the values selected */
   public selectedValues: any[] = [];
@@ -130,10 +131,13 @@ export class SelectMenuComponent
     }
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     // Listen to search bar changes if filterable is available
     if (this.filterable) {
-      this.searchControl.valueChanges
+      if (this.searchSubscriptionActive) {
+        this.searchSubscriptionActive.unsubscribe();
+      }
+      this.searchSubscriptionActive = this.searchControl.valueChanges
         .pipe(
           debounceTime(500),
           distinctUntilChanged(),
@@ -462,6 +466,7 @@ export class SelectMenuComponent
     }
     this.closePanelTimeoutListener = setTimeout(() => {
       this.overlayRef.detach();
+      this.searchControl.setValue('');
       this.triggerUIChange$.next(true);
     }, 100);
   }

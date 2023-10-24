@@ -49,7 +49,10 @@
 </button>
 <!-- Listbox showing when focus on the component, change in function of inputs -->
 <ng-template #optionPanel>
-  <div id="optionsContainer" class="relative w-full">
+  <div
+    id="optionsContainer"
+    class="relative w-full shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ease-in-out duration-100 rounded-md"
+  >
     <!-- Search -->
     <ng-container *ngIf="filterable">
       <ng-container *ngTemplateOutlet="search"></ng-container>
@@ -60,7 +63,7 @@
         'max-h-36 py-1': !isGraphQlSelect,
         'max-h-52': isGraphQlSelect
       }"
-      class="shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ease-in-out duration-100 w-full overflow-auto rounded-md bg-white text-base"
+      class="w-full overflow-auto bg-white text-base"
     >
       <!-- Display the elements of the list -->
       <ng-content></ng-content>
