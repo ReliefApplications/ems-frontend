@@ -112,6 +112,7 @@ import {
 export class SafeApplicationService {
   /** Current application */
   public application = new BehaviorSubject<Application | null>(null);
+
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -135,6 +136,7 @@ export class SafeApplicationService {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
+
   /** @returns Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;

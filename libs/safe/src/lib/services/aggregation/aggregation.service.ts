@@ -52,6 +52,7 @@ export class SafeAggregationService {
    * @param options query options
    * @param options.ids list of aggregation id
    * @param options.first number of items to get
+   * @returns Aggregations as Promise
    */
   async getAggregations(
     resourceId: string,

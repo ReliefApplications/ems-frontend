@@ -167,6 +167,7 @@ export class SafeSummaryCardSettingsComponent
         } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
       });
   }
+
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
     return this.tileForm?.get('widgetDisplay.searchable') as any;

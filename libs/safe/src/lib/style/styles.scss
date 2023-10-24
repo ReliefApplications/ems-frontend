@@ -5,9 +5,6 @@
 @include mat.legacy-core();
 @include mat.core();
 
-// === KENDO THEME ===
-@import 'theme.scss';
-
 .sv_main,
 .svd_container {
   --main-color: #{rgb($primary_500)};
