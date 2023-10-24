@@ -77,21 +77,6 @@ export class SafeAddUserComponent
   }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      email: ['', Validators.minLength(1)],
-      role: ['', Validators.required],
-      ...(this.data.positionAttributeCategories && {
-        positionAttributes: this.formBuilder.array(
-          this.data.positionAttributeCategories.map((x) =>
-            this.formBuilder.group({
-              value: [''],
-              category: [x.id, Validators.required],
-            })
-          )
-        ),
-      }),
-    });
-
     const getUsersByEmail = this.form.controls.email.valueChanges.pipe(
       debounceTime(1000),
       distinctUntilChanged(),
