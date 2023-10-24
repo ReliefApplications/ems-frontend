@@ -1,7 +1,7 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
+import { environment } from 'apps/back-office/src/environments/environment';
 import { GridWidgetComponent } from './grid.component';
 import {
   DateTimeProvider,
@@ -25,7 +25,7 @@ import { GET_QUERY_TYPES } from './graphql/queries';
 
 describe('GridWidgetComponent', () => {
   let component: GridWidgetComponent;
-  let fixture: ComponentFixture<sharedGridWidgetComponent>;
+  let fixture: ComponentFixture<GridWidgetComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(waitForAsync(() => {

@@ -4,7 +4,7 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
+import { environment } from 'apps/back-office/src/environments/environment';
 import { RecordHistoryComponent } from './record-history.component';
 import {
   DateTimeProvider,
@@ -23,7 +23,7 @@ import { MenuModule } from '@oort-front/ui';
 
 describe('RecordHistoryComponent', () => {
   let component: RecordHistoryComponent;
-  let fixture: ComponentFixture<sharedRecordHistoryComponent>;
+  let fixture: ComponentFixture<RecordHistoryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

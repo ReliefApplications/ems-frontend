@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'projects/back-office/src/environments/environment';
+import { environment } from 'apps/back-office/src/environments/environment';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -17,7 +17,7 @@ import { GET_QUERY_TYPES } from './graphql/queries';
 
 describe('AggregationBuilderComponent', () => {
   let component: AggregationBuilderComponent;
-  let fixture: ComponentFixture<sharedAggregationBuilderComponent>;
+  let fixture: ComponentFixture<AggregationBuilderComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

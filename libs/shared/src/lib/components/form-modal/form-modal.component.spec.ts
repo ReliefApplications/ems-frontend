@@ -5,7 +5,7 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
+import { environment } from 'apps/back-office/src/environments/environment';
 import { FormModalComponent } from './form-modal.component';
 import {
   DateTimeProvider,
@@ -22,7 +22,7 @@ import {
 
 describe('FormModalComponent', () => {
   let component: FormModalComponent;
-  let fixture: ComponentFixture<sharedFormModalComponent>;
+  let fixture: ComponentFixture<FormModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

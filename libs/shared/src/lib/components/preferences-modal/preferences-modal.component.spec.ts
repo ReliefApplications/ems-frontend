@@ -3,7 +3,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
+import { environment } from 'apps/back-office/src/environments/environment';
 import { PreferencesModalComponent } from './preferences-modal.component';
 import {
   DialogModule as DialogCdkModule,
@@ -20,7 +20,7 @@ import {
 
 describe('PreferencesModalComponent', () => {
   let component: PreferencesModalComponent;
-  let fixture: ComponentFixture<sharedPreferencesModalComponent>;
+  let fixture: ComponentFixture<PreferencesModalComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

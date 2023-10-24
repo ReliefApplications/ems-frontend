@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'projects/back-office/src/environments/environment';
+import { environment } from 'apps/back-office/src/environments/environment';
 import {
   TranslateModule,
   TranslateService,
@@ -13,7 +13,7 @@ import { ChartSettingsComponent } from './chart-settings.component';
 
 describe('ChartSettingsComponent', () => {
   let component: ChartSettingsComponent;
-  let fixture: ComponentFixture<sharedChartSettingsComponent>;
+  let fixture: ComponentFixture<ChartSettingsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

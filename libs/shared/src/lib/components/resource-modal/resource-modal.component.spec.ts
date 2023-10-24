@@ -18,7 +18,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 describe('ResourceModalComponent', () => {
   let component: ResourceModalComponent;
-  let fixture: ComponentFixture<sharedResourceModalComponent>;
+  let fixture: ComponentFixture<ResourceModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

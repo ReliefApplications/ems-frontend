@@ -13,7 +13,7 @@ import {
 } from '@ngx-translate/core';
 import { ChartSettingsComponent } from '../../widgets/chart-settings/chart-settings.component';
 import { HttpClientModule } from '@angular/common/http';
-import { environment } from 'projects/back-office/src/environments/environment';
+import { environment } from 'apps/back-office/src/environments/environment';
 
 import { EditWidgetModalComponent } from './edit-widget-modal.component';
 

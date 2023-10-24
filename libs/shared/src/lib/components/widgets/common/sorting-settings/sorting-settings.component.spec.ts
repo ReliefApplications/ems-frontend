@@ -4,7 +4,7 @@ import { SortingSettingsComponent } from './sorting-settings.component';
 
 describe('SortingSettingsComponent', () => {
   let component: SortingSettingsComponent;
-  let fixture: ComponentFixture<sharedSortingSettingsComponent>;
+  let fixture: ComponentFixture<SortingSettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
