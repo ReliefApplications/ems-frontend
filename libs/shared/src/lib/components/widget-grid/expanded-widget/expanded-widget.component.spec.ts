@@ -9,7 +9,7 @@ import { ExpandedWidgetComponent } from './expanded-widget.component';
 
 describe('ExpandedWidgetComponent', () => {
   let component: ExpandedWidgetComponent;
-  let fixture: ComponentFixture<sharedExpandedWidgetComponent>;
+  let fixture: ComponentFixture<ExpandedWidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

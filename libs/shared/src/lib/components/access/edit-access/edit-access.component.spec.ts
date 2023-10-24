@@ -20,7 +20,7 @@ import { GET_ROLES } from './graphql/queries';
 
 describe('EditAccessComponent', () => {
   let component: EditAccessComponent;
-  let fixture: ComponentFixture<sharedEditAccessComponent>;
+  let fixture: ComponentFixture<EditAccessComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

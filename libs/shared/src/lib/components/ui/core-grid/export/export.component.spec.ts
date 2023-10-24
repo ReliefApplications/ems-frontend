@@ -14,7 +14,7 @@ import {
 
 describe('ExportComponent', () => {
   let component: ExportComponent;
-  let fixture: ComponentFixture<sharedExportComponent>;
+  let fixture: ComponentFixture<ExportComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -9,7 +9,7 @@ import { SearchMenuComponent } from './search-menu.component';
 
 describe('SearchMenuComponent', () => {
   let component: SearchMenuComponent;
-  let fixture: ComponentFixture<sharedSearchMenuComponent>;
+  let fixture: ComponentFixture<SearchMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
