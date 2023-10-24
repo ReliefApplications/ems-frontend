@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { ApolloTestingModule } from 'apollo-angular/testing';
-import { DashboardComponent } from './dashboard.component';
+import { ApplicationComponent } from './application.component';
 import { Ability } from '@casl/ability';
 import {
   TranslateFakeLoader,
@@ -20,9 +20,9 @@ import {
 import { DialogModule } from '@angular/cdk/dialog';
 import { MenuModule } from '@oort-front/ui';
 
-describe('DashboardComponent', () => {
-  let component: DashboardComponent;
-  let fixture: ComponentFixture<DashboardComponent>;
+describe('ApplicationComponent', () => {
+  let component: ApplicationComponent;
+  let fixture: ComponentFixture<ApplicationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,7 +42,7 @@ describe('DashboardComponent', () => {
           },
         }),
       ],
-      declarations: [DashboardComponent],
+      declarations: [ApplicationComponent],
       providers: [
         TranslateService,
         Ability,
@@ -64,7 +64,7 @@ describe('DashboardComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardComponent);
+    fixture = TestBed.createComponent(ApplicationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

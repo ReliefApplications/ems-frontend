@@ -42,9 +42,4 @@ export class AddApiConfigurationComponent implements OnInit {
       name: ['', [Validators.required, Validators.pattern(apiValidator)]],
     });
   }
-
-  /** Close the modal without sending data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

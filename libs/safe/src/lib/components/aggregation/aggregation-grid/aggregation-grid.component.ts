@@ -18,6 +18,7 @@ import {
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { createDefaultField } from '../../query-builder/query-builder-forms';
 import { ResourceQueryResponse } from '../../../models/resource.model';
+import { cloneDeep } from 'lodash';
 
 /**
  * Shared aggregation grid component.
@@ -236,11 +237,14 @@ export class SafeAggregationGridComponent
             });
           } else {
             this.loadingSettings = false;
+            // this.status = {
+            //   error: !this.loadingSettings,
+            //   message: this.translate.instant(
+            //     'components.widget.grid.errors.metaQueryBuildFailed'
+            //   ),
+            // };
             this.status = {
-              error: !this.loadingSettings,
-              message: this.translate.instant(
-                'components.widget.grid.errors.metaQueryBuildFailed'
-              ),
+              error: false,
             };
           }
         },
@@ -283,7 +287,7 @@ export class SafeAggregationGridComponent
    */
   private updateValues(data: AggregationDataQueryResponse, loading: boolean) {
     this.gridData = {
-      data: data.recordsAggregation.items,
+      data: cloneDeep(data.recordsAggregation.items),
       total: data.recordsAggregation.totalCount,
     };
     this.loading = loading;

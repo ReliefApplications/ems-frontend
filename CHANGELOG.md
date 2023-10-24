@@ -1,3 +1,25 @@
+## [2.1.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.1...v2.1.2) (2023-10-09)
+
+
+### Bug Fixes
+
+* prevent metadata error to appear while building aggregation grid ([20470f9](https://github.com/ReliefApplications/oort-frontend/commit/20470f97cb299cbcd88cab8b9e01c0b8aa169b3d))
+* unfriendly api configuration edition ([#1937](https://github.com/ReliefApplications/oort-frontend/issues/1937)) ([ee341e9](https://github.com/ReliefApplications/oort-frontend/commit/ee341e9cec5c90bf9ca27f90cd3ad629d357db2d))
+
+## [2.0.11](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.10...v2.0.11) (2023-10-09)
+
+
+### Bug Fixes
+
+* prevent metadata error to appear while building aggregation grid ([20470f9](https://github.com/ReliefApplications/oort-frontend/commit/20470f97cb299cbcd88cab8b9e01c0b8aa169b3d))
+
+## [2.1.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0...v2.1.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* unable to invite new users, UI was broken ([#1902](https://github.com/ReliefApplications/oort-frontend/issues/1902)) ([a0a5eb6](https://github.com/ReliefApplications/oort-frontend/commit/a0a5eb6cdb61582c257cba9d4366a1143b31310c))
+
 # [2.1.0](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.10...v2.1.0) (2023-09-21)
 
 

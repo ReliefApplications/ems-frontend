@@ -332,7 +332,6 @@ export class SafeGridWidgetComponent
         return;
       }
     }
-    console.log('there');
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
       await this.promisedRowsModifications(
@@ -506,6 +505,7 @@ export class SafeGridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @returns Attach to record promise
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],

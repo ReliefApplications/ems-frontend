@@ -67,6 +67,7 @@ export class SafeDownloadService {
 
     return { snackBarRef, headers };
   }
+
   /**
    * Downloads file from the server
    *

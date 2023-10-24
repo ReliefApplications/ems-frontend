@@ -95,6 +95,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       this.setTransitionForContent();
     }, 0);
   }
+
   /**
    * Resolve sidenav classes by given properties
    *

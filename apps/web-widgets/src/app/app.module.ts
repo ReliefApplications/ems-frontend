@@ -91,7 +91,6 @@ const initializeAuthAndTranslations =
             );
           },
           complete: () => {
-            // console.log(translate.instant('kendo.datetimepicker.now'));
             resolve(null);
           },
         });

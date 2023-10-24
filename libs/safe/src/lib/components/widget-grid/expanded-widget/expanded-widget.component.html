@@ -1,9 +1,14 @@
-<ui-dialog [closable]="true" size="fullscreen">
+<ui-dialog size="fullscreen">
   <ng-container ngProjectAs="content">
     <safe-widget
       [widget]="data.widget"
       [header]="false"
       (goToNextStep)="goToNextStep.emit($event)"
     ></safe-widget>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
+      {{ 'common.close' | translate }}
+    </ui-button>
   </ng-container>
 </ui-dialog>

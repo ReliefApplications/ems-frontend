@@ -28,6 +28,7 @@ class LaunchSnackbarComponent implements OnDestroy {
   @Input() default = true;
 
   destroy$ = new Subject<void>();
+
   /**
    * Constructor for the launch Snackbar component
    *
@@ -101,6 +102,7 @@ class LaunchSnackbarComponent implements OnDestroy {
 })
 class CustomSnackbarComponent {
   data: SnackBarData;
+
   /**
    * Snackbar child component
    *
