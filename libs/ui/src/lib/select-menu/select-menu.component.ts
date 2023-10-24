@@ -506,14 +506,23 @@ export class SelectMenuComponent
    */
   private filterOptionList(searchValue: string) {
     this.loading = true;
-    this.optionList.forEach((option: SelectOptionComponent) => {
-      const regExTest = new RegExp(searchValue, 'gmi');
-      if (regExTest.test(option.label)) {
-        option.display = true;
-      } else {
-        option.display = false;
-      }
-    });
+    // Recursively set option display input, based on if the option is a group or not
+    const setOptionVisibility = (options: QueryList<SelectOptionComponent>) => {
+      options.forEach((option) => {
+        if (option.options.length) {
+          setOptionVisibility(option.options);
+          option.display = option.options.toArray().some((o) => o.display);
+        } else {
+          const regExTest = new RegExp(searchValue, 'gmi');
+          if (regExTest.test(option.label)) {
+            option.display = true;
+          } else {
+            option.display = false;
+          }
+        }
+      });
+    };
+    setOptionVisibility(this.optionList);
     this.loading = false;
     this.triggerUIChange$.next(true);
   }
