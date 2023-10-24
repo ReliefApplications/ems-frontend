@@ -18,7 +18,7 @@ import {
 } from './graphql/mutations';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { catchError, takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   getCachedValues,
@@ -33,6 +33,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { GET_APPLICATIONS } from './graphql/queries';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { throwError } from 'rxjs';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -466,9 +467,7 @@ export class ApplicationsComponent
     //   'idtoken'
     // )}`;
 
-    const postmanUrl3 = `https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/oauth2/authorize?response_type=code&client_id=021202ac-d23b-4757-83e3-f6ecde12266b&scope=api%3A%2F%2Fb5f3a688-a5e9-491e-8289-ea7248d8a64a%2F.default&prompt=none&id_token_hint=${localStorage.getItem(
-      'idtoken'
-    )}`;
+    const postmanUrl3 = `https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/oauth2/authorize?response_type=code&client_id=021202ac-d23b-4757-83e3-f6ecde12266b&scope=api%3A%2F%2Fb5f3a688-a5e9-491e-8289-ea7248d8a64a%2F.default&prompt=none`;
 
     // const headers = {
     //   'Content-Type': 'application/json',
@@ -483,9 +482,25 @@ export class ApplicationsComponent
     //   .subscribe((response) => {
     //     console.log(response, 'query2');
     //   });
-    this.http.get(postmanUrl3).subscribe((response) => {
-      console.log(response, 'query3');
-    });
+    this.http
+      .get(postmanUrl3)
+      .pipe(
+        catchError((error: any) => {
+          return throwError(
+            () =>
+              new Error(
+                `Something bad happened; please try again later: ${error}`
+              )
+          );
+        })
+      )
+      .subscribe((response) => {
+        try {
+          console.log(response, 'query3');
+        } catch (error: any) {
+          console.error(error);
+        }
+      });
     console.log(
       JSON.parse(atob(localStorage.getItem('idtoken')?.split('.')[1] ?? '')),
       'token validity'
