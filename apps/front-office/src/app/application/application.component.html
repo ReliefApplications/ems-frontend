@@ -1,11 +1,18 @@
-<safe-layout
-  [applications]="applications"
-  [header]="header"
-  [leftSidenav]="pages"
-  [sideMenu]="sideMenu"
-  [profileRoute]="'/' + appID + '/profile'"
-  (openApplication)="onOpenApplication($event)"
-></safe-layout>
+<!-- Loading indicator -->
+<ng-container *ngIf="loading">
+  <ui-spinner class="flex justify-center items-center h-screen"></ui-spinner>
+</ng-container>
+<ng-container *ngIf="!loading">
+  <!-- Application wrapper -->
+  <safe-layout
+    [applications]="applications"
+    [header]="header"
+    [leftSidenav]="pages"
+    [sideMenu]="sideMenu"
+    [profileRoute]="'/' + appID + '/profile'"
+    (openApplication)="onOpenApplication($event)"
+  ></safe-layout>
+</ng-container>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #pages let-nav>
   <safe-navbar
@@ -29,6 +36,7 @@
     icon="tune"
     variant="light"
     [uiMenuTriggerFor]="settingsMenu"
+    [uiTooltip]="'common.settings' | translate"
   ></ui-button>
 </ng-template>
 

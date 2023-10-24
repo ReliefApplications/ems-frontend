@@ -45,11 +45,8 @@ export class ApplicationComponent
   public sideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
-
-  /** @returns True if applications is empty */
-  get empty(): boolean {
-    return this.applications.length === 0;
-  }
+  /** Is loading */
+  public loading = true;
 
   /**
    * Main component of Front-Office navigation.
@@ -92,6 +89,7 @@ export class ApplicationComponent
   ngOnInit(): void {
     // Subscribe to params change
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
       this.applicationService.loadApplication(params.id);
     });
     // Get list of available applications
@@ -105,6 +103,7 @@ export class ApplicationComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          this.loading = false;
           this.title = application.name || '';
           this.appID = application.id || '';
           this.adminNavItems = [];
@@ -117,7 +116,7 @@ export class ApplicationComponent
             // if can see users globally / can manage apps / can see users in app
             this.adminNavItems.push({
               name: this.translate.instant('common.user.few'),
-              path: `/${this.appID}/settings/users`,
+              path: `./settings/users`,
               icon: 'supervisor_account',
             });
           }
@@ -130,7 +129,7 @@ export class ApplicationComponent
             // if can see roles globally / can manage apps / can see roles in app
             this.adminNavItems.push({
               name: this.translate.instant('common.role.few'),
-              path: `/${this.appID}/settings/roles`,
+              path: `./settings/roles`,
               icon: 'admin_panel_settings',
             });
           }
@@ -143,7 +142,7 @@ export class ApplicationComponent
             // if can manage apps / can manage templates in app
             this.adminNavItems.push({
               name: this.translate.instant('common.template.few'),
-              path: `/${this.appID}/settings/templates`,
+              path: `./settings/templates`,
               icon: 'description',
             });
           }
@@ -156,7 +155,7 @@ export class ApplicationComponent
             // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.distributionList.few'),
-              path: `/${this.appID}/settings/distribution-lists`,
+              path: `./settings/distribution-lists`,
               icon: 'mail',
             });
           }
@@ -169,7 +168,7 @@ export class ApplicationComponent
             // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.customNotification.few'),
-              path: `/${this.appID}/settings/notifications`,
+              path: `./settings/notifications`,
               icon: 'schedule_send',
             });
           }
@@ -182,8 +181,8 @@ export class ApplicationComponent
                   name: x.name,
                   path:
                     x.type === ContentType.form
-                      ? `/${this.appID}/${x.type}/${x.id}`
-                      : `/${this.appID}/${x.type}/${x.content}`,
+                      ? `./${x.type}/${x.id}`
+                      : `./${x.type}/${x.content}`,
                   icon: this.getNavIcon(x.type || ''),
                 })),
             },
@@ -198,7 +197,7 @@ export class ApplicationComponent
               if (firstPage && !find) {
                 this.router.navigate(
                   [
-                    `/${this.appID}/${firstPage.type}/${
+                    `./${firstPage.type}/${
                       firstPage.type === ContentType.form
                         ? firstPage.id
                         : firstPage.content
@@ -208,7 +207,7 @@ export class ApplicationComponent
                 );
               } else {
                 if (!find) {
-                  this.router.navigate([`/${this.appID}`], {
+                  this.router.navigate([`./${this.appID}`], {
                     relativeTo: this.route,
                   });
                 }

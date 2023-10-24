@@ -9,6 +9,7 @@ import {
   IconModule,
   MenuModule,
   SpinnerModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -28,6 +29,7 @@ import {
     IconModule,
     ButtonModule,
     SpinnerModule,
+    TooltipModule,
   ],
 })
 export class ApplicationModule {}

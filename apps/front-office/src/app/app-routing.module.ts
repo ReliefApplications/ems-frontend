@@ -19,7 +19,6 @@ const routes: Routes = [
         loadChildren: () =>
           import('./redirect/redirect.module').then((m) => m.RedirectModule),
         pathMatch: 'full',
-        // canActivate: [AccessGuard],
       },
       {
         path: ':id',
@@ -38,7 +37,7 @@ const routes: Routes = [
  * Use lazy loading for performance.
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {})],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

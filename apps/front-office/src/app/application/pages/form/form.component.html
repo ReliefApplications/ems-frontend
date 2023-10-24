@@ -1,3 +1,7 @@
+<!-- Loading indicator -->
+<ng-container *ngIf="loading">
+  <ui-spinner class="flex h-full"></ui-spinner>
+</ng-container>
 <ng-container *ngIf="!loading && form && canCreateRecords">
   <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">

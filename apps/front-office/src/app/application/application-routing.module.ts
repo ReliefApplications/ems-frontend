@@ -13,22 +13,6 @@ export const routes: Routes = [
     component: ApplicationComponent,
     children: [
       {
-        path: 'share',
-        children: [
-          // Redirect to main page
-          {
-            path: '',
-            redirectTo: '/',
-            pathMatch: 'full',
-          },
-          {
-            path: ':id',
-            loadChildren: () =>
-              import('./pages/share/share.module').then((m) => m.ShareModule),
-          },
-        ],
-      },
-      {
         path: 'dashboard/:id',
         loadChildren: () =>
           import('./pages/dashboard/dashboard.module').then(
