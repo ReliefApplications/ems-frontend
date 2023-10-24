@@ -13,7 +13,7 @@ import {
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { clone, get } from 'lodash';
 // import { clone, get, isEqual } from 'lodash';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 // import { ContextService } from '../../../services/context/context.service';
@@ -117,10 +117,23 @@ export class FilterRowComponent
         }
       });
 
+    this.form
+      .get('value')
+      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
+      .subscribe((value) => {
+        const val = value
+          .replace(/<[^>]*>/gi, ' ')
+          .replace(/<\/[^>]*>/gi, ' ')
+          .replace(/&nbsp;|&#160;/gi, ' ')
+          .replace(/\s+/gi, ' ')
+          .trim();
+        this.form.get('value')?.setValue(val);
+      });
+
     const keys = [
       ...getCalcKeys(),
       ...getInfoKeys(),
-      // ...getDataKeys(this.resourceFields),
+      ...getDataKeys(this.fields),
     ];
     this.editorService.addCalcAndKeysAutoCompleter(
       this.editorTinymce,
