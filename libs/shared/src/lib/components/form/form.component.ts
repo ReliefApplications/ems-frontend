@@ -258,7 +258,9 @@ export class FormComponent
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
         localStorage.removeItem(this.storageId);
-        this.survey.clear(true, true);
+        this.snackBar.openSnackBar('Successfully saved as draft', {
+          error: false,
+        });
       }
       this.surveyActive = true;
       // Emit but stay in record addition mode
