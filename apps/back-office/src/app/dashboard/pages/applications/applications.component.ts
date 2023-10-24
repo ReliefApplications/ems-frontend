@@ -409,8 +409,7 @@ export class ApplicationsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.newApplications.unshift(value);
-        this.applications = [...this.applications, value];
+        this.onOpenApplication(value.id);
       }
     });
   }
