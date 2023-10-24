@@ -51,7 +51,7 @@
   </ui-button>
 
   <!-- DEFAULT FIELD TEMPLATE -->
-  <ng-template #fieldSelect>
+  <ng-template #fieldSelect >
     <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
       <label>{{ 'common.field.one' | translate }}</label>
       <ui-select-menu formControlName="field">
@@ -79,8 +79,8 @@
   </ng-template>
 
   <!-- TEXT EDITOR -->
-  <ng-template #textEditor>
-    <div uiFormFieldDirective [defaultMargin]="false">
+  <ng-template #textEditor >
+    <div uiFormFieldDirective [defaultMargin]="false" *ngIf="!hideField">
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="string" />
     </div>

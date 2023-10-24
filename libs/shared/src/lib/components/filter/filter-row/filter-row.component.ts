@@ -36,6 +36,7 @@ export class FilterRowComponent
 
   public field?: any;
   public editor?: TemplateRef<any>;
+  public hideField = false;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -98,8 +99,10 @@ export class FilterRowComponent
         const operator = this.operators.find((x) => x.value === value);
         if (operator?.disableValue) {
           this.form.get('value')?.disable();
+          this.hideField = true;
         } else {
           this.form.get('value')?.enable();
+          this.hideField = false;
         }
       });
   }
