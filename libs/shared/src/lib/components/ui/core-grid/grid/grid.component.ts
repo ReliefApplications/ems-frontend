@@ -958,7 +958,6 @@ export class GridComponent
    * @param event Click event
    */
   public onOpenURL(url: string, event: MouseEvent) {
-    const token = localStorage.getItem('idtoken');
     if (url?.startsWith(LIFT_REPORT_URL)) {
       event.preventDefault();
       const urlList = url.split('/');
@@ -968,10 +967,7 @@ export class GridComponent
       this.downloadService.getFile(
         urlList.join('/'),
         'pdf',
-        `Report-${incrementalID}.pdf`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `Report-${incrementalID}.pdf`
       );
     }
   }

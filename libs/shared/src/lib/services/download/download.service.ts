@@ -76,38 +76,31 @@ export class DownloadService {
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
-   * @param options (optional) request options
    */
-  getFile(path: string, type: string, fileName: string, options?: any): void {
+  getFile(path: string, type: string, fileName: string): void {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
 
-    if (options?.headers?.Authorization) {
-      headers.append('Authorization', options.headers.Authorization);
-    }
-
-    this.restService
-      .get(path, { ...options, responseType: 'blob', headers })
-      .subscribe({
-        next: (res) => {
-          const blob = new Blob([res], { type });
-          this.saveFile(fileName, blob);
-          snackBarRef.instance.message = this.translate.instant(
-            'common.notifications.file.download.ready'
-          );
-          snackBarRef.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
-        },
-        error: () => {
-          snackBarRef.instance.message = this.translate.instant(
-            'common.notifications.file.download.error'
-          );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
-        },
-      });
+    this.restService.get(path, { responseType: 'blob', headers }).subscribe({
+      next: (res) => {
+        const blob = new Blob([res], { type });
+        this.saveFile(fileName, blob);
+        snackBarRef.instance.message = this.translate.instant(
+          'common.notifications.file.download.ready'
+        );
+        snackBarRef.instance.loading = false;
+        setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+      },
+      error: () => {
+        snackBarRef.instance.message = this.translate.instant(
+          'common.notifications.file.download.error'
+        );
+        snackBarRef.instance.loading = false;
+        snackBarRef.instance.error = true;
+        setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+      },
+    });
   }
 
   /**
