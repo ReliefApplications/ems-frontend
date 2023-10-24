@@ -471,6 +471,55 @@
           "codeCoverage": true
         }
       }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "apps/back-office/.storybook",
+        "browserTarget": "back-office:build",
+        "compodoc": true,
+        "compodocArgs": ["-e", "json", "-d", "apps/back-office"],
+        "styles": [
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/styles/src/lib/themes/default"]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "outputDir": "dist/storybook/back-office",
+        "configDir": "apps/back-office/.storybook",
+        "browserTarget": "back-office:build",
+        "compodoc": false,
+        "styles": ["libs/shared/src/lib/style/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/styles/src/lib/themes/default",
+            "libs/styles/src/lib/kendo"
+          ]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
     }
   },
   "tags": []

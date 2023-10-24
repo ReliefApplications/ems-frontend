@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup" class="flex">
   <div class="flex flex-col w-full">
     <div class="flex justify-between">
-      <ui-toggle formControlName="show">
+      <ui-toggle formControlName="show" class="self-center">
         <ng-container ngProjectAs="label">{{
           'components.widget.settings.grid.buttons.enable' | translate
         }}</ng-container>
@@ -27,6 +27,7 @@
 
       <!-- Select all records of query -->
       <ui-checkbox formControlName="selectAll">
+        here
         <ng-container ngProjectAs="label">{{
           'components.widget.settings.grid.buttons.callback.selectAllRecords'
             | translate
@@ -66,6 +67,7 @@
                 'components.widget.settings.grid.buttons.tooltip.attach'
                   | translate
               "
+              class="self-center ml-1 cursor-help"
             ></ui-icon>
           </ng-container>
         </ui-checkbox>
@@ -240,6 +242,7 @@
               'components.widget.settings.grid.buttons.tooltip.notify'
                 | translate
             "
+            class="self-center ml-1 cursor-help"
           ></ui-icon>
         </ng-container>
       </ui-checkbox>
@@ -279,6 +282,7 @@
               'components.widget.settings.grid.buttons.tooltip.publish'
                 | translate
             "
+            class="self-center ml-1 cursor-help"
           ></ui-icon>
         </ng-container>
       </ui-checkbox>
@@ -327,6 +331,7 @@
               'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
                 | translate
             "
+            class="self-center ml-1 cursor-help"
           ></ui-icon>
           <ui-button
             uiSuffix
@@ -369,6 +374,7 @@
               'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
                 | translate
             "
+            class="self-center ml-1 cursor-help"
           ></ui-icon>
           <ui-button
             uiSuffix

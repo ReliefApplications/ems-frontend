@@ -171,7 +171,19 @@ export class SummaryCardSettingsComponent
           );
           searchableControl?.setValue(false);
           searchableControl?.disable();
-        } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
+          // disable form actions if aggregation selected
+          const actionsForm = this.tileForm?.controls.actions;
+          // Prefer disabling all nested controls, so it automatically checks validation
+          if (actionsForm) {
+            Object.keys(actionsForm.controls).forEach((controlName: any) => {
+              actionsForm.get(controlName)?.disable();
+            });
+          }
+        } else {
+          this.tileForm?.get('widgetDisplay.searchable')?.enable();
+          // enable form actions if aggregation selected
+          this.tileForm?.controls.actions.enable();
+        }
       });
 
     this.initSortFields();

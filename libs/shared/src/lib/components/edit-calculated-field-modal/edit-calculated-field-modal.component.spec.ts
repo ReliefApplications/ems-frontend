@@ -15,7 +15,7 @@ import {
 
 describe('EditCalculatedFieldModalComponent', () => {
   let component: EditCalculatedFieldModalComponent;
-  let fixture: ComponentFixture<sharedEditCalculatedFieldModalComponent>;
+  let fixture: ComponentFixture<EditCalculatedFieldModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

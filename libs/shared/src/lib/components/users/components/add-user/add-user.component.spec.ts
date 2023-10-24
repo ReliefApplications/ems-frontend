@@ -20,7 +20,7 @@ import { AutocompleteModule } from '@oort-front/ui';
 
 describe('AddUserComponent', () => {
   let component: AddUserComponent;
-  let fixture: ComponentFixture<sharedAddUserComponent>;
+  let fixture: ComponentFixture<AddUserComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

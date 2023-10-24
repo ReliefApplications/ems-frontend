@@ -1,0 +1,3737 @@
+{
+    "pipes": [],
+    "interfaces": [],
+    "injectables": [],
+    "guards": [],
+    "interceptors": [],
+    "classes": [],
+    "directives": [],
+    "components": [
+        {
+            "name": "AppComponent",
+            "id": "component-AppComponent-9fd5823c8008896d12a1ccdce760b052744a523e135e017d45bc5ff4a5a5db0d675d73bd4a2300b4d9d4e82f79a4d7f1187b0fa7132f5e23b36ff807ee677bc8",
+            "file": "apps/front-office/src/app/app.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-root",
+            "styleUrls": [
+                "./app.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./app.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "declaration",
+                    "defaultValue": "[\n    ApplicationDropdownComponent,\n    GeofieldsListboxComponent,\n    ReferenceDataDropdownComponent,\n    ResourceAvailableFieldsComponent,\n    ResourceCustomFiltersComponent,\n    ResourceDropdownComponent,\n    ResourceSelectTextComponent,\n    TestServiceDropdownComponent,\n  ]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 26,
+                    "modifierKind": [
+                        124
+                    ]
+                },
+                {
+                    "name": "title",
+                    "defaultValue": "'front-office'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 36
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 55,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nConfiguration of the Authentication behavior\n",
+                    "description": "<p>Configuration of the Authentication behavior</p>\n"
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Main component of Front-office.</p>\n",
+            "rawdescription": "\n\nMain component of Front-office.\n",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport {\n  GeofieldsListboxComponent,\n  ApplicationDropdownComponent,\n  ReferenceDataDropdownComponent,\n  ResourceAvailableFieldsComponent,\n  ResourceCustomFiltersComponent,\n  ResourceDropdownComponent,\n  ResourceSelectTextComponent,\n  TestServiceDropdownComponent,\n  AuthService,\n} from '@oort-front/shared';\nimport { TranslateService } from '@ngx-translate/core';\nimport { environment } from '../environments/environment';\n\n/**\n * Main component of Front-office.\n */\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.scss'],\n})\nexport class AppComponent implements OnInit {\n  // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build\n  static declaration = [\n    ApplicationDropdownComponent,\n    GeofieldsListboxComponent,\n    ReferenceDataDropdownComponent,\n    ResourceAvailableFieldsComponent,\n    ResourceCustomFiltersComponent,\n    ResourceDropdownComponent,\n    ResourceSelectTextComponent,\n    TestServiceDropdownComponent,\n  ];\n  title = 'front-office';\n\n  /**\n   * Main component of Front-office.\n   *\n   * @param authService Shared authentication service\n   * @param translate Angular translate service\n   */\n  constructor(\n    private authService: AuthService,\n    private translate: TranslateService\n  ) {\n    this.translate.addLangs(environment.availableLanguages);\n    this.translate.setDefaultLang(environment.availableLanguages[0]);\n  }\n\n  /**\n   * Configuration of the Authentication behavior\n   */\n  ngOnInit(): void {\n    this.authService.initLoginSequence();\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./app.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Main component of Front-office.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "authService",
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 36,
+                "rawdescription": "\n\nMain component of Front-office.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 1226,
+                            "end": 1237,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "authService"
+                        },
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1220,
+                            "end": 1225,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared authentication service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1280,
+                            "end": 1289,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "translate"
+                        },
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1274,
+                            "end": 1279,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular translate service</p>\n"
+                    }
+                ]
+            },
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<router-outlet></router-outlet>\n"
+        },
+        {
+            "name": "ApplicationComponent",
+            "id": "component-ApplicationComponent-d4cb9b6082ffb35a729c55aceb847932ab3d8dea96f1e2be621a5a10bb0d1ffbb960acdaff38603663e9f474e8be09aa78e316790a901a457647d6ac0c3f2ddb",
+            "file": "apps/front-office/src/app/application/application.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-application",
+            "styleUrls": [
+                "./application.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./application.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "adminNavItems",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any[]",
+                    "optional": false,
+                    "description": "<p>List of settings pages</p>\n",
+                    "line": 40,
+                    "rawdescription": "\nList of settings pages",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "appID",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "<p>Stores current app ID</p>\n",
+                    "line": 32,
+                    "rawdescription": "\nStores current app ID",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "application",
+                    "defaultValue": "null",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Application | null",
+                    "optional": false,
+                    "description": "<p>Current application</p>\n",
+                    "line": 42,
+                    "rawdescription": "\nCurrent application",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "applications",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Application[]",
+                    "optional": false,
+                    "description": "<p>List of accessible applications</p>\n",
+                    "line": 36,
+                    "rawdescription": "\nList of accessible applications",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "appPage",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "<p>Stores current app page</p>\n",
+                    "line": 34,
+                    "rawdescription": "\nStores current app page",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "largeDevice",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "optional": false,
+                    "description": "<p>Is large device</p>\n",
+                    "line": 46,
+                    "rawdescription": "\nIs large device",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "loading",
+                    "defaultValue": "true",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Is loading</p>\n",
+                    "line": 48,
+                    "rawdescription": "\nIs loading",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "navGroups",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any[]",
+                    "optional": false,
+                    "description": "<p>List of application pages</p>\n",
+                    "line": 38,
+                    "rawdescription": "\nList of application pages",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "route",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "ActivatedRoute",
+                    "optional": false,
+                    "description": "Angular current route",
+                    "line": 63,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "sideMenu",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Use side menu or not</p>\n",
+                    "line": 44,
+                    "rawdescription": "\nUse side menu or not",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "title",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "<p>Application title</p>\n",
+                    "line": 30,
+                    "rawdescription": "\nApplication title",
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "getNavIcon",
+                    "args": [
+                        {
+                            "name": "type",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "string",
+                    "typeParameters": [],
+                    "line": 152,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nGets nav icon from page content type.\n\n",
+                    "description": "<p>Gets nav icon from page content type.</p>\n",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 4536,
+                                "end": 4540,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "type"
+                            },
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 4530,
+                                "end": 4535,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>content type of the page</p>\n"
+                        },
+                        {
+                            "tagName": {
+                                "pos": 4572,
+                                "end": 4579,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "returns"
+                            },
+                            "comment": "<p>icon</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "ngOnDestroy",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 255,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        161
+                    ]
+                },
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 86,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nSubscribes to current user change, and application change.\nOn load, try to open the first application accessible to the user.\n",
+                    "description": "<p>Subscribes to current user change, and application change.\nOn load, try to open the first application accessible to the user.</p>\n"
+                },
+                {
+                    "name": "onOpenApplication",
+                    "args": [
+                        {
+                            "name": "application",
+                            "type": "Application",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 142,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nOpens an application, contacting the application service.\n\n",
+                    "description": "<p>Opens an application, contacting the application service.</p>\n",
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 4323,
+                                "end": 4334,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "application"
+                            },
+                            "type": "Application",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 4317,
+                                "end": 4322,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>Application to open</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "onResize",
+                    "args": [
+                        {
+                            "name": "event",
+                            "type": "any",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 78,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nChange the display depending on windows size.\n\n",
+                    "description": "<p>Change the display depending on windows size.</p>\n",
+                    "decorators": [
+                        {
+                            "name": "HostListener",
+                            "stringifiedArguments": "'window:resize', ['$event']"
+                        }
+                    ],
+                    "modifierKind": [
+                        167
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 2067,
+                                "end": 2072,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "event"
+                            },
+                            "type": "any",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 2061,
+                                "end": 2066,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>Event that implies a change in window size</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "setAdminNavItems",
+                    "args": [
+                        {
+                            "name": "application",
+                            "type": "Application",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 193,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nSet admin nav items ( settings )\n\n",
+                    "description": "<p>Set admin nav items ( settings )</p>\n",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 5527,
+                                "end": 5538,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "application"
+                            },
+                            "type": "Application",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 5521,
+                                "end": 5526,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>Loading application</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "setNavGroups",
+                    "args": [
+                        {
+                            "name": "application",
+                            "type": "Application",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 168,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nSet nav groups ( sidenav )\n\n",
+                    "description": "<p>Set nav groups ( sidenav )</p>\n",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 4868,
+                                "end": 4879,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "application"
+                            },
+                            "type": "Application",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 4862,
+                                "end": 4867,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>Loading application</p>\n"
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [
+                {
+                    "name": "window:resize",
+                    "args": [
+                        {
+                            "name": "event",
+                            "type": "any",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "argsDecorator": [
+                        "$event"
+                    ],
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nChange the display depending on windows size.\n\n",
+                    "description": "<p>Change the display depending on windows size.</p>\n",
+                    "jsdoctags": [
+                        {
+                            "pos": 2060,
+                            "end": 2119,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 344,
+                            "tagName": {
+                                "pos": 2061,
+                                "end": 2066,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>Event that implies a change in window size</p>\n",
+                            "name": {
+                                "pos": 2067,
+                                "end": 2072,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "event"
+                            },
+                            "isNameFirst": true,
+                            "isBracketed": false
+                        }
+                    ],
+                    "line": 78
+                }
+            ],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Front-office Application component.</p>\n",
+            "rawdescription": "\n\nFront-office Application component.\n",
+            "type": "component",
+            "sourceCode": "import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';\nimport { ActivatedRoute, Router } from '@angular/router';\nimport { subject } from '@casl/ability';\nimport { TranslateService } from '@ngx-translate/core';\nimport {\n  Application,\n  User,\n  AuthService,\n  ApplicationService,\n  ContentType,\n  UnsubscribeComponent,\n  AppAbility,\n} from '@oort-front/shared';\nimport get from 'lodash/get';\nimport { takeUntil } from 'rxjs/operators';\n\n/**\n * Front-office Application component.\n */\n@Component({\n  selector: 'app-application',\n  templateUrl: './application.component.html',\n  styleUrls: ['./application.component.scss'],\n})\nexport class ApplicationComponent\n  extends UnsubscribeComponent\n  implements OnInit, OnDestroy\n{\n  /** Application title */\n  public title = '';\n  /** Stores current app ID */\n  public appID = '';\n  /** Stores current app page */\n  public appPage = '';\n  /** List of accessible applications */\n  public applications: Application[] = [];\n  /** List of application pages */\n  public navGroups: any[] = [];\n  /** List of settings pages */\n  public adminNavItems: any[] = [];\n  /** Current application */\n  public application: Application | null = null;\n  /** Use side menu or not */\n  public sideMenu = false;\n  /** Is large device */\n  public largeDevice: boolean;\n  /** Is loading */\n  public loading = true;\n\n  /**\n   * Front-office Application component.\n   *\n   * @param authService Shared authentication service\n   * @param applicationService Shared application service\n   * @param route Angular current route\n   * @param router Angular router\n   * @param translate Angular translate service\n   * @param ability user ability\n   */\n  constructor(\n    private authService: AuthService,\n    private applicationService: ApplicationService,\n    public route: ActivatedRoute,\n    private router: Router,\n    private translate: TranslateService,\n    private ability: AppAbility\n  ) {\n    super();\n    this.largeDevice = window.innerWidth > 1024;\n  }\n\n  /**\n   * Change the display depending on windows size.\n   *\n   * @param event Event that implies a change in window size\n   */\n  @HostListener('window:resize', ['$event'])\n  onResize(event: any): void {\n    this.largeDevice = event.target.innerWidth > 1024;\n  }\n\n  /**\n   * Subscribes to current user change, and application change.\n   * On load, try to open the first application accessible to the user.\n   */\n  ngOnInit(): void {\n    // Subscribe to params change\n    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {\n      this.loading = true;\n      this.applicationService.loadApplication(params.id);\n    });\n    // Get list of available applications\n    this.authService.user$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((user: User | null) => {\n        this.applications = user?.applications || [];\n      });\n    // Subscribe to application change\n    this.applicationService.application$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((application: Application | null) => {\n        if (application) {\n          this.loading = false;\n          this.title = application.name || '';\n          this.adminNavItems = [];\n          this.setAdminNavItems(application);\n          this.setNavGroups(application);\n          if (!this.application || application.id !== this.application.id) {\n            const firstPage = get(application, 'pages', [])[0];\n            if (this.router.url.endsWith(application?.id || '') || !firstPage) {\n              // If a page is configured\n              if (firstPage) {\n                this.router.navigate(\n                  [\n                    `./${firstPage.type}/${\n                      firstPage.type === ContentType.form\n                        ? firstPage.id\n                        : firstPage.content\n                    }`,\n                  ],\n                  { relativeTo: this.route }\n                );\n              } else {\n                this.router.navigate(['./'], { relativeTo: this.route });\n              }\n            }\n          }\n          this.application = application;\n          this.sideMenu = this.application?.sideMenu ?? false;\n        } else {\n          this.title = '';\n          this.navGroups = [];\n        }\n      });\n  }\n\n  /**\n   * Opens an application, contacting the application service.\n   *\n   * @param application Application to open\n   */\n  onOpenApplication(application: Application): void {\n    this.router.navigate([`/${application.id}`]);\n  }\n\n  /**\n   * Gets nav icon from page content type.\n   *\n   * @param type content type of the page\n   * @returns icon\n   */\n  private getNavIcon(type: string): string {\n    switch (type) {\n      case 'workflow':\n        return 'linear_scale';\n      case 'form':\n        return 'description';\n      default:\n        return 'dashboard';\n    }\n  }\n\n  /**\n   * Set nav groups ( sidenav )\n   *\n   * @param application Loading application\n   */\n  private setNavGroups(application: Application): void {\n    this.navGroups = [\n      {\n        name: 'Pages',\n        navItems: application.pages\n          ?.filter((x) => x.content)\n          .map((x) => ({\n            name: x.name,\n            path:\n              x.type === ContentType.form\n                ? `./${x.type}/${x.id}`\n                : `./${x.type}/${x.content}`,\n            icon: x.icon || this.getNavIcon(x.type || ''),\n            fontFamily: x.icon ? 'fa' : 'material',\n            visible: x.visible,\n          })),\n      },\n    ];\n  }\n\n  /**\n   * Set admin nav items ( settings )\n   *\n   * @param application Loading application\n   */\n  private setAdminNavItems(application: Application): void {\n    if (\n      this.ability.can('read', subject('User', { application: application.id }))\n    ) {\n      // if can see users globally / can manage apps / can see users in app\n      this.adminNavItems.push({\n        name: this.translate.instant('common.user.few'),\n        path: `./settings/users`,\n        icon: 'supervisor_account',\n      });\n    }\n    if (\n      this.ability.can('read', subject('Role', { application: application.id }))\n    ) {\n      // if can see roles globally / can manage apps / can see roles in app\n      this.adminNavItems.push({\n        name: this.translate.instant('common.role.few'),\n        path: `./settings/roles`,\n        icon: 'admin_panel_settings',\n      });\n    }\n    if (\n      this.ability.can(\n        'manage',\n        subject('Template', { application: application.id })\n      )\n    ) {\n      // if can manage apps / can manage templates in app\n      this.adminNavItems.push({\n        name: this.translate.instant('common.template.few'),\n        path: `./settings/templates`,\n        icon: 'description',\n      });\n    }\n    if (\n      this.ability.can(\n        'manage',\n        subject('DistributionList', { application: application.id })\n      )\n    ) {\n      // if can manage apps / can manage distribution lists in app\n      this.adminNavItems.push({\n        name: this.translate.instant('common.distributionList.few'),\n        path: `./settings/distribution-lists`,\n        icon: 'mail',\n      });\n    }\n    if (\n      this.ability.can(\n        'manage',\n        subject('CustomNotification', { application: application.id })\n      )\n    ) {\n      // if can manage apps / can manage distribution lists in app\n      this.adminNavItems.push({\n        name: this.translate.instant('common.customNotification.few'),\n        path: './settings/notifications',\n        icon: 'schedule_send',\n      });\n    }\n  }\n\n  override ngOnDestroy(): void {\n    super.ngOnDestroy();\n    this.applicationService.leaveApplication();\n  }\n\n  // /**\n  //  * Checks if route page is valid.\n  //  *\n  //  * @param app application to check pages of\n  //  * @returns Is page valid or not\n  //  */\n  // private validPage(app: any): boolean {\n  //   if (\n  //     this.appPage &&\n  //     (this.appPage === 'profile' ||\n  //       this.appPage === 'settings/users' ||\n  //       this.appPage === 'settings/roles' ||\n  //       app.pages?.find(\n  //         (val: any) =>\n  //           val.type + '/' + val.content === this.appPage ||\n  //           val.type + '/' + val.id === this.appPage\n  //       ))\n  //   ) {\n  //     return true;\n  //   }\n  //   return false;\n  // }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./application.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Front-office Application component.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "authService",
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "applicationService",
+                        "type": "ApplicationService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "ability",
+                        "type": "AppAbility",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 48,
+                "rawdescription": "\n\nFront-office Application component.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 1419,
+                            "end": 1430,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "authService"
+                        },
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1413,
+                            "end": 1418,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared authentication service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1473,
+                            "end": 1491,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "applicationService"
+                        },
+                        "type": "ApplicationService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1467,
+                            "end": 1472,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared application service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1531,
+                            "end": 1536,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "route"
+                        },
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1525,
+                            "end": 1530,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular current route</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1571,
+                            "end": 1577,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "router"
+                        },
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1565,
+                            "end": 1570,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular router</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1605,
+                            "end": 1614,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "translate"
+                        },
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1599,
+                            "end": 1604,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular translate service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1653,
+                            "end": 1660,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "ability"
+                        },
+                        "type": "AppAbility",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1647,
+                            "end": 1652,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>user ability</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit",
+                "OnDestroy"
+            ],
+            "templateData": "<!-- Loading indicator -->\n<ui-spinner\n  class=\"flex justify-center items-center h-screen\"\n  *ngIf=\"loading\"\n></ui-spinner>\n<!-- Application wrapper -->\n<shared-layout\n  *ngIf=\"!loading\"\n  [applications]=\"applications\"\n  [header]=\"header\"\n  [leftSidenav]=\"pages\"\n  [sideMenu]=\"sideMenu\"\n  [profileRoute]=\"'/' + appID + '/profile'\"\n  (openApplication)=\"onOpenApplication($event)\"\n></shared-layout>\n<!--Need the nav variable, don't remove let-nav, used in layout-->\n<ng-template #pages let-nav>\n  <shared-navbar\n    [nav]=\"nav\"\n    [appLayout]=\"true\"\n    [navGroups]=\"navGroups\"\n    [vertical]=\"!(!sideMenu && largeDevice)\"\n  ></shared-navbar>\n</ng-template>\n\n<!-- Application header -->\n<ng-template #header>\n  <!-- Title -->\n  <h2 class=\"!m-0 overflow-hidden text-ellipsis whitespace-nowrap\">\n    {{ title }}\n  </h2>\n  <!-- Settings -->\n  <ui-button\n    *ngIf=\"adminNavItems.length > 0\"\n    [isIcon]=\"true\"\n    icon=\"tune\"\n    variant=\"light\"\n    [uiMenuTriggerFor]=\"settingsMenu\"\n    [uiTooltip]=\"'common.settings' | translate\"\n  ></ui-button>\n</ng-template>\n\n<!-- Admin pages -->\n<ui-menu #settingsMenu>\n  <a\n    uiMenuItem\n    *ngFor=\"let setting of adminNavItems\"\n    [routerLink]=\"setting.path\"\n    routerLinkActive=\"text-primary-600 bg-gray-50\"\n    class=\"text-sm font-semibold leading-6\"\n  >\n    <ui-icon variant=\"grey\" [icon]=\"setting.icon\"> </ui-icon>\n    {{ setting.name }}\n  </a>\n</ui-menu>\n"
+        },
+        {
+            "name": "DashboardComponent",
+            "id": "component-DashboardComponent-928b7604d62ac801f770470b451f90ff1605a4c8b748451e85bd2cad66d55106d5b9b7e45a9c9f40ffcaf14d527447e81f911a3f09db9f2bf92e4342ed8b6007",
+            "file": "apps/front-office/src/app/application/pages/dashboard/dashboard.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-dashboard",
+            "styleUrls": [
+                "./dashboard.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./dashboard.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [
+                {
+                    "name": "changeStep",
+                    "defaultValue": "new EventEmitter()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\nChange step event ( in workflow )",
+                    "description": "<p>Change step event ( in workflow )</p>\n",
+                    "line": 45,
+                    "type": "EventEmitter<number>"
+                }
+            ],
+            "propertiesClass": [
+                {
+                    "name": "applicationId",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": true,
+                    "description": "<p>Application id</p>\n",
+                    "line": 54,
+                    "rawdescription": "\nApplication id",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "buttonActions",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "ButtonActionT[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 67,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "dashboard",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Dashboard",
+                    "optional": true,
+                    "description": "<p>Current dashboard</p>\n",
+                    "line": 60,
+                    "rawdescription": "\nCurrent dashboard",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "dialog",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Dialog",
+                    "optional": false,
+                    "description": "Dialog service",
+                    "line": 98,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "id",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "<p>Dashboard id</p>\n",
+                    "line": 52,
+                    "rawdescription": "\nDashboard id",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "isFullScreen",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Is dashboard in fullscreen mode</p>\n",
+                    "line": 50,
+                    "rawdescription": "\nIs dashboard in fullscreen mode",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "loading",
+                    "defaultValue": "true",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Is dashboard loading</p>\n",
+                    "line": 56,
+                    "rawdescription": "\nIs dashboard loading",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "showFilter",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "optional": false,
+                    "description": "<p>Show dashboard filter</p>\n",
+                    "line": 62,
+                    "rawdescription": "\nShow dashboard filter",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "showName",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Show name ( contextual pages )</p>\n",
+                    "line": 64,
+                    "rawdescription": "\nShow name ( contextual pages )",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "widgetGridComponent",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "WidgetGridComponent",
+                    "optional": false,
+                    "description": "<p>Widget grid reference</p>\n",
+                    "line": 48,
+                    "rawdescription": "\nWidget grid reference",
+                    "decorators": [
+                        {
+                            "name": "ViewChild",
+                            "stringifiedArguments": "WidgetGridComponent"
+                        }
+                    ],
+                    "modifierKind": [
+                        167
+                    ]
+                },
+                {
+                    "name": "widgets",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any[]",
+                    "optional": false,
+                    "description": "<p>List of widgets</p>\n",
+                    "line": 58,
+                    "rawdescription": "\nList of widgets",
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "canDeactivate",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable | boolean",
+                    "typeParameters": [],
+                    "line": 249,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nShow modal confirmation before leave the page if has changes on form\n\n",
+                    "description": "<p>Show modal confirmation before leave the page if has changes on form</p>\n",
+                    "jsdoctags": [
+                        {
+                            "tagName": {
+                                "pos": 7698,
+                                "end": 7705,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "returns"
+                            },
+                            "comment": "<p>boolean of observable of boolean</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "loadDashboard",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "unknown",
+                    "typeParameters": [],
+                    "line": 187,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nInit the dashboard\n\n",
+                    "description": "<p>Init the dashboard</p>\n",
+                    "modifierKind": [
+                        121,
+                        132
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 5735,
+                                "end": 5737,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "id"
+                            },
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 5729,
+                                "end": 5734,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>Dashboard id</p>\n"
+                        },
+                        {
+                            "tagName": {
+                                "pos": 5757,
+                                "end": 5764,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "returns"
+                            },
+                            "comment": "<p>Promise</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "ngOnDestroy",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 239,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nRemoves all subscriptions of the component.\n",
+                    "description": "<p>Removes all subscriptions of the component.</p>\n",
+                    "modifierKind": [
+                        161
+                    ]
+                },
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 114,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nSubscribes to the route to load the dashboard accordingly.\n",
+                    "description": "<p>Subscribes to the route to load the dashboard accordingly.</p>\n"
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Dashboard page.</p>\n",
+            "rawdescription": "\n\nDashboard page.\n",
+            "type": "component",
+            "sourceCode": "import { Apollo } from 'apollo-angular';\nimport {\n  Component,\n  ElementRef,\n  EventEmitter,\n  Inject,\n  OnDestroy,\n  OnInit,\n  Output,\n  Renderer2,\n  ViewChild,\n} from '@angular/core';\nimport { Dialog } from '@angular/cdk/dialog';\nimport { ActivatedRoute, NavigationEnd, Router } from '@angular/router';\nimport { GET_DASHBOARD_BY_ID } from './graphql/queries';\nimport {\n  Dashboard,\n  DashboardService,\n  UnsubscribeComponent,\n  WidgetGridComponent,\n  ConfirmService,\n  ButtonActionT,\n  ContextService,\n  DashboardQueryResponse,\n} from '@oort-front/shared';\nimport { TranslateService } from '@ngx-translate/core';\nimport { filter, map, startWith, takeUntil } from 'rxjs/operators';\nimport { Observable, firstValueFrom } from 'rxjs';\nimport { SnackbarService } from '@oort-front/ui';\nimport { DOCUMENT } from '@angular/common';\n\n/**\n * Dashboard page.\n */\n@Component({\n  selector: 'app-dashboard',\n  templateUrl: './dashboard.component.html',\n  styleUrls: ['./dashboard.component.scss'],\n})\nexport class DashboardComponent\n  extends UnsubscribeComponent\n  implements OnInit, OnDestroy\n{\n  /** Change step event ( in workflow ) */\n  @Output() changeStep: EventEmitter<number> = new EventEmitter();\n  /** Widget grid reference */\n  @ViewChild(WidgetGridComponent)\n  widgetGridComponent!: WidgetGridComponent;\n  /** Is dashboard in fullscreen mode */\n  public isFullScreen = false;\n  /** Dashboard id */\n  public id = '';\n  /** Application id */\n  public applicationId?: string;\n  /** Is dashboard loading */\n  public loading = true;\n  /** List of widgets */\n  public widgets: any[] = [];\n  /** Current dashboard */\n  public dashboard?: Dashboard;\n  /** Show dashboard filter */\n  public showFilter!: boolean;\n  /** Show name ( contextual pages ) */\n  public showName = false;\n\n  // === BUTTON ACTIONS ===\n  public buttonActions: ButtonActionT[] = [];\n\n  /** @returns type of context element */\n  get contextType() {\n    if (this.dashboard?.page?.context) {\n      return 'resource' in this.dashboard.page.context ? 'record' : 'element';\n    } else {\n      return;\n    }\n  }\n\n  /**\n   * Dashboard page.\n   *\n   * @param apollo Apollo client\n   * @param route Angular current page\n   * @param router Angular router\n   * @param dialog Dialog service\n   * @param snackBar Shared snackbar service\n   * @param dashboardService Shared dashboard service\n   * @param translate Angular translate service\n   * @param confirmService Shared confirm service\n   * @param renderer Angular renderer\n   * @param elementRef Angular element ref\n   * @param document Document\n   * @param contextService Dashboard context service\n   */\n  constructor(\n    private apollo: Apollo,\n    private route: ActivatedRoute,\n    private router: Router,\n    public dialog: Dialog,\n    private snackBar: SnackbarService,\n    private dashboardService: DashboardService,\n    private translate: TranslateService,\n    private confirmService: ConfirmService,\n    private renderer: Renderer2,\n    private elementRef: ElementRef,\n    @Inject(DOCUMENT) private document: Document,\n    private contextService: ContextService\n  ) {\n    super();\n  }\n\n  /**\n   * Subscribes to the route to load the dashboard accordingly.\n   */\n  ngOnInit(): void {\n    /** Listen to router events navigation end, to get last version of params & queryParams. */\n    this.router.events\n      .pipe(\n        filter((event) => event instanceof NavigationEnd),\n        startWith(this.router), // initialize\n        takeUntil(this.destroy$)\n      )\n      .subscribe(() => {\n        this.loading = true;\n        // Reset scroll when changing page\n        const pageContainer = this.document.getElementById('appPageContainer');\n        if (pageContainer) {\n          pageContainer.scrollTop = 0;\n        }\n        /** Extract main dashboard id */\n        const id = this.route.snapshot.paramMap.get('id');\n        /** Extract query id to load template */\n        const queryId = this.route.snapshot.queryParamMap.get('id');\n        if (id) {\n          if (queryId) {\n            // Try to load template\n            this.showName = true;\n            this.loadDashboard(id).then(() => {\n              const templates = this.dashboard?.page?.contentWithContext;\n              const type = this.contextType;\n              if (type) {\n                // Find template from parent's templates, based on query params id\n                const template = templates?.find((d) => {\n                  // If templates use reference data\n                  if (type === 'element')\n                    return (\n                      'element' in d &&\n                      d.element.toString().trim() === queryId.trim()\n                    );\n                  // If templates use resource\n                  else if (type === 'record')\n                    return (\n                      'record' in d &&\n                      d.record.toString().trim() === queryId.trim()\n                    );\n                  return false;\n                });\n\n                if (template) {\n                  // Load template, it will erase current dashboard\n                  this.loadDashboard(template.content).then(\n                    () => (this.loading = false)\n                  );\n                } else {\n                  // Will use current template\n                  this.loading = false;\n                  return;\n                }\n              } else {\n                this.loading = false;\n              }\n            });\n          } else {\n            // Don't use template, and directly load the dashboard from router's params\n            this.showName = false;\n            this.loadDashboard(id).then(() => (this.loading = false));\n          }\n        }\n      });\n  }\n\n  /**\n   * Init the dashboard\n   *\n   * @param id Dashboard id\n   * @returns Promise\n   */\n  private async loadDashboard(id: string) {\n    // don't init the dashboard if the id is the same\n    if (this.dashboard?.id === id) {\n      return;\n    }\n\n    const rootElement = this.elementRef.nativeElement;\n    // Doing this to be able to use custom styles on specific dashboards\n    this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);\n    this.loading = true;\n    this.id = id;\n    return firstValueFrom(\n      this.apollo.query<DashboardQueryResponse>({\n        query: GET_DASHBOARD_BY_ID,\n        variables: {\n          id: this.id,\n        },\n      })\n    )\n      .then(({ data }) => {\n        if (data.dashboard) {\n          this.dashboard = data.dashboard;\n          this.dashboardService.openDashboard(this.dashboard);\n          this.widgets = data.dashboard.structure\n            ? data.dashboard.structure\n            : [];\n          this.buttonActions = this.dashboard.buttons || [];\n          this.showFilter = this.dashboard.showFilter ?? false;\n          this.contextService.isFilterEnabled.next(this.showFilter);\n        } else {\n          this.contextService.isFilterEnabled.next(false);\n          this.snackBar.openSnackBar(\n            this.translate.instant('common.notifications.accessNotProvided', {\n              type: this.translate\n                .instant('common.dashboard.one')\n                .toLowerCase(),\n              error: '',\n            }),\n            { error: true }\n          );\n          this.router.navigate(['/applications']);\n        }\n      })\n      .catch((err) => {\n        this.snackBar.openSnackBar(err.message, { error: true });\n        this.router.navigate(['/applications']);\n      });\n  }\n\n  /**\n   * Removes all subscriptions of the component.\n   */\n  override ngOnDestroy(): void {\n    super.ngOnDestroy();\n    this.dashboardService.closeDashboard();\n  }\n\n  /**\n   * Show modal confirmation before leave the page if has changes on form\n   *\n   * @returns boolean of observable of boolean\n   */\n  canDeactivate(): Observable<boolean> | boolean {\n    if (this.widgetGridComponent && !this.widgetGridComponent.canDeactivate) {\n      const dialogRef = this.confirmService.openConfirmModal({\n        title: this.translate.instant('pages.dashboard.update.exit'),\n        content: this.translate.instant('pages.dashboard.update.exitMessage'),\n        confirmText: this.translate.instant('components.confirmModal.confirm'),\n        confirmVariant: 'primary',\n      });\n      return dialogRef.closed.pipe(\n        map((confirm) => {\n          if (confirm) {\n            return true;\n          }\n          return false;\n        })\n      );\n    }\n    return true;\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./dashboard.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Dashboard page.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "apollo",
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "dialog",
+                        "type": "Dialog",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "snackBar",
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "dashboardService",
+                        "type": "DashboardService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "confirmService",
+                        "type": "ConfirmService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "renderer",
+                        "type": "Renderer2",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "elementRef",
+                        "type": "ElementRef",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "document",
+                        "type": "Document",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "contextService",
+                        "type": "ContextService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 76,
+                "rawdescription": "\n\nDashboard page.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 2116,
+                            "end": 2122,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "apollo"
+                        },
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2110,
+                            "end": 2115,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Apollo client</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2149,
+                            "end": 2154,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "route"
+                        },
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2143,
+                            "end": 2148,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular current page</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2188,
+                            "end": 2194,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "router"
+                        },
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2182,
+                            "end": 2187,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular router</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2222,
+                            "end": 2228,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "dialog"
+                        },
+                        "type": "Dialog",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2216,
+                            "end": 2221,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Dialog service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2256,
+                            "end": 2264,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "snackBar"
+                        },
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2250,
+                            "end": 2255,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared snackbar service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2301,
+                            "end": 2317,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "dashboardService"
+                        },
+                        "type": "DashboardService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2295,
+                            "end": 2300,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared dashboard service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2355,
+                            "end": 2364,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "translate"
+                        },
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2349,
+                            "end": 2354,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular translate service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2403,
+                            "end": 2417,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "confirmService"
+                        },
+                        "type": "ConfirmService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2397,
+                            "end": 2402,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared confirm service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2453,
+                            "end": 2461,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "renderer"
+                        },
+                        "type": "Renderer2",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2447,
+                            "end": 2452,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular renderer</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2491,
+                            "end": 2501,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "elementRef"
+                        },
+                        "type": "ElementRef",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2485,
+                            "end": 2490,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular element ref</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2534,
+                            "end": 2542,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "document"
+                        },
+                        "type": "Document",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2528,
+                            "end": 2533,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Document</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 2564,
+                            "end": 2578,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "contextService"
+                        },
+                        "type": "ContextService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 2558,
+                            "end": 2563,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Dashboard context service</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit",
+                "OnDestroy"
+            ],
+            "accessors": {
+                "contextType": {
+                    "name": "contextType",
+                    "getSignature": {
+                        "name": "contextType",
+                        "type": "",
+                        "returnType": "",
+                        "line": 70,
+                        "rawdescription": "",
+                        "description": "",
+                        "jsdoctags": [
+                            {
+                                "pos": 1856,
+                                "end": 1889,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 345,
+                                "tagName": {
+                                    "pos": 1857,
+                                    "end": 1864,
+                                    "flags": 8421376,
+                                    "modifierFlagsCache": 0,
+                                    "transformFlags": 0,
+                                    "kind": 79,
+                                    "escapedText": "returns"
+                                },
+                                "comment": "<p>type of context element</p>\n"
+                            }
+                        ]
+                    }
+                }
+            },
+            "templateData": "<!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->\n<div [ngClass]=\"{ 'p-8 h-full bg-white overflow-auto': isFullScreen }\">\n  <ng-container\n    sharedFullScreen\n    [(isFullScreenMode)]=\"isFullScreen\"\n    *sharedSkeleton=\"\n      loading;\n      repeat: 1;\n      height: '32px';\n      width: '120px';\n      shape: 'rectangle'\n    \"\n  >\n    <ng-container *ngIf=\"dashboard && (showName || buttonActions.length > 0)\">\n      <div class=\"flex flex-wrap items-center mb-6 gap-4 justify-between\">\n        <ng-container *ngIf=\"showName\">\n          <h1 class=\"!m-0 overflow-hidden text-ellipsis\">\n            {{ dashboard.name }}\n          </h1>\n        </ng-container>\n        <div class=\"flex items-center gap-1\">\n          <!-- Button actions -->\n          <shared-button-action\n            [buttonActions]=\"buttonActions\"\n            [dashboard]=\"dashboard\"\n          ></shared-button-action>\n          <!-- Fullscreen -->\n          <!-- <ui-button\n            variant=\"grey\"\n            [isIcon]=\"true\"\n            icon=\"{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}\"\n            (click)=\"isFullScreen = !isFullScreen\"\n            [uiTooltip]=\"\n              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')\n                | translate\n            \"\n          >\n          </ui-button> -->\n        </div>\n      </div>\n    </ng-container>\n  </ng-container>\n  <shared-widget-grid\n    [loading]=\"loading\"\n    [widgets]=\"widgets\"\n    (changeStep)=\"changeStep.emit($event)\"\n  ></shared-widget-grid>\n  <shared-dashboard-filter\n    *ngIf=\"showFilter && isFullScreen\"\n    [isFullScreen]=\"isFullScreen\"\n  ></shared-dashboard-filter>\n</div>\n<shared-dashboard-filter\n  *ngIf=\"showFilter && !isFullScreen\"\n  [isFullScreen]=\"isFullScreen\"\n></shared-dashboard-filter>\n"
+        },
+        {
+            "name": "FormComponent",
+            "id": "component-FormComponent-321fad75a96e9348fe31276e3fada840c6ba195c58e5c0f38c4316cce475abe4fc433903dfc59431e50f957b1677034af48b80f7551089fee3c6161e0688ae88",
+            "file": "apps/front-office/src/app/application/pages/form/form.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-form",
+            "styleUrls": [
+                "./form.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./form.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "canCreateRecords",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Prevents new records to be created</p>\n",
+                    "line": 49,
+                    "rawdescription": "\nPrevents new records to be created",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "completed",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Is the form answered</p>\n",
+                    "line": 43,
+                    "rawdescription": "\nIs the form answered",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "form",
+                    "defaultValue": "{}",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Form",
+                    "optional": false,
+                    "description": "<p>Current form</p>\n",
+                    "line": 41,
+                    "rawdescription": "\nCurrent form",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "formComponent",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "SharedFormComponent",
+                    "optional": true,
+                    "description": "<p>View reference of Shared form component</p>\n",
+                    "line": 35,
+                    "rawdescription": "\nView reference of Shared form component",
+                    "decorators": [
+                        {
+                            "name": "ViewChild",
+                            "stringifiedArguments": "SharedFormComponent"
+                        }
+                    ],
+                    "modifierKind": [
+                        167,
+                        121
+                    ]
+                },
+                {
+                    "name": "hideNewRecord",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Prevents new records to be created</p>\n",
+                    "line": 47,
+                    "rawdescription": "\nPrevents new records to be created",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "id",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "<p>Current form id</p>\n",
+                    "line": 39,
+                    "rawdescription": "\nCurrent form id",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "isStep",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Tells if the form is within a workflow</p>\n",
+                    "line": 55,
+                    "rawdescription": "\nTells if the form is within a workflow",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "loading",
+                    "defaultValue": "true",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Loading state of the page</p>\n",
+                    "line": 37,
+                    "rawdescription": "\nLoading state of the page",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "page",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Page",
+                    "optional": true,
+                    "description": "<p>Current page</p>\n",
+                    "line": 51,
+                    "rawdescription": "\nCurrent page",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "querySubscription",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Subscription",
+                    "optional": true,
+                    "description": "<p>Ongoing query</p>\n",
+                    "line": 45,
+                    "rawdescription": "\nOngoing query",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "step",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Step",
+                    "optional": true,
+                    "description": "<p>Current step if nested in workflow</p>\n",
+                    "line": 53,
+                    "rawdescription": "\nCurrent step if nested in workflow",
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "clearForm",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 187,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nResets the form.\n",
+                    "description": "<p>Resets the form.</p>\n"
+                },
+                {
+                    "name": "getFormQuery",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "any",
+                    "typeParameters": [],
+                    "line": 132,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nReturns a form query stream for the given id\n\n",
+                    "description": "<p>Returns a form query stream for the given id</p>\n",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 3606,
+                                "end": 3608,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "id"
+                            },
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 3591,
+                                "end": 3596,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>form id to fetch</p>\n",
+                            "typeExpression": {
+                                "pos": 3597,
+                                "end": 3605,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 312,
+                                "type": {
+                                    "pos": 3598,
+                                    "end": 3604,
+                                    "flags": 8388608,
+                                    "modifierFlagsCache": 0,
+                                    "transformFlags": 1,
+                                    "kind": 152
+                                }
+                            }
+                        },
+                        {
+                            "tagName": {
+                                "pos": 3632,
+                                "end": 3639,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "returns"
+                            },
+                            "comment": "<p>a query stream</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "handleApplicationLoadResponse",
+                    "args": [
+                        {
+                            "name": "data",
+                            "type": "FormQueryResponse",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "loading",
+                            "type": "boolean",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 147,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nHandles the response for the given form query response data and loading state\n\n",
+                    "description": "<p>Handles the response for the given form query response data and loading state</p>\n",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 3956,
+                                "end": 3960,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "data"
+                            },
+                            "type": "FormQueryResponse",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 3930,
+                                "end": 3935,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>data retrieved from the form query</p>\n",
+                            "typeExpression": {
+                                "pos": 3936,
+                                "end": 3955,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 312,
+                                "type": {
+                                    "pos": 3937,
+                                    "end": 3954,
+                                    "flags": 8388608,
+                                    "modifierFlagsCache": 0,
+                                    "transformFlags": 1,
+                                    "kind": 180,
+                                    "typeName": {
+                                        "pos": 3937,
+                                        "end": 3954,
+                                        "flags": 8388608,
+                                        "modifierFlagsCache": 0,
+                                        "transformFlags": 0,
+                                        "kind": 79,
+                                        "escapedText": "FormQueryResponse"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": {
+                                "pos": 4018,
+                                "end": 4025,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "loading"
+                            },
+                            "type": "boolean",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 4002,
+                                "end": 4007,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>loadin state</p>\n",
+                            "typeExpression": {
+                                "pos": 4008,
+                                "end": 4017,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 312,
+                                "type": {
+                                    "pos": 4009,
+                                    "end": 4016,
+                                    "flags": 8388608,
+                                    "modifierFlagsCache": 0,
+                                    "transformFlags": 1,
+                                    "kind": 134
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 79,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nSubscribes to the route to load the form.\n",
+                    "description": "<p>Subscribes to the route to load the form.</p>\n"
+                },
+                {
+                    "name": "onComplete",
+                    "args": [
+                        {
+                            "name": "e",
+                            "type": "literal type",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 179,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nUpdates status of the page.\n\n",
+                    "description": "<p>Updates status of the page.</p>\n",
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 4695,
+                                "end": 4696,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "e"
+                            },
+                            "type": "literal type",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 4689,
+                                "end": 4694,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>completion event</p>\n"
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Form page.</p>\n",
+            "rawdescription": "\n\nForm page.\n",
+            "type": "component",
+            "sourceCode": "import { Apollo } from 'apollo-angular';\nimport { Component, OnInit, ViewChild } from '@angular/core';\nimport { ActivatedRoute, Router } from '@angular/router';\nimport {\n  Form,\n  Page,\n  Step,\n  FormComponent as SharedFormComponent,\n  UnsubscribeComponent,\n  StepQueryResponse,\n  FormQueryResponse,\n  PageQueryResponse,\n} from '@oort-front/shared';\nimport {\n  GET_FORM_BY_ID,\n  GET_PAGE_BY_ID,\n  GET_STEP_BY_ID,\n} from './graphql/queries';\nimport { Subscription } from 'rxjs';\nimport { switchMap, takeUntil } from 'rxjs/operators';\nimport { TranslateService } from '@ngx-translate/core';\nimport { SnackbarService } from '@oort-front/ui';\n\n/**\n * Form page.\n */\n@Component({\n  selector: 'app-form',\n  templateUrl: './form.component.html',\n  styleUrls: ['./form.component.scss'],\n})\nexport class FormComponent extends UnsubscribeComponent implements OnInit {\n  /** View reference of Shared form component */\n  @ViewChild(SharedFormComponent)\n  private formComponent?: SharedFormComponent;\n  /** Loading state of the page */\n  public loading = true;\n  /** Current form id */\n  public id = '';\n  /** Current form */\n  public form: Form = {};\n  /** Is the form answered */\n  public completed = false;\n  /** Ongoing query */\n  public querySubscription?: Subscription;\n  /** Prevents new records to be created */\n  public hideNewRecord = false;\n  /** Prevents new records to be created */\n  public canCreateRecords = false;\n  /** Current page */\n  public page?: Page;\n  /** Current step if nested in workflow */\n  public step?: Step;\n  /** Tells if the form is within a workflow */\n  public isStep = false;\n\n  /**\n   * Form page.\n   *\n   * @param apollo Apollo client\n   * @param route Angular current route\n   * @param router Angular router\n   * @param snackBar Shared snackbar service\n   * @param translate Angular translate service\n   */\n  constructor(\n    private apollo: Apollo,\n    private route: ActivatedRoute,\n    private router: Router,\n    private snackBar: SnackbarService,\n    private translate: TranslateService\n  ) {\n    super();\n  }\n\n  /**\n   * Subscribes to the route to load the form.\n   */\n  ngOnInit(): void {\n    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {\n      this.loading = true;\n      this.id = params.id;\n      this.isStep = this.router.url.includes('/workflow/');\n      // If a query is already loading, cancel it\n      if (this.querySubscription) {\n        this.querySubscription.unsubscribe();\n      }\n      if (this.isStep) {\n        this.querySubscription = this.apollo\n          .query<StepQueryResponse>({\n            query: GET_STEP_BY_ID,\n            variables: {\n              id: this.id,\n            },\n          })\n          .pipe(\n            switchMap((res) => {\n              this.step = res.data.step;\n              return this.getFormQuery(this.step.content ?? '');\n            })\n          )\n          .subscribe(({ data, loading }) => {\n            this.handleApplicationLoadResponse(data, loading);\n          });\n      } else {\n        this.querySubscription = this.apollo\n          .query<PageQueryResponse>({\n            query: GET_PAGE_BY_ID,\n            variables: {\n              id: this.id,\n            },\n          })\n          .pipe(\n            switchMap((res) => {\n              this.page = res.data.page;\n              return this.getFormQuery(this.page.content ?? '');\n            })\n          )\n          .subscribe(({ data, loading }) => {\n            this.handleApplicationLoadResponse(data, loading);\n          });\n      }\n    });\n  }\n\n  /**\n   * Returns a form query stream for the given id\n   *\n   * @param {string} id form id to fetch\n   * @returns a query stream\n   */\n  private getFormQuery(id: string) {\n    return this.apollo.query<FormQueryResponse>({\n      query: GET_FORM_BY_ID,\n      variables: {\n        id,\n      },\n    });\n  }\n\n  /**\n   * Handles the response for the given form query response data and loading state\n   *\n   * @param {FormQueryResponse} data data retrieved from the form query\n   * @param {boolean} loading loadin state\n   */\n  private handleApplicationLoadResponse(\n    data: FormQueryResponse,\n    loading: boolean\n  ) {\n    if (data) {\n      this.form = data.form;\n    }\n    if (\n      !this.form ||\n      this.form.status !== 'active' ||\n      !this.form.canCreateRecords\n    ) {\n      this.snackBar.openSnackBar(\n        this.translate.instant('common.notifications.accessNotProvided', {\n          type: this.translate.instant('common.form.one').toLowerCase(),\n          error: '',\n        }),\n        { error: true }\n      );\n    } else {\n      this.canCreateRecords = true;\n    }\n    this.loading = loading;\n  }\n\n  /**\n   * Updates status of the page.\n   *\n   * @param e completion event\n   * @param e.completed is form completed\n   * @param e.hideNewRecord is it needed to hide new record button\n   */\n  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {\n    this.completed = e.completed;\n    this.hideNewRecord = e.hideNewRecord || false;\n  }\n\n  /**\n   * Resets the form.\n   */\n  clearForm(): void {\n    this.formComponent?.reset();\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./form.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Form page.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "apollo",
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "snackBar",
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 55,
+                "rawdescription": "\n\nForm page.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 1641,
+                            "end": 1647,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "apollo"
+                        },
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1635,
+                            "end": 1640,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Apollo client</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1674,
+                            "end": 1679,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "route"
+                        },
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1668,
+                            "end": 1673,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular current route</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1714,
+                            "end": 1720,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "router"
+                        },
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1708,
+                            "end": 1713,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular router</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1748,
+                            "end": 1756,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "snackBar"
+                        },
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1742,
+                            "end": 1747,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared snackbar service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1793,
+                            "end": 1802,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "translate"
+                        },
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1787,
+                            "end": 1792,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular translate service</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<ng-container *ngIf=\"loading\"><ui-spinner></ui-spinner></ng-container>\n<ng-container *ngIf=\"!loading && form && canCreateRecords\">\n  <shared-form [form]=\"form\" (save)=\"onComplete($event)\"></shared-form>\n  <ng-container *ngIf=\"completed && !form.uniqueRecord && !hideNewRecord\">\n    <ui-button category=\"secondary\" (click)=\"clearForm()\">{{\n      'models.record.new' | translate\n    }}</ui-button>\n  </ng-container>\n</ng-container>\n"
+        },
+        {
+            "name": "HomeComponent",
+            "id": "component-HomeComponent-7fc81dffe28946275b50178e6457a258680cd9e33f6ef297df95649932e2109c9c5724afa413a796f46ad03daec67c5dc823c51e87fd3e560d786dd24e9589ac",
+            "file": "apps/front-office/src/app/application/pages/home/home.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-home",
+            "styleUrls": [
+                "./home.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./home.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Home page component.</p>\n",
+            "rawdescription": "\n\nHome page component.\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n/**\n * Home page component.\n */\n@Component({\n  selector: 'app-home',\n  templateUrl: './home.component.html',\n  styleUrls: ['./home.component.scss'],\n})\nexport class HomeComponent {}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./home.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "templateData": "<ui-spinner\n  class=\"absolute top-0 bottom-0 left-0 right-0 flex-col items-center\"\n></ui-spinner>\n"
+        },
+        {
+            "name": "LoginComponent",
+            "id": "component-LoginComponent-098d339b40942e62b0a38cdbb588ca208f0e85d84e91bbd771bf2958e5924c6f44c66e0ee56bf4d25af68365cf0f6fbed68f4065d0922cab4a787f71524d377e",
+            "file": "apps/front-office/src/app/auth/pages/login/login.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-login",
+            "styleUrls": [
+                "./login.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./login.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 25,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nCheck that user is authenticated, and redirect to main page if true.\n",
+                    "description": "<p>Check that user is authenticated, and redirect to main page if true.</p>\n"
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Login Page component.</p>\n",
+            "rawdescription": "\n\nLogin Page component.\n",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { Router } from '@angular/router';\nimport { AuthService } from '@oort-front/shared';\n\n/**\n * Login Page component.\n */\n@Component({\n  selector: 'app-login',\n  templateUrl: './login.component.html',\n  styleUrls: ['./login.component.scss'],\n})\nexport class LoginComponent implements OnInit {\n  /**\n   * Login Page component.\n   *\n   * @param authService Shared authentication service\n   * @param router Angular router\n   */\n  constructor(private authService: AuthService, private router: Router) {}\n\n  /**\n   * Check that user is authenticated, and redirect to main page if true.\n   */\n  ngOnInit(): void {\n    this.authService.isAuthenticated$.subscribe((res: boolean) => {\n      if (res === true) {\n        this.router.navigate(['/']);\n      }\n    });\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./login.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Login Page component.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "authService",
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 13,
+                "rawdescription": "\n\nLogin Page component.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 398,
+                            "end": 409,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "authService"
+                        },
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 392,
+                            "end": 397,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared authentication service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 452,
+                            "end": 458,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "router"
+                        },
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 446,
+                            "end": 451,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular router</p>\n"
+                    }
+                ]
+            },
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<ui-spinner\n  class=\"absolute top-0 bottom-0 left-0 right-0 flex-col items-center\"\n></ui-spinner>\n"
+        },
+        {
+            "name": "RedirectComponent",
+            "id": "component-RedirectComponent-63c8c06a82512015bd529b512cb56a7c0eaa3c85b41faede55b87c33c30d8dc75d24e047e16b06e9ca0fb645f92da7eb43b338c037bacb1557fc0b8ef72062fe",
+            "file": "apps/front-office/src/app/redirect/redirect.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-redirect",
+            "styleUrls": [
+                "./redirect.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./redirect.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "applications",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Application[]",
+                    "optional": false,
+                    "description": "<p>List of accessible applications</p>\n",
+                    "line": 21,
+                    "rawdescription": "\nList of accessible applications"
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 38,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Redirect page of front-office.</p>\n",
+            "rawdescription": "\n\nRedirect page of front-office.\n",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { Router } from '@angular/router';\nimport {\n  Application,\n  AuthService,\n  UnsubscribeComponent,\n  User,\n} from '@oort-front/shared';\nimport { takeUntil } from 'rxjs';\n\n/**\n * Redirect page of front-office.\n */\n@Component({\n  selector: 'app-redirect',\n  templateUrl: './redirect.component.html',\n  styleUrls: ['./redirect.component.scss'],\n})\nexport class RedirectComponent extends UnsubscribeComponent implements OnInit {\n  /** List of accessible applications */\n  applications: Application[] = [];\n\n  /** @returns True if applications is empty */\n  get empty(): boolean {\n    return this.applications.length === 0;\n  }\n\n  /**\n   * Redirect page of front-office.\n   *\n   * @param authService shared authentication service\n   * @param router Angular router\n   */\n  constructor(private authService: AuthService, private router: Router) {\n    super();\n  }\n\n  ngOnInit(): void {\n    this.authService.user$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((user: User | null) => {\n        if (user) {\n          this.applications = user?.applications || [];\n          if (user.favoriteApp) {\n            if (this.applications.find((app) => app.id === user.favoriteApp)) {\n              this.router.navigate([`./${user.favoriteApp}`]);\n            } else {\n              this.router.navigate([`./${this.applications[0].id}`]);\n            }\n          } else {\n            this.router.navigate([`./${this.applications[0].id}`]);\n          }\n        } else {\n          this.applications = [];\n        }\n      });\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./redirect.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Redirect page of front-office.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "authService",
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 26,
+                "rawdescription": "\n\nRedirect page of front-office.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 740,
+                            "end": 751,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "authService"
+                        },
+                        "type": "AuthService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 734,
+                            "end": 739,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>shared authentication service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 794,
+                            "end": 800,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "router"
+                        },
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 788,
+                            "end": 793,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular router</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit"
+            ],
+            "accessors": {
+                "empty": {
+                    "name": "empty",
+                    "getSignature": {
+                        "name": "empty",
+                        "type": "boolean",
+                        "returnType": "boolean",
+                        "line": 24,
+                        "rawdescription": "",
+                        "description": "",
+                        "jsdoctags": [
+                            {
+                                "pos": 566,
+                                "end": 605,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 345,
+                                "tagName": {
+                                    "pos": 567,
+                                    "end": 574,
+                                    "flags": 8421376,
+                                    "modifierFlagsCache": 0,
+                                    "transformFlags": 0,
+                                    "kind": 79,
+                                    "escapedText": "returns"
+                                },
+                                "comment": "<p>True if applications is empty</p>\n"
+                            }
+                        ]
+                    }
+                }
+            },
+            "templateData": "<div class=\"flex w-full h-full justify-center items-center\">\n  <!-- Empty indicator -->\n  <shared-empty\n    *ngIf=\"empty\"\n    icon=\"dashboard\"\n    [title]=\"'components.application.dashboard.empty' | translate\"\n  ></shared-empty>\n</div>\n"
+        },
+        {
+            "name": "RolesComponent",
+            "id": "component-RolesComponent-9c3322e53316edc66229cdeb2b2b97b53f3aa72dc27b15d9dd674bfc25525ba4c1a0e3e8f2272a9c021ca27c66670919d73710b6996e4f8621a53a6e7edbf9b3",
+            "file": "apps/front-office/src/app/application/pages/roles/roles.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-roles",
+            "styleUrls": [
+                "./roles.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./roles.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Roles page.\nDisplays shared module.</p>\n",
+            "rawdescription": "\n\nRoles page.\nDisplays shared module.\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n/**\n * Roles page.\n * Displays shared module.\n */\n@Component({\n  selector: 'app-roles',\n  templateUrl: './roles.component.html',\n  styleUrls: ['./roles.component.scss'],\n})\nexport class RolesComponent {}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./roles.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "templateData": "<shared-roles [inApplication]=\"true\"></shared-roles>\n"
+        },
+        {
+            "name": "RoleSummaryComponent",
+            "id": "component-RoleSummaryComponent-0febd2df2229f6af55f48287ae84484bb5b2003c1ef0245217f63cc2f4f4495dc77053d2d0d0065ac3a3becf2d68ae046e73b3280941252fa744f62f53067bee",
+            "file": "apps/front-office/src/app/application/pages/role-summary/role-summary.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-role-summary",
+            "styleUrls": [
+                "./role-summary.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./role-summary.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "application",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Application",
+                    "optional": false,
+                    "description": "",
+                    "line": 23,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "applicationService",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "ApplicationService",
+                    "optional": false,
+                    "description": "Shared application service",
+                    "line": 33,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "id",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 22,
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 38,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Role summary page</p>\n",
+            "rawdescription": "\n\nRole summary page\n",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { ActivatedRoute } from '@angular/router';\nimport {\n  Application,\n  ApplicationService,\n  UnsubscribeComponent,\n} from '@oort-front/shared';\nimport { takeUntil } from 'rxjs/operators';\n\n/**\n * Role summary page\n */\n@Component({\n  selector: 'app-role-summary',\n  templateUrl: './role-summary.component.html',\n  styleUrls: ['./role-summary.component.scss'],\n})\nexport class RoleSummaryComponent\n  extends UnsubscribeComponent\n  implements OnInit\n{\n  public id = '';\n  public application!: Application;\n\n  /**\n   * Role summary page\n   *\n   * @param route Angular current route\n   * @param applicationService Shared application service\n   */\n  constructor(\n    private route: ActivatedRoute,\n    public applicationService: ApplicationService\n  ) {\n    super();\n  }\n\n  ngOnInit(): void {\n    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((val: any) => {\n      this.id = val.id;\n    });\n    this.applicationService.application$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((application: Application | null) => {\n        if (application) {\n          this.application = application;\n        }\n      });\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./role-summary.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Role summary page</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "applicationService",
+                        "type": "ApplicationService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 23,
+                "rawdescription": "\n\nRole summary page\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 606,
+                            "end": 611,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "route"
+                        },
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 600,
+                            "end": 605,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular current route</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 646,
+                            "end": 664,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "applicationService"
+                        },
+                        "type": "ApplicationService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 640,
+                            "end": 645,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared application service</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<shared-role-summary\n  *ngIf=\"application\"\n  [id]=\"id\"\n  [application]=\"application\"\n></shared-role-summary>\n"
+        },
+        {
+            "name": "ShareComponent",
+            "id": "component-ShareComponent-48193f166e47f60b15c96ad47e10d0dc3ab75948db922927d5cee0933276cc91a72256d36864a51e56ebd35d62cada494a35150799db68d4d40200630147cb98",
+            "file": "apps/front-office/src/app/application/pages/share/share.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-share",
+            "styleUrls": [
+                "./share.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./share.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 45,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nQuery dashboard information from share url and redirect to dashboard page.\n",
+                    "description": "<p>Query dashboard information from share url and redirect to dashboard page.</p>\n"
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Share URL access component.</p>\n",
+            "rawdescription": "\n\nShare URL access component.\n",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { Router, ActivatedRoute } from '@angular/router';\nimport { TranslateService } from '@ngx-translate/core';\nimport { Apollo } from 'apollo-angular';\nimport {\n  Dashboard,\n  DashboardQueryResponse,\n  UnsubscribeComponent,\n} from '@oort-front/shared';\nimport { GET_SHARE_DASHBOARD_BY_ID } from './graphql/queries';\nimport { takeUntil } from 'rxjs/operators';\nimport { SnackbarService } from '@oort-front/ui';\n\n/**\n * Share URL access component.\n */\n@Component({\n  selector: 'app-share',\n  templateUrl: './share.component.html',\n  styleUrls: ['./share.component.scss'],\n})\nexport class ShareComponent extends UnsubscribeComponent implements OnInit {\n  /**\n   * Share URL access component.\n   *\n   * @param router Angular shared router service\n   * @param route Angular shared route service\n   * @param apollo Apollo client service\n   * @param snackBar Shared snackbar service\n   * @param translateService Angular Translate service\n   */\n  constructor(\n    private router: Router,\n    private route: ActivatedRoute,\n    private apollo: Apollo,\n    private snackBar: SnackbarService,\n    private translateService: TranslateService\n  ) {\n    super();\n  }\n\n  /**\n   * Query dashboard information from share url and redirect to dashboard page.\n   */\n  ngOnInit(): void {\n    this.route.params\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((params: any) => {\n        this.apollo\n          .query<DashboardQueryResponse>({\n            query: GET_SHARE_DASHBOARD_BY_ID,\n            variables: {\n              id: params.id,\n            },\n          })\n          .subscribe(({ data }) => {\n            let url = '';\n            const dashboard: Dashboard = data.dashboard;\n            if (dashboard) {\n              if (dashboard.step) {\n                url +=\n                  '/' + data.dashboard.step?.workflow?.page?.application?.id;\n                url += '/workflow/' + data.dashboard.step?.workflow?.id;\n                url += '/dashboard/' + data.dashboard.id;\n              } else {\n                url += '/' + data.dashboard.page?.application?.id;\n                url += '/dashboard/' + data.dashboard.id;\n              }\n            } else {\n              // Error handling\n              this.snackBar.openSnackBar(\n                this.translateService.instant(\n                  'common.notifications.accessNotProvided',\n                  {\n                    type: this.translateService\n                      .instant('common.dashboard.one')\n                      .toLowerCase(),\n                    error: '',\n                  }\n                ),\n                { error: true }\n              );\n            }\n            this.router.navigate([url]);\n          });\n      });\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./share.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Share URL access component.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "apollo",
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "snackBar",
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translateService",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 22,
+                "rawdescription": "\n\nShare URL access component.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 760,
+                            "end": 766,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "router"
+                        },
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 754,
+                            "end": 759,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular shared router service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 809,
+                            "end": 814,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "route"
+                        },
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 803,
+                            "end": 808,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular shared route service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 856,
+                            "end": 862,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "apollo"
+                        },
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 850,
+                            "end": 855,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Apollo client service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 897,
+                            "end": 905,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "snackBar"
+                        },
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 891,
+                            "end": 896,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared snackbar service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 942,
+                            "end": 958,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "translateService"
+                        },
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 936,
+                            "end": 941,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular Translate service</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<ui-spinner class=\"absolute top-0 bottom-0 left-0 right-0 m-auto\"></ui-spinner>\n"
+        },
+        {
+            "name": "UserSummaryComponent",
+            "id": "component-UserSummaryComponent-1b41a55d67a298e28ee3bbc92a81c2dc1e08832992c131f21bbe2bf8086b469e0b03d1585f42551056b2cc3bc7ba0a392bedb3b343407d849a5e5855d1ea420f",
+            "file": "apps/front-office/src/app/application/pages/user-summary/user-summary.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-user-summary",
+            "styleUrls": [
+                "./user-summary.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./user-summary.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "application",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Application",
+                    "optional": false,
+                    "description": "",
+                    "line": 23,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "applicationService",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "ApplicationService",
+                    "optional": false,
+                    "description": "Shared application service",
+                    "line": 33,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "id",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 22,
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 38,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>User Summary page component.</p>\n",
+            "rawdescription": "\n\nUser Summary page component.\n",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { ActivatedRoute } from '@angular/router';\nimport {\n  Application,\n  ApplicationService,\n  UnsubscribeComponent,\n} from '@oort-front/shared';\nimport { takeUntil } from 'rxjs/operators';\n\n/**\n * User Summary page component.\n */\n@Component({\n  selector: 'app-user-summary',\n  templateUrl: './user-summary.component.html',\n  styleUrls: ['./user-summary.component.scss'],\n})\nexport class UserSummaryComponent\n  extends UnsubscribeComponent\n  implements OnInit\n{\n  public id = '';\n  public application!: Application;\n\n  /**\n   * User summary page component.\n   *\n   * @param route Angular active route\n   * @param applicationService Shared application service\n   */\n  constructor(\n    private route: ActivatedRoute,\n    public applicationService: ApplicationService\n  ) {\n    super();\n  }\n\n  ngOnInit(): void {\n    const routeSubscription = this.route.params.subscribe((val: any) => {\n      this.id = val.id;\n    });\n    routeSubscription.unsubscribe();\n    this.applicationService.application$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((application: Application | null) => {\n        if (application) {\n          this.application = application;\n        }\n      });\n    // applicationSubscription.unsubscribe();\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./user-summary.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>User summary page component.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "applicationService",
+                        "type": "ApplicationService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 23,
+                "rawdescription": "\n\nUser summary page component.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 628,
+                            "end": 633,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "route"
+                        },
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 622,
+                            "end": 627,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular active route</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 667,
+                            "end": 685,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "applicationService"
+                        },
+                        "type": "ApplicationService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 661,
+                            "end": 666,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared application service</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<shared-user-summary\n  *ngIf=\"application\"\n  [id]=\"id\"\n  [application]=\"application\"\n></shared-user-summary>\n"
+        },
+        {
+            "name": "WorkflowComponent",
+            "id": "component-WorkflowComponent-676ca3044405f6a016d9b29e965d931bb1507502c3f0e5a27917c7f8e12fdccfae8ce5152a3d11bcea8f3932abd2c645b1ae1456ca210e01695701287107d46a",
+            "file": "apps/front-office/src/app/application/pages/workflow/workflow.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-workflow",
+            "styleUrls": [
+                "./workflow.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./workflow.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "activeStep",
+                    "defaultValue": "0",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "number",
+                    "optional": false,
+                    "description": "<p>Current step</p>\n",
+                    "line": 34,
+                    "rawdescription": "\nCurrent step",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "id",
+                    "defaultValue": "''",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "optional": false,
+                    "description": "<p>Current workflow id</p>\n",
+                    "line": 28,
+                    "rawdescription": "\nCurrent workflow id",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "loading",
+                    "defaultValue": "true",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "<p>Loading state of the page</p>\n",
+                    "line": 26,
+                    "rawdescription": "\nLoading state of the page",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "steps",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Step[]",
+                    "optional": false,
+                    "description": "<p>Current workflow steps</p>\n",
+                    "line": 32,
+                    "rawdescription": "\nCurrent workflow steps",
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "workflow",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Workflow",
+                    "optional": true,
+                    "description": "<p>Current workflow</p>\n",
+                    "line": 30,
+                    "rawdescription": "\nCurrent workflow",
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "goToNextStep",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 166,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nNavigates to the next step if possible and change selected step / index consequently\n",
+                    "description": "<p>Navigates to the next step if possible and change selected step / index consequently</p>\n",
+                    "modifierKind": [
+                        121
+                    ]
+                },
+                {
+                    "name": "goToPreviousStep",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 189,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nNavigates to the previous step if possible and change selected step / index consequently\n",
+                    "description": "<p>Navigates to the previous step if possible and change selected step / index consequently</p>\n",
+                    "modifierKind": [
+                        121
+                    ]
+                },
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 58,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nSubscribes to the route to load the workflow accordingly.\n",
+                    "description": "<p>Subscribes to the route to load the workflow accordingly.</p>\n"
+                },
+                {
+                    "name": "onActivate",
+                    "args": [
+                        {
+                            "name": "elementRef",
+                            "type": "any",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 128,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nGets data from within selected step\n\n",
+                    "description": "<p>Gets data from within selected step</p>\n",
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 4013,
+                                "end": 4023,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "elementRef"
+                            },
+                            "type": "any",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 4007,
+                                "end": 4012,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>Ref to the stepper</p>\n"
+                        }
+                    ]
+                },
+                {
+                    "name": "onOpenStep",
+                    "args": [
+                        {
+                            "name": "index",
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 145,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nNavigates to the clicked step.\n\n",
+                    "description": "<p>Navigates to the clicked step.</p>\n",
+                    "modifierKind": [
+                        123
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 4374,
+                                "end": 4379,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "index"
+                            },
+                            "type": "number",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "pos": 4368,
+                                "end": 4373,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 79,
+                                "escapedText": "param"
+                            },
+                            "comment": "<p>index of step to navigate to</p>\n"
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "<p>Workflow page.</p>\n",
+            "rawdescription": "\n\nWorkflow page.\n",
+            "type": "component",
+            "sourceCode": "import { Apollo } from 'apollo-angular';\nimport { Component, OnInit } from '@angular/core';\nimport { ActivatedRoute, Router } from '@angular/router';\nimport {\n  ContentType,\n  Step,\n  Workflow,\n  UnsubscribeComponent,\n  WorkflowQueryResponse,\n} from '@oort-front/shared';\nimport { GET_WORKFLOW_BY_ID } from './graphql/queries';\nimport { TranslateService } from '@ngx-translate/core';\nimport { takeUntil } from 'rxjs/operators';\nimport { SnackbarService } from '@oort-front/ui';\n\n/**\n * Workflow page.\n */\n@Component({\n  selector: 'app-workflow',\n  templateUrl: './workflow.component.html',\n  styleUrls: ['./workflow.component.scss'],\n})\nexport class WorkflowComponent extends UnsubscribeComponent implements OnInit {\n  /** Loading state of the page */\n  public loading = true;\n  /** Current workflow id */\n  public id = '';\n  /** Current workflow */\n  public workflow?: Workflow;\n  /** Current workflow steps */\n  public steps: Step[] = [];\n  /** Current step */\n  public activeStep = 0;\n\n  /**\n   * Workflow page.\n   *\n   * @param apollo Apollo client\n   * @param route Angular current route\n   * @param snackBar Shared snackbar service\n   * @param router Angular router\n   * @param translate Angular translate service\n   */\n  constructor(\n    private apollo: Apollo,\n    private route: ActivatedRoute,\n    private snackBar: SnackbarService,\n    private router: Router,\n    private translate: TranslateService\n  ) {\n    super();\n  }\n\n  /**\n   * Subscribes to the route to load the workflow accordingly.\n   */\n  ngOnInit(): void {\n    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {\n      this.loading = true;\n      this.id = params.id;\n      this.apollo\n        .watchQuery<WorkflowQueryResponse>({\n          query: GET_WORKFLOW_BY_ID,\n          variables: {\n            id: this.id,\n          },\n        })\n        .valueChanges.pipe(takeUntil(this.destroy$))\n        .subscribe({\n          next: ({ data, loading }) => {\n            if (data.workflow) {\n              this.workflow = data.workflow;\n              this.steps = data.workflow.steps || [];\n              this.loading = loading;\n              if (this.steps.length > 0) {\n                const currentStepId = this.router.url.split('/').pop();\n                // If redirect to the workflow beginning, just go to the firstStep\n                const firstStep = this.steps[0];\n                const firstStepIsForm = firstStep.type === ContentType.form;\n                let currentActiveStep = 0;\n                if (\n                  !(firstStepIsForm\n                    ? firstStep.id === currentStepId\n                    : firstStep.content === currentStepId)\n                ) {\n                  // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)\n                  data.workflow?.steps?.forEach((step: Step, index: number) => {\n                    const stepIsForm = step.type === ContentType.form;\n                    if (\n                      (stepIsForm && step.id === currentStepId) ||\n                      step.content === currentStepId\n                    ) {\n                      currentActiveStep = index;\n                      return;\n                    }\n                  });\n                }\n                this.onOpenStep(currentActiveStep);\n              }\n            } else {\n              this.snackBar.openSnackBar(\n                this.translate.instant(\n                  'common.notifications.accessNotProvided',\n                  {\n                    type: this.translate\n                      .instant('common.workflow.one')\n                      .toLowerCase(),\n                    error: '',\n                  }\n                ),\n                { error: true }\n              );\n            }\n          },\n          error: (err) => {\n            this.snackBar.openSnackBar(err.message, { error: true });\n          },\n        });\n    });\n  }\n\n  /**\n   * Gets data from within selected step\n   *\n   * @param elementRef Ref to the stepper\n   */\n  onActivate(elementRef: any): void {\n    if (elementRef.changeStep) {\n      elementRef.changeStep.subscribe((event: any) => {\n        if (event > 0) {\n          this.goToNextStep();\n        } else {\n          this.goToPreviousStep();\n        }\n      });\n    }\n  }\n\n  /**\n   * Navigates to the clicked step.\n   *\n   * @param index index of step to navigate to\n   */\n  public onOpenStep(index: number): void {\n    if (index >= 0 && index < this.steps.length) {\n      const step = this.steps[index];\n      this.activeStep = index;\n      if (step.type === ContentType.form) {\n        this.router.navigate(['./' + step.type + '/' + step.id], {\n          relativeTo: this.route,\n        });\n      } else {\n        this.router.navigate(['./' + step.type + '/' + step.content], {\n          relativeTo: this.route,\n        });\n      }\n    } else {\n      this.router.navigate(['./'], { relativeTo: this.route });\n    }\n  }\n\n  /**\n   * Navigates to the next step if possible and change selected step / index consequently\n   */\n  private goToNextStep(): void {\n    if (this.activeStep + 1 < this.steps.length) {\n      this.onOpenStep(this.activeStep + 1);\n    } else if (this.activeStep + 1 === this.steps.length) {\n      this.onOpenStep(0);\n      this.snackBar.openSnackBar(\n        this.translate.instant('models.workflow.notifications.goToStep', {\n          step: this.steps[0].name,\n        })\n      );\n    } else {\n      this.snackBar.openSnackBar(\n        this.translate.instant(\n          'models.workflow.notifications.cannotGoToNextStep'\n        ),\n        { error: true }\n      );\n    }\n  }\n\n  /**\n   * Navigates to the previous step if possible and change selected step / index consequently\n   */\n  private goToPreviousStep(): void {\n    if (this.activeStep > 0) {\n      this.onOpenStep(this.activeStep - 1);\n    } else if (this.activeStep === 0) {\n      this.onOpenStep(this.steps.length - 1);\n      this.snackBar.openSnackBar(\n        this.translate.instant('models.workflow.notifications.goToStep', {\n          step: this.steps[this.steps.length - 1].name,\n        })\n      );\n    } else {\n      this.snackBar.openSnackBar(\n        this.translate.instant(\n          'models.workflow.notifications.cannotGoToPreviousStep'\n        ),\n        { error: true }\n      );\n    }\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "",
+                    "styleUrl": "./workflow.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "<p>Workflow page.</p>\n",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "apollo",
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "snackBar",
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 34,
+                "rawdescription": "\n\nWorkflow page.\n\n",
+                "jsdoctags": [
+                    {
+                        "name": {
+                            "pos": 1032,
+                            "end": 1038,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "apollo"
+                        },
+                        "type": "Apollo",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1026,
+                            "end": 1031,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Apollo client</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1065,
+                            "end": 1070,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "route"
+                        },
+                        "type": "ActivatedRoute",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1059,
+                            "end": 1064,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular current route</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1105,
+                            "end": 1113,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "snackBar"
+                        },
+                        "type": "SnackbarService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1099,
+                            "end": 1104,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Shared snackbar service</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1150,
+                            "end": 1156,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "router"
+                        },
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1144,
+                            "end": 1149,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular router</p>\n"
+                    },
+                    {
+                        "name": {
+                            "pos": 1184,
+                            "end": 1193,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "translate"
+                        },
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "pos": 1178,
+                            "end": 1183,
+                            "flags": 8421376,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "param"
+                        },
+                        "comment": "<p>Angular translate service</p>\n"
+                    }
+                ]
+            },
+            "extends": "UnsubscribeComponent",
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<!-- Skeleton when loading -->\n<ng-container\n  *sharedSkeleton=\"\n    loading;\n    repeat: 1;\n    height: '32px';\n    width: '120px';\n    shape: 'rectangle'\n  \"\n>\n  <ng-container *ngIf=\"workflow\">\n    <div class=\"flex flex-wrap items-center justify-between mb-3 gap-4\">\n      <!-- Title -->\n      <div class=\"flex items-center gap-1\">\n        <h1 class=\"!m-0 overflow-hidden text-ellipsis\">\n          {{ workflow.name }}\n        </h1>\n      </div>\n    </div>\n  </ng-container>\n</ng-container>\n<!-- STEPS -->\n<shared-workflow-stepper\n  [loading]=\"loading\"\n  [steps]=\"steps\"\n  (openStep)=\"onOpenStep($event)\"\n  [activeStep]=\"activeStep\"\n  class=\"block\"\n>\n</shared-workflow-stepper>\n<router-outlet (activate)=\"onActivate($event)\"></router-outlet>\n"
+        }
+    ],
+    "modules": [],
+    "miscellaneous": [],
+    "routes": [],
+    "coverage": {
+        "count": 85,
+        "status": "very-good",
+        "files": [
+            {
+                "filePath": "apps/front-office/src/app/app.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "AppComponent",
+                "coveragePercent": 60,
+                "coverageCount": "3/5",
+                "status": "good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/application.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "ApplicationComponent",
+                "coveragePercent": 95,
+                "coverageCount": "20/21",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/dashboard/dashboard.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "DashboardComponent",
+                "coveragePercent": 94,
+                "coverageCount": "17/18",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/form/form.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "FormComponent",
+                "coveragePercent": 100,
+                "coverageCount": "18/18",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/home/home.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "HomeComponent",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/role-summary/role-summary.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "RoleSummaryComponent",
+                "coveragePercent": 50,
+                "coverageCount": "3/6",
+                "status": "medium"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/roles/roles.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "RolesComponent",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/share/share.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "ShareComponent",
+                "coveragePercent": 100,
+                "coverageCount": "3/3",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/user-summary/user-summary.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "UserSummaryComponent",
+                "coveragePercent": 50,
+                "coverageCount": "3/6",
+                "status": "medium"
+            },
+            {
+                "filePath": "apps/front-office/src/app/application/pages/workflow/workflow.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "WorkflowComponent",
+                "coveragePercent": 100,
+                "coverageCount": "12/12",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/auth/pages/login/login.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "LoginComponent",
+                "coveragePercent": 100,
+                "coverageCount": "3/3",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/front-office/src/app/redirect/redirect.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "RedirectComponent",
+                "coveragePercent": 75,
+                "coverageCount": "3/4",
+                "status": "good"
+            }
+        ]
+    }
+}

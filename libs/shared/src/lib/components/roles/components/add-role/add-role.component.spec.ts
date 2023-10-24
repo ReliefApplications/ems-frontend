@@ -15,7 +15,7 @@ import {
 
 describe('AddRoleComponent', () => {
   let component: AddRoleComponent;
-  let fixture: ComponentFixture<sharedAddRoleComponent>;
+  let fixture: ComponentFixture<AddRoleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

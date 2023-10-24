@@ -470,7 +470,7 @@
 				"week": "Week",
 				"year": "Year"
 			},
-			"sourceFields": "Select fields",
+			"sourceFields": "Choose the fields to include in the aggregation",
 			"stages": {
 				"addFields": "Add fields",
 				"custom": "Custom",
