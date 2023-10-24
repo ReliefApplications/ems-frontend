@@ -1,14 +1,12 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   User,
-  Role,
   SafeAuthService,
   SafeApplicationService,
-  Permission,
   ContentType,
   SafeUnsubscribeComponent,
   AppAbility,
@@ -21,13 +19,13 @@ import { takeUntil } from 'rxjs/operators';
  * Main component of Front-Office navigation.
  */
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  selector: 'app-application',
+  templateUrl: './application.component.html',
+  styleUrls: ['./application.component.scss'],
 })
-export class DashboardComponent
+export class ApplicationComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Application title */
   public title = '';
@@ -43,19 +41,12 @@ export class DashboardComponent
   public adminNavItems: any[] = [];
   /** Current application */
   public application: Application | null = null;
-  /** Permissions of the user */
-  private permissions: Permission[] = [];
-  /** Roles of the user */
-  private roles: Role[] = [];
   /** Use side menu or not */
   public sideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
-
-  /** @returns True if applications is empty */
-  get empty(): boolean {
-    return this.applications.length === 0;
-  }
+  /** Is loading */
+  public loading = true;
 
   /**
    * Main component of Front-Office navigation.
@@ -96,42 +87,23 @@ export class DashboardComponent
    * On load, try to open the first application accessible to the user.
    */
   ngOnInit(): void {
+    // Subscribe to params change
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
+      this.applicationService.loadApplication(params.id);
+    });
+    // Get list of available applications
     this.authService.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user: User | null) => {
-        if (user) {
-          const applications = user.applications || [];
-          if (applications.length > 0) {
-            this.applications = applications;
-            this.applications.map((element) => {
-              if (element.id === this.router.url.slice(1, 25)) {
-                this.appID = this.router.url.slice(1, 25);
-                const temp = this.router.url.split('/');
-                if (temp[2]) {
-                  this.appPage = temp[2];
-                  if (temp[3]) {
-                    this.appPage += '/' + temp[3];
-                  }
-                }
-              }
-            });
-            if (this.appID.length <= 0) {
-              if (user.favoriteApp) {
-                this.appID = user.favoriteApp;
-              } else {
-                this.appID = applications[0].id || '';
-              }
-            }
-            this.applicationService.loadApplication(this.appID);
-            this.roles = user.roles || [];
-            this.permissions = user.permissions || [];
-          }
-        }
+        this.applications = user?.applications || [];
       });
+    // Subscribe to application change
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          this.loading = false;
           this.title = application.name || '';
           this.appID = application.id || '';
           this.adminNavItems = [];
@@ -144,7 +116,7 @@ export class DashboardComponent
             // if can see users globally / can manage apps / can see users in app
             this.adminNavItems.push({
               name: this.translate.instant('common.user.few'),
-              path: `./${this.appID}/settings/users`,
+              path: `./settings/users`,
               icon: 'supervisor_account',
             });
           }
@@ -157,7 +129,7 @@ export class DashboardComponent
             // if can see roles globally / can manage apps / can see roles in app
             this.adminNavItems.push({
               name: this.translate.instant('common.role.few'),
-              path: `./${this.appID}/settings/roles`,
+              path: `./settings/roles`,
               icon: 'admin_panel_settings',
             });
           }
@@ -170,7 +142,7 @@ export class DashboardComponent
             // if can manage apps / can manage templates in app
             this.adminNavItems.push({
               name: this.translate.instant('common.template.few'),
-              path: `./${this.appID}/settings/templates`,
+              path: `./settings/templates`,
               icon: 'description',
             });
           }
@@ -183,7 +155,7 @@ export class DashboardComponent
             // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.distributionList.few'),
-              path: `./${this.appID}/settings/distribution-lists`,
+              path: `./settings/distribution-lists`,
               icon: 'mail',
             });
           }
@@ -196,7 +168,7 @@ export class DashboardComponent
             // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.customNotification.few'),
-              path: './settings/notifications',
+              path: `./settings/notifications`,
               icon: 'schedule_send',
             });
           }
@@ -209,27 +181,23 @@ export class DashboardComponent
                   name: x.name,
                   path:
                     x.type === ContentType.form
-                      ? `./${this.appID}/${x.type}/${x.id}`
-                      : `./${this.appID}/${x.type}/${x.content}`,
+                      ? `./${x.type}/${x.id}`
+                      : `./${x.type}/${x.content}`,
                   icon: this.getNavIcon(x.type || ''),
                 })),
             },
           ];
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            const find = !this.application
-              ? this.validPage(application)
-              : false;
-            if (
-              !find &&
-              (this.router.url.endsWith('/') ||
-                application.id !== this.application?.id ||
-                !firstPage)
-            ) {
-              if (firstPage) {
+            const urlContainsPage = new RegExp(
+              /(\/dashboard\/)|(\/form\/)|(\/workflow\/)|(\/profile\/)|(\/settings\/)/gim
+            );
+            const find = urlContainsPage.test(this.router.url);
+            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+              if (firstPage && !find) {
                 this.router.navigate(
                   [
-                    `./${this.appID}/${firstPage.type}/${
+                    `./${firstPage.type}/${
                       firstPage.type === ContentType.form
                         ? firstPage.id
                         : firstPage.content
@@ -238,9 +206,11 @@ export class DashboardComponent
                   { relativeTo: this.route }
                 );
               } else {
-                this.router.navigate([`./${this.appID}`], {
-                  relativeTo: this.route,
-                });
+                if (!find) {
+                  this.router.navigate([`./${this.appID}`], {
+                    relativeTo: this.route,
+                  });
+                }
               }
             }
           }
@@ -259,7 +229,7 @@ export class DashboardComponent
    * @param application Application to open
    */
   onOpenApplication(application: Application): void {
-    this.applicationService.loadApplication(application.id || '');
+    this.router.navigate([`/${application.id}`]);
   }
 
   /**
@@ -279,26 +249,8 @@ export class DashboardComponent
     }
   }
 
-  /**
-   * Checks if route page is valid.
-   *
-   * @param app application to check pages of
-   * @returns Is page valid or not
-   */
-  private validPage(app: any): boolean {
-    if (
-      this.appPage &&
-      (this.appPage === 'profile' ||
-        this.appPage === 'settings/users' ||
-        this.appPage === 'settings/roles' ||
-        app.pages?.find(
-          (val: any) =>
-            val.type + '/' + val.content === this.appPage ||
-            val.type + '/' + val.id === this.appPage
-        ))
-    ) {
-      return true;
-    }
-    return false;
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.applicationService.leaveApplication();
   }
 }
