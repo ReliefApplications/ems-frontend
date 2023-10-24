@@ -25,6 +25,8 @@
   (columnResize)="onColumnResize($event)"
   (columnVisibilityChange)="onColumnVisibilityChange()"
   (cellClick)="cellClickHandler($event)"
+  *uiVirtualScroll
+  itemSize="46"
 >
   <!-- ACTIONS -->
   <ng-template
@@ -116,6 +118,7 @@
     >
     </safe-grid-toolbar>
   </ng-template>
+
   <ng-container *ngIf="fields.length > 0">
     <!-- ROW SELECTION -->
     <kendo-grid-checkbox-column
@@ -129,7 +132,7 @@
       [sticky]="true"
     ></kendo-grid-checkbox-column>
     <!-- FIELDS -->
-    <ng-container *ngFor="let field of fields">
+    <ng-container *uiForVirtual="let field of fields">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
       <kendo-grid-column
         *ngIf="
@@ -1006,6 +1009,7 @@
       </ng-template>
     </kendo-grid-column>
   </ng-container>
+
   <!-- EMPTY TABLE / INVALID QUERY -->
   <ng-template kendoGridNoRecordsTemplate>
     {{ statusMessage }}

@@ -67,3 +67,7 @@ export * from './lib/ui.module';
 
 // === HELPER METHODS === //
 export * from './lib/table/handle-pagination-event';
+
+// === DIRECTIVES === //
+export * from './lib/virtual-scroll/virtual-scroll.directive';
+export * from './lib/virtual-scroll/virtual-scroll-items.directive';

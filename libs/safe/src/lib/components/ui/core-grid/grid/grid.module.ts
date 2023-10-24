@@ -4,8 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   IconModule,
+  NgForUIVirtualDirective,
   TextareaModule,
   TooltipModule,
+  VirtualScrollDirective,
   ButtonModule as uiButtonModule,
 } from '@oort-front/ui';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -60,6 +62,9 @@ import { SafeGridComponent } from './grid.component';
     SafeDateModule,
     TextareaModule,
     uiButtonModule,
+    // === DIRECTIVES ===
+    VirtualScrollDirective,
+    NgForUIVirtualDirective,
   ],
   exports: [SafeGridComponent],
 })
