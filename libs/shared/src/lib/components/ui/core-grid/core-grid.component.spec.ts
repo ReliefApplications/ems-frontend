@@ -5,7 +5,6 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { environment } from 'apps/back-office/src/environments/environment';
 import {
   DialogModule as DialogCdkModule,
   DialogRef,
@@ -38,7 +37,7 @@ describe('CoreGridComponent', () => {
       providers: [
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,

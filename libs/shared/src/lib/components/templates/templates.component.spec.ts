@@ -7,7 +7,6 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { environment } from 'apps/back-office/src/environments/environment';
 import {
   TranslateModule,
   TranslateService,
@@ -25,7 +24,7 @@ describe('TemplatesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,

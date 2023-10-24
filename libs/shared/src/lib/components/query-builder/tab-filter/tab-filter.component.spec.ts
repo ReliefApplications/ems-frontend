@@ -8,7 +8,6 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { environment } from 'apps/back-office/src/environments/environment';
 import { TabFilterComponent } from './tab-filter.component';
 import {
   DateTimeProvider,
@@ -34,7 +33,7 @@ describe('TabFilterComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,

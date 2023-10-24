@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'apps/back-office/src/environments/environment';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -26,7 +25,7 @@ describe('PipelineComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,

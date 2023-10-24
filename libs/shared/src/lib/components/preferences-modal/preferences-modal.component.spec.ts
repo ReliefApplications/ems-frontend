@@ -3,7 +3,6 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { environment } from 'apps/back-office/src/environments/environment';
 import { PreferencesModalComponent } from './preferences-modal.component';
 import {
   DialogModule as DialogCdkModule,
@@ -28,7 +27,7 @@ describe('PreferencesModalComponent', () => {
       providers: [
         UntypedFormBuilder,
         TranslateService,
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         { provide: DialogRef, useValue: {} },
         {
           provide: DIALOG_DATA,

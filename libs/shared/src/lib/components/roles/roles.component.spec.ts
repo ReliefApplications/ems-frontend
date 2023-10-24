@@ -4,7 +4,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'apps/back-office/src/environments/environment';
 import { RolesComponent } from './roles.component';
 import {
   DateTimeProvider,
@@ -36,7 +35,7 @@ describe('RolesComponent', () => {
       providers: [
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,

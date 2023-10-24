@@ -5,7 +5,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'apps/back-office/src/environments/environment';
 import { FormModalComponent } from './form-modal.component';
 import {
   DateTimeProvider,
@@ -29,7 +28,7 @@ describe('FormModalComponent', () => {
       providers: [
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,

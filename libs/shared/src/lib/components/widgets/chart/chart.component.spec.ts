@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'apps/back-office/src/environments/environment';
 
 import { ChartComponent } from './chart.component';
 
@@ -11,10 +10,7 @@ describe('ChartComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [
-        UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
-      ],
+      providers: [UntypedFormBuilder, { provide: 'environment', useValue: {} }],
       declarations: [ChartComponent],
       imports: [HttpClientModule],
     }).compileComponents();

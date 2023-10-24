@@ -4,7 +4,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'apps/back-office/src/environments/environment';
 import { RecordHistoryComponent } from './record-history.component';
 import {
   DateTimeProvider,
@@ -35,7 +34,7 @@ describe('RecordHistoryComponent', () => {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
         },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
