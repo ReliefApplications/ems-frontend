@@ -406,8 +406,20 @@ export class MapComponent
 
     // Close layers/bookmarks menu
     this.document.getElementById('layer-control-button-close')?.click();
+    console.log(modifiedAt);
 
-    this.modifiedAt = modifiedAt;
+    if (this.layers.length) {
+      const latestModifiedDate = this.getLatestModifiedDate();
+      if (latestModifiedDate) {
+        this.modifiedAt = {
+          ...modifiedAt,
+          time: latestModifiedDate,
+        };
+      }
+    } else {
+      this.modifiedAt = modifiedAt;
+    }
+
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
   }
@@ -1035,5 +1047,24 @@ export class MapComponent
     (this.map as any)['_handlers']?.forEach((handler: L.Handler) => {
       disable ? handler.disable() : handler.enable();
     });
+  }
+
+  /**
+   * Gets the latest modification time among the layers.
+   *
+   * @returns {Date | undefined} The latest modification time, or undefined if no layers have a modification time.
+   */
+  private getLatestModifiedDate(): Date {
+    // Initialize with a very early date
+    let latestModifiedDate = new Date(0);
+    console.log(this.layers);
+    this.layers.forEach((layer) => {
+      const layerModifiedDate = layer.updatedAt;
+      if (layerModifiedDate > latestModifiedDate) {
+        latestModifiedDate = layerModifiedDate;
+      }
+    });
+    console.log('updateDate:', latestModifiedDate);
+    return latestModifiedDate;
   }
 }
