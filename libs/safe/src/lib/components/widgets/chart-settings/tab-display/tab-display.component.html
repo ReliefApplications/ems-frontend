@@ -217,33 +217,60 @@
             {{ 'components.widget.settings.chart.axes' | translate }}
           </ng-container>
           <!-- === X AXIS PARAMETERS === -->
-          <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
+          <ng-container
+            formGroupName="x"
+            *ngIf="['bar'].includes(type.name)"
+          >
             <h3>
               {{ 'components.widget.settings.chart.xAxis' | translate }}
             </h3>
-            <div class="axis-container">
-              <ui-toggle formControlName="enableMin"></ui-toggle>
-              <div uiFormFieldDirective>
-                <label>{{
-                  'components.aggregationBuilder.operators.min' | translate
-                }}</label>
-                <input
-                  formControlName="min"
-                  type="number"
-                  [placeholder]="'common.auto' | translate"
-                />
+            <div class="flex flex-wrap place-content-between">
+              <div>
+                <div class="flex gap-2 items-center">
+                  <ui-toggle formControlName="enableMin"></ui-toggle>
+                  <div uiFormFieldDirective>
+                    <label>{{
+                      'components.aggregationBuilder.operators.min' | translate
+                    }}</label>
+                    <input
+                      formControlName="min"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
+                  </div>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <ui-toggle formControlName="enableMax"></ui-toggle>
+                  <div uiFormFieldDirective floatLabel="always">
+                    <label>{{
+                      'components.aggregationBuilder.operators.max' | translate
+                    }}</label>
+                    <input
+                      formControlName="max"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="axis-container">
-              <ui-toggle formControlName="enableMax"></ui-toggle>
-              <div uiFormFieldDirective floatLabel="always">
-                <label>{{
-                  'components.aggregationBuilder.operators.max' | translate
-                }}</label>
+              <div class="w-56" uiFormFieldDirective>
+                <label
+                  >{{ 'components.widget.settings.chart.stepSize' | translate }}
+                  <ui-icon
+                    [size]="18"
+                    icon="info_outline"
+                    variant="grey"
+                    class="cursor-help"
+                    [uiTooltip]="
+                      'components.widget.settings.chart.tooltip.stepSize'
+                        | translate
+                    "
+                  ></ui-icon>
+                </label>
                 <input
-                  formControlName="max"
-                  type="number"
+                  formControlName="stepSize"
                   [placeholder]="'common.auto' | translate"
+                  type="number"
                 />
               </div>
             </div>
@@ -256,29 +283,53 @@
             <h3>
               {{ 'components.widget.settings.chart.yAxis' | translate }}
             </h3>
-            <div class="axis-container">
-              <ui-toggle formControlName="enableMin"></ui-toggle>
-              <div uiFormFieldDirective floatLabel="always">
-                <label>{{
-                  'components.aggregationBuilder.operators.min' | translate
-                }}</label>
-                <input
-                  formControlName="min"
-                  type="number"
-                  [placeholder]="'common.auto' | translate"
-                />
+            <div class="flex flex-wrap place-content-between">
+              <div>
+                <div class="flex gap-2 items-center">
+                  <ui-toggle formControlName="enableMin"></ui-toggle>
+                  <div uiFormFieldDirective floatLabel="always">
+                    <label>{{
+                      'components.aggregationBuilder.operators.min' | translate
+                    }}</label>
+                    <input
+                      formControlName="min"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
+                  </div>
+                </div> 
+                <div class="flex gap-2 items-center">
+                  <ui-toggle formControlName="enableMax"></ui-toggle>
+                  <div uiFormFieldDirective floatLabel="always">
+                    <label>{{
+                      'components.aggregationBuilder.operators.max' | translate
+                    }}</label>
+                    <input
+                      formControlName="max"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="axis-container">
-              <ui-toggle formControlName="enableMax"></ui-toggle>
-              <div uiFormFieldDirective floatLabel="always">
-                <label>{{
-                  'components.aggregationBuilder.operators.max' | translate
-                }}</label>
+              <div class="w-56" uiFormFieldDirective>
+                <label
+                  >{{ 'components.widget.settings.chart.stepSize' | translate }}
+                  <ui-icon
+                    [size]="18"
+                    icon="info_outline"
+                    variant="grey"
+                    class="cursor-help"
+                    [uiTooltip]="
+                      'components.widget.settings.chart.tooltip.stepSize'
+                        | translate
+                    "
+                  ></ui-icon>
+                </label>
                 <input
-                  formControlName="max"
-                  type="number"
+                  formControlName="stepSize"
                   [placeholder]="'common.auto' | translate"
+                  type="number"
                 />
               </div>
             </div>
