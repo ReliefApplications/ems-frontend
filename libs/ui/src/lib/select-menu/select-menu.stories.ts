@@ -4,6 +4,11 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SelectMenuComponent } from './select-menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SelectOptionModule } from './components/select-option.module';
+import { StorybookTranslateModule } from '../../storybook-translate.module';
+import { ButtonModule } from '../button/button.module';
+import { SpinnerModule } from '../spinner/spinner.module';
+import { TooltipModule } from '../tooltip/tooltip.module';
+import { IconModule } from '../icon/icon.module';
 
 export default {
   title: 'Components/Select Menu',
@@ -31,6 +36,11 @@ export default {
       type: 'boolean',
       control: { type: 'boolean' },
     },
+    filterable: {
+      defaultValue: false,
+      type: 'boolean',
+      control: { type: 'boolean' },
+    },
   },
   decorators: [
     moduleMetadata({
@@ -39,6 +49,11 @@ export default {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         SelectOptionModule,
+        StorybookTranslateModule,
+        ButtonModule,
+        SpinnerModule,
+        TooltipModule,
+        IconModule,
       ],
     }),
   ],
@@ -86,7 +101,8 @@ const selectTemplate = `<ui-select-menu
   (closed)="closeEvent($event)" 
   (selectedOption)="selectEvent($event)" 
   [multiselect]="multiselect"
-  [disabled]="disabled">
+  [disabled]="disabled"
+  [filterable]="filterable">
   <ui-select-option *ngFor="let option of options" [value]="option">
     {{option}}
   </ui-select-option>
@@ -129,6 +145,7 @@ const formControlSelectTemplate = `
     (closed)="closeEvent($event)" 
     (selectedOption)="selectEvent($event)" 
     [multiselect]="multiselect"
+    [filterable]="filterable"
   >
     <ui-select-option
       *ngFor="let option of options"
@@ -302,4 +319,21 @@ export const TemplateRefSelection = TemplateTemplateRefSelection.bind({});
 TemplateRefSelection.args = {
   multiselect: false,
   disabled: false,
+};
+
+/** Actual export of standalone select story using search bar */
+export const TemplateStandaloneSelectionFilterable =
+  TemplateStandaloneSelection.bind({});
+TemplateRefSelection.args = {
+  multiselect: false,
+  disabled: false,
+  filterable: true,
+};
+
+/** Actual export of multi select story using search bar */
+export const TemplateMultiSelectionFilterable = TemplateMultiSelection.bind({});
+TemplateRefSelection.args = {
+  multiselect: true,
+  disabled: false,
+  filterable: true,
 };
