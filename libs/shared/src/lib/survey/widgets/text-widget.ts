@@ -343,6 +343,7 @@ export const init = (
    */
   const getDateDisplay = (value: any, inputType: string): Date => {
     const date = new Date(value);
+    date.setTime(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
     if (inputType === 'time') {
       return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
     } else {
