@@ -128,7 +128,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
   providers: [
     {
       provide: LOCALE_ID,
-      useValue: localStorage.getItem('lang'),
+      useValue: localStorage.getItem('lang') || 'en',
     },
     {
       provide: 'environment',
