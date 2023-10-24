@@ -332,7 +332,6 @@ export class SafeGridWidgetComponent
         return;
       }
     }
-    console.log('there');
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
       await this.promisedRowsModifications(

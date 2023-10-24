@@ -81,7 +81,7 @@ export function formatGridRowData(
     showFullScreenButton: {},
   };
   fields
-    .filter((field) => !!rowData[field.name])
+    .filter((field) => !!get(rowData, field.name))
     .forEach((field) => {
       // Format styling for each field
       Object.assign(styleObj.style, {
@@ -114,7 +114,7 @@ export function formatGridRowData(
         });
       } else {
         // Format files name and icons for each field
-        rowData[field.name].forEach((file: { name: string }) => {
+        (get(rowData, field.name) || {}).forEach((file: { name: string }) => {
           const text = applyFieldFormat(removeFileExtension(file.name), field);
           Object.assign(textObj.text, {
             [field.name]: {

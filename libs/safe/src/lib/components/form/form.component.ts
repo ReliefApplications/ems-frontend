@@ -218,7 +218,6 @@ export class SafeFormComponent
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
-    console.log(this.survey);
     setTimeout(() => (this.surveyActive = true), 100);
   }
 
