@@ -160,7 +160,7 @@
           <label>{{
             'models.dashboard.context.refData.element' | translate
           }}</label>
-          <ui-select-menu [formControl]="contextId">
+          <ui-select-menu [formControl]="contextId" [filterable]="true">
             <ui-select-option
               *ngFor="let element of refDataElements"
               [value]="element[refDataValueField]"
