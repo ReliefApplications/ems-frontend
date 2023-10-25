@@ -376,12 +376,12 @@ export class SafeGridComponent
    * @param filter Filter value.
    */
   private formatFilter(filter: any) {
-    filter.filters.forEach((filter: any) => {
+    filter.filters.forEach((subFilter: any) => {
       // if there are sub filters
-      if (filter.filters) {
-        this.formatFilter(filter);
-      } else if (filter.value instanceof Date) {
-        const currentDate = filter.value;
+      if (subFilter.filters) {
+        this.formatFilter(subFilter);
+      } else if (subFilter.value instanceof Date) {
+        const currentDate = subFilter.value;
         const hoursToAdjustTimezone = Math.floor(
           (currentDate as Date).getTimezoneOffset() / 60
         );
@@ -397,7 +397,7 @@ export class SafeGridComponent
           .replace('T00:00:00.000Z', '');
         const modifiedDate = new Date(modifiedDateString);
 
-        filter.value = modifiedDate;
+        subFilter.value = modifiedDate;
       }
     });
   }
