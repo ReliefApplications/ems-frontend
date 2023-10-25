@@ -80,13 +80,9 @@
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <div class="w-60" uiFormFieldDirective [defaultMargin]="false">
+    <div uiFormFieldDirective [defaultMargin]="false">
       <label>{{ 'common.value.one' | translate }}</label>
-      <!-- <input formControlName="value" type="string" /> -->
-      <shared-editor-control
-        formControlName="value"
-        [editorConfig]="editorTinymce"
-      ></shared-editor-control>
+      <input formControlName="value" type="string" />
     </div>
   </ng-template>
 

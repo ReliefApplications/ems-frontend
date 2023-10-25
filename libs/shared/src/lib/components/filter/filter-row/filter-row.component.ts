@@ -13,17 +13,11 @@ import {
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { clone, get } from 'lodash';
 // import { clone, get, isEqual } from 'lodash';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 // import { ContextService } from '../../../services/context/context.service';
 import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
-import { EditorService } from '../../../services/editor/editor.service';
-import {
-  getCalcKeys,
-  getDataKeys,
-  getInfoKeys,
-} from '../../edit-calculated-field-modal/utils/keys';
 
 /**
  * Composite filter row.
@@ -71,12 +65,8 @@ export class FilterRowComponent
   /**
    * Constructor of filter row
    */
-  constructor(private editorService: EditorService) {
+  constructor() {
     super();
-    // Set the editor base url based on the environment file
-    this.editorTinymce.base_url = editorService.url;
-    // Set the editor language
-    this.editorTinymce.language = editorService.language;
   }
 
   ngOnInit(): void {
@@ -116,29 +106,6 @@ export class FilterRowComponent
           this.form.get('value')?.enable();
         }
       });
-
-    this.form
-      .get('value')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe((value) => {
-        const val = value
-          .replace(/<[^>]*>/gi, ' ')
-          .replace(/<\/[^>]*>/gi, ' ')
-          .replace(/&nbsp;|&#160;/gi, ' ')
-          .replace(/\s+/gi, ' ')
-          .trim();
-        this.form.get('value')?.setValue(val);
-      });
-
-    const keys = [
-      ...getCalcKeys(),
-      ...getInfoKeys(),
-      ...getDataKeys(this.fields),
-    ];
-    this.editorService.addCalcAndKeysAutoCompleter(
-      this.editorTinymce,
-      keys.map((key) => ({ value: key, text: key }))
-    );
   }
 
   ngAfterViewInit(): void {
