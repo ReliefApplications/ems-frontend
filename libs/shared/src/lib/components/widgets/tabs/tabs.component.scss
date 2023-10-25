@@ -1,6 +1,7 @@
 :host ::ng-deep {
   #tab-group-wrapper {
     height: 100%;
+    overflow: hidden;
   }
 
   .k-tilelayout {
