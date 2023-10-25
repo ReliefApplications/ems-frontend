@@ -93,6 +93,14 @@ export class FilterRowComponent
         // remove value
         this.form.get('value')?.setValue(null);
         this.setField(value, true);
+        const operator = this.operators.find((x) => x.value === value);
+        if (operator?.disableValue) {
+          this.form.get('value')?.disable();
+          this.hideEditor = true;
+        } else {
+          this.form.get('value')?.enable();
+          this.hideEditor = false;
+        }
       });
     this.form
       .get('operator')
