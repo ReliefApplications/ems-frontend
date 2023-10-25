@@ -632,7 +632,7 @@
             "implements": [
                 "OnInit"
             ],
-            "templateData": "<ui-dialog size=\"medium\">\n  <ng-container ngProjectAs=\"header\">\n    <h3 class=\"font-semibold\">{{ 'models.form.new' | translate }}</h3>\n  </ng-container>\n  <ng-container ngProjectAs=\"content\">\n    <form [formGroup]=\"form\">\n      <div class=\"flex flex-col\">\n        <div uiFormFieldDirective>\n          <label>{{ 'common.name' | translate }}</label>\n          <input\n            formControlName=\"name\"\n            type=\"text\"\n            placeholder=\"Enter a name\"\n          />\n        </div>\n        <div\n          class=\"flex flex-col mb-5 gap-1\"\n          formControlName=\"newResource\"\n          uiRadioGroupDirective=\"newResourceOptions\"\n        >\n          <ui-radio [value]=\"true\">\n            <ng-container ngProjectAs=\"label\">\n              {{ 'components.form.create.choice.resource' | translate }}\n              <ui-icon\n                [size]=\"18\"\n                icon=\"info_outline\"\n                variant=\"grey\"\n                [uiTooltip]=\"\n                  'components.form.create.tooltip.resource' | translate\n                \"\n              >\n              </ui-icon>\n            </ng-container>\n          </ui-radio>\n          <ui-radio [value]=\"false\">\n            <ng-container ngProjectAs=\"label\">\n              {{ 'components.form.create.choice.inherit' | translate }}\n              <ui-icon\n                [size]=\"18\"\n                icon=\"info_outline\"\n                variant=\"grey\"\n                [uiTooltip]=\"\n                  'components.form.create.tooltip.inherit' | translate\n                \"\n              >\n              </ui-icon>\n            </ng-container>\n          </ui-radio>\n        </div>\n        <ng-container *ngIf=\"!form.value.newResource\">\n          <div uiFormFieldDirective>\n            <label>{{\n              'components.form.create.template.title' | translate\n            }}</label>\n            <ui-graphql-select\n              valueField=\"id\"\n              textField=\"name\"\n              [query]=\"resourcesQuery\"\n              formControlName=\"resource\"\n              (searchChange)=\"onResourceSearchChange($event)\"\n              [filterable]=\"true\"\n              [placeholder]=\"\n                'components.form.create.template.selectResource' | translate\n              \"\n            >\n            </ui-graphql-select>\n          </div>\n          <ng-container *ngIf=\"form.controls.resource.value !== null\">\n            <ui-toggle formControlName=\"inheritsTemplate\" class=\"mb-5\">\n              <ng-container ngProjectAs=\"label\">\n                {{ 'components.form.create.choice.template' | translate }}\n                <ui-icon\n                  icon=\"info_outline\"\n                  variant=\"grey\"\n                  [size]=\"18\"\n                  [uiTooltip]=\"\n                    'components.form.create.tooltip.template' | translate\n                  \"\n                ></ui-icon>\n              </ng-container>\n            </ui-toggle>\n            <ng-container *ngIf=\"form.controls.inheritsTemplate.value\">\n              <div uiFormFieldDirective [outline]=\"false\">\n                <label>{{\n                  'components.form.create.template.from' | translate\n                }}</label>\n                <ui-select-menu formControlName=\"template\">\n                  <ui-select-option\n                    *ngFor=\"let template of templates\"\n                    [value]=\"template.id\"\n                  >\n                    {{ template.name }}\n                    <ng-container ngProjectAs=\"icon\">\n                      <div uiChipList *ngIf=\"template.core\">\n                        <ui-chip class=\"!rounded-lg\" variant=\"grey\">{{\n                          'models.form.core' | translate\n                        }}</ui-chip>\n                      </div>\n                    </ng-container>\n                  </ui-select-option>\n                </ui-select-menu>\n              </div>\n            </ng-container>\n          </ng-container>\n        </ng-container>\n      </div>\n    </form>\n  </ng-container>\n  <ng-container ngProjectAs=\"actions\">\n    <ui-button uiDialogClose variant=\"default\">{{\n      'common.close' | translate\n    }}</ui-button>\n    <ui-button\n      category=\"secondary\"\n      variant=\"primary\"\n      [uiDialogClose]=\"form.value\"\n      cdkFocusInitial\n      [disabled]=\"!form.valid\"\n    >\n      {{ 'common.create' | translate }}\n    </ui-button>\n  </ng-container>\n</ui-dialog>\n"
+            "templateData": "<ui-dialog size=\"medium\">\n  <ng-container ngProjectAs=\"header\">\n    <h3 class=\"font-semibold\">{{ 'models.form.new' | translate }}</h3>\n  </ng-container>\n  <ng-container ngProjectAs=\"content\">\n    <form [formGroup]=\"form\">\n      <div class=\"flex flex-col\">\n        <div uiFormFieldDirective>\n          <label>{{ 'common.name' | translate }}</label>\n          <input\n            formControlName=\"name\"\n            type=\"text\"\n            placeholder=\"Enter a name\"\n          />\n        </div>\n        <div\n          class=\"flex flex-col mb-5 gap-1\"\n          formControlName=\"newResource\"\n          uiRadioGroupDirective=\"newResourceOptions\"\n        >\n          <ui-radio [value]=\"true\">\n            <ng-container ngProjectAs=\"label\">\n              <span class=\"flex items-center gap-1\">\n                {{ 'components.form.create.choice.resource' | translate }}\n                <ui-icon\n                  class=\"cursor-help\"\n                  [size]=\"18\"\n                  icon=\"info_outline\"\n                  variant=\"grey\"\n                  [uiTooltip]=\"\n                    'components.form.create.tooltip.resource' | translate\n                  \"\n                >\n                </ui-icon>\n              </span>\n            </ng-container>\n          </ui-radio>\n          <ui-radio [value]=\"false\">\n            <ng-container ngProjectAs=\"label\">\n              <span class=\"flex items-center gap-1\">\n                {{ 'components.form.create.choice.inherit' | translate }}\n                <ui-icon\n                  class=\"cursor-help\"\n                  [size]=\"18\"\n                  icon=\"info_outline\"\n                  variant=\"grey\"\n                  [uiTooltip]=\"\n                    'components.form.create.tooltip.inherit' | translate\n                  \"\n                >\n                </ui-icon>\n              </span>\n            </ng-container>\n          </ui-radio>\n        </div>\n        <ng-container *ngIf=\"!form.value.newResource\">\n          <div uiFormFieldDirective>\n            <label>{{\n              'components.form.create.template.title' | translate\n            }}</label>\n            <ui-graphql-select\n              valueField=\"id\"\n              textField=\"name\"\n              [query]=\"resourcesQuery\"\n              formControlName=\"resource\"\n              (searchChange)=\"onResourceSearchChange($event)\"\n              [filterable]=\"true\"\n              [placeholder]=\"\n                'components.form.create.template.selectResource' | translate\n              \"\n            >\n            </ui-graphql-select>\n          </div>\n          <ng-container *ngIf=\"form.controls.resource.value !== null\">\n            <ui-toggle formControlName=\"inheritsTemplate\" class=\"mb-5\">\n              <ng-container ngProjectAs=\"label\">\n                {{ 'components.form.create.choice.template' | translate }}\n                <ui-icon\n                  class=\"ml-1 cursor-help self-center\"\n                  icon=\"info_outline\"\n                  variant=\"grey\"\n                  [size]=\"18\"\n                  [uiTooltip]=\"\n                    'components.form.create.tooltip.template' | translate\n                  \"\n                ></ui-icon>\n              </ng-container>\n            </ui-toggle>\n            <ng-container *ngIf=\"form.controls.inheritsTemplate.value\">\n              <div uiFormFieldDirective [outline]=\"false\">\n                <label>{{\n                  'components.form.create.template.from' | translate\n                }}</label>\n                <ui-select-menu formControlName=\"template\">\n                  <ui-select-option\n                    *ngFor=\"let template of templates\"\n                    [value]=\"template.id\"\n                  >\n                    {{ template.name }}\n                    <ng-container ngProjectAs=\"icon\">\n                      <div uiChipList *ngIf=\"template.core\">\n                        <ui-chip class=\"!rounded-lg\" variant=\"grey\">{{\n                          'models.form.core' | translate\n                        }}</ui-chip>\n                      </div>\n                    </ng-container>\n                  </ui-select-option>\n                </ui-select-menu>\n              </div>\n            </ng-container>\n          </ng-container>\n        </ng-container>\n      </div>\n    </form>\n  </ng-container>\n  <ng-container ngProjectAs=\"actions\">\n    <ui-button uiDialogClose variant=\"default\">{{\n      'common.close' | translate\n    }}</ui-button>\n    <ui-button\n      category=\"secondary\"\n      variant=\"primary\"\n      [uiDialogClose]=\"form.value\"\n      cdkFocusInitial\n      [disabled]=\"!form.valid\"\n    >\n      {{ 'common.create' | translate }}\n    </ui-button>\n  </ng-container>\n</ui-dialog>\n"
         },
         {
             "name": "AddPageComponent",
@@ -5242,7 +5242,7 @@
         },
         {
             "name": "ApplicationsComponent",
-            "id": "component-ApplicationsComponent-3c74981fa94d5ded0201086fbbe2a8661ecb7f4bb88c10510a5716328c011344c30ff2ccd063b7edf5e17dacf30fe89a28ab4c6a2d6cf9a9aa67630385410416",
+            "id": "component-ApplicationsComponent-2db64f6ac76ce6fab2cef21e182999b6c0a84e9e316218d8c9d583c77177cc9572e68751beaa6661006e518c1aa5d664c7420cb23ab61098fc9e5b3dc468763e",
             "file": "apps/back-office/src/app/dashboard/pages/applications/applications.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -5662,7 +5662,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 424,
+                    "line": 422,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nNavigates to application.\n\n",
@@ -5670,8 +5670,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 12339,
-                                "end": 12341,
+                                "pos": 12244,
+                                "end": 12246,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5682,8 +5682,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 12333,
-                                "end": 12338,
+                                "pos": 12238,
+                                "end": 12243,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5926,7 +5926,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 434,
+                    "line": 432,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nUpdates local list with given data\n\n",
@@ -5937,8 +5937,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 12521,
-                                "end": 12525,
+                                "pos": 12426,
+                                "end": 12430,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5949,8 +5949,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 12515,
-                                "end": 12520,
+                                "pos": 12420,
+                                "end": 12425,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5961,8 +5961,8 @@
                         },
                         {
                             "name": {
-                                "pos": 12565,
-                                "end": 12572,
+                                "pos": 12470,
+                                "end": 12477,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5973,8 +5973,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 12559,
-                                "end": 12564,
+                                "pos": 12464,
+                                "end": 12469,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5995,7 +5995,7 @@
             "description": "<p>Applications page component.</p>\n",
             "rawdescription": "\nApplications page component.",
             "type": "component",
-            "sourceCode": "import { Apollo, QueryRef } from 'apollo-angular';\nimport { Component, OnInit } from '@angular/core';\nimport { Dialog } from '@angular/cdk/dialog';\nimport { Router } from '@angular/router';\nimport {\n  AddApplicationMutationResponse,\n  Application,\n  ConfirmService,\n  UnsubscribeComponent,\n  ApplicationsApplicationNodesQueryResponse,\n  DeleteApplicationMutationResponse,\n  EditApplicationMutationResponse,\n} from '@oort-front/shared';\nimport {\n  DELETE_APPLICATION,\n  ADD_APPLICATION,\n  EDIT_APPLICATION,\n} from './graphql/mutations';\nimport { PreviewService } from '../../../services/preview.service';\nimport { TranslateService } from '@ngx-translate/core';\nimport { takeUntil } from 'rxjs/operators';\nimport { ApolloQueryResult } from '@apollo/client';\nimport {\n  getCachedValues,\n  updateQueryUniqueValues,\n} from '../../../utils/update-queries';\nimport {\n  TableSort,\n  UIPageChangeEvent,\n  handleTablePageEvent,\n} from '@oort-front/ui';\nimport { SnackbarService } from '@oort-front/ui';\nimport { GET_APPLICATIONS } from './graphql/queries';\n\n/** Default number of items per request for pagination */\nconst DEFAULT_PAGE_SIZE = 10;\n\n/** Applications page component. */\n@Component({\n  selector: 'app-applications',\n  templateUrl: './applications.component.html',\n  styleUrls: ['./applications.component.scss'],\n})\nexport class ApplicationsComponent\n  extends UnsubscribeComponent\n  implements OnInit\n{\n  // === DATA ===\n  public loading = true;\n  public updating = false;\n  private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;\n  public applications = new Array<Application>();\n  public cachedApplications: Application[] = [];\n  public displayedColumns = [\n    'name',\n    'createdAt',\n    'status',\n    'usersCount',\n    'actions',\n  ];\n  public newApplications: Application[] = [];\n  public filter: any = {\n    filters: [],\n    logic: 'and',\n  };\n  private sort: TableSort = { active: '', sortDirection: '' };\n\n  public pageInfo = {\n    pageIndex: 0,\n    pageSize: DEFAULT_PAGE_SIZE,\n    length: 0,\n    endCursor: '',\n  };\n\n  /**\n   * Applications page component\n   *\n   * @param apollo Apollo service\n   * @param dialog Dialog service\n   * @param router Angular router\n   * @param snackBar Shared snackbar service\n   * @param previewService Shared preview service\n   * @param confirmService Share confirm service\n   * @param translate Angular translate service\n   */\n  constructor(\n    private apollo: Apollo,\n    public dialog: Dialog,\n    private router: Router,\n    private snackBar: SnackbarService,\n    private previewService: PreviewService,\n    private confirmService: ConfirmService,\n    private translate: TranslateService\n  ) {\n    super();\n  }\n\n  /**\n   * Creates the application query and subscribes to the query changes.\n   */\n  ngOnInit(): void {\n    this.applicationsQuery =\n      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({\n        query: GET_APPLICATIONS,\n        variables: {\n          first: DEFAULT_PAGE_SIZE,\n          afterCursor: null,\n          filter: this.filter,\n          sortField: this.sort?.sortDirection && this.sort.active,\n          sortOrder: this.sort?.sortDirection,\n        },\n      });\n    this.apollo\n      .query<ApplicationsApplicationNodesQueryResponse>({\n        query: GET_APPLICATIONS,\n        fetchPolicy: 'no-cache',\n        variables: {\n          first: 5,\n          sortField: 'modifiedAt',\n          sortOrder: 'desc',\n        },\n      })\n      .pipe(takeUntil(this.destroy$))\n      .subscribe(({ data }) => {\n        this.newApplications = data.applications.edges.map((x) => x.node);\n      });\n    this.applicationsQuery.valueChanges\n      .pipe(takeUntil(this.destroy$))\n      .subscribe(\n        (\n          results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>\n        ) => {\n          this.updateValues(results.data, results.loading);\n        }\n      );\n  }\n\n  /**\n   * Handles page event.\n   *\n   * @param e page event.\n   */\n  onPage(e: UIPageChangeEvent): void {\n    const cachedData = handleTablePageEvent(\n      e,\n      this.pageInfo,\n      this.cachedApplications\n    );\n    if (cachedData && cachedData.length === this.pageInfo.pageSize) {\n      this.applications = cachedData;\n    } else {\n      this.fetchApplications();\n    }\n  }\n\n  /**\n   * Filters applications and updates table.\n   *\n   * @param filter filter event.\n   */\n  onFilter(filter: any): void {\n    this.filter = filter;\n    this.fetchApplications(true);\n  }\n\n  /**\n   * Handle sort change.\n   *\n   * @param event sort event\n   */\n  onSort(event: TableSort): void {\n    this.sort = event;\n    this.fetchApplications(true);\n  }\n\n  /**\n   * Update applications query.\n   *\n   * @param refetch erase previous query results\n   */\n  private fetchApplications(refetch?: boolean): void {\n    this.updating = true;\n    const variables = {\n      first: this.pageInfo.pageSize,\n      afterCursor: refetch ? null : this.pageInfo.endCursor,\n      filter: this.filter,\n      sortField: this.sort?.sortDirection && this.sort.active,\n      sortOrder: this.sort?.sortDirection,\n    };\n    const cachedValues: ApplicationsApplicationNodesQueryResponse =\n      getCachedValues(this.apollo.client, GET_APPLICATIONS, variables);\n    if (refetch) {\n      this.cachedApplications = [];\n      this.pageInfo.pageIndex = 0;\n    }\n    if (cachedValues) {\n      this.updateValues(cachedValues, false);\n    } else {\n      if (refetch) {\n        // Rebuild the query\n        this.applicationsQuery.refetch(variables);\n      } else {\n        // Fetch more records\n        this.applicationsQuery\n          .fetchMore({\n            variables,\n          })\n          .then(\n            (\n              results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>\n            ) => {\n              this.updateValues(results.data, results.loading);\n            }\n          );\n      }\n    }\n  }\n\n  /**\n   * Deletes an application if authorized.\n   *\n   * @param element application.\n   * @param e click event.\n   */\n  onDelete(element: any, e?: any): void {\n    if (e) {\n      e.stopPropagation();\n    }\n    const dialogRef = this.confirmService.openConfirmModal({\n      title: this.translate.instant('common.deleteObject', {\n        name: this.translate.instant('common.application.one'),\n      }),\n      content: this.translate.instant(\n        'components.application.delete.confirmationMessage',\n        { name: element.name }\n      ),\n      confirmText: this.translate.instant('components.confirmModal.delete'),\n      confirmVariant: 'danger',\n    });\n    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {\n      if (value) {\n        const id = element.id;\n        this.apollo\n          .mutate<DeleteApplicationMutationResponse>({\n            mutation: DELETE_APPLICATION,\n            variables: {\n              id,\n            },\n          })\n          .subscribe({\n            next: ({ errors, data }) => {\n              if (errors) {\n                this.snackBar.openSnackBar(\n                  this.translate.instant(\n                    'common.notifications.objectNotDeleted',\n                    {\n                      value: this.translate.instant('common.application.one'),\n                      error: errors ? errors[0].message : '',\n                    }\n                  ),\n                  { error: true }\n                );\n              } else {\n                this.snackBar.openSnackBar(\n                  this.translate.instant('common.notifications.objectDeleted', {\n                    value: this.translate.instant('common.application.one'),\n                  })\n                );\n                this.applications = this.applications.filter(\n                  (x) => x.id !== data?.deleteApplication.id\n                );\n                this.newApplications = this.newApplications.filter(\n                  (x) => x.id !== data?.deleteApplication.id\n                );\n              }\n            },\n            error: (err) => {\n              this.snackBar.openSnackBar(err.message, { error: true });\n            },\n          });\n      }\n    });\n  }\n\n  /**\n   * Displays the AddApplication component.\n   * Adds a new application once closed, if result exists.\n   */\n  onAdd(): void {\n    this.apollo\n      .mutate<AddApplicationMutationResponse>({\n        mutation: ADD_APPLICATION,\n      })\n      .subscribe({\n        next: ({ errors, data }) => {\n          if (errors?.length) {\n            this.snackBar.openSnackBar(\n              this.translate.instant('common.notifications.objectNotCreated', {\n                type: this.translate\n                  .instant('common.application.one')\n                  .toLowerCase(),\n                error: errors ? errors[0].message : '',\n              }),\n              { error: true }\n            );\n          } else {\n            if (data) {\n              this.snackBar.openSnackBar(\n                this.translate.instant('common.notifications.objectCreated', {\n                  type: this.translate.instant('common.application.one'),\n                  value: data.addApplication.name,\n                })\n              );\n              const id = data.addApplication.id;\n              this.router.navigate(['/applications', id]);\n            }\n          }\n        },\n        error: (err) => {\n          this.snackBar.openSnackBar(err.message, { error: true });\n        },\n      });\n  }\n\n  /**\n   * Edits the permissions layer.\n   *\n   * @param e permissions.\n   * @param element application.\n   */\n  saveAccess(e: any, element: Application): void {\n    this.apollo\n      .mutate<EditApplicationMutationResponse>({\n        mutation: EDIT_APPLICATION,\n        variables: {\n          id: element.id,\n          permissions: e,\n        },\n      })\n      .subscribe({\n        next: ({ errors, data }) => {\n          if (errors) {\n            this.snackBar.openSnackBar(\n              this.translate.instant('common.notifications.objectNotUpdated', {\n                type: this.translate.instant('common.access'),\n                error: errors ? errors[0].message : '',\n              }),\n              { error: true }\n            );\n          } else {\n            if (data) {\n              this.snackBar.openSnackBar(\n                this.translate.instant('common.notifications.objectUpdated', {\n                  type: this.translate.instant('common.access'),\n                  value: element.name,\n                })\n              );\n              const index = this.applications.findIndex(\n                (x) => x.id === element.id\n              );\n              this.applications[index] = data.editApplication;\n              // eslint-disable-next-line no-self-assign\n              this.applications = this.applications;\n            }\n          }\n        },\n        error: (err) => {\n          this.snackBar.openSnackBar(err.message, { error: true });\n        },\n      });\n  }\n\n  /**\n   * Opens a dialog to choose roles to fit in the preview.\n   *\n   * @param element application to preview.\n   */\n  async onPreview(element: Application): Promise<void> {\n    const { ChoseRoleComponent } = await import(\n      './components/chose-role/chose-role.component'\n    );\n    const dialogRef = this.dialog.open(ChoseRoleComponent, {\n      data: {\n        application: element.id,\n      },\n    });\n    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {\n      if (value) {\n        this.previewService.setRole(value.role);\n        this.router.navigate(['./app-preview', element.id]);\n      }\n    });\n  }\n\n  /**\n   * Opens a dialog to give a name for the duplicated application.\n   *\n   * @param application application to duplicate.\n   */\n  async onClone(application: Application): Promise<void> {\n    const { DuplicateApplicationModalComponent } = await import(\n      '../../../components/duplicate-application-modal/duplicate-application-modal.component'\n    );\n    const dialogRef = this.dialog.open(DuplicateApplicationModalComponent, {\n      data: {\n        id: application.id,\n        name: application.name,\n      },\n    });\n    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {\n      if (value) {\n        this.applications.push(value);\n        // eslint-disable-next-line no-self-assign\n        this.applications = this.applications;\n      }\n    });\n  }\n\n  /**\n   * Navigates to application.\n   *\n   * @param id application id.\n   */\n  onOpenApplication(id: string): void {\n    this.router.navigate(['/applications', id]);\n  }\n\n  /**\n   * Updates local list with given data\n   *\n   * @param data New values to update forms\n   * @param loading Loading state\n   */\n  private updateValues(\n    data: ApplicationsApplicationNodesQueryResponse,\n    loading: boolean\n  ): void {\n    const mappedValues = data.applications.edges.map((x) => x.node);\n    this.cachedApplications = updateQueryUniqueValues(\n      this.cachedApplications,\n      mappedValues\n    );\n    this.pageInfo.length = data.applications.totalCount;\n    this.pageInfo.endCursor = data.applications.pageInfo.endCursor;\n    this.loading = loading;\n    this.applications = this.cachedApplications.slice(\n      this.pageInfo.pageSize * this.pageInfo.pageIndex,\n      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)\n    );\n    this.updating = false;\n  }\n}\n",
+            "sourceCode": "import { Apollo, QueryRef } from 'apollo-angular';\nimport { Component, OnInit } from '@angular/core';\nimport { Dialog } from '@angular/cdk/dialog';\nimport { Router } from '@angular/router';\nimport {\n  AddApplicationMutationResponse,\n  Application,\n  ConfirmService,\n  UnsubscribeComponent,\n  ApplicationsApplicationNodesQueryResponse,\n  DeleteApplicationMutationResponse,\n  EditApplicationMutationResponse,\n} from '@oort-front/shared';\nimport {\n  DELETE_APPLICATION,\n  ADD_APPLICATION,\n  EDIT_APPLICATION,\n} from './graphql/mutations';\nimport { PreviewService } from '../../../services/preview.service';\nimport { TranslateService } from '@ngx-translate/core';\nimport { takeUntil } from 'rxjs/operators';\nimport { ApolloQueryResult } from '@apollo/client';\nimport {\n  getCachedValues,\n  updateQueryUniqueValues,\n} from '../../../utils/update-queries';\nimport {\n  TableSort,\n  UIPageChangeEvent,\n  handleTablePageEvent,\n} from '@oort-front/ui';\nimport { SnackbarService } from '@oort-front/ui';\nimport { GET_APPLICATIONS } from './graphql/queries';\n\n/** Default number of items per request for pagination */\nconst DEFAULT_PAGE_SIZE = 10;\n\n/** Applications page component. */\n@Component({\n  selector: 'app-applications',\n  templateUrl: './applications.component.html',\n  styleUrls: ['./applications.component.scss'],\n})\nexport class ApplicationsComponent\n  extends UnsubscribeComponent\n  implements OnInit\n{\n  // === DATA ===\n  public loading = true;\n  public updating = false;\n  private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;\n  public applications = new Array<Application>();\n  public cachedApplications: Application[] = [];\n  public displayedColumns = [\n    'name',\n    'createdAt',\n    'status',\n    'usersCount',\n    'actions',\n  ];\n  public newApplications: Application[] = [];\n  public filter: any = {\n    filters: [],\n    logic: 'and',\n  };\n  private sort: TableSort = { active: '', sortDirection: '' };\n\n  public pageInfo = {\n    pageIndex: 0,\n    pageSize: DEFAULT_PAGE_SIZE,\n    length: 0,\n    endCursor: '',\n  };\n\n  /**\n   * Applications page component\n   *\n   * @param apollo Apollo service\n   * @param dialog Dialog service\n   * @param router Angular router\n   * @param snackBar Shared snackbar service\n   * @param previewService Shared preview service\n   * @param confirmService Share confirm service\n   * @param translate Angular translate service\n   */\n  constructor(\n    private apollo: Apollo,\n    public dialog: Dialog,\n    private router: Router,\n    private snackBar: SnackbarService,\n    private previewService: PreviewService,\n    private confirmService: ConfirmService,\n    private translate: TranslateService\n  ) {\n    super();\n  }\n\n  /**\n   * Creates the application query and subscribes to the query changes.\n   */\n  ngOnInit(): void {\n    this.applicationsQuery =\n      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({\n        query: GET_APPLICATIONS,\n        variables: {\n          first: DEFAULT_PAGE_SIZE,\n          afterCursor: null,\n          filter: this.filter,\n          sortField: this.sort?.sortDirection && this.sort.active,\n          sortOrder: this.sort?.sortDirection,\n        },\n      });\n    this.apollo\n      .query<ApplicationsApplicationNodesQueryResponse>({\n        query: GET_APPLICATIONS,\n        fetchPolicy: 'no-cache',\n        variables: {\n          first: 5,\n          sortField: 'modifiedAt',\n          sortOrder: 'desc',\n        },\n      })\n      .pipe(takeUntil(this.destroy$))\n      .subscribe(({ data }) => {\n        this.newApplications = data.applications.edges.map((x) => x.node);\n      });\n    this.applicationsQuery.valueChanges\n      .pipe(takeUntil(this.destroy$))\n      .subscribe(\n        (\n          results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>\n        ) => {\n          this.updateValues(results.data, results.loading);\n        }\n      );\n  }\n\n  /**\n   * Handles page event.\n   *\n   * @param e page event.\n   */\n  onPage(e: UIPageChangeEvent): void {\n    const cachedData = handleTablePageEvent(\n      e,\n      this.pageInfo,\n      this.cachedApplications\n    );\n    if (cachedData && cachedData.length === this.pageInfo.pageSize) {\n      this.applications = cachedData;\n    } else {\n      this.fetchApplications();\n    }\n  }\n\n  /**\n   * Filters applications and updates table.\n   *\n   * @param filter filter event.\n   */\n  onFilter(filter: any): void {\n    this.filter = filter;\n    this.fetchApplications(true);\n  }\n\n  /**\n   * Handle sort change.\n   *\n   * @param event sort event\n   */\n  onSort(event: TableSort): void {\n    this.sort = event;\n    this.fetchApplications(true);\n  }\n\n  /**\n   * Update applications query.\n   *\n   * @param refetch erase previous query results\n   */\n  private fetchApplications(refetch?: boolean): void {\n    this.updating = true;\n    const variables = {\n      first: this.pageInfo.pageSize,\n      afterCursor: refetch ? null : this.pageInfo.endCursor,\n      filter: this.filter,\n      sortField: this.sort?.sortDirection && this.sort.active,\n      sortOrder: this.sort?.sortDirection,\n    };\n    const cachedValues: ApplicationsApplicationNodesQueryResponse =\n      getCachedValues(this.apollo.client, GET_APPLICATIONS, variables);\n    if (refetch) {\n      this.cachedApplications = [];\n      this.pageInfo.pageIndex = 0;\n    }\n    if (cachedValues) {\n      this.updateValues(cachedValues, false);\n    } else {\n      if (refetch) {\n        // Rebuild the query\n        this.applicationsQuery.refetch(variables);\n      } else {\n        // Fetch more records\n        this.applicationsQuery\n          .fetchMore({\n            variables,\n          })\n          .then(\n            (\n              results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>\n            ) => {\n              this.updateValues(results.data, results.loading);\n            }\n          );\n      }\n    }\n  }\n\n  /**\n   * Deletes an application if authorized.\n   *\n   * @param element application.\n   * @param e click event.\n   */\n  onDelete(element: any, e?: any): void {\n    if (e) {\n      e.stopPropagation();\n    }\n    const dialogRef = this.confirmService.openConfirmModal({\n      title: this.translate.instant('common.deleteObject', {\n        name: this.translate.instant('common.application.one'),\n      }),\n      content: this.translate.instant(\n        'components.application.delete.confirmationMessage',\n        { name: element.name }\n      ),\n      confirmText: this.translate.instant('components.confirmModal.delete'),\n      confirmVariant: 'danger',\n    });\n    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {\n      if (value) {\n        const id = element.id;\n        this.apollo\n          .mutate<DeleteApplicationMutationResponse>({\n            mutation: DELETE_APPLICATION,\n            variables: {\n              id,\n            },\n          })\n          .subscribe({\n            next: ({ errors, data }) => {\n              if (errors) {\n                this.snackBar.openSnackBar(\n                  this.translate.instant(\n                    'common.notifications.objectNotDeleted',\n                    {\n                      value: this.translate.instant('common.application.one'),\n                      error: errors ? errors[0].message : '',\n                    }\n                  ),\n                  { error: true }\n                );\n              } else {\n                this.snackBar.openSnackBar(\n                  this.translate.instant('common.notifications.objectDeleted', {\n                    value: this.translate.instant('common.application.one'),\n                  })\n                );\n                this.applications = this.applications.filter(\n                  (x) => x.id !== data?.deleteApplication.id\n                );\n                this.newApplications = this.newApplications.filter(\n                  (x) => x.id !== data?.deleteApplication.id\n                );\n              }\n            },\n            error: (err) => {\n              this.snackBar.openSnackBar(err.message, { error: true });\n            },\n          });\n      }\n    });\n  }\n\n  /**\n   * Displays the AddApplication component.\n   * Adds a new application once closed, if result exists.\n   */\n  onAdd(): void {\n    this.apollo\n      .mutate<AddApplicationMutationResponse>({\n        mutation: ADD_APPLICATION,\n      })\n      .subscribe({\n        next: ({ errors, data }) => {\n          if (errors?.length) {\n            this.snackBar.openSnackBar(\n              this.translate.instant('common.notifications.objectNotCreated', {\n                type: this.translate\n                  .instant('common.application.one')\n                  .toLowerCase(),\n                error: errors ? errors[0].message : '',\n              }),\n              { error: true }\n            );\n          } else {\n            if (data) {\n              this.snackBar.openSnackBar(\n                this.translate.instant('common.notifications.objectCreated', {\n                  type: this.translate.instant('common.application.one'),\n                  value: data.addApplication.name,\n                })\n              );\n              const id = data.addApplication.id;\n              this.router.navigate(['/applications', id]);\n            }\n          }\n        },\n        error: (err) => {\n          this.snackBar.openSnackBar(err.message, { error: true });\n        },\n      });\n  }\n\n  /**\n   * Edits the permissions layer.\n   *\n   * @param e permissions.\n   * @param element application.\n   */\n  saveAccess(e: any, element: Application): void {\n    this.apollo\n      .mutate<EditApplicationMutationResponse>({\n        mutation: EDIT_APPLICATION,\n        variables: {\n          id: element.id,\n          permissions: e,\n        },\n      })\n      .subscribe({\n        next: ({ errors, data }) => {\n          if (errors) {\n            this.snackBar.openSnackBar(\n              this.translate.instant('common.notifications.objectNotUpdated', {\n                type: this.translate.instant('common.access'),\n                error: errors ? errors[0].message : '',\n              }),\n              { error: true }\n            );\n          } else {\n            if (data) {\n              this.snackBar.openSnackBar(\n                this.translate.instant('common.notifications.objectUpdated', {\n                  type: this.translate.instant('common.access'),\n                  value: element.name,\n                })\n              );\n              const index = this.applications.findIndex(\n                (x) => x.id === element.id\n              );\n              this.applications[index] = data.editApplication;\n              // eslint-disable-next-line no-self-assign\n              this.applications = this.applications;\n            }\n          }\n        },\n        error: (err) => {\n          this.snackBar.openSnackBar(err.message, { error: true });\n        },\n      });\n  }\n\n  /**\n   * Opens a dialog to choose roles to fit in the preview.\n   *\n   * @param element application to preview.\n   */\n  async onPreview(element: Application): Promise<void> {\n    const { ChoseRoleComponent } = await import(\n      './components/chose-role/chose-role.component'\n    );\n    const dialogRef = this.dialog.open(ChoseRoleComponent, {\n      data: {\n        application: element.id,\n      },\n    });\n    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {\n      if (value) {\n        this.previewService.setRole(value.role);\n        this.router.navigate(['./app-preview', element.id]);\n      }\n    });\n  }\n\n  /**\n   * Opens a dialog to give a name for the duplicated application.\n   *\n   * @param application application to duplicate.\n   */\n  async onClone(application: Application): Promise<void> {\n    const { DuplicateApplicationModalComponent } = await import(\n      '../../../components/duplicate-application-modal/duplicate-application-modal.component'\n    );\n    const dialogRef = this.dialog.open(DuplicateApplicationModalComponent, {\n      data: {\n        id: application.id,\n        name: application.name,\n      },\n    });\n    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {\n      if (value) {\n        this.onOpenApplication(value.id);\n      }\n    });\n  }\n\n  /**\n   * Navigates to application.\n   *\n   * @param id application id.\n   */\n  onOpenApplication(id: string): void {\n    this.router.navigate(['/applications', id]);\n  }\n\n  /**\n   * Updates local list with given data\n   *\n   * @param data New values to update forms\n   * @param loading Loading state\n   */\n  private updateValues(\n    data: ApplicationsApplicationNodesQueryResponse,\n    loading: boolean\n  ): void {\n    const mappedValues = data.applications.edges.map((x) => x.node);\n    this.cachedApplications = updateQueryUniqueValues(\n      this.cachedApplications,\n      mappedValues\n    );\n    this.pageInfo.length = data.applications.totalCount;\n    this.pageInfo.endCursor = data.applications.pageInfo.endCursor;\n    this.loading = loading;\n    this.applications = this.cachedApplications.slice(\n      this.pageInfo.pageSize * this.pageInfo.pageIndex,\n      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)\n    );\n    this.updating = false;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -28660,7 +28660,7 @@
         },
         {
             "name": "UploadMenuComponent",
-            "id": "component-UploadMenuComponent-1949b7c343f8a14ffb72307fa1ca4b61092590cd315d548581a65727253caf77e56d596667347c0a0c7a6ac1e15675f8a1d95446df6c027191950e9a2a748d9d",
+            "id": "component-UploadMenuComponent-430b3c57d0223f27b9411d28483c964e1c6ee504383904df9f6bb5e3f52f202cbd3bb04c1bf8db11b93d307fb9376f245fbccf84e2731ddbc75f1108896a4020",
             "file": "apps/back-office/src/app/components/upload-menu/upload-menu.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -28684,7 +28684,9 @@
                     "defaultValue": "new EventEmitter()",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 17,
+                    "rawdescription": "\nClose event emitter",
+                    "description": "<p>Close event emitter</p>\n",
+                    "line": 20,
                     "type": "EventEmitter<>"
                 },
                 {
@@ -28692,7 +28694,9 @@
                     "defaultValue": "new EventEmitter()",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 15,
+                    "rawdescription": "\nDownload event emitter, for template",
+                    "description": "<p>Download event emitter, for template</p>\n",
+                    "line": 17,
                     "type": "EventEmitter"
                 },
                 {
@@ -28700,7 +28704,9 @@
                     "defaultValue": "new EventEmitter<UploadEvent>()",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 14,
+                    "rawdescription": "\nUpload event emitter",
+                    "description": "<p>Upload event emitter</p>\n",
+                    "line": 15,
                     "type": "EventEmitter"
                 }
             ],
@@ -28712,8 +28718,9 @@
                     "deprecationMessage": "",
                     "type": "",
                     "optional": false,
-                    "description": "",
-                    "line": 19,
+                    "description": "<p>Show upload menu</p>\n",
+                    "line": 22,
+                    "rawdescription": "\nShow upload menu",
                     "modifierKind": [
                         121
                     ]
@@ -28726,7 +28733,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 23,
+                    "line": 26,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\nListen to click event on the document",
@@ -28747,7 +28754,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 29,
+                    "line": 32,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\nListen to document click event and close the component if outside of it",
@@ -28768,7 +28775,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 51,
+                    "line": 54,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nHandles download template event.\nEvent is transmitted by the component to other components.\n",
@@ -28787,7 +28794,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 42,
+                    "line": 45,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nHandles upload event.\nEvent is transmitted by the component to other components.\n\n",
@@ -28795,8 +28802,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 1113,
-                                "end": 1114,
+                                "pos": 1243,
+                                "end": 1244,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -28807,8 +28814,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 1107,
-                                "end": 1112,
+                                "pos": 1237,
+                                "end": 1242,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -28832,7 +28839,7 @@
                     "deprecationMessage": "",
                     "rawdescription": "\nListen to click event on the document",
                     "description": "<p>Listen to click event on the document</p>\n",
-                    "line": 23
+                    "line": 26
                 },
                 {
                     "name": "document:click",
@@ -28842,7 +28849,7 @@
                     "deprecationMessage": "",
                     "rawdescription": "\nListen to document click event and close the component if outside of it",
                     "description": "<p>Listen to document click event and close the component if outside of it</p>\n",
-                    "line": 29
+                    "line": 32
                 }
             ],
             "standalone": false,
@@ -28850,7 +28857,7 @@
             "description": "<p>Upload Menu to be displayed in overlay container.\nContains file upload and template download.</p>\n",
             "rawdescription": "\n\nUpload Menu to be displayed in overlay container.\nContains file upload and template download.\n",
             "type": "component",
-            "sourceCode": "import { Component, EventEmitter, HostListener, Output } from '@angular/core';\nimport { UploadEvent } from '@progress/kendo-angular-upload';\n\n/**\n * Upload Menu to be displayed in overlay container.\n * Contains file upload and template download.\n */\n@Component({\n  selector: 'app-upload-menu',\n  templateUrl: './upload-menu.component.html',\n  styleUrls: ['./upload-menu.component.scss'],\n})\nexport class UploadMenuComponent {\n  @Output() upload = new EventEmitter<UploadEvent>();\n  @Output() download = new EventEmitter();\n  // eslint-disable-next-line @angular-eslint/no-output-native\n  @Output() close: EventEmitter<null> = new EventEmitter();\n\n  private show = true;\n\n  /** Listen to click event on the document */\n  @HostListener('click')\n  clickInside() {\n    this.show = true;\n  }\n\n  /** Listen to document click event and close the component if outside of it */\n  @HostListener('document:click')\n  clickout() {\n    if (!this.show) {\n      this.close.emit();\n    }\n    this.show = false;\n  }\n\n  /**\n   * Handles upload event.\n   * Event is transmitted by the component to other components.\n   *\n   * @param e kendo upload event\n   */\n  onUpload(e: UploadEvent): void {\n    e.preventDefault();\n    this.upload.emit(e);\n  }\n\n  /**\n   * Handles download template event.\n   * Event is transmitted by the component to other components.\n   */\n  onDownloadTemplate(): void {\n    this.download.emit();\n  }\n}\n",
+            "sourceCode": "import { Component, EventEmitter, HostListener, Output } from '@angular/core';\nimport { UploadEvent } from '@progress/kendo-angular-upload';\n\n/**\n * Upload Menu to be displayed in overlay container.\n * Contains file upload and template download.\n */\n@Component({\n  selector: 'app-upload-menu',\n  templateUrl: './upload-menu.component.html',\n  styleUrls: ['./upload-menu.component.scss'],\n})\nexport class UploadMenuComponent {\n  /** Upload event emitter */\n  @Output() upload = new EventEmitter<UploadEvent>();\n  /** Download event emitter, for template */\n  @Output() download = new EventEmitter();\n  /** Close event emitter */\n  // eslint-disable-next-line @angular-eslint/no-output-native\n  @Output() close: EventEmitter<null> = new EventEmitter();\n  /** Show upload menu */\n  private show = true;\n\n  /** Listen to click event on the document */\n  @HostListener('click')\n  clickInside() {\n    this.show = true;\n  }\n\n  /** Listen to document click event and close the component if outside of it */\n  @HostListener('document:click')\n  clickout() {\n    if (!this.show) {\n      this.close.emit();\n    }\n    this.show = false;\n  }\n\n  /**\n   * Handles upload event.\n   * Event is transmitted by the component to other components.\n   *\n   * @param e kendo upload event\n   */\n  onUpload(e: UploadEvent): void {\n    e.preventDefault();\n    this.upload.emit(e);\n  }\n\n  /**\n   * Handles download template event.\n   * Event is transmitted by the component to other components.\n   */\n  onDownloadTemplate(): void {\n    this.download.emit();\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -31243,6 +31250,30 @@
                 "description": "<p>Create a form group for the page context datasource selection</p>\n"
             },
             {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "apps/back-office/src/app/components/upload-menu/upload-menu.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "StoryFn<Story>",
+                "defaultValue": "() => {\n  return {\n    props: {},\n  };\n}",
+                "rawdescription": "Default story",
+                "description": "<p>Default story</p>\n"
+            },
+            {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "StoryFn<Story>",
+                "defaultValue": "() => {\n  return {\n    props: {\n      iconControl: new FormControl(),\n    },\n  };\n}",
+                "rawdescription": "Default story",
+                "description": "<p>Default story</p>\n"
+            },
+            {
                 "name": "DEFAULT_COLUMNS",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -31339,6 +31370,18 @@
                 "description": "<p>Default value shown for private settings fields</p>\n"
             },
             {
+                "name": "environment",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "object",
+                "defaultValue": "{\n  theme: {\n    primary: '#6f51ae',\n  },\n}",
+                "rawdescription": "Provided environment",
+                "description": "<p>Provided environment</p>\n"
+            },
+            {
                 "name": "getAbilityForAppPreview",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -31349,6 +31392,18 @@
                 "defaultValue": "(app: Application, role: string) => {\n  const { can, rules } = new AbilityBuilder(AppAbility);\n  const permissions =\n    app.roles?.find((x) => x.id === role)?.permissions?.map((p) => p.type) ||\n    [];\n  // === Role ===\n  if (permissions.includes('can_see_roles')) {\n    can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);\n  }\n\n  // === User ===\n  if (permissions.includes('can_see_users')) {\n    can(['create', 'read', 'update', 'delete'], 'User');\n  }\n\n  // === Template ===\n  if (permissions.includes('can_manage_templates')) {\n    can(['create', 'read', 'update', 'delete', 'manage'], 'Template');\n  }\n\n  // === Distribution list ===\n  if (permissions.includes('can_manage_distribution_lists')) {\n    can(['create', 'read', 'update', 'delete', 'manage'], 'DistributionList');\n  }\n\n  // === Custom notifications===\n  if (permissions.includes('can_manage_custom_notifications')) {\n    can(['create', 'read', 'update', 'delete', 'manage'], 'CustomNotification');\n  }\n\n  return new AppAbility(rules);\n}",
                 "rawdescription": "Creates a ability object the app preview\ngiven the application and the role to preview with",
                 "description": "<p>Creates a ability object the app preview\ngiven the application and the role to preview with</p>\n"
+            },
+            {
+                "name": "initializeApp",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "(): any => () => {\n  // Add fa icon font to check in the application\n  library.add(fas, fab);\n}",
+                "rawdescription": "App initializer",
+                "description": "<p>App initializer</p>\n"
             },
             {
                 "name": "ITEMS_PER_PAGE",
@@ -31553,10 +31608,45 @@
                 "defaultValue": "['grid', 'map', 'summaryCard', 'tabs']",
                 "rawdescription": "Widget types that can be used as single widget page",
                 "description": "<p>Widget types that can be used as single widget page</p>\n"
+            },
+            {
+                "name": "WithValue",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "StoryFn<Story>",
+                "defaultValue": "() => {\n  return {\n    props: {\n      iconControl: new FormControl('people-group'),\n    },\n  };\n}",
+                "rawdescription": "Story with default value",
+                "description": "<p>Story with default value</p>\n"
             }
         ],
         "functions": [],
-        "typealiases": [],
+        "typealiases": [
+            {
+                "name": "Story",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "UploadMenuComponent",
+                "file": "apps/back-office/src/app/components/upload-menu/upload-menu.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 180
+            },
+            {
+                "name": "Story",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "ViewIconSelectorComponent",
+                "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 180
+            }
+        ],
         "enumerations": [],
         "groupedVariables": {
             "apps/back-office/src/app/dashboard/pages/dashboard/components/edit-button-action/edit-button-action.component.ts": [
@@ -31597,6 +31687,70 @@
                     "defaultValue": "10",
                     "rawdescription": "Default items per resources query, for pagination",
                     "description": "<p>Default items per resources query, for pagination</p>\n"
+                }
+            ],
+            "apps/back-office/src/app/components/upload-menu/upload-menu.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "apps/back-office/src/app/components/upload-menu/upload-menu.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<Story>",
+                    "defaultValue": "() => {\n  return {\n    props: {},\n  };\n}",
+                    "rawdescription": "Default story",
+                    "description": "<p>Default story</p>\n"
+                }
+            ],
+            "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<Story>",
+                    "defaultValue": "() => {\n  return {\n    props: {\n      iconControl: new FormControl(),\n    },\n  };\n}",
+                    "rawdescription": "Default story",
+                    "description": "<p>Default story</p>\n"
+                },
+                {
+                    "name": "environment",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "object",
+                    "defaultValue": "{\n  theme: {\n    primary: '#6f51ae',\n  },\n}",
+                    "rawdescription": "Provided environment",
+                    "description": "<p>Provided environment</p>\n"
+                },
+                {
+                    "name": "initializeApp",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "(): any => () => {\n  // Add fa icon font to check in the application\n  library.add(fas, fab);\n}",
+                    "rawdescription": "App initializer",
+                    "description": "<p>App initializer</p>\n"
+                },
+                {
+                    "name": "WithValue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<Story>",
+                    "defaultValue": "() => {\n  return {\n    props: {\n      iconControl: new FormControl('people-group'),\n    },\n  };\n}",
+                    "rawdescription": "Story with default value",
+                    "description": "<p>Story with default value</p>\n"
                 }
             ],
             "apps/back-office/src/app/dashboard/pages/form-records/form-records.component.ts": [
@@ -31940,11 +32094,38 @@
         },
         "groupedFunctions": {},
         "groupedEnumerations": {},
-        "groupedTypeAliases": {}
+        "groupedTypeAliases": {
+            "apps/back-office/src/app/components/upload-menu/upload-menu.stories.ts": [
+                {
+                    "name": "Story",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "UploadMenuComponent",
+                    "file": "apps/back-office/src/app/components/upload-menu/upload-menu.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 180
+                }
+            ],
+            "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts": [
+                {
+                    "name": "Story",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "ViewIconSelectorComponent",
+                    "file": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 180
+                }
+            ]
+        }
     },
     "routes": [],
     "coverage": {
-        "count": 76,
+        "count": 78,
         "status": "very-good",
         "files": [
             {
@@ -32274,9 +32455,19 @@
                 "type": "component",
                 "linktype": "component",
                 "name": "UploadMenuComponent",
-                "coveragePercent": 63,
-                "coverageCount": "7/11",
-                "status": "good"
+                "coveragePercent": 100,
+                "coverageCount": "11/11",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/back-office/src/app/components/upload-menu/upload-menu.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Default",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
+                "status": "very-good"
             },
             {
                 "filePath": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.component.ts",
@@ -32285,6 +32476,46 @@
                 "name": "ViewIconSelectorComponent",
                 "coveragePercent": 100,
                 "coverageCount": "2/2",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Default",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "environment",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "initializeApp",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
+                "status": "very-good"
+            },
+            {
+                "filePath": "apps/back-office/src/app/components/view-icon-selector/view-icon-selector.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "WithValue",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
                 "status": "very-good"
             },
             {

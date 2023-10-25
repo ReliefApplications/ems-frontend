@@ -90,7 +90,7 @@
         !settings.card?.aggregation &&
         displayMode === 'cards'
       "
-      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
+      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 flex-1 max-w-[200px]"
     >
       <kendo-textbox
         class="!border-0 !shadow-none"
@@ -130,13 +130,13 @@
       (click)="changeDisplayMode('grid')"
       [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
     ></ui-button>
+    <ui-button
+      *ngIf="export && displayMode === 'cards'"
+      [isIcon]="true"
+      icon="get_app"
+      class="text-neutral-700"
+      (click)="pdf.saveAs(exportName)"
+      [uiTooltip]="'common.export' | translate"
+    ></ui-button>
   </div>
-  <ui-button
-    *ngIf="export && displayMode === 'cards'"
-    [isIcon]="true"
-    icon="get_app"
-    class="text-neutral-700"
-    (click)="pdf.saveAs(exportName)"
-    [uiTooltip]="'common.export' | translate"
-  ></ui-button>
 </ng-template>

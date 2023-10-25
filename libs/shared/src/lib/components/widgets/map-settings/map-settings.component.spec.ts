@@ -15,7 +15,7 @@ import { MapSettingsComponent } from './map-settings.component';
 
 describe('MapSettingsComponent', () => {
   let component: MapSettingsComponent;
-  let fixture: ComponentFixture<sharedMapSettingsComponent>;
+  let fixture: ComponentFixture<MapSettingsComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(waitForAsync(() => {

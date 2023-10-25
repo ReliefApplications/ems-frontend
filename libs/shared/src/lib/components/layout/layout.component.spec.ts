@@ -38,7 +38,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('LayoutComponent', () => {
   let component: LayoutComponent;
-  let fixture: ComponentFixture<sharedLayoutComponent>;
+  let fixture: ComponentFixture<LayoutComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

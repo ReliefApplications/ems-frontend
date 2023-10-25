@@ -512,6 +512,8 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"enterEditMode": "Entrer en mode édition",
+				"enterPreviewMode": "Entrer en mode prévisualisation",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
 					"filterPosition": {

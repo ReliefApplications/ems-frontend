@@ -16,7 +16,6 @@ import {
   ApplicationService,
   WorkflowService,
   DashboardService,
-  AuthService,
   Application,
   UnsubscribeComponent,
   WidgetGridComponent,
@@ -109,8 +108,10 @@ export class DashboardComponent
   public contextRecord: Record | null = null;
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
-
+  /** Timeout to scroll to newly added widget */
   private timeoutListener!: NodeJS.Timeout;
+  /** Is edition active */
+  public editionActive = true;
 
   /** @returns get newest widget id from existing ids */
   get newestId(): number {
@@ -147,7 +148,6 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
@@ -167,7 +167,6 @@ export class DashboardComponent
     private snackBar: SnackbarService,
     private dashboardService: DashboardService,
     private translate: TranslateService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private contextService: ContextService,
     private refDataService: ReferenceDataService,
@@ -294,6 +293,7 @@ export class DashboardComponent
       return;
     }
 
+    this.editionActive = true;
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
