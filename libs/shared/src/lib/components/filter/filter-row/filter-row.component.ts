@@ -17,7 +17,6 @@ import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 // import { ContextService } from '../../../services/context/context.service';
-import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
 /**
  * Composite filter row.
@@ -37,9 +36,6 @@ export class FilterRowComponent
 
   public field?: any;
   public editor?: TemplateRef<any>;
-
-  /** tinymce editor */
-  public editorTinymce: any = INLINE_EDITOR_CONFIG;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
