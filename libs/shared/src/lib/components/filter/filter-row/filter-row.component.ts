@@ -168,6 +168,10 @@ export class FilterRowComponent
         this.form
           .get('operator')
           ?.setValue(this.form.value.operator, { emitEvent: false });
+        const operator = this.operators.find(
+          (x) => x.value === this.form.get('operator')?.value
+        );
+        this.hideField = operator?.disableValue ?? false;
       }
       // set operator template
       this.setEditor(this.field);
