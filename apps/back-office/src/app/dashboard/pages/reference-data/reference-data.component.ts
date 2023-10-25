@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   ReferenceData,
-  SafeSnackBarService,
   referenceDataType,
   ApiConfiguration,
   SafeBreadcrumbService,
@@ -31,13 +30,15 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
+import { SnackbarService } from '@oort-front/ui';
 
+/** Default graphql query */
+const DEFAULT_QUERY = `query {\n  \n}`;
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
 /** Available separator for csv */
@@ -80,6 +81,17 @@ export class ReferenceDataComponent
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
 
+  // === MONACO EDITOR ===
+  public editorOptions = {
+    language: 'graphql',
+    formatOnPaste: true,
+  };
+
+  /** @returns the graphqlQuery form control */
+  get queryControl() {
+    return this.referenceForm.get('query') as FormControl | null;
+  }
+
   /** @returns name of reference model */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
@@ -105,7 +117,7 @@ export class ReferenceDataComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
@@ -131,7 +143,6 @@ export class ReferenceDataComponent
       query: new FormControl(this.referenceData?.query),
       path: new FormControl(this.referenceData?.path),
       data: new FormControl(this.referenceData?.data),
-      graphQLFilter: new FormControl(this.referenceData?.graphQLFilter),
     });
 
     // Clear valueFields when type, apiConfiguration, path or query changes
@@ -146,7 +157,23 @@ export class ReferenceDataComponent
       form
         .get('type')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(clearFields);
+        .subscribe(() => {
+          clearFields();
+
+          // Clear the query field if the type is not GraphQL
+          if (this.type !== referenceDataType.graphql)
+            form.get('query')?.setValue('');
+
+          // Set the default query if the type is GraphQL
+          if (this.type === referenceDataType.graphql)
+            form
+              .get('query')
+              ?.setValue(
+                `# ${this.translateService.instant(
+                  'pages.referenceData.tooltip.graphQLFilter'
+                )}\n\n${DEFAULT_QUERY}`
+              );
+        });
 
       form
         .get('apiConfiguration')
@@ -368,10 +395,6 @@ export class ReferenceDataComponent
         },
         this.referenceForm.value.query !== this.referenceData?.query && {
           query: this.referenceForm.value.query,
-        },
-        this.referenceForm.value.graphQLFilter !==
-          this.referenceData?.graphQLFilter && {
-          graphQLFilter: this.referenceForm.value.graphQLFilter,
         }
       );
     } else {
@@ -420,7 +443,7 @@ export class ReferenceDataComponent
    *
    * @param event input event.
    */
-  add(event: MatChipInputEvent | any): void {
+  add(event: string | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
@@ -557,7 +580,6 @@ export class ReferenceDataComponent
       this.loadingFields = false;
       return;
     }
-
     try {
       this.triedToGetFields = true;
       // get the fields
@@ -585,5 +607,25 @@ export class ReferenceDataComponent
   onRemoveField(field: any) {
     this.valueFields = this.valueFields.filter((x) => x.name !== field.name);
     this.referenceForm?.get('fields')?.setValue(this.valueFields);
+  }
+
+  /**
+   * On initialization of editor, format code
+   *
+   * @param editor monaco editor used for scss edition
+   */
+  public initEditor(editor: any): void {
+    const queryControl = this.queryControl;
+    if (!queryControl) return;
+    if (editor) {
+      setTimeout(() => {
+        editor
+          .getAction('editor.action.formatDocument')
+          .run()
+          .finally(() => {
+            queryControl.markAsPristine();
+          });
+      }, 100);
+    }
   }
 }

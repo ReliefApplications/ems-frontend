@@ -20,17 +20,17 @@ import {
 import {
   SafeLayoutService,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
   SafeDownloadService,
   Record,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/safe';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -73,6 +73,11 @@ export class FormRecordsComponent
     endCursor: '',
   };
 
+  /** @returns True if the layouts tab is empty */
+  get empty(): boolean {
+    return !this.loading && this.dataSource.length === 0;
+  }
+
   @ViewChild('xlsxFile') xlsxFile: any;
   public showUpload = false;
 
@@ -83,7 +88,7 @@ export class FormRecordsComponent
    * @param route Angular activated route
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
@@ -94,8 +99,8 @@ export class FormRecordsComponent
     private route: ActivatedRoute,
     private downloadService: SafeDownloadService,
     private layoutService: SafeLayoutService,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
     private confirmService: SafeConfirmService
@@ -182,11 +187,11 @@ export class FormRecordsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length &&
+      e.totalItems > this.cachedRecords.length &&
       ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
       this.loadingMore = true;
@@ -241,13 +246,15 @@ export class FormRecordsComponent
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.deleteRecord(element.id);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.deleteRecord(element.id);
+          }
+        });
     } else {
       this.deleteRecord(element.id);
     }
@@ -314,9 +321,9 @@ export class FormRecordsComponent
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

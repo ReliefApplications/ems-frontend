@@ -1,5 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { ButtonIconPosition } from './enums/button-icon-position.enum';
+import { Component, HostBinding, Input } from '@angular/core';
+import { ButtonIconPosition } from './types/button-icon-position';
+import { Category } from '../types/category';
+import { Variant } from '../types/variant';
+import { Subject } from 'rxjs';
+import { Size } from '../types/size';
 
 /**
  * UI Button Component
@@ -11,17 +15,54 @@ import { ButtonIconPosition } from './enums/button-icon-position.enum';
 })
 export class ButtonComponent {
   @Input() icon = '';
-  @Input() iconPosition: ButtonIconPosition = ButtonIconPosition.PREFIX;
-  buttonIconPosition = ButtonIconPosition;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  @Input() action: any = () => {};
+  @Input() iconPosition: ButtonIconPosition = 'prefix';
+  @Input() category: Category = 'primary';
+  @Input() size: Size = 'medium';
+  @Input() variant: Variant = 'default';
+  @Input() isIcon = false;
+  @HostBinding('class.flex')
+  @Input()
+  isBlock = false;
+  @Input() loading = false;
+  @HostBinding('class.disabled')
+  @Input()
+  disabled = false;
+  @Input() isOutlined = false;
+
+  public emittedEventSubject: Subject<string> = new Subject();
 
   /**
-   * Triggers any action given on click button element
+   * Map icon size as number for Size enum
+   *
+   * @returns size as number
    */
-  triggerAction() {
-    if (this.action) {
-      this.action();
+  get iconSize(): number {
+    switch (this.size) {
+      case 'small':
+        return 18;
+      case 'large':
+        return 24;
+      default:
+        return 21;
     }
+  }
+
+  /** @returns general resolved classes and variant for button*/
+  get resolveButtonClasses(): string[] {
+    const classes = [];
+    if (this.isBlock) classes.push('flex-1');
+    classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');
+    classes.push(this.category);
+    classes.push(this.size);
+    classes.push(
+      'button-' + (this.variant === 'default' ? 'primary' : this.variant)
+    );
+    if ((this.icon || this.loading) && !this.isIcon) {
+      classes.push('inline-flex items-center gap-x-2');
+    }
+    if (this.disabled) {
+      classes.push('opacity-70');
+    }
+    return classes;
   }
 }

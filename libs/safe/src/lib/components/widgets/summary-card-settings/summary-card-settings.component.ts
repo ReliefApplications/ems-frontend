@@ -1,22 +1,22 @@
 import {
+  AfterViewInit,
   Component,
-  OnInit,
-  Output,
   EventEmitter,
   Input,
-  AfterViewInit,
+  OnInit,
+  Output,
 } from '@angular/core';
-import { Validators, FormGroup, FormControl } from '@angular/forms';
-
-import { get } from 'lodash';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { Resource } from '../../../models/resource.model';
-import { Layout } from '../../../models/layout.model';
+import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
-import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { Layout } from '../../../models/layout.model';
+import { Resource } from '../../../models/resource.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
-import { MatLegacyTabChangeEvent } from '@angular/material/legacy-tabs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { takeUntil } from 'rxjs';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -74,14 +74,23 @@ const createSummaryCardForm = (def: any) => {
     card: createCardForm(get(settings, 'card', null)),
   });
 
-  return extendWidgetForm(form, settings?.widgetDisplay, {
-    searchable: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.searchable', false)
-    ),
+  const isUsingAggregation = !!get(settings, 'card.aggregation', null);
+  const searchable = isUsingAggregation
+    ? false
+    : get<boolean>(settings, 'widgetDisplay.searchable', false);
+
+  const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
+    searchable: new FormControl(searchable),
     usePagination: new FormControl(
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
     ),
   });
+
+  // disable searchable if aggregation is selected
+  if (isUsingAggregation)
+    extendedForm.get('widgetDisplay.searchable')?.disable();
+
+  return extendedForm;
 };
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -93,7 +102,10 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
   templateUrl: './summary-card-settings.component.html',
   styleUrls: ['./summary-card-settings.component.scss'],
 })
-export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
+export class SafeSummaryCardSettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === REACTIVE FORM ===
   tileForm: SummaryCardFormT | undefined;
 
@@ -121,7 +133,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private aggregationService: SafeAggregationService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -134,6 +148,21 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     if (resourceID) {
       this.getResource(resourceID);
     }
+
+    // Subscribe to aggregation changes
+    this.tileForm
+      .get('card.aggregation')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((aggregationID) => {
+        // disable searchable if aggregation is selected
+        if (aggregationID) {
+          const searchableControl = this.tileForm?.get(
+            'widgetDisplay.searchable'
+          );
+          searchableControl?.setValue(false);
+          searchableControl?.disable();
+        } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
+      });
   }
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -149,7 +178,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.tileForm?.valueChanges.subscribe(() => {
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.change.emit(this.tileForm);
     });
   }
@@ -159,8 +188,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param e Change tab event.
    */
-  handleTabChange(e: MatLegacyTabChangeEvent) {
-    this.activeTabIndex = e.index;
+  handleTabChange(e: number) {
+    this.activeTabIndex = e;
   }
 
   /**

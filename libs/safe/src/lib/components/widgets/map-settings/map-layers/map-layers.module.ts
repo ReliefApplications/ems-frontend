@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayersComponent } from './map-layers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapMarkersModule } from './map-markers/map-markers.module';
 import { MapClorophletsModule } from './map-clorophlets/map-clorophlets.module';
@@ -18,7 +18,7 @@ import { MapOnlineLayersModule } from './map-online-layers/map-online-layers.mod
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatTabsModule,
+    TabsModule,
     MapMarkersModule,
     MapClorophletsModule,
     MapOnlineLayersModule,

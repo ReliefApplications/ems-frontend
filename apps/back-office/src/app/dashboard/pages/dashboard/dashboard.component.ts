@@ -1,17 +1,17 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   OnDestroy,
   OnInit,
   Output,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Dashboard,
-  SafeSnackBarService,
   SafeApplicationService,
   SafeWorkflowService,
   SafeDashboardService,
@@ -21,7 +21,6 @@ import {
   SafeWidgetGridComponent,
   SafeConfirmService,
   SafeReferenceDataService,
-  PageContextT,
   Record,
 } from '@oort-front/safe';
 import {
@@ -46,6 +45,8 @@ import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 
 /** Default number of records fetched per page */
@@ -104,13 +105,15 @@ export class DashboardComponent
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param refDataService Shared reference data service
+   * @param renderer Angular renderer
+   * @param elementRef Angular element ref
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -118,19 +121,24 @@ export class DashboardComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
-    private refDataService: SafeReferenceDataService
+    private refDataService: SafeReferenceDataService,
+    private renderer: Renderer2,
+    private elementRef: ElementRef
   ) {
     super();
   }
 
   ngOnInit(): void {
+    const rootElement = this.elementRef.nativeElement;
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Doing this to be able to use custom styles on specific dashboards
+      this.renderer.setAttribute(rootElement, 'data-dashboard-id', params.id);
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
@@ -224,7 +232,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translateService.instant('pages.dashboard.update.exit'),
         content: this.translateService.instant(
@@ -233,9 +241,9 @@ export class DashboardComponent
         confirmText: this.translateService.instant(
           'components.confirmModal.confirm'
         ),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(takeUntil(this.destroy$)).pipe(
         map((confirm) => {
           if (confirm) {
             return true;
@@ -576,7 +584,7 @@ export class DashboardComponent
         url,
       },
     });
-    dialogRef.afterClosed().subscribe();
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   /**
@@ -620,35 +628,37 @@ export class DashboardComponent
       data: currContext,
     });
 
-    dialogRef.afterClosed().subscribe(async (context: PageContextT | null) => {
-      if (context) {
-        if (isEqual(context, currContext)) return;
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (context: any) => {
+        if (context) {
+          if (isEqual(context, currContext)) return;
 
-        await this.dashboardService.updateContext(context);
-        this.dashboard = {
-          ...this.dashboard,
-          page: {
-            ...this.dashboard?.page,
-            context,
-          },
-        };
+          await this.dashboardService.updateContext(context);
+          this.dashboard = {
+            ...this.dashboard,
+            page: {
+              ...this.dashboard?.page,
+              context,
+            },
+          };
 
-        const newSource =
-          (currContext as any)?.resource !== (context as any).resource ||
-          (currContext as any)?.refData !== (context as any).refData;
+          const newSource =
+            (currContext as any)?.resource !== (context as any).resource ||
+            (currContext as any)?.refData !== (context as any).refData;
 
-        const urlArr = this.router.url.split('/');
+          const urlArr = this.router.url.split('/');
 
-        if (
-          newSource &&
-          this.dashboard?.page?.content &&
-          urlArr[urlArr.length - 1] !== this.dashboard.page.content
-        ) {
-          urlArr[urlArr.length - 1] = this.dashboard.page.content;
-          this.router.navigateByUrl(urlArr.join('/'));
-        } else this.updateContextOptions();
-      }
-    });
+          if (
+            newSource &&
+            this.dashboard?.page?.content &&
+            urlArr[urlArr.length - 1] !== this.dashboard.page.content
+          ) {
+            urlArr[urlArr.length - 1] = this.dashboard.page.content;
+            this.router.navigateByUrl(urlArr.join('/'));
+          } else this.updateContextOptions();
+        }
+      });
   }
 
   /**

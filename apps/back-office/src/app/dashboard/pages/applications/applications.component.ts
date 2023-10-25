@@ -1,11 +1,10 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Component, OnInit } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
   Application,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -20,10 +19,7 @@ import {
   EditApplicationMutationResponse,
   EDIT_APPLICATION,
 } from './graphql/mutations';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
@@ -31,6 +27,8 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -49,7 +47,7 @@ export class ApplicationsComponent
   public loading = true;
   public updating = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
-  public applications = new MatTableDataSource<Application>([]);
+  public applications = new Array<Application>();
   public cachedApplications: Application[] = [];
   public displayedColumns = [
     'name',
@@ -63,7 +61,7 @@ export class ApplicationsComponent
     filters: [],
     logic: 'and',
   };
-  private sort: Sort = { active: '', direction: '' };
+  private sort: TableSort = { active: '', sortDirection: '' };
 
   public pageInfo = {
     pageIndex: 0,
@@ -72,15 +70,11 @@ export class ApplicationsComponent
     endCursor: '',
   };
 
-  @ViewChild('startDate', { read: MatStartDate })
-  startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
   /**
    * Applications page component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param previewService Shared preview service
@@ -89,9 +83,9 @@ export class ApplicationsComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private previewService: PreviewService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -110,8 +104,8 @@ export class ApplicationsComponent
           first: DEFAULT_PAGE_SIZE,
           afterCursor: null,
           filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
+          sortField: this.sort?.sortDirection && this.sort.active,
+          sortOrder: this.sort?.sortDirection,
         },
       });
     this.apollo
@@ -140,7 +134,7 @@ export class ApplicationsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -148,19 +142,19 @@ export class ApplicationsComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedApplications.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApplications.length
+      e.totalItems > this.cachedApplications.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
       this.pageInfo.pageSize = first;
       this.fetchApplications();
     } else {
-      this.applications.data = this.cachedApplications.slice(
+      this.applications = this.cachedApplications.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -183,7 +177,7 @@ export class ApplicationsComponent
    *
    * @param event sort event
    */
-  onSort(event: Sort): void {
+  onSort(event: TableSort): void {
     this.sort = event;
     this.fetchApplications(true);
   }
@@ -199,8 +193,8 @@ export class ApplicationsComponent
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: this.filter,
-      sortField: this.sort?.direction && this.sort.active,
-      sortOrder: this.sort?.direction,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
     };
     const cachedValues: GetApplicationsQueryResponse = getCachedValues(
       this.apollo.client,
@@ -249,9 +243,9 @@ export class ApplicationsComponent
         { name: element.name }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const id = element.id;
         this.apollo
@@ -280,7 +274,7 @@ export class ApplicationsComponent
                     value: this.translate.instant('common.application.one'),
                   })
                 );
-                this.applications.data = this.applications.data.filter(
+                this.applications = this.applications.filter(
                   (x) => x.id !== data?.deleteApplication.id
                 );
                 this.newApplications = this.newApplications.filter(
@@ -369,12 +363,12 @@ export class ApplicationsComponent
                   value: element.name,
                 })
               );
-              const index = this.applications.data.findIndex(
+              const index = this.applications.findIndex(
                 (x) => x.id === element.id
               );
-              this.applications.data[index] = data.editApplication;
+              this.applications[index] = data.editApplication;
               // eslint-disable-next-line no-self-assign
-              this.applications.data = this.applications.data;
+              this.applications = this.applications;
             }
           }
         },
@@ -398,7 +392,7 @@ export class ApplicationsComponent
         application: element.id,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.previewService.setRole(value.role);
         this.router.navigate(['./app-preview', element.id]);
@@ -421,11 +415,11 @@ export class ApplicationsComponent
         name: application.name,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applications.data.push(value);
+        this.applications.push(value);
         // eslint-disable-next-line no-self-assign
-        this.applications.data = this.applications.data;
+        this.applications = this.applications;
       }
     });
   }
@@ -449,17 +443,18 @@ export class ApplicationsComponent
     data: GetApplicationsQueryResponse,
     loading: boolean
   ): void {
+    const mappedValues = data.applications.edges.map((x) => x.node);
     this.cachedApplications = updateQueryUniqueValues(
       this.cachedApplications,
-      data.applications.edges.map((x) => x.node)
-    );
-    this.applications.data = this.cachedApplications.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      mappedValues
     );
     this.pageInfo.length = data.applications.totalCount;
     this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
     this.loading = loading;
+    this.applications = this.cachedApplications.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.updating = false;
   }
 }

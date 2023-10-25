@@ -1,14 +1,16 @@
-<form [formGroup]="form">
-  <mat-form-field appearance="outline">
-    <mat-label>{{
-      'components.aggregationBuilder.operator' | translate
-    }}</mat-label>
-    <mat-select formControlName="operator">
-      <mat-option *ngFor="let operator of operatorsList" [value]="operator">{{
-        'components.aggregationBuilder.operators.' + operator | translate
-      }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+<form [formGroup]="form" class="flex flex-row gap-4">
+  <div uiFormFieldDirective [defaultMargin]="false" class="w-44">
+    <label>{{ 'components.aggregationBuilder.operator' | translate }}</label>
+    <ui-select-menu formControlName="operator">
+      <ui-select-option
+        *ngFor="let operator of operatorsList"
+        [value]="operator"
+        >{{
+          'components.aggregationBuilder.operators.' + operator | translate
+        }}</ui-select-option
+      >
+    </ui-select-menu>
+  </div>
   <safe-field-dropdown
     *ngIf="
       displayField &&

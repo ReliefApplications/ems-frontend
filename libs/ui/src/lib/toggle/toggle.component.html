@@ -1,9 +1,4 @@
 <div class="flex items-center">
-  <!-- LABEL LEFT -->
-  <ng-container *ngIf="label && label.position === 'left'">
-    <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
-  </ng-container>
-
   <!-- TOGGLE -->
   <button
     type="button"
@@ -19,10 +14,10 @@
     <span
       aria-hidden="true"
       [ngClass]="{
-        'span-simple': type === toggleTypes.SIMPLE,
-        'span-short': type === toggleTypes.SHORT,
-        'translate-x-0': !value && type === toggleTypes.SIMPLE,
-        'translate-x-5': value && type === toggleTypes.SIMPLE
+        'span-simple': type === 'simple',
+        'span-short': type === 'short',
+        'translate-x-0': !value && type === 'simple',
+        'translate-x-5': value && type === 'simple'
       }"
       class="pointer-events-none"
     >
@@ -32,15 +27,29 @@
       </ng-container>
     </span>
 
-    <ng-container *ngIf="type === toggleTypes.SHORT">
+    <ng-container *ngIf="type === 'short'">
       <ng-container *ngTemplateOutlet="shortToggleTemplate"></ng-container>
     </ng-container>
   </button>
-
-  <!-- LABEL RIGHT -->
-  <ng-container *ngIf="label && label.position === 'right'">
-    <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
-  </ng-container>
+  <!-- LABEL -->
+  <div
+    [ngClass]="{
+      'order-2': labelPosition === 'right',
+      'order-1': labelPosition === 'left'
+    }"
+    class="text-sm"
+  >
+    <span
+      class="flex font-medium leading-6 text-gray-900 flex-wrap whitespace-pre-wrap"
+    >
+      <!-- TEXT -->
+      <ng-content select="label"></ng-content>
+    </span>
+    <!-- DESCRIPTION -->
+    <p class="m-0 font-normal text-gray-500">
+      <ng-content select="description"></ng-content>
+    </p>
+  </div>
 </div>
 
 <ng-template #shortToggleTemplate>
@@ -51,29 +60,6 @@
     [ngClass]="{ 'translate-x-0': !value, 'translate-x-5': value }"
     class="short-translate"
   >
-  </span>
-</ng-template>
-
-<ng-template #labelTemplate>
-  <span
-    [ngClass]="{
-      'ml-4': label.position === 'right',
-      'mr-4': label.position === 'left'
-    }"
-    class="flex flex-col flex-wrap whitespace-pre-wrap text-sm"
-  >
-    <!-- TEXT -->
-    <span class="font-medium leading-6 text-gray-900" id="toggle-label">
-      {{ label.text }}
-    </span>
-    <!-- DESCRIPTION -->
-    <span
-      class="text-gray-500"
-      *ngIf="label.description"
-      id="toggle-description"
-    >
-      {{ label.description }}
-    </span>
   </span>
 </ng-template>
 

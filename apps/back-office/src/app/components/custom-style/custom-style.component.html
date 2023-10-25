@@ -6,7 +6,7 @@
         {{ 'components.application.customStyling' | translate }}
       </h2>
       <div class="flex">
-        <safe-button
+        <ui-button
           variant="primary"
           category="tertiary"
           [isIcon]="true"
@@ -14,14 +14,14 @@
           (click)="onSave()"
           [disabled]="!applicationId || formControl.pristine"
         >
-        </safe-button>
-        <safe-button [isIcon]="true" icon="close" (click)="onClose()">
-        </safe-button>
+        </ui-button>
+        <ui-button [isIcon]="true" icon="close" (click)="onClose()">
+        </ui-button>
       </div>
     </div>
   </div>
   <!-- Style editor -->
-  <div class="grow overflow-y-auto">
+  <div class="grow overflow-y-auto overflow-x-hidden">
     <ngx-monaco-editor
       class="h-full"
       (onInit)="initEditor($event)"

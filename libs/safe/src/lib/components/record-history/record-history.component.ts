@@ -1,33 +1,23 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  EventEmitter,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { Record } from '../../models/record.model';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeDownloadService } from '../../services/download/download.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Version } from '../../models/form.model';
+import { Record } from '../../models/record.model';
+import { Change, RecordHistory } from '../../models/recordsHistory';
+import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
-  GetRecordByIdQueryResponse,
-  GetRecordHistoryByIdResponse,
   GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
+  GetRecordByIdQueryResponse,
+  GetRecordHistoryByIdResponse,
 } from './graphql/queries';
-import { Change, RecordHistory } from '../../models/recordsHistory';
-import { Version } from '../../models/form.model';
-import { Subject } from 'rxjs';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
-import { scrollFactory } from '../../utils/scroll-factory';
-import { Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
+import { FormControl, FormGroup } from '@angular/forms';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -57,13 +47,6 @@ const getValueType = (
   selector: 'safe-record-history',
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeRecordHistoryComponent
   extends SafeUnsubscribeComponent
@@ -80,16 +63,15 @@ export class SafeRecordHistoryComponent
   public loading = true;
   public showMore = false;
   public displayedColumns: string[] = ['position'];
-  public filtersDate = { startDate: '', endDate: '' };
+  public filtersDate = new FormGroup({
+    startDate: new FormControl(''),
+    endDate: new FormControl(''),
+  });
   public sortedFields: any[] = [];
   public filterFields: string[] = [];
 
   // Refresh content of the history
   @Input() refresh$: Subject<boolean> = new Subject<boolean>();
-
-  @ViewChild('startDate', { read: MatStartDate })
-  startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -98,13 +80,13 @@ export class SafeRecordHistoryComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${this.record.incrementalId} ${formatDate}`;
+    return `${this.record?.incrementalId} ${formatDate}`;
   }
 
   /**
    * Constructor of the record history component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param downloadService The download service
    * @param translate The translation service
    * @param dateFormat The dateTranslation service
@@ -112,12 +94,12 @@ export class SafeRecordHistoryComponent
    * @param snackBar The snackbar service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private downloadService: SafeDownloadService,
     private translate: TranslateService,
     private dateFormat: SafeDateTranslateService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -281,7 +263,7 @@ export class SafeRecordHistoryComponent
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.revert(version);
       }
@@ -292,11 +274,9 @@ export class SafeRecordHistoryComponent
    * Clears the date filter, empties it
    */
   clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
+    this.filtersDate.get('startDate')?.setValue('');
+    this.filtersDate.get('endDate')?.setValue('');
     this.filterHistory = this.history;
-    this.startDate.value = '';
-    this.endDate.value = '';
   }
 
   /**
@@ -310,13 +290,14 @@ export class SafeRecordHistoryComponent
     // empty => 'All fields' selected
     // other => Field name for filter
     if (fields) this.filterFields = fields;
+    if (!fields) this.filterFields = [];
 
-    const startDate = this.filtersDate.startDate
-      ? new Date(this.filtersDate.startDate)
+    const startDate = this.filtersDate.get('startDate')?.value
+      ? new Date(this.filtersDate.get('startDate')?.value as any)
       : undefined;
     if (startDate) startDate.setHours(0, 0, 0, 0);
-    const endDate = this.filtersDate.endDate
-      ? new Date(this.filtersDate.endDate)
+    const endDate = this.filtersDate.get('endDate')?.value
+      ? new Date(this.filtersDate.get('endDate')?.value as any)
       : undefined;
     if (endDate) endDate.setHours(23, 59, 59, 99);
 
@@ -358,8 +339,12 @@ export class SafeRecordHistoryComponent
     const path = `download/form/records/${this.id}/history`;
     const queryString = new URLSearchParams({
       type,
-      from: `${new Date(this.filtersDate.startDate).getTime()}`,
-      to: `${new Date(this.filtersDate.endDate).getTime()}`,
+      from: `${new Date(
+        this.filtersDate.get('startDate')?.value as any
+      ).getTime()}`,
+      to: `${new Date(
+        this.filtersDate.get('endDate')?.value as any
+      ).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
       ...(this.filterFields && { fields: this.filterFields.join(',') }),

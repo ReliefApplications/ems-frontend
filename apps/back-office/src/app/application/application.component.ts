@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -35,6 +35,9 @@ export class ApplicationComponent
   // === APPLICATION ===
   public application?: Application;
 
+  public sideMenu = false;
+  public largeDevice: boolean;
+
   /**
    * Main component of application view
    *
@@ -52,6 +55,7 @@ export class ApplicationComponent
     private confirmService: SafeConfirmService
   ) {
     super();
+    this.largeDevice = window.innerWidth > 1024;
   }
 
   ngOnInit(): void {
@@ -167,6 +171,7 @@ export class ApplicationComponent
           this.title = '';
           this.navGroups = [];
         }
+        this.sideMenu = this.application?.sideMenu ?? false;
       });
   }
 
@@ -188,6 +193,16 @@ export class ApplicationComponent
   }
 
   /**
+   * Change the display depending on windows size.
+   *
+   * @param event Event that implies a change in window size
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.largeDevice = event.target.innerWidth > 1024;
+  }
+
+  /**
    * Delete item, prompt for confirmation
    *
    * @param item item to delete
@@ -202,9 +217,9 @@ export class ApplicationComponent
         { name: item.name }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deletePage(item.id);
       }
@@ -235,9 +250,9 @@ export class ApplicationComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
             return true;

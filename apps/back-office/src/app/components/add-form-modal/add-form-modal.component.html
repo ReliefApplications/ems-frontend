@@ -1,119 +1,123 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>{{ 'models.form.new' | translate }}</h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'models.form.new' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.name' | translate }}</label>
           <input
-            matInput
             formControlName="name"
             type="text"
             placeholder="Enter a name"
           />
-        </mat-form-field>
-        <mat-radio-group
-          formControlName="newResource"
+        </div>
+        <div
           class="flex flex-col mb-5 gap-1"
+          formControlName="newResource"
+          uiRadioGroupDirective="newResourceOptions"
         >
-          <mat-radio-button [value]="true">
-            {{ 'components.form.create.choice.resource' | translate }}
-            <safe-icon
-              icon="info_outline"
-              variant="grey"
-              [inline]="true"
-              [size]="18"
-              [matTooltip]="
-                'components.form.create.tooltip.resource' | translate
-              "
-            ></safe-icon>
-          </mat-radio-button>
-          <mat-radio-button [value]="false">
-            {{ 'components.form.create.choice.inherit' | translate }}
-            <safe-icon
-              icon="info_outline"
-              variant="grey"
-              [inline]="true"
-              [size]="18"
-              [matTooltip]="
-                'components.form.create.tooltip.inherit' | translate
-              "
-            ></safe-icon>
-          </mat-radio-button>
-        </mat-radio-group>
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{ 'components.form.create.choice.resource' | translate }}
+              <ui-icon
+                [size]="18"
+                icon="info_outline"
+                variant="grey"
+                [uiTooltip]="
+                  'components.form.create.tooltip.resource' | translate
+                "
+              >
+              </ui-icon>
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{ 'components.form.create.choice.inherit' | translate }}
+              <ui-icon
+                [size]="18"
+                icon="info_outline"
+                variant="grey"
+                [uiTooltip]="
+                  'components.form.create.tooltip.inherit' | translate
+                "
+              >
+              </ui-icon>
+            </ng-container>
+          </ui-radio>
+        </div>
         <ng-container *ngIf="!form.value.newResource">
-          <mat-form-field appearance="outline">
-            <mat-label>{{
+          <div uiFormFieldDirective>
+            <label>{{
               'components.form.create.template.title' | translate
-            }}</mat-label>
-            <safe-graphql-select
+            }}</label>
+            <ui-graphql-select
               valueField="id"
               textField="name"
               [query]="resourcesQuery"
               formControlName="resource"
               (searchChange)="onResourceSearchChange($event)"
               [filterable]="true"
+              [placeholder]="
+                'components.form.create.template.selectResource' | translate
+              "
             >
-            </safe-graphql-select>
-          </mat-form-field>
+            </ui-graphql-select>
+          </div>
           <ng-container *ngIf="form.controls.resource.value !== null">
-            <mat-slide-toggle formControlName="inheritsTemplate" class="mb-5">
-              {{ 'components.form.create.choice.template' | translate }}
-              <safe-icon
-                icon="info_outline"
-                variant="grey"
-                [inline]="true"
-                [size]="18"
-                [matTooltip]="
-                  'components.form.create.tooltip.template' | translate
-                "
-              ></safe-icon>
-            </mat-slide-toggle>
-            <ng-container *ngIf="form.controls.inheritsTemplate.value">
-              <mat-form-field appearance="outline">
-                <mat-label>{{
-                  'components.form.create.template.from' | translate
-                }}</mat-label>
-                <mat-select
-                  formControlName="template"
-                  [placeholder]="
-                    'components.form.create.template.placeholder' | translate
+            <ui-toggle formControlName="inheritsTemplate" class="mb-5">
+              <ng-container ngProjectAs="label">
+                {{ 'components.form.create.choice.template' | translate }}
+                <ui-icon
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.template' | translate
                   "
+                ></ui-icon>
+              </ng-container>
+            </ui-toggle>
+            <ng-container *ngIf="form.controls.inheritsTemplate.value">
+              <div uiFormFieldDirective [outline]="false">
+                <label>{{
+                  'components.form.create.template.from' | translate
+                }}</label>
+                <ui-select-menu
+                  formControlName="template"
                 >
-                  <mat-option
+                  <ui-select-option
                     *ngFor="let template of templates"
                     [value]="template.id"
                   >
                     {{ template.name }}
-                    <mat-chip-list
-                      *ngIf="template.core"
-                      class="float-right py-1.5 px-0 rounded-lg"
-                    >
-                      <mat-chip class="primary-chip !rounded-lg" disabled>{{
-                        'models.form.core' | translate
-                      }}</mat-chip>
-                    </mat-chip-list>
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+                    <ng-container ngProjectAs="icon">
+                      <div uiChipList *ngIf="template.core">
+                        <ui-chip class="!rounded-lg" variant="grey">{{
+                          'models.form.core' | translate
+                        }}</ui-chip>
+                      </div>
+                    </ng-container>
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
             </ng-container>
           </ng-container>
         </ng-container>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       cdkFocusInitial
       [disabled]="!form.valid"
     >
       {{ 'common.create' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

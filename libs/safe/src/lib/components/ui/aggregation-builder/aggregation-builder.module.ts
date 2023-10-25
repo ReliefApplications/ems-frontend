@@ -6,7 +6,7 @@ import { SafePipelineModule } from './pipeline/pipeline.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeTagboxModule } from '../tagbox/tagbox.module';
 import { SafeGridModule } from '../core-grid/grid/grid.module';
-import { SafeSpinnerModule } from '../spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 
 /**
  * Aggregation Builder module.
@@ -22,7 +22,7 @@ import { SafeSpinnerModule } from '../spinner/spinner.module';
     SafeTagboxModule,
     SafePipelineModule,
     SafeGridModule,
-    SafeSpinnerModule,
+    SpinnerModule,
   ],
   exports: [SafeAggregationBuilderComponent],
 })

@@ -1,6 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DuplicateApplicationModalComponent } from './duplicate-application.component';
+import { DuplicateApplicationModalComponent } from './duplicate-application-modal.component';
+import {
+  TranslateService,
+  TranslateLoader,
+  TranslateModule,
+  TranslateFakeLoader,
+} from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { DialogRef, DialogModule, DIALOG_DATA } from '@angular/cdk/dialog';
 
 describe('DuplicateApplicationModalComponent', () => {
   let component: DuplicateApplicationModalComponent;
@@ -8,7 +15,28 @@ describe('DuplicateApplicationModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DuplicateApplicationModalComponent],
+      imports: [
+        DialogModule,
+        ApolloTestingModule,
+        DuplicateApplicationModalComponent,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+      providers: [
+        TranslateService,
+        {
+          provide: DialogRef,
+          useValue: {
+            updateSize: jest.fn(),
+            removePanelClass: jest.fn(),
+          },
+        },
+        { provide: DIALOG_DATA, useValue: {} },
+      ],
     }).compileComponents();
   });
 

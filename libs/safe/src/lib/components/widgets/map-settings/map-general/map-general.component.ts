@@ -8,9 +8,9 @@ import {
   GET_RESOURCES,
 } from '../graphql/queries';
 import { Resource } from '../../../../models/resource.model';
-import { SafeGraphQLSelectComponent } from '../../../graphql-select/graphql-select.component';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { GraphQLSelectComponent } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -35,8 +35,8 @@ export class MapGeneralComponent
   public resource?: Resource;
 
   /** Reference to graphql select for layout */
-  @ViewChild(SafeGraphQLSelectComponent)
-  resourceSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  resourceSelect?: GraphQLSelectComponent;
 
   /**
    * General settings of the map widget:

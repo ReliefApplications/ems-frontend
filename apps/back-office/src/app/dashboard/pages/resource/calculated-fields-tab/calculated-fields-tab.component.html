@@ -1,65 +1,75 @@
-<div class="self-end">
-  <safe-button
-    variant="primary"
-    class="actions"
-    category="secondary"
-    (click)="onAddCalculatedField()"
-  >
-    {{ 'components.calculatedFields.add' | translate }}</safe-button
-  >
-</div>
-<div>
+<ng-container *ngIf="fields.length">
+  <ng-container *ngTemplateOutlet="newField"> </ng-container>
+</ng-container>
+<ng-template #newField>
+  <div class="self-end">
+    <ui-button
+      variant="primary"
+      class="actions"
+      category="secondary"
+      (click)="onAddCalculatedField()"
+    >
+      {{ 'components.calculatedFields.add' | translate }}</ui-button
+    >
+  </div>
+</ng-template>
+<ng-container *ngIf="fields.length; else emptyTmpl">
   <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table mat-table [dataSource]="fields">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>
+      <table cdk-table uiTableWrapper [dataSource]="fields">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'models.form.field.name' | translate }}
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+            {{ element.name }}
+          </td>
         </ng-container>
 
-        <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef>
+        <ng-container cdkColumnDef="createdAt">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'components.calculatedFields.expression' | translate }}
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             {{ element.expression }}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="_actions" [stickyEnd]="true">
-          <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
+        <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="resMenu"
+              [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
-            </safe-button>
-            <mat-menu #resMenu="matMenu">
-              <button mat-menu-item (click)="onEditCalculatedField(element)">
-                <mat-icon>edit</mat-icon>
+            </ui-button>
+            <ui-menu #resMenu>
+              <button uiMenuItem (click)="onEditCalculatedField(element)">
+                <ui-icon icon="edit" variant="grey"></ui-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button mat-menu-item (click)="onDeleteCalculatedField(element)">
-                <mat-icon>delete</mat-icon>
+              <ui-divider class="py-1"></ui-divider>
+              <button uiMenuItem (click)="onDeleteCalculatedField(element)">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
                 {{ 'common.delete' | translate }}
               </button>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
-    <safe-empty
-      class="m-auto py-6 px-0 bg-white"
-      *ngIf="fields.length === 0"
-      [title]="'components.resource.empty.calculatedFields' | translate"
-    ></safe-empty>
   </div>
-</div>
+</ng-container>
+<ng-template #emptyTmpl>
+  <safe-empty
+    [title]="'components.resource.empty.calculatedFields' | translate"
+    [footerTemplate]="newField"
+  ></safe-empty>
+</ng-template>

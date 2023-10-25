@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { isEqual, sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
@@ -33,11 +32,11 @@ export class ResourceFieldsComponent implements OnInit {
 
   public filterId = new FormControl<string | null | undefined>(undefined);
 
-  public fields = new MatTableDataSource<ResourceField[]>([]);
+  public fields = new Array<ResourceField[]>([]);
   public displayedColumns: string[] = ['name', 'actions'];
 
   ngOnInit() {
-    this.fields.data = sortBy(
+    this.fields = sortBy(
       this.resource.fields.map((field: any) => ({
         name: field.name,
         canSee: !!field.permissions?.canSee?.includes(this.role.id),
@@ -57,7 +56,7 @@ export class ResourceFieldsComponent implements OnInit {
    */
   private filterByTemplate(id?: string | null) {
     if (id) {
-      this.fields.data = sortBy(
+      this.fields = sortBy(
         this.resource.fields
           .filter((field: any) =>
             this.resource.metadata
@@ -72,7 +71,7 @@ export class ResourceFieldsComponent implements OnInit {
         'name'
       );
     } else {
-      this.fields.data = sortBy(
+      this.fields = sortBy(
         this.resource.fields.map((field: any) => ({
           name: field.name,
           canSee: !!field.permissions?.canSee?.includes(this.role.id),

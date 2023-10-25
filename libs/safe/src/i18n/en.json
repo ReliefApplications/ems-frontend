@@ -41,7 +41,10 @@
 			"none": "No channel",
 			"one": "Channel"
 		},
-		"child": "Child",
+		"child": {
+			"edit": "Edit child",
+			"one": "Child"
+		},
 		"clear": "Clear",
 		"close": "Close",
 		"column": {
@@ -75,7 +78,6 @@
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
 		"edit": "Edit",
-		"editObject": "Edit {{name}}",
 		"email": {
 			"few": "Emails",
 			"none": "No email",
@@ -130,6 +132,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -260,8 +263,10 @@
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
+		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"selectStatus": "Select a status",
 		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
@@ -401,6 +406,11 @@
 			"dashboard": {
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
+				"filter": {
+					"empty": "No filters have been defined by the administrators",
+					"info": "Dashboard filters can be used between pages to filter their content.",
+					"title": "Dashboard filters configuration"
+				},
 				"filterSettings": "Filter settings",
 				"settings": {
 					"defaultPosition": "Default position for the filter"
@@ -493,7 +503,8 @@
 			},
 			"dropdown": {
 				"select": "Notify on"
-			}
+			},
+			"selectChannel": "Select a channel"
 		},
 		"confirmModal": {
 			"cancel": "Cancel",
@@ -549,6 +560,15 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "Subject cannot be left empty."
+			},
+			"from": "From",
+			"subject": "Subject",
+			"title": "Email Preview",
+			"to": "To"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -564,6 +584,7 @@
 				"template": {
 					"from": "From template",
 					"placeholder": "Pick an existing template",
+					"selectResource": "Select a resource",
 					"title": "From resource"
 				},
 				"tooltip": {
@@ -612,6 +633,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -635,6 +657,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -693,6 +716,7 @@
 				"title": "Delete pull job"
 			},
 			"modal": {
+				"addMappingField": "add a mapping field",
 				"errors": {
 					"schedule": "Enter a valid cron expression"
 				},
@@ -899,6 +923,7 @@
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
 						"edit": "Edit assignment rule",
+						"none": "No assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
@@ -1060,6 +1085,7 @@
 					"history": "Show history"
 				},
 				"errors": {
+					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin"
@@ -1154,11 +1180,12 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Fill",
 						"interpolation": {
 							"step": "Step interpolation",
 							"title": "Interpolation"
 						},
-						"showSerie": "Show serie",
+						"showSeries": "Show series",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
@@ -1255,7 +1282,10 @@
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
 						},
-						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below"
+						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",
+						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
+						"executionOrder": "Selected actions will be executed in the displayed order",
+						"prefillForm": "If no record is created at this point, the action will be canceled"
 					},
 					"layouts": {
 						"add": {
@@ -1356,6 +1386,9 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"preview": {
+							"title": "Preview"
+						},
 						"textEditor": {
 							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
@@ -1397,7 +1430,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Select a date",
+			"endLabel": "Select a end date",
+			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"
 		},
@@ -1546,6 +1585,21 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
+		"pager": {
+			"firstPage": "Go to the first page",
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"label": "'Page navigation, page {currentPage} of {totalPages}'",
+			"lastPage": "Go to the last page",
+			"nextPage": "Go to the next page",
+			"of": "of",
+			"page": "Page",
+			"pageNumberInputTitle": "Page Number",
+			"previousPage": "Go to the previous page"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "items",
@@ -1570,11 +1624,13 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "Authentication type",
-			"new": "New API Configuration"
+			"new": "New API Configuration",
+			"selectAuthType": "Select authentication type"
 		},
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
+			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",
@@ -1588,6 +1644,7 @@
 		},
 		"channel": {
 			"create": "Create a channel",
+			"edit": "Edit channel",
 			"new": "New channel"
 		},
 		"customNotification": {
@@ -1614,6 +1671,8 @@
 				"refData": {
 					"element": "Element"
 				},
+				"selectDisplayField": "Select display field",
+				"selectOrigin": "Select context origin",
 				"title": "Context",
 				"tooltip": {
 					"useContextEditor": "Use context editor",
@@ -1626,6 +1685,7 @@
 		"form": {
 			"core": "Core",
 			"create": "Create a Form",
+			"edit": "Edit form",
 			"field": {
 				"label": "Label",
 				"name": "Field name",
@@ -1655,9 +1715,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "Edit position attribute",
 			"new": "New position attribute"
 		},
 		"pullJob": {
+			"edit": "Edit pull job",
 			"new": "New pull job",
 			"nextIteration": "Next iteration",
 			"path": "Path",
@@ -1666,6 +1728,7 @@
 		},
 		"record": {
 			"convert": "Convert",
+			"edit": "Edit record",
 			"new": "New record",
 			"notifications": {
 				"conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
@@ -1692,6 +1755,7 @@
 			"new": "New step"
 		},
 		"subscription": {
+			"edit": "Edit subscription",
 			"new": "New subscription"
 		},
 		"user": {
@@ -1826,6 +1890,10 @@
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
 			},
+			"move": {
+				"down": "Move down",
+				"up": "Move up"
+			},
 			"questionsCategories": {
 				"core": "Question Library"
 			},
@@ -1860,7 +1928,8 @@
 			},
 			"queryName": "Query Name",
 			"tooltip": {
-				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format."
+				"graphQLFilter": "You can use {{lastUpdate}} to dynamically get the last fetch date in SQL format.",
+				"path": "Uses JSONPath syntax to extract items from the JSON response. Examples: $.data[*].name, $.data..countries, $.data.countries.*"
 			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",

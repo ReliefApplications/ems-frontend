@@ -10,7 +10,6 @@ export const GET_APPLICATION_USERS = gql`
     $automated: Boolean
   ) {
     application(id: $id) {
-      id
       users(afterCursor: $afterCursor, first: $first, automated: $automated) {
         edges {
           node {

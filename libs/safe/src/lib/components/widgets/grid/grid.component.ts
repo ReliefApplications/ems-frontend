@@ -1,5 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EDIT_RECORD,
   EditRecordMutationResponse,
@@ -29,7 +28,6 @@ import {
   EventEmitter,
   Inject,
 } from '@angular/core';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow/workflow.service';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeEmailService } from '../../../services/email/email.service';
@@ -41,10 +39,14 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
+import set from 'lodash/set';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Component for the grid widget */
 @Component({
@@ -53,14 +55,16 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./grid.component.scss'],
 })
 /** Grid widget using KendoUI. */
-export class SafeGridWidgetComponent implements OnInit {
+export class SafeGridWidgetComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
   private grid!: SafeCoreGridComponent;
 
   // === DATA ===
   @Input() widget: any;
-  public loading = true;
 
   // === PERMISSIONS ===
   public canCreateRecords = false;
@@ -111,7 +115,7 @@ export class SafeGridWidgetComponent implements OnInit {
    *
    * @param environment Environment variables
    * @param apollo The apollo client
-   * @param dialog Material dialogs service
+   * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
    * @param safeAuthService Shared authentication service
@@ -122,13 +126,12 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param applicationService The safe application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
-   * @param snackbarService Shared snackbar service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
@@ -137,9 +140,9 @@ export class SafeGridWidgetComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private applicationService: SafeApplicationService,
     private translate: TranslateService,
-    private aggregationService: SafeAggregationService,
-    private snackbarService: SafeSnackBarService
+    private aggregationService: SafeAggregationService
   ) {
+    super();
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -220,39 +223,11 @@ export class SafeGridWidgetComponent implements OnInit {
   }
 
   /**
-   * Send changes on multiple records to the backend
-   *
-   * @param items A list of item representing the changes for each record
-   * @returns A list of promise with the result of the request
-   */
-  private promisedChanges(items: any[]): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    for (const item of items) {
-      const data = Object.assign({}, item);
-      delete data.id;
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: item.id,
-              data,
-              template: get(this.settings, 'template', null),
-            },
-          })
-        )
-      );
-    }
-    return promises;
-  }
-
-  /**
    * Executes sequentially actions enabled by settings for the floating button
    *
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
-    this.loading = true;
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -276,26 +251,90 @@ export class SafeGridWidgetComponent implements OnInit {
     if (options.selectPage) {
       this.grid.selectedRows = this.grid.gridData.data.map((x) => x.id);
     }
-
     // Auto save all records
     if (options.autoSave) {
-      await Promise.all(this.promisedChanges(this.grid.updatedItems));
+      const hasError = await this.grid.onSaveChanges();
+      if (hasError) {
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.widget.grid.errors.autoSaveFailed'
+          ),
+          {
+            error: true,
+            duration: 8000,
+          }
+        );
+        // Close the action if error detected during auto save
+        return;
+      }
     }
+    // Attaches the records to another one.
+    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
+      const shouldContinue = await this.promisedAttachToRecord(
+        this.grid.selectedRows,
+        options.targetForm,
+        options.targetFormField,
+        options.targetFormQuery
+      );
+      if (!shouldContinue) {
+        // Close the action
+        this.grid.reloadData();
+        return;
+      }
+    }
+    // Opens a form with selected records.
+    if (options.prefillForm) {
+      const promise = new Promise((resolve) => {
+        const promisedRecords: Promise<any>[] = [];
+        // Fetches the record object for each selected record.
+        for (const record of this.grid.selectedItems) {
+          promisedRecords.push(
+            firstValueFrom(
+              this.apollo.query<GetRecordDetailsQueryResponse>({
+                query: GET_RECORD_DETAILS,
+                variables: {
+                  id: record.id,
+                },
+              })
+            )
+          );
+        }
+        Promise.all(promisedRecords).then(async (results) => {
+          const records = results.map((x) => x.data.record);
+          // Opens a modal containing the prefilled form.
+          const { SafeFormModalComponent } = await import(
+            '../../form-modal/form-modal.component'
+          );
+          const dialogRef = this.dialog.open(SafeFormModalComponent, {
+            data: {
+              template: options.prefillTargetForm,
+              prefillRecords: records,
+              askForConfirm: false,
+            },
+            autoFocus: false,
+          });
+          dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+            if (!value) {
+              resolve(false);
+            } else {
+              resolve(true);
+            }
+          });
+        });
+      });
+      const shouldContinue = await promise;
+      if (!shouldContinue) {
+        // Close the action
+        this.grid.reloadData();
+        return;
+      }
+    }
+    console.log('there');
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
       await this.promisedRowsModifications(
         options.modifications,
         this.grid.selectedRows
-      );
-    }
-
-    // Attaches the records to another one.
-    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
-      await this.promisedAttachToRecord(
-        this.grid.selectedRows,
-        options.targetForm,
-        options.targetFormField,
-        options.targetFormQuery
       );
     }
     const promises: Promise<any>[] = [];
@@ -341,7 +380,7 @@ export class SafeGridWidgetComponent implements OnInit {
         ) || [];
       if (templates.length === 0) {
         // no template found, skip
-        this.snackbarService.openSnackBar(
+        this.snackBar.openSnackBar(
           this.translate.instant(
             'common.notifications.email.errors.noTemplate'
           ),
@@ -353,88 +392,47 @@ export class SafeGridWidgetComponent implements OnInit {
           this.applicationService.distributionLists.find(
             (x) => x.id === options.distributionList
           )?.emails || [];
-        if (recipients.length === 0) {
-          // no recipient found, skip
-          this.snackbarService.openSnackBar(
-            this.translate.instant(
-              'common.notifications.email.errors.noDistributionList'
-            ),
-            { error: true }
-          );
-        } else {
-          // select template
-          const { EmailTemplateModalComponent } = await import(
-            '../../email-template-modal/email-template-modal.component'
-          );
-          const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-            data: {
-              templates,
+
+        // select template
+        const { EmailTemplateModalComponent } = await import(
+          '../../email-template-modal/email-template-modal.component'
+        );
+        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+          data: {
+            templates,
+          },
+        });
+
+        const value = await firstValueFrom<any>(
+          dialogRef.closed.pipe(takeUntil(this.destroy$))
+        );
+        const template = value?.template;
+
+        if (template) {
+          this.emailService.previewMail(
+            recipients,
+            template.content.subject,
+            template.content.body,
+            {
+              logic: 'and',
+              filters: [
+                {
+                  operator: 'eq',
+                  field: 'ids',
+                  value: this.grid.selectedRows,
+                },
+              ],
             },
-          });
-
-          const value = await firstValueFrom(dialogRef.afterClosed());
-          const template = value?.template;
-
-          if (template) {
-            this.emailService.previewMail(
-              recipients,
-              template.content.subject,
-              template.content.body,
-              {
-                logic: 'and',
-                filters: [
-                  {
-                    operator: 'eq',
-                    field: 'ids',
-                    value: this.grid.selectedRows,
-                  },
-                ],
-              },
-              {
-                name: this.grid.settings.query.name,
-                fields: options.bodyFields,
-              },
-              this.grid.sortField || undefined,
-              this.grid.sortOrder || undefined,
-              options.export
-            );
-          }
+            {
+              name: this.grid.settings.query.name,
+              fields: options.bodyFields,
+            },
+            this.grid.sortField || undefined,
+            this.grid.sortOrder || undefined,
+            options.export
+          );
         }
       }
-    }
-
-    // Opens a form with selected records.
-    if (options.prefillForm) {
-      const promisedRecords: Promise<any>[] = [];
-      // Fetches the record object for each selected record.
-      for (const record of this.grid.selectedItems) {
-        promisedRecords.push(
-          firstValueFrom(
-            this.apollo.query<GetRecordDetailsQueryResponse>({
-              query: GET_RECORD_DETAILS,
-              variables: {
-                id: record.id,
-              },
-            })
-          )
-        );
-      }
-      const records = (await Promise.all(promisedRecords)).map(
-        (x) => x.data.record
-      );
-
-      // Opens a modal containing the prefilled form.
-      const { SafeFormModalComponent } = await import(
-        '../../form-modal/form-modal.component'
-      );
-      this.dialog.open(SafeFormModalComponent, {
-        data: {
-          template: options.prefillTargetForm,
-          prefillRecords: records,
-          askForConfirm: false,
-        },
-        autoFocus: false,
-      });
     }
 
     // Workflow only: goes to next step, or closes the workflow.
@@ -450,13 +448,15 @@ export class SafeGridWidgetComponent implements OnInit {
           confirmText: this.translate.instant(
             'components.confirmModal.confirm'
           ),
-          confirmColor: 'primary',
+          confirmVariant: 'primary',
         });
-        dialogRef.afterClosed().subscribe((confirm: boolean) => {
-          if (confirm) {
-            this.workflowService.closeWorkflow();
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((confirm: any) => {
+            if (confirm) {
+              this.workflowService.closeWorkflow();
+            }
+          });
       }
     } else {
       this.grid.reloadData();
@@ -477,7 +477,9 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      update[modification.field.name] = modification.value;
+      if (modification.field) {
+        set(update, modification.field, modification.value);
+      }
     }
     const data = cleanRecord(update);
     return firstValueFrom(
@@ -507,107 +509,124 @@ export class SafeGridWidgetComponent implements OnInit {
     targetForm: string,
     targetFormField: string,
     targetFormQuery: any
-  ): Promise<void> {
-    this.apollo
-      .query<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: targetForm,
-        },
-      })
-      .subscribe(async (getForm) => {
-        if (getForm.data.form) {
-          const form = getForm.data.form;
-          const { SafeChooseRecordModalComponent } = await import(
-            '../../choose-record-modal/choose-record-modal.component'
-          );
-          const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
-            data: {
-              targetForm: form,
-              targetFormField,
-              targetFormQuery,
-            },
-          });
-          const value = await Promise.resolve(
-            firstValueFrom(dialogRef.afterClosed())
-          );
-          if (value && value.record) {
-            this.apollo
-              .query<GetRecordByIdQueryResponse>({
-                query: GET_RECORD_BY_ID,
-                variables: {
-                  id: value.record,
-                },
-              })
-              .subscribe((getRecord) => {
-                const resourceField = form.fields?.find(
-                  (field) =>
-                    field.resource && field.resource === this.settings.resource
-                );
-                let data = getRecord.data.record.data;
-                const key = resourceField.name;
-                if (resourceField.type === 'resource') {
-                  data = { ...data, [key]: selectedRecords[0] };
-                } else {
-                  if (data[key]) {
-                    data = {
-                      ...data,
-                      [key]: data[key].concat(selectedRecords),
-                    };
+  ): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.apollo
+        .query<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: targetForm,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async (getForm) => {
+          if (getForm.data.form) {
+            const form = getForm.data.form;
+            const { SafeChooseRecordModalComponent } = await import(
+              '../../choose-record-modal/choose-record-modal.component'
+            );
+            const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
+              data: {
+                targetForm: form,
+                targetFormField,
+                targetFormQuery,
+              },
+            });
+            const value = await Promise.resolve(
+              firstValueFrom(dialogRef.closed) as any
+            );
+            if (value && value.record) {
+              this.apollo
+                .query<GetRecordByIdQueryResponse>({
+                  query: GET_RECORD_BY_ID,
+                  variables: {
+                    id: value.record,
+                  },
+                })
+                .subscribe((getRecord) => {
+                  const resourceField = form.fields?.find(
+                    (field) =>
+                      field.resource &&
+                      field.resource === this.settings.resource
+                  );
+                  let data = getRecord.data.record.data;
+                  const key = resourceField.name;
+                  if (resourceField.type === 'resource') {
+                    data = { ...data, [key]: selectedRecords[0] };
                   } else {
-                    data = { ...data, [key]: selectedRecords };
-                  }
-                }
-                this.apollo
-                  .mutate<EditRecordMutationResponse>({
-                    mutation: EDIT_RECORD,
-                    variables: {
-                      id: value.record,
-                      template: targetForm,
-                      data,
-                    },
-                  })
-                  .subscribe(async (editRecord) => {
-                    if (editRecord.errors) {
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'models.record.notifications.rowsNotAdded'
-                        ),
-                        { error: true }
-                      );
+                    if (data[key]) {
+                      data = {
+                        ...data,
+                        [key]: data[key].concat(selectedRecords),
+                      };
                     } else {
-                      if (editRecord.data) {
-                        const record = editRecord.data.editRecord;
-                        if (record) {
-                          this.snackBar.openSnackBar(
-                            this.translate.instant(
-                              'models.record.notifications.rowsAdded',
+                      data = { ...data, [key]: selectedRecords };
+                    }
+                  }
+                  this.apollo
+                    .mutate<EditRecordMutationResponse>({
+                      mutation: EDIT_RECORD,
+                      variables: {
+                        id: value.record,
+                        template: targetForm,
+                        data,
+                      },
+                    })
+                    .subscribe(async (editRecord) => {
+                      if (editRecord.errors) {
+                        this.snackBar.openSnackBar(
+                          this.translate.instant(
+                            'models.record.notifications.rowsNotAdded'
+                          ),
+                          { error: true }
+                        );
+                        resolve(false);
+                      } else {
+                        if (editRecord.data) {
+                          const record = editRecord.data.editRecord;
+                          if (record) {
+                            this.snackBar.openSnackBar(
+                              this.translate.instant(
+                                'models.record.notifications.rowsAdded',
+                                {
+                                  field: record.data[targetFormField],
+                                  length: selectedRecords.length,
+                                  value: key,
+                                }
+                              )
+                            );
+                            const { SafeFormModalComponent } = await import(
+                              '../../form-modal/form-modal.component'
+                            );
+                            const dialogRef2 = this.dialog.open(
+                              SafeFormModalComponent,
                               {
-                                field: record.data[targetFormField],
-                                length: selectedRecords.length,
-                                value: key,
+                                disableClose: true,
+                                data: {
+                                  recordId: record.id,
+                                  template: targetForm,
+                                },
+                                autoFocus: false,
                               }
-                            )
-                          );
-                          const { SafeFormModalComponent } = await import(
-                            '../../form-modal/form-modal.component'
-                          );
-                          this.dialog.open(SafeFormModalComponent, {
-                            disableClose: true,
-                            data: {
-                              recordId: record.id,
-                              template: targetForm,
-                            },
-                            autoFocus: false,
-                          });
+                            );
+                            dialogRef2.closed
+                              .pipe(takeUntil(this.destroy$))
+                              .subscribe(() => resolve(true));
+                          } else {
+                            resolve(false);
+                          }
                         }
                       }
-                    }
-                  });
-              });
+                    });
+                });
+            } else {
+              resolve(false);
+            }
+          } else {
+            resolve(false);
           }
-        }
-      });
+        });
+    });
   }
 
   /**

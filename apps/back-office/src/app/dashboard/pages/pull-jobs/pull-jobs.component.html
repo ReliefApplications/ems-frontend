@@ -1,109 +1,113 @@
+<!-- Pull jobs add button -->
 <div class="mb-4 flex flex-row justify-end">
-  <safe-button
+  <ui-button
     icon="add"
     category="secondary"
     variant="primary"
     (click)="onAdd()"
   >
     {{ 'pages.pullJobs.create' | translate }}
-  </safe-button>
+  </ui-button>
 </div>
 
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="pullJobs">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
+    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="pullJobs">
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.name' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
           {{ element.name }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="status">
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.status' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip-list>
-            <mat-chip
-              class="success-chip !rounded-lg"
-              disabled
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList>
+            <ui-chip
+              class="s!rounded-lg"
+              variant="success"
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="accent-chip !rounded-lg"
-              disabled
-              color="accent"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="warning"
               *ngIf="element.status === 'pending'"
             >
               {{ 'common.status_pending' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="warn-chip !rounded-lg"
-              disabled
-              color="warn"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="danger"
               *ngIf="element.status === 'archived'"
             >
               {{ 'common.status_archived' | translate | titlecase }}
-            </mat-chip>
-          </mat-chip-list>
+            </ui-chip>
+          </div>
         </td>
       </ng-container>
-      <!-- <ng-container matColumnDef="apiConfiguration">
-        <th mat-header-cell *matHeaderCellDef>
+      <!-- <ng-container cdkColumnDef="apiConfiguration">
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.apiConfiguration.one' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.apiConfiguration ? element.apiConfiguration.name : '-' }}
         </td>
       </ng-container> -->
-      <ng-container matColumnDef="schedule">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="schedule">
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'models.pullJob.nextIteration' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.schedule | safeCronParser | safeDate : 'short' }}
         </td>
       </ng-container>
-      <!-- <ng-container matColumnDef="convertTo">
-        <th mat-header-cell *matHeaderCellDef>
+      <!-- <ng-container cdkColumnDef="convertTo">
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'components.record.convert.select' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.convertTo ? element.convertTo.name : '-' }}
         </td>
       </ng-container> -->
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
-          <safe-button
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onEdit(element)">
-              <mat-icon>edit</mat-icon>
+          </ui-button>
+          <ui-menu #menu>
+            <button uiMenuItem (click)="onEdit(element)">
+              <ui-icon icon="edit" variant="grey"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
-            <safe-divider class="m-0"></safe-divider>
-            <button mat-menu-item color="warn" (click)="onDelete(element)">
-              <mat-icon>delete</mat-icon>
+            <ui-divider class="py-1"></ui-divider>
+            <button uiMenuItem (click)="onDelete(element)">
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
     </table>
+    <!-- Skeleton table when loading -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="[
@@ -116,13 +120,13 @@
     >
     </safe-skeleton-table>
   </div>
-  <mat-paginator
-    [disabled]="loading"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

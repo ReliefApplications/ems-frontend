@@ -452,6 +452,7 @@ export const EDIT_APPLICATION = gql`
     $pages: [ID]
     $permissions: JSON
     $description: String
+    $sideMenu: Boolean
   ) {
     editApplication(
       id: $id
@@ -460,9 +461,11 @@ export const EDIT_APPLICATION = gql`
       pages: $pages
       permissions: $permissions
       description: $description
+      sideMenu: $sideMenu
     ) {
       id
       description
+      sideMenu
       name
       createdAt
       modifiedAt

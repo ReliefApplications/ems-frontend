@@ -1,32 +1,31 @@
 <div
-  matRipple
   class="safe-step"
   [style.background-color]="active ? type?.color : ''"
   [ngClass]="{ active: active }"
 >
-  <div class="step-actions">
-    <safe-button
-      *ngIf="canUpdate"
+  <div class="step-actions" *ngIf="canUpdate">
+    <!-- Delete action -->
+    <ui-button
       [isIcon]="true"
       icon="delete_outline"
       category="primary"
       variant="danger"
-      [matTooltip]="
+      [uiTooltip]="
         'common.deleteObject'
           | translate : { name: 'common.step.one' | translate }
       "
       (click)="onDelete($event)"
     >
-    </safe-button>
-    <safe-button
-      *ngIf="canUpdate"
+    </ui-button>
+    <!-- Duplicate action ( disabled ) -->
+    <ui-button
       [isIcon]="true"
       icon="content_copy"
       category="primary"
       variant="primary"
       [disabled]="true"
     >
-    </safe-button>
+    </ui-button>
   </div>
   <img class="h-9 mt-5" [src]="type?.img" />
   <span>{{ step.name | titlecase }}</span>

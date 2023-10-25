@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SafeSnackBarService, SafeBreadcrumbService } from '@oort-front/safe';
+import { SafeBreadcrumbService } from '@oort-front/safe';
 import {
   EditResourceMutationResponse,
   EDIT_RESOURCE,
@@ -11,6 +11,7 @@ import {
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Array of tab names sorted by position index.
@@ -51,7 +52,7 @@ export class ResourceComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
   ) {}

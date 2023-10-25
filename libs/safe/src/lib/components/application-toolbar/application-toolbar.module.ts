@@ -2,13 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeApplicationToolbarComponent } from './application-toolbar.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
+import { IconModule } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
 import { SafeAccessModule } from '../access/access.module';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
+import { MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Application toolbar module.
@@ -17,14 +14,12 @@ import { SafeIconModule } from '../ui/icon/icon.module';
   declarations: [SafeApplicationToolbarComponent],
   imports: [
     CommonModule,
-    SafeButtonModule,
     TranslateModule,
     SafeAccessModule,
-    MatMenuModule,
-    MatIconModule,
-    MatListModule,
+    MenuModule,
+    IconModule,
     RouterModule,
-    SafeIconModule,
+    ButtonModule,
   ],
   exports: [SafeApplicationToolbarComponent],
 })

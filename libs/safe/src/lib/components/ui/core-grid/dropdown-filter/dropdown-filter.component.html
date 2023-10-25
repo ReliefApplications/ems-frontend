@@ -10,11 +10,13 @@
   (filterChange)="handleFilter($event)"
 >
 </kendo-dropdownlist>
-<kendo-dropdownbutton
-  [data]="op"
-  icon="filter"
-  (itemClick)="onChangeOperator($event)"
-></kendo-dropdownbutton>
-<button kendoButton *ngIf="selectedValue" (click)="onClear()">
-  <span class="k-icon k-i-filter-clear"></span>
-</button>
+<div class="flex flex-row">
+  <kendo-dropdownbutton
+    [data]="op"
+    icon="filter"
+    (itemClick)="onChangeOperator($event)"
+  ></kendo-dropdownbutton>
+  <button kendoButton (click)="onClear()">
+    <span class="k-icon k-i-filter-clear"></span>
+  </button>
+</div>

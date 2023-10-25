@@ -1,9 +1,5 @@
-.mat-checkbox {
-  margin-bottom: 10px;
-}
-
 .update-row {
-  align-items: center;
+  align-items: end;
   margin-top: 24px;
   .mat-form-field {
     margin-left: 16px;
@@ -13,9 +9,6 @@
 .radio-row {
   display: flex;
   flex-direction: row;
-  .mat-radio-button {
-    margin-left: 12px;
-  }
 }
 
 .sub-parameters {

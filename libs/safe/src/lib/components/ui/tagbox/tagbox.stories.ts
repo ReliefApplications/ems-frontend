@@ -160,6 +160,9 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
@@ -176,6 +179,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * With source story
+ */
 export const INITIAL_SOURCE = {
   render: TEMPLATE,
   name: 'Initial source',

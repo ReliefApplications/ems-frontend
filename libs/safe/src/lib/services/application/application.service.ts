@@ -7,7 +7,6 @@ import { Page, ContentType } from '../../models/page.model';
 import { Application } from '../../models/application.model';
 import { Channel } from '../../models/channel.model';
 import { HttpHeaders } from '@angular/common/http';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import {
   AddPageMutationResponse,
   ADD_PAGE,
@@ -87,6 +86,7 @@ import {
 } from '../application-notifications/graphql/mutations';
 import { SafeRestService } from '../rest/rest.service';
 import { SafeLayoutService } from '../layout/layout.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -96,7 +96,7 @@ import { SafeLayoutService } from '../layout/layout.service';
 })
 export class SafeApplicationService {
   /** Current application */
-  private application = new BehaviorSubject<Application | null>(null);
+  public application = new BehaviorSubject<Application | null>(null);
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -173,7 +173,7 @@ export class SafeApplicationService {
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private router: Router,
     private translate: TranslateService,
@@ -207,7 +207,7 @@ export class SafeApplicationService {
         const application = this.application.getValue();
         this.getCustomStyle();
         this.customStyleEdited = false;
-        if (data.application.locked) {
+        if (data.application?.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectLocked', {
@@ -232,7 +232,9 @@ export class SafeApplicationService {
             duration: 0,
           }
         );
-        snackBar.onAction().subscribe(() => window.location.reload());
+        snackBar.instance.actionComplete.subscribe(() =>
+          window.location.reload()
+        );
       });
     this.lockSubscription = this.apollo
       .subscribe<ApplicationUnlockedSubscriptionResponse>({
@@ -246,8 +248,8 @@ export class SafeApplicationService {
           const application = this.application.getValue();
           const newApplication = {
             ...application,
-            locked: data?.applicationUnlocked.locked,
-            lockedByUser: data?.applicationUnlocked.lockedByUser,
+            locked: data?.applicationUnlocked?.locked,
+            lockedByUser: data?.applicationUnlocked?.lockedByUser,
           };
           this.application.next(newApplication);
         }
@@ -299,7 +301,7 @@ export class SafeApplicationService {
           if (!data.toggleApplicationLock.lockedByUser) {
             const newApplication = {
               ...application,
-              locked: data?.toggleApplicationLock.locked,
+              locked: data?.toggleApplicationLock?.locked,
               lockedByUser: data?.toggleApplicationLock.lockedByUser,
             };
             this.application.next(newApplication);
@@ -323,6 +325,7 @@ export class SafeApplicationService {
             id: application?.id,
             name: value.name,
             description: value.description,
+            sideMenu: value.sideMenu,
             status: value.status,
           },
         })
@@ -349,8 +352,10 @@ export class SafeApplicationService {
                 ...application,
                 name: data.editApplication.name,
                 description: data.editApplication.description,
+                sideMenu: value.sideMenu,
                 status: data.editApplication.status,
               };
+
               this.application.next(newApplication);
             }
           }

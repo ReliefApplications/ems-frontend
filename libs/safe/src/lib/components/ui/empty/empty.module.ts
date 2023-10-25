@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeEmptyComponent } from './empty.component';
-import { SafeIconModule } from '../icon/icon.module';
+import { IconModule } from '@oort-front/ui';
 
 /** Module for the empty indicator component */
 @NgModule({
   declarations: [SafeEmptyComponent],
-  imports: [CommonModule, SafeIconModule],
+  imports: [CommonModule, IconModule],
   exports: [SafeEmptyComponent],
 })
 export class SafeEmptyModule {}

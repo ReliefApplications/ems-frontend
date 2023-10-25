@@ -3,7 +3,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
- * Service that injects i18n translations in mat-paginator elements
+ * Service that injects i18n translations in ui-paginator elements
  *
  * @class MatPaginationIntlService
  * @typedef {MatPaginationIntlService}

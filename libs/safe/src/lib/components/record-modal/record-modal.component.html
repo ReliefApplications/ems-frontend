@@ -1,28 +1,28 @@
-<safe-modal size="big" [closable]="true">
-  <ng-container *ngIf="!loading">
-    <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
-      <safe-record-summary
-        *ngIf="!data.compareTo"
-        [record]="record"
-        (showHistory)="onShowHistory()"
-      ></safe-record-summary>
+<ui-dialog size="big" [closable]="true">
+  <ng-container ngProjectAs="header">
+    <ng-container *ngIf="!loading">
+      <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+        <safe-record-summary
+          *ngIf="!data.compareTo"
+          [record]="record"
+          (showHistory)="onShowHistory()"
+        ></safe-record-summary>
 
-      <safe-form-actions
-        [survey]="survey"
-        [surveyNext]="surveyNext || undefined"
-      ></safe-form-actions>
-    </div>
-    <div mat-dialog-title>
-      <mat-tab-group
-        animationDuration="0ms"
-        [selectedIndex]="selectedTabIndex"
+        <safe-form-actions
+          [survey]="survey"
+          [surveyNext]="surveyNext || undefined"
+        ></safe-form-actions>
+      </div>
+      <ui-tabs
+        [selectedIndex]="(selectedPageIndex$ | async)!"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <mat-tab
-          *ngFor="let page of pages$ | async"
-          [label]="page.title ? page.title : page.name"
-        ></mat-tab>
-      </mat-tab-group>
+        <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
+          <ng-container ngProjectAs="label">{{
+            page.title ? page.title : page.name
+          }}</ng-container>
+        </ui-tab>
+      </ui-tabs>
       <div class="versions-info" *ngIf="data.compareTo">
         <div class="version-info">
           <div>{{ 'components.record.history.version.old' | translate }}</div>
@@ -35,71 +35,72 @@
           <span>{{ record.modifiedAt | safeDate : 'short' }}</span>
         </div>
       </div>
-    </div>
+    </ng-container>
   </ng-container>
-  <mat-dialog-content class="grow max-h-full flex flex-row">
+  <ng-container ngProjectAs="content">
     <ng-container *ngIf="!data.compareTo">
       <div #formContainer class="grow"></div>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
-      <div #formContainerNext class="grow"></div>
-      <div #formContainer class="grow"></div>
+      <div class="flex flex-row">
+        <div #formContainerNext class="grow max-w-[50%]"></div>
+        <div #formContainer class="grow max-w-[50%]"></div>
+      </div>
     </ng-container>
     <div *ngIf="loading" class="h-full w-full flex">
-      <safe-spinner class="m-auto block"></safe-spinner>
+      <ui-spinner class="m-auto block"></ui-spinner>
     </div>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
-    <safe-button (click)="onClose()">
-      {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
-      mat-dialog-close="true"
-      cdkFocusInitial
-    >
-      {{ 'components.record.history.revert' | translate }}
-    </safe-button>
-  </mat-dialog-actions>
-  <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">
-    <safe-button (click)="onClose()" variant="danger">
-      {{ 'common.close' | translate }}
-    </safe-button>
-
-    <ng-container *ngIf="pages$ | async as pages">
-      <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ng-container *ngIf="!loading && data.compareTo">
+      <ui-button (click)="onClose()">
+        {{ 'common.close' | translate }}
+      </ui-button>
+      <ui-button
         category="secondary"
         variant="primary"
+        uiDialogClose="true"
         cdkFocusInitial
-        *ngIf="pages.length > 1"
-        (click)="survey.prevPage()"
-        [disabled]="survey.isFirstPage"
       >
-        {{ 'common.previous' | translate }}
-      </safe-button>
-      <safe-button
-        category="secondary"
-        variant="primary"
-        cdkFocusInitial
-        *ngIf="pages.length > 1"
-        (click)="survey.nextPage()"
-        [disabled]="survey.isLastPage"
-      >
-        {{ 'common.next' | translate }}
-      </safe-button>
+        {{ 'components.record.history.revert' | translate }}
+      </ui-button>
     </ng-container>
-    <safe-button
-      category="secondary"
-      variant="primary"
-      cdkFocusInitial
-      *ngIf="canEdit"
-      (click)="onEdit()"
-    >
-      {{
-        'common.editObject'
-          | translate : { name: 'common.record.one' | translate }
-      }}
-    </safe-button>
-  </mat-dialog-actions>
-</safe-modal>
+    <ng-container *ngIf="!loading && !data.compareTo">
+      <ui-button (click)="onClose()" variant="danger">
+        {{ 'common.close' | translate }}
+      </ui-button>
+
+      <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
+        <ui-button
+          category="secondary"
+          variant="primary"
+          cdkFocusInitial
+          *ngIf="pages.length > 1"
+          (click)="survey.prevPage()"
+          [disabled]="survey.isFirstPage"
+        >
+          {{ 'common.previous' | translate }}
+        </ui-button>
+        <ui-button
+          category="secondary"
+          variant="primary"
+          cdkFocusInitial
+          *ngIf="pages.length > 1"
+          (click)="survey.nextPage()"
+          [disabled]="survey.isLastPage"
+        >
+          {{ 'common.next' | translate }}
+        </ui-button>
+      </ng-container>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        cdkFocusInitial
+        *ngIf="canEdit"
+        (click)="onEdit()"
+      >
+        {{ 'models.record.edit' | translate }}
+      </ui-button>
+    </ng-container>
+  </ng-container>
+</ui-dialog>

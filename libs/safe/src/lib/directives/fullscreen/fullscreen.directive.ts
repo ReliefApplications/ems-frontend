@@ -29,8 +29,8 @@ export class FullScreenDirective
   @Output() isFullScreenModeChange = new EventEmitter<boolean>();
   // How nested is the element(parentElement) respect the directive's attached element that we want to set to fullscreen mode
   @Input() parentElementNestedNumber = 2;
-  public document: Document;
   private accessorString = '';
+  private fullScreenListener!: any;
 
   /**
    * Create the accessor to the path of the property for the fullscreen mode
@@ -44,16 +44,22 @@ export class FullScreenDirective
    */
   constructor(
     private el: ElementRef,
-    @Inject(DOCUMENT) document: Document,
+    @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2
   ) {
-    this.document = document;
     this.accessorString = this.setAccessorPath();
-    addEventListener('fullscreenchange', () => {
-      if (!this.document.fullscreenElement) {
-        this.isFullScreenModeChange.emit(false);
+    if (this.fullScreenListener) {
+      this.fullScreenListener();
+    }
+    this.fullScreenListener = this.renderer.listen(
+      this.document,
+      'fullscreenchange',
+      () => {
+        if (!this.document.fullscreenElement) {
+          this.isFullScreenModeChange.emit(false);
+        }
       }
-    });
+    );
   }
 
   ngAfterViewInit(): void {
@@ -111,5 +117,8 @@ export class FullScreenDirective
         get(this.el.nativeElement, this.accessorString),
         'background'
       );
+    if (this.fullScreenListener) {
+      this.fullScreenListener();
+    }
   }
 }

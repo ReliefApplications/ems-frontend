@@ -54,12 +54,10 @@
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-          "node_modules/select2/dist/css/select2.min.css"
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
         ],
         "scripts": [
           "node_modules/jquery/dist/jquery.js",
-          "node_modules/select2/dist/js/select2.min.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
@@ -68,7 +66,6 @@
           "hammerjs",
           "survey-creator",
           "survey-knockout",
-          "surveyjs-widgets",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -77,7 +74,8 @@
           "cron-validator",
           "localforage",
           "survey-angular",
-          "fast-sha256"
+          "fast-sha256",
+          "jsonpath"
         ]
       },
       "configurations": {
@@ -101,7 +99,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -127,7 +124,31 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
+        "azure-sit": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.azure.sit.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -153,7 +174,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -179,7 +199,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -205,10 +224,34 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-tailwind": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.tailwind.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/Default"]
           }
         },
         "oort-guyane": {
@@ -231,7 +274,31 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-alimentaide": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.alimentaide.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -257,7 +324,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -283,10 +349,34 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-expertisefr": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.expertisefr.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
           }
         },
         "oort-local": {

@@ -20,12 +20,17 @@ export const GET_RESOURCES = gql`
         node {
           id
           name
+          queryName
           forms {
             id
             name
           }
           layouts {
             totalCount
+          }
+          metadata {
+            name
+            type
           }
         }
         cursor

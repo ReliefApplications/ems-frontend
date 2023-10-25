@@ -3,88 +3,70 @@
   <h2>
     {{ 'components.widget.settings.grid.buttons.title' | translate }}
   </h2>
-  <safe-alert class="mb-4">
-    <safe-icon icon="info"></safe-icon>
+  <!-- <ui-alert class="mb-4">
     {{ 'components.widget.settings.grid.hint.buttons' | translate }}
-  </safe-alert>
+  </ui-alert> -->
   <!-- Add new button -->
-  <safe-button
+  <ui-button
     class="self-end"
     icon="add"
     variant="primary"
     (click)="addButton($event)"
   >
     {{ 'components.widget.settings.grid.buttons.create' | translate }}
-  </safe-button>
+  </ui-button>
   <!-- Available buttons -->
-  <mat-tab-group
-    mat-align-tabs="start"
-    animationDuration="0ms"
-    dynamicHeight
-    *ngIf="buttons.length > 0"
-    #tabGroup
-  >
-    <ng-container
-      *ngFor="
-        let button of buttons.controls;
-        let i = index;
-        trackBy: trackByIndex
-      "
-    >
-      <mat-tab>
-        <!-- Button label - tab header -->
-        <ng-template mat-tab-label>
-          <div
-            (cdkDropListDropped)="onReorder($event)"
-            [cdkDropListConnectedTo]="(tabIds$ | async)!"
-            [id]="TAB_ID_NAME + i"
-            cdkDropListOrientation="horizontal"
-            cdkDropList
-          >
-            <div class="flex items-center" cdkDrag>
-              <!-- Drag placeholder-->
-              <div *cdkDragPlaceholder></div>
-              <!-- Drag indicator -->
-              <safe-icon
-                cdkDragHandle
-                class="draggable"
-                icon="drag_indicator"
-              ></safe-icon>
-              <!-- Button name -->
-              <span
-                class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
-                >{{
-                  button.value.name.length > 0
-                    ? button.value.name
-                    : ('components.widget.settings.grid.buttons.defaultName'
-                      | translate)
-                }}
-              </span>
-              <!-- Error indicator -->
-              <safe-icon
-                *ngIf="button.invalid"
-                icon="error_outline"
-                variant="danger"
-                [inline]="true"
-                [size]="18"
-              ></safe-icon>
-            </div>
+  <ui-tabs *ngIf="buttons.length > 0">
+    <ui-tab *ngFor="let button of buttons.controls; let i = index">
+      <!-- Button label - tab label -->
+      <ng-container ngProjectAs="label">
+        <div
+          (cdkDropListDropped)="onReorder($event)"
+          [cdkDropListConnectedTo]="(tabIds$ | async)!"
+          [id]="TAB_ID_NAME + i"
+          cdkDropListOrientation="horizontal"
+          cdkDropList
+        >
+          <div class="flex items-center" cdkDrag>
+            <!-- Drag placeholder-->
+            <div *cdkDragPlaceholder></div>
+            <!-- Drag indicator -->
+            <ui-icon
+              cdkDragHandle
+              class="draggable"
+              icon="drag_indicator"
+            ></ui-icon>
+            <!-- Button name -->
+            <span
+              class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
+              >{{
+                button.value.name.length > 0
+                  ? button.value.name
+                  : ('components.widget.settings.grid.buttons.defaultName'
+                    | translate)
+              }}
+            </span>
+            <!-- Error indicator -->
+            <ui-icon
+              *ngIf="button.invalid"
+              icon="error_outline"
+              variant="danger"
+              [size]="18"
+            ></ui-icon>
           </div>
-        </ng-template>
-        <!-- Button form - tab content -->
-        <ng-template matTabContent>
-          <safe-button-config
-            [formGroup]="$any(button)"
-            [fields]="fields"
-            [channels]="channels"
-            [templates]="templates"
-            [distributionLists]="distributionLists"
-            [relatedForms]="relatedForms"
-            (deleteButton)="deleteButton(i)"
-          >
-          </safe-button-config>
-        </ng-template>
-      </mat-tab>
-    </ng-container>
-  </mat-tab-group>
+        </div>
+      </ng-container>
+      <!-- Button form - tab content -->
+      <safe-button-config
+        [formGroup]="$any(button)"
+        [fields]="fields"
+        [channels]="channels"
+        [templates]="templates"
+        [distributionLists]="distributionLists"
+        [relatedForms]="relatedForms"
+        (deleteButton)="deleteButton(i)"
+      >
+      </safe-button-config>
+    </ui-tab>
+  </ui-tabs>
 </div>

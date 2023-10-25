@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component that is used to create the access management modals
@@ -9,7 +11,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
   templateUrl: './access.component.html',
   styleUrls: ['./access.component.scss'],
 })
-export class SafeAccessComponent {
+export class SafeAccessComponent extends SafeUnsubscribeComponent {
   // === PERMISSIONS LAYER OF CURRENT OBJECT ===
   @Input() access!: any;
   @Input() application?: string;
@@ -25,9 +27,11 @@ export class SafeAccessComponent {
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
-   * @param {MatDialog} dialog - MatDialog - This is the material service that is used to open modal dialogs with Material Design styling and animations.
+   * @param {Dialog} dialog - Dialog - This is the service that is used to open modal dialogs
    */
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: Dialog) {
+    super();
+  }
 
   /**
    * Function that on click displays the EditAccess modal. Once closed, emits the result if exists.
@@ -43,7 +47,7 @@ export class SafeAccessComponent {
         objectTypeName: this.objectTypeName,
       },
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res) => {
       if (res) {
         this.save.emit(res);
       }

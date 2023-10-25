@@ -1,28 +1,56 @@
 <safe-layout
   [applications]="applications"
+  [header]="header"
   [toolbar]="toolbar"
-  [leftSidenav]="leftSidenav"
+  [leftSidenav]="pages"
+  [sideMenu]="sideMenu"
   [profileRoute]="'/' + appID + '/profile'"
   (openApplication)="onOpenApplication($event)"
 ></safe-layout>
 <ng-template #toolbar>
-  <safe-app-application-toolbar
-    [title]="title"
-    [settings]="adminNavItems"
-  ></safe-app-application-toolbar>
   <!-- Empty indicator -->
   <safe-empty
-    class="m-auto py-6 px-0 bg-white"
     *ngIf="empty"
     icon="dashboard"
     [title]="'components.application.dashboard.empty' | translate"
   ></safe-empty>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
-<ng-template #leftSidenav let-nav>
-  <safe-left-sidenav
+<ng-template #pages let-nav>
+  <safe-navbar
     [nav]="nav"
     [appLayout]="true"
     [navGroups]="navGroups"
-  ></safe-left-sidenav>
+    [vertical]="!(!sideMenu && largeDevice)"
+  ></safe-navbar>
 </ng-template>
+
+<!-- Application header -->
+<ng-template #header>
+  <!-- Title -->
+  <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+    {{ title }}
+  </h2>
+  <!-- Settings -->
+  <ui-button
+    *ngIf="adminNavItems.length > 0"
+    [isIcon]="true"
+    icon="tune"
+    variant="light"
+    [uiMenuTriggerFor]="settingsMenu"
+  ></ui-button>
+</ng-template>
+
+<!-- Admin pages -->
+<ui-menu #settingsMenu>
+  <a
+    uiMenuItem
+    *ngFor="let setting of adminNavItems"
+    [routerLink]="setting.path"
+    routerLinkActive="text-primary-600 bg-gray-50"
+    class="text-sm font-semibold leading-6"
+  >
+    <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
+    {{ setting.name }}
+  </a>
+</ui-menu>

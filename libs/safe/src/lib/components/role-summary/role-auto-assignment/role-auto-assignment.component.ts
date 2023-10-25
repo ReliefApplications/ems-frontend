@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
@@ -12,6 +10,9 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component for Auto assignment of role
@@ -21,7 +22,10 @@ import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
   templateUrl: './role-auto-assignment.component.html',
   styleUrls: ['./role-auto-assignment.component.scss'],
 })
-export class RoleAutoAssignmentComponent implements OnInit {
+export class RoleAutoAssignmentComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() role!: Role;
   public formArray!: UntypedFormArray;
   @Output() edit = new EventEmitter();
@@ -34,7 +38,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
     }
   }
 
-  public rules = new MatTableDataSource<CompositeFilterDescriptor>([]);
+  public rules = new Array<CompositeFilterDescriptor>();
   public displayedColumns: string[] = ['filter', 'actions'];
 
   private fields: any[] = [];
@@ -45,17 +49,19 @@ export class RoleAutoAssignmentComponent implements OnInit {
    *
    * @param fb Angular form builder
    * @param apollo Apollo service
-   * @param dialog Material dialog
+   * @param dialog Dialog
    * @param translate Angular translate service
    * @param restService Safe REST service
    */
   constructor(
     private fb: UntypedFormBuilder,
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private translate: TranslateService,
     private restService: SafeRestService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.formArray = this.fb.array(
@@ -63,9 +69,9 @@ export class RoleAutoAssignmentComponent implements OnInit {
         createFilterGroup(x)
       )
     );
-    this.rules.data = this.formArray.value;
+    this.rules = this.formArray.value;
     this.formArray.valueChanges.subscribe((value) => {
-      this.rules.data = value;
+      this.rules = value;
     });
     this.apollo
       .query<GetGroupsQueryResponse>({
@@ -131,7 +137,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
         fields: this.fields,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.edit.emit({
           autoAssignment: {
@@ -173,7 +179,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
         fields: this.fields,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.edit.emit({
           autoAssignment: {

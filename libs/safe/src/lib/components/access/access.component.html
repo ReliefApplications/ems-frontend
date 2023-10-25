@@ -1,19 +1,19 @@
 <ng-container *ngIf="menuItem">
-  <button mat-menu-item (click)="onClick()">
-    <mat-icon matTooltipPosition="above">admin_panel_settings</mat-icon>
+  <button uiMenuItem (click)="onClick()" class="w-full">
+    <ui-icon icon="admin_panel_settings" variant="grey"></ui-icon>
     {{ 'components.access.title' | translate }}
   </button>
 </ng-container>
+<!-- Button to update permissions in toolbar of apps -->
 <ng-container *ngIf="!menuItem">
-  <safe-button
+  <ui-button
     variant="grey"
     [isIcon]="true"
     icon="admin_panel_settings"
-    matTooltipPosition="above"
-    [matTooltip]="
+    [uiTooltip]="
       'components.access.description' | translate : { name: objectTypeName }
     "
     (click)="onClick()"
   >
-  </safe-button>
+  </ui-button>
 </ng-container>

@@ -13,7 +13,6 @@ import { Question } from '../types';
  */
 export const init = (Survey: any, environment: any): void => {
   const serializer: JsonMetadata = Survey.Serializer;
-
   // change the prefix for comments
   Survey.settings.commentPrefix = '_comment';
   // override default expression properties
@@ -28,7 +27,16 @@ export const init = (Survey: any, environment: any): void => {
     required: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-  Survey.ChoicesRestfull.onBeforeSendRequest = (
+  // Survey.ChoicesRestful.onBeforeSendRequest = (
+  //   sender: ChoicesRestful,
+  //   options: { request: { headers: Headers } }
+  // ) => {
+  //   if (sender.url.includes(environment.apiUrl)) {
+  //     const token = localStorage.getItem('idtoken');
+  //     options.request.headers.append('Authorization', `Bearer ${token}`);
+  //   }
+  // };
+  Survey.ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
     options: { request: XMLHttpRequest }
   ) => {
@@ -38,7 +46,7 @@ export const init = (Survey: any, environment: any): void => {
     }
   };
 
-  // // Add file option for file columns on matrix questions
+  // Add file option for file columns on matrix questions
   Survey.matrixDropdownColumnTypes.file = {
     properties: ['showPreview', 'imageHeight', 'imageWidth'],
     tabs: [
@@ -46,6 +54,20 @@ export const init = (Survey: any, environment: any): void => {
       { name: 'enableIf', index: 20 },
     ],
   };
+
+  // Adds property that clears the value when condition is met
+  serializer.addProperty('question', {
+    name: 'clearIf:condition',
+    category: 'logic',
+    visibleIndex: 4,
+    default: '',
+    isLocalizable: true,
+    onExecuteExpression: (obj: Question, res: boolean) => {
+      if (res) {
+        obj.value = null;
+      }
+    },
+  });
 };
 
 /**

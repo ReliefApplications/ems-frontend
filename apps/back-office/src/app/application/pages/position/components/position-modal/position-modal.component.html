@@ -1,39 +1,37 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>
-    {{
-      data.add
-        ? ('models.positionAttribute.new' | translate)
-        : ('common.editObject'
-          | translate : { name: 'common.positionAttribute.one' | translate })
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.add
+          ? ('models.positionAttribute.new' | translate)
+          : ('models.positionAttribute.edit' | translate)
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="positionForm" class="flex flex-col">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <label>{{ 'common.title' | translate }}</label>
         <input
-          matInput
           formControlName="title"
           type="text"
           [placeholder]="
             data.add ? ('common.placeholder.title' | translate) : data.title
           "
         />
-      </mat-form-field>
+      </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="positionForm.value"
+      [uiDialogClose]="positionForm.value"
       cdkFocusInitial
       [disabled]="!positionForm.valid"
     >
       {{ (data.add ? 'common.create' : 'common.update') | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

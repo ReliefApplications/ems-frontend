@@ -1,6 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AddResourceModalComponent } from './add-resource.component';
+import { DialogRef, DialogModule } from '@angular/cdk/dialog';
+import { AddResourceModalComponent } from './add-resource-modal.component';
+import {
+  TranslateService,
+  TranslateLoader,
+  TranslateModule,
+  TranslateFakeLoader,
+} from '@ngx-translate/core';
 
 describe('AddResourceModalComponent', () => {
   let component: AddResourceModalComponent;
@@ -8,7 +14,25 @@ describe('AddResourceModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddResourceModalComponent],
+      imports: [
+        AddResourceModalComponent,
+        DialogModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+      providers: [
+        TranslateService,
+        {
+          provide: DialogRef,
+          useValue: {
+            updateSize: jest.fn(),
+          },
+        },
+      ],
     }).compileComponents();
   });
 

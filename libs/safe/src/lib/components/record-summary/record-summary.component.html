@@ -1,11 +1,11 @@
 <div class="flex gap-2 items-center" *ngIf="cacheDate">
-  <safe-button
+  <ui-button
     *ngIf="!record"
     [isIcon]="true"
     icon="restart_alt"
-    [matTooltip]="'components.form.summary.cache.clear' | translate"
+    [uiTooltip]="'components.form.summary.cache.clear' | translate"
     (click)="clear.emit()"
-  ></safe-button>
+  ></ui-button>
   <span>{{
     'components.form.summary.cache.load'
       | translate
@@ -15,12 +15,12 @@
   }}</span>
 </div>
 <div class="flex gap-2 items-center" *ngIf="record">
-  <safe-button
+  <ui-button
     [isIcon]="true"
     icon="history"
-    [matTooltip]="'components.widget.grid.actions.history' | translate"
+    [uiTooltip]="'components.widget.grid.actions.history' | translate"
     (click)="showHistory.emit()"
-  ></safe-button>
+  ></ui-button>
   <div class="flex flex-col text-xs">
     <span>{{
       'components.form.summary.createdBy'

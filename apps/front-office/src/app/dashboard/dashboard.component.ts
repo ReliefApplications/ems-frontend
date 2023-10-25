@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,13 +7,13 @@ import {
   User,
   Role,
   SafeAuthService,
-  SafeSnackBarService,
   SafeApplicationService,
   Permission,
   ContentType,
   SafeUnsubscribeComponent,
   AppAbility,
 } from '@oort-front/safe';
+import { SnackbarService } from '@oort-front/ui';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 
@@ -47,6 +47,10 @@ export class DashboardComponent
   private permissions: Permission[] = [];
   /** Roles of the user */
   private roles: Role[] = [];
+  /** Use side menu or not */
+  public sideMenu = false;
+  /** Is large device */
+  public largeDevice: boolean;
 
   /** @returns True if applications is empty */
   get empty(): boolean {
@@ -67,12 +71,23 @@ export class DashboardComponent
     private authService: SafeAuthService,
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private translate: TranslateService,
     private ability: AppAbility
   ) {
     super();
+    this.largeDevice = window.innerWidth > 1024;
+  }
+
+  /**
+   * Change the display depending on windows size.
+   *
+   * @param event Event that implies a change in window size
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.largeDevice = event.target.innerWidth > 1024;
   }
 
   /**
@@ -210,82 +225,32 @@ export class DashboardComponent
                 application.id !== this.application?.id ||
                 !firstPage)
             ) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.distributionList.few'),
-                path: `./${this.appID}/settings/distribution-lists`,
-                icon: 'mail',
-              });
+              if (firstPage) {
+                this.router.navigate(
+                  [
+                    `./${this.appID}/${firstPage.type}/${
+                      firstPage.type === ContentType.form
+                        ? firstPage.id
+                        : firstPage.content
+                    }`,
+                  ],
+                  { relativeTo: this.route }
+                );
+              } else {
+                this.router.navigate([`./${this.appID}`], {
+                  relativeTo: this.route,
+                });
+              }
             }
-            // if (
-            //   this.permissions.some(
-            //     (x) =>
-            //       (x.type === Permissions.canManageCustomNotifications &&
-            //         this.roles.some(
-            //           (y) =>
-            //             y.application?.id === application.id &&
-            //             y.permissions?.some((perm) => perm.id === x.id)
-            //         )) ||
-            //       (x.type === Permissions.canManageApplications && x.global)
-            //   )
-            // ) {
-            //   this.adminNavItems.push({
-            //     name: this.translate.instant('common.customNotification.few'),
-            //     path: `./${this.appID}/settings/notifications`,
-            //     icon: 'mail',
-            //   });
-            // }
-            this.navGroups = [
-              {
-                name: 'Pages',
-                navItems: application.pages
-                  ?.filter((x) => x.content)
-                  .map((x) => ({
-                    name: x.name,
-                    path:
-                      x.type === ContentType.form
-                        ? `./${this.appID}/${x.type}/${x.id}`
-                        : `./${this.appID}/${x.type}/${x.content}`,
-                    icon: this.getNavIcon(x.type || ''),
-                  })),
-              },
-            ];
           }
           this.application = application;
           this.appID = application.id || '';
+          this.sideMenu = this.application?.sideMenu ?? false;
         } else {
           this.navGroups = [];
         }
       });
   }
-
-  // if (!this.application || application.id !== this.application.id) {
-  //   const firstPage = get(application, 'pages', [])[0];
-  //   const find = !this.application
-  //     ? this.validPage(application)
-  //     : false;
-  //   if (
-  //     !find &&
-  //     (this.router.url.endsWith('/') ||
-  //       application.id !== this.application?.id ||
-  //       !firstPage)
-  //   ) {
-  //     if (firstPage) {
-  //       this.router.navigate(
-  //         [
-  //           `./${this.appID}/${firstPage.type}/${
-  //             firstPage.type === ContentType.form
-  //               ? firstPage.id
-  //               : firstPage.content
-  //           }`,
-  //         ],
-  //         { relativeTo: this.route }
-  //       );
-  //     } else {
-  //       this.router.navigate([`./${this.appID}`], {
-  //         relativeTo: this.route,
-  //       });
-  //     }
-  //   }
 
   /**
    * Opens an application, contacting the application service.

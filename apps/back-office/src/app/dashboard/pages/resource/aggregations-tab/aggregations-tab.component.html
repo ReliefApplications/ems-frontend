@@ -1,92 +1,108 @@
-<div class="self-end" *ngIf="!loading">
-  <safe-button
-    variant="primary"
-    category="secondary"
-    (click)="onAddAggregation()"
-  >
-    {{
-      'components.widget.settings.grid.aggregations.add.choice.create'
-        | translate
-    }}</safe-button
-  >
-</div>
-<div>
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-2lg">
-    <!-- Table scroll container -->
-    <div class="overflow-x-auto">
-      <table *ngIf="!loading" mat-table [dataSource]="aggregations">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'common.name' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element" class="font-bold">
-            {{ element.name }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'common.createdOn' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.createdAt | safeDate }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="_actions" [stickyEnd]="true">
-          <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
-              [isIcon]="true"
-              icon="more_vert"
-              [matMenuTriggerFor]="resMenu"
-              (click)="$event.stopPropagation()"
-              [disabled]="!resource.canUpdate"
-            >
-            </safe-button>
-            <mat-menu #resMenu="matMenu">
-              <button mat-menu-item (click)="onEditAggregation(element)">
-                <mat-icon>edit</mat-icon>
-                {{ 'common.edit' | translate }}
-              </button>
-              <button mat-menu-item (click)="onDeleteAggregation(element)">
-                <mat-icon>delete</mat-icon>
-                {{ 'common.delete' | translate }}
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsAggregations"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumnsAggregations"
-        ></tr>
-      </table>
-      <safe-skeleton-table
-        *ngIf="loading"
-        [columns]="['common.name', 'common.createdOn']"
-        [actions]="true"
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <ng-container *ngIf="!empty">
+    <ng-container *ngTemplateOutlet="newAggregation"> </ng-container>
+  </ng-container>
+  <ng-template #newAggregation>
+    <div class="self-end">
+      <ui-button
+        variant="primary"
+        category="secondary"
+        (click)="onAddAggregation()"
       >
-      </safe-skeleton-table>
+        {{
+          'components.widget.settings.grid.aggregations.add.choice.create'
+            | translate
+        }}</ui-button
+      >
+    </div>
+  </ng-template>
+  <ng-container *ngIf="!empty; else emptyTmpl">
+    <!-- Table container -->
+    <div class="overflow-x-hidden shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <table cdk-table uiTableWrapper [dataSource]="aggregations">
+          <ng-container cdkColumnDef="name">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'common.name' | translate }}
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium max-w-[30vw]"
+            >
+              {{ element.name }}
+            </td>
+          </ng-container>
+
+          <ng-container cdkColumnDef="createdAt">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'common.createdOn' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let element">
+              {{ element.createdAt | safeDate }}
+            </td>
+          </ng-container>
+
+          <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+            <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+            <td uiCell *cdkCellDef="let element">
+              <ui-button
+                [isIcon]="true"
+                icon="more_vert"
+                [uiMenuTriggerFor]="resMenu"
+                (click)="$event.stopPropagation()"
+                [disabled]="!resource.canUpdate"
+              >
+              </ui-button>
+              <ui-menu #resMenu>
+                <button uiMenuItem (click)="onEditAggregation(element)">
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
+                  {{ 'common.edit' | translate }}
+                </button>
+                <ui-divider class="py-1"></ui-divider>
+                <button uiMenuItem (click)="onDeleteAggregation(element)">
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
+                  {{ 'common.delete' | translate }}
+                </button>
+              </ui-menu>
+            </td>
+          </ng-container>
+
+          <tr
+            cdk-header-row
+            *cdkHeaderRowDef="displayedColumnsAggregations"
+          ></tr>
+          <tr
+            cdk-row
+            *cdkRowDef="let row; columns: displayedColumnsAggregations"
+          ></tr>
+        </table>
+      </div>
     </div>
     <!-- Pagination -->
-    <mat-paginator
-      *ngIf="!empty"
+    <ui-paginator
       [disabled]="loading"
       [pageIndex]="pageInfo.pageIndex"
       [pageSize]="pageInfo.pageSize"
       [pageSizeOptions]="[10, 25, 50]"
-      [length]="pageInfo.length"
-      (page)="onPage($event)"
+      [totalItems]="pageInfo.length"
+      (pageChange)="onPage($event)"
     >
-    </mat-paginator>
+    </ui-paginator>
+  </ng-container>
+  <ng-template #emptyTmpl>
     <!-- Empty indicator -->
     <safe-empty
-      class="m-auto py-6 px-0 bg-white"
-      *ngIf="empty"
       [title]="'components.resource.empty.aggregations' | translate"
+      [footerTemplate]="newAggregation"
     ></safe-empty>
-  </div>
-</div>
+  </ng-template>
+</ng-container>
+<ng-template #loadingTmpl>
+  <safe-skeleton-table
+    [columns]="['common.name', 'common.createdOn']"
+    [actions]="true"
+  >
+  </safe-skeleton-table>
+</ng-template>

@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isEqual } from 'lodash';
 import {
@@ -11,7 +10,6 @@ import {
 } from '@angular/animations';
 import { Resource } from '../../../models/resource.model';
 import { Role } from '../../../models/user.model';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import {
   GetResourceQueryResponse,
   GetResourcesQueryResponse,
@@ -28,6 +26,7 @@ import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -70,7 +69,7 @@ export class RoleResourcesComponent
   // === TABLE ELEMENTS ===
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public displayedColumns: string[] = ['name', 'actions'];
-  public resources = new MatTableDataSource<TableResourceElement>([]);
+  public resources = new Array<TableResourceElement>();
   public cachedResources: Resource[] = [];
 
   // === SINGLE ELEMENT ===
@@ -96,7 +95,7 @@ export class RoleResourcesComponent
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {
+  constructor(private apollo: Apollo, private snackBar: SnackbarService) {
     super();
   }
 
@@ -138,6 +137,7 @@ export class RoleResourcesComponent
         icon: this.getIcon(resource, x),
         variant: this.getVariant(resource, x),
         tooltip: this.getTooltip(resource, x),
+        isOutlined: this.getIconOutlined(resource, x),
       })),
     };
   }
@@ -157,14 +157,14 @@ export class RoleResourcesComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedResources.length
+      e.totalItems > this.cachedResources.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -176,7 +176,7 @@ export class RoleResourcesComponent
       this.pageInfo.pageSize = first;
       this.fetchResources();
     } else {
-      this.resources.data = this.setTableElements(
+      this.resources = this.setTableElements(
         this.cachedResources.slice(
           e.pageSize * this.pageInfo.pageIndex,
           e.pageSize * (this.pageInfo.pageIndex + 1)
@@ -306,16 +306,20 @@ export class RoleResourcesComponent
       .subscribe({
         next: ({ errors, data }) => {
           if (data?.editResource) {
-            const index = this.resources.data.findIndex(
+            const index = this.resources.findIndex(
               (x) => x.resource.id === resource.id
             );
-            const tableElements = [...this.resources.data];
+            const tableElements = [...this.resources];
             tableElements[index] = this.setTableElement(
               isEqual(resource.id, this.openedResource?.id)
                 ? { ...this.openedResource, ...data?.editResource }
                 : data?.editResource
             );
-            this.resources.data = tableElements;
+            this.resources = tableElements;
+            const cachedIndex = this.cachedResources.findIndex(
+              (x) => x.id === resource.id
+            );
+            this.cachedResources[cachedIndex] = tableElements[index].resource;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }
@@ -353,16 +357,16 @@ export class RoleResourcesComponent
       .subscribe({
         next: ({ errors, data }) => {
           if (data?.editResource) {
-            const index = this.resources.data.findIndex(
+            const index = this.resources.findIndex(
               (x) => x.resource.id === resource.id
             );
-            const tableElements = [...this.resources.data];
+            const tableElements = [...this.resources];
             tableElements[index] = this.setTableElement(
               isEqual(resource.id, this.openedResource?.id)
                 ? { ...this.openedResource, ...data?.editResource }
                 : data?.editResource
             );
-            this.resources.data = tableElements;
+            this.resources = tableElements;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }
@@ -426,16 +430,16 @@ export class RoleResourcesComponent
       .subscribe({
         next: ({ errors, data }) => {
           if (data?.editResource) {
-            const index = this.resources.data.findIndex(
+            const index = this.resources.findIndex(
               (x) => x.resource.id === resource.id
             );
-            const tableElements = [...this.resources.data];
+            const tableElements = [...this.resources];
             tableElements[index] = this.setTableElement(
               isEqual(resource.id, this.openedResource?.id)
                 ? { ...this.openedResource, ...data?.editResource }
                 : data?.editResource
             );
-            this.resources.data = tableElements;
+            this.resources = tableElements;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }
@@ -507,6 +511,26 @@ export class RoleResourcesComponent
             return 'delete';
           }
         }
+    }
+  }
+
+  /**
+   * Gets if icon should be outlined
+   *
+   * @param resource A resource
+   * @param permission The permission name
+   * @returns is icon outlined
+   */
+  private getIconOutlined(resource: Resource, permission: Permission) {
+    const permissionLevel = this.permissionLevel(resource, permission);
+    switch (permissionLevel) {
+      case 'limited': {
+        return true;
+      }
+      case 'full':
+      default: {
+        return false;
+      }
     }
   }
 
@@ -617,11 +641,12 @@ export class RoleResourcesComponent
    * @param loading loading status
    */
   private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+    const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
-      data.resources.edges.map((x) => x.node)
+      mappedValues
     );
-    this.resources.data = this.setTableElements(
+    this.resources = this.setTableElements(
       this.cachedResources.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)

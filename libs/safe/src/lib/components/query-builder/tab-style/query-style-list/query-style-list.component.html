@@ -2,61 +2,69 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <mat-table
+    <table
+      cdk-table
+      uiTableWrapper
       [dataSource]="styles"
       cdkDropList
       (cdkDropListDropped)="drop($event)"
       [cdkDropListData]="styles"
     >
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
-        </mat-header-cell>
-        <mat-cell *matCellDef="let element" class="font-bold">
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
           {{ element.name }}
-        </mat-cell>
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="preview">
-        <mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="preview">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.preview' | translate }}
-        </mat-header-cell>
-        <mat-cell *matCellDef="let element">
+        </th>
+        <td uiCell *cdkCellDef="let element">
           <safe-query-style-preview
             [style]="element"
           ></safe-query-style-preview>
-        </mat-cell>
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="_actions" [stickyEnd]="true">
-        <mat-header-cell *matHeaderCellDef class="w-16"></mat-header-cell>
-        <mat-cell *matCellDef="let element; let i = index">
-          <safe-button
+      <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element; let i = index">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="resMenu"
+            [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
-          <mat-menu #resMenu="matMenu">
-            <button mat-menu-item (click)="edit.emit(i)">
-              <mat-icon>edit</mat-icon>
+          </ui-button>
+          <ui-menu #resMenu>
+            <button uiMenuItem (click)="edit.emit(i)">
+              <ui-icon icon="edit" variant="grey"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
-            <button mat-menu-item (click)="delete.emit(i)">
-              <mat-icon>delete</mat-icon>
+            <ui-divider class="py-1"></ui-divider>
+            <button uiMenuItem (click)="delete.emit(i)">
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
-        </mat-cell>
+          </ui-menu>
+        </td>
       </ng-container>
 
-      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
-      <mat-row
-        *matRowDef="let row; columns: columns"
+      <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
+      <tr
+        cdk-row
+        *cdkRowDef="let row; columns: columns"
         cdkDrag
         [cdkDragData]="row"
-      ></mat-row>
-    </mat-table>
+      ></tr>
+    </table>
   </div>
 </div>

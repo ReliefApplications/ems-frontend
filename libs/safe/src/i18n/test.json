@@ -41,7 +41,10 @@
 			"none": "******",
 			"one": "******"
 		},
-		"child": "******",
+		"child": {
+			"edit": "******",
+			"one": "******"
+		},
 		"clear": "******",
 		"close": "******",
 		"column": {
@@ -75,7 +78,6 @@
 		"downloadTemplate": "******",
 		"duplicate": "******",
 		"edit": "******",
-		"editObject": "****** {{name}}",
 		"email": {
 			"few": "******",
 			"none": "******",
@@ -130,6 +132,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -260,8 +263,10 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"selectStatus": "******",
 		"send": "******",
 		"settings": "******",
 		"status": "******",
@@ -401,6 +406,11 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"filter": {
+					"empty": "******",
+					"info": "******",
+					"title": "******"
+				},
 				"filterSettings": "******",
 				"settings": {
 					"defaultPosition": "******"
@@ -493,7 +503,8 @@
 			},
 			"dropdown": {
 				"select": "******"
-			}
+			},
+			"selectChannel": "******"
 		},
 		"confirmModal": {
 			"cancel": "******",
@@ -549,6 +560,15 @@
 			"subject": "******",
 			"withoutRecords": "******"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "******"
+			},
+			"from": "******",
+			"subject": "******",
+			"title": "******",
+			"to": "******"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -564,6 +584,7 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
+					"selectResource": "******",
 					"title": "******"
 				},
 				"tooltip": {
@@ -612,6 +633,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
@@ -635,6 +657,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -693,6 +716,7 @@
 				"title": "******"
 			},
 			"modal": {
+				"addMappingField": "******",
 				"errors": {
 					"schedule": "******"
 				},
@@ -899,6 +923,7 @@
 						"add": "******",
 						"delete": "******",
 						"edit": "******",
+						"none": "******",
 						"title": "******"
 					},
 					"title": "******"
@@ -1060,6 +1085,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"
@@ -1154,11 +1180,12 @@
 					},
 					"position": "******",
 					"series": {
+						"fill": "******",
 						"interpolation": {
 							"step": "******",
 							"title": "******"
 						},
-						"showSerie": "******",
+						"showSeries": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1255,7 +1282,10 @@
 							"showDetails": "******",
 							"update": "******"
 						},
-						"buttons": "******"
+						"attachToRecord": "******",
+						"buttons": "******",
+						"executionOrder": "******",
+						"prefillForm": "******"
 					},
 					"layouts": {
 						"add": {
@@ -1356,6 +1386,9 @@
 								"datasource": "******"
 							}
 						},
+						"preview": {
+							"title": "******"
+						},
 						"textEditor": {
 							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
@@ -1397,7 +1430,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "******"
+		},
 		"datepicker": {
+			"dateLabel": "******",
+			"endLabel": "******",
+			"startLabel": "******",
 			"today": "******",
 			"toggle": "******"
 		},
@@ -1546,6 +1585,21 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"multiselect": {
+			"noDataText": "******"
+		},
+		"pager": {
+			"firstPage": "******",
+			"items": "******",
+			"itemsPerPage": "******",
+			"label": "******",
+			"lastPage": "******",
+			"nextPage": "******",
+			"of": "******",
+			"page": "******",
+			"pageNumberInputTitle": "******",
+			"previousPage": "******"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "******",
@@ -1570,11 +1624,13 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "******",
-			"new": "******"
+			"new": "******",
+			"selectAuthType": "******"
 		},
 		"application": {
 			"description": "******",
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -1588,6 +1644,7 @@
 		},
 		"channel": {
 			"create": "******",
+			"edit": "******",
 			"new": "******"
 		},
 		"customNotification": {
@@ -1614,6 +1671,8 @@
 				"refData": {
 					"element": "******"
 				},
+				"selectDisplayField": "******",
+				"selectOrigin": "******",
 				"title": "******",
 				"tooltip": {
 					"useContextEditor": "******",
@@ -1626,6 +1685,7 @@
 		"form": {
 			"core": "******",
 			"create": "******",
+			"edit": "******",
 			"field": {
 				"label": "******",
 				"name": "******",
@@ -1655,9 +1715,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "******",
 			"new": "******"
 		},
 		"pullJob": {
+			"edit": "******",
 			"new": "******",
 			"nextIteration": "******",
 			"path": "******",
@@ -1666,6 +1728,7 @@
 		},
 		"record": {
 			"convert": "******",
+			"edit": "******",
 			"new": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
@@ -1692,6 +1755,7 @@
 			"new": "******"
 		},
 		"subscription": {
+			"edit": "******",
 			"new": "******"
 		},
 		"user": {
@@ -1826,6 +1890,10 @@
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
+			"move": {
+				"down": "******",
+				"up": "******"
+			},
 			"questionsCategories": {
 				"core": "******"
 			},
@@ -1860,7 +1928,8 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "****** {{lastUpdate}} ******"
+				"graphQLFilter": "****** {{lastUpdate}} ******",
+				"path": "******"
 			},
 			"type": "******",
 			"validateCsv": "******",

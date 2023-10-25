@@ -1,32 +1,35 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{ 'components.templates.select.email' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.templates.select.email' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label
-          >{{ 'components.templates.edit.name' | translate }}
-        </mat-label>
-        <mat-select formControlName="template">
-          <mat-option *ngFor="let template of templates" [value]="template">
+      <div uiFormFieldDirective [outline]="false" class="w-full">
+        <label>{{ 'components.templates.edit.name' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option
+            *ngFor="let template of templates"
+            [value]="template"
+          >
             {{ template.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [disabled]="!form.valid"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
     >
       {{ 'components.confirmModal.confirm' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -1,13 +1,26 @@
-<button mat-icon-button [matMenuTriggerFor]="menu">
-  <mat-icon>more_vert</mat-icon>
-</button>
-<mat-menu #menu="matMenu">
-  <ng-container *ngFor="let item of items">
-    <safe-divider *ngIf="item.name === 'Delete'" class="m-0"></safe-divider>
-
-    <button mat-menu-item (click)="onClick(item)" [disabled]="item.disabled">
-      <mat-icon>{{ item.icon }}</mat-icon>
-      <span>{{ item.text }}</span>
-    </button>
-  </ng-container>
-</mat-menu>
+<ui-button
+  [isIcon]="true"
+  icon="more_vert"
+  [uiMenuTriggerFor]="menu"
+  variant="grey"
+>
+</ui-button>
+<ui-menu #menu>
+  <button
+    uiMenuItem
+    (click)="onClick('Settings')"
+    [disabled]="!this.widget || !this.widget.settings"
+  >
+    <ui-icon icon="insert_chart" variant="grey"></ui-icon>
+    <span>{{ 'common.settings' | translate }}</span>
+  </button>
+  <button uiMenuItem (click)="onClick('Expand')">
+    <ui-icon icon="open_in_full" variant="grey"></ui-icon>
+    <span>{{ 'components.widget.expand' | translate }}</span>
+  </button>
+  <ui-divider class="py-1"></ui-divider>
+  <button uiMenuItem (click)="onClick('Delete')">
+    <ui-icon icon="delete" variant="danger"></ui-icon>
+    <span>{{ 'common.delete' | translate }}</span>
+  </button>
+</ui-menu>

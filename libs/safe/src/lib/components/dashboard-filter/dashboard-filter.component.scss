@@ -1,3 +1,5 @@
+@import '../../style/survey.scss';
+
 :host {
   // Host is positioned absolutely with an inset of 0
   // to take all the available space without interfering in the element flow of the DOM
@@ -24,31 +26,38 @@
 }
 
 .dashboard-filter-tab {
-  width: 80px;
   &.top {
-    top: 40px;
+    top: 0px;
+    width: 80px;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
     @extend .dashboard-filter-y-axis;
   }
   &.bottom {
-    bottom: 40px;
+    bottom: 0px;
+    width: 80px;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     @extend .dashboard-filter-y-axis;
   }
   &.right {
-    right: 0;
+    right: 0px;
+    width: 40px;
     border-bottom-left-radius: 1rem;
     border-top-left-radius: 1rem;
     @extend .dashboard-filter-x-axis;
     justify-content: start;
   }
   &.left {
-    left: 0;
+    left: 0px;
+    width: 40px;
     border-bottom-right-radius: 1rem;
     border-top-right-radius: 1rem;
     @extend .dashboard-filter-x-axis;
     justify-content: end;
   }
+}
+
+.text-side {
+  writing-mode: vertical-lr;
 }

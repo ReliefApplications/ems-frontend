@@ -1,7 +1,7 @@
 import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
 import { BreadcrumbsComponent } from './breadcrumbs.component';
-import { BreadcrumbDisplay } from './enums/breadcrumb-display.enum';
-import { BreadcrumbSeparator } from './enums/breadcrumb-separator.enum';
+import { breadCrumbDisplays } from './types/breadcrumb-display';
+import { breadcrumbSeparators } from './types/breadcrumb-separator';
 import { BreadcrumbsModule } from './breadcrumbs.module';
 
 export default {
@@ -9,11 +9,11 @@ export default {
   component: BreadcrumbsComponent,
   argTypes: {
     separator: {
-      options: BreadcrumbSeparator,
+      options: breadcrumbSeparators,
       control: 'select',
     },
     display: {
-      options: BreadcrumbDisplay,
+      options: breadCrumbDisplays,
       control: 'select',
     },
   },
@@ -31,18 +31,21 @@ export const SimpleChevron: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
-    separator: BreadcrumbSeparator.CHEVRON,
-    display: BreadcrumbDisplay.SIMPLE,
+    separator: 'chevron',
+    display: 'simple',
   },
 };
 
@@ -53,18 +56,21 @@ export const SimpleSlash: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
-    separator: BreadcrumbSeparator.SLASH,
-    display: BreadcrumbDisplay.SIMPLE,
+    separator: 'slash',
+    display: 'simple',
   },
 };
 
@@ -75,18 +81,21 @@ export const Contained: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
-    separator: BreadcrumbSeparator.CHEVRON,
-    display: BreadcrumbDisplay.CONTAINED,
+    separator: 'chevron',
+    display: 'contained',
   },
 };
 
@@ -97,17 +106,20 @@ export const Full: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
-    separator: BreadcrumbSeparator.CHEVRON,
-    display: BreadcrumbDisplay.FULL,
+    separator: 'chevron',
+    display: 'full',
   },
 };

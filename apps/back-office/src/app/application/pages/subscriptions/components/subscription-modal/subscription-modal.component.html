@@ -1,119 +1,117 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{
-      data.subscription
-        ? ('common.editObject'
-          | translate : { name: 'common.subscription.one' | translate })
-        : ('models.subscription.new' | translate)
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.subscription
+          ? ('models.subscription.edit' | translate)
+          : ('models.subscription.new' | translate)
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="subscriptionForm">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.title' | translate }}</label>
           <input
             type="text"
             [placeholder]="'common.placeholder.title' | translate"
-            matInput
             formControlName="title"
           />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{
             'components.application.subscription.modal.listenTo' | translate
-          }}</mat-label>
+          }}</label>
           <input
             type="text"
             [placeholder]="
               'components.application.subscription.modal.placeholder.listenTo'
                 | translate
             "
-            matInput
             formControlName="routingKey"
-            [matAutocomplete]="auto"
-          />
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            #applicationSelect
+            [uiAutocomplete]="auto"
             (opened)="onOpenApplicationSelect()"
-          >
-            <mat-optgroup
-              *ngFor="let application of applications$ | async"
+          />
+          <ui-autocomplete #auto>
+            <ui-option
+              [isGroup]="true"
               [label]="application.name || ''"
+              *ngFor="let application of applications$ | async"
             >
-              <mat-option
+              {{ application.name || '' }}
+              <ui-option
                 *ngFor="let channel of application.channels"
                 [value]="channel.routingKey"
+                [label]="channel.title ?? ''"
               >
-                {{ channel.title }}
-              </mat-option>
-            </mat-optgroup>
-          </mat-autocomplete>
-          <safe-button
+                {{ channel.title ?? '' }}
+              </ui-option>
+            </ui-option>
+          </ui-autocomplete>
+          <ui-button
             *ngIf="routingKey"
-            matSuffix
+            uiSuffix
             [isIcon]="true"
             icon="close"
-            [ariaLabel]="
+            variant="primary"
+            uiSuffix
+            [uiTooltip]="
               'components.application.subscription.modal.routingKey.clear.ariaLabel'
                 | translate
             "
             (click)="routingKey = ''"
-          ></safe-button>
-          <safe-icon
+          ></ui-button>
+          <ui-icon
             icon="info"
             class="cursor-pointer"
             variant="grey"
-            matSuffix
-            [matTooltip]="
+            uiSuffix
+            [uiTooltip]="
               'components.application.subscription.modal.hint.listenTo'
                 | translate
             "
-          ></safe-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.record.convert.select' | translate
-          }}</mat-label>
-          <safe-graphql-select
+          ></ui-icon>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'components.record.convert.select' | translate }}</label>
+          <ui-graphql-select
+            formControlName="convertTo"
             valueField="id"
             textField="name"
             [query]="formsQuery"
-            formControlName="convertTo"
             [selectedElements]="[defaultForm]"
             (searchChange)="onSearchChange($event)"
             [filterable]="true"
-          ></safe-graphql-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.channel.dropdown.select' | translate
-          }}</mat-label>
-          <mat-select formControlName="channel">
-            <mat-option
+          ></ui-graphql-select>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'components.channel.dropdown.select' | translate }}</label>
+          <ui-select-menu
+            formControlName="channel"
+            [placeholder]="'components.channel.selectChannel' | translate"
+          >
+            <ui-select-option
               *ngFor="let channel of data.channels"
               [value]="channel.id"
-              >{{ channel.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            >
+              {{ channel.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="subscriptionForm.value"
+      [uiDialogClose]="subscriptionForm.value"
       cdkFocusInitial
       [disabled]="!subscriptionForm.valid"
     >
       {{ (data.subscription ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

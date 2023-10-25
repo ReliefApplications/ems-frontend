@@ -14,6 +14,7 @@ import {
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/apiConfiguration.model';
+import jsonpath from 'jsonpath';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -21,7 +22,6 @@ const LAST_MODIFIED_KEY = '_last_modified';
 const LAST_REQUEST_KEY = '_last_request';
 /** Property for filtering in requests */
 const LAST_UPDATE_CODE = '{{lastUpdate}}';
-
 /**
  *  Interface for items stored in localForage cache.
  */
@@ -60,36 +60,6 @@ export class SafeReferenceDataService {
         })
         .pipe(map(({ data }) => data.referenceData))
     );
-  }
-
-  /**
-   * Build a graphQL query based on the ReferenceData configuration.
-   *
-   * @param referenceData Reference data configuration.
-   * @param newItems do we need to query only new items
-   * @returns GraphQL query.
-   */
-  private buildGraphQLQuery(
-    referenceData: ReferenceData,
-    newItems = false
-  ): string {
-    let query = '{ ' + (referenceData.query || '');
-    if (newItems && referenceData.graphQLFilter) {
-      let filter = `${referenceData.graphQLFilter}`;
-      if (filter.includes(LAST_UPDATE_CODE)) {
-        const lastUpdate =
-          localStorage.getItem(referenceData.id + LAST_REQUEST_KEY) ||
-          this.formatDateSQL(new Date(0));
-        filter = filter.split(LAST_UPDATE_CODE).join(lastUpdate);
-      }
-      query += '(' + filter + ')';
-    }
-    query += ' { ';
-    for (const field of referenceData.fields || []) {
-      query += field + ' ';
-    }
-    query += '} }';
-    return query;
   }
 
   /**
@@ -134,8 +104,13 @@ export class SafeReferenceDataService {
       ((foreignIsMultiselect && filter.foreignValue.length) ||
         (!foreignIsMultiselect && !!filter.foreignValue))
     ) {
-      const { items: foreignItems, valueField: foreignValueField } =
-        (await localForage.getItem(filter.foreignReferenceData)) as CachedItems;
+      const cache = (await localForage.getItem(
+        filter.foreignReferenceData
+      )) as CachedItems;
+      if (!cache) {
+        return [];
+      }
+      const { items: foreignItems, valueField: foreignValueField } = cache;
       let selectedForeignValue: any | any[];
       // Retrieve foreign field items for multiselect or single select
       if (foreignIsMultiselect) {
@@ -147,7 +122,7 @@ export class SafeReferenceDataService {
         );
       } else {
         selectedForeignValue = foreignItems.find(
-          (item) => item[foreignValueField] === filter.foreignValue
+          (item) => get(item, foreignValueField) === filter.foreignValue
         )[filter.foreignField];
       }
       return items
@@ -198,12 +173,13 @@ export class SafeReferenceDataService {
         // Fetch items
         const url =
           this.apiProxy.baseUrl +
-          referenceData.apiConfiguration?.name +
-          referenceData.apiConfiguration?.graphQLEndpoint;
-        const body = { query: this.buildGraphQLQuery(referenceData, isCached) };
+          (referenceData.apiConfiguration?.name ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+        const body = { query: this.processQuery(referenceData) };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-        items = referenceData.path ? get(data, referenceData.path) : data;
-        items = referenceData.query ? items[referenceData.query] : items;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         // Cache items
         if (isCached) {
           const { items: cache } = (await localForage.getItem(
@@ -255,12 +231,13 @@ export class SafeReferenceDataService {
       case referenceDataType.graphql: {
         const url =
           this.apiProxy.baseUrl +
-          referenceData.apiConfiguration?.name +
-          referenceData.apiConfiguration?.graphQLEndpoint;
-        const body = { query: this.buildGraphQLQuery(referenceData, false) };
+          (referenceData.apiConfiguration?.name ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+        const body = { query: this.processQuery(referenceData) };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-        items = referenceData.path ? get(data, referenceData.path) : data;
-        items = referenceData.query ? items[referenceData.query] : items;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())
@@ -273,7 +250,9 @@ export class SafeReferenceDataService {
           referenceData.apiConfiguration?.name +
           referenceData.query;
         const data = await this.apiProxy.promisedRequestWithHeaders(url);
-        items = referenceData.path ? get(data, referenceData.path) : data;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         break;
       }
       case referenceDataType.static: {
@@ -397,5 +376,34 @@ export class SafeReferenceDataService {
     }
 
     return [];
+  }
+
+  /**
+   * Processes a refData query, replacing template variables with values
+   *
+   * @param refData Reference data to process
+   * @returns Processed query
+   */
+  private processQuery(refData: ReferenceData) {
+    const { query, id } = refData;
+    if (!query) return query;
+
+    const filterVariables = [LAST_UPDATE_CODE] as const;
+    let processedQuery = query;
+    for (const variable of filterVariables) {
+      switch (variable) {
+        case LAST_UPDATE_CODE:
+          const lastUpdate =
+            localStorage.getItem(id + LAST_REQUEST_KEY) ||
+            this.formatDateSQL(new Date(0));
+          processedQuery = processedQuery
+            .split(LAST_UPDATE_CODE)
+            .join(lastUpdate);
+          break;
+        default:
+          console.error('Unknown variable on refData query', variable);
+      }
+    }
+    return processedQuery;
   }
 }

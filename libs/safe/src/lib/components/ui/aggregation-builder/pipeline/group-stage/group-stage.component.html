@@ -2,7 +2,7 @@
   <h3>{{ 'components.aggregationBuilder.groupingRules' | translate }}</h3>
   <div class="flex flex-col gap-2">
     <div
-      class="flex items-center gap-2"
+      class="flex items-end gap-2"
       *ngFor="let rule of groupBy.controls; let i = index"
     >
       <safe-field-dropdown
@@ -16,17 +16,21 @@
         [operators]="$any(dateOperators)"
         [displayField]="false"
       ></safe-expressions>
-      <safe-button
+      <ui-button
         *ngIf="i > 0"
         (click)="onDeleteRule(i)"
         [isIcon]="true"
         icon="delete"
         variant="danger"
-      ></safe-button>
+      ></ui-button>
     </div>
-    <safe-button icon="add" category="tertiary" (click)="onAddRule()">{{
-      'components.aggregationBuilder.addRule' | translate
-    }}</safe-button>
+    <ui-button
+      class="mt-4 w-max"
+      icon="add"
+      category="tertiary"
+      (click)="onAddRule()"
+      >{{ 'components.aggregationBuilder.addRule' | translate }}</ui-button
+    >
   </div>
 </div>
 

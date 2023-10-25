@@ -12,7 +12,7 @@ import { get } from 'lodash';
 import { Observable } from 'rxjs';
 import { SafeApplicationService } from '../services/application/application.service';
 import { AppAbility } from '../services/auth/auth.service';
-import { SafeSnackBarService } from '../services/snackbar/snackbar.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Check if the logged user has an access to the route.
@@ -37,7 +37,7 @@ export class SafePermissionGuard implements CanActivate {
     private router: Router,
     private ability: AppAbility,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private appService: SafeApplicationService
   ) {}
 

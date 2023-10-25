@@ -1,47 +1,48 @@
 <form [formGroup]="form">
   <div class="flex gap-2" formGroupName="sort">
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.queryBuilder.sort.field' | translate
-      }}</mat-label>
-      <mat-select formControlName="field">
-        <mat-option>{{ 'common.input.none' | translate }}</mat-option>
+    <div uiFormFieldDirective class="w-44">
+      <label>{{ 'components.queryBuilder.sort.field' | translate }}</label>
+      <ui-select-menu formControlName="field">
+        <ui-select-option>{{
+          'common.input.none' | translate
+        }}</ui-select-option>
         <ng-container *ngFor="let field of fields">
-          <mat-option *ngIf="field.type.kind === 'SCALAR'" [value]="field.name">
-            {{ field.name }}
-          </mat-option>
-          <mat-optgroup
-            *ngIf="field.type.kind !== 'SCALAR'"
-            [label]="field.name"
+          <ui-select-option
+            *ngIf="field.type.kind === 'SCALAR'"
+            [value]="field.name"
           >
-            <mat-option
-              *ngFor="let subField of field.fields"
-              [value]="field.name + '.' + subField.name"
+            {{ field.name }}
+          </ui-select-option>
+          <ng-container *ngIf="field.type.kind !== 'SCALAR'">
+            <ui-select-option
+              *ngIf="field.type.kind !== 'SCALAR'"
+              [isGroup]="true"
             >
-              {{ subField.name }}
-            </mat-option>
-          </mat-optgroup>
+              <ui-select-option
+                *ngFor="let subField of field.fields"
+                [value]="field.name + '.' + subField.name"
+              >
+                {{ subField.name }}
+              </ui-select-option>
+            </ui-select-option>
+          </ng-container>
         </ng-container>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" *ngIf="form.value.sort.field">
-      <mat-label>{{
-        'components.queryBuilder.sort.order' | translate
-      }}</mat-label>
-      <mat-select formControlName="order">
-        <mat-option value="asc">{{
+      </ui-select-menu>
+    </div>
+    <div *ngIf="form.value.sort.field" uiFormFieldDirective class="w-44">
+      <label>{{ 'components.queryBuilder.sort.order' | translate }}</label>
+      <ui-select-menu formControlName="order">
+        <ui-select-option value="asc">{{
           'components.queryBuilder.sort.ascending' | translate
-        }}</mat-option>
-        <mat-option value="desc">{{
+        }}</ui-select-option>
+        <ui-select-option value="desc">{{
           'components.queryBuilder.sort.descending' | translate
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
-  <mat-form-field appearance="outline" *ngIf="showLimit">
-    <mat-label>{{
-      'components.queryBuilder.sort.limit' | translate
-    }}</mat-label>
-    <input matInput formControlName="first" type="number" min="1" />
-  </mat-form-field>
+  <div uiFormFieldDirective *ngIf="showLimit">
+    <label>{{ 'components.queryBuilder.sort.limit' | translate }}</label>
+    <input formControlName="first" type="number" min="1" />
+  </div>
 </form>

@@ -1,0 +1,16 @@
+// === VARIANTS ===
+.radio-primary {
+  @apply text-primary-400 focus:ring-primary-600;
+}
+
+.radio-success {
+  @apply text-green-400 focus:ring-green-600;
+}
+
+.radio-danger {
+  @apply text-red-400 focus:ring-red-600;
+}
+
+.radio-grey {
+  @apply text-gray-400 focus:ring-gray-600;
+}

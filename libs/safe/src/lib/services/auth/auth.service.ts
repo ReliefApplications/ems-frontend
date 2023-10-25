@@ -93,6 +93,15 @@ export class SafeAuthService {
 
   private environment: any;
 
+  /** @returns module origin */
+  get origin(): string {
+    if (this.environment.module === 'backoffice') {
+      return this.environment.backOfficeUri;
+    } else {
+      return this.environment.frontOfficeUri;
+    }
+  }
+
   /**
    * Shared authentication service.
    *
@@ -131,7 +140,15 @@ export class SafeAuthService {
       .subscribe(() => {
         const redirectPath = localStorage.getItem('redirectPath');
         if (redirectPath) {
+          // Current URL has finished loading, navigate to the desired URL
           this.router.navigateByUrl(redirectPath);
+        } else {
+          // Fallback to the location origin with a new url state with clean params
+          // Chrome does not delete state and session state params once the oauth is successful
+          // Which triggers a new token fetch with an invalid(deprecated) code
+          // can cause an issue with navigation
+          // console.log(e);
+          // this.router.navigateByUrl(this.origin);
         }
         localStorage.removeItem('redirectPath');
       });

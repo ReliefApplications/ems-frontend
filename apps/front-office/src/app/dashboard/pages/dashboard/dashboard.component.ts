@@ -1,13 +1,15 @@
 import { Apollo } from 'apollo-angular';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   OnDestroy,
   OnInit,
   Output,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
@@ -15,7 +17,6 @@ import {
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeSnackBarService,
   SafeDashboardService,
   SafeUnsubscribeComponent,
   SafeWidgetGridComponent,
@@ -24,6 +25,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Dashboard page.
@@ -52,6 +54,7 @@ export class DashboardComponent
 
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
+  public showFilter?: boolean;
 
   /**
    * Dashboard page.
@@ -59,21 +62,25 @@ export class DashboardComponent
    * @param apollo Apollo client
    * @param route Angular current page
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
    * @param confirmService Shared confirm service
+   * @param renderer Angular renderer
+   * @param elementRef Angular element ref
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: SafeConfirmService,
+    private renderer: Renderer2,
+    private elementRef: ElementRef
   ) {
     super();
   }
@@ -82,7 +89,10 @@ export class DashboardComponent
    * Subscribes to the route to load the dashboard accordingly.
    */
   ngOnInit(): void {
+    const rootElement = this.elementRef.nativeElement;
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Doing this to be able to use custom styles on specific dashboards
+      this.renderer.setAttribute(rootElement, 'data-dashboard-id', params.id);
       this.id = params.id;
       this.loading = true;
       this.apollo
@@ -101,6 +111,7 @@ export class DashboardComponent
                 ? data.dashboard.structure
                 : [];
               this.loading = loading;
+              this.showFilter = this.dashboard.showFilter;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -139,14 +150,14 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('pages.dashboard.update.exit'),
         content: this.translate.instant('pages.dashboard.update.exitMessage'),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
             return true;

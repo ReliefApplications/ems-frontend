@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && form">
   <!-- Page header -->
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
@@ -28,18 +28,15 @@
     <!-- Page actions -->
     <div class="flex items-center" *ngIf="!formActive">
       <!-- Edit name -->
-      <safe-button
+      <ui-button
         icon="edit"
         category="secondary"
         variant="primary"
         (click)="editForm()"
         *ngIf="form.canUpdate"
       >
-        {{
-          'common.editObject'
-            | translate : { name: 'common.form.one' | translate }
-        }}
-      </safe-button>
+        {{ 'models.form.edit' | translate }}
+      </ui-button>
     </div>
   </div>
   <!-- Form -->
@@ -50,12 +47,14 @@
     *ngIf="completed && !form.uniqueRecord && !hideNewRecord"
   >
     <!-- New record -->
-    <safe-button
+    <ui-button
+      [isBlock]="true"
       class="flex-1 max-w-xs"
       variant="primary"
       category="secondary"
       (click)="clearForm()"
-      >{{ 'models.record.new' | translate }}</safe-button
     >
+      {{ 'models.record.new' | translate }}
+    </ui-button>
   </div>
 </ng-container>

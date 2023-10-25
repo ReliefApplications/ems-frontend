@@ -1,21 +1,11 @@
-@use '@angular/material' as mat;
 @import 'variables.scss';
-// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
-//  The following line adds:
-//    1. Default typography styles for all components
-//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
-//  If you specify typography styles for the components you use elsewhere, you should delete this line.
-//  If you don't need the default component typographies but still want the hierarchy styles,
-//  you can delete this line and instead use:
-//    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
-@include mat.all-legacy-component-typographies();
-@include mat.legacy-core();
-@include mat.core();
-
 @import '@angular/cdk/overlay-prebuilt.css';
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+// === KENDO THEME ===
+@import 'theme.scss';
 
 .sv_main,
 .svd_container {
@@ -38,7 +28,7 @@
   // --error-color: #ed5565;
 }
 
-$safe-palette: (
+$ui-palette: (
   50: rgb($primary_50),
   100: rgb($primary_100),
   200: rgb($primary_200),
@@ -68,11 +58,11 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,
+      // A700: #ffffff,,,,,,
     ),
 );
 
-$safe-palette-accent: (
+$ui-palette-accent: (
   main: rgb($secondary_50),
   lighter: rgb($secondary_100),
   darker: rgb($secondary_150),
@@ -86,7 +76,7 @@ $safe-palette-accent: (
     ),
 );
 
-$safe-palette-warn: (
+$ui-palette-warn: (
   main: #d34444,
   // 500
   lighter: #ff766f,
@@ -103,58 +93,11 @@ $safe-palette-warn: (
     ),
 );
 
-$safe-primary: mat.define-palette($safe-palette);
-$safe-accent: mat.define-palette($safe-palette-accent, main, lighter, darker);
-$safe-warn: mat.define-palette($safe-palette-warn, main, lighter, darker);
-// $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
-
-$safe-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: $safe-primary,
-      accent: $safe-accent,
-      warn: $safe-warn,
-    ),
-    typography: mat.define-typography-config(),
-    density: 0,
-  )
-);
-
 // === CUSTOM THEME ===
 @mixin custom-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .snack-error {
-    background-color: mat.get-color-from-palette($warn);
-    color: white;
-    white-space: pre-wrap;
-
-    .mat-simple-snackbar-action {
-      color: white;
-    }
-  }
-
-  .active-link {
-    .nav-icon {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
-
-  .mat-list-item {
-    a:not(.active-link) {
-      color: mat.get-color-from-palette(mat.$grey-palette, 500);
-    }
-  }
-
-  .accent {
-    color: mat.get-color-from-palette($accent);
-  }
-
-  .warn {
-    color: mat.get-color-from-palette($warn);
-  }
 }
 
 // === CHIP ===
@@ -162,11 +105,6 @@ $safe-theme: mat.define-light-theme(
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .warn-chip {
-    background-color: mat.get-color-from-palette($warn, lighter) !important;
-    color: mat.get-color-from-palette($warn) !important;
-  }
 
   .success-chip {
     background-color: #e9fae1 !important;
@@ -177,214 +115,6 @@ $safe-theme: mat.define-light-theme(
     background-color: rgba(255, 159, 0, 0.14) !important;
     color: #ff9f00 !important;
   }
-
-  .primary-chip {
-    background-color: mat.get-color-from-palette($primary, lighter) !important;
-    color: mat.get-color-from-palette($primary) !important;
-  }
-}
-
-// === BUTTON ===
-@mixin button($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .mat-stroked-button:not(.mat-button-disabled) {
-    &.mat-primary {
-      border-color: mat.get-color-from-palette($primary);
-    }
-    &.mat-accent {
-      border-color: mat.get-color-from-palette($accent);
-    }
-    &.mat-warn {
-      border-color: mat.get-color-from-palette($warn);
-    }
-  }
-
-  .mat-button:disabled,
-  .mat-stroked-button:disabled {
-    color: #adadad !important;
-  }
-
-  .mat-flat-button:disabled {
-    color: #adadad !important;
-    background-color: #d8d8d8 !important;
-  }
-}
-
-// === ALERT ===
-@mixin alert($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .safe-alert {
-    &-default {
-      $variant-color: #f1f1f1;
-      background-color: $variant-color;
-      color: darken($variant-color, 30%);
-    }
-
-    &-primary {
-      background-color: mat.get-color-from-palette($primary, 50);
-      color: mat.get-color-from-palette($primary);
-    }
-
-    &-danger {
-      background-color: mat.get-color-from-palette($warn, 50);
-      color: mat.get-color-from-palette($warn);
-    }
-
-    &-success {
-      background-color: rgba(149, 221, 101, 0.2);
-      color: rgb(149, 221, 101);
-    }
-
-    &-warning {
-      background-color: rgba(244, 174, 82, 0.2);
-      color: rgb(244, 174, 82);
-    }
-  }
-}
-
-// === RADIO ===
-@mixin radio($theme) {
-  .mat-radio-label-content {
-    safe-icon {
-      vertical-align: text-bottom;
-    }
-  }
-}
-
-// === SLIDE TOGGLE ===
-@mixin slide-toggle($theme) {
-  .mat-slide-toggle-content {
-    safe-icon {
-      vertical-align: text-bottom;
-    }
-  }
-}
-
-// === EXPANSION PANEL ===
-@mixin expansion-panel($theme) {
-  .mat-expansion-panel-header-title {
-    gap: 4px;
-  }
-}
-
-// === CHECKBOX ===
-@mixin checkbox($theme) {
-  .mat-checkbox-label {
-    safe-icon {
-      vertical-align: text-bottom;
-    }
-  }
-}
-
-// === FORM FIELD ===
-@mixin form-field($theme) {
-  mat-label {
-    safe-icon {
-      vertical-align: text-bottom;
-    }
-  }
-
-  .p-0 {
-    // no padding fields
-    &.mat-form-field {
-      .mat-form-field-wrapper {
-        padding: 0 !important;
-      }
-    }
-  }
-
-  .mat-form-field-sm {
-    // small form-field
-    &.mat-form-field {
-      .mat-form-field-label-wrapper {
-        top: -1.4em;
-      }
-    }
-
-    .mat-form-field-flex > .mat-form-field-infix {
-      padding: 0.42em 0px !important;
-    }
-
-    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
-      .mat-form-field-label {
-      transform: translateY(-1.1em) scale(0.75);
-      width: 133.33333%;
-    }
-  }
-}
-
-// === MODAL ===
-@mixin modal($theme) {
-  .mat-dialog-actions {
-    gap: 8px;
-  }
-}
-
-// === TOOLTIP ===
-@mixin tooltip($theme) {
-  .mat-tooltip-panel {
-    pointer-events: none !important;
-  }
-}
-
-// === GLOBAL STYLES ==
-.mat-table {
-  font-size: 14px;
-  opacity: 0.87;
-  border-radius: 4px;
-  width: 100%;
-  th,
-  td {
-    padding: 0 4px !important;
-    &:first-of-type {
-      padding-left: 24px !important;
-      &:not(:last-of-type) {
-        padding-right: 4px !important;
-      }
-    }
-    &:last-of-type {
-      padding-right: 24px !important;
-      &:not(:first-of-type) {
-        padding-left: 4px !important;
-      }
-    }
-  }
-}
-
-.success-button {
-  &:not(:disabled) {
-    background-color: #63d168 !important;
-    color: white !important;
-  }
-}
-
-.danger-button {
-  background: mat.get-color-from-palette($safe-warn) !important;
-}
-
-// Mat table
-mat-header-row {
-  border-bottom: none !important;
-}
-
-.mat-header-cell {
-  @apply text-gray-500 border-b border-solid border-zinc-300 #{!important};
-}
-
-.mat-row {
-  .mat-cell {
-    @apply text-gray-600 border-b border-solid border-zinc-100 #{!important};
-  }
-}
-
-.mat-spinner {
-  margin: auto;
 }
 
 *:focus,
@@ -408,17 +138,6 @@ mat-header-row {
   }
 }
 
-.mat-chip {
-  min-width: 75px;
-  justify-content: center;
-  font-weight: 500 !important;
-
-  &.mat-chip-disabled {
-    opacity: 1 !important;
-    pointer-events: none;
-  }
-}
-
 // === FORMS ===
 .auth-form {
   padding: 32px 24px;
@@ -426,38 +145,6 @@ mat-header-row {
   border-radius: 4px;
   margin: 32px;
 }
-
-.mat-tab-group .mat-tab-header,
-.mat-tab-nav-bar {
-  margin-bottom: 12px;
-}
-
-.collapsible-form-group {
-  mat-expansion-panel {
-    border: solid 1px rgba(0, 0, 0, 0.1);
-    box-shadow: none !important;
-  }
-
-  mat-expansion-panel:not(.mat-expanded)
-    + mat-expansion-panel:not(.mat-expanded) {
-    border-top: 0;
-  }
-}
-
-// === ADDITIONAL MATERIAL STYLING ===
-@include mat.all-component-themes($safe-theme);
-@include mat.all-legacy-component-themes($safe-theme);
-@include chip($safe-theme);
-@include button($safe-theme);
-@include alert($safe-theme);
-@include radio($safe-theme);
-@include slide-toggle($safe-theme);
-@include expansion-panel($safe-theme);
-@include checkbox($safe-theme);
-@include form-field($safe-theme);
-@include modal($safe-theme);
-@include tooltip($safe-theme);
-@include custom-theme($safe-theme);
 
 html,
 body {
@@ -478,10 +165,10 @@ body {
   text-align: left;
   line-height: 40px;
   padding: 0 40px !important;
-  border-bottom: 1px solid #d8d8d8 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  @apply bg-white border-b border-b-gray-300 #{!important};
 
   .widget-title {
     overflow: hidden;
@@ -497,127 +184,6 @@ body {
   max-width: unset !important;
   width: 100%;
   height: 100%;
-}
-
-.no-padding-dialog {
-  mat-dialog-container {
-    padding: unset;
-  }
-}
-
-.resource-access-dialog {
-  max-width: unset !important;
-  width: 90%;
-  height: calc(100% - 72px);
-
-  mat-dialog-container {
-    position: relative;
-    border-radius: 4px 4px 0 0;
-    width: 100%;
-    background-color: #fafafa;
-  }
-
-  .mat-dialog-content {
-    max-height: calc(100% - 68px - 32px);
-    height: 100%;
-  }
-}
-
-// === UTILS ===
-// Correct a bug of angular, see https://github.com/angular/components/issues/14311
-.mat-form-field-suffix,
-.mat-form-field-prefix {
-  display: inline-flex;
-  align-items: center;
-}
-
-// === SURVEY BUILDER ===
-.core-question {
-  color: mat.get-color-from-palette($safe-warn) !important;
-}
-
-// === KENDO THEME ===
-@import 'theme.scss';
-
-// === VERTICAL TABS ===
-mat-tab-group[vertical] {
-  display: flex;
-  flex-direction: row !important;
-
-  & > .mat-tab-header {
-    border-bottom: none;
-    width: 240px;
-    z-index: 1;
-
-    .mat-tab-labels {
-      display: flex;
-      flex-direction: column !important;
-      position: relative;
-
-      .mat-tab-label {
-        justify-content: left;
-        border-radius: 7px;
-        transition: all 0.1s ease;
-
-        &.mat-tab-label-active:not(.cdk-keyboard-focused) {
-          opacity: 1;
-          background-color: #f5f5f5;
-        }
-
-        .mat-tab-label-content {
-          gap: 6px;
-
-          safe-icon {
-            display: flex;
-            pointer-events: none;
-          }
-        }
-      }
-    }
-
-    .mat-ink-bar {
-      display: none;
-    }
-  }
-
-  & > .mat-tab-body-wrapper {
-    width: 100%;
-
-    & > .mat-tab-body {
-      & > .mat-tab-body-content {
-        transition: all ease 200ms;
-        padding-left: 32px;
-      }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
-        transform: translate3d(0px, 100%, 0px) !important;
-      }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
-        transform: translate3d(0px, -100%, 0px) !important;
-      }
-    }
-  }
-}
-
-@media (max-width: 598px) {
-  mat-tab-group[vertical] {
-    & > .mat-tab-header {
-      width: unset;
-
-      .mat-tab-label {
-        .mat-tab-label-content {
-          span {
-            display: none;
-          }
-
-          safe-icon {
-            pointer-events: all !important;
-          }
-        }
-      }
-    }
-  }
 }
 
 // === TINYMCE ===

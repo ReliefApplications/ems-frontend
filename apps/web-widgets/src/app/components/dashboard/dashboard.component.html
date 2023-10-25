@@ -1,7 +1,0 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading && dashboard">
-  <safe-widget-grid
-    [widgets]="tiles"
-    (goToNextStep)="goToNextStep.emit($event)"
-  ></safe-widget-grid>
-</ng-container>

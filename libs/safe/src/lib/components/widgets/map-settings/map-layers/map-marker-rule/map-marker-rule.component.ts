@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { markerRuleForm } from '../../map-forms';
 
 /** Interface of dialog data of the component */
@@ -30,7 +30,7 @@ export class MapMarkerRuleComponent {
    *
    * @param data dialog data
    */
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
+  constructor(@Inject(DIALOG_DATA) public data: DialogData) {
     this.form = markerRuleForm(data.value);
     this.fields = data.fields;
     this.query = data.query;
