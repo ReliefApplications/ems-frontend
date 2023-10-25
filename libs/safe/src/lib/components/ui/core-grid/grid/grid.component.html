@@ -28,7 +28,7 @@
   uiVirtualScroll
   [checkItemList]="!(loadingRecords || loadingSettings)"
   itemSize="46"
-  scrollContainerSelector="div.k-grid-content.k-virtual-content"
+  scrollContainerSelector="#recordsGrid > div > kendo-grid-list > div"
   listItemsSelector="tr"
 >
   <!-- ACTIONS -->
@@ -135,7 +135,7 @@
       [sticky]="true"
     ></kendo-grid-checkbox-column>
     <!-- FIELDS -->
-    <ng-container *uiForVirtual="let field of fields">
+    <ng-container *ngFor="let field of fields">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
       <kendo-grid-column
         *ngIf="

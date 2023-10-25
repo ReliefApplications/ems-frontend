@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   IconModule,
-  NgForUIVirtualDirective,
   TextareaModule,
   TooltipModule,
   VirtualScrollDirective,
@@ -64,7 +63,6 @@ import { SafeGridComponent } from './grid.component';
     uiButtonModule,
     // === DIRECTIVES ===
     VirtualScrollDirective,
-    NgForUIVirtualDirective,
   ],
   exports: [SafeGridComponent],
 })
