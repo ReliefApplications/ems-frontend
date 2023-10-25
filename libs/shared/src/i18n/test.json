@@ -512,6 +512,8 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"enterEditMode": "******",
+				"enterPreviewMode": "******",
 				"filter": {
 					"empty": "******",
 					"filterPosition": {

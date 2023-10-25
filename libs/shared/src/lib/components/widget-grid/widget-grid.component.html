@@ -18,7 +18,7 @@
     [columns]="colsNumber"
     [rowHeight]="200"
     [resizable]="canUpdate"
-    [reorderable]="true"
+    [reorderable]="canUpdate"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)"
     class="-m-4"
