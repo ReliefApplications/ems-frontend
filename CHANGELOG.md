@@ -1,3 +1,11 @@
+## [2.1.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.3...v2.1.4) (2023-10-25)
+
+
+### Bug Fixes
+
+* createdBy & modifiedBy would not appear in grids ([8b18cc6](https://github.com/ReliefApplications/oort-frontend/commit/8b18cc65a8deb0f32a9c8adcaec701bc0b14b9a8))
+* dialog close directive could sometimes send empty string instead of undefined ([ef6a3af](https://github.com/ReliefApplications/oort-frontend/commit/ef6a3afc7e33f658e50aa0ce5fa1265674d1010e))
+
 ## [2.1.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.2...v2.1.3) (2023-10-24)
 
 
