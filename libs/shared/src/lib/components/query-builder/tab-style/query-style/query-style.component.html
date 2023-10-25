@@ -1,0 +1,122 @@
+<div class="field-container">
+  <ng-container>
+    <form [formGroup]="form" class="style-form">
+      <ui-button
+        [isIcon]="true"
+        icon="arrow_back"
+        (click)="closeEdition.emit()"
+        [uiTooltip]="'common.back' | translate"
+      >
+      </ui-button>
+
+      <div class="field-form">
+        <span class="field-name">{{
+          'components.queryBuilder.style.edit.name' | translate
+        }}</span>
+        <div uiFormFieldDirective>
+          <input formControlName="name" type="text" />
+        </div>
+      </div>
+
+      <!-- DEFINITION OF FILTERS -->
+      <div class="field-form mb-4">
+        <span class="field-name">{{
+          'components.queryBuilder.style.edit.criteria' | translate
+        }}</span>
+        <shared-filter
+          [canUseContext]="true"
+          [form]="$any(form.controls.filter)"
+          [fields]="filterFields"
+        ></shared-filter>
+      </div>
+
+      <ng-container formGroupName="background">
+        <div class="field-form">
+          <span class="field-name">{{
+            'components.queryBuilder.style.edit.background.color' | translate
+          }}</span>
+          <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+        </div>
+      </ng-container>
+      <ng-container formGroupName="text">
+        <div class="field-form">
+          <span class="field-name">{{
+            'components.queryBuilder.style.edit.text.color' | translate
+          }}</span>
+          <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+        </div>
+        <div class="field-form">
+          <span class="field-name">{{
+            'components.queryBuilder.style.edit.text.style' | translate
+          }}</span>
+          <div class="flex gap-1">
+            <ui-button
+              icon="format_bold"
+              (click)="onToggle('text.bold')"
+              [category]="
+                form.get('text.bold')?.value ? 'secondary' : 'tertiary'
+              "
+              [variant]="form.get('text.bold')?.value && 'primary'"
+            ></ui-button>
+            <ui-button
+              icon="format_italic"
+              (click)="onToggle('text.italic')"
+              [category]="
+                form.get('text.italic')?.value ? 'secondary' : 'tertiary'
+              "
+              [variant]="form.get('text.italic')?.value && 'primary'"
+            ></ui-button>
+            <ui-button
+              icon="format_underline"
+              (click)="onToggle('text.underline')"
+              [category]="
+                form.get('text.underline')?.value ? 'secondary' : 'tertiary'
+              "
+              [variant]="form.get('text.underline')?.value && 'primary'"
+            ></ui-button>
+          </div>
+        </div>
+      </ng-container>
+      <div class="field-form">
+        <span class="field-name">{{
+          'components.queryBuilder.style.edit.appliesTo' | translate
+        }}</span>
+        <div
+          class="flex flex-col"
+          [formControl]="wholeRow"
+          uiRadioGroupDirective="wholeRowOptions"
+        >
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{ 'components.queryBuilder.style.edit.wholeRow' | translate }}
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.queryBuilder.style.edit.selectedColumns' | translate
+              }}
+            </ng-container>
+          </ui-radio>
+        </div>
+      </div>
+      <div class="field-form" *ngIf="!wholeRow.value">
+        <span class="field-name">{{
+          'components.queryBuilder.style.edit.fields' | translate
+        }}</span>
+        <div class="flex">
+          <kendo-treeview
+            [nodes]="fieldNodes"
+            textField="name"
+            childrenField="fields"
+            kendoTreeViewHierarchyBinding
+            kendoTreeViewExpandable
+            kendoTreeViewCheckable
+            (checkedChange)="handleChecking()"
+            [(checkedKeys)]="checkedKeys"
+          ></kendo-treeview>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</div>

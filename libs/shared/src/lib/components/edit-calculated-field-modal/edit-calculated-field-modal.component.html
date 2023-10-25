@@ -1,0 +1,62 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        (this.data.calculatedField
+          ? 'components.calculatedFields.edit'
+          : 'components.calculatedFields.add'
+        ) | translate
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form">
+      <div class="flex flex-col">
+        <!-- @todo: check -->
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.aggregationBuilder.fieldName' | translate
+          }}</label>
+          <input formControlName="name" type="string" />
+          <ui-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="'components.calculatedFields.hint.name' | translate"
+          ></ui-icon>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.calculatedFields.expression' | translate
+          }}</label>
+          <shared-editor-control
+            formControlName="expression"
+            [editorConfig]="editor"
+          ></shared-editor-control>
+          <ui-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="'common.tooltip.editor.insert' | translate"
+          ></ui-icon>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

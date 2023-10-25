@@ -45,11 +45,15 @@ import { By } from '@angular/platform-browser';
   imports: [TranslateModule, TableModule],
 })
 class TestingComponent {
+  /** Reference to the TableWrapperDirective. */
   @ViewChild(TableWrapperDirective)
   tableWrapperDirective!: TableWrapperDirective;
+  /** Reference to the TableHeaderSortDirective. */
   @ViewChild(TableHeaderSortDirective)
   tableHeaderSortDirective!: TableHeaderSortDirective;
+  /** Reference to the CellDirective. */
   @ViewChild(CellDirective) cellDirective!: CellDirective;
+  /** Reference to the CellHeaderDirective. */
   @ViewChild(CellHeaderDirective) cellHeaderDirective!: CellHeaderDirective;
 
   public data: { name: string; lastName: string; count: number }[] = [

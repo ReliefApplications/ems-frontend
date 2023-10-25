@@ -1,0 +1,22 @@
+<ui-dialog size="fullscreen" [onClose]="onClose.bind(this)">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">{{ 'common.settings' | translate }}</h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <template #settingsContainer></template>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()" variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!widgetForm || !widgetForm.valid"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

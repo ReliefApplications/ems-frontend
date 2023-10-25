@@ -1,0 +1,54 @@
+<h3 class="mb-4">
+  {{ 'components.widget.settings.map.properties.controls.title' | translate }}
+</h3>
+<form [formGroup]="form" class="flex flex-col gap-1">
+  <!-- <ui-toggle formControlName="timedimension">
+    <ng-container ngProjectAs="label">
+      {{
+        'components.widget.settings.map.properties.controls.timedimension'
+          | translate
+      }}
+    </ng-container>
+  </ui-toggle> -->
+
+  <ui-toggle formControlName="download">
+    <ng-container ngProjectAs="label">
+      {{
+        'components.widget.settings.map.properties.controls.download'
+          | translate
+      }}
+    </ng-container>
+  </ui-toggle>
+
+  <ui-toggle formControlName="search">
+    <ng-container ngProjectAs="label">
+      {{
+        'components.widget.settings.map.properties.controls.search' | translate
+      }}
+    </ng-container>
+  </ui-toggle>
+
+  <ui-toggle formControlName="layer">
+    <ng-container ngProjectAs="label">
+      {{
+        'components.widget.settings.map.properties.controls.layer' | translate
+      }}
+    </ng-container>
+  </ui-toggle>
+
+  <ui-toggle formControlName="legend">
+    <ng-container ngProjectAs="label">
+      {{
+        'components.widget.settings.map.properties.controls.legend' | translate
+      }}
+    </ng-container>
+  </ui-toggle>
+
+  <ui-toggle formControlName="measure">
+    <ng-container ngProjectAs="label">
+      {{
+        'components.widget.settings.map.properties.controls.measure' | translate
+      }}
+    </ng-container>
+  </ui-toggle>
+</form>

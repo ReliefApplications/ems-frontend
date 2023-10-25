@@ -31,8 +31,6 @@ export const environment: Environment = {
   module: 'backoffice',
   availableLanguages: ['en'],
   authConfig,
-  esriApiKey:
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
   availableWidgets: [
     'donut-chart',
@@ -44,6 +42,13 @@ export const environment: Environment = {
     'radar-chart',
     'grid',
     'text',
+    'map',
     'summaryCard',
+    'tabs',
   ],
+  sentry: {
+    environment: 'development',
+    dns: 'https://da63b46285f94315b2d6f8e9c69d7c8c@o4505563078918144.ingest.sentry.io/4505563106312192',
+    tracePropagationTargets: ['ems-safe-dev.who.int'],
+  },
 };

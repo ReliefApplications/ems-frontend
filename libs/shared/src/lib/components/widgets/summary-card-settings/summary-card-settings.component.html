@@ -1,0 +1,175 @@
+<ng-container *ngIf="tileForm">
+  <ui-tabs
+    [vertical]="true"
+    class="grow"
+    (selectedIndexChange)="handleTabChange($event)"
+  >
+    <!-- GENERAL SETTINGS -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="preview"
+          [size]="24"
+          [uiTooltip]="'common.general' | translate"
+        ></ui-icon>
+        <span>{{ 'common.general' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-summary-card-general
+          [tileForm]="tileForm"
+          [selectedResource]="selectedResource"
+          [templates]="templates"
+          [selectedLayout]="selectedLayout"
+          [selectedAggregation]="selectedAggregation"
+          (resourceChange)="handleResourceChange($event)"
+          (layoutChange)="handleLayoutChange($event)"
+          (aggregationChange)="handleAggregationChange($event)"
+        ></shared-summary-card-general>
+      </ng-template>
+    </ui-tab>
+    <!-- Card text editor -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="article" [size]="24"></ui-icon>
+        <span>{{
+          'components.widget.settings.summaryCard.card.textEditor.title'
+            | translate
+        }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-text-editor-tab
+          *ngIf="activeTabIndex === 1"
+          [form]="tileForm"
+          [fields]="fields"
+        ></shared-text-editor-tab>
+      </ng-template>
+    </ui-tab>
+    <!-- Card text preview -->
+    <ui-tab *ngIf="tileForm && !tileForm.invalid">
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="preview" [size]="24"></ui-icon>
+        <span>{{
+          'components.widget.settings.summaryCard.card.preview.title'
+            | translate
+        }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-summary-card [settings]="tileForm.value" [widget]="tile">
+        </shared-summary-card>
+      </ng-template>
+    </ui-tab>
+    <!-- Available actions -->
+    <ui-tab *ngIf="selectedLayout">
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="toggle_on"
+          [size]="24"
+          uiTooltip="{{
+            'components.widget.settings.summaryCard.card.gridActions.tooltip'
+              | translate
+          }}"
+        ></ui-icon>
+        <span>{{
+          'components.widget.settings.summaryCard.card.gridActions.title'
+            | translate
+        }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-tab-actions [formGroup]="tileForm"></shared-tab-actions>
+      </ng-template>
+    </ui-tab>
+    <!-- Card display settings -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="display_settings" [size]="24"></ui-icon>
+        <span>{{ 'common.display' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-display-tab [form]="tileForm"></shared-display-tab>
+      </ng-template>
+    </ui-tab>
+    <!-- Context filter settings -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="filter_list" [size]="24"></ui-icon>
+        <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-contextual-filters-settings
+          [form]="tileForm"
+        ></shared-contextual-filters-settings>
+      </ng-template>
+    </ui-tab>
+    <!-- Widget display options -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="settings_overscan"
+          [size]="24"
+          [uiTooltip]="'models.widget.display.title' | translate"
+        ></ui-icon>
+        <span>{{ 'models.widget.display.title' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-display-settings [formGroup]="tileForm">
+          <!-- Specific settings for summary card -->
+          <ui-toggle
+            *ngIf="tileForm.get('widgetDisplay.searchable')?.enabled"
+            [formControl]="$any(tileForm.get('widgetDisplay.searchable'))"
+          >
+            <ng-container ngProjectAs="label">{{
+              'models.widget.display.searchable' | translate
+            }}</ng-container>
+          </ui-toggle>
+          <div>
+            <p class="font-medium mt-0 mb-0.5">
+              {{
+                'components.widget.settings.summaryCard.loadMore.title'
+                  | translate
+              }}
+            </p>
+            <div
+              [formControl]="$any(tileForm.get('widgetDisplay.usePagination'))"
+              class="flex flex-col gap-1 mt-2"
+              uiRadioGroupDirective="usePaginationOptions"
+            >
+              <ui-radio [value]="false">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'components.widget.settings.summaryCard.loadMore.infiniteScroll'
+                      | translate
+                  }}
+                </ng-container>
+              </ui-radio>
+              <ui-radio [value]="true">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'components.widget.settings.summaryCard.loadMore.pagination'
+                      | translate
+                  }}
+                </ng-container>
+              </ui-radio>
+            </div>
+          </div>
+        </shared-display-settings>
+      </ng-template>
+    </ui-tab>
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="filter_alt"
+          [size]="24"
+          [uiTooltip]="'models.widget.sorting.title' | translate"
+        ></ui-icon>
+        <span>{{ 'models.widget.sorting.title' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-sorting-settings
+          [fields]="fields"
+          [formArray]="$any(tileForm.get('sortFields'))"
+          [formGroup]="tileForm"
+        ></shared-sorting-settings>
+      </ng-template>
+    </ui-tab>
+  </ui-tabs>
+</ng-container>

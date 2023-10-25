@@ -1,0 +1,32 @@
+<form [formGroup]="form">
+  <ng-container formGroupName="card">
+    <div class="form-group">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.summaryCard.card.display.header'
+            | translate
+        }}</label>
+        <input formControlName="title" type="string" />
+      </div>
+      <ui-divider class="my-1"></ui-divider>
+      <ui-toggle formControlName="showDataSourceLink">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.summaryCard.card.display.dataSource'
+              | translate
+          }}
+          <ui-icon
+            class="ml-1 cursor-help self-center"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+                | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-toggle>
+    </div>
+  </ng-container>
+</form>

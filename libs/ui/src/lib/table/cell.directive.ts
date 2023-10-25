@@ -35,7 +35,6 @@ export class CellDirective extends CdkCell implements AfterContentInit {
     'pr-3',
     'text-sm',
     'text-gray-500',
-    'bg-white',
     'text-ellipsis',
     'overflow-hidden',
   ];

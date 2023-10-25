@@ -1,0 +1,85 @@
+<ng-container *ngIf="form">
+  <div class="flex flex-col gap-2" [formGroup]="form">
+    <!-- First Date -->
+    <ng-container
+      *ngTemplateOutlet="
+        dateFilterTmpl;
+        context: {
+          formGroup: $any(filters.at(0)),
+          dateMode: 'first',
+          dateModeProperty: firstDateMode,
+          data: operatorsList
+        }
+      "
+    ></ng-container>
+
+    <!-- Filter logic -->
+    <kendo-dropdownlist
+      formControlName="logic"
+      [data]="logics"
+      [valuePrimitive]="true"
+      textField="text"
+      valueField="value"
+      class="k-filter-and"
+    ></kendo-dropdownlist>
+
+    <!-- Second Date -->
+    <ng-container
+      *ngTemplateOutlet="
+        dateFilterTmpl;
+        context: {
+          formGroup: $any(filters.at(1)),
+          dateMode: 'second',
+          dateModeProperty: secondDateMode,
+          data: operatorsList
+        }
+      "
+    ></ng-container>
+  </div>
+</ng-container>
+
+<ng-template
+  #dateFilterTmpl
+  let-data="data"
+  let-formGroup="formGroup"
+  let-dateMode="dateMode"
+  let-dateModeProperty="dateModeProperty"
+>
+  <ng-container [formGroup]="formGroup">
+    <kendo-dropdownlist
+      [data]="data"
+      [valuePrimitive]="true"
+      textField="text"
+      valueField="value"
+      formControlName="operator"
+    >
+    </kendo-dropdownlist>
+
+    <div class="flex">
+      <kendo-textbox
+        *ngIf="dateModeProperty === 'expression'"
+        [style.width.px]="300"
+        [clearButton]="true"
+        formControlName="value"
+      ></kendo-textbox>
+      <kendo-datepicker
+        *ngIf="dateModeProperty === 'date'"
+        formControlName="value"
+        [popupSettings]="popupSettings"
+      ></kendo-datepicker>
+
+      <button
+        type="button"
+        kendoButton
+        icon="refresh"
+        [title]="
+          (dateModeProperty === 'expression'
+            ? 'components.queryBuilder.tooltip.filter.date.usePicker'
+            : 'components.queryBuilder.tooltip.filter.date.useExpression'
+          ) | translate
+        "
+        (click)="$event.stopPropagation(); setDateModeType(dateMode)"
+      ></button>
+    </div>
+  </ng-container>
+</ng-template>

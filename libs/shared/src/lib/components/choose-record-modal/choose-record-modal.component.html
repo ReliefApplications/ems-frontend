@@ -1,0 +1,62 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        'components.record.attach.selectTarget'
+          | translate : { name: data.targetForm.name }
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.record.one' | translate }}</label>
+          <ui-graphql-select
+            *ngIf="dataQuery"
+            [query]="dataQuery"
+            formControlName="record"
+            valueField="id"
+            [textField]="this.data.targetFormField"
+            (searchChange)="onSearchChange($event)"
+            [filterable]="true"
+          >
+          </ui-graphql-select>
+        </div>
+      </div>
+    </form>
+    <shared-core-grid
+      *ngIf="isSearchActivated"
+      [settings]="settings"
+      [multiSelect]="false"
+      [selectedRows]="
+        chooseRecordForm.value.record ? [chooseRecordForm.value.record] : []
+      "
+      (selectionChange)="onSelectionChange($event)"
+      class="h-96"
+    >
+    </shared-core-grid>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button
+      category="secondary"
+      cdkFocusInitial
+      (click)="isSearchActivated = !isSearchActivated"
+      *ngIf="data.targetFormQuery"
+    >
+      {{ (isSearchActivated ? 'common.select' : 'common.search') | translate }}
+    </ui-button>
+    <ui-button uiDialogClose variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="chooseRecordForm.value"
+      cdkFocusInitial
+      [disabled]="!chooseRecordForm.valid"
+    >
+      {{ 'components.record.attach.confirm' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

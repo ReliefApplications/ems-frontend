@@ -1,0 +1,78 @@
+<ng-container *ngIf="form">
+  <div class="flex flex-col gap-2" [formGroup]="form">
+    <ng-container [formGroup]="$any(filters.at(0))">
+      <kendo-dropdownlist
+        [data]="operators"
+        [valuePrimitive]="true"
+        textField="text"
+        valueField="value"
+        formControlName="operator"
+      ></kendo-dropdownlist>
+      <ng-container *ngIf="isNotArray; else multiSelectTmpl1">
+        <kendo-dropdownlist
+          [filterable]="true"
+          [data]="choices1"
+          [valuePrimitive]="true"
+          [textField]="textField"
+          [valueField]="valueField"
+          formControlName="value"
+          (filterChange)="handleFilter($event, 1)"
+        >
+        </kendo-dropdownlist>
+      </ng-container>
+      <ng-template #multiSelectTmpl1>
+        <kendo-multiselect
+          [filterable]="true"
+          [data]="choices1"
+          [valuePrimitive]="true"
+          [textField]="textField"
+          [valueField]="valueField"
+          formControlName="value"
+          (filterChange)="handleFilter($event, 1)"
+        >
+        </kendo-multiselect>
+      </ng-template>
+    </ng-container>
+    <kendo-dropdownlist
+      formControlName="logic"
+      [data]="logics"
+      [valuePrimitive]="true"
+      textField="text"
+      valueField="value"
+      class="k-filter-and"
+    ></kendo-dropdownlist>
+    <ng-container [formGroup]="$any(filters.at(1))">
+      <kendo-dropdownlist
+        [data]="operators"
+        [valuePrimitive]="true"
+        textField="text"
+        valueField="value"
+        formControlName="operator"
+      ></kendo-dropdownlist>
+      <ng-container *ngIf="isNotArray; else multiSelectTmpl2">
+        <kendo-dropdownlist
+          [filterable]="true"
+          [data]="choices2"
+          [valuePrimitive]="true"
+          [textField]="textField"
+          [valueField]="valueField"
+          formControlName="value"
+          (filterChange)="handleFilter($event, 2)"
+        >
+        </kendo-dropdownlist>
+      </ng-container>
+      <ng-template #multiSelectTmpl2>
+        <kendo-multiselect
+          [filterable]="true"
+          [data]="choices2"
+          [valuePrimitive]="true"
+          [textField]="textField"
+          [valueField]="valueField"
+          formControlName="value"
+          (filterChange)="handleFilter($event, 2)"
+        >
+        </kendo-multiselect>
+      </ng-template>
+    </ng-container>
+  </div>
+</ng-container>

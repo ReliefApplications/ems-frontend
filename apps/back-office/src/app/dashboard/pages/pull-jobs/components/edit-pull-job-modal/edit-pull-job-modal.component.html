@@ -1,13 +1,13 @@
 <ui-dialog size="medium">
   <!-- Modal header -->
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         data.pullJob
           ? ('models.pullJob.edit' | translate)
           : ('models.pullJob.new' | translate)
       }}
-    </h1>
+    </h3>
   </ng-container>
 
   <!-- Modal content -->
@@ -50,10 +50,10 @@
           </div>
         </div>
         <!-- Schedule -->
-        <safe-cron-expression-control
+        <shared-cron-expression-control
           class="flex"
           formControlName="schedule"
-        ></safe-cron-expression-control>
+        ></shared-cron-expression-control>
         <!-- API to use -->
         <div uiFormFieldDirective class="flex-1">
           <label>{{ 'common.apiConfiguration.one' | translate }}</label>
@@ -167,7 +167,14 @@
             </div>
             <!-- Raw edition mode (json) -->
             <ng-container *ngIf="openRawJSON">
-              <div uiFormFieldDirective>
+              <div class="grow h-[300px]">
+                <ngx-monaco-editor
+                  class="!h-full"
+                  formControlName="rawMapping"
+                  [options]="editorOptions"
+                ></ngx-monaco-editor>
+              </div>
+              <!-- <div uiFormFieldDirective>
                 <label>{{ 'common.input.rawJson' | translate }}</label>
                 <ui-textarea
                   formControlName="rawMapping"
@@ -175,7 +182,7 @@
                   [minRows]="2"
                 >
                 </ui-textarea>
-              </div>
+              </div> -->
             </ng-container>
             <!-- UI edition mode -->
             <ng-container *ngIf="!openRawJSON">
@@ -214,6 +221,7 @@
                     icon="remove_circle_outline"
                     variant="danger"
                     (click)="onDeleteElement(i)"
+                    [uiTooltip]="'common.delete' | translate"
                   >
                   </ui-button>
                 </form>
@@ -242,10 +250,10 @@
             [multiselect]="true"
           >
             <ui-select-option
-              *ngFor="let element of mappingArray.controls"
-              [value]="element.value.value"
+              *ngFor="let element of mappingArray.value"
+              [value]="element.value"
             >
-              {{ element.value.value }}
+              {{ element.value }}
             </ui-select-option>
           </ui-select-menu>
         </div>
@@ -254,7 +262,9 @@
   </ng-container>
   <!-- Modal actions -->
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
@@ -270,15 +280,5 @@
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <div uiChipList>
-    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
-      {{ 'common.status_active' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
-      {{ 'common.status_pending' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
-      {{ 'common.status_archived' | translate | titlecase }}
-    </ui-chip>
-  </div>
+  <shared-status-options [status]="status"></shared-status-options>
 </ng-template>

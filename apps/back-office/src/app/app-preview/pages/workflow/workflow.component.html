@@ -1,10 +1,10 @@
 <!-- STEPS -->
-<safe-workflow-stepper
-  class="my-4 -mx-6 block"
+<shared-workflow-stepper
+  class="-mt-8 -mx-6 block"
   [loading]="loading"
   [steps]="steps"
   (openStep)="onOpenStep($event)"
   [activeStep]="activeStep"
 >
-</safe-workflow-stepper>
+</shared-workflow-stepper>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

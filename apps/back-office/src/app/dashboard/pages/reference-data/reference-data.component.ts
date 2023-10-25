@@ -3,28 +3,25 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
-  UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  ApiConfiguration,
   ReferenceData,
   referenceDataType,
-  ApiConfiguration,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-  SafeReferenceDataService,
-} from '@oort-front/safe';
-import { Apollo, QueryRef } from 'apollo-angular';
-import {
+  BreadcrumbService,
+  UnsubscribeComponent,
+  ReferenceDataService,
+  ApiConfigurationsQueryResponse,
+  ReferenceDataQueryResponse,
+  ApiConfigurationQueryResponse,
   EditReferenceDataMutationResponse,
-  EDIT_REFERENCE_DATA,
-} from './graphql/mutations';
+} from '@oort-front/shared';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { EDIT_REFERENCE_DATA } from './graphql/mutations';
 import {
-  GetApiConfigurationQueryResponse,
-  GetApiConfigurationsQueryResponse,
-  GetReferenceDataQueryResponse,
   GET_API_CONFIGURATION,
   GET_API_CONFIGURATIONS_NAMES,
   GET_REFERENCE_DATA,
@@ -35,7 +32,8 @@ import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, TextareaComponent } from '@oort-front/ui';
+import { GraphQLError } from 'graphql';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -53,7 +51,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   styleUrls: ['./reference-data.component.scss'],
 })
 export class ReferenceDataComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -66,7 +64,7 @@ export class ReferenceDataComponent
   public referenceTypeChoices = Object.values(referenceDataType);
 
   public selectedApiConfiguration?: ApiConfiguration;
-  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   public valueFields: NonNullable<ReferenceData['fields']> = [];
   public triedToGetFields = false;
@@ -77,9 +75,10 @@ export class ReferenceDataComponent
   public csvValue = '';
   public newData: any = [];
   public csvLoading = false;
+  public separator = new FormControl(',');
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
-  @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
+  @ViewChild('csvData') csvData?: TextareaComponent;
 
   // === MONACO EDITOR ===
   public editorOptions = {
@@ -109,7 +108,6 @@ export class ReferenceDataComponent
    * @param route Angular route
    * @param snackBar Shared snackbar service
    * @param router Angular router
-   * @param formBuilder Angular form builder
    * @param translateService Angular translate service
    * @param breadcrumbService Setups the breadcrumb component variables
    * @param refDataService Reference data service
@@ -119,15 +117,18 @@ export class ReferenceDataComponent
     private route: ActivatedRoute,
     private snackBar: SnackbarService,
     private router: Router,
-    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
-    private refDataService: SafeReferenceDataService
+    private breadcrumbService: BreadcrumbService,
+    private refDataService: ReferenceDataService
   ) {
     super();
   }
 
-  /** @returns the reference data group form */
+  /**
+   * Build Reference data form group
+   *
+   * @returns Reference data form group
+   */
   private getRefDataForm() {
     const form = new FormGroup({
       name: new FormControl(this.referenceData?.name, Validators.required),
@@ -201,7 +202,7 @@ export class ReferenceDataComponent
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
-        .watchQuery<GetReferenceDataQueryResponse>({
+        .watchQuery<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: this.id,
@@ -272,7 +273,7 @@ export class ReferenceDataComponent
       this.referenceForm.get('fields')?.setValidators(Validators.required);
       if (this.referenceForm.value.apiConfiguration) {
         this.apollo
-          .query<GetApiConfigurationQueryResponse>({
+          .query<ApiConfigurationQueryResponse>({
             query: GET_API_CONFIGURATION,
             variables: {
               id: this.referenceForm.value.apiConfiguration,
@@ -286,7 +287,7 @@ export class ReferenceDataComponent
       }
 
       this.apiConfigurationsQuery =
-        this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+        this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
           query: GET_API_CONFIGURATIONS_NAMES,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -322,41 +323,51 @@ export class ReferenceDataComponent
       })
       .subscribe({
         next: ({ errors, data, loading }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant(
-                    'common.referenceData.one'
-                  ),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant(
-                      'common.referenceData.one'
-                    ),
-                    value: '',
-                  }
-                )
-              );
-              this.referenceData = data.editReferenceData;
-              this.loading = loading;
-            }
-          }
+          this.handleEditReferenceDataResponse(data, errors, loading);
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handles the reference data mutation response
+   *
+   * @param {EditReferenceDataMutationResponse} data save mutation data
+   * @param {GraphQLError[]} errors save mutation errors
+   * @param {boolean} loading save mutation loading state
+   * @param {boolean} usingForm if saved data comes from the reference data form
+   */
+  private handleEditReferenceDataResponse(
+    data: EditReferenceDataMutationResponse | null | undefined,
+    errors: readonly GraphQLError[] | undefined,
+    loading: boolean,
+    usingForm: boolean = false
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translateService.instant('common.notifications.objectNotUpdated', {
+          type: this.translateService.instant('common.referenceData.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      if (data) {
+        this.snackBar.openSnackBar(
+          this.translateService.instant('common.notifications.objectUpdated', {
+            type: this.translateService.instant('common.referenceData.one'),
+            value: '',
+          })
+        );
+        this.referenceData = data.editReferenceData;
+      }
+      if (usingForm) {
+        this.referenceForm.markAsPristine();
+      }
+    }
+    this.loading = loading;
   }
 
   /**
@@ -412,25 +423,7 @@ export class ReferenceDataComponent
       })
       .subscribe({
         next: ({ errors, data, loading }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant(
-                    'common.referenceData.one'
-                  ),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
-              { error: true }
-            );
-            this.loading = false;
-          } else {
-            this.referenceData = data?.editReferenceData;
-            this.referenceForm.markAsPristine();
-            this.loading = loading || false;
-          }
+          this.handleEditReferenceDataResponse(data, errors, loading, true);
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -463,9 +456,7 @@ export class ReferenceDataComponent
           valueFieldsCopy.push(value.trim());
           this.valueFields = valueFieldsCopy;
         }
-        this.referenceForm?.get('fields')?.setValue(this.valueFields);
-        this.referenceForm?.get('fields')?.updateValueAndValidity();
-        this.referenceForm?.markAsDirty();
+        this.setReferenceFormValue();
         // Reset the input value
         if (input) {
           input.value = '';
@@ -473,6 +464,15 @@ export class ReferenceDataComponent
       },
       event.type === 'focusout' ? 500 : 0
     );
+  }
+
+  /**
+   * Update reference form value programmatically with the current value fields
+   */
+  private setReferenceFormValue() {
+    this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    this.referenceForm?.get('fields')?.updateValueAndValidity();
+    this.referenceForm?.markAsDirty();
   }
 
   /**
@@ -488,9 +488,7 @@ export class ReferenceDataComponent
       valueFieldsCopy.splice(index, 1);
       this.valueFields = valueFieldsCopy;
     }
-    this.referenceForm?.get('fields')?.setValue(this.valueFields);
-    this.referenceForm?.get('fields')?.updateValueAndValidity();
-    this.referenceForm?.markAsDirty();
+    this.setReferenceFormValue();
   }
 
   /**
@@ -498,16 +496,20 @@ export class ReferenceDataComponent
    */
   onValidateCSV(): void {
     this.csvLoading = true;
-    const dataTemp = this.csvData?.nativeElement.value || '';
+    const dataTemp = this.csvData?.value || '';
     if (dataTemp !== this.csvValue) {
       this.csvValue = dataTemp;
       this.newData = [];
       const lines = dataTemp.split('\n');
-      const headers = lines[0].split(',').map((x: string) => x.trim());
+      const headers = lines[0]
+        .split(this.separator.value || ',')
+        .map((x: string) => x.trim());
       if (lines.length < 2) return;
       // Infer types from first line
-      const fields = headers.reduce((acc, header) => {
-        const value = lines[1].split(',')[headers.indexOf(header)].trim();
+      const fields = headers.reduce((acc: any, header: any) => {
+        const value = lines[1]
+          .split(this.separator.value || ',')
+          [headers.indexOf(header)].trim();
         const type = inferTypeFromString(value);
         acc.push({ name: header, type });
         return acc;
@@ -516,7 +518,9 @@ export class ReferenceDataComponent
       for (let i = 1; i < lines.length; i++) {
         if (!lines[i]) continue;
         const obj: any = {};
-        const currentline = lines[i].split(',').map((x: string) => x.trim());
+        const currentline = lines[i]
+          .split(this.separator.value || ',')
+          .map((x: string) => x.trim());
         for (let j = 0; j < headers.length; j++) {
           obj[headers[j]] = currentline[j];
         }
@@ -568,7 +572,7 @@ export class ReferenceDataComponent
     }
     // get the api configuration
     this.loadingFields = true;
-    const query$ = this.apollo.query<GetApiConfigurationQueryResponse>({
+    const query$ = this.apollo.query<ApiConfigurationQueryResponse>({
       query: GET_API_CONFIGURATION,
       variables: {
         id: apiConfID,

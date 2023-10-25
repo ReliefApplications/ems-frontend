@@ -1,0 +1,83 @@
+<kendo-tilelayout-item-header
+  *ngIf="header"
+  class="widget-header border-b"
+  [ngClass]="{
+    '!border-transparent': !(widget.settings.widgetDisplay?.showBorder ?? true),
+    '!border-b-gray-300': widget.settings.widgetDisplay?.showBorder ?? true
+  }"
+>
+  <ng-container
+    *ngIf="headerLeftTemplate"
+    [ngTemplateOutlet]="headerLeftTemplate"
+  ></ng-container>
+  <ng-container
+    *ngIf="widgetContentComponent?.headerTemplate"
+    [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+  ></ng-container>
+  <ng-container
+    *ngIf="headerRightTemplate"
+    [ngTemplateOutlet]="headerRightTemplate"
+  ></ng-container>
+</kendo-tilelayout-item-header>
+<ng-container [ngSwitch]="widget.component">
+  <!-- CHART -->
+  <shared-chart
+    *ngSwitchCase="'chart'"
+    #widgetContent
+    [header]="header"
+    [settings]="widget.settings"
+    class="flex-1 overflow-hidden"
+  ></shared-chart>
+  <!-- GRID -->
+  <shared-grid-widget
+    *ngSwitchCase="'grid'"
+    #widgetContent
+    [header]="header"
+    [settings]="widget.settings"
+    (changeStep)="changeStep.emit($event)"
+    (edit)="edit.emit($event)"
+    [widget]="widget"
+    [canUpdate]="canUpdate"
+    class="flex-1 overflow-hidden"
+  ></shared-grid-widget>
+  <!-- MAP -->
+  <shared-map-widget
+    *ngSwitchCase="'map'"
+    #widgetContent
+    [header]="header"
+    [settings]="widget.settings"
+    class="flex-1 overflow-hidden"
+  ></shared-map-widget>
+  <!-- TEXT EDITOR -->
+  <shared-editor
+    *ngSwitchCase="'editor'"
+    #widgetContent
+    [header]="header"
+    [settings]="widget.settings"
+    class="flex-1 overflow-hidden"
+  >
+  </shared-editor>
+  <!-- SUMMARY CARD -->
+  <shared-summary-card
+    *ngSwitchCase="'summaryCard'"
+    #widgetContent
+    [header]="header"
+    [settings]="widget.settings"
+    (edit)="edit.emit($event)"
+    [widget]="widget"
+    class="flex-1 overflow-hidden"
+  >
+  </shared-summary-card>
+  <!-- Tabs -->
+  <shared-tabs
+    *ngSwitchCase="'tabs'"
+    #widgetContent
+    [header]="header"
+    [settings]="widget.settings"
+    (edit)="edit.emit($event)"
+    [canUpdate]="canUpdate"
+    [widget]="widget"
+    class="flex-1 overflow-hidden"
+  >
+  </shared-tabs>
+</ng-container>

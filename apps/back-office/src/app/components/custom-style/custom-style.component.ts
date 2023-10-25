@@ -1,20 +1,34 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+  Inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   Application,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-  SafeConfirmService,
-} from '@oort-front/safe';
-import { firstValueFrom } from 'rxjs';
+  ApplicationService,
+  UnsubscribeComponent,
+  ConfirmService,
+  RestService,
+  BlobType,
+  DownloadService,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
-import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
-import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, SnackbarService } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SnackbarService,
+  SpinnerModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -30,13 +44,15 @@ const DEFAULT_STYLE = '';
     MonacoEditorModule,
     TranslateModule,
     ButtonModule,
+    SpinnerModule,
+    TooltipModule,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
 })
 export class CustomStyleComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
 {
   public formControl = new FormControl(DEFAULT_STYLE);
   public applicationId?: string;
@@ -47,8 +63,9 @@ export class CustomStyleComponent
     language: 'scss',
     fixedOverflowWidgets: false,
   };
-  private styleApplied: HTMLStyleElement;
+  private rawCustomStyle!: string;
   private savedStyle = '';
+  public loading = false;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -58,33 +75,52 @@ export class CustomStyleComponent
    * @param apollo Apollo service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param restService Shared rest service
+   * @param document document
+   * @param downloadService Shared download service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: ConfirmService,
+    private restService: RestService,
+    @Inject(DOCUMENT) private document: Document,
+    private downloadService: DownloadService
   ) {
     super();
-    this.styleApplied = document.createElement('style');
     // Updates the style when the value changes
-    this.formControl.valueChanges.subscribe((value: any) => {
-      this.applicationService.customStyleEdited = true;
-      this.styleApplied.innerText = value;
-      document.getElementsByTagName('body')[0].appendChild(this.styleApplied);
-      this.style.emit(value);
-    });
+    this.formControl.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((value: any) => {
+        const scss = value as string;
+        this.restService
+          .post('style/scss-to-css', { scss }, { responseType: 'text' })
+          .subscribe({
+            next: (css) => {
+              if (this.applicationService.customStyle) {
+                this.applicationService.customStyle.innerText = css;
+              }
+            },
+          });
+        this.applicationService.customStyleEdited = true;
+        this.rawCustomStyle = value;
+      });
   }
 
   ngOnInit(): void {
-    if (this.applicationService.customStyle) {
-      this.savedStyle = this.applicationService.customStyle.innerText;
-      this.styleApplied = this.applicationService.customStyle;
-      this.formControl.setValue(this.styleApplied.innerText);
+    if (this.applicationService.rawCustomStyle) {
+      this.savedStyle = this.applicationService.customStyle?.innerText || '';
+      this.rawCustomStyle = this.applicationService.rawCustomStyle;
+      this.formControl.setValue(this.rawCustomStyle, { emitEvent: false });
       this.formControl.markAsPristine();
     } else {
-      this.applicationService.customStyle = this.styleApplied;
+      const styleElement = this.document.createElement('style');
+      styleElement.innerText = '';
+      this.document.getElementsByTagName('head')[0].appendChild(styleElement);
+      this.applicationService.rawCustomStyle = this.rawCustomStyle;
+      this.applicationService.customStyle = styleElement;
     }
 
     this.applicationService.application$
@@ -115,7 +151,11 @@ export class CustomStyleComponent
         .subscribe((confirm: any) => {
           if (confirm) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.applicationService.customStyle!.innerText = this.savedStyle;
+
+            if (this.applicationService.customStyle) {
+              this.applicationService.customStyleEdited = false;
+              this.applicationService.customStyle.innerText = this.savedStyle;
+            }
             this.cancel.emit(true);
           }
         });
@@ -124,6 +164,12 @@ export class CustomStyleComponent
 
   /** Save application custom css styling */
   async onSave(): Promise<void> {
+    // todo(beta): check
+    this.loading = true;
+    if (!this.applicationId) {
+      throw new Error('No application id');
+    }
+
     const file = new File(
       [this.formControl.value as string],
       'customStyle.scss',
@@ -132,22 +178,20 @@ export class CustomStyleComponent
       }
     );
 
-    const res = await firstValueFrom(
-      this.apollo.mutate<UploadApplicationStyleMutationResponse>({
-        mutation: UPLOAD_APPLICATION_STYLE,
-        variables: {
-          file,
-          application: this.applicationId,
-        },
-        context: {
-          useMultipart: true,
-        },
+    const path = await this.downloadService.uploadBlob(
+      file,
+      BlobType.APPLICATION_STYLE,
+      this.applicationId
+    );
+
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.objectUpdated', {
+        value: this.translate.instant('components.application.customStyling'),
+        type: '',
       })
     );
-    if (res.errors) {
-      this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-      return;
-    } else {
+    // todo(beta): check
+    if (path) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectUpdated', {
           value: this.translate.instant('components.application.customStyling'),
@@ -156,8 +200,10 @@ export class CustomStyleComponent
       );
       this.formControl.markAsPristine();
       this.applicationService.customStyleEdited = false;
-      this.applicationService.customStyle = this.styleApplied;
+      this.applicationService.rawCustomStyle = this.rawCustomStyle;
+      this.savedStyle = this.applicationService.customStyle?.innerText || '';
     }
+    this.loading = false;
   }
 
   /**
@@ -176,6 +222,17 @@ export class CustomStyleComponent
             this.applicationService.customStyleEdited = false;
           });
       }, 100);
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (
+      this.applicationService.customStyleEdited &&
+      this.applicationService.customStyle
+    ) {
+      this.applicationService.customStyleEdited = false;
+      this.applicationService.customStyle.innerText = this.savedStyle;
     }
   }
 }

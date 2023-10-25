@@ -36,23 +36,23 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('./pages/roles/roles.module').then(
+                  import('../shared/pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/role-summary/role-summary.module').then(
-                    (m) => m.RoleSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/role-summary/role-summary.module'
+                  ).then((m) => m.RoleSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@role',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -67,23 +67,23 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('@oort-front/safe').then(
-                    (m) => m.SafeApplicationUsersViewModule
+                  import('@oort-front/shared').then(
+                    (m) => m.ApplicationUsersViewModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/user-summary/user-summary.module').then(
-                    (m) => m.UserSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/user-summary/user-summary.module'
+                  ).then((m) => m.UserSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@user',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -95,25 +95,25 @@ const routes: Routes = [
           {
             path: 'templates',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationTemplatesViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationTemplatesViewModule
               ),
           },
           {
             path: 'distribution-lists',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationDistributionListsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationDistributionListsViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'notifications',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationNotificationsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationNotificationsViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
         ],
       },

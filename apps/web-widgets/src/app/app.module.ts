@@ -25,9 +25,9 @@ import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   AppAbility,
   KendoTranslationService,
-  SafeAuthInterceptorService,
-  SafeFormService,
-} from '@oort-front/safe';
+  AuthInterceptorService,
+  FormService,
+} from '@oort-front/shared';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
@@ -47,6 +47,7 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
@@ -59,17 +60,21 @@ registerLocaleData(localeEn);
  * @param oauth OAuth Service
  * @param translate Translate service
  * @param injector Injector
+ * @param {FormService} formService Form service containing initialize for survey features
  * @returns oAuth configuration and translation content loaded
  */
 const initializeAuthAndTranslations =
   (
     oauth: OAuthService,
     translate: TranslateService,
-    injector: Injector
+    injector: Injector,
+    formService: FormService
   ): (() => Promise<any>) =>
   () => {
     // todo: check if used or not
     oauth.configure(environment.authConfig);
+    formService.initialize();
+    // Add fa icon font to check in the application
     // Make sure that all translations are available before the app initializes
     return new Promise<any>((resolve: any) => {
       const locationInitialized = injector.get(
@@ -91,7 +96,6 @@ const initializeAuthAndTranslations =
             );
           },
           complete: () => {
-            // console.log(translate.instant('kendo.datetimepicker.now'));
             resolve(null);
           },
         });
@@ -114,7 +118,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
  * @returns custom Overlay container.
  */
 const provideOverlay = (_platform: Platform): AppOverlayContainer =>
-  new AppOverlayContainer(_platform);
+  new AppOverlayContainer(_platform, document);
 
 /**
  * Web Widget project root module.
@@ -147,7 +151,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: APP_INITIALIZER,
       useFactory: initializeAuthAndTranslations,
       multi: true,
-      deps: [OAuthService, TranslateService, Injector],
+      deps: [OAuthService, TranslateService, Injector, FormService],
     },
     {
       provide: OverlayContainer,
@@ -164,7 +168,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
     {
@@ -192,10 +196,8 @@ export class AppModule implements DoBootstrap {
    * Main project root module
    *
    * @param injector Angular injector
-   * @param formService SafeFormService
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(private injector: Injector, formService: SafeFormService) {}
+  constructor(private injector: Injector) {}
 
   /**
    * Bootstrap the project.

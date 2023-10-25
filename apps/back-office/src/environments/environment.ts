@@ -55,5 +55,6 @@ export const environment: Environment = {
     'text',
     'map',
     'summaryCard',
+    'tabs',
   ],
 };

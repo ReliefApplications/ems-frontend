@@ -1,8 +1,9 @@
 import {
-  AfterContentInit,
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ContentChildren,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
@@ -26,6 +27,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
 
 /**
  * UI Tabs component
+ * Tabs are used to split content between multiple sections. Tabs can be either horizontal or vertical.
  */
 @Component({
   selector: 'ui-tabs',
@@ -46,7 +48,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
     ]),
   ],
 })
-export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
+export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -66,11 +68,14 @@ export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */
   @Output() selectedIndexChange = new EventEmitter<number>();
-
+  /** Event emitter for when a tab is opened. */
   @Output() openedTab = new EventEmitter<TabComponent>();
-
+  /** Reference to the TabBodyHostDirective. */
   @ViewChild(TabBodyHostDirective)
   tabBodyHost!: TabBodyHostDirective;
+  /** Refenrece to tab list element */
+  @ViewChild('tabList')
+  tabList!: ElementRef<any>;
 
   previousTabsLength = 0;
   triggerAnimation = false;
@@ -100,17 +105,16 @@ export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
     return classes;
   }
 
-  ngAfterContentInit() {
+  ngAfterViewInit() {
     // This ensures that the subscription logic is executed for both existing and new tab elements
     this.tabs.changes
       .pipe(startWith(this.tabs), takeUntil(this.destroy$))
       .subscribe((tabs: QueryList<TabComponent>) => {
         this.cdr.detectChanges();
-        if (tabs.length !== this.previousTabsLength) {
-          this.reorder$.next();
-          this.previousTabsLength = tabs.length;
-          this.subscribeToOpenTabEvents();
-        }
+        this.reorder$.next();
+        this.previousTabsLength = tabs.length;
+        this.subscribeToOpenTabEvents();
+        this.setSelectedTab();
       });
   }
 
@@ -166,7 +170,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
       tab.vertical = this.vertical;
       tab.index = index;
       tab.openTab
-        .pipe(takeUntil(this.destroy$), takeUntil(this.reorder$))
+        .pipe(takeUntil(this.reorder$), takeUntil(this.destroy$))
         .subscribe(() => {
           this.showContent(tab);
           this.selectedIndex = index;

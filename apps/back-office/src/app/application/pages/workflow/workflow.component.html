@@ -1,6 +1,6 @@
 <!-- Skeleton when loading -->
 <ng-container
-  *safeSkeleton="
+  *sharedSkeleton="
     loading;
     repeat: 1;
     height: '32px';
@@ -11,76 +11,42 @@
   <ng-container *ngIf="workflow">
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
       <!-- Editable Title -->
-      <safe-editable-text
-        [text]="workflow.name"
-        [canEdit]="canEditName"
-        (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event"
-      >
-        <h1 class="!m-0 overflow-hidden text-ellipsis">
-          {{ workflow.name }}
-        </h1>
-      </safe-editable-text>
-
-      <!-- buttons right to title -->
-      <div class="flex items-center gap-1" *ngIf="!formActive">
-        <safe-access
-          [access]="workflow.permissions"
-          [application]="workflow.page?.application?.id"
-          [objectTypeName]="'common.page.one' | translate"
-          (save)="saveAccess($event)"
-          *ngIf="workflow.page?.canUpdate || false"
-        ></safe-access>
+      <div class="flex items-center gap-1">
+        <shared-editable-text
+          [text]="workflow.name"
+          [canEdit]="canEditName"
+          (onChange)="saveName($event)"
+          (formActiveEvent)="formActive = $event"
+        >
+          <h1 class="!m-0 overflow-hidden text-ellipsis">
+            {{ workflow.name }}
+          </h1>
+        </shared-editable-text>
         <ui-button
+          *ngIf="!formActive"
           variant="grey"
+          (click)="onOpenSettings()"
           [isIcon]="true"
-          icon="more_vert"
-          [uiMenuTriggerFor]="menu"
-          cdkOverlayOrigin
-          #appMenuTrigger="cdkOverlayOrigin"
-        >
-        </ui-button>
-        <ui-menu #menu>
-          <button uiMenuItem (click)="onAppSelection()">
-            <ui-icon icon="file_copy" variant="grey"></ui-icon>
-            {{ 'common.duplicate' | translate }}
-          </button>
-        </ui-menu>
-
-        <ng-template #searchMenuHeaderTemplate>
-          <ui-alert>
-            {{ 'models.page.tooltip.duplicate' | translate }}
-          </ui-alert>
-        </ng-template>
-
-        <ng-template
-          cdkConnectedOverlay
-          [cdkConnectedOverlayOrigin]="appMenuTrigger"
-          [cdkConnectedOverlayOpen]="showAppMenu"
-        >
-          <safe-search-menu
-            [headerTemplate]="searchMenuHeaderTemplate"
-            [currentApplicationId]="applicationId"
-            [applications]="applications"
-            (close)="showAppMenu = false"
-            (open)="onDuplicate($event)"
-          ></safe-search-menu>
-        </ng-template>
+          icon="settings"
+          [uiTooltip]="'common.settings' | translate"
+        ></ui-button>
       </div>
+      <ui-button *ngIf="canUpdate" icon="add" (click)="onAddStep()">{{
+        'models.step.new' | translate
+      }}</ui-button>
     </div>
   </ng-container>
 </ng-container>
 <!-- STEPS -->
-<safe-workflow-stepper
-  class="-mx-6 my-4 block"
+<shared-workflow-stepper
+  class="-mx-6 block"
   [loading]="loading"
   [steps]="steps"
   [canUpdate]="canUpdate"
-  (add)="onAddStep()"
   (openStep)="onOpenStep($event)"
   (delete)="onDeleteStep($event)"
   (reorderSteps)="onReorderSteps($event)"
   [activeStep]="activeStep"
 >
-</safe-workflow-stepper>
+</shared-workflow-stepper>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

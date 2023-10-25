@@ -1,0 +1,356 @@
+<div>
+  <h2>{{ 'common.display' | translate }}</h2>
+  <form [formGroup]="formGroup" class="flex flex-row h-full">
+    <!-- Chart options -->
+    <div class="flex flex-1 flex-col" formGroupName="chart">
+      <cdk-accordion>
+        <!-- === LEGEND === -->
+        <ui-expansion-panel formGroupName="legend">
+          <ng-container ngProjectAs="title">
+            {{ 'components.widget.settings.chart.legend' | translate }}
+          </ng-container>
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.widget.settings.chart.position' | translate
+            }}</label>
+            <ng-template #positionLabel>
+              {{ chartForm.value.legend.position }}
+            </ng-template>
+            <ui-select-menu
+              [customTemplate]="{ template: positionLabel, context: null }"
+              formControlName="position"
+            >
+              <ui-select-option value="none">{{
+                'components.widget.settings.chart.hideLegend' | translate
+              }}</ui-select-option>
+              <ui-select-option
+                *ngFor="let position of legendPositions"
+                value="{{ position.value }}"
+              >
+                {{ position.value }}
+                <ng-container ngProjectAs="icon">
+                  <ui-icon icon="{{ position.icon }}"></ui-icon>
+                </ng-container>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </ui-expansion-panel>
+        <!-- === TITLE === -->
+        <ui-expansion-panel formGroupName="title" [index]="1">
+          <ng-container ngProjectAs="title">
+            {{ 'common.title' | translate }}
+          </ng-container>
+          <div class="flex flex-col gap-2">
+            <!-- Text -->
+            <div uiFormFieldDirective class="flex-1">
+              <label>{{
+                'components.widget.settings.chart.text' | translate
+              }}</label>
+              <input formControlName="text" />
+            </div>
+            <div class="flex gap-2 items-center">
+              <!-- Font size -->
+              <div uiFormFieldDirective class="flex-1">
+                <label>{{
+                  'components.widget.settings.chart.size' | translate
+                }}</label>
+                <ui-select-menu formControlName="size">
+                  <ui-select-option *ngFor="let size of sizes" [value]="size">
+                    {{ size }}
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
+              <!-- Position -->
+              <div uiFormFieldDirective class="flex-1">
+                <label>{{
+                  'components.widget.settings.chart.position' | translate
+                }}</label>
+                <ng-template #positionLabel>
+                  {{ chartForm.value.legend.position }}
+                </ng-template>
+                <ui-select-menu
+                  [customTemplate]="{ template: positionLabel, context: null }"
+                  formControlName="position"
+                >
+                  <ui-select-option
+                    *ngFor="let position of titlePositions"
+                    value="{{ position.value }}"
+                  >
+                    {{ position.value }}
+                    <ng-container ngProjectAs="icon">
+                      <ui-icon icon="{{ position.icon }}"></ui-icon>
+                    </ng-container>
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
+            </div>
+            <div class="flex gap-2 items-center">
+              <!-- Format -->
+              <div class="flex-1 flex flex-col">
+                <span class="text-gray-500 mb-1 text-xs">{{
+                  'components.widget.settings.chart.title.format' | translate
+                }}</span>
+                <div class="flex">
+                  <ng-container
+                    *ngIf="chartForm.get('title.bold'); let control"
+                  >
+                    <ui-button
+                      icon="format_bold"
+                      (click)="onToggleStyle('title.bold')"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
+                      [disabled]="control.disabled"
+                    ></ui-button>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="chartForm.get('title.italic'); let control"
+                  >
+                    <ui-button
+                      icon="format_italic"
+                      (click)="onToggleStyle('title.italic')"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
+                      [disabled]="control.disabled"
+                    ></ui-button>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="chartForm.get('title.underline'); let control"
+                  >
+                    <ui-button
+                      (click)="onToggleStyle('title.underline')"
+                      icon="format_underline"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
+                      [disabled]="control.disabled"
+                    ></ui-button>
+                  </ng-container>
+                </div>
+              </div>
+              <!-- Color -->
+              <div class="flex-1 flex flex-col">
+                <span class="text-gray-500 mb-1 text-xs">{{
+                  'components.widget.settings.chart.title.color' | translate
+                }}</span>
+                <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+              </div>
+            </div>
+          </div>
+        </ui-expansion-panel>
+        <!-- === PALETTE -->
+        <ui-expansion-panel formGroupName="palette" [index]="2">
+          <ng-container ngProjectAs="title">
+            {{ 'components.widget.settings.chart.palette.title' | translate }}
+          </ng-container>
+          <div class="flex flex-col gap-2">
+            <ui-toggle formControlName="enabled">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.chart.palette.enable' | translate
+                }}<ui-icon
+                class="ml-1 cursor-help self-center"
+                  variant="grey"
+                  [size]="18"
+                  icon="info_outline"
+                  [uiTooltip]="
+                    'components.widget.settings.chart.tooltip.palette'
+                      | translate
+                  "
+                ></ui-icon>
+              </ng-container>
+            </ui-toggle>
+            <shared-palette-control
+              formControlName="value"
+            ></shared-palette-control>
+          </div>
+        </ui-expansion-panel>
+        <!-- === LABELS === -->
+        <ui-expansion-panel formGroupName="labels" [index]="3">
+          <ng-container ngProjectAs="title">
+            {{ 'components.widget.settings.chart.labels.title' | translate }}
+          </ng-container>
+          <div class="flex flex-col gap-2">
+            <ui-toggle
+              formControlName="showCategory"
+              *ngIf="type.name === 'donut' || type.name === 'pie'"
+            >
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.labels.showCategory'
+                  | translate
+              }}</ng-container>
+            </ui-toggle>
+            <ui-toggle formControlName="showValue">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.labels.showValue' | translate
+              }}</ng-container>
+            </ui-toggle>
+            <div
+              *ngIf="
+                chartForm.value.labels.showValue &&
+                (['donut', 'pie'].includes(type.name) ||
+                  (['bar', 'column'].includes(type.name) &&
+                    chartForm.value.mapping.series))
+              "
+              uiFormFieldDirective
+            >
+              <label>{{
+                'components.widget.settings.chart.labels.valueType' | translate
+              }}</label>
+              <ui-select-menu formControlName="valueType">
+                <ui-select-option value="value">{{
+                  'common.value.one' | translate
+                }}</ui-select-option>
+                <ui-select-option value="percentage">{{
+                  'components.widget.settings.chart.labels.percentage'
+                    | translate
+                }}</ui-select-option>
+              </ui-select-menu>
+            </div>
+          </div>
+        </ui-expansion-panel>
+        <!-- === AXES PARAMETERS === -->
+        <ui-expansion-panel
+          formGroupName="axes"
+          *ngIf="['bar', 'column'].includes(type.name)"
+          [index]="4"
+        >
+          <ng-container ngProjectAs="title">
+            {{ 'components.widget.settings.chart.axes' | translate }}
+          </ng-container>
+          <!-- === X AXIS PARAMETERS === -->
+          <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
+            <h3>
+              {{ 'components.widget.settings.chart.xAxis' | translate }}
+            </h3>
+            <div class="axis-container">
+              <ui-toggle formControlName="enableMin"></ui-toggle>
+              <div uiFormFieldDirective>
+                <label>{{
+                  'components.aggregationBuilder.operators.min' | translate
+                }}</label>
+                <input
+                  formControlName="min"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </div>
+            </div>
+            <div class="axis-container">
+              <ui-toggle formControlName="enableMax"></ui-toggle>
+              <div uiFormFieldDirective floatLabel="always">
+                <label>{{
+                  'components.aggregationBuilder.operators.max' | translate
+                }}</label>
+                <input
+                  formControlName="max"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </div>
+            </div>
+          </ng-container>
+          <!-- === Y AXIS PARAMETERS === -->
+          <ng-container
+            formGroupName="y"
+            *ngIf="['column'].includes(type.name)"
+          >
+            <h3>
+              {{ 'components.widget.settings.chart.yAxis' | translate }}
+            </h3>
+            <div class="axis-container">
+              <ui-toggle formControlName="enableMin"></ui-toggle>
+              <div uiFormFieldDirective floatLabel="always">
+                <label>{{
+                  'components.aggregationBuilder.operators.min' | translate
+                }}</label>
+                <input
+                  formControlName="min"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </div>
+            </div>
+            <div class="axis-container">
+              <ui-toggle formControlName="enableMax"></ui-toggle>
+              <div uiFormFieldDirective floatLabel="always">
+                <label>{{
+                  'components.aggregationBuilder.operators.max' | translate
+                }}</label>
+                <input
+                  formControlName="max"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </div>
+            </div>
+          </ng-container>
+        </ui-expansion-panel>
+        <!-- === DISPLAY GRIDS === -->
+        <ui-expansion-panel
+          formGroupName="grid"
+          *ngIf="['bar', 'column', 'line'].includes(type.name)"
+          [index]="5"
+        >
+          <ng-container ngProjectAs="title">
+            {{ 'components.widget.settings.chart.grid.title' | translate }}
+          </ng-container>
+          <div class="flex flex-col gap-2" formGroupName="x">
+            <ui-toggle formControlName="display">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.grid.x.display' | translate
+              }}</ng-container>
+            </ui-toggle>
+          </div>
+          <div class="flex flex-col gap-2 mt-2" formGroupName="y">
+            <ui-toggle formControlName="display">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.grid.y.display' | translate
+              }}</ng-container>
+            </ui-toggle>
+          </div>
+        </ui-expansion-panel>
+        <!-- === SERIES AND STACKS PARAMETERS === -->
+        <ui-expansion-panel [index]="6">
+          <ng-container ngProjectAs="title">
+            {{ 'components.widget.settings.chart.series.title' | translate }}
+          </ng-container>
+          <div
+            class="flex flex-col gap-2 mb-6"
+            formGroupName="stack"
+            *ngIf="
+              ['bar', 'column'].includes(type.name) &&
+              chartForm.value.mapping.series
+            "
+          >
+            <ui-toggle formControlName="enable">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.series.stack.enable'
+                  | translate
+              }}</ng-container>
+            </ui-toggle>
+            <ui-toggle formControlName="usePercentage">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.series.stack.usePercentage'
+                  | translate
+              }}</ng-container>
+            </ui-toggle>
+            <ui-divider class="my-1"></ui-divider>
+          </div>
+          <shared-series-settings
+            [formArray]="$any(formGroup.get('chart.series'))"
+          >
+          </shared-series-settings>
+        </ui-expansion-panel>
+      </cdk-accordion>
+    </div>
+    <!-- Chart preview -->
+    <div class="flex flex-1 flex-col h-96">
+      <shared-chart
+        class="h-full"
+        [header]="false"
+        [export]="false"
+        [settings]="chartSettings"
+      >
+      </shared-chart>
+    </div>
+  </form>
+</div>

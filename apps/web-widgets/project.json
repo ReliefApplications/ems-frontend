@@ -19,7 +19,7 @@
           "apps/web-widgets/src/favicon.ico",
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/",
+            "input": "libs/shared/src/i18n/",
             "output": "/assets/i18n/"
           },
           {
@@ -34,43 +34,33 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/tinymce/",
+            "input": "libs/shared/src/i18n/tinymce/",
             "output": "/tinymce/langs"
           },
           {
             "glob": "**/*",
             "input": "node_modules/leaflet/dist/images/",
             "output": "/assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
-            "output": "/assets/webfonts/"
           }
         ],
         "styles": [
-          {
-            "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
-            "inject": true
-          },
           "apps/web-widgets/src/styles.scss",
-          "libs/safe/src/lib/style/styles.scss",
-          "libs/safe/src/lib/style/widgets.scss",
-          "node_modules/survey-angular/survey.min.css",
-          "node_modules/survey-creator/survey-creator.min.css",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css",
+          "node_modules/survey-creator-core/survey-creator-core.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
         ],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -78,12 +68,11 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular",
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
           "fast-sha256",
-          "leaflet",
-          "esri-leaflet-vector",
-          "leaflet.markercluster",
-          "jsonpath"
+          "color"
         ]
       },
       "configurations": {
@@ -102,7 +91,7 @@
           ],
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/default",
+              "libs/styles/src/lib/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
           },
@@ -129,7 +118,7 @@
           ],
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/default",
+              "libs/styles/src/lib/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
           },
@@ -150,7 +139,7 @@
           "namedChunks": true,
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/default",
+              "libs/styles/src/lib/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
           }

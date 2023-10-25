@@ -1,0 +1,12 @@
+<shared-filter
+  [form]="form"
+  [fields]="filterFields"
+  [canUseContext]="true"
+></shared-filter>
+
+<!-- CUSTOM EDITOR FOR DATES -->
+<ng-template #dateEditor let-valueControl="valueControl">
+  <shared-date-filter-editor
+    [control]="valueControl"
+  ></shared-date-filter-editor>
+</ng-template>

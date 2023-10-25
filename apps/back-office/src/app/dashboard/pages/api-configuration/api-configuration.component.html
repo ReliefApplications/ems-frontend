@@ -4,12 +4,12 @@
     <h1 class="page-title">
       {{ apiConfiguration.name }}
     </h1>
-    <safe-access
+    <shared-access
       [access]="apiConfiguration.permissions"
       [objectTypeName]="'common.apiConfiguration.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="apiConfiguration?.canUpdate"
-    ></safe-access>
+    ></shared-access>
   </div>
   <form [formGroup]="apiForm" *ngIf="apiForm">
     <!-- General settings -->
@@ -62,9 +62,7 @@
           <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
           <ui-select-menu
             formControlName="authType"
-            [placeholder]="
-              'models.apiConfiguration.selectAuthType' | translate
-            "
+            [placeholder]="'models.apiConfiguration.selectAuthType' | translate"
           >
             <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
@@ -142,7 +140,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.tokenUrl' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.authTargetUrl')"
             />
           </div>
           <!-- Client id -->
@@ -156,7 +154,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.clientId' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.apiClientID')"
             />
           </div>
           <!-- Client secret -->
@@ -170,7 +168,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.secret' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.safeSecret')"
             />
           </div>
           <!-- Token scope -->
@@ -184,7 +182,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.scope' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.scope')"
             />
           </div>
         </div>
@@ -203,7 +201,7 @@
               [placeholder]="
                 'pages.apiConfiguration.placeholder.token' | translate
               "
-              onfocus="this.value=''"
+              (focus)="clearControl('settings.token')"
             />
           </div>
         </div>
@@ -230,29 +228,22 @@
       </div>
     </div>
 
-    <!-- Save button -->
-    <ui-button
-      category="secondary"
-      variant="primary"
-      (click)="onSave()"
-      [disabled]="apiForm.invalid || !apiForm.dirty"
-    >
-      {{ 'common.save' | translate }}
-    </ui-button>
+    <!-- Floating div for actions buttons -->
+    <ui-fixed-wrapper>
+      <!-- Save button -->
+      <ui-button
+        category="secondary"
+        variant="primary"
+        (click)="onSave()"
+        [disabled]="apiForm.invalid || !apiForm.dirty"
+      >
+        {{ 'common.save' | translate }}
+      </ui-button>
+    </ui-fixed-wrapper>
   </form>
 </ng-container>
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <div uiChipList>
-    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
-      {{ 'common.status_active' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
-      {{ 'common.status_pending' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
-      {{ 'common.status_archived' | translate | titlecase }}
-    </ui-chip>
-  </div>
+  <shared-status-options [status]="status"></shared-status-options>
 </ng-template>
