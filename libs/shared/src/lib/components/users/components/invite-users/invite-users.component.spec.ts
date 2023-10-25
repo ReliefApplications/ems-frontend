@@ -6,7 +6,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
   TranslateService,
@@ -18,12 +17,12 @@ import { InviteUsersComponent } from './invite-users.component';
 
 describe('InviteUsersComponent', () => {
   let component: InviteUsersComponent;
-  let fixture: ComponentFixture<sharedInviteUsersComponent>;
+  let fixture: ComponentFixture<InviteUsersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         UntypedFormBuilder,
         { provide: DialogRef, useValue: {} },
         {

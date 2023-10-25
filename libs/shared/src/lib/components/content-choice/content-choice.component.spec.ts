@@ -4,7 +4,7 @@ import { ContentChoiceComponent } from './content-choice.component';
 
 describe('ContentChoiceComponent', () => {
   let component: ContentChoiceComponent;
-  let fixture: ComponentFixture<sharedContentChoiceComponent>;
+  let fixture: ComponentFixture<ContentChoiceComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

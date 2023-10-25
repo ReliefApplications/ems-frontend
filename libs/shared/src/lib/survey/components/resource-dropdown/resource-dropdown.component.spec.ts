@@ -14,7 +14,7 @@ import { GET_RESOURCES } from './graphql/queries';
 
 describe('ResourceDropdownComponent', () => {
   let component: ResourceDropdownComponent;
-  let fixture: ComponentFixture<sharedResourceDropdownComponent>;
+  let fixture: ComponentFixture<ResourceDropdownComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

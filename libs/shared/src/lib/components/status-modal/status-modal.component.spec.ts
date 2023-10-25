@@ -8,7 +8,7 @@ import { StatusModalComponent } from './status-modal.component';
 
 describe('StatusModalComponent', () => {
   let component: StatusModalComponent;
-  let fixture: ComponentFixture<sharedStatusModalComponent>;
+  let fixture: ComponentFixture<StatusModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

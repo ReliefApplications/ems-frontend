@@ -1,4 +1,4 @@
-<div *ngIf="!loading">
+<ng-container *ngIf="!loading; else emptyTemplate">
   <!-- NEW WIDGETS -->
   <div
     class="widget-choice-wrapper"
@@ -18,7 +18,7 @@
     [columns]="colsNumber"
     [rowHeight]="200"
     [resizable]="canUpdate"
-    [reorderable]="true"
+    [reorderable]="canUpdate"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)"
     class="-m-4"
@@ -82,21 +82,23 @@
       </ng-template>
     </kendo-tilelayout-item>
   </kendo-tilelayout>
-</div>
+</ng-container>
 <!-- LOADING INDICATOR -->
-<div *ngIf="loading" class="mt-6">
-  <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber" class="-m-4">
-    <kendo-tilelayout-item
-      *ngFor="let skeleton of skeletons"
-      [colSpan]="skeleton.colSpan"
-      [rowSpan]="skeleton.rowSpan"
-    >
-      <kendo-skeleton
-        shape="rectangle"
-        animation="pulse"
-        [width]="'100%'"
-        [height]="'100%'"
-      ></kendo-skeleton>
-    </kendo-tilelayout-item>
-  </kendo-tilelayout>
-</div>
+<ng-template #emptyTemplate>
+  <div class="mt-6">
+    <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber" class="-m-4">
+      <kendo-tilelayout-item
+        *ngFor="let skeleton of skeletons"
+        [colSpan]="skeleton.colSpan"
+        [rowSpan]="skeleton.rowSpan"
+      >
+        <kendo-skeleton
+          shape="rectangle"
+          animation="pulse"
+          [width]="'100%'"
+          [height]="'100%'"
+        ></kendo-skeleton>
+      </kendo-tilelayout-item>
+    </kendo-tilelayout>
+  </div>
+</ng-template>

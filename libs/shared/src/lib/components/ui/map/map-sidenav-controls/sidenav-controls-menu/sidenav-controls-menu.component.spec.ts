@@ -4,7 +4,7 @@ import { LayersMenuComponent } from './layers-menu.component';
 
 describe('LayersMenuComponent', () => {
   let component: LayersMenuComponent;
-  let fixture: ComponentFixture<sharedLayersMenuComponent>;
+  let fixture: ComponentFixture<LayersMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
