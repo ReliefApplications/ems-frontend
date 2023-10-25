@@ -20,8 +20,8 @@ import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
-/** Maximum height of the widget in row units */
-const MAX_ROW_SPAN = 4;
+/** Maximum height of the widget in row units when loading grid */
+const MAX_ROW_SPAN_LOADING = 4;
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -252,12 +252,11 @@ export class WidgetGridComponent
     const widgetDefinition = this.availableWidgets.find(
       (x) => x.component === this.widgets[e.item.order].component
     );
+    // Prevent widgets to be smaller than minimum width ( definition per widget )
     if (e.newRowSpan < widgetDefinition.minRow) {
       e.newRowSpan = widgetDefinition.minRow;
     }
-    if (e.newRowSpan > MAX_ROW_SPAN) {
-      e.newRowSpan = MAX_ROW_SPAN;
-    }
+    // Prevent widgets to be greater than maximum width ( fixed limit in the widget grid )
     if (e.newColSpan > MAX_COL_SPAN) {
       e.newColSpan = MAX_COL_SPAN;
     }
@@ -288,7 +287,7 @@ export class WidgetGridComponent
       }
       skeletons.push({
         colSpan,
-        rowSpan: Math.floor(Math.random() * MAX_ROW_SPAN) + 1,
+        rowSpan: Math.floor(Math.random() * MAX_ROW_SPAN_LOADING) + 1,
       });
     }
     return skeletons;
