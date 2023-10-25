@@ -2143,6 +2143,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"header": "Afficher le titre du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"

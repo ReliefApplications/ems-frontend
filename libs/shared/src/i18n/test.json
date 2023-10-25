@@ -2127,6 +2127,7 @@
 			},
 			"display": {
 				"border": "******",
+				"header": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"
