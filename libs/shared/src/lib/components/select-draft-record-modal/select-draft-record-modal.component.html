@@ -1,0 +1,15 @@
+<ui-dialog [size]="'medium'">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">Select draft record</h3>
+  </ng-container>
+
+  <ng-container ngProjectAs="content"> </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
+    <ui-button category="secondary" variant="primary" cdkFocusInitial>
+      Select draft
+    </ui-button>
+  </ng-container>
+</ui-dialog>

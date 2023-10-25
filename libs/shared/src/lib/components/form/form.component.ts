@@ -29,6 +29,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { cloneDeep, isNil } from 'lodash';
+import { SelectDraftRecordModalComponent } from '../select-draft-record-modal/select-draft-record-modal.component';
 
 /**
  * This component is used to display forms
@@ -351,6 +352,16 @@ export class FormComponent
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
+  }
+
+  /**
+   * Opens the modal to select a draft record to fill the form
+   */
+  public openSelectDraftRecord(): void {
+    const dialogRef = this.dialog.open(SelectDraftRecordModalComponent);
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      console.log('VALUE', value);
+    });
   }
 
   /**
