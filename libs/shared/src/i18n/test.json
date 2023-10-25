@@ -353,7 +353,17 @@
 		"row": {
 			"few": "******",
 			"none": "******",
-			"one": "******"
+			"one": "******",
+			"update": {
+				"few": {
+					"content": "****** {{quantity}} ******",
+					"title": "******"
+				},
+				"one": {
+					"content": "******",
+					"title": "******"
+				}
+			}
 		},
 		"save": "******",
 		"saveChanges": "******",
@@ -1235,6 +1245,11 @@
 					}
 				},
 				"other": "******"
+			},
+			"display": {
+				"tooltip": {
+					"placeholder": "******"
+				}
 			},
 			"expand": "******",
 			"grid": {
@@ -2144,7 +2159,8 @@
 				"border": "******",
 				"searchable": "******",
 				"sortable": "******",
-				"title": "******"
+				"title": "******",
+				"tooltip": "******"
 			},
 			"map": {
 				"defaultTitle": "******",

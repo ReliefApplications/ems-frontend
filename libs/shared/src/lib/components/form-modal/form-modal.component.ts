@@ -310,20 +310,13 @@ export class FormModalComponent
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
       const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.updateObject', {
-          name:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }),
+        title: this.translate.instant(
+          `common.row.update.${rowsSelected > 1 ? 'few' : 'one'}.title`
+        ),
         content: this.translate.instant(
-          'components.form.updateRow.confirmationMessage',
+          `common.row.update.${rowsSelected > 1 ? 'few' : 'one'}.content`,
           {
             quantity: rowsSelected,
-            rowText:
-              rowsSelected > 1
-                ? this.translate.instant('common.row.few')
-                : this.translate.instant('common.row.one'),
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),

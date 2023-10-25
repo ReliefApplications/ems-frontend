@@ -353,7 +353,17 @@
 		"row": {
 			"few": "Rangées",
 			"none": "Aucune rangée",
-			"one": "Rangée"
+			"one": "Rangée",
+			"update": {
+				"few": {
+					"content": "Souhaitez vous mettre à jour les {{count}} enregistrements?",
+					"title": "Mise à jour des enregistrements"
+				},
+				"one": {
+					"content": "Souhaitez vous mettre à jour l’enregistrement?",
+					"title": "Mise à jour de l’enregistrement"
+				}
+			}
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
@@ -1250,6 +1260,11 @@
 					}
 				},
 				"other": "Autre"
+			},
+			"display": {
+				"tooltip": {
+					"placeholder": "Entrez une valeur pour l'info-bulle"
+				}
 			},
 			"expand": "Étendre",
 			"grid": {
@@ -2160,7 +2175,8 @@
 				"border": "Afficher la bordure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
-				"title": "Affichage des widgets"
+				"title": "Affichage des widgets",
+				"tooltip": "afficher l'info-bulle"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",

@@ -1,5 +1,14 @@
 <ng-container *ngIf="canUpdate; else defaultTemplate">
   <div class="flex items-center" *ngIf="!collapsed">
+    <!-- Widget tooltip -->
+    <ui-button
+      *ngIf="widget.settings?.widgetDisplay?.showTooltip"
+      [isIcon]="true"
+      icon="info"
+      variant="grey"
+      [uiTooltip]="widget.settings.widgetDisplay.tooltip"
+    ></ui-button>
+    <!-- Widget settings -->
     <ui-button
       [isIcon]="true"
       icon="insert_chart"
@@ -8,6 +17,7 @@
       [disabled]="!this.widget || !this.widget.settings"
       variant="grey"
     ></ui-button>
+    <!-- Widget styling  -->
     <ui-button
       [isIcon]="true"
       icon="palette"
@@ -15,6 +25,7 @@
       (click)="onClick('style')"
       variant="grey"
     ></ui-button>
+    <!-- Expand widget -->
     <ui-button
       *ngIf="!(widget.component === 'map')"
       [isIcon]="true"
@@ -23,6 +34,7 @@
       (click)="onClick('expand')"
       variant="grey"
     ></ui-button>
+    <!-- Delete widget -->
     <ui-button
       [isIcon]="true"
       icon="delete"
@@ -32,6 +44,13 @@
     ></ui-button>
   </div>
 
+  <!-- Widget tooltip -->
+  <ui-icon
+    *ngIf="widget.settings?.widgetDisplay?.showTooltip && collapsed"
+    icon="info"
+    variant="grey"
+    [uiTooltip]="widget.settings.widgetDisplay.tooltip"
+  ></ui-icon>
   <!-- Only display if we have space to do it -->
   <ui-button
     *ngIf="collapsed"
@@ -43,6 +62,7 @@
   >
   </ui-button>
   <ui-menu #menu>
+    <!-- Widget settings -->
     <button
       uiMenuItem
       (click)="onClick('settings')"
@@ -51,10 +71,12 @@
       <ui-icon icon="insert_chart" variant="grey"></ui-icon>
       <span>{{ 'common.settings' | translate }}</span>
     </button>
+    <!-- Widget styling  -->
     <button uiMenuItem (click)="onClick('style')">
       <ui-icon icon="palette" variant="grey"></ui-icon>
       <span>{{ 'components.widget.styling' | translate }}</span>
     </button>
+    <!-- Expand widget -->
     <button
       uiMenuItem
       (click)="onClick('expand')"
@@ -63,6 +85,7 @@
       <ui-icon icon="open_in_full" variant="grey"></ui-icon>
       <span>{{ 'components.widget.expand' | translate }}</span>
     </button>
+    <!-- Delete widget -->
     <ui-divider class="py-1"></ui-divider>
     <button uiMenuItem (click)="onClick('delete')">
       <ui-icon icon="delete" variant="danger"></ui-icon>
@@ -72,6 +95,15 @@
 </ng-container>
 
 <ng-template #defaultTemplate>
+  <!-- Widget tooltip -->
+  <ui-button
+    *ngIf="widget.settings?.widgetDisplay?.showTooltip && collapsed"
+    [isIcon]="true"
+    icon="info"
+    variant="grey"
+    [uiTooltip]="widget.settings.widgetDisplay.tooltip"
+  ></ui-button>
+  <!-- Expand widget -->
   <ui-button
     *ngIf="!(widget.component === 'map')"
     [isIcon]="true"

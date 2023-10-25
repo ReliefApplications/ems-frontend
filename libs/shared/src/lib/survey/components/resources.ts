@@ -2,8 +2,9 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
+  UPDATE_RECORD,
 } from '../graphql/queries';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
@@ -306,6 +307,13 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['resource', 'addRecord'],
         visibleIf: (obj: any) => !!obj.resource && !!obj.addRecord,
+        visibleIndex: 3,
+      });
+      Serializer.addProperty('resources', {
+        name: 'autoSaveChanges:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        visibleIf: (obj: any) => !!obj.resource,
         visibleIndex: 3,
       });
       Serializer.addProperty('resources', {
@@ -711,6 +719,28 @@ export const init = (
                   : 'none';
             });
           }
+        }
+
+        const survey = question.survey as SurveyModel;
+        if (question.autoSaveChanges && survey) {
+          survey.onValueChanged.add(async (_: any, options: any) => {
+            const record = survey.getVariable('record.id');
+            // Can only auto save when updating a records
+            if (options.name === question.name && record) {
+              // Automatically save the changes
+              await firstValueFrom(
+                apollo.mutate({
+                  mutation: UPDATE_RECORD,
+                  variables: {
+                    id: record,
+                    data: {
+                      [question.name]: options.value,
+                    },
+                  },
+                })
+              );
+            }
+          });
         }
       }
     },

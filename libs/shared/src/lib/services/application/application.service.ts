@@ -239,20 +239,19 @@ export class ApplicationService {
       })
       .subscribe(async ({ data }) => {
         // extend user abilities for application
+        const app = { ...data.application };
         if (data.application) {
           // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
-          data.application.pages = (data.application.pages ?? []).map(
-            (page: Page) => {
-              if (faV4toV6Mapper[page.icon as string]) {
-                (page as Page).icon = faV4toV6Mapper[page.icon as string];
-              }
-              return page;
+          app.pages = (app.pages ?? []).map((page: Page) => {
+            if (faV4toV6Mapper[page.icon as string]) {
+              (page as Page).icon = faV4toV6Mapper[page.icon as string];
             }
-          );
-          this.authService.extendAbilityForApplication(data.application);
+            return page;
+          });
+          this.authService.extendAbilityForApplication(app);
         }
-        await this.getCustomStyle(data.application);
-        this.application.next(data.application);
+        await this.getCustomStyle(app);
+        this.application.next(app);
         const application = this.application.getValue();
         if (data.application?.locked) {
           if (!application?.lockedByUser) {

@@ -353,7 +353,17 @@
 		"row": {
 			"few": "Rows",
 			"none": "No row",
-			"one": "Row"
+			"one": "Row",
+			"update": {
+				"few": {
+					"content": "Do you really want to update {{quantity}} rows?",
+					"title": "Update rows"
+				},
+				"one": {
+					"content": "Do you really want to update this row?",
+					"title": "Update row"
+				}
+			}
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
@@ -1235,6 +1245,11 @@
 					}
 				},
 				"other": "Other"
+			},
+			"display": {
+				"tooltip": {
+					"placeholder": "Enter a value for tooltip"
+				}
 			},
 			"expand": "Expand",
 			"grid": {
@@ -2144,7 +2159,8 @@
 				"border": "Show widget border",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
-				"title": "Widget display"
+				"title": "Widget display",
+				"tooltip": "Show tooltip"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",

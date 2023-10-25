@@ -460,10 +460,45 @@ export class GridComponent
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
+    // format filter before sending
+    this.formatFilter(filter);
     if (!this.loadingRecords) {
       this.filter = filter;
       this.filterChange.emit(filter);
     }
+  }
+
+  /**
+   * Format filter before sending.
+   * Adjust date filters to remove timezone.
+   *
+   * @param filter Filter value.
+   */
+  private formatFilter(filter: any) {
+    filter.filters.forEach((filter: any) => {
+      // if there are sub filters
+      if (filter.filters) {
+        this.formatFilter(filter);
+      } else if (filter.value instanceof Date) {
+        const currentDate = filter.value;
+        const hoursToAdjustTimezone = Math.floor(
+          (currentDate as Date).getTimezoneOffset() / 60
+        );
+        const minutesToAdjustTimezone =
+          (currentDate as Date).getTimezoneOffset() % 60;
+
+        const dateObj = new Date(currentDate);
+        dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
+        dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
+        // Convert the modified date back to the original format
+        const modifiedDateString = dateObj
+          .toISOString()
+          .replace('T00:00:00.000Z', '');
+        const modifiedDate = new Date(modifiedDateString);
+
+        filter.value = modifiedDate;
+      }
+    });
   }
 
   /**
@@ -996,7 +1031,6 @@ export class GridComponent
    * @param event Click event
    */
   public onOpenURL(url: string, event: MouseEvent) {
-    const token = localStorage.getItem('idtoken');
     if (url?.startsWith(LIFT_REPORT_URL)) {
       event.preventDefault();
       const urlList = url.split('/');
@@ -1006,10 +1040,7 @@ export class GridComponent
       this.downloadService.getFile(
         urlList.join('/'),
         'pdf',
-        `Report-${incrementalID}.pdf`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `Report-${incrementalID}.pdf`
       );
     }
   }
