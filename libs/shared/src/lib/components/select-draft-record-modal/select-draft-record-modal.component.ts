@@ -1,32 +1,44 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  TabsModule,
-  DialogModule,
-  ButtonModule,
-  TooltipModule,
-  SelectMenuModule,
-  FormWrapperModule,
-  IconModule,
-} from '@oort-front/ui';
+  DraftRecordsQueryResponse,
+  DraftRecord,
+} from '../../models/draftRecord.model';
+import { DateModule } from '../../pipes/date/date.module';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Apollo } from 'apollo-angular';
+import { TableModule, DialogModule, ButtonModule } from '@oort-front/ui';
+import { GET_DRAFT_RECORDS } from '../roles/graphql/queries';
 
 @Component({
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TabsModule,
-    DialogModule,
-    IconModule,
-    ButtonModule,
-    TooltipModule,
-    SelectMenuModule,
-    FormWrapperModule,
-  ],
+  imports: [CommonModule, TableModule, DateModule, DialogModule, ButtonModule],
   selector: 'shared-select-draft-record-modal',
   templateUrl: './select-draft-record-modal.component.html',
   styleUrls: ['./select-draft-record-modal.component.scss'],
 })
-export class SelectDraftRecordModalComponent {}
+export class SelectDraftRecordModalComponent implements OnInit {
+  public draftRecords: Array<DraftRecord> = new Array<DraftRecord>();
+  public displayedColumns = ['createdAt'];
+
+  /**
+   * Modal for selection of a draft record
+   *
+   * @param apollo Apollo service
+   */
+  constructor(private apollo: Apollo) {}
+
+  ngOnInit(): void {
+    this.fetchDraftRecords();
+  }
+
+  fetchDraftRecords() {
+    this.apollo
+      .query<DraftRecordsQueryResponse>({
+        query: GET_DRAFT_RECORDS,
+      })
+      .pipe()
+      .subscribe(({ data }) => {
+        this.draftRecords = data.draftRecords;
+      });
+  }
+}

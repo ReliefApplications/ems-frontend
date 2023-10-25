@@ -3,13 +3,41 @@
     <h3 class="font-semibold">Select draft record</h3>
   </ng-container>
 
-  <ng-container ngProjectAs="content"> </ng-container>
+  <ng-container ngProjectAs="content">
+    <!-- Table container -->
+    <div class="mt-4 overflow-x-hidden shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <table cdk-table uiTableWrapper [dataSource]="draftRecords">
+          <ng-container cdkColumnDef="createdAt">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span class="headerTitle">
+                Creation date
+              </span>
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium max-w-[30vw]"
+            >
+              {{ element.createdAt | sharedDate : 'short' }}
+            </td>
+          </ng-container>
+
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr
+            cdk-row
+            *cdkRowDef="let row; columns: displayedColumns"
+            class="cursor-pointer"
+          ></tr>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+
   <ng-container ngProjectAs="actions">
     <ui-button uiDialogClose variant="default">{{
       'common.cancel' | translate
     }}</ui-button>
-    <ui-button category="secondary" variant="primary" cdkFocusInitial>
-      Select draft
-    </ui-button>
   </ng-container>
 </ui-dialog>
