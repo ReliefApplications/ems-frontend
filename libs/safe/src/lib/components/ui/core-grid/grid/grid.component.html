@@ -25,8 +25,11 @@
   (columnResize)="onColumnResize($event)"
   (columnVisibilityChange)="onColumnVisibilityChange()"
   (cellClick)="cellClickHandler($event)"
-  *uiVirtualScroll
+  uiVirtualScroll
+  [checkItemList]="!(loadingRecords || loadingSettings)"
   itemSize="46"
+  scrollContainerSelector="div.k-grid-content.k-virtual-content"
+  listItemsSelector="tr"
 >
   <!-- ACTIONS -->
   <ng-template
