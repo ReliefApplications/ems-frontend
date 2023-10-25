@@ -11,9 +11,6 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { RestService } from '../rest/rest.service';
 
-/** LIFT case report api URL */
-const LIFT_REPORT_URL = 'https://lift-functions.azurewebsites.net/api/report/';
-
 /**
  * Shared Authentication interceptor service
  */
@@ -44,11 +41,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token = this.authService.getAuthToken();
-    if (
-      (request.url.startsWith(this.restService.apiUrl) ||
-        request.url.startsWith(LIFT_REPORT_URL)) &&
-      token
-    ) {
+    if (request.url.startsWith(this.restService.apiUrl) && token) {
       // If we have a token, we set it to the header
       request = request.clone({
         setHeaders: {

@@ -8,6 +8,10 @@ import { RestService } from '../rest/rest.service';
 import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { AuthService } from '../auth/auth.service';
+
+/** LIFT case report api URL */
+const LIFT_REPORT_URL = 'https://lift-functions.azurewebsites.net/api/report/';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
@@ -39,12 +43,14 @@ export class DownloadService {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param restService Shared rest service
+   * @param authService Shared authentication service
    * @param document document
    */
   constructor(
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private restService: RestService,
+    private authService: AuthService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -88,25 +94,35 @@ export class DownloadService {
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
-    this.restService.get(path, { responseType: 'blob', headers }).subscribe({
-      next: (res) => {
-        const blob = new Blob([res], { type });
-        this.saveFile(fileName, blob);
-        snackBarSpinner.message = this.translate.instant(
-          'common.notifications.file.download.ready'
-        );
-        snackBarSpinner.loading = false;
-        setTimeout(() => snackBarSpinner.dismiss(), SNACKBAR_DURATION);
-      },
-      error: () => {
-        snackBarSpinner.message = this.translate.instant(
-          'common.notifications.file.download.error'
-        );
-        snackBarSpinner.loading = false;
-        snackBarSpinner.error = true;
-        setTimeout(() => snackBarSpinner.dismiss(), SNACKBAR_DURATION);
-      },
-    });
+    this.restService
+      .get(path, {
+        responseType: 'blob',
+        headers: path.startsWith(LIFT_REPORT_URL)
+          ? headers.append(
+              'Authorization',
+              `Bearer ${this.authService.getAuthToken()}`
+            )
+          : headers,
+      })
+      .subscribe({
+        next: (res) => {
+          const blob = new Blob([res], { type });
+          this.saveFile(fileName, blob);
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+        },
+        error: () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.error'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+        },
+      });
   }
 
   /**

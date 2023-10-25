@@ -45,22 +45,23 @@
   </div>
 
   <!-- Widget tooltip -->
-  <ui-icon
-    *ngIf="widget.settings?.widgetDisplay?.showTooltip && collapsed"
-    icon="info"
-    variant="grey"
-    [uiTooltip]="widget.settings.widgetDisplay.tooltip"
-  ></ui-icon>
-  <!-- Only display if we have space to do it -->
-  <ui-button
-    *ngIf="collapsed"
-    [isIcon]="true"
-    icon="more_vert"
-    [uiMenuTriggerFor]="menu"
-    variant="grey"
-    [uiTooltip]="'common.options' | translate"
-  >
-  </ui-button>
+  <div *ngIf="collapsed" class="flex items-center">
+    <ui-button
+      *ngIf="widget.settings?.widgetDisplay?.showTooltip"
+      [isIcon]="true"
+      icon="info"
+      variant="grey"
+      [uiTooltip]="widget.settings.widgetDisplay.tooltip"
+    ></ui-button>
+    <!-- Only display if we have space to do it -->
+    <ui-button
+      [isIcon]="true"
+      icon="more_vert"
+      [uiMenuTriggerFor]="menu"
+      variant="grey"
+      [uiTooltip]="'common.options' | translate"
+    ></ui-button>
+  </div>
   <ui-menu #menu>
     <!-- Widget settings -->
     <button
