@@ -169,24 +169,60 @@ export const init = (Survey: any, domService: DomService): void => {
 
       // Listen to change on base map
       question.registerFunctionOnPropertyValueChanged('BaseMap', () => {
-        instance.mapSettings.basemap = question.BaseMap;
+        instance.mapSettings = {
+          ...instance.mapSettings,
+          basemap: question.BaseMap,
+        };
       });
 
       // Listen to change on default zoom
       question.registerFunctionOnPropertyValueChanged('DefaultZoom', () => {
-        instance.mapSettings.initialState.viewpoint.zoom = question.DefaultZoom;
+        instance.mapSettings = {
+          ...instance.mapSettings,
+          initialState: {
+            ...instance.mapSettings.initialState,
+            viewpoint: {
+              ...instance.mapSettings.initialState.viewpoint,
+              zoom: question.DefaultZoom,
+            },
+          },
+        };
       });
 
       // Listen to change on latitude
       question.registerFunctionOnPropertyValueChanged('Latitude', () => {
-        instance.mapSettings.initialState.viewpoint.center.latitude =
-          question.Latitude;
+        const viewpoint = {
+          ...instance.mapSettings.initialState.viewpoint,
+          center: {
+            ...instance.mapSettings.initialState.viewpoint.center,
+            latitude: question.Latitude,
+          },
+        };
+        instance.mapSettings = {
+          ...instance.mapSettings,
+          initialState: {
+            ...instance.mapSettings.initialState,
+            viewpoint,
+          },
+        };
       });
 
       // Listen to change on longitude
       question.registerFunctionOnPropertyValueChanged('Longitude', () => {
-        instance.mapSettings.initialState.viewpoint.center.longitude =
-          question.Longitude;
+        const viewpoint = {
+          ...instance.mapSettings.initialState.viewpoint,
+          center: {
+            ...instance.mapSettings.initialState.viewpoint.center,
+            longitude: question.Longitude,
+          },
+        };
+        instance.mapSettings = {
+          ...instance.mapSettings,
+          initialState: {
+            ...instance.mapSettings.initialState,
+            viewpoint,
+          },
+        };
       });
 
       // updates the question value when the map changes
