@@ -1644,6 +1644,15 @@
 						"basemap": "******",
 						"controls": {
 							"download": "******",
+							"lastUpdate": "******",
+							"lastUpdateError": "******",
+							"lastUpdateOptions": {
+								"bottomleft": "******",
+								"bottomright": "******",
+								"hide": "******",
+								"topleft": "******",
+								"topright": "******"
+							},
 							"layer": "******",
 							"legend": "******",
 							"measure": "******",

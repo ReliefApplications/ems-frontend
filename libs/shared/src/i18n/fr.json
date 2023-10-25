@@ -1660,6 +1660,15 @@
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
+							"lastUpdate": "Dernière mise à jour le",
+							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
+							"lastUpdateOptions": {
+								"bottomleft": "En bas à gauche",
+								"bottomright": "En bas à droite",
+								"hide": "Cacher",
+								"topleft": "En haut à gauche",
+								"topright": "En haut à droite"
+							},
 							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",

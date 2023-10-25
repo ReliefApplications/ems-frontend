@@ -51,4 +51,13 @@
       }}
     </ng-container>
   </ui-toggle>
+
+  <div uiFormFieldDirective>
+    <label>{{ 'components.widget.settings.map.properties.controls.lastUpdate' | translate }}</label>
+    <ui-select-menu formControlName="lastUpdate">
+    <ui-select-option *ngFor="let option of options" [value]="option">
+      {{ 'components.widget.settings.map.properties.controls.lastUpdateOptions.' + option | translate }}
+    </ui-select-option>
+  </ui-select-menu>
+  </div>
 </form>

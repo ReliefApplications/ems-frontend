@@ -455,6 +455,37 @@ export class MapControlsService {
   }
 
   /**
+   * Adds a control for the last time the map was refreshed
+   *
+   * @param map Leaflet map
+   * @param position position of the control
+   * @returns last updated control
+   */
+  public getLastUpdateControl(map: any, position: L.ControlPosition) {
+    const customLastUpdatedControl = new L.Control(<any>{ position });
+    const modifiedAt = new Date();
+    const lastUpdateText = this.translate.instant(
+      'components.widget.settings.map.properties.controls.lastUpdate'
+    );
+    const lastUpdateError = this.translate.instant(
+      'components.widget.settings.map.properties.controls.lastUpdateError'
+    );
+    customLastUpdatedControl.onAdd = () => {
+      const div = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
+      div.innerHTML = modifiedAt
+        ? `<div id="last-updated-map" class="bg-white px-4 py-2 rounded-md">${lastUpdateText} ${new Date(
+            modifiedAt
+          ).toLocaleDateString()} at ${new Date(
+            modifiedAt
+          ).toLocaleTimeString()}</div>`
+        : `<div id="last-updated-map" class="bg-white px-4 py-2 rounded-md"> ${lastUpdateError} </div>`;
+      return div;
+    };
+    map.addControl(customLastUpdatedControl);
+    return customLastUpdatedControl;
+  }
+
+  /**
    * Adds custom zoom control (different from the leaflet default one
    *
    * @param map Leaflet map

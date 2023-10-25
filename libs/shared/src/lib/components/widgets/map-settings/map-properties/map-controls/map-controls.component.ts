@@ -4,6 +4,7 @@ import {
   NG_VALUE_ACCESSOR,
   UntypedFormGroup,
 } from '@angular/forms';
+import { lastUpdateControlOptions } from '../../../../ui/map/interfaces/map.interface';
 
 /**
  * Control value accessor
@@ -24,7 +25,11 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class MapControlsComponent implements ControlValueAccessor {
+  /** Map Controls form group */
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
+  /** Last update control options */
+  public options = lastUpdateControlOptions;
+  /** Disable ControlValueAccessor */
   private disabled = false;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

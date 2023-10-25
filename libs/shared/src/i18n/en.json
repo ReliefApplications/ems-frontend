@@ -1644,6 +1644,15 @@
 						"basemap": "Base map",
 						"controls": {
 							"download": "Download",
+							"lastUpdate": "Last updated on",
+							"lastUpdateError": "Last modified time could not be loaded",
+							"lastUpdateOptions": {
+								"bottomleft": "Bottom left",
+								"bottomright": "Bottom right",
+								"hide": "Hide",
+								"topleft": "Top left",
+								"topright": "Top right"
+							},
 							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",
