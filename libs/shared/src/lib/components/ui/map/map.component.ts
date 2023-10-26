@@ -614,6 +614,7 @@ export class MapComponent
       this.searchControl?.remove();
       this.searchControl = undefined;
     }
+    this.refreshLastUpdate();
   }
 
   /**
@@ -1092,8 +1093,8 @@ export class MapComponent
         );
       }
     } else {
-      this.searchControl?.remove();
-      this.searchControl = undefined;
+      this.lastUpdateControl?.remove();
+      this.lastUpdateControl = undefined;
     }
   }
 }

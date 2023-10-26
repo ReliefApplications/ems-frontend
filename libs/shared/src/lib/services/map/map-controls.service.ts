@@ -22,6 +22,8 @@ import { legendControl } from '../../components/ui/map/controls/legend.control';
 import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
 import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
 import { MapComponent } from '../../components/ui/map';
+import { createFontAwesomeIcon } from '../../components/ui/map/utils/create-div-icon';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Shared map control service.
@@ -51,12 +53,14 @@ export class MapControlsService {
   /**
    * Shared map control service
    *
+   * @param {Document} document current document
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
    * @param _renderer RendererFactory2
    */
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private domService: DomService,
@@ -471,13 +475,25 @@ export class MapControlsService {
     );
     customLastUpdatedControl.onAdd = () => {
       const div = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
-      div.innerHTML = modifiedAt
-        ? `<div id="last-updated-map" class="bg-white px-4 py-2 rounded-md">${lastUpdateText} ${new Date(
+      const lastUpdatedIcon = createFontAwesomeIcon(
+        {
+          icon: 'pen-to-square',
+          color: 'none',
+          opacity: 1,
+          size: 16,
+        },
+        this.document
+      );
+      const lastUpdatedControlContent = modifiedAt
+        ? `<div id="last-updated-map" class="flex bg-white p-1 rounded-md leaflet-last-updated-control">${
+            lastUpdatedIcon.innerHTML
+          } <span class="pl-1"> ${lastUpdateText} ${new Date(
             modifiedAt
           ).toLocaleDateString()} at ${new Date(
             modifiedAt
-          ).toLocaleTimeString()}</div>`
-        : `<div id="last-updated-map" class="bg-white px-4 py-2 rounded-md"> ${lastUpdateError} </div>`;
+          ).toLocaleTimeString()}</span></div>`
+        : `<div id="last-updated-map" class="flex bg-white p-1 rounded-md leaflet-last-updated-control">${lastUpdatedIcon.innerHTML} <span class="pl-1">${lastUpdateError}</span> </div>`;
+      div.innerHTML = lastUpdatedControlContent;
       return div;
     };
     map.addControl(customLastUpdatedControl);

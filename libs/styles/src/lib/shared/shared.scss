@@ -1,4 +1,3 @@
-
 *:focus,
 *:active:focus,
 *.active:focus {
@@ -98,4 +97,22 @@ tr.cdk-drag-preview {
   border-radius: 10px;
   background: #d4d4d9;
   border: solid 2px white;
+}
+
+.leaflet-last-updated-control {
+  width: 25px;
+  overflow: hidden;
+  transition: width 0.175s ease-in;
+}
+
+.leaflet-last-updated-control > span {
+  text-wrap: nowrap;
+  display: none;
+}
+
+.leaflet-last-updated-control:hover {
+  & > span {
+    display: inline;
+  }
+  width: 250px;
 }
