@@ -73,7 +73,7 @@
 
 <ng-template #defaultTemplate>
   <ui-button
-    *ngIf="!(widget.component === 'map')"
+    *ngIf="!(widget.component === 'map') && showHeader"
     [isIcon]="true"
     icon="open_in_full"
     [uiTooltip]="'components.widget.expand' | translate"

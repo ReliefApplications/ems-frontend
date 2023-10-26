@@ -117,6 +117,10 @@ export class GridWidgetComponent
       : true;
   }
 
+  get floatingButtons() {
+    return (this.settings.floatingButtons || []).filter((x: any) => x.show);
+  }
+
   @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
   @ViewChild(AggregationGridComponent)
   aggregationGridComponent?: AggregationGridComponent;
