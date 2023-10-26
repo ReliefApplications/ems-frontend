@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import get from 'lodash/get';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -29,11 +28,6 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() expand: EventEmitter<any> = new EventEmitter();
   @Output() style: EventEmitter<any> = new EventEmitter();
-
-  /** @returns should show widget header, based on widget settings */
-  get showHeader() {
-    return get(this.widget, 'settings.widgetDisplay.showHeader', true);
-  }
 
   /**
    * Button on top left of each widget, if user can see it, with menu of possible

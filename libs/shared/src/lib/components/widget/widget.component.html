@@ -1,6 +1,6 @@
 <ng-container *ngIf="header">
   <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
-    <kendo-tilelayout-item-header class="floating-widget-header">
+    <kendo-tilelayout-item-header class="floating-widget-header" *ngIf="canUpdate">
       <ng-container
         *ngIf="headerLeftTemplate"
         [ngTemplateOutlet]="headerLeftTemplate"
