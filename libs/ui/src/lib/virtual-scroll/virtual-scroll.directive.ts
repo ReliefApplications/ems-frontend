@@ -24,9 +24,16 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
   private parentContainerScrollSize = 0;
   private currentItemSize = 50;
   private stopIntersectionCallback = true;
-  private swapTag: string = 'div';
+  private swapTag = 'div';
   private currentVerticalScroll = 0;
   private currentHorizontalScroll = 0;
+
+  // === Event listeners === //
+  private onScrollStartListener!: any;
+  // === Timeout listeners === //
+  private checkListTimeoutListener!: NodeJS.Timeout;
+  // === Intersection observer === //
+  private parentIntersectionObserver!: IntersectionObserver;
 
   /** @returns container hosting the scroll given a selector or the related elementRef */
   private get currentScrollContainer() {
@@ -84,12 +91,6 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
 
     return false;
   };
-  // === Event listeners === //
-  private onScrollStartListener!: any;
-  // === Timeout listeners === //
-  private checkListTimeoutListener!: NodeJS.Timeout;
-  // === Intersection observer === //
-  private parentIntersectionObserver!: IntersectionObserver;
 
   /**
    *
@@ -272,10 +273,7 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
     hideOriginalElement = false
   ) {
     // Create the swap element(empty row) to replace the original row with the data using the index as reference for swap
-    const elementToSwap = this.createSwapElement(
-      referenceIdentifier,
-      !hideOriginalElement
-    );
+    const elementToSwap = this.createSwapElement(referenceIdentifier);
     if (elementToSwap) {
       this.renderer.addClass(elementToSwap, 'hidden');
       if (hideOriginalElement) {
@@ -327,7 +325,7 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
    * @param {boolean} hideSwapElement If current swap element has to be hidden by default
    * @returns {HTMLElement} the element for swapping
    */
-  private createSwapElement(reference: string, hideSwapElement = true): any {
+  private createSwapElement(reference: string): any {
     // const swapElement = this.document.createElement(this.swapTag);
     // this.renderer.addClass(swapElement, 'ui-swapper');
     // if (this.scrollDirection === 'vertical') {
@@ -335,11 +333,10 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
     // } else if (this.scrollDirection === 'horizontal') {
     //   this.renderer.setStyle(swapElement, 'display', `inline-block`);
     // }
-    let elementSize = this.currentItemSize;
+    const elementSize = this.currentItemSize;
     if (!elementSize) {
       const originalItem = Array.from(this.currentItemsList).find(
-        (element: any, index: number) =>
-          get(element, this.referencePropertyPath) === reference
+        (element: any) => get(element, this.referencePropertyPath) === reference
       ) as any;
       const clone = originalItem?.children[0]?.cloneNode(true);
       if (clone) {
