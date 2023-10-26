@@ -3,7 +3,7 @@
     <h3 class="font-semibold">Select draft record</h3>
   </ng-container>
 
-  <ng-container ngProjectAs="content">
+  <ng-container ngProjectAs="content" *ngIf="!loading; else loadingTmpl">
     <!-- Table container -->
     <div class="mt-4 overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
@@ -40,4 +40,10 @@
       'common.cancel' | translate
     }}</ui-button>
   </ng-container>
+
+  <ng-template #loadingTmpl>
+    <!-- Loading indicator -->
+    <shared-skeleton-table [columns]="displayedColumns">
+    </shared-skeleton-table>
+  </ng-template>
 </ui-dialog>
