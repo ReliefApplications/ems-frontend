@@ -16,7 +16,6 @@ import { EditorComponent } from '../widgets/editor/editor.component';
 import { GridWidgetComponent } from '../widgets/grid/grid.component';
 import { MapWidgetComponent } from '../widgets/map/map.component';
 import { SummaryCardComponent } from '../widgets/summary-card/summary-card.component';
-import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { RestService } from '../../services/rest/rest.service';
 import { DOCUMENT } from '@angular/common';
@@ -56,8 +55,15 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
   private customStyle?: HTMLStyleElement;
 
-  @HostBinding()
-  id = `widget-${uuidv4()}`;
+  /**
+   * Bind current element with the widget id
+   *
+   * @returns current element's id based in the current widget
+   */
+  @HostBinding('id')
+  get id() {
+    return `widget-${this.widget.id}`;
+  }
 
   @ViewChild('widgetContent')
   widgetContentComponent!:

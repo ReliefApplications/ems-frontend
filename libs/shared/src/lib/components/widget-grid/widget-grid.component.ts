@@ -19,6 +19,7 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { v4 as uuidv4 } from 'uuid';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -224,6 +225,8 @@ export class WidgetGridComponent
           .subscribe((value: any) => {
             // Should save the value, and so, add the widget to the grid
             if (value) {
+              // Add the new id once the widget add is confirmed
+              tile.id = uuidv4();
               this.add.emit({
                 ...tile,
                 settings: value,

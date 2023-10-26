@@ -113,14 +113,6 @@ export class DashboardComponent
   /** Is edition active */
   public editionActive = true;
 
-  /** @returns get newest widget id from existing ids */
-  get newestId(): number {
-    const widgets = this.widgets?.slice() || [];
-    return widgets.length === 0
-      ? 0
-      : Math.max(...widgets.map((x: any) => x.id)) + 1;
-  }
-
   /** @returns type of context element */
   get contextType() {
     if (this.dashboard?.page?.context) {
@@ -394,7 +386,6 @@ export class DashboardComponent
    */
   onAdd(e: any): void {
     const widget = JSON.parse(JSON.stringify(e));
-    widget.id = this.newestId;
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
     if (this.timeoutListener) {
