@@ -15,13 +15,6 @@ import { ApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 
-/** Defines the type for workflow context. */
-type WorkflowContext = {
-  dashboard: string;
-  widget: string;
-  rows: string[];
-} | null;
-
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
  */
@@ -40,11 +33,11 @@ export class WorkflowService {
   /** Emits a value when the user navigates to next/previous step */
   public nextStep = new EventEmitter<void>();
   /** Current workflow context */
-  private workflowContext = new BehaviorSubject<WorkflowContext>(null);
+  private workflowContext = new BehaviorSubject<string[] | null>(null);
 
   /** @returns Current workflow context as observable */
-  get workflowContext$(): Observable<WorkflowContext> {
-    return this.workflowContext.asObservable();
+  get workflowContextValue() {
+    return this.workflowContext.value;
   }
 
   /**
@@ -268,19 +261,9 @@ export class WorkflowService {
   /**
    * Adds a context to the workflow context.
    *
-   * @param dashboardId dashboard id
-   * @param widgetId widget id
    * @param rows selected rows
    */
-  public setContext(
-    dashboardId: string,
-    widgetId: string,
-    rows: string[]
-  ): void {
-    this.workflowContext.next({
-      dashboard: dashboardId,
-      widget: widgetId,
-      rows,
-    });
+  public setContext(rows: string[]): void {
+    this.workflowContext.next(rows);
   }
 }

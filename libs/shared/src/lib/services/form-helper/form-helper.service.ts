@@ -422,6 +422,7 @@ export class FormHelpersService {
     survey.setVariable('record.id', record.id);
     survey.setVariable('record.incrementalID', record?.incrementalId ?? '');
   };
+
   /**
    * Registers custom variables based on the workflow state
    * to be used in the survey.
@@ -429,11 +430,13 @@ export class FormHelpersService {
    * @param survey Survey instance
    */
   public setWorkflowContextVariable = (survey: SurveyModel) => {
-    firstValueFrom(this.workflowService.workflowContext$).then((context) => {
-      if (!context) return;
-      const { dashboard, widget, rows } = context;
-      survey.setVariable(`workflow_${dashboard}_${widget}`, rows);
-    });
+    survey.setVariable(
+      `__WORKFLOW_CONTEXT__`,
+      this.workflowService.workflowContextValue ?? []
+    );
+
+    // After the workflow context is set, we clear it
+    this.workflowService.setContext([]);
   };
 
   /**
