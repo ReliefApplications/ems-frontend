@@ -274,16 +274,6 @@ export class FormModalComponent
   public submit(): void {
     this.saving = true;
     if (!this.survey?.hasErrors()) {
-      // Removes data that isn't in the structure, that might've come from prefilling data
-      if (this.survey) {
-        const data = this.survey.data;
-        Object.keys(data).forEach((filed) => {
-          if (!this.survey.getQuestionByName(filed)) {
-            delete data[filed];
-          }
-        });
-        this.survey.data = data;
-      }
       this.survey.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
@@ -364,7 +354,7 @@ export class FormModalComponent
           mutation: ADD_RECORD,
           variables: {
             form: this.data.template,
-            data: survey.data,
+            data: survey.parsedData ?? survey.data,
           },
         })
         .subscribe({
@@ -405,7 +395,7 @@ export class FormModalComponent
         mutation: EDIT_RECORD,
         variables: {
           id,
-          data: survey.data,
+          data: survey.parsedData ?? survey.data,
           template: this.data.template,
         },
       })
@@ -426,7 +416,7 @@ export class FormModalComponent
    * @param survey current survey.
    */
   public updateMultipleData(ids: any, survey: any): void {
-    const recordData = cleanRecord(survey.data);
+    const recordData = cleanRecord(survey.parsedData ?? survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,

@@ -318,7 +318,10 @@ export class FormBuilderComponent
       }
 
       // Add 'up' & 'down' adorners to panels & questions
-      const parent = element.parent;
+      const parent = element.parent ?? element.parentElement?.parent;
+      if (!parent) {
+        return;
+      }
       const index = parent.elements.indexOf(element);
       if (index > 0) {
         const moveUpAdorner = moveUpButton(element);

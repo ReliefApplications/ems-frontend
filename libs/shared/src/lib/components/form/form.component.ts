@@ -269,7 +269,7 @@ export class FormComponent
         mutation: EDIT_RECORD,
         variables: {
           id: recordId,
-          data: this.survey.data,
+          data: this.survey.parsedData ?? this.survey.data,
           template:
             this.form.id !== this.record?.form?.id ? this.form.id : null,
         },
@@ -280,7 +280,7 @@ export class FormComponent
         mutation: ADD_RECORD,
         variables: {
           form: this.form.id,
-          data: this.survey.data,
+          data: this.survey.parsedData ?? this.survey.data,
         },
       });
     }
