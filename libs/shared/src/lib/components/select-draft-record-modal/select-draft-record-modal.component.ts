@@ -26,7 +26,8 @@ import { GET_DRAFT_RECORDS } from '../roles/graphql/queries';
 })
 export class SelectDraftRecordModalComponent implements OnInit {
   public draftRecords: Array<DraftRecord> = new Array<DraftRecord>();
-  public displayedColumns = ['createdAt'];
+  public displayedColumns = ['createdAt', 'actions'];
+  public displayedColumnsForSkeleton = ['createdAt'];
   public loading = true;
 
   /**

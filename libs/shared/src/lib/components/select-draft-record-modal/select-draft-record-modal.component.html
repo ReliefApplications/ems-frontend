@@ -11,9 +11,7 @@
         <table cdk-table uiTableWrapper [dataSource]="draftRecords">
           <ng-container cdkColumnDef="createdAt">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                Creation date
-              </span>
+              <span class="headerTitle"> Creation date </span>
             </th>
             <td
               uiCell
@@ -21,6 +19,35 @@
               class="!text-gray-900 !font-medium max-w-[30vw]"
             >
               {{ element.createdAt | sharedDate : 'short' }}
+            </td>
+          </ng-container>
+
+          <ng-container cdkColumnDef="actions">
+            <th uiCellHeader *cdkHeaderCellDef scope="col"></th>
+            <td uiCell class="flex justify-end" *cdkCellDef="let element">
+              <div class="flex items-center">
+                <ui-button
+                [isIcon]="true"
+                icon="refresh"
+                variant="primary"
+                [disabled]="loading"
+              >
+              </ui-button>
+              <ui-button
+                [isIcon]="true"
+                icon="visibility"
+                variant="primary"
+                [disabled]="loading"
+              >
+              </ui-button>
+              <ui-button
+                [isIcon]="true"
+                icon="delete"
+                variant="danger"
+                [disabled]="loading"
+              >
+              </ui-button>
+              </div>
             </td>
           </ng-container>
 
@@ -43,7 +70,10 @@
 
   <ng-template #loadingTmpl>
     <!-- Loading indicator -->
-    <shared-skeleton-table [columns]="displayedColumns">
+    <shared-skeleton-table
+      class="my-4 mx-0 w-full"
+      [columns]="displayedColumnsForSkeleton"
+    >
     </shared-skeleton-table>
   </ng-template>
 </ui-dialog>
