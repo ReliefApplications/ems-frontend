@@ -16,6 +16,7 @@ import {
   ButtonModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { PortalModule } from '@angular/cdk/portal';
 
 /** Module for the widget-related components */
 @NgModule({
@@ -40,6 +41,7 @@ import {
     IconModule,
     SelectMenuModule,
     TooltipModule,
+    PortalModule,
   ],
   exports: [WidgetGridComponent],
 })

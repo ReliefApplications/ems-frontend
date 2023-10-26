@@ -10,6 +10,8 @@ import {
   Inject,
   TemplateRef,
   ElementRef,
+  ViewContainerRef,
+  AfterViewInit,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -20,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { RestService } from '../../services/rest/rest.service';
 import { DOCUMENT } from '@angular/common';
+import { ExpandedWidgetComponent } from '../widget-grid/expanded-widget/expanded-widget.component';
 
 /** Component for the widgets */
 @Component({
@@ -27,7 +30,7 @@ import { DOCUMENT } from '@angular/common';
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
 })
-export class WidgetComponent implements OnInit, OnDestroy {
+export class WidgetComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Current widget definition */
   @Input() widget: any;
   // todo: rename or delete
@@ -73,6 +76,9 @@ export class WidgetComponent implements OnInit, OnDestroy {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
+  @ViewChild('widgetContent', { read: ViewContainerRef })
+  widgetContent!: ViewContainerRef;
+
   /**
    * Widget component
    *
@@ -104,6 +110,18 @@ export class WidgetComponent implements OnInit, OnDestroy {
           head.appendChild(this.customStyle);
         });
     }
+  }
+
+  ngAfterViewInit(): void {
+    const componentRef = this.widgetContent.createComponent(
+      ExpandedWidgetComponent
+    );
+    // TODO: check ?
+    componentRef.setInput('widget', this.widget);
+    componentRef.setInput('header', this.header);
+    componentRef.setInput('canUpdate', this.canUpdate);
+    /** To use angular hooks */
+    componentRef.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {

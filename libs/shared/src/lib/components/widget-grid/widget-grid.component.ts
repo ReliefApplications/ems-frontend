@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   HostListener,
   Inject,
@@ -7,6 +8,7 @@ import {
   OnInit,
   Output,
   QueryList,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
@@ -19,6 +21,7 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { DomPortal } from '@angular/cdk/portal';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -71,6 +74,7 @@ export class WidgetGridComponent
   /** Widget components view children */
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
+  @ViewChild('widgetElement') widgetElement!: ElementRef<any>;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -180,6 +184,7 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
+    const sharedWidgetPortal = new DomPortal(this.widgetElement);
     const widget = this.widgets.find((x) => x.id === e.id);
     const { ExpandedWidgetComponent } = await import(
       './expanded-widget/expanded-widget.component'
@@ -187,6 +192,7 @@ export class WidgetGridComponent
     const dialogRef = this.dialog.open(ExpandedWidgetComponent, {
       data: {
         widget,
+        sharedWidgetPortal: sharedWidgetPortal,
       },
       autoFocus: false,
     });

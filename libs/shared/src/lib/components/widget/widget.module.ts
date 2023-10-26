@@ -9,6 +9,7 @@ import { MapWidgetModule } from '../widgets/map/map.module';
 import { TabsModule } from '../widgets/tabs/tabs.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import 'hammerjs';
+import { PortalModule } from '@angular/cdk/portal';
 
 /**
  * Main Widget Module.
@@ -26,6 +27,7 @@ import 'hammerjs';
     SummaryCardModule,
     TabsModule,
     LayoutModule,
+    PortalModule,
   ],
   exports: [WidgetComponent],
 })
