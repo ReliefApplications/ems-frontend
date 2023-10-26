@@ -67,9 +67,9 @@
 <ng-template #floatingButtonsTemplate>
   <div
     class="flex overflow-hidden flex-1 max-w-fit"
-    *ngIf="settings.floatingButtons?.length > 0"
+    *ngIf="floatingButtons.length > 0"
   >
-    <ng-container *ngFor="let floatingButton of settings.floatingButtons">
+    <ng-container *ngFor="let floatingButton of floatingButtons">
       <ui-button
         variant="primary"
         (click)="onQuickAction(floatingButton)"
