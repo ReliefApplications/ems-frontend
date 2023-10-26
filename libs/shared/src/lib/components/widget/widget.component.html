@@ -5,10 +5,12 @@
         *ngIf="headerLeftTemplate"
         [ngTemplateOutlet]="headerLeftTemplate"
       ></ng-container>
-      <ng-container
-        *ngIf="headerRightTemplate"
-        [ngTemplateOutlet]="headerRightTemplate"
-      ></ng-container>
+      <div class="bg-white/70 rounded-2xl">
+        <ng-container
+          *ngIf="headerRightTemplate"
+          [ngTemplateOutlet]="headerRightTemplate"
+        ></ng-container>
+      </div>
     </kendo-tilelayout-item-header>
   </ng-container>
 

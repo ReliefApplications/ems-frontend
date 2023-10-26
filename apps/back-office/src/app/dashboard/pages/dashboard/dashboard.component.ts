@@ -394,6 +394,7 @@ export class DashboardComponent
    */
   onAdd(e: any): void {
     const widget = JSON.parse(JSON.stringify(e));
+    console.log(this.newestId);
     widget.id = this.newestId;
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
