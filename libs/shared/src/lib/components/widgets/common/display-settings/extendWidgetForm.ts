@@ -20,6 +20,7 @@ export const extendWidgetForm = <
   settings?: {
     showBorder?: boolean;
     showHeader?: boolean;
+    showPadding?: boolean;
     style?: string;
   },
   specificControls?: T2
@@ -27,6 +28,7 @@ export const extendWidgetForm = <
   const controls = {
     showBorder: new FormControl(get(settings, 'showBorder', true)),
     showHeader: new FormControl(get(settings, 'showHeader', true)),
+    showPadding: new FormControl(get(settings, 'showPadding', true)),
     style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
@@ -38,6 +40,7 @@ export const extendWidgetForm = <
         {
           showBorder: FormControl<boolean>;
           showHeader: FormControl<boolean>;
+          showPadding: FormControl<boolean>;
           style: FormControl<string>;
         } & T2
       >;

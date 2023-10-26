@@ -50,6 +50,8 @@ export class BarChartComponent implements OnChanges {
     palette: DEFAULT_PALETTE,
     stack: false,
   };
+  /** Input decorator for show padding */
+  @Input() showPadding = true;
   /** Input decorator for gap. */
   @Input() gap = 2;
   /** Input decorator for spacing. */

@@ -18,5 +18,6 @@
   [styles]="card.useStyles ? styles : []"
   [wholeCardStyles]="card.wholeCardStyles"
   class="flex-1 overflow-auto p-[14px]"
+  [ngClass]="{'p-[14px]': showPadding}"
 >
 </shared-summary-card-item-content>

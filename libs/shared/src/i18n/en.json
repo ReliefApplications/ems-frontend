@@ -2128,6 +2128,7 @@
 			"display": {
 				"border": "Show widget border",
 				"header": "Show widget header",
+				"padding": "Show widget padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
 				"title": "Widget display"

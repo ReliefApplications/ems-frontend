@@ -2144,6 +2144,7 @@
 			"display": {
 				"border": "Afficher la bordure du widget",
 				"header": "Afficher l'en-tête du widget",
+				"padding": "Afficher le remplissage du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"

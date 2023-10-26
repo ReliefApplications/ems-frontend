@@ -13,6 +13,18 @@
         'models.widget.display.header' | translate
       }}</ng-container>
     </ui-toggle>
+    <ui-toggle 
+      formControlName="showPadding" 
+      *ngIf="
+        widgetType === 'summaryCard' ||
+        widgetType === 'editor' ||
+        widgetType === 'chart'
+      "
+    >
+      <ng-container ngProjectAs="label">
+        {{ 'models.widget.display.padding' | translate }}
+      </ng-container>
+    </ui-toggle>
   </ng-container>
   <!-- Other specific options for each widget type -->
   <ng-content></ng-content>

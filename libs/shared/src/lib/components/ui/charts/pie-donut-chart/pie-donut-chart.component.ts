@@ -47,6 +47,8 @@ export class PieDonutChartComponent implements OnChanges {
   @Input() options: any = {
     palette: DEFAULT_PALETTE,
   };
+  /** Input decorator for show padding */
+  @Input() showPadding = true;
   /** ViewChild decorator for chart. */
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
   /** Options for the chart configuration. */

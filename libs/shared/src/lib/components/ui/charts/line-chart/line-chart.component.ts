@@ -57,6 +57,8 @@ export class LineChartComponent implements OnChanges {
     palette: DEFAULT_PALETTE,
     axes: null,
   };
+  /** Input decorator for show padding */
+  @Input() showPadding = true;
   /** ViewChild decorator for chart. */
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   /** Options for the chart configuration. */

@@ -1,4 +1,4 @@
-<div class="h-full p-2" style="background: white">
+<div class="h-full" [ngClass]="{'p-2': showPadding}" style="background: white" id="inner-widget">
   <canvas
     baseChart
     [data]="chartData"

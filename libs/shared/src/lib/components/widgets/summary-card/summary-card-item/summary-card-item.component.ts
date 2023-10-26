@@ -12,6 +12,8 @@ import { CardT } from '../summary-card.component';
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: CardT;
+  /** Input decorator for show padding */
+  @Input() showPadding = true;
   public fields: any[] = [];
   public fieldsValue: any = null;
   public styles: any[] = [];

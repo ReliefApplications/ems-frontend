@@ -20,4 +20,5 @@ import { ToggleModule } from '@oort-front/ui';
 })
 export class DisplaySettingsComponent {
   @Input() formGroup!: FormGroup;
+  @Input() widgetType!: string;
 }

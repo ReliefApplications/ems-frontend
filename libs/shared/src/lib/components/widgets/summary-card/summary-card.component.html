@@ -6,7 +6,9 @@
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
           class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
+          [ngClass]="{'p-4': settings.widgetDisplay?.showPadding}"
           style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
+          id="inner-widget"
         >
           <ng-container
             *sharedSkeleton="
@@ -26,6 +28,8 @@
               }}"
               style.grid-row-end="{{ 'span ' + 2 }}"
               [card]="card"
+              [showPadding]="settings.widgetDisplay?.showPadding ?? true"
+              id="inner-widget-card"
             >
             </shared-summary-card-item>
           </ng-container>
