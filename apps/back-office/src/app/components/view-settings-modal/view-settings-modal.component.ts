@@ -307,6 +307,11 @@ export class ViewSettingsModalComponent
     );
   }
 
+  /**
+   * Save nextStepOnSave on change.
+   * 
+   * @param nextStepOnSave boolean
+   */
   private onUpdateNextStepOnSave(nextStepOnSave: boolean): void {
     const callback = () => {
       this.step = {

@@ -258,6 +258,12 @@ export class WorkflowService {
     }
   }
 
+  /**
+   * Update step next step on save, sending a mutation to the back-end.
+   * @param step Edited step
+   * @param callback callback method, allow the component calling the service to do some logic.
+   * @returns void
+   * */
   updateStepNextStepOnSave(step: Step, callback?: any): void {
     const workflow = this.workflow.getValue();
     if (workflow) {
