@@ -176,9 +176,9 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
   }
 
   /**
-   * Swap given element from the list with an empty object or the original list item given the current action type
+   * Attach a swap element next to the given element in order to display it outside of the view
    *
-   * @param element Element to swap from the list
+   * @param element Element to attache swap from the list
    * @param hideOriginalElement If given element is out of view by default or not
    */
   private swapElement(element: Element, hideOriginalElement = false) {
@@ -199,7 +199,7 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
   }
 
   /**
-   * Swap original list items outside that are outside the scroll view
+   * Add swap elements to the original list items that are outside the scroll view
    */
   addSwapElementsIntoView() {
     let itemsHeightSum = 0;
