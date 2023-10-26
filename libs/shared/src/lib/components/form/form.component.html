@@ -11,8 +11,11 @@
     [surveyActive]="surveyActive"
   ></shared-form-actions>
   <div>
-    <ui-button (click)="openSelectDraftRecord()"
-      ><ui-icon icon="format_list_bulleted_add"></ui-icon
+    <ui-button
+      [isIcon]="true"
+      icon="format_list_bulleted_add"
+      (click)="openSelectDraftRecord()"
+      uiTooltip="Load draft record"
     ></ui-button>
   </div>
 </div>

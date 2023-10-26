@@ -30,8 +30,8 @@ export const GET_GROUPS = gql`
 
 /** Graphql request for getting draft records */
 export const GET_DRAFT_RECORDS = gql`
-  query GetDraftRecords {
-    draftRecords {
+  query GetDraftRecords($formId: ID!) {
+    draftRecords(formId: $formId) {
       id
       createdAt
     }

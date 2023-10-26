@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormComponent } from './form.component';
 import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
-import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
+import { ButtonModule, SelectMenuModule, TooltipModule } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 
 /**
@@ -26,6 +26,7 @@ import { SurveyModule } from 'survey-angular-ui';
     SurveyModule,
     FixedWrapperModule,
     SelectMenuModule,
+    TooltipModule,
   ],
   exports: [FormComponent],
 })

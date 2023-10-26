@@ -358,7 +358,9 @@ export class FormComponent
    * Opens the modal to select a draft record to fill the form
    */
   public openSelectDraftRecord(): void {
-    const dialogRef = this.dialog.open(SelectDraftRecordModalComponent);
+    const dialogRef = this.dialog.open(SelectDraftRecordModalComponent, {
+      data: this.form.id,
+    });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       console.log('VALUE', value);
     });
