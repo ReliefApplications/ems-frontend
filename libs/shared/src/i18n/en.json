@@ -2136,6 +2136,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"header": "Show widget header",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
 				"title": "Widget display"

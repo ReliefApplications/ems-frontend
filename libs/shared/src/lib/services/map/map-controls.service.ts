@@ -15,7 +15,6 @@ import * as L from 'leaflet';
 import 'esri-leaflet';
 import 'leaflet-fullscreen';
 import 'leaflet-measure';
-import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
 import { MapSidenavControlsComponent } from '../../components/ui/map/map-sidenav-controls/map-sidenav-controls.component';

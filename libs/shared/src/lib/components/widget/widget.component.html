@@ -1,24 +1,45 @@
-<kendo-tilelayout-item-header
-  *ngIf="header"
-  class="widget-header border-b"
-  [ngClass]="{
-    '!border-transparent': !(widget.settings.widgetDisplay?.showBorder ?? true),
-    '!border-b-gray-300': widget.settings.widgetDisplay?.showBorder ?? true
-  }"
->
-  <ng-container
-    *ngIf="headerLeftTemplate"
-    [ngTemplateOutlet]="headerLeftTemplate"
-  ></ng-container>
-  <ng-container
-    *ngIf="widgetContentComponent?.headerTemplate"
-    [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
-  ></ng-container>
-  <ng-container
-    *ngIf="headerRightTemplate"
-    [ngTemplateOutlet]="headerRightTemplate"
-  ></ng-container>
-</kendo-tilelayout-item-header>
+<ng-container *ngIf="header">
+  <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
+    <kendo-tilelayout-item-header class="floating-widget-header">
+      <ng-container
+        *ngIf="headerLeftTemplate"
+        [ngTemplateOutlet]="headerLeftTemplate"
+      ></ng-container>
+      <div class="bg-white/70 rounded-2xl">
+        <ng-container
+          *ngIf="headerRightTemplate"
+          [ngTemplateOutlet]="headerRightTemplate"
+        ></ng-container>
+      </div>
+    </kendo-tilelayout-item-header>
+  </ng-container>
+
+  <ng-template #defaultHeaderTemplate>
+    <kendo-tilelayout-item-header
+      class="widget-header border-b"
+      [ngClass]="{
+        '!border-transparent': !(
+          widget.settings.widgetDisplay?.showBorder ?? true
+        ),
+        '!border-b-gray-300': widget.settings.widgetDisplay?.showBorder ?? true
+      }"
+    >
+      <ng-container
+        *ngIf="headerLeftTemplate"
+        [ngTemplateOutlet]="headerLeftTemplate"
+      ></ng-container>
+      <ng-container
+        *ngIf="widgetContentComponent?.headerTemplate"
+        [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+      ></ng-container>
+      <ng-container
+        *ngIf="headerRightTemplate"
+        [ngTemplateOutlet]="headerRightTemplate"
+      ></ng-container>
+    </kendo-tilelayout-item-header>
+  </ng-template>
+</ng-container>
+
 <ng-container [ngSwitch]="widget.component">
   <!-- CHART -->
   <shared-chart
