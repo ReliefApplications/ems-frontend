@@ -230,11 +230,7 @@ export class ContextDatasourceComponent
           this.resource?.fields.map((x: any) => x.name) ?? [];
         break;
       case 'refData':
-        // TODO: When frontend changes about referenceData fields are merged,
-        // swap to the commented line to remove any casting
-        // this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
-        this.availableFields =
-          this.refData?.fields?.map((x: any) => x.name) ?? [];
+        this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
         break;
       default:
         this.availableFields = [];
