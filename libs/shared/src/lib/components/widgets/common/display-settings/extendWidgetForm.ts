@@ -9,6 +9,7 @@ import { get } from 'lodash';
  * @param settings.showBorder show border setting
  * @param settings.showHeader show border header
  * @param settings.style custom style of the widget
+ * @param settings.showPadding show padding of the widget
  * @param specificControls specific controls to add to the form, on a widget basis
  * @returns form with the common fields
  */
