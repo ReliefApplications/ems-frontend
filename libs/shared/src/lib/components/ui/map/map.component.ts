@@ -1078,7 +1078,7 @@ export class MapComponent
    */
   private refreshLastUpdate(): void {
     const controls = this.extractSettings().controls;
-    if (controls.lastUpdate !== 'hide') {
+    if (!isNil(controls.lastUpdate)) {
       if (!this.lastUpdateControl) {
         this.lastUpdateControl = this.mapControlsService.getLastUpdateControl(
           this.map,

@@ -205,6 +205,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"hide": "******",
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "******"
+		},
+		"position": {
+			"bottomleft": "******",
+			"bottomright": "******",
+			"topleft": "******",
+			"topright": "******"
 		},
 		"positionAttribute": {
 			"few": "******",
@@ -1646,13 +1653,6 @@
 							"download": "******",
 							"lastUpdate": "******",
 							"lastUpdateError": "******",
-							"lastUpdateOptions": {
-								"bottomleft": "******",
-								"bottomright": "******",
-								"hide": "******",
-								"topleft": "******",
-								"topright": "******"
-							},
 							"layer": "******",
 							"legend": "******",
 							"measure": "******",

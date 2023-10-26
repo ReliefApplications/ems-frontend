@@ -52,17 +52,8 @@ export interface MapControls {
   measure: boolean;
   layer: boolean;
   search: boolean;
-  lastUpdate: L.ControlPosition | 'hide';
+  lastUpdate: L.ControlPosition | undefined | null;
 }
-
-/** Available Last update control values. */
-export const lastUpdateControlOptions = [
-  'hide',
-  'topleft',
-  'topright',
-  'bottomleft',
-  'bottomright',
-];
 
 /** Default values for the map controls */
 export const DefaultMapControls: MapControls = {
@@ -72,5 +63,5 @@ export const DefaultMapControls: MapControls = {
   measure: false,
   layer: false,
   search: true,
-  lastUpdate: 'hide',
+  lastUpdate: null,
 };

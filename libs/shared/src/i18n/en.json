@@ -205,6 +205,7 @@
 			"none": "No groups",
 			"one": "Group"
 		},
+		"hide": "Hide",
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "Back-Office"
+		},
+		"position": {
+			"bottomleft": "Bottom left",
+			"bottomright": "Bottom right",
+			"topleft": "Top left",
+			"topright": "Top right"
 		},
 		"positionAttribute": {
 			"few": "Position attributes",
@@ -1646,13 +1653,6 @@
 							"download": "Download",
 							"lastUpdate": "Last updated on",
 							"lastUpdateError": "Last modified time could not be loaded",
-							"lastUpdateOptions": {
-								"bottomleft": "Bottom left",
-								"bottomright": "Bottom right",
-								"hide": "Hide",
-								"topleft": "Top left",
-								"topright": "Top right"
-							},
 							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",
