@@ -562,6 +562,7 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"goNextStepOnSave": "Go to next step on save",
 					"selectIcon": "Select an icon",
 					"tooltip": {
 						"autoSave": "Changes are automatically saved"

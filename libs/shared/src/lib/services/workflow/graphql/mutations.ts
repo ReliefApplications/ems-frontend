@@ -21,6 +21,7 @@ export const EDIT_STEP = gql`
   mutation editStep(
     $id: ID!
     $name: String
+    $nextStepOnSave: Boolean
     $icon: String
     $type: String
     $content: ID
@@ -31,6 +32,7 @@ export const EDIT_STEP = gql`
       name: $name
       icon: $icon
       type: $type
+      nextStepOnSave: $nextStepOnSave
       content: $content
       permissions: $permissions
     ) {
@@ -39,6 +41,7 @@ export const EDIT_STEP = gql`
       icon
       type
       content
+      nextStepOnSave
       createdAt
       permissions {
         canSee {

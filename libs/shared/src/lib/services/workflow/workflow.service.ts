@@ -258,6 +258,39 @@ export class WorkflowService {
     }
   }
 
+  updateStepNextStepOnSave(step: Step, callback?: any): void {
+    const workflow = this.workflow.getValue();
+    if (workflow) {
+      this.apollo
+        .mutate<EditStepMutationResponse>({
+          mutation: EDIT_STEP,
+          variables: {
+            id: step.id,
+            nextStepOnSave: step.nextStepOnSave,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.step.one')
+          );
+          if (!errors && data) {
+            const newWorkflow: Workflow = {
+              ...workflow,
+              steps: workflow.steps?.map((x) => {
+                if (x.id === step.id) {
+                  x = { ...x, nextStepOnSave: data.editStep.nextStepOnSave };
+                }
+                return x;
+              }),
+            };
+            this.workflow.next(newWorkflow);
+            if (callback) callback();
+          }
+        });
+    }
+  }
+
   /**
    * Goes to first page of application.
    */

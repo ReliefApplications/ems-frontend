@@ -142,6 +142,20 @@ export class ViewSettingsModalComponent
           }
         });
     }
+
+    // Listen to nextnextStepOnSave updates (only for steps)
+    if (this.data.type === 'step') {
+      this.settingsForm?.controls.nextStepOnSaveControl.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: boolean | null) => {
+          if (!isNil(value)) {
+            this.onUpdateNextStepOnSave(value);
+          }
+        });
+    }
+    this.settingsForm?.controls.nextStepOnSaveControl.setValue(
+      this.step?.nextStepOnSave ?? false
+    );
   }
 
   /**
@@ -227,6 +241,9 @@ export class ViewSettingsModalComponent
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
+      nextStepOnSaveControl: this.fb.control(
+        this.data.step?.nextStepOnSave ?? false
+      ),
     });
   }
 
@@ -285,6 +302,25 @@ export class ViewSettingsModalComponent
       {
         id: this.page?.id,
         visible,
+      },
+      callback
+    );
+  }
+
+  private onUpdateNextStepOnSave(nextStepOnSave: boolean): void {
+    const callback = () => {
+      this.step = {
+        ...this.step,
+        nextStepOnSave,
+      };
+      // Updates parent component
+      const updates = { nextStepOnSave };
+      this.onUpdate.emit(updates);
+    };
+    this.workflowService.updateStepNextStepOnSave(
+      {
+        id: this.step?.id,
+        nextStepOnSave,
       },
       callback
     );

@@ -189,6 +189,11 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         this.workflowService.nextStep.emit();
       }
     });
+
+    // Checks if should go to next step if in an workflow
+    if (this.step?.nextStepOnSave) {
+      this.workflowService.nextStep.emit();
+    }
   }
 
   /**

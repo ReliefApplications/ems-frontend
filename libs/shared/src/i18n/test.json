@@ -562,6 +562,7 @@
 				},
 				"settings": {
 					"actions": "******",
+					"goNextStepOnSave": "******",
 					"selectIcon": "******",
 					"tooltip": {
 						"autoSave": "******"

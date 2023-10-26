@@ -562,6 +562,7 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"goNextStepOnSave": "Aller à l'étape suivante après avoir enregistré",
 					"selectIcon": "Sélectionnez une icône",
 					"tooltip": {
 						"autoSave": "Les modifications sont automatiquement enregistrées"
