@@ -27,9 +27,9 @@
   (cellClick)="cellClickHandler($event)"
   uiVirtualScroll
   [checkItemList]="!(loadingRecords || loadingSettings)"
-  itemSize="46"
   scrollContainerSelector="#recordsGrid > div > kendo-grid-list > div"
-  listItemsSelector="tr"
+  listItemsSelector="td"
+  scrollDirection="horizontal"
 >
   <!-- ACTIONS -->
   <ng-template
