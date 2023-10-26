@@ -2,17 +2,28 @@
   <ng-container formGroupName="card">
     <div class="form-group">
       <div uiFormFieldDirective>
-        <label>{{
-          'components.widget.settings.summaryCard.card.display.header'
-            | translate
-        }}</label>
+        <div class="flex items-center">
+          <label>
+            {{ 'components.widget.settings.summaryCard.card.cards.header' | translate }}
+          </label>
+          <ui-icon
+            icon="info_outline"
+            variant="grey"
+            class="ml-1 cursor-pointer"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.summaryCard.card.cards.tooltip.header' | translate
+            "
+          >
+          </ui-icon>
+        </div>
         <input formControlName="title" type="string" />
       </div>
       <ui-divider class="my-1"></ui-divider>
       <ui-toggle formControlName="showDataSourceLink">
         <ng-container ngProjectAs="label">
           {{
-            'components.widget.settings.summaryCard.card.display.dataSource'
+            'components.widget.settings.summaryCard.card.cards.dataSource'
               | translate
           }}
           <ui-icon
@@ -21,12 +32,32 @@
             variant="grey"
             [size]="18"
             [uiTooltip]="
-              'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+              'components.widget.settings.summaryCard.card.cards.tooltip.datasource'
                 | translate
             "
           ></ui-icon>
         </ng-container>
       </ui-toggle>
+
+      <ui-toggle formControlName="showOptionEditCard">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.summaryCard.card.cards.editCardRecord'
+              | translate
+          }}
+          <ui-icon
+            class="ml-1 cursor-help self-center"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.summaryCard.card.cards.tooltip.editCardRecord'
+                | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-toggle>
+
     </div>
   </ng-container>
 </form>

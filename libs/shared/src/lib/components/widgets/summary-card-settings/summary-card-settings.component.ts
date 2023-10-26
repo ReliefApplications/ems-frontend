@@ -53,6 +53,9 @@ const createCardForm = (value?: any) => {
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),
+    showOptionEditCard: new FormControl<boolean>(
+      get(value, 'showOptionEditCard', false)
+    ),
     useStyles: new FormControl<boolean>(get(value, 'useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
       get(value, 'wholeCardStyles', false)

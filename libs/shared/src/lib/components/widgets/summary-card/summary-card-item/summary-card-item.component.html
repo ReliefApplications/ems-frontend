@@ -21,7 +21,7 @@
 >
 </shared-summary-card-item-content>
 <!-- Edit -->
-<ng-container *ngIf="card.record?.canUpdate">
+<ng-container *ngIf="card.record?.canUpdate && card.showOptionEditCard">
   <div class="absolute bottom-0 right-0 p-4">
     <ui-button [isIcon]="true" icon="edit" (click)="updateSummaryCard()">
     </ui-button>

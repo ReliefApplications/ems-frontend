@@ -1685,6 +1685,17 @@
 				"summaryCard": {
 					"add": "Add new card",
 					"card": {
+						"cards": {
+							"dataSource": "Show link to data source",
+							"editCardRecord": "Show option to edit cards record",
+							"header": "Card header",
+							"title": "Cards",
+							"tooltip": {
+								"datasource": "Add a button in widget's header to view card's data source",
+								"editCardRecord": "Add a button in the card to edit its record",
+								"header": "If blank, header will be hidden"
+							}
+						},
 						"dataSource": {
 							"layoutStyles": {
 								"title": "Layout styles",
@@ -1696,14 +1707,6 @@
 								}
 							},
 							"title": "Data source"
-						},
-						"display": {
-							"dataSource": "Show link to data source",
-							"header": "Header",
-							"title": "Display",
-							"tooltip": {
-								"datasource": "Add a button in widget's header to view card's data source"
-							}
 						},
 						"gridActions": {
 							"title": "Grid actions",
@@ -2044,7 +2047,10 @@
 				"savingFailed": "Saving failed, some fields require your attention."
 			},
 			"select": "Select a Form",
-			"template": "Template"
+			"template": {
+				"title": "Template",
+				"tooltip": "Form template that will be used for edition, when enabled"
+			}
 		},
 		"group": {
 			"create": "Create a group",

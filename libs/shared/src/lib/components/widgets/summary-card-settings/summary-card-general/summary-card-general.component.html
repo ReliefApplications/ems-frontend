@@ -19,10 +19,23 @@
           [filterable]="true"
         ></ui-graphql-select>
       </div>
-
       <!-- TEMPLATE SELECTION -->
       <div uiFormFieldDirective class="flex-1">
-        <label>{{ 'models.form.template' | translate }}</label>
+        <div class="flex items-center">
+          <label class="flex">
+            {{ 'models.form.template.title' | translate }}
+          </label>
+          <ui-icon
+              icon="info_outline"
+              variant="grey"
+              class="ml-1"
+              [uiTooltip]="
+                'models.form.template.tooltip' | translate
+              "
+              [size]="18"
+            >
+          </ui-icon>
+        </div>
         <ui-select-menu formControlName="template">
           <ui-select-option>-</ui-select-option>
           <ui-select-option

@@ -78,11 +78,11 @@
         <shared-tab-actions [formGroup]="tileForm"></shared-tab-actions>
       </ng-template>
     </ui-tab>
-    <!-- Card display settings -->
+    <!-- Cards settings -->
     <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon icon="display_settings" [size]="24"></ui-icon>
-        <span>{{ 'common.display' | translate }}</span>
+        <span>{{ 'components.widget.settings.summaryCard.card.cards.title' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <shared-display-tab [form]="tileForm"></shared-display-tab>

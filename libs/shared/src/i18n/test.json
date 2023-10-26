@@ -1685,6 +1685,17 @@
 				"summaryCard": {
 					"add": "******",
 					"card": {
+						"cards": {
+							"dataSource": "******",
+							"editCardRecord": "******",
+							"header": "******",
+							"title": "******",
+							"tooltip": {
+								"datasource": "******",
+								"editCardRecord": "******",
+								"header": "******"
+							}
+						},
 						"dataSource": {
 							"layoutStyles": {
 								"title": "******",
@@ -1696,14 +1707,6 @@
 								}
 							},
 							"title": "******"
-						},
-						"display": {
-							"dataSource": "******",
-							"header": "******",
-							"title": "******",
-							"tooltip": {
-								"datasource": "******"
-							}
 						},
 						"gridActions": {
 							"title": "******",
@@ -2044,7 +2047,10 @@
 				"savingFailed": "******"
 			},
 			"select": "******",
-			"template": "******"
+			"template": {
+				"title": "******",
+				"tooltip": "******"
+			}
 		},
 		"group": {
 			"create": "******",

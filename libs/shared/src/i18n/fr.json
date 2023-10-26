@@ -1701,6 +1701,17 @@
 				"summaryCard": {
 					"add": "Ajouter un carte",
 					"card": {
+						"cards": {
+							"dataSource": "Afficher le lien vers la source de données",
+							"editCardRecord": "Afficher l'option pour modifier l'enregistrement des cartes",
+							"header": "Titre de la carte",
+							"title": "Affichage",
+							"tooltip": {
+								"datasource": "Ajoute un bouton pour afficher la source de données de la carte",
+								"editCardRecord": "Ajouter un bouton dans la fiche pour modifier sa fiche",
+								"header": "Si vide, l'en-tête sera masqué"
+							}
+						},
 						"dataSource": {
 							"layoutStyles": {
 								"title": "Styles de mise en page",
@@ -1712,14 +1723,6 @@
 								}
 							},
 							"title": "Source de données"
-						},
-						"display": {
-							"dataSource": "Afficher le lien vers la source de données",
-							"header": "Titre",
-							"title": "Affichage",
-							"tooltip": {
-								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
-							}
 						},
 						"gridActions": {
 							"title": "Actions de grille",
@@ -2060,7 +2063,10 @@
 				"savingFailed": "Échec de l'enregistrement, certains champs nécessitent votre attention."
 			},
 			"select": "Sélectionner un formulaire",
-			"template": "Modèle"
+			"template": {
+				"title": "Modèle",
+				"tooltip": "Modèle de formulaire qui sera utilisé pour l'édition, lorsqu'il est activé"
+			}
 		},
 		"group": {
 			"create": "Créer un groupe",
