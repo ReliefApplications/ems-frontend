@@ -11,7 +11,15 @@
   </ui-button>
 </div>
 
-<form [formGroup]="formGroup">
+<shared-empty
+  *ngIf="formGroup.get('sortFields')!.value.length === 0"
+  [title]="'models.widget.sorting.empty' | translate"
+></shared-empty>
+
+<form
+  [formGroup]="formGroup"
+  *ngIf="formGroup.get('sortFields')!.value.length > 0"
+>
   <table
     cdk-table
     uiTableWrapper
@@ -89,6 +97,8 @@
           >
           </ui-button>
           <ui-button
+            (mouseenter)="dragEnabled = true"
+            (mouseleave)="dragEnabled = false"
             cdkDragHandle
             [isIcon]="true"
             icon="drag_indicator"
@@ -104,6 +114,7 @@
       cdk-row
       *cdkRowDef="let row; columns: displayedColumnsApps"
       cdkDrag
+      [cdkDragDisabled]="!dragEnabled"
       class="bg-white"
     ></tr>
   </table>

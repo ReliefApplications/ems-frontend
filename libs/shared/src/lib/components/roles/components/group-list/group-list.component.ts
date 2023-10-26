@@ -194,6 +194,7 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
         },
       }
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     this.apollo
       .mutate<FetchGroupsMutationResponse>({ mutation: FETCH_GROUPS })
       .pipe(takeUntil(this.destroy$))
@@ -202,19 +203,19 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
           if (data) this.groups = data.fetchGroups || [];
           this.filteredGroups = this.groups;
           this.loadingFetch = loading;
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.groups.ready'
           );
-          snackBarRef.instance.loading = false;
+          snackBarSpinner.instance.loading = false;
 
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
         error: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.groups.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
 
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },

@@ -59,6 +59,7 @@ export class MapLayersService {
     private contextService: ContextService,
     @Inject(DOCUMENT) private document: Document
   ) {}
+
   /**
    * Save a new layer in the DB
    *

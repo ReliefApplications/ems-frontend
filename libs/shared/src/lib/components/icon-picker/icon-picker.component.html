@@ -5,17 +5,12 @@
   cdkOverlayOrigin
 >
   <ng-container *ngIf="value; else defaultTemplate">
-    <i
-      *ngIf="value"
-      [style.color]="color"
-      class="{{ value | sharedIconDisplay : fontFamily }} mr-2"
-    ></i
-    >{{ value }}
+    <span class="mr-2"></span>{{ value }}
   </ng-container>
 </div>
 
 <ng-template #defaultTemplate>
-  <div class="text-gray-400">{{ placeholder }}</div>
+  <div class="text-gray-400 text-sm">{{ placeholder }}</div>
 </ng-template>
 
 <ng-template
@@ -24,7 +19,6 @@
   [cdkConnectedOverlayOpen]="showList"
 >
   <shared-icon-picker-popup
-    [fontFamily]="fontFamily"
     [icons]="icons"
     [color]="color"
     (close)="setIcon($event)"

@@ -70,6 +70,7 @@ export const AppAbility = Ability as AbilityClass<AppAbility>;
 export class AuthService {
   /** Current user */
   public user = new BehaviorSubject<User | null>(null);
+
   /** @returns Current user as observable */
   get user$(): Observable<User | null> {
     return this.user.asObservable();
@@ -77,10 +78,12 @@ export class AuthService {
 
   /** Current account info */
   public account: Account | null = null;
+
   /** @returns Current user value */
   get userValue(): User | null {
     return this.user.getValue();
   }
+
   /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 

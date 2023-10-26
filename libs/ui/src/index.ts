@@ -1,5 +1,3 @@
-export * from './lib/ui.module';
-
 // === TAILWIND COMPONENTS === //
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
@@ -19,8 +17,9 @@ export * from './lib/textarea/textarea.component';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/autocomplete/autocomplete.module';
-export * from './lib/select-menu/select-menu.module';
 export * from './lib/select-menu/components/select-option.module';
+export * from './lib/select-menu/select-menu.component';
+export * from './lib/select-menu/select-menu.module';
 export * from './lib/expansion-panel/expansion-panel.module';
 export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
@@ -55,6 +54,7 @@ export * from './lib/divider/types/divider-position';
 export * from './lib/divider/types/divider-orientation';
 export * from './lib/breadcrumbs/types/breadcrumb-display';
 export * from './lib/breadcrumbs/types/breadcrumb-separator';
+export * from './lib/icon/icon.list';
 
 // === INTERFACES === //
 export * from './lib/table/interfaces/table-column.interface';

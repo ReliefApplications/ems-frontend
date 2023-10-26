@@ -26,7 +26,6 @@ import {
   QueryBuilderService,
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
-import { RecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   CONVERT_RECORD,
   DELETE_RECORDS,
@@ -55,6 +54,7 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
+import { Router } from '@angular/router';
 
 /**
  * Default file name when exporting grid data.
@@ -271,10 +271,19 @@ export class CoreGridComponent
     convert: false,
     export: this.showExport,
     showDetails: true,
+    navigateToPage: false,
+    navigateSettings: {
+      useRecordId: false,
+      pageUrl: '',
+      title: '',
+    },
     remove: false,
   };
 
   public editable = false;
+
+  /** Current environment */
+  private environment: any;
 
   /**
    * Main Grid data component to display Records.
@@ -294,6 +303,7 @@ export class CoreGridComponent
    * @param dateTranslate Shared date translate service
    * @param applicationService Shared application service
    * @param contextService Shared context service
+   * @param router Angular Router
    */
   constructor(
     @Inject('environment') environment: any,
@@ -309,9 +319,11 @@ export class CoreGridComponent
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private applicationService: ApplicationService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private router: Router
   ) {
     super();
+    this.environment = environment;
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
 
@@ -355,6 +367,16 @@ export class CoreGridComponent
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
+      navigateToPage: get(this.settings, 'actions.navigateToPage', false),
+      navigateSettings: {
+        useRecordId: get(
+          this.settings,
+          'actions.navigateSettings.useRecordId',
+          false
+        ),
+        pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
+        title: get(this.settings, 'actions.navigateSettings.title', ''),
+      },
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
@@ -828,6 +850,8 @@ export class CoreGridComponent
    * @param event.items list of items to perform the action on
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
+   * @param event.pageUrl url of page
+   * @param event.useRecordId boolean to use record id
    */
   public onAction(event: {
     action: string;
@@ -835,6 +859,8 @@ export class CoreGridComponent
     items?: any[];
     value?: any;
     field?: any;
+    pageUrl?: string;
+    useRecordId?: boolean;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -866,6 +892,17 @@ export class CoreGridComponent
       case 'details': {
         if (event.items) {
           this.onShowDetails(event.items, event.field);
+        }
+        break;
+      }
+      case 'goTo': {
+        if (event.item) {
+          let fullUrl = this.getPageUrl(event.pageUrl as string);
+          if (event.useRecordId) {
+            const recordId = event.item.id;
+            fullUrl = `${fullUrl}?id=${recordId}`;
+          }
+          this.router.navigateByUrl(fullUrl);
         }
         break;
       }
@@ -1171,15 +1208,19 @@ export class CoreGridComponent
    * @param item item to get history of
    */
   public onViewHistory(item: any): void {
-    this.layoutService.setRightSidenav({
-      component: RecordHistoryComponent,
-      inputs: {
-        id: item.id,
-        revert: (version: any) => this.confirmRevertDialog(item, version),
-        template: this.settings.template || null,
-        refresh$: this.refresh$,
-      },
-    });
+    import('../../record-history/record-history.component').then(
+      ({ RecordHistoryComponent }) => {
+        this.layoutService.setRightSidenav({
+          component: RecordHistoryComponent,
+          inputs: {
+            id: item.id,
+            revert: (version: any) => this.confirmRevertDialog(item, version),
+            template: this.settings.template || null,
+            refresh$: this.refresh$,
+          },
+        });
+      }
+    );
   }
 
   /**
@@ -1445,5 +1486,17 @@ export class CoreGridComponent
     );
     this.items = [...this.gridData.data];
     this.removeRowIds.emit(selected);
+  }
+
+  /**
+   * Get page url full link taking into account the environment.
+   *
+   * @param pageUrlParams page url params
+   * @returns url of the page
+   */
+  private getPageUrl(pageUrlParams: string): string {
+    return this.environment.module === 'backoffice'
+      ? `applications/${pageUrlParams}`
+      : `${pageUrlParams}`;
   }
 }

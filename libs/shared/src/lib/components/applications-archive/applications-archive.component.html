@@ -41,6 +41,7 @@
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
+              [uiTooltip]="'common.actions' | translate"
             ></ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onRestore(element)">

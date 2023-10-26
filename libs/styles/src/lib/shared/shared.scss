@@ -1,4 +1,3 @@
-@import '~@fortawesome/fontawesome-free/css/all.css';
 
 *:focus,
 *:active:focus,
@@ -58,6 +57,14 @@ body {
 .cdk-drag-preview {
   z-index: 1100 !important;
   @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
+}
+
+tr.cdk-drag-preview {
+  display: table;
+  > * {
+    display: table-cell;
+    vertical-align: middle;
+  }
 }
 
 .cdk-drag-animating {

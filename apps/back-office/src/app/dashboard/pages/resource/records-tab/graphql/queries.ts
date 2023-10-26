@@ -22,11 +22,6 @@ export const GET_RESOURCE_RECORDS = gql`
             id
             incrementalId
             data(display: $display)
-            versions {
-              id
-              createdAt
-              data
-            }
             form {
               id
               name

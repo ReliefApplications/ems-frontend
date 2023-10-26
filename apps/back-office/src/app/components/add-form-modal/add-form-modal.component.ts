@@ -172,9 +172,4 @@ export class AddFormModalComponent implements OnInit {
         this.templates = data.resource.forms || [];
       });
   }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

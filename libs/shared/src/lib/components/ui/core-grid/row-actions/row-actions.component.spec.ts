@@ -5,7 +5,7 @@ import { GridRowActionsComponent } from './row-actions.component';
 
 describe('GridRowActionsComponent', () => {
   let component: GridRowActionsComponent;
-  let fixture: ComponentFixture<sharedGridRowActionsComponent>;
+  let fixture: ComponentFixture<GridRowActionsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

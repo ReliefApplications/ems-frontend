@@ -130,16 +130,7 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
     template: [get(configuration, 'template', null)],
     layouts: [get(configuration, 'layouts', []), Validators.required],
     aggregations: [get(configuration, 'aggregations', []), Validators.required],
-    actions: fb.group({
-      delete: [get(configuration, 'actions.delete', true)],
-      history: [get(configuration, 'actions.history', true)],
-      convert: [get(configuration, 'actions.convert', true)],
-      update: [get(configuration, 'actions.update', true)],
-      inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
-      addRecord: [get(configuration, 'actions.addRecord', false)],
-      export: [get(configuration, 'actions.export', true)],
-      showDetails: [get(configuration, 'actions.showDetails', true)],
-    }),
+    actions: createGridActionsFormGroup(configuration),
     floatingButtons: fb.array(
       configuration.floatingButtons && configuration.floatingButtons.length
         ? configuration.floatingButtons.map((x: any) =>
@@ -152,6 +143,53 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
     ],
     at: get(configuration, 'at', ''),
+  });
+  return formGroup;
+};
+
+/**
+ * Creates a form group for the grid settings with the given grid actions configuration
+ *
+ * @param configuration configuration to build up the grid actions form group
+ * @returns form group with the given grid actions configuration
+ */
+export const createGridActionsFormGroup = (configuration: any) => {
+  const formGroup = fb.group({
+    delete: [get(configuration, 'actions.delete', true)],
+    history: [get(configuration, 'actions.history', true)],
+    convert: [get(configuration, 'actions.convert', true)],
+    update: [get(configuration, 'actions.update', true)],
+    inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
+    addRecord: [get(configuration, 'actions.addRecord', false)],
+    export: [get(configuration, 'actions.export', true)],
+    showDetails: [get(configuration, 'actions.showDetails', true)],
+    navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
+    navigateSettings: fb.group({
+      pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
+      useRecordId: [
+        get(configuration, 'actions.navigateSettings.useRecordId', false),
+      ],
+      title: [
+        get(configuration, 'actions.navigateSettings.title', 'Details view'),
+      ],
+    }),
+  });
+  // Set validators ot navigate to page title option, based on other params
+  const setValidatorsNavigateToPageTitle = (value: boolean) => {
+    if (value) {
+      formGroup
+        .get('navigateSettings.title')
+        ?.setValidators(Validators.required);
+    } else {
+      formGroup.get('navigateSettings.title')?.clearValidators();
+    }
+    formGroup.get('navigateSettings.title')?.updateValueAndValidity();
+  };
+  // Initialize
+  setValidatorsNavigateToPageTitle(formGroup.get('navigateToPage')?.value);
+  // Subscribe to changes
+  formGroup.get('navigateToPage')?.valueChanges.subscribe((value) => {
+    setValidatorsNavigateToPageTitle(value);
   });
   return formGroup;
 };

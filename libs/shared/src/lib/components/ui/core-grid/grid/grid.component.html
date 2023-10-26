@@ -1183,6 +1183,32 @@
         ></button>
       </ng-template>
     </kendo-grid-column>
+    <!-- Go to page ( navigateToPage action ) -->
+    <kendo-grid-column
+      *ngIf="actions.navigateToPage"
+      [columnMenu]="false"
+      [width]="54"
+      [resizable]="true"
+      [title]="actions.navigateSettings.title"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <button
+          class="text-center"
+          kendoButton
+          icon="hyperlink-open-sm"
+          [look]="'flat'"
+          (click)="
+            action.emit({
+              action: 'goTo',
+              item: dataItem,
+              pageUrl: actions.navigateSettings.pageUrl,
+              useRecordId: actions.navigateSettings.useRecordId
+            })
+          "
+          [uiTooltip]="'components.widget.grid.actions.goTo' | translate"
+        ></button>
+      </ng-template>
+    </kendo-grid-column>
     <!-- ROW ACTIONS -->
     <kendo-grid-column
       *ngIf="hasEnabledActions"

@@ -35,7 +35,10 @@ export class FilterRowComponent
   @Input() fields: any[] = [];
 
   public field?: any;
+  /** Template reference to the editor */
   public editor?: TemplateRef<any>;
+  /** Should hide editor or not */
+  public hideEditor = false;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -98,8 +101,10 @@ export class FilterRowComponent
         const operator = this.operators.find((x) => x.value === value);
         if (operator?.disableValue) {
           this.form.get('value')?.disable();
+          this.hideEditor = true;
         } else {
           this.form.get('value')?.enable();
+          this.hideEditor = false;
         }
       });
   }
@@ -158,9 +163,17 @@ export class FilterRowComponent
         /** If type undefined, use as default 'eq' operator and not undefined. */
         this.form
           .get('operator')
-          ?.setValue(type?.defaultOperator ?? FILTER_OPERATORS[0].value);
+          ?.setValue(type?.defaultOperator ?? FILTER_OPERATORS[0].value, {
+            emitEvent: false,
+          });
       } else {
-        this.form.get('operator')?.setValue(this.form.value.operator);
+        this.form
+          .get('operator')
+          ?.setValue(this.form.value.operator, { emitEvent: false });
+        const operator = this.operators.find(
+          (x) => x.value === this.form.get('operator')?.value
+        );
+        this.hideEditor = operator?.disableValue ?? false;
       }
       // set operator template
       this.setEditor(this.field);

@@ -22,6 +22,7 @@ export class QueryStyleListComponent
 
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
+
   /**
    * Constructor for the query style list component
    */

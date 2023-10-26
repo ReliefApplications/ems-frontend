@@ -63,7 +63,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   standalone: true,
   selector: 'shared-form-modal',
   templateUrl: './form-modal.component.html',
-  styleUrls: ['./form-modal.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form-modal.component.scss'],
   imports: [
     CommonModule,
     IconModule,
@@ -543,31 +543,6 @@ export class FormModalComponent
       }
     }
     return data;
-  }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    // TODO: we should compare the data with init data to display a confirm modal
-    // if (!isEqual(this.survey?.data, this.initData)) {
-    //   const closeDialogRef = this.dialog.open(ConfirmModalComponent, {
-    //     data: {
-    //       title: 'Confirm',
-    //       content: 'Record has been modified. You can cancel to continue editing, or discard you changes.',
-    //       confirmText: 'Discard changes',
-    //       confirmVariant: 'primary'
-    //     }
-    //   });
-    //   closeDialogRef.closed.subscribe((value: any) => {
-    //     if(value){
-    //       this.dialogRef.close();
-    //     }
-    //   });
-    // } else {
-    //   this.dialogRef.close();
-    // }
-    this.dialogRef.close();
   }
 
   /**

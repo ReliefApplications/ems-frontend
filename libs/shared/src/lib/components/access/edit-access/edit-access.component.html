@@ -1,44 +1,17 @@
-<ui-dialog>
+<!-- Modal -->
+<ui-dialog *ngIf="useModal">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
-      {{
-        'components.access.description'
-          | translate : { name: data.objectTypeName }
-      }}
+      {{ 'components.access.description' | translate : { name: contentType } }}
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form [formGroup]="accessForm" class="flex flex-col">
-      <div uiFormFieldDirective>
-        <label>{{ 'components.access.canSee' | translate }}</label>
-        <ui-select-menu formControlName="canSee" [multiselect]="true">
-          <ui-select-option *ngFor="let role of roles" [value]="role.id">
-            {{ role.title }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
-      <ng-container *ngIf="!data.application">
-        <div uiFormFieldDirective>
-          <label>{{ 'components.access.canUpdate' | translate }}</label>
-          <ui-select-menu formControlName="canUpdate" [multiselect]="true">
-            <ui-select-option *ngFor="let role of roles" [value]="role.id">
-              {{ role.title }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
-        <div uiFormFieldDirective>
-          <label>{{ 'components.access.canDelete' | translate }}</label>
-          <ui-select-menu formControlName="canDelete" [multiselect]="true">
-            <ui-select-option *ngFor="let role of roles" [value]="role.id">
-              {{ role.title }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
-      </ng-container>
-    </form>
+    <ng-container *ngTemplateOutlet="accessFormTmpl"></ng-container>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()" variant="default">{{ 'common.close' | translate }}</ui-button>
+    <ui-button (click)="onClose()" variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
@@ -50,3 +23,40 @@
     </ui-button>
   </ng-container>
 </ui-dialog>
+
+<!-- To project component content without use modal -->
+<div *ngIf="!useModal">
+  <ng-container *ngTemplateOutlet="accessFormTmpl"></ng-container>
+</div>
+
+<!-- Access form -->
+<ng-template #accessFormTmpl>
+  <form [formGroup]="accessForm" class="flex flex-col">
+    <div uiFormFieldDirective>
+      <label>{{ 'components.access.canSee' | translate }}</label>
+      <ui-select-menu formControlName="canSee" [multiselect]="true">
+        <ui-select-option *ngFor="let role of roles" [value]="role.id">
+          {{ role.title }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+    <ng-container *ngIf="!applicationId">
+      <div uiFormFieldDirective>
+        <label>{{ 'components.access.canUpdate' | translate }}</label>
+        <ui-select-menu formControlName="canUpdate" [multiselect]="true">
+          <ui-select-option *ngFor="let role of roles" [value]="role.id">
+            {{ role.title }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.access.canDelete' | translate }}</label>
+        <ui-select-menu formControlName="canDelete" [multiselect]="true">
+          <ui-select-option *ngFor="let role of roles" [value]="role.id">
+            {{ role.title }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+  </form>
+</ng-template>

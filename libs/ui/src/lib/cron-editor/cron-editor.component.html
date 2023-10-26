@@ -1,4 +1,3 @@
-<!-- todo: translate all texts -->
 <section>
   <ui-tabs>
     <!-- Minute -->
@@ -153,39 +152,39 @@
               <div [formGroup]="allForm" class="flex flex-col">
                 <ui-checkbox formControlName="MON">
                   <ng-container ngProjectAs="label">
-                    {{ 'common.cronEditor.monday' | translate }}
+                    {{ 'common.cronEditor.weekDays.monday' | translate }}
                   </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="TUE">
                   <ng-container ngProjectAs="label">
-                    {{ 'common.cronEditor.tuesday' | translate }}
+                    {{ 'common.cronEditor.weekDays.tuesday' | translate }}
                   </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="WED">
                   <ng-container ngProjectAs="label">
                     {{
-                      'common.cronEditor.Wednesday' | translate
+                      'common.cronEditor.weekDays.wednesday' | translate
                     }}</ng-container
                   >
                 </ui-checkbox>
                 <ui-checkbox formControlName="THU">
                   <ng-container ngProjectAs="label">
-                    {{ 'common.cronEditor.thursday' | translate }}
+                    {{ 'common.cronEditor.weekDays.thursday' | translate }}
                   </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="FRI">
                   <ng-container ngProjectAs="label">
-                    {{ 'common.cronEditor.friday' | translate }}
+                    {{ 'common.cronEditor.weekDays.friday' | translate }}
                   </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="SAT">
                   <ng-container ngProjectAs="label">
-                    {{ 'common.cronEditor.saturday' | translate }}
+                    {{ 'common.cronEditor.weekDays.saturday' | translate }}
                   </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="SUN">
                   <ng-container ngProjectAs="label">
-                    {{ 'common.cronEditor.sunday' | translate }}
+                    {{ 'common.cronEditor.weekDays.sunday' | translate }}
                   </ng-container>
                 </ui-checkbox>
               </div>
@@ -229,7 +228,9 @@
                 <!-- Specific day -->
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.masculine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.masculine' | translate
+                    }}</span>
                     <ng-container *ngIf="options.cronFlavor === 'quartz'">
                       <div uiFormFieldDirective>
                         <label>{{ 'common.cronEditor.day' | translate }}</label>
@@ -296,7 +297,9 @@
                 <!-- Specific Week day -->
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.feminine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.feminine' | translate
+                    }}</span>
                     <div uiFormFieldDirective>
                       <label>{{ 'common.cronEditor.week' | translate }}</label>
                       <ui-select-menu
@@ -384,7 +387,9 @@
               >
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.masculine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.masculine' | translate
+                    }}</span>
 
                     <div
                       uiFormFieldDirective
@@ -444,7 +449,9 @@
               >
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>{{ 'common.cronEditor.onThe.feminine' | translate }}</span>
+                    <span>{{
+                      'common.cronEditor.onThe.feminine' | translate
+                    }}</span>
 
                     <div uiFormFieldDirective>
                       <label>{{ 'common.cronEditor.week' | translate }}</label>
@@ -515,7 +522,9 @@
         <div class="px-2">
           <div [formGroup]="allForm">
             <div uiFormFieldDirective>
-              <label>{{ 'components.calculatedFields.expression' | translate }}</label>
+              <label>{{
+                'components.calculatedFields.expression' | translate
+              }}</label>
               <input type="text" formControlName="expression" />
             </div>
           </div>

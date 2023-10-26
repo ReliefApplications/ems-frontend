@@ -36,7 +36,7 @@
         "compodocArgs": ["-e", "json", "-d", "libs/ui"],
         "styles": [
           "libs/ui/src/style/styles.scss",
-          "libs/ui/src/style/storybook.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
           "libs/styles/src/lib/tailwind/tailwind.scss",
           "libs/styles/src/lib/shared/shared.scss",
           "libs/styles/src/lib/kendo/theme.scss"
@@ -61,7 +61,7 @@
         "compodoc": false,
         "styles": [
           "libs/ui/src/style/styles.scss",
-          "libs/ui/src/style/storybook.scss",
+          "libs/styles/src/storybook/storybook.scss",
           "libs/styles/src/lib/tailwind/tailwind.scss",
           "libs/styles/src/lib/shared/shared.scss",
           "libs/styles/src/lib/kendo/theme.scss"

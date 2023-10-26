@@ -4,7 +4,7 @@ import { SortStageComponent } from './sort-stage.component';
 
 describe('SortStageComponent', () => {
   let component: SortStageComponent;
-  let fixture: ComponentFixture<sharedSortStageComponent>;
+  let fixture: ComponentFixture<SortStageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

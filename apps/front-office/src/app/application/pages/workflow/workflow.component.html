@@ -1,10 +1,31 @@
+<!-- Skeleton when loading -->
+<ng-container
+  *sharedSkeleton="
+    loading;
+    repeat: 1;
+    height: '32px';
+    width: '120px';
+    shape: 'rectangle'
+  "
+>
+  <ng-container *ngIf="workflow">
+    <div class="flex flex-wrap items-center justify-between mb-3 gap-4">
+      <!-- Title -->
+      <div class="flex items-center gap-1">
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ workflow.name }}
+        </h1>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
 <!-- STEPS -->
 <shared-workflow-stepper
   [loading]="loading"
   [steps]="steps"
   (openStep)="onOpenStep($event)"
   [activeStep]="activeStep"
-  class="my-4 -mx-6 block"
+  class="block"
 >
 </shared-workflow-stepper>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

@@ -24,7 +24,6 @@ export class AggregationBuilderComponent
   // === REACTIVE FORM ===
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
   @Input() resource!: Resource;
-
   @Input() reload$!: Observable<boolean>;
 
   // === DATA ===
@@ -32,7 +31,7 @@ export class AggregationBuilderComponent
 
   // === FIELDS ===
   private fields = new BehaviorSubject<any[]>([]);
-  public fields$!: Observable<any[]>;
+  public fields$ = this.fields.asObservable();
   private selectedFields = new BehaviorSubject<any[]>([]);
   public selectedFields$!: Observable<any[]>;
   private metaFields = new BehaviorSubject<any[]>([]);
@@ -63,10 +62,16 @@ export class AggregationBuilderComponent
   }
 
   ngOnInit(): void {
-    this.initFields();
+    // Fixes issue where sometimes we try to load the fields before the queries are loaded
+    this.queryBuilder.availableQueries$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((queryList) => {
+        if (queryList.length > 0) {
+          this.initFields();
+        }
+      });
 
     // Fields query
-    this.fields$ = this.fields.asObservable();
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields) => {
       fields.forEach((field) => {
         field['used'] = this.pipelineForm.value.some((x: any) => {
@@ -84,8 +89,7 @@ export class AggregationBuilderComponent
     this.metaFields$ = this.metaFields.asObservable();
     this.aggregationForm
       .get('sourceFields')
-      ?.valueChanges.pipe(debounceTime(1000))
-      .pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
       });
@@ -94,8 +98,7 @@ export class AggregationBuilderComponent
     this.mappingFields$ = this.mappingFields.asObservable();
     this.aggregationForm
       .get('pipeline')
-      ?.valueChanges.pipe(debounceTime(1000))
-      .pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((pipeline) => {
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(

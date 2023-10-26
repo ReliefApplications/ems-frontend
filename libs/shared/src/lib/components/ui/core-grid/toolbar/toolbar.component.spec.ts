@@ -4,7 +4,7 @@ import { GridToolbarComponent } from './toolbar.component';
 
 describe('GridToolbarComponent', () => {
   let component: GridToolbarComponent;
-  let fixture: ComponentFixture<sharedGridToolbarComponent>;
+  let fixture: ComponentFixture<GridToolbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

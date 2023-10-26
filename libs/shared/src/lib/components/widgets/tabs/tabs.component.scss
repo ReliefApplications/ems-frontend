@@ -1,6 +1,7 @@
 :host ::ng-deep {
   #tab-group-wrapper {
     height: 100%;
+    overflow: hidden;
   }
 
   .k-tilelayout {
@@ -8,7 +9,7 @@
   }
 
   /** Override tab list to make it sticky so content is scrollable **/
-  #tabs {
+  #tab-list {
     position: sticky;
     top: 0;
     z-index: 1;

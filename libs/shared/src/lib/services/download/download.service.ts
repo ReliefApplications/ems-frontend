@@ -21,6 +21,9 @@ const BLOB_TYPE_TO_PATH: Record<BlobType, string> = {
   [BlobType.APPLICATION_STYLE]: 'style',
 };
 
+/** Snackbar duration in ms */
+const SNACKBAR_DURATION = 3000;
+
 /**
  * Shared download service. Handles export and upload events.
  * TODO: rename in file service
@@ -65,11 +68,12 @@ export class DownloadService {
     );
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'application/json',
+      Accept: 'application/json',
     });
 
     return { snackBarRef, headers };
   }
+
   /**
    * Downloads file from the server
    *
@@ -82,6 +86,7 @@ export class DownloadService {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     this.restService
       .get(path, { ...options, responseType: 'blob', headers })
@@ -89,19 +94,19 @@ export class DownloadService {
         next: (res) => {
           const blob = new Blob([res], { type });
           this.saveFile(fileName, blob);
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.ready'
           );
-          snackBarRef.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarSpinner.instance.loading = false;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         },
         error: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         },
       });
   }
@@ -123,34 +128,35 @@ export class DownloadService {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     this.restService
       .post(path, body, { responseType: 'blob', headers })
       .subscribe({
         next: (res) => {
           if (body?.email) {
-            snackBarRef.instance.message = this.translate.instant(
+            snackBarSpinner.instance.message = this.translate.instant(
               'common.notifications.file.download.ongoing'
             );
-            snackBarRef.instance.loading = false;
-            setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+            snackBarSpinner.instance.loading = false;
+            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
           } else {
             const blob = new Blob([res], { type });
             this.saveFile(fileName, blob);
-            snackBarRef.instance.message = this.translate.instant(
+            snackBarSpinner.instance.message = this.translate.instant(
               'common.notifications.file.download.ready'
             );
-            snackBarRef.instance.loading = false;
-            setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+            snackBarSpinner.instance.loading = false;
+            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
           }
         },
         error: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         },
       });
   }
@@ -179,6 +185,7 @@ export class DownloadService {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     this.restService
       .post(path, { users }, { responseType: 'blob', headers })
@@ -186,19 +193,19 @@ export class DownloadService {
         (res) => {
           const blob = new Blob([res], { type: `text/${type};charset=utf-8;` });
           this.saveFile(fileName, blob);
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.ready'
           );
-          snackBarRef.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarSpinner.instance.loading = false;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         },
         () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         }
       );
   }
@@ -229,26 +236,27 @@ export class DownloadService {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     const formData = new FormData();
     formData.append('excelFile', file, file.name);
     return this.restService.post(path, formData, { headers }).pipe(
       tap({
         next: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.upload.ready'
           );
-          snackBarRef.instance.loading = false;
+          snackBarSpinner.instance.loading = false;
 
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         },
         error: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.upload.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         },
       })
     );
@@ -275,6 +283,7 @@ export class DownloadService {
         },
       }
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     const path = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
     const headers = new HttpHeaders({
@@ -289,20 +298,20 @@ export class DownloadService {
         .subscribe((res: { path: string }) => {
           const { path } = res ?? {};
           if (path) {
-            snackBarRef.instance.message = this.translate.instant(
+            snackBarSpinner.instance.message = this.translate.instant(
               'common.notifications.file.upload.ready'
             );
-            snackBarRef.instance.loading = false;
+            snackBarSpinner.instance.loading = false;
 
-            setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
             resolve(path);
           } else {
-            snackBarRef.instance.message = this.translate.instant(
+            snackBarSpinner.instance.message = this.translate.instant(
               'common.notifications.file.upload.error'
             );
-            snackBarRef.instance.loading = false;
-            snackBarRef.instance.error = true;
-            setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
+            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
             reject();
           }
         });

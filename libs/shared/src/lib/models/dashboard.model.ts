@@ -202,8 +202,8 @@ export const WIDGET_TYPES = [
   {
     id: 'tabs',
     name: 'Tabs',
-    icon: '/assets/summary-card.svg',
-    color: '#99CBEF',
+    icon: '/assets/tab.svg',
+    color: '#D5B38C',
     settings: { title: 'Tabs' },
     defaultCols: 8,
     defaultRows: 4,

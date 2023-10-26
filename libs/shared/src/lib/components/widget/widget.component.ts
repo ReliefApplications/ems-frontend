@@ -8,6 +8,8 @@ import {
   OnInit,
   OnDestroy,
   Inject,
+  TemplateRef,
+  ElementRef,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -26,9 +28,17 @@ import { DOCUMENT } from '@angular/common';
   styleUrls: ['./widget.component.scss'],
 })
 export class WidgetComponent implements OnInit, OnDestroy {
+  /** Current widget definition */
   @Input() widget: any;
+  // todo: rename or delete
+  /** Is widget in fullscreen mode */
   @Input() header = true;
+  /** Can user update widget */
   @Input() canUpdate = false;
+  /** Template to display on the left of widget header */
+  @Input() headerLeftTemplate?: TemplateRef<any>;
+  /** Template to display on the right of widget header */
+  @Input() headerRightTemplate?: TemplateRef<any>;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -37,6 +47,11 @@ export class WidgetComponent implements OnInit, OnDestroy {
     } else {
       return true;
     }
+  }
+
+  /** @returns should show widget header, based on widget settings */
+  get showHeader() {
+    return get(this.widget, 'settings.widgetDisplay.showHeader', true);
   }
 
   private customStyle?: HTMLStyleElement;
@@ -63,10 +78,12 @@ export class WidgetComponent implements OnInit, OnDestroy {
    *
    * @param restService Shared rest service
    * @param document document
+   * @param elementRef reference to element
    */
   constructor(
     private restService: RestService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    public elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {

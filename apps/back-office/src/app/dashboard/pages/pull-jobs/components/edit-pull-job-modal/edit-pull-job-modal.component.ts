@@ -426,6 +426,7 @@ export class EditPullJobModalComponent implements OnInit {
       }
     }
   }
+
   /**
    * Changes the query according to search text
    *

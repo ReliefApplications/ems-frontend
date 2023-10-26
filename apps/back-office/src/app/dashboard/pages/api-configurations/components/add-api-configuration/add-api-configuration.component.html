@@ -1,6 +1,8 @@
 <ui-dialog size="small">
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">{{ 'models.apiConfiguration.new' | translate }}</h3>
+    <h3 class="font-semibold">
+      {{ 'models.apiConfiguration.new' | translate }}
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="apiForm" class="flex flex-col">
@@ -21,7 +23,9 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()" variant="default">{{ 'common.close' | translate }}</ui-button>
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

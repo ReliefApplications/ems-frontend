@@ -14,6 +14,7 @@ export class UILayoutService {
   public closeRightSidenav = true;
   /** Current right sidenav */
   private rightSidenav = new BehaviorSubject<any>(null);
+
   /** @returns Current right sidenav as observable */
   get rightSidenav$(): Observable<any> {
     return this.rightSidenav.asObservable();
@@ -21,6 +22,7 @@ export class UILayoutService {
 
   /** Current fixed wrapper actions */
   private fixedWrapperActions = new BehaviorSubject<any>(null);
+
   /** @returns Current fixed wrapper actions as observable */
   get fixedWrapperActions$(): Observable<any> {
     return this.fixedWrapperActions.asObservable();

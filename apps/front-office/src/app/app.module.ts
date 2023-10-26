@@ -27,6 +27,7 @@ import {
   AppAbility,
   KendoTranslationService,
   AuthInterceptorService,
+  FormService,
 } from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -39,18 +40,6 @@ import { PureAbility } from '@casl/ability';
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
 
-// Kendo datepicker for surveyjs
-// import {
-//   CalendarDOMService,
-//   CenturyViewService,
-//   DecadeViewService,
-//   HoursService,
-//   MinutesService,
-//   MonthViewService,
-//   TimePickerDOMService,
-//   TOUCH_ENABLED,
-//   YearViewService,
-// } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { IconsService } from '@progress/kendo-angular-icons';
@@ -68,19 +57,26 @@ import {
 // Sentry
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular-ivy';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
 
 /**
- * Initialize authentication in the platform.
- * Configuration in environment file.
- * Use oAuth
+ * Initialize application.
+ * Setup oAuth configuration.
+ * Initialize form builder.
  *
  * @param oauth OAuth Service
+ * @param formService Shared form service
  * @returns oAuth configuration
  */
-const initializeAuth =
-  (oauth: OAuthService): any =>
+const initializeApp =
+  (oauth: OAuthService, formService: FormService): any =>
   () => {
     oauth.configure(environment.authConfig);
+    formService.initialize();
+    // Add fa icon font to check in the application
+    library.add(fas, fab);
   };
 
 /**
@@ -123,9 +119,9 @@ export const httpTranslateLoader = (http: HttpClient) =>
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeAuth,
+      useFactory: initializeApp,
       multi: true,
-      deps: [OAuthService],
+      deps: [OAuthService, FormService],
     },
     {
       provide: MessageService,

@@ -2,6 +2,8 @@
 	"common": {
 		"access": "Accès",
 		"accessDenied": "Accès refusé",
+		"account": "Compte",
+		"actions": "Actions",
 		"add": "Ajouter",
 		"adminField": "Champ administrateur",
 		"aggregation": {
@@ -42,6 +44,7 @@
 				"clear": "Supprimer la recherche"
 			}
 		},
+		"asc": "Croissant",
 		"attribute": {
 			"few": "Attributs",
 			"none": "Aucun attribut",
@@ -77,7 +80,6 @@
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"cronEditor": {
-			"Wednesday": "Mercredi",
 			"advanced": "Avancé",
 			"atTime": "À",
 			"daily": "Quotidien",
@@ -87,27 +89,55 @@
 				"feminine": "Toutes les",
 				"masculine": "Tous les"
 			},
-			"friday": "Vendredi",
+			"firstWeekDay": "Premier jour de la semaine",
 			"hourly": "Horaire",
 			"hours": "Heure(s)",
+			"lastDay": "Dernier jour",
+			"lastWeekDay": "Dernier jour de la semaine",
 			"minutely": "Chaque minute",
 			"minutes": "Minute(s)",
-			"monday": "Lundi",
 			"month": "Mois",
 			"monthly": "Mensuel",
+			"months": {
+				"april": "Avril",
+				"august": "Août",
+				"december": "Décembre",
+				"february": "Février",
+				"january": "Janvier",
+				"july": "Juillet",
+				"june": "Juin",
+				"march": "Mars",
+				"may": "Mai",
+				"november": "Novembre",
+				"october": "Octobre",
+				"september": "Septembre"
+			},
 			"of": "du",
 			"ofEvery": "de chaque",
 			"onThe": {
 				"feminine": "Pendant la",
 				"masculine": "Pendant le"
 			},
-			"saturday": "Samedi",
 			"seconds": "Seconde(s)",
-			"sunday": "Dimanche",
-			"thursday": "Jeudi",
-			"tuesday": "Mardi",
 			"week": "Semaine",
 			"weekDay": "Jour de la semaine (LUN-VEN)",
+			"weekDays": {
+				"friday": "Vendredi",
+				"monday": "Lundi",
+				"saturday": "Samedi",
+				"sunday": "Dimanche",
+				"thursday": "Jeudi",
+				"tuesday": "Mardi",
+				"wednesday": "Mercredi"
+			},
+			"weekNumber": {
+				"fifth": "Cinquième",
+				"first": "Première",
+				"fourth": "Quatrième",
+				"last": "Dernière",
+				"second": "Deuxième",
+				"third": "Troisième"
+			},
 			"weekly": "Hebdomadaire",
 			"yearly": "Annuel"
 		},
@@ -124,6 +154,7 @@
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
+		"desc": "Décroissant",
 		"dismiss": "Fermer",
 		"display": "Afficher",
 		"distributionList": {
@@ -307,6 +338,7 @@
 			"none": "Aucune référence de données",
 			"one": "Référence de données"
 		},
+		"remove": "Retirer",
 		"resource": {
 			"few": "Ressources",
 			"none": "Aucune ressource",
@@ -438,7 +470,7 @@
 				"week": "Semaine",
 				"year": "Année"
 			},
-			"sourceFields": "Sélectionner les champs",
+			"sourceFields": "Choisissez les champs à inclure dans l'agrégation",
 			"stages": {
 				"addFields": "Ajouter des champs",
 				"custom": "Personnaliser",
@@ -480,8 +512,16 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"enterEditMode": "Entrer en mode édition",
+				"enterPreviewMode": "Entrer en mode prévisualisation",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"filterPosition": {
+						"bottom": "Afficher le filtre en bas",
+						"left": "Afficher le filtre à gauche",
+						"right": "Afficher le filtre à droite",
+						"top": "Afficher le filtre en haut"
+					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
 				},
@@ -510,6 +550,13 @@
 				"reordered": {
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
+				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Sélectionnez une icône",
+					"tooltip": {
+						"autoSave": "Les modifications sont automatiquement enregistrées"
+					}
 				},
 				"show": "Afficher la page dans la barre latérale de navigation"
 			},
@@ -981,6 +1028,7 @@
 		"records": {
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
+			"editAs": "Editer en tant que",
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'enregistrements"
 			},
@@ -1204,6 +1252,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"goTo": "Aller à la page",
 					"history": "Voir l'historique"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
@@ -1265,6 +1314,7 @@
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"displayMap": "Afficher la carte",
+					"openPage": "Aller à la page",
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
@@ -1348,11 +1398,21 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"navigateToPage": "Accédez à la page",
+						"pageUrl": {
+							"label": "Url de la source de la page",
+							"placeholder": "Entrez l'id de la page"
+						},
+						"pageUrlTitle": {
+							"label": "Nom de la colonne",
+							"placeholder": "Entrez un nom pour la colonne..."
+						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
-						"update": "Modifier les enregistrements"
+						"update": "Modifier les enregistrements",
+						"useRecordId": "Injecter l'identifiant comme paramètre de navigation"
 					},
 					"aggregations": {
 						"add": {
@@ -1407,6 +1467,7 @@
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
+							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
@@ -1431,7 +1492,8 @@
 						"title": "Mise en page de la grille"
 					},
 					"tooltip": {
-						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
+						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
 					}
 				},
 				"iconPicker": {
@@ -1658,6 +1720,10 @@
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
+						},
+						"gridActions": {
+							"title": "Actions de grille",
+							"tooltip": "Actions de grille activées"
 						},
 						"preview": {
 							"title": "Prévisualisation"
@@ -2077,6 +2143,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"header": "Afficher l'en-tête du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
@@ -2090,6 +2157,7 @@
 			"sorting": {
 				"add": "Ajouter un champ",
 				"delete": "Supprimer le champ de tri",
+				"empty": "Aucun champ de tri défini",
 				"field": "Champ",
 				"label": "Étiquette",
 				"management": "Gestion des champs de tri",

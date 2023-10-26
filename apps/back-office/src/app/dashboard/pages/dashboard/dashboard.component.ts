@@ -16,7 +16,6 @@ import {
   ApplicationService,
   WorkflowService,
   DashboardService,
-  AuthService,
   Application,
   UnsubscribeComponent,
   WidgetGridComponent,
@@ -27,11 +26,9 @@ import {
   ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
-  EditStepMutationResponse,
-  EditPageMutationResponse,
   RecordQueryResponse,
 } from '@oort-front/shared';
-import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
+import { EDIT_DASHBOARD } from './graphql/mutations';
 import {
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
@@ -55,7 +52,6 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { GraphQLError } from 'graphql';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -112,8 +108,10 @@ export class DashboardComponent
   public contextRecord: Record | null = null;
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
-
+  /** Timeout to scroll to newly added widget */
   private timeoutListener!: NodeJS.Timeout;
+  /** Is edition active */
+  public editionActive = true;
 
   /** @returns get newest widget id from existing ids */
   get newestId(): number {
@@ -150,7 +148,6 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
@@ -170,7 +167,6 @@ export class DashboardComponent
     private snackBar: SnackbarService,
     private dashboardService: DashboardService,
     private translate: TranslateService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private contextService: ContextService,
     private refDataService: ReferenceDataService,
@@ -297,6 +293,7 @@ export class DashboardComponent
       return;
     }
 
+    this.editionActive = true;
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
@@ -333,6 +330,7 @@ export class DashboardComponent
           this.showFilter = this.dashboard.showFilter ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
+          this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
@@ -506,119 +504,19 @@ export class DashboardComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          this.handleDashboardMutationResponse(errors);
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.dashboard.one')
+          );
+          if (!errors) {
+            this.dashboardService.openDashboard({
+              ...this.dashboard,
+              structure: this.widgets,
+            });
+          }
         },
         complete: () => (this.loading = false),
       });
-  }
-
-  /**
-   * Handle dashboard mutations response
-   *
-   * @param errors errors from mutation response
-   * @param data from mutation response if any
-   */
-  private handleDashboardMutationResponse(
-    errors: readonly GraphQLError[] | undefined,
-    data?: EditDashboardMutationResponse | null
-  ) {
-    if (errors) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectNotUpdated', {
-          type: this.translate.instant('common.dashboard.one'),
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
-      );
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.dashboard.one'),
-          value: '',
-        })
-      );
-      this.dashboardService.openDashboard({
-        ...this.dashboard,
-        ...(!data && { structure: this.widgets }),
-        ...(data && { showFilter: data?.editDashboard.showFilter }),
-      });
-    }
-  }
-  /**
-   * Edit the permissions layer.
-   *
-   * @param e edit event
-   */
-  saveAccess(e: any): void {
-    if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            this.handleAccessMutationResponse(data, errors, 'editStep');
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            this.handleAccessMutationResponse(data, errors, 'editPage');
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    }
-  }
-
-  /**
-   * Handle access mutations response
-   *
-   * @param data retrieved from the access mutation response
-   * @param errors errors from the access mutation response if any
-   * @param dataKey key used to get permission from the given data
-   */
-  private handleAccessMutationResponse<T>(
-    data: T | null | undefined,
-    errors: readonly GraphQLError[] | undefined,
-    dataKey: keyof T
-  ) {
-    if (errors) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectNotUpdated', {
-          type: this.translate.instant('common.step.one'),
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
-      );
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.step.one'),
-          value: '',
-        })
-      );
-      this.dashboard = {
-        ...this.dashboard,
-        permissions: (data?.[dataKey] as any).permissions,
-      };
-    }
   }
 
   /**
@@ -633,6 +531,7 @@ export class DashboardComponent
       this.formActive = !this.formActive;
     }
   }
+
   /**
    * Update the name of the dashboard and the step or page linked to it.
    *
@@ -685,11 +584,20 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ data, errors }) => {
-            this.handleDashboardMutationResponse(errors, data);
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.dashboard.one')
+            );
+            if (!errors) {
+              this.dashboardService.openDashboard({
+                ...this.dashboard,
+                ...(data && { showFilter: data?.editDashboard.showFilter }),
+              });
+            }
           },
           complete: () => {
-            this.loading = false;
             this.contextService.isFilterEnabled.next(this.showFilter);
+            this.loading = false;
           },
         });
     }
@@ -702,34 +610,6 @@ export class DashboardComponent
     this.snackBar.openSnackBar(
       this.translate.instant('common.notifications.copiedToClipboard')
     );
-  }
-
-  /**
-   * Duplicate page, in a new ( or same ) application
-   *
-   * @param event duplication event
-   */
-  public onDuplicate(event: any): void {
-    this.applicationService.duplicatePage(event.id, {
-      pageId: this.dashboard?.page?.id,
-      stepId: this.dashboard?.step?.id,
-    });
-  }
-
-  /**
-   * Toggle visibility of application menu
-   * Get applications
-   */
-  public onAppSelection(): void {
-    this.showAppMenu = !this.showAppMenu;
-    const authSubscription = this.authService.user$.subscribe(
-      (user: any | null) => {
-        if (user) {
-          this.applications = user.applications;
-        }
-      }
-    );
-    authSubscription.unsubscribe();
   }
 
   /** Open modal to add new button action */
@@ -906,78 +786,65 @@ export class DashboardComponent
   }
 
   /**
-   * Toggle page visibility.
+   * Open settings modal.
    */
-  togglePageVisibility() {
-    const callback = () => {
-      this.dashboard = {
-        ...this.dashboard,
-        page: {
-          ...this.dashboard?.page,
-          visible: !this.dashboard?.page?.visible,
-        },
-      };
-    };
-    this.applicationService.togglePageVisibility(
-      {
-        id: this.dashboard?.page?.id,
-        visible: this.dashboard?.page?.visible,
-      },
-      callback
+  public async onOpenSettings(): Promise<void> {
+    const { ViewSettingsModalComponent } = await import(
+      '../../../components/view-settings-modal/view-settings-modal.component'
     );
-  }
-
-  /**
-   * Handle icon change.
-   * Open icon modal settings, and save changes if icon is updated.
-   */
-  public async onChangeIcon(): Promise<void> {
-    const { IconModalComponent } = await import(
-      '../../../components/icon-modal/icon-modal.component'
-    );
-    const dialogRef = this.dialog.open(IconModalComponent, {
+    const dialogRef = this.dialog.open(ViewSettingsModalComponent, {
       data: {
+        type: this.isStep ? 'step' : 'page',
+        applicationId: this.applicationId,
+        page: this.isStep ? undefined : this.dashboard?.page,
+        step: this.isStep ? this.dashboard?.step : undefined,
+        visible: this.dashboard?.page?.visible,
         icon: this.isStep
           ? this.dashboard?.step?.icon
           : this.dashboard?.page?.icon,
+        accessData: {
+          access: this.dashboard?.permissions,
+          application: this.applicationId,
+          objectTypeName: this.translate.instant(
+            'common.' + this.isStep ? 'step' : 'page' + '.one'
+          ),
+        },
+        canUpdate: this.dashboard?.page
+          ? this.dashboard?.page.canUpdate
+          : this.dashboard?.step
+          ? this.dashboard?.step.canUpdate
+          : false,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
-      if (icon) {
-        if (this.isStep) {
-          const callback = () => {
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updates: any) => {
+        if (updates) {
+          if (this.isStep) {
             this.dashboard = {
               ...this.dashboard,
+              ...(updates.permissions && updates),
               step: {
                 ...this.dashboard?.step,
-                icon,
+                ...(!updates.permissions && updates),
               },
             };
-          };
-          this.dashboard?.step &&
-            this.workflowService.updateStepIcon(
-              this.dashboard.step,
-              icon,
-              callback
-            );
-        } else {
-          const callback = () => {
+          } else {
             this.dashboard = {
               ...this.dashboard,
+              ...(updates.permissions && updates),
               page: {
                 ...this.dashboard?.page,
-                icon,
+                ...(!updates.permissions && updates),
               },
             };
-          };
-          this.dashboard?.page &&
-            this.applicationService.changePageIcon(
-              this.dashboard.page,
-              icon,
-              callback
-            );
+          }
         }
-      }
+      });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
     });
   }
 }

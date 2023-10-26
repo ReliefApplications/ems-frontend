@@ -21,12 +21,17 @@ interface IStatus {
   styleUrls: ['./application-summary.component.scss'],
 })
 export class ApplicationSummaryComponent {
+  /** Application input */
   @Input() application!: Application;
+  /** Preview event emitter */
   @Output() preview = new EventEmitter();
+  /** Delete event emitter */
   @Output() delete = new EventEmitter();
+  /** Clone event emitter */
   @Output() clone = new EventEmitter();
+  /** Edit access event emitter */
   @Output() editAccess = new EventEmitter();
-
+  /** Statuses */
   statuses: IStatus[] = [
     {
       name: 'active',
