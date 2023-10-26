@@ -22,8 +22,7 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
   @Input() checkItemList = false;
   private parentContainerScrollHeight = 0;
   private currentItemSize = 50;
-  private elementSwap!: HTMLSpanElement;
-  private listItems: any[] = [];
+  private firstViewTrigger = true;
 
   /** @returns parent node of the item list */
   private get itemListParentContainer() {
@@ -50,6 +49,13 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
     return this.currentScrollContainer?.querySelectorAll(fullSelector);
   }
 
+  /** @returns all the swapper items */
+  private get swapperItemsList() {
+    return this.currentScrollContainer?.querySelectorAll('span.ui-swapper');
+  }
+
+  // === Event listeners === //
+  private onScrollStartListener!: any;
   // === Timeout listeners === //
   private checkListTimeoutListener!: NodeJS.Timeout;
   // === Intersection observer === //
@@ -83,61 +89,65 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
       if (this.checkListTimeoutListener) {
         clearTimeout(this.checkListTimeoutListener);
       }
+      // Remove any previously added swappers
+      this.swapperItemsList.forEach((element: any) => {
+        element.remove();
+      });
       this.checkListTimeoutListener = setTimeout(() => {
-        // // // Get scroll container height
+        this.currentScrollContainer.scrollTo(0, 0);
+        // Get scroll container height
         this.parentContainerScrollHeight =
           this.currentScrollContainer.clientHeight;
-        // Save all the items for the virtual scroll for later use
-        this.listItems = [...this.currentItemsList];
         // If there was an observer active, disconnect it
         if (this.parentIntersectionObserver) {
           this.parentIntersectionObserver.disconnect();
         }
-        // Swap all items out of view by default
-        this.swapOutOfViewElements();
-        let firstView = true;
+        // If there is an scroll, then add swapper elements to the DOM
+        if (
+          this.parentContainerScrollHeight <
+          this.currentItemsList.length * this.currentItemSize
+        ) {
+          this.addSwapElementsIntoView();
+        }
+        this.firstViewTrigger = true;
         // Create intersection observer in order to check what elements enter/leave viewport
         this.parentIntersectionObserver = new IntersectionObserver(
           (entries) => {
-            if (firstView) {
-              firstView = false;
+            // Intersection observer triggers attached callback by default on DOM first load
+            // In order to avoid any strange behavior, avoid this using this property
+            if (this.firstViewTrigger) {
               return;
             }
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
                 if (entry.target.tagName.toLowerCase() === 'span') {
-                  // Get the swap element(empty row) reference to swap with the original item
-                  const swapReference = (entry.target as any)[
-                    'ui-swap-reference'
-                  ];
-                  // Find the original item to insert using the previously set reference
-                  const originalItem = this.listItems.find(
-                    (item) => swapReference === item.dataset.kendoGridItemIndex
-                  );
-                  // Observe new item to trigger swapping
-                  this.parentIntersectionObserver.observe(originalItem);
-                  this.renderer.insertBefore(
-                    this.itemListParentContainer,
-                    originalItem,
-                    entry.target
-                  );
-                  entry.target.remove();
+                  const originalItem = Array.from(
+                    this.itemsListWithSwappers
+                  ).find((element: any) => {
+                    if (
+                      (element as any).dataset?.kendoGridItemIndex ===
+                      (entry.target as any)['ui-swap-reference']
+                    ) {
+                      return element;
+                    }
+                  });
+                  this.renderer.addClass(entry.target, 'hidden');
+                  this.renderer.removeClass(originalItem, 'hidden');
                 }
               } else {
                 if (entry.target.tagName.toLowerCase() !== 'span') {
-                  // Create the swap element(empty row) to replace the original row with the data using the index as reference for swap
-                  this.elementSwap = this.createSwapElement(
-                    (entry.target as any).dataset.kendoGridItemIndex
-                  );
-                  // Observe new item to trigger swapping
-                  this.parentIntersectionObserver.observe(this.elementSwap);
-                  // Insert the empty row before the original row to remove
-                  this.renderer.insertBefore(
-                    this.itemListParentContainer,
-                    this.elementSwap,
-                    entry.target
-                  );
-                  entry.target.remove();
+                  const swapperItem = Array.from(
+                    this.itemsListWithSwappers
+                  ).find((element: any) => {
+                    if (
+                      (entry.target as any).dataset.kendoGridItemIndex ===
+                      (element as any)['ui-swap-reference']
+                    ) {
+                      return element;
+                    }
+                  });
+                  this.renderer.addClass(entry.target, 'hidden');
+                  this.renderer.removeClass(swapperItem, 'hidden');
                 }
               }
             });
@@ -145,6 +155,16 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
           {
             root: this.currentScrollContainer, // Table list
             threshold: 0.3, // set offset 0.3 means trigger if at least 30% of element in viewport
+          }
+        );
+        if (this.onScrollStartListener) {
+          this.onScrollStartListener();
+        }
+        this.onScrollStartListener = this.renderer.listen(
+          this.currentScrollContainer,
+          'scroll',
+          () => {
+            this.firstViewTrigger = false;
           }
         );
         // Observe all current items
@@ -156,43 +176,65 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
   }
 
   /**
+   * Swap given element from the list with an empty object or the original list item given the current action type
+   *
+   * @param element Element to swap from the list
+   * @param hideOriginalElement If given element is out of view by default or not
+   */
+  private swapElement(element: Element, hideOriginalElement = false) {
+    // Create the swap element(empty row) to replace the original row with the data using the index as reference for swap
+    const elementToSwap = this.createSwapElement(
+      (element as any).dataset.kendoGridItemIndex,
+      !hideOriginalElement
+    );
+    if (hideOriginalElement) {
+      this.renderer.addClass(element, 'hidden');
+    }
+    // Insert the empty row before the original row to remove
+    this.renderer.insertBefore(
+      this.itemListParentContainer,
+      elementToSwap,
+      element
+    );
+  }
+
+  /**
    * Swap original list items outside that are outside the scroll view
    */
-  swapOutOfViewElements() {
+  addSwapElementsIntoView() {
     let itemsHeightSum = 0;
+    let hideOriginalElement = false;
     for (let index = 0; index < this.currentItemsList.length; index++) {
-      // If current scroll container height is reached, start swapping
+      // If current scroll container height is reached, start hiding original items from view
       if (itemsHeightSum >= this.parentContainerScrollHeight) {
-        this.elementSwap = this.createSwapElement(
-          this.currentItemsList[index].dataset.kendoGridItemIndex
-        );
-        this.renderer.removeChild(
-          this.itemListParentContainer,
-          this.currentItemsList[index]
-        );
-        this.renderer.appendChild(
-          this.itemListParentContainer,
-          this.elementSwap
-        );
+        hideOriginalElement = true;
       } else {
         itemsHeightSum += this.currentItemSize;
       }
+      this.swapElement(this.currentItemsList[index], hideOriginalElement);
     }
   }
 
   /**
    * Create an empty row to swap with the original list item in order to keep the same scroll but less DOM stress
    *
-   * @param reference Reference data to later swap the created element with the original list item
+   * @param {string} reference Reference data to later swap the created element with the original list item
+   * @param {boolean} hideSwapElement If current swap element has to be hidden by default
    * @returns {HTMLSpanElement} the element for swapping
    */
-  private createSwapElement(reference: string): HTMLSpanElement {
+  private createSwapElement(
+    reference: string,
+    hideSwapElement = true
+  ): HTMLSpanElement {
     const swapElement = this.document.createElement('span');
     this.renderer.addClass(swapElement, 'ui-swapper');
     this.renderer.setStyle(swapElement, 'display', `block`);
     this.renderer.setStyle(swapElement, 'height', `${this.currentItemSize}px`);
     this.renderer.setStyle(swapElement, 'width', '100%');
     this.renderer.setProperty(swapElement, 'ui-swap-reference', reference);
+    if (hideSwapElement) {
+      this.renderer.addClass(swapElement, 'hidden');
+    }
     return swapElement;
   }
 
@@ -202,6 +244,9 @@ export class VirtualScrollDirective implements OnChanges, OnDestroy {
     }
     if (this.parentIntersectionObserver) {
       this.parentIntersectionObserver.disconnect();
+    }
+    if (this.onScrollStartListener) {
+      this.onScrollStartListener();
     }
   }
 }
