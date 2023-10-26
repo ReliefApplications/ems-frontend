@@ -1,3 +1,13 @@
+## [2.1.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.2...v2.1.3) (2023-10-24)
+
+
+### Bug Fixes
+
+* could not load aggregation grid ([d660f07](https://github.com/ReliefApplications/oort-frontend/commit/d660f0727b8b8d74cd128fc626f262c4672a58e1))
+* improve front-office navigation that could sometimes lost track of redirection ([#1991](https://github.com/ReliefApplications/oort-frontend/issues/1991)) ([196d5ea](https://github.com/ReliefApplications/oort-frontend/commit/196d5ea040edc3280aaf15e7402777cb8437387c))
+* page is taking too much resource when showing a grid with many columns records ([#1982](https://github.com/ReliefApplications/oort-frontend/issues/1982)) ([8205b20](https://github.com/ReliefApplications/oort-frontend/commit/8205b20cc99ffbd152f266d55f20f9466a2ec88a))
+* prevent min & max of lines charts to not be integers, and add possibility to set them manually ([#1985](https://github.com/ReliefApplications/oort-frontend/issues/1985)) ([4194d5f](https://github.com/ReliefApplications/oort-frontend/commit/4194d5f5cdc89c881dc7b8021e7dd193dba0f782))
+
 ## [2.1.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.1...v2.1.2) (2023-10-09)
 
 

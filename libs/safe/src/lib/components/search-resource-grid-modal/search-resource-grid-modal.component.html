@@ -20,7 +20,7 @@
     </safe-core-grid>
   </ng-container>
   <ng-container ngProjectAs="actions" *ngIf="selectable">
-    <ui-button uiDialogClose>
+    <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

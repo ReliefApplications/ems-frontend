@@ -6,7 +6,7 @@
     {{ content }}
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>{{ cancelText }}</ui-button>
+    <ui-button [uiDialogClose]>{{ cancelText }}</ui-button>
     <ui-button
       category="secondary"
       [variant]="confirmVariant"
