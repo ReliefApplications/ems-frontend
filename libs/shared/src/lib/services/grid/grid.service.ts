@@ -167,6 +167,7 @@ export class GridService {
             return {
               name: fullName,
               title,
+              itensLabel: f.itensLabel,
               type: f.type,
               format: this.getFieldFormat(f.type),
               editor: this.getFieldFilterOrEditor(f.type),
