@@ -93,27 +93,12 @@ export class FilterRowComponent
         // remove value
         this.form.get('value')?.setValue(null);
         this.setField(value, true);
-        const operator = this.operators.find((x) => x.value === value);
-        if (operator?.disableValue) {
-          this.form.get('value')?.disable();
-          this.hideEditor = true;
-        } else {
-          this.form.get('value')?.enable();
-          this.hideEditor = false;
-        }
       });
     this.form
       .get('operator')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        const operator = this.operators.find((x) => x.value === value);
-        if (operator?.disableValue) {
-          this.form.get('value')?.disable();
-          this.hideEditor = true;
-        } else {
-          this.form.get('value')?.enable();
-          this.hideEditor = false;
-        }
+        this.setHideEditor(value);
       });
   }
 
@@ -178,13 +163,28 @@ export class FilterRowComponent
         this.form
           .get('operator')
           ?.setValue(this.form.value.operator, { emitEvent: false });
-        const operator = this.operators.find(
-          (x) => x.value === this.form.get('operator')?.value
-        );
-        this.hideEditor = operator?.disableValue ?? false;
       }
+      this.setHideEditor(this.form.get('operator')?.value);
       // set operator template
-      this.setEditor(this.field);
+      if (!this.hideEditor) {
+        this.setEditor(this.field);
+      }
+    }
+  }
+
+  /**
+   * Set hide editor.
+   *
+   * @param value operator value
+   */
+  private setHideEditor(value: string): void {
+    const operator = this.operators.find((x) => x.value === value);
+    if (operator?.disableValue) {
+      this.form.get('value')?.disable();
+      this.hideEditor = true;
+    } else {
+      this.form.get('value')?.enable();
+      this.hideEditor = false;
     }
   }
 
