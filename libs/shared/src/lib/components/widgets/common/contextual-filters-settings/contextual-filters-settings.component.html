@@ -29,11 +29,11 @@
         [uiTooltip]="'models.dashboard.tooltip.dashboardFilter' | translate"
       ></ui-icon>
     </h2>
-    <shared-tab-filter
+    <shared-filter
         [form]="$any(form.get('contextFilters'))"
-        [query]="filterFields"
+        [fields]="filterFields"
       >
-    </shared-tab-filter>
+    </shared-filter>
 
 <!--
     <ng-container ngProjectAs="content">
