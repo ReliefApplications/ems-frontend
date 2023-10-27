@@ -1,18 +1,10 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { ExpandedWidgetComponent } from '../expanded-widget/expanded-widget.component';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -23,10 +15,7 @@ import { ExpandedWidgetComponent } from '../expanded-widget/expanded-widget.comp
   templateUrl: './widget-actions.component.html',
   styleUrls: ['./widget-actions.component.scss'],
 })
-export class WidgetActionsComponent
-  extends UnsubscribeComponent
-  implements OnChanges
-{
+export class WidgetActionsComponent extends UnsubscribeComponent {
   /** Current widget */
   @Input() widget: any;
   /** Widget id */
@@ -44,8 +33,6 @@ export class WidgetActionsComponent
   /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
 
-  public notExpandedDialog = true;
-
   /**
    * Button on top left of each widget, if user can see it, with menu of possible
    * actions for that widget.
@@ -62,20 +49,6 @@ export class WidgetActionsComponent
     private translate: TranslateService
   ) {
     super();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // If there is a change while the expanded widget dialog is opened
-    // we trigger the expand event again, that the parent component would handle updating the current dialog
-    if (
-      changes['widget']?.currentValue &&
-      this.dialog.openDialogs.length === 1 &&
-      this.dialog.openDialogs[0].componentInstance instanceof
-        ExpandedWidgetComponent
-    ) {
-      this.notExpandedDialog = false;
-      this.expand.emit({ widget: this.widget });
-    }
   }
 
   /**
@@ -104,7 +77,6 @@ export class WidgetActionsComponent
       });
     }
     if (action === 'expand') {
-      this.notExpandedDialog = false;
       this.expand.emit({ widget: this.widget });
     }
     if (action === 'style') {
