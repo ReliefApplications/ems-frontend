@@ -44,7 +44,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -112,14 +112,6 @@ export class DashboardComponent
   private timeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   public editionActive = true;
-
-  /** @returns get newest widget id from existing ids */
-  get newestId(): number {
-    const widgets = this.widgets?.slice() || [];
-    return widgets.length === 0
-      ? 0
-      : Math.max(...widgets.map((x: any) => x.id)) + 1;
-  }
 
   /** @returns type of context element */
   get contextType() {
@@ -393,8 +385,7 @@ export class DashboardComponent
    * @param e add event
    */
   onAdd(e: any): void {
-    const widget = JSON.parse(JSON.stringify(e));
-    widget.id = this.newestId;
+    const widget = cloneDeep(e);
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
     if (this.timeoutListener) {
@@ -402,9 +393,12 @@ export class DashboardComponent
     }
     // scroll to the element once it is created
     this.timeoutListener = setTimeout(() => {
-      const el = this.document.getElementById(`widget-${widget.id}`);
+      const widgetComponents =
+        this.widgetGridComponent.widgetComponents.toArray();
+      const target = widgetComponents[widgetComponents.length - 1];
+      const el = this.document.getElementById(target.id);
       el?.scrollIntoView({ behavior: 'smooth' });
-    });
+    }, 1000);
   }
 
   /**
@@ -413,40 +407,40 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
-    // make sure that we save the default layout.
-    const index = this.widgets.findIndex((v: any) => v.id === e.id);
-    const options = this.widgets[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: this.widgets[index].settings.defaultLayout,
+    switch (e.type) {
+      case 'display': {
+        this.autoSaveChanges();
+        break;
+      }
+      case 'data': {
+        // Find the widget to be edited
+        const widgetComponents =
+          this.widgetGridComponent.widgetComponents.toArray();
+        const targetIndex = widgetComponents.findIndex(
+          (v: any) => v.id === e.id
+        );
+        if (targetIndex > -1) {
+          // Update the configuration
+          const options = this.widgets[targetIndex]?.settings?.defaultLayout
+            ? {
+                ...e.options,
+                defaultLayout: this.widgets[targetIndex].settings.defaultLayout,
+              }
+            : e.options;
+          if (options) {
+            // Save configuration
+            this.widgets[targetIndex] = {
+              ...this.widgets[targetIndex],
+              settings: options,
+            };
+            this.autoSaveChanges();
+          }
         }
-      : e.options;
-    if (options) {
-      switch (e.type) {
-        case 'display': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x.defaultCols = options.cols;
-              x.defaultRows = options.rows;
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        case 'data': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x = { ...x, settings: options };
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        default: {
-          break;
-        }
+
+        break;
+      }
+      default: {
+        break;
       }
     }
   }
@@ -457,8 +451,13 @@ export class DashboardComponent
    * @param e delete event
    */
   onDeleteTile(e: any): void {
-    this.widgets = this.widgets.filter((x) => x.id !== e.id);
-    this.autoSaveChanges();
+    const widgetComponents =
+      this.widgetGridComponent.widgetComponents.toArray();
+    const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
+    if (targetIndex > -1) {
+      this.widgets.splice(targetIndex, 1);
+      this.autoSaveChanges();
+    }
   }
 
   /**
