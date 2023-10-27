@@ -239,6 +239,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
       }
       // if the filter is for name
     } else if (e.column === 'search') {
+      e.event = e.event.toLowerCase();
       // if the filter is empty it's removed
       if (e.event === '' || e.event === null) {
         this.filter.filters = this.filter.filters.filter(

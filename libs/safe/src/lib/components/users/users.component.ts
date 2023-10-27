@@ -287,9 +287,7 @@ export class SafeUsersComponent
       this.roleFilter = event?.trim() ?? '';
       this.changeFilter.emit({ column: column, event: this.roleFilter });
     } else if (column === 'search') {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
+      this.searchText = event ? event.target.value.trim() : this.searchText;
       this.changeFilter.emit({ column: column, event: this.searchText });
     } else {
       this.changeFilter.emit({ column: '' });
