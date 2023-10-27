@@ -219,7 +219,7 @@ export class FormBuilderComponent implements OnInit {
    * @param structure form structure
    */
   public async onSave(structure: any): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('Loading...');
+    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
     const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
     const overlayRef = this.overlay.create({
       positionStrategy: this.overlay
@@ -249,7 +249,11 @@ export class FormBuilderComponent implements OnInit {
               snackBarData.message = errors[0].message;
             } else {
               snackBarData.message = this.translate.instant(
-                'Form saved successfully!'
+                'common.notifications.objectUpdated',
+                {
+                  type: this.translate.instant('common.form.one').toLowerCase(),
+                  value: '',
+                }
               );
               snackBarData.loading = false;
               this.form = { ...data?.editForm, structure };
@@ -276,7 +280,7 @@ export class FormBuilderComponent implements OnInit {
    * @param status new status
    */
   private async updateStatus(status: string): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('Loading...');
+    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
     const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
     const overlayRef = this.overlay.create({
       positionStrategy: this.overlay
@@ -378,7 +382,7 @@ export class FormBuilderComponent implements OnInit {
    * @param {string} formName new form name
    */
   public async saveName(formName: string): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('Loading...');
+    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
     const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
     const overlayRef = this.overlay.create({
       positionStrategy: this.overlay
@@ -436,7 +440,7 @@ export class FormBuilderComponent implements OnInit {
    * @param e new permissions
    */
   async saveAccess(e: any): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('Loading...');
+    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
     const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
     const overlayRef = this.overlay.create({
       positionStrategy: this.overlay
