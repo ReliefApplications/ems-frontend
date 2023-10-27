@@ -19,12 +19,15 @@ import {
   EditFormMutationResponse,
   SafeSnackbarSpinnerComponent,
 } from '@oort-front/safe';
+import { SpinnerComponent } from 'libs/ui/src/lib/spinner/spinner.component';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import { Overlay } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
 
 /**
  * Form builder page
@@ -64,6 +67,7 @@ export class FormBuilderComponent implements OnInit {
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
+   * @param overlay Angular overlay service
    */
   constructor(
     private apollo: Apollo,
@@ -74,7 +78,8 @@ export class FormBuilderComponent implements OnInit {
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: SafeBreadcrumbService,
+    private overlay: Overlay
   ) {}
 
   /**
@@ -216,17 +221,18 @@ export class FormBuilderComponent implements OnInit {
   public async onSave(structure: any): Promise<void> {
     const { snackBarRef } = this.snackBarMessageInit('Loading...');
     const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
+    const overlayRef = this.overlay.create({
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically(),
+      hasBackdrop: true,
+    });
+    overlayRef.attach(new ComponentPortal(SpinnerComponent));
     if (!this.form?.id) {
       alert('not valid');
     } else {
-      const { SafeStatusModalComponent } = await import('@oort-front/safe');
-      const statusModal = this.dialog.open(SafeStatusModalComponent, {
-        disableClose: true,
-        data: {
-          title: this.translate.instant('components.formBuilder.saveSurvey'),
-          showSpinner: true,
-        },
-      });
       this.apollo
         .mutate<EditFormMutationResponse>({
           mutation: EDIT_FORM_STRUCTURE,
@@ -238,30 +244,30 @@ export class FormBuilderComponent implements OnInit {
         .subscribe({
           next: ({ errors, data }) => {
             if (errors) {
-              this.snackBar.openSnackBar(errors[0].message, {
-                error: true,
-              });
-              statusModal.close();
+              snackBarData.loading = false;
+              snackBarData.error = true;
+              snackBarData.message = errors[0].message;
             } else {
               snackBarData.message = this.translate.instant(
                 'Form saved successfully!'
               );
               snackBarData.loading = false;
-              setTimeout(() => snackBarRef.instance.dismiss(), 3000);
               this.form = { ...data?.editForm, structure };
               this.structure = structure;
               localStorage.removeItem(`form:${this.id}`);
               this.hasChanges = false;
               this.authService.canLogout.next(true);
-              statusModal.close();
             }
           },
           error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-            statusModal.close();
+            snackBarData.loading = false;
+            snackBarData.message = err;
+            snackBarData.error = true;
           },
         });
     }
+    setTimeout(() => snackBarRef.instance.dismiss(), 3000);
+    overlayRef.detach();
   }
 
   /**
@@ -296,7 +302,7 @@ export class FormBuilderComponent implements OnInit {
               }),
               { error: true }
             );
-            statusModal.close();
+            // statusModal.close();
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.statusUpdated', {
@@ -307,7 +313,7 @@ export class FormBuilderComponent implements OnInit {
             this.statusControl.setValue(data?.editForm.status, {
               emitEvent: false,
             });
-            statusModal.close();
+            // statusModal.close();
           }
         },
         error: (err) => {
@@ -388,7 +394,7 @@ export class FormBuilderComponent implements OnInit {
               }),
               { error: true }
             );
-            statusModal.close();
+            // statusModal.close();
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
@@ -401,7 +407,7 @@ export class FormBuilderComponent implements OnInit {
               '@form',
               this.form.name as string
             );
-            statusModal.close();
+            // statusModal.close();
           }
         });
     }
@@ -439,7 +445,7 @@ export class FormBuilderComponent implements OnInit {
               }),
               { error: true }
             );
-            statusModal.close();
+            // statusModal.close();
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
@@ -448,7 +454,7 @@ export class FormBuilderComponent implements OnInit {
               })
             );
             this.form = { ...data?.editForm, structure: this.structure };
-            statusModal.close();
+            // statusModal.close();
           }
         },
         error: (err) => {
