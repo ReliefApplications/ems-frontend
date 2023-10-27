@@ -1,6 +1,9 @@
 <ng-container *ngIf="header">
   <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
-    <kendo-tilelayout-item-header class="floating-widget-header" *ngIf="canUpdate">
+    <kendo-tilelayout-item-header
+      class="floating-widget-header"
+      *ngIf="canUpdate"
+    >
       <ng-container
         *ngIf="headerLeftTemplate"
         [ngTemplateOutlet]="headerLeftTemplate"
@@ -9,6 +12,7 @@
         <ng-container
           *ngIf="headerRightTemplate"
           [ngTemplateOutlet]="headerRightTemplate"
+          [ngTemplateOutletContext]="{ $implicit: id }"
         ></ng-container>
       </div>
     </kendo-tilelayout-item-header>
@@ -35,6 +39,7 @@
       <ng-container
         *ngIf="headerRightTemplate"
         [ngTemplateOutlet]="headerRightTemplate"
+        [ngTemplateOutletContext]="{ $implicit: id }"
       ></ng-container>
     </kendo-tilelayout-item-header>
   </ng-template>

@@ -205,6 +205,7 @@
 			"none": "No groups",
 			"one": "Group"
 		},
+		"hide": "Hide",
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "Back-Office"
+		},
+		"position": {
+			"bottomleft": "Bottom left",
+			"bottomright": "Bottom right",
+			"topleft": "Top left",
+			"topright": "Top right"
 		},
 		"positionAttribute": {
 			"few": "Position attributes",
@@ -1644,6 +1651,8 @@
 						"basemap": "Base map",
 						"controls": {
 							"download": "Download",
+							"lastUpdate": "Last updated on",
+							"lastUpdateError": "Last modified time could not be loaded",
 							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",
