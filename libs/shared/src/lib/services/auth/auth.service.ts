@@ -139,7 +139,8 @@ export class AuthService {
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        this.oauthService.initImplicitFlow();
+        console.log('init code flow');
+        this.oauthService.initCodeFlow();
       });
     // Redirect to previous path
     this.oauthService.events
@@ -166,7 +167,6 @@ export class AuthService {
   /**
    * Check if user has permission.
    * If user profile is empty, tries to get it.
-   *
    * @param permission permission.s required
    * @param global is the permission global or not
    * @returns Does the user have access
@@ -197,7 +197,6 @@ export class AuthService {
 
   /**
    * Check if user is admin. If user profile is empty, tries to get it.
-   *
    * @returns A boolean value.
    */
   get userIsAdmin(): boolean {
@@ -211,23 +210,18 @@ export class AuthService {
 
   /**
    * Initiate the login sequence
-   *
    * @returns A promise that resolves to void.
    */
   public initLoginSequence(): Promise<void> {
     if (!localStorage.getItem('idtoken')) {
       let redirectUri: URL;
+      const pathName = location.href.replace(
+        this.environment.backOfficeUri,
+        '/'
+      );
       if (this.environment.module === 'backoffice') {
-        const pathName = location.href.replace(
-          this.environment.backOfficeUri,
-          '/'
-        );
         redirectUri = new URL(pathName, this.environment.backOfficeUri);
       } else {
-        const pathName = location.href.replace(
-          this.environment.backOfficeUri,
-          '/'
-        );
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
       redirectUri.search = '';
@@ -238,6 +232,10 @@ export class AuthService {
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => {
+        const url =
+          'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/oauth2/authorize?resource=75deca06-ae07-4765-85c0-23e719062833&response_type=code&client_id=021202ac-d23b-4757-83e3-f6ecde12266b&scope=api%3A%2F%2F75deca06-ae07-4765-85c0-23e719062833%2Faccess_as_user';
+
+        window.open(url);
         this.isDoneLoading.next(true);
       })
       .catch((err) => {
@@ -272,7 +270,6 @@ export class AuthService {
 
   /**
    * Gets the profile from the database, using GraphQL.
-   *
    * @returns Apollo query of profile
    */
   getProfile(): Observable<ApolloQueryResult<ProfileQueryResponse>> {
@@ -285,7 +282,6 @@ export class AuthService {
 
   /**
    * Get the authentication token from local storage if it exists
-   *
    * @returns token as stored in local storage
    */
   public getAuthToken(): string | null {
@@ -294,7 +290,6 @@ export class AuthService {
 
   /**
    * Update user ability, based on its permissions
-   *
    * @param user active user
    */
   private updateAbility(user: User | null) {
@@ -392,7 +387,6 @@ export class AuthService {
 
   /**
    * Extend user ability on application
-   *
    * @param app Application to extend ability on
    */
   public extendAbilityForApplication(app: Application) {
