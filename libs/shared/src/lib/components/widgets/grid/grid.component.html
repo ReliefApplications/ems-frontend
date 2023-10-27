@@ -1,10 +1,6 @@
 <div class="h-full flex flex-col">
   <!-- Core grid display -->
   <ng-container *ngIf="aggregations.length === 0">
-    <!-- FULL WINDOW VIEW -->
-    <ng-container *ngIf="!header">
-      <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
-    </ng-container>
     <!-- GRID CONTENT -->
     <ng-container *ngTemplateOutlet="coreGridTemplate"></ng-container>
   </ng-container>

@@ -2,7 +2,7 @@
   <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
     <kendo-tilelayout-item-header
       class="floating-widget-header"
-      *ngIf="canUpdate"
+      *ngIf="canUpdate && !fullscreen"
     >
       <ng-container
         *ngIf="headerLeftTemplate"
@@ -29,7 +29,7 @@
       }"
     >
       <ng-container
-        *ngIf="headerLeftTemplate"
+        *ngIf="headerLeftTemplate && !fullscreen"
         [ngTemplateOutlet]="headerLeftTemplate"
       ></ng-container>
       <ng-container
@@ -37,7 +37,7 @@
         [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
       ></ng-container>
       <ng-container
-        *ngIf="headerRightTemplate"
+        *ngIf="headerRightTemplate && !fullscreen"
         [ngTemplateOutlet]="headerRightTemplate"
         [ngTemplateOutletContext]="{ $implicit: id }"
       ></ng-container>
@@ -50,7 +50,6 @@
   <shared-chart
     *ngSwitchCase="'chart'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     class="flex-1 overflow-hidden"
   ></shared-chart>
@@ -58,7 +57,6 @@
   <shared-grid-widget
     *ngSwitchCase="'grid'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     (changeStep)="changeStep.emit($event)"
     (edit)="edit.emit($event)"
@@ -70,7 +68,6 @@
   <shared-map-widget
     *ngSwitchCase="'map'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     class="flex-1 overflow-hidden"
   ></shared-map-widget>
@@ -78,7 +75,6 @@
   <shared-editor
     *ngSwitchCase="'editor'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     class="flex-1 overflow-hidden"
   >
@@ -87,7 +83,6 @@
   <shared-summary-card
     *ngSwitchCase="'summaryCard'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     (edit)="edit.emit($event)"
     [widget]="widget"
@@ -98,7 +93,6 @@
   <shared-tabs
     *ngSwitchCase="'tabs'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     (edit)="edit.emit($event)"
     [canUpdate]="canUpdate"

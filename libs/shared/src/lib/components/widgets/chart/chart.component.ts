@@ -49,7 +49,6 @@ export class ChartComponent
   public hasError = false;
 
   // === WIDGET CONFIGURATION ===
-  @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;

@@ -42,9 +42,8 @@
       }"
     >
       <shared-widget
-        #widgetElement
         [widget]="widget"
-        (changeStep)="changeStep.emit($event)"
+        (changeStep)="triggerChangeStepAction($event)"
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"
         [headerLeftTemplate]="headerLeftTemplate"
@@ -71,7 +70,9 @@
           class="-mr-3"
           [id]="id"
           [canUpdate]="canUpdate"
-          [collapsed]="widgetElement.elementRef.nativeElement.clientWidth < 500"
+          [collapsed]="
+            widgetComponents.get(i)?.elementRef?.nativeElement.clientWidth < 500
+          "
           [widget]="widget"
           (edit)="onEditWidget($event)"
           (delete)="onDeleteWidget($event)"

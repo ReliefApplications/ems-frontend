@@ -39,6 +39,25 @@ export class WidgetComponent implements OnInit, OnDestroy {
   @Input() headerLeftTemplate?: TemplateRef<any>;
   /** Template to display on the right of widget header */
   @Input() headerRightTemplate?: TemplateRef<any>;
+  /** Is fullscreen mode activated */
+  @Input() fullscreen = false;
+  /** Edit widget event emitter */
+  @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Change step workflow event emitter */
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  /** Id of the ticket. Visible in the dom */
+  @HostBinding()
+  id = `widget-${uuidv4()}`;
+  /** Reference to widget inner component */
+  @ViewChild('widgetContent')
+  widgetContentComponent!:
+    | ChartComponent
+    | GridWidgetComponent
+    | MapWidgetComponent
+    | EditorComponent
+    | SummaryCardComponent;
+  /** Html element containing widget custom style */
+  private customStyle?: HTMLStyleElement;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -53,25 +72,6 @@ export class WidgetComponent implements OnInit, OnDestroy {
   get showHeader() {
     return get(this.widget, 'settings.widgetDisplay.showHeader', true);
   }
-
-  private customStyle?: HTMLStyleElement;
-
-  @HostBinding()
-  id = `widget-${uuidv4()}`;
-
-  @ViewChild('widgetContent')
-  widgetContentComponent!:
-    | ChartComponent
-    | GridWidgetComponent
-    | MapWidgetComponent
-    | EditorComponent
-    | SummaryCardComponent;
-
-  // === EMIT EVENT ===
-  @Output() edit: EventEmitter<any> = new EventEmitter();
-
-  // === STEP CHANGE FOR WORKFLOW ===
-  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   /**
    * Widget component

@@ -8,7 +8,7 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import {
   TileLayoutReorderEvent,
@@ -18,6 +18,7 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -64,6 +65,11 @@ export class WidgetGridComponent
   /** Widget components view children */
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
+  /** Expanded widget dialog ref, to be closed when navigating */
+  public expandWidgetDialogRef!: DialogRef<
+    unknown,
+    ExpandedWidgetComponent
+  > | null;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -163,21 +169,38 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
-    const { ExpandedWidgetComponent } = await import(
-      './expanded-widget/expanded-widget.component'
-    );
-    const dialogRef = this.dialog.open(ExpandedWidgetComponent, {
-      data: {
-        widget: e.widget,
-      },
-      autoFocus: false,
-    });
-    dialogRef.componentInstance?.changeStep
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event: any) => {
-        this.changeStep.emit(event);
-        dialogRef.close();
+    const target = this.widgetComponents.find((x) => x.id === e.id);
+    if (target) {
+      target.fullscreen = true;
+      const { ExpandedWidgetComponent } = await import(
+        './expanded-widget/expanded-widget.component'
+      );
+      this.expandWidgetDialogRef = this.dialog.open(ExpandedWidgetComponent, {
+        data: {
+          element: target?.elementRef,
+        },
+        autoFocus: false,
       });
+      // Destroy dialog ref after closed to show the widget header actions again
+      this.expandWidgetDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          target.fullscreen = false;
+          this.expandWidgetDialogRef = null;
+        });
+    }
+  }
+
+  /**
+   * Emits current change step and close the expand widget dialog if triggered from there
+   *
+   * @param event Step emitted by child grid widget component
+   */
+  triggerChangeStepAction(event: number) {
+    this.changeStep.emit(event);
+    if (this.expandWidgetDialogRef) {
+      this.expandWidgetDialogRef?.close();
+    }
   }
 
   /**
