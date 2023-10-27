@@ -16,6 +16,7 @@ export interface Application {
   name?: string;
   description?: string;
   sideMenu?: boolean;
+  showLeftSideBar?: boolean;
   createdAt?: Date;
   modifiedAt?: Date;
   pages?: Page[];
