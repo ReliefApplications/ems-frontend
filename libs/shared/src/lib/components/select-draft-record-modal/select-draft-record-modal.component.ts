@@ -16,6 +16,8 @@ import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.m
 import { GET_DRAFT_RECORDS } from '../roles/graphql/queries';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { DELETE_DRAFT_RECORD } from './graphql/mutations';
+import { ConfirmService } from '../../services/confirm/confirm.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
@@ -45,6 +47,8 @@ export class SelectDraftRecordModalComponent implements OnInit {
    * @param data Data passed to the dialog, here the formId of the current form
    */
   constructor(
+    private confirmService: ConfirmService,
+    private translate: TranslateService,
     private apollo: Apollo,
     @Inject(DIALOG_DATA)
     public data: any
@@ -71,16 +75,26 @@ export class SelectDraftRecordModalComponent implements OnInit {
   }
 
   onDeleteDraft(element: any) {
-    this.loading = true;
-    this.apollo
-      .mutate<any>({
-        mutation: DELETE_DRAFT_RECORD,
-        variables: {
-          id: element.id,
-        },
-      })
-      .subscribe(() => {
-        this.fetchDraftRecords();
-      });
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: 'Delete this draft',
+      content: 'Do you really want to delete this draft record ?',
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmVariant: 'primary',
+    });
+    dialogRef.closed.pipe().subscribe((value) => {
+      if (value) {
+        this.loading = true;
+        this.apollo
+          .mutate<any>({
+            mutation: DELETE_DRAFT_RECORD,
+            variables: {
+              id: element.id,
+            },
+          })
+          .subscribe(() => {
+            this.fetchDraftRecords();
+          });
+      }
+    });
   }
 }
