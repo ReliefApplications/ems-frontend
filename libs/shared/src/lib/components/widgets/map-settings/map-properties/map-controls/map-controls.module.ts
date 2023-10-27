@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MapControlsComponent } from './map-controls.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ToggleModule } from '@oort-front/ui';
+import {
+  ToggleModule,
+  SelectMenuModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Module of Map Controls of the Map Properties.
@@ -16,6 +20,8 @@ import { ToggleModule } from '@oort-front/ui';
     ReactiveFormsModule,
     TranslateModule,
     ToggleModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   exports: [MapControlsComponent],
 })

@@ -68,6 +68,20 @@ ui-checkbox {
   }
 }
 
+.floating-widget-header {
+  height: 40px;
+  position: absolute !important;
+  z-index: 1001 !important;
+  line-height: 40px;
+  padding: 0 12px !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  left: 0;
+  right: 0;
+  border: unset !important;
+}
+
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
