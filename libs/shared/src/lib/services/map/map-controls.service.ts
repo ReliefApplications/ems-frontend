@@ -474,26 +474,26 @@ export class MapControlsService {
       'components.widget.settings.map.properties.controls.lastUpdateError'
     );
     customLastUpdatedControl.onAdd = () => {
-      const div = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
-      const lastUpdatedIcon = createFontAwesomeIcon(
+      const div = L.DomUtil.create('div', 'leaflet-control');
+      const innerIcon = createFontAwesomeIcon(
         {
-          icon: 'pen-to-square',
+          icon: 'circle-info',
           color: 'none',
           opacity: 1,
           size: 16,
         },
         this.document
       );
-      const lastUpdatedControlContent = modifiedAt
-        ? `<div id="last-updated-map" class="flex bg-white p-1 rounded-md leaflet-last-updated-control">${
-            lastUpdatedIcon.innerHTML
-          } <span class="pl-1"> ${lastUpdateText} ${new Date(
+      const spanText = modifiedAt
+        ? `${lastUpdateText} ${new Date(
             modifiedAt
           ).toLocaleDateString()} at ${new Date(
             modifiedAt
-          ).toLocaleTimeString()}</span></div>`
-        : `<div id="last-updated-map" class="flex bg-white p-1 rounded-md leaflet-last-updated-control">${lastUpdatedIcon.innerHTML} <span class="pl-1">${lastUpdateError}</span> </div>`;
-      div.innerHTML = lastUpdatedControlContent;
+          ).toLocaleTimeString()}`
+        : `${lastUpdateError}`;
+      const innerSpan = `<span class="pl-1 whitespace-nowrap hidden group-hover:inline"> ${spanText} </span>`;
+      const innerDiv = `<div class="flex bg-white p-1 rounded-md overflow-hidden w-6 h-6 transition-all hover:w-[250px] group">${innerIcon.innerHTML} ${innerSpan} </div>`;
+      div.innerHTML = innerDiv;
       return div;
     };
     map.addControl(customLastUpdatedControl);
