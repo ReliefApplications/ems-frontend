@@ -10,7 +10,6 @@ import {
   Inject,
   TemplateRef,
   ElementRef,
-  ViewContainerRef,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -73,9 +72,6 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-
-  @ViewChild('widgetContent', { read: ViewContainerRef })
-  widgetContent!: ViewContainerRef;
 
   /**
    * Widget component

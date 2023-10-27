@@ -122,7 +122,6 @@ export class WidgetActionsComponent
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
-          this.notExpandedDialog = true;
           if (value) {
             this.delete.emit({ id: this.id });
           }
