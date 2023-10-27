@@ -65,7 +65,7 @@ export class WidgetGridComponent
   /** Widget components view children */
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
-  /** Expanded widget dialog ref */
+  /** Expanded widget dialog ref, to be closed when navigating */
   public expandWidgetDialogRef!: DialogRef<
     unknown,
     ExpandedWidgetComponent
@@ -169,22 +169,26 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
-    const currentWidgetTmpl = this.widgetComponents.find(
-      (wc) => wc.widget.id === e.widget.id
-    );
-    const { ExpandedWidgetComponent } = await import(
-      './expanded-widget/expanded-widget.component'
-    );
-    this.expandWidgetDialogRef = this.dialog.open(ExpandedWidgetComponent, {
-      data: {
-        sharedWidgetPortal: currentWidgetTmpl?.elementRef,
-      },
-      autoFocus: false,
-    });
-    // Destroy dialog ref after closed to show the widget header actions again
-    this.expandWidgetDialogRef.closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => (this.expandWidgetDialogRef = null));
+    const target = this.widgetComponents.find((x) => x.id === e.id);
+    if (target) {
+      target.fullscreen = true;
+      const { ExpandedWidgetComponent } = await import(
+        './expanded-widget/expanded-widget.component'
+      );
+      this.expandWidgetDialogRef = this.dialog.open(ExpandedWidgetComponent, {
+        data: {
+          element: target?.elementRef,
+        },
+        autoFocus: false,
+      });
+      // Destroy dialog ref after closed to show the widget header actions again
+      this.expandWidgetDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          target.fullscreen = false;
+          this.expandWidgetDialogRef = null;
+        });
+    }
   }
 
   /**

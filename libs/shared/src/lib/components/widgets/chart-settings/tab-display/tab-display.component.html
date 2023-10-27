@@ -147,7 +147,7 @@
                 {{
                   'components.widget.settings.chart.palette.enable' | translate
                 }}<ui-icon
-                class="ml-1 cursor-help self-center"
+                  class="ml-1 cursor-help self-center"
                   variant="grey"
                   [size]="18"
                   icon="info_outline"
@@ -344,12 +344,7 @@
     </div>
     <!-- Chart preview -->
     <div class="flex flex-1 flex-col h-96">
-      <shared-chart
-        class="h-full"
-        [header]="false"
-        [export]="false"
-        [settings]="chartSettings"
-      >
+      <shared-chart class="h-full" [export]="false" [settings]="chartSettings">
       </shared-chart>
     </div>
   </form>

@@ -90,7 +90,6 @@ export class GridWidgetComponent
   public isAdmin: boolean;
 
   // === SETTINGS ===
-  @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
   @Input() canUpdate = false;

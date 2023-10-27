@@ -4,7 +4,6 @@ import { WidgetGridComponent } from './widget-grid.component';
 import { WidgetModule } from '../widget/widget.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WidgetActionsComponent } from './widget-actions/widget-actions.component';
-import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import { WidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
@@ -16,15 +15,10 @@ import {
   ButtonModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { PortalModule } from '@angular/cdk/portal';
 
 /** Module for the widget-related components */
 @NgModule({
-  declarations: [
-    WidgetGridComponent,
-    WidgetActionsComponent,
-    ExpandedWidgetComponent,
-  ],
+  declarations: [WidgetGridComponent, WidgetActionsComponent],
   imports: [
     CommonModule,
     WidgetModule,
@@ -41,7 +35,6 @@ import { PortalModule } from '@angular/cdk/portal';
     IconModule,
     SelectMenuModule,
     TooltipModule,
-    PortalModule,
   ],
   exports: [WidgetGridComponent],
 })

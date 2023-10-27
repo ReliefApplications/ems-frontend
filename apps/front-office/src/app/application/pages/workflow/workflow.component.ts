@@ -33,7 +33,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   public steps: Step[] = [];
   /** Current step */
   public activeStep = 0;
-  // === ACTIVE STEP ===
+  /** Subscription to change step events */
   private changeStepSubscription!: Subscription;
 
   /**

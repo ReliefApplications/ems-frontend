@@ -28,8 +28,6 @@ export class TabsComponent
   extends UnsubscribeComponent
   implements AfterViewInit
 {
-  /** Should display header */
-  @Input() header = true;
   /** Widget settings */
   @Input() settings: any;
   /** Widget definition */

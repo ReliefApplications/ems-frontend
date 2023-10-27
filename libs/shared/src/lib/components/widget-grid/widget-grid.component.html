@@ -52,39 +52,34 @@
       ></shared-widget>
       <!-- Left header template -->
       <ng-template #headerLeftTemplate>
-        <ng-container *ngIf="!expandWidgetDialogRef">
-          <!-- Drag n drop indicator -->
-          <ui-button
-            *ngIf="canUpdate"
-            icon="drag_indicator"
-            class="cursor-grab -ml-3 pointer-events-none"
-            variant="grey"
-            [isIcon]="true"
-            [uiTooltip]="'models.page.tooltip.drag' | translate"
-          >
-          </ui-button>
-        </ng-container>
+        <!-- Drag n drop indicator -->
+        <ui-button
+          *ngIf="canUpdate"
+          icon="drag_indicator"
+          class="cursor-grab -ml-3 pointer-events-none"
+          variant="grey"
+          [isIcon]="true"
+          [uiTooltip]="'models.page.tooltip.drag' | translate"
+        >
+        </ui-button>
       </ng-template>
       <!-- Right header template -->
       <ng-template #headerRightTemplate let-id>
-        <ng-container *ngIf="!expandWidgetDialogRef">
-          <!-- Widget actions -->
-          <shared-widget-actions
-            class="-mr-3"
-            [id]="id"
-            [canUpdate]="canUpdate"
-            [collapsed]="
-              widgetComponents.get(i)?.elementRef?.nativeElement.clientWidth <
-              500
-            "
-            [widget]="widget"
-            (edit)="onEditWidget($event)"
-            (delete)="onDeleteWidget($event)"
-            (expand)="onExpandWidget($event)"
-            (style)="onStyleWidget($event)"
-          >
-          </shared-widget-actions>
-        </ng-container>
+        <!-- Widget actions -->
+        <shared-widget-actions
+          class="-mr-3"
+          [id]="id"
+          [canUpdate]="canUpdate"
+          [collapsed]="
+            widgetComponents.get(i)?.elementRef?.nativeElement.clientWidth < 500
+          "
+          [widget]="widget"
+          (edit)="onEditWidget($event)"
+          (delete)="onDeleteWidget($event)"
+          (expand)="onExpandWidget($event)"
+          (style)="onStyleWidget($event)"
+        >
+        </shared-widget-actions>
       </ng-template>
     </kendo-tilelayout-item>
   </kendo-tilelayout>

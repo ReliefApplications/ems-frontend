@@ -46,6 +46,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
 
   // === ACTIVE STEP ===
   public activeStep = 0;
+  /** Subscription to change step events */
   private changeStepSubscription!: Subscription;
 
   // === DUP APP SELECTION ===

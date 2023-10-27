@@ -36,7 +36,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   public activeStep = 0;
   /** Role used for preview */
   public role = '';
-  // === ACTIVE STEP ===
+  /** Subscription to change step events */
   private changeStepSubscription!: Subscription;
 
   /**

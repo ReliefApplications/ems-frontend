@@ -63,7 +63,6 @@ export class SummaryCardComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   @Input() widget: any;
-  @Input() header = true;
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
