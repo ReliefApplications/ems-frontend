@@ -82,15 +82,6 @@ export class TabSettingsComponent implements OnDestroy {
     if (options) {
       switch (e.type) {
         case 'display': {
-          this.structure?.setValue(
-            widgets.map((x: any) => {
-              if (x.id === e.id) {
-                x.defaultCols = options.cols;
-                x.defaultRows = options.rows;
-              }
-              return x;
-            })
-          );
           break;
         }
         case 'data': {

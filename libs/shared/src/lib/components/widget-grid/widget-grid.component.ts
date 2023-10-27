@@ -260,14 +260,11 @@ export class WidgetGridComponent
     if (e.newColSpan > MAX_COL_SPAN) {
       e.newColSpan = MAX_COL_SPAN;
     }
+    const target = this.widgets[e.item.order];
+    target.defaultCols = e.newColSpan;
+    target.defaultRows = e.newRowSpan;
     this.edit.emit({
       type: 'display',
-      id: this.widgets[e.item.order].id,
-      options: {
-        id: this.widgets[e.item.order].id,
-        cols: e.newColSpan,
-        rows: e.newRowSpan,
-      },
     });
   }
 

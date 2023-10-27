@@ -407,28 +407,21 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
-    // make sure that we save the default layout.
-    const index = this.widgets.findIndex((v: any) => v.id === e.id);
-    const options = this.widgets[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: this.widgets[index].settings.defaultLayout,
-        }
-      : e.options;
-    if (options) {
-      switch (e.type) {
-        case 'display': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x.defaultCols = options.cols;
-              x.defaultRows = options.rows;
+    switch (e.type) {
+      case 'display': {
+        this.autoSaveChanges();
+        break;
+      }
+      case 'data': {
+        // make sure that we save the default layout.
+        const index = this.widgets.findIndex((v: any) => v.id === e.id);
+        const options = this.widgets[index]?.settings?.defaultLayout
+          ? {
+              ...e.options,
+              defaultLayout: this.widgets[index].settings.defaultLayout,
             }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        case 'data': {
+          : e.options;
+        if (options) {
           this.widgets = this.widgets.map((x) => {
             if (x.id === e.id) {
               x = { ...x, settings: options };
@@ -436,11 +429,12 @@ export class DashboardComponent
             return x;
           });
           this.autoSaveChanges();
-          break;
         }
-        default: {
-          break;
-        }
+
+        break;
+      }
+      default: {
+        break;
       }
     }
   }
