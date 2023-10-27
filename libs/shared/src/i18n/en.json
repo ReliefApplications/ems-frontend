@@ -1936,7 +1936,7 @@
 			"create": "Create a Form",
 			"edit": "Edit form",
 			"field": {
-				"itensLabel": "Itens label",
+				"itemsLabel": "Items label",
 				"label": "Label",
 				"name": "Field name",
 				"usedIn": "Used in"

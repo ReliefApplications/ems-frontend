@@ -825,7 +825,7 @@ export class GridComponent
    */
   public evaluateLabel(field: any, dataItem: any) {
     const quantityItems = dataItem[field.name].length;
-    return field.itensLabel.replaceAll('{{count}}', quantityItems);
+    return field.itemsLabel.replaceAll('{{count}}', quantityItems);
   }
 
   /**
