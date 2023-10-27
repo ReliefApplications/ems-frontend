@@ -362,7 +362,7 @@ export class FormComponent
       data: this.form.id,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      console.log('VALUE', value);
+      this.survey.data = value.data;
     });
   }
 

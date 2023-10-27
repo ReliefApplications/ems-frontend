@@ -34,6 +34,7 @@ export const GET_DRAFT_RECORDS = gql`
     draftRecords(formId: $formId) {
       id
       createdAt
+      data
     }
   }
 `;
