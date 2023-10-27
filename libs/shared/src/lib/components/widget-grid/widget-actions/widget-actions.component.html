@@ -16,7 +16,7 @@
       variant="grey"
     ></ui-button>
     <ui-button
-      *ngIf="!(widget.component === 'map')"
+      *ngIf="!(widget.component === 'map') && notExpandedDialog"
       [isIcon]="true"
       icon="open_in_full"
       [uiTooltip]="'components.widget.expand' | translate"

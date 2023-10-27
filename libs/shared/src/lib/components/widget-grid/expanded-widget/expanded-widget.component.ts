@@ -13,7 +13,6 @@ import { DomPortal } from '@angular/cdk/portal';
 
 /** Widget data and template for class dialog */
 interface WidgetData {
-  widget: any;
   sharedWidgetPortal?: ElementRef<any>;
 }
 
@@ -38,6 +37,15 @@ export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
     @Inject(DIALOG_DATA) public data: WidgetData,
     @Inject(DOCUMENT) private document: Document
   ) {}
+
+  /**
+   * Update current dom portal with the given elementRef in the widget data
+   *
+   * @param {WidgetData} data containing the last updated widget component element ref
+   */
+  public updatePortal(data: WidgetData) {
+    this.portal = new DomPortal(data.sharedWidgetPortal);
+  }
 
   ngAfterViewInit(): void {
     this.document.dispatchEvent(

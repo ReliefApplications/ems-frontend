@@ -8,7 +8,7 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import {
   TileLayoutReorderEvent,
@@ -18,6 +18,7 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -64,6 +65,14 @@ export class WidgetGridComponent
   /** Widget components view children */
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
+
+  /** Expanded widget dialog ref */
+  private expandWidgetDialogRef!: DialogRef<
+    unknown,
+    ExpandedWidgetComponent
+  > | null;
+  /** Timeout listener for expanded dialog ref dom portal content update */
+  private dialogRefPortalUpdateTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -163,25 +172,50 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
-    const currentWidgetTmpl = this.widgetComponents.find(
+    let currentWidgetTmpl!: any;
+    // If we already have a expanded widget dialog ref
+    if (this.expandWidgetDialogRef) {
+      // Detach the widget from the current dialog
+      (this.expandWidgetDialogRef.componentInstance as any).portal.detach();
+      // Trigger the change detection ref with the timeout in order to get the last element ref with the changes
+      if (this.dialogRefPortalUpdateTimeoutListener) {
+        clearTimeout(this.dialogRefPortalUpdateTimeoutListener);
+      }
+      this.dialogRefPortalUpdateTimeoutListener = setTimeout(() => {
+        // Find that most updated child component instance from the query list
+        currentWidgetTmpl = this.widgetComponents.find(
+          (wc) => wc.widget.id === e.widget.id
+        );
+        // Update the current dialog's portal with the latest widget element ref
+        (this.expandWidgetDialogRef?.componentInstance as any).updatePortal({
+          sharedWidgetPortal: currentWidgetTmpl?.elementRef,
+        });
+      }, 0);
+      return;
+    }
+    currentWidgetTmpl = this.widgetComponents.find(
       (wc) => wc.widget.id === e.widget.id
     );
     const { ExpandedWidgetComponent } = await import(
       './expanded-widget/expanded-widget.component'
     );
-    const dialogRef = this.dialog.open(ExpandedWidgetComponent, {
+    this.expandWidgetDialogRef = this.dialog.open(ExpandedWidgetComponent, {
       data: {
-        widget: e.widget,
         sharedWidgetPortal: currentWidgetTmpl?.elementRef,
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance?.changeStep
+    this.expandWidgetDialogRef.componentInstance?.changeStep
       .pipe(takeUntil(this.destroy$))
       .subscribe((event: any) => {
         this.changeStep.emit(event);
-        dialogRef.close();
+        this.expandWidgetDialogRef?.close();
       });
+    // After the current expand widget dialog is closed, we set the value to null
+    // in order to reset the expand widget dom portal logic
+    this.expandWidgetDialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => (this.expandWidgetDialogRef = null));
   }
 
   /**

@@ -11,7 +11,6 @@ import {
   TemplateRef,
   ElementRef,
   ViewContainerRef,
-  AfterViewInit,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -22,7 +21,6 @@ import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { RestService } from '../../services/rest/rest.service';
 import { DOCUMENT } from '@angular/common';
-import { ExpandedWidgetComponent } from '../widget-grid/expanded-widget/expanded-widget.component';
 
 /** Component for the widgets */
 @Component({
@@ -30,7 +28,7 @@ import { ExpandedWidgetComponent } from '../widget-grid/expanded-widget/expanded
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
 })
-export class WidgetComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WidgetComponent implements OnInit, OnDestroy {
   /** Current widget definition */
   @Input() widget: any;
   // todo: rename or delete
@@ -110,18 +108,6 @@ export class WidgetComponent implements OnInit, OnDestroy, AfterViewInit {
           head.appendChild(this.customStyle);
         });
     }
-  }
-
-  ngAfterViewInit(): void {
-    // const componentRef = this.widgetContent.createComponent(
-    //   ExpandedWidgetComponent
-    // );
-    // // TODO: check ?
-    // componentRef.setInput('widget', this.widget);
-    // componentRef.setInput('header', this.header);
-    // componentRef.setInput('canUpdate', this.canUpdate);
-    // /** To use angular hooks */
-    // componentRef.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {

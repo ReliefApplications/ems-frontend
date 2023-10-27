@@ -1,10 +1,18 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ExpandedWidgetComponent } from '../expanded-widget/expanded-widget.component';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -15,7 +23,10 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './widget-actions.component.html',
   styleUrls: ['./widget-actions.component.scss'],
 })
-export class WidgetActionsComponent extends UnsubscribeComponent {
+export class WidgetActionsComponent
+  extends UnsubscribeComponent
+  implements OnChanges
+{
   /** Current widget */
   @Input() widget: any;
   /** Widget id */
@@ -33,6 +44,8 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
   /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
 
+  public notExpandedDialog = true;
+
   /**
    * Button on top left of each widget, if user can see it, with menu of possible
    * actions for that widget.
@@ -49,6 +62,20 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
     private translate: TranslateService
   ) {
     super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // If there is a change while the expanded widget dialog is opened
+    // we trigger the expand event again, that the parent component would handle updating the current dialog
+    if (
+      changes['widget']?.currentValue &&
+      this.dialog.openDialogs.length === 1 &&
+      this.dialog.openDialogs[0].componentInstance instanceof
+        ExpandedWidgetComponent
+    ) {
+      this.notExpandedDialog = false;
+      this.expand.emit({ widget: this.widget });
+    }
   }
 
   /**
@@ -77,6 +104,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       });
     }
     if (action === 'expand') {
+      this.notExpandedDialog = false;
       this.expand.emit({ widget: this.widget });
     }
     if (action === 'style') {
@@ -94,6 +122,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
+          this.notExpandedDialog = true;
           if (value) {
             this.delete.emit({ id: this.id });
           }
