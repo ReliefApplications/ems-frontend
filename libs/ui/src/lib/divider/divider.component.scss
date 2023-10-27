@@ -1,6 +1,7 @@
 :host {
-  @apply block w-full;
+  display: block;
 }
+
 .divider-container {
   @apply flex justify-center;
 }
