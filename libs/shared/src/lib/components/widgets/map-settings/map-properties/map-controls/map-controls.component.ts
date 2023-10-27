@@ -4,6 +4,7 @@ import {
   NG_VALUE_ACCESSOR,
   UntypedFormGroup,
 } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Control value accessor
@@ -15,7 +16,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 };
 
 /**
- * Map controls form control
+ * Map controls editor.
  */
 @Component({
   selector: 'shared-map-controls',
@@ -24,13 +25,45 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class MapControlsComponent implements ControlValueAccessor {
+  /** Map Controls form group */
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
+  /** Available control positions */
+  public controlPositions = [
+    {
+      text: this.translate.instant('common.position.bottomleft'),
+      value: 'bottomleft',
+    },
+    {
+      text: this.translate.instant('common.position.bottomright'),
+      value: 'bottomright',
+    },
+    {
+      text: this.translate.instant('common.position.topleft'),
+      value: 'topleft',
+    },
+    {
+      text: this.translate.instant('common.position.topright'),
+      value: 'topright',
+    },
+    {
+      text: this.translate.instant('common.hide'),
+      value: null,
+    },
+  ];
+  /** Disable ControlValueAccessor */
   private disabled = false;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onTouched = () => {};
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChanged = (_: any) => {};
+
+  /**
+   * Map controls editor.
+   *
+   * @param translate Angular translate service
+   */
+  constructor(private translate: TranslateService) {}
 
   /**
    * Write new value

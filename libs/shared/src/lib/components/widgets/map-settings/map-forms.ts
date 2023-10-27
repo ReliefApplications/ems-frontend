@@ -494,6 +494,7 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
     measure: [get(value, 'measure', false)],
     layer: [get(value, 'layer', true)],
     search: [get(value, 'search', false)],
+    lastUpdate: [get(value, 'lastUpdate', null)],
   });
 
 /**

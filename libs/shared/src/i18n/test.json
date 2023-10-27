@@ -205,6 +205,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"hide": "******",
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "******"
+		},
+		"position": {
+			"bottomleft": "******",
+			"bottomright": "******",
+			"topleft": "******",
+			"topright": "******"
 		},
 		"positionAttribute": {
 			"few": "******",
@@ -1644,6 +1651,8 @@
 						"basemap": "******",
 						"controls": {
 							"download": "******",
+							"lastUpdate": "******",
+							"lastUpdateError": "******",
 							"layer": "******",
 							"legend": "******",
 							"measure": "******",
