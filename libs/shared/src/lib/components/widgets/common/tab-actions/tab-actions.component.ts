@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { Application } from '../../../../models/application.model';
@@ -19,7 +19,8 @@ export class TabActionsComponent
   implements OnInit
 {
   @Input() formGroup!: UntypedFormGroup;
-
+  /** To show the tooltip warning icon next to the tab name */
+  public templateWarning = false;
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
   /** Available pages from the application */
@@ -55,6 +56,7 @@ export class TabActionsComponent
       name: 'addRecord',
       text: 'components.widget.settings.grid.actions.add',
       tooltip: 'components.widget.settings.grid.hint.actions.add',
+      toolTipWarning: 'components.widget.settings.grid.warnings.add',
     },
     {
       name: 'export',
@@ -72,6 +74,8 @@ export class TabActionsComponent
       tooltip: 'components.widget.settings.grid.hint.actions.navigateToPage',
     },
   ];
+  /** Alerts parent component on warning status changes */
+  @Output() warnings = new EventEmitter();
 
   /**
    * Constructor of the grid component
@@ -93,6 +97,15 @@ export class TabActionsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((val: boolean) => {
         this.showSelectPage = val;
+      });
+
+    // If addRecord actin enabled but missing template, show warning
+    this.checkTemplateWarning();
+    this.formGroup.controls.actions
+      .get('addRecord')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.checkTemplateWarning();
       });
   }
 
@@ -124,5 +137,21 @@ export class TabActionsComponent
     return page.type === ContentType.form
       ? `${application.id}/${page.type}/${page.id}`
       : `${application.id}/${page.type}/${page.content}`;
+  }
+
+  /**
+   * Checks if If addRecord action is enabled but missing template to display warning
+   */
+  private checkTemplateWarning(): void {
+    this.templateWarning =
+      !(
+        this.formGroup.get('template')?.value ||
+        this.formGroup.get('card.template')?.value
+      ) && this.formGroup.controls.actions.get('addRecord')?.value;
+    if (this.templateWarning) {
+      this.warnings.emit(true);
+    } else {
+      this.warnings.emit(false);
+    }
   }
 }

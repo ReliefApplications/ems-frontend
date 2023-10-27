@@ -131,6 +131,8 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
   public templates: Form[] = [];
+  /** To show the tooltip warning icon if grid actions has warnings */
+  public actionsWarnings = false;
 
   /**
    * Summary Card Settings component.
@@ -198,6 +200,15 @@ export class SummaryCardSettingsComponent
       });
 
     this.getTemplates();
+
+    // Subscribe to form template changes to display warning if necessary
+    this.checkActionsWarning();
+    this.tileForm
+      .get('card.template')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.checkActionsWarning();
+      });
   }
 
   /**
@@ -390,5 +401,15 @@ export class SummaryCardSettingsComponent
   handleAggregationChange(aggregation: Aggregation | null) {
     this.selectedAggregation = aggregation;
     this.getCustomAggregation();
+  }
+
+  /**
+   * Checks if If addRecord action is enabled but missing template to display warning
+   */
+  private checkActionsWarning(): void {
+    this.actionsWarnings =
+      (!this.tileForm?.get('card.template')?.value &&
+        this.tileForm?.get('actions.addRecord')?.value) ??
+      false;
   }
 }

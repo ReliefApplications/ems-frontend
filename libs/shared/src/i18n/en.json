@@ -1485,6 +1485,10 @@
 					"tooltip": {
 						"template": "Select a template for addition and edition of records",
 						"useRecordId": "Url will contain id of the item, in order to redirect to contextual page, if configured"
+					},
+					"warnings": {
+						"add": "Please select a template",
+						"general": "Warning: actions contain errors"
 					}
 				},
 				"iconPicker": {

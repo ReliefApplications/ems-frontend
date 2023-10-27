@@ -69,6 +69,8 @@ export class GridSettingsComponent
 
   /** Stores the selected tab */
   public selectedTab = 0;
+  /** To show the tooltip warning icon if grid actions has warnings */
+  public actionsWarnings = false;
 
   /** @returns application templates */
   get appTemplates(): any[] {
@@ -182,6 +184,15 @@ export class GridSettingsComponent
     if (this.formGroup.get('layouts')?.value.length > 0) {
       this.formGroup.controls.aggregations.clearValidators();
     }
+
+    // Subscribe to form template changes to display warning if necessary
+    this.checkActionsWarning();
+    this.formGroup
+      .get('template')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.checkActionsWarning();
+      });
 
     this.initSortFields();
   }
@@ -355,5 +366,15 @@ export class GridSettingsComponent
           }
         });
     }
+  }
+
+  /**
+   * Checks if If addRecord action is enabled but missing template to display warning
+   */
+  private checkActionsWarning(): void {
+    console.log('checkTemplateWarning');
+    this.actionsWarnings =
+      !this.formGroup.get('template')?.value &&
+      this.formGroup.get('actions.addRecord')?.value;
   }
 }
