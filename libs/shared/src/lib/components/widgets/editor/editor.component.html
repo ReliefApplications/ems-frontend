@@ -1,7 +1,7 @@
 <div class="h-full flex flex-col">
-  <div 
+  <div
     class="flex-1 overflow-auto"
-    [ngClass]="{'p-[14px]': settings.widgetDisplay.showPadding}"
+    [ngClass]="{ 'p-[14px]': settings.widgetDisplay.showPadding ?? true }"
     (click)="onClick($event)"
     id="inner-widget"
   >

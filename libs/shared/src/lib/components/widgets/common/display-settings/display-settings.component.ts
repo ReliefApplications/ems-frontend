@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Attribute, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToggleModule } from '@oort-front/ui';
+import { WidgetType } from '../../types/widget-types';
 
 /** Component for selecting the widget display options */
 @Component({
@@ -20,5 +21,11 @@ import { ToggleModule } from '@oort-front/ui';
 })
 export class DisplaySettingsComponent {
   @Input() formGroup!: FormGroup;
-  @Input() widgetType!: string;
+
+  /**
+   * Shared display settings constructor by widget type
+   *
+   * @param widgetType Type of widget
+   */
+  constructor(@Attribute('widgetType') public widgetType: WidgetType) {}
 }
