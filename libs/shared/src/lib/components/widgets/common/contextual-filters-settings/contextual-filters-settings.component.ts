@@ -4,11 +4,15 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
+import { FilterModule } from '../../../filter/filter.module';
+import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
 
 /** Component to define the contextual filters of a widget or a map layer */
 @Component({
   selector: 'shared-contextual-filters-settings',
   standalone: true,
+  templateUrl: './contextual-filters-settings.component.html',
+  styleUrls: ['./contextual-filters-settings.component.scss'],
   imports: [
     CommonModule,
     MonacoEditorModule,
@@ -18,13 +22,13 @@ import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
     FormWrapperModule,
     IconModule,
     TooltipModule,
+    FilterModule,
+    QueryBuilderModule,
   ],
-  templateUrl: './contextual-filters-settings.component.html',
-  styleUrls: ['./contextual-filters-settings.component.scss'],
 })
 export class ContextualFiltersSettingsComponent {
   @Input() form!: FormGroup;
-
+  public filterFields: any[] = [];
   public editorOptions = {
     theme: 'vs-dark',
     language: 'json',

@@ -17,7 +17,7 @@
     </div>
   </div>
   <!-- Dashboard filter -->
-  <div class="flex-1 flex flex-col">
+  <div class="flex-1 flex flex-col"> <!-- change here, in case of widgets-->
     <h2 class="flex">
       {{ 'models.dashboard.dashboardFilter' | translate
       }}<ui-icon
@@ -29,13 +29,15 @@
         [uiTooltip]="'models.dashboard.tooltip.dashboardFilter' | translate"
       ></ui-icon>
     </h2>
-    <div class="grow overflow-y-auto overflow-x-hidden w-full">
-      <ngx-monaco-editor
-        class="!h-full min-h-[450px]"
-        (onInit)="initEditor($event)"
-        [options]="editorOptions"
-        [formControl]="$any(form.get('contextFilters'))"
-      ></ngx-monaco-editor>
-    </div>
+    <shared-tab-filter
+        [form]="$any(form.get('contextFilters'))"
+        [query]="filterFields"
+      >
+    </shared-tab-filter>
+
+<!--
+    <ng-container ngProjectAs="content">
+      <shared-filter [form]="$any(form.get('contextFilters'))" [fields]="filterFields"></shared-filter>
+    </ng-container> -->
   </div>
 </div>
