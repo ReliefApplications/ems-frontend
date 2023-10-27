@@ -1,4 +1,6 @@
 import { GlobalOptions } from '../types';
+import * as Survey from 'survey-angular';
+
 /**
  * Formats date in specified format
  *
@@ -6,7 +8,7 @@ import { GlobalOptions } from '../types';
  * @returns The formatted date.
  */
 function formatDate(params: any[]) {
-  const [date, format] = params;
+  const [date, format = Survey.surveyLocalization.defaultLocaleValue] = params;
   const customFormatRegex = /^(DD|MM|YYYY)([-/])(DD|MM|YYYY)\2(DD|MM|YYYY)$/;
   const dateFormatted = new Date(date);
   const formatFormatted = format.toUpperCase();
@@ -23,8 +25,16 @@ function formatDate(params: any[]) {
 
     return formattedDate;
   } else {
-    const locale = format; // Use the format as a locale string
-    return new Intl.DateTimeFormat(locale).format(dateFormatted);
+    const currentLocaleKeys = Object.keys(
+      Survey.surveyLocalization.localeNames
+    ); // Use the format as a locale string
+    if (currentLocaleKeys.includes(format.toLowerCase())) {
+      return new Intl.DateTimeFormat(format).format(dateFormatted);
+    } else {
+      return new Intl.DateTimeFormat(
+        Survey.surveyLocalization.defaultLocaleValue
+      ).format(dateFormatted);
+    }
   }
 }
 // }
