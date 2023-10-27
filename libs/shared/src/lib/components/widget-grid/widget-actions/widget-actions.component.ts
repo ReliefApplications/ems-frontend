@@ -24,11 +24,13 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
   @Input() canUpdate = false;
   /** Collapse actions into a single button */
   @Input() collapsed = true;
-
-  // === EMIT ACTION SELECTED ===
+  /** Edit event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
+  /** Expand event emitter */
   @Output() expand: EventEmitter<any> = new EventEmitter();
+  /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
 
   /**
@@ -70,7 +72,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if (res) {
-          this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+          this.edit.emit({ type: 'data', id: this.id, options: res });
         }
       });
     }
@@ -78,7 +80,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       this.expand.emit({ id: this.widget.id });
     }
     if (action === 'style') {
-      this.style.emit({ widget: this.widget });
+      this.style.emit({ id: this.id, widget: this.widget });
     }
     if (action === 'delete') {
       const dialogRef = this.confirmService.openConfirmModal({

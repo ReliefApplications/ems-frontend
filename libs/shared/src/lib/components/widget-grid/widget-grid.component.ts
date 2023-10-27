@@ -2,7 +2,6 @@ import {
   Component,
   EventEmitter,
   HostListener,
-  Inject,
   Input,
   OnInit,
   Output,
@@ -48,12 +47,8 @@ export class WidgetGridComponent
   @Input() widgets: any[] = [];
   /** Update permission */
   @Input() canUpdate = false;
-
-  // === GRID ===
   /** Number of columns */
   colsNumber = MAX_COL_SPAN;
-
-  // === EVENT EMITTER ===
   /** Move event emitter */
   @Output() move: EventEmitter<any> = new EventEmitter();
   /** Delete event emitter */
@@ -64,8 +59,6 @@ export class WidgetGridComponent
   @Output() add: EventEmitter<any> = new EventEmitter();
   /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
-
-  // === STEP CHANGE FOR WORKFLOW ===
   /** Change step event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
   /** Widget components view children */
@@ -81,8 +74,6 @@ export class WidgetGridComponent
     return !this.widgetComponents.some((x) => !x.canDeactivate);
   }
 
-  public isBackOffice = false;
-
   /**
    * Changes display when windows size changes.
    *
@@ -97,19 +88,14 @@ export class WidgetGridComponent
   /**
    * Constructor of the grid widget component
    *
-   * @param environment This is the environment in which we are running the application
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(
-    @Inject('environment') environment: any,
     public dialog: Dialog,
     private dashboardService: DashboardService
   ) {
     super();
-    if (environment.module === 'backoffice') {
-      this.isBackOffice = true;
-    }
   }
 
   /** OnInit lifecycle hook. */
@@ -165,11 +151,8 @@ export class WidgetGridComponent
    * @param e widget to style.
    */
   onStyleWidget(e: any): void {
-    const widgetComp = this.widgetComponents.find(
-      (v) => v.widget.id == e.widget.id
-    );
     this.style.emit({
-      domId: widgetComp?.id,
+      id: e.id,
       widget: e.widget,
     });
   }

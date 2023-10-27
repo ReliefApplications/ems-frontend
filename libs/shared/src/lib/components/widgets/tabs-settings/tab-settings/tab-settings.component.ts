@@ -72,32 +72,38 @@ export class TabSettingsComponent implements OnDestroy {
    */
   onEdit(e: any) {
     const widgets = this.structure?.value.slice() || [];
-    const index = widgets.findIndex((x: any) => x.ide === e.id);
-    const options = widgets[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: widgets[index].settings.defaultLayout,
-        }
-      : e.options;
-    if (options) {
-      switch (e.type) {
-        case 'display': {
-          break;
-        }
-        case 'data': {
-          this.structure?.setValue(
-            widgets.map((x: any) => {
-              if (x.id === e.id) {
-                x = { ...x, settings: options };
+    switch (e.type) {
+      case 'display': {
+        break;
+      }
+      case 'data': {
+        // Find the widget to be edited
+        const widgetComponents =
+          this.widgetGridComponent.widgetComponents.toArray();
+        const targetIndex = widgetComponents.findIndex(
+          (v: any) => v.id === e.id
+        );
+        if (targetIndex > -1) {
+          // Update the configuration
+          const options = widgets[targetIndex]?.settings?.defaultLayout
+            ? {
+                ...e.options,
+                defaultLayout: widgets[targetIndex].settings.defaultLayout,
               }
-              return x;
-            })
-          );
-          break;
+            : e.options;
+          if (options) {
+            // Save configuration
+            widgets[targetIndex] = {
+              ...widgets[targetIndex],
+              settings: options,
+            };
+          }
         }
-        default: {
-          break;
-        }
+        this.structure?.setValue(widgets);
+        break;
+      }
+      default: {
+        break;
       }
     }
   }

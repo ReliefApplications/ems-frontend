@@ -413,22 +413,28 @@ export class DashboardComponent
         break;
       }
       case 'data': {
-        // make sure that we save the default layout.
-        const index = this.widgets.findIndex((v: any) => v.id === e.id);
-        const options = this.widgets[index]?.settings?.defaultLayout
-          ? {
-              ...e.options,
-              defaultLayout: this.widgets[index].settings.defaultLayout,
-            }
-          : e.options;
-        if (options) {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x = { ...x, settings: options };
-            }
-            return x;
-          });
-          this.autoSaveChanges();
+        // Find the widget to be edited
+        const widgetComponents =
+          this.widgetGridComponent.widgetComponents.toArray();
+        const targetIndex = widgetComponents.findIndex(
+          (v: any) => v.id === e.id
+        );
+        if (targetIndex > -1) {
+          // Update the configuration
+          const options = this.widgets[targetIndex]?.settings?.defaultLayout
+            ? {
+                ...e.options,
+                defaultLayout: this.widgets[targetIndex].settings.defaultLayout,
+              }
+            : e.options;
+          if (options) {
+            // Save configuration
+            this.widgets[targetIndex] = {
+              ...this.widgets[targetIndex],
+              settings: options,
+            };
+            this.autoSaveChanges();
+          }
         }
 
         break;
