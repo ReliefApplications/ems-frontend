@@ -66,11 +66,12 @@
         </ui-button>
       </ng-template>
       <!-- Right header template -->
-      <ng-template #headerRightTemplate>
+      <ng-template #headerRightTemplate let-id>
         <!-- Widget actions -->
         <shared-widget-actions
-          [canUpdate]="canUpdate"
           class="-mr-3"
+          [id]="id"
+          [canUpdate]="canUpdate"
           [collapsed]="widgetElement.elementRef.nativeElement.clientWidth < 500"
           [widget]="widget"
           (edit)="onEditWidget($event)"

@@ -16,8 +16,10 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   styleUrls: ['./widget-actions.component.scss'],
 })
 export class WidgetActionsComponent extends UnsubscribeComponent {
-  // === WIDGET ===
+  /** Current widget */
   @Input() widget: any;
+  /** Widget id */
+  @Input() id!: string;
   /** Can user edit widget */
   @Input() canUpdate = false;
   /** Collapse actions into a single button */
@@ -91,7 +93,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.delete.emit({ id: this.widget.id });
+            this.delete.emit({ id: this.id });
           }
         });
     }

@@ -108,8 +108,15 @@ export class TabSettingsComponent implements OnDestroy {
    * @param e deletion event
    */
   onDelete(e: any) {
-    const widgets = this.structure?.value.slice() || [];
-    this.structure?.setValue(widgets.filter((x: any) => x.id !== e.id));
+    const widgetComponents =
+      this.widgetGridComponent.widgetComponents.toArray();
+    const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
+    if (targetIndex > -1) {
+      const widgets = this.structure?.value.slice() || [];
+      widgets.splice(targetIndex, 1);
+      console.log(widgets);
+      this.structure?.setValue(widgets);
+    }
   }
 
   /**

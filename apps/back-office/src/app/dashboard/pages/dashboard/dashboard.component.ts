@@ -445,8 +445,13 @@ export class DashboardComponent
    * @param e delete event
    */
   onDeleteTile(e: any): void {
-    this.widgets = this.widgets.filter((x) => x.id !== e.id);
-    this.autoSaveChanges();
+    const widgetComponents =
+      this.widgetGridComponent.widgetComponents.toArray();
+    const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
+    if (targetIndex > -1) {
+      this.widgets.splice(targetIndex, 1);
+      this.autoSaveChanges();
+    }
   }
 
   /**
