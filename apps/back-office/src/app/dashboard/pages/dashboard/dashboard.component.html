@@ -140,6 +140,8 @@
           <ui-graphql-select
             [query]="recordsQuery"
             [formControl]="contextId"
+            [filterable]="true"
+            (searchChange)="onSearchChange($event)"
             path="records"
             valueField="id"
             textField="data.{{ dashboard.page.context.displayField }}"

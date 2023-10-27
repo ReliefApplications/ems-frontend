@@ -846,4 +846,32 @@ export class DashboardComponent
       subscription?.unsubscribe();
     });
   }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  public onSearchChange(search: string): void {
+    const context = this.dashboard?.page?.context;
+    if (!context) return;
+    if ('resource' in context) {
+      this.recordsQuery.refetch({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          id: context.resource,
+        },
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              field: context.displayField,
+              operator: 'contains',
+              value: search,
+            },
+          ],
+        },
+      });
+    }
+  }
 }
