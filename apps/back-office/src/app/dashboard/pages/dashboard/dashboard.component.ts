@@ -44,7 +44,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -112,14 +112,6 @@ export class DashboardComponent
   private timeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   public editionActive = true;
-
-  /** @returns get newest widget id from existing ids */
-  get newestId(): number {
-    const widgets = this.widgets?.slice() || [];
-    return widgets.length === 0
-      ? 0
-      : Math.max(...widgets.map((x: any) => x.id)) + 1;
-  }
 
   /** @returns type of context element */
   get contextType() {
@@ -393,8 +385,7 @@ export class DashboardComponent
    * @param e add event
    */
   onAdd(e: any): void {
-    const widget = JSON.parse(JSON.stringify(e));
-    widget.id = this.newestId;
+    const widget = cloneDeep(e);
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
     if (this.timeoutListener) {
@@ -402,9 +393,12 @@ export class DashboardComponent
     }
     // scroll to the element once it is created
     this.timeoutListener = setTimeout(() => {
-      const el = this.document.getElementById(`widget-${widget.id}`);
+      const widgetComponents =
+        this.widgetGridComponent.widgetComponents.toArray();
+      const target = widgetComponents[widgetComponents.length - 1];
+      const el = this.document.getElementById(target.id);
       el?.scrollIntoView({ behavior: 'smooth' });
-    });
+    }, 1000);
   }
 
   /**
