@@ -77,7 +77,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       });
     }
     if (action === 'expand') {
-      this.expand.emit({ id: this.widget.id });
+      this.expand.emit({ widget: this.widget });
     }
     if (action === 'style') {
       this.style.emit({ id: this.id, widget: this.widget });

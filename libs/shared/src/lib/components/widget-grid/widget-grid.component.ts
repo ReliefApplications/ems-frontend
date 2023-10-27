@@ -163,13 +163,12 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
-    const widget = this.widgets.find((x) => x.id === e.id);
     const { ExpandedWidgetComponent } = await import(
       './expanded-widget/expanded-widget.component'
     );
     const dialogRef = this.dialog.open(ExpandedWidgetComponent, {
       data: {
-        widget,
+        widget: e.widget,
       },
       autoFocus: false,
     });

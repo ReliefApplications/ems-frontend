@@ -45,7 +45,6 @@
         #widgetElement
         [widget]="widget"
         (changeStep)="changeStep.emit($event)"
-        [id]="'widget-' + widget.id"
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"
         [headerLeftTemplate]="headerLeftTemplate"

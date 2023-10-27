@@ -7,6 +7,7 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   Renderer2,
   ViewChild,
@@ -32,11 +33,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-// import {
-//   CalendarDOMService,
-//   MonthViewService,
-//   WeekNamesService,
-// } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
@@ -50,6 +46,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
+import { WidgetComponent } from '../../../widget/widget.component';
 
 /**
  * Test if an element match a css selector
@@ -276,6 +273,7 @@ export class GridComponent
   /**
    * Constructor of the grid component
    *
+   * @param widgetComponent parent widget component ( optional )
    * @param environment Current environment
    * @param dialog The Dialog service
    * @param gridService The grid service
@@ -287,6 +285,7 @@ export class GridComponent
    * @param document document
    */
   constructor(
+    @Optional() public widgetComponent: WidgetComponent,
     @Inject('environment') environment: any,
     private dialog: Dialog,
     private gridService: GridService,
@@ -821,21 +820,27 @@ export class GridComponent
    * Emit an event to open settings window
    */
   public async openSettings(): Promise<void> {
-    const { EditWidgetModalComponent } = await import(
-      '../../../widget-grid/edit-widget-modal/edit-widget-modal.component'
-    );
-    const dialogRef = this.dialog.open(EditWidgetModalComponent, {
-      disableClose: true,
-      data: {
-        tile: this.widget,
-        template: this.dashboardService.findSettingsTemplate(this.widget),
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if (res) {
-        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
-      }
-    });
+    if (this.widgetComponent) {
+      const { EditWidgetModalComponent } = await import(
+        '../../../widget-grid/edit-widget-modal/edit-widget-modal.component'
+      );
+      const dialogRef = this.dialog.open(EditWidgetModalComponent, {
+        disableClose: true,
+        data: {
+          tile: this.widget,
+          template: this.dashboardService.findSettingsTemplate(this.widget),
+        },
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if (res) {
+          this.edit.emit({
+            type: 'data',
+            id: this.widgetComponent.id,
+            options: res,
+          });
+        }
+      });
+    }
   }
 
   /**
