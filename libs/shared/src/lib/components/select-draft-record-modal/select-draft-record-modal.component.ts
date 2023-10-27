@@ -15,6 +15,7 @@ import {
 import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { GET_DRAFT_RECORDS } from '../roles/graphql/queries';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { DELETE_DRAFT_RECORD } from './graphql/mutations';
 
 @Component({
   standalone: true,
@@ -50,7 +51,6 @@ export class SelectDraftRecordModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('DATA', this.data);
     this.fetchDraftRecords();
   }
 
@@ -67,6 +67,20 @@ export class SelectDraftRecordModalComponent implements OnInit {
       .subscribe(({ data }) => {
         this.draftRecords = data.draftRecords;
         this.loading = false;
+      });
+  }
+
+  onDeleteDraft(element: any) {
+    this.loading = true;
+    this.apollo
+      .mutate<any>({
+        mutation: DELETE_DRAFT_RECORD,
+        variables: {
+          id: element.id,
+        },
+      })
+      .subscribe(() => {
+        this.fetchDraftRecords();
       });
   }
 }
