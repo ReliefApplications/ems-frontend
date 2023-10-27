@@ -117,6 +117,7 @@ export class GridWidgetComponent
       : true;
   }
 
+  /** @returns list of active floating buttons */
   get floatingButtons() {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
