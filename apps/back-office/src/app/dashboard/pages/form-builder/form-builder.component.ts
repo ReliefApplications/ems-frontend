@@ -17,6 +17,7 @@ import {
   status,
   FormQueryResponse,
   EditFormMutationResponse,
+  SafeSnackbarSpinnerComponent,
 } from '@oort-front/safe';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -187,11 +188,34 @@ export class FormBuilderComponent implements OnInit {
   }
 
   /**
+   * Set up needed headers and response information for the file download action
+   *
+   * @param translationKey Translation key for the file download snackbar message
+   * @returns snackbar reference and header for the file download request
+   */
+  private snackBarMessageInit(translationKey: string) {
+    // Opens a loader in a snackbar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant(translationKey),
+          loading: true,
+        },
+      }
+    );
+    return { snackBarRef };
+  }
+
+  /**
    * Save form structure
    *
    * @param structure form structure
    */
   public async onSave(structure: any): Promise<void> {
+    const { snackBarRef } = this.snackBarMessageInit('Loading...');
+    const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
     if (!this.form?.id) {
       alert('not valid');
     } else {
@@ -219,12 +243,11 @@ export class FormBuilderComponent implements OnInit {
               });
               statusModal.close();
             } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.form.one'),
-                  value: this.form?.name,
-                })
+              snackBarData.message = this.translate.instant(
+                'Form saved successfully!'
               );
+              snackBarData.loading = false;
+              setTimeout(() => snackBarRef.instance.dismiss(), 3000);
               this.form = { ...data?.editForm, structure };
               this.structure = structure;
               localStorage.removeItem(`form:${this.id}`);

@@ -1,5 +1,6 @@
 import {
   Component,
+  ComponentRef,
   ElementRef,
   EventEmitter,
   Inject,
@@ -31,6 +32,7 @@ export class SnackbarComponent {
   error = false;
   displaySnackBar = false;
   action!: string;
+  public nestedComponent?: ComponentRef<any>;
   durationResolver = (duration: number) =>
     new Promise((resolve) => setTimeout(resolve, duration));
 
@@ -111,7 +113,9 @@ export class SnackbarComponent {
    */
   openFromComponent(component: ComponentType<any>, config: SnackBarConfig) {
     this.setSnackbarProperties(config);
-    this.snackBarContentView?.createComponent(component);
+    const ref = this.snackBarContentView?.createComponent(component);
+    this.nestedComponent = ref;
+    ref.changeDetectorRef.detectChanges();
     this.triggerSnackBar(config.duration);
   }
 
