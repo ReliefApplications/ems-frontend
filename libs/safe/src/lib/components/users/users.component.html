@@ -33,9 +33,9 @@
       class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"
       *ngIf="showFilters"
     >
-      <!-- Title filter -->
+      <!-- Roles filter -->
       <div uiFormFieldDirective class="w-44" [defaultMargin]="false">
-        <label>{{ 'common.title' | translate }}</label>
+        <label>{{ 'common.role.one' | translate }}</label>
         <ui-select-menu
           [ngModel]="roleFilter"
           (selectedOption)="applyFilter('role', $event)"
