@@ -113,15 +113,15 @@ export class WidgetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const componentRef = this.widgetContent.createComponent(
-      ExpandedWidgetComponent
-    );
-    // TODO: check ?
-    componentRef.setInput('widget', this.widget);
-    componentRef.setInput('header', this.header);
-    componentRef.setInput('canUpdate', this.canUpdate);
-    /** To use angular hooks */
-    componentRef.changeDetectorRef.detectChanges();
+    // const componentRef = this.widgetContent.createComponent(
+    //   ExpandedWidgetComponent
+    // );
+    // // TODO: check ?
+    // componentRef.setInput('widget', this.widget);
+    // componentRef.setInput('header', this.header);
+    // componentRef.setInput('canUpdate', this.canUpdate);
+    // /** To use angular hooks */
+    // componentRef.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {

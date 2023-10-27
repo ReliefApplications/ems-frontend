@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
   Inject,
   OnDestroy,
@@ -8,12 +9,12 @@ import {
 } from '@angular/core';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { DOCUMENT } from '@angular/common';
-import { CdkPortalOutlet, DomPortal } from '@angular/cdk/portal';
+import { DomPortal } from '@angular/cdk/portal';
 
-/** Dialog data */
-interface DialogData {
+/** Widget data and template for class dialog */
+interface WidgetData {
   widget: any;
-  sharedWidgetPortal?: any;
+  sharedWidgetPortal?: ElementRef<any>;
 }
 
 /** Component for expanded widgets */
@@ -25,7 +26,6 @@ interface DialogData {
 export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  // @ViewChild(CdkPortalOutlet) portalOutlet!: CdkPortalOutlet;
   public portal?: DomPortal;
 
   /**
@@ -35,7 +35,7 @@ export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
    * @param document Document
    */
   constructor(
-    @Inject(DIALOG_DATA) public data: DialogData,
+    @Inject(DIALOG_DATA) public data: WidgetData,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -43,7 +43,6 @@ export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
     this.document.dispatchEvent(
       new CustomEvent('expandchange', { detail: { expanded: true } })
     );
-    // this.portalOutlet.attach(this.data.sharedWidgetPortal);
     this.portal = new DomPortal(this.data.sharedWidgetPortal);
   }
 
