@@ -1952,7 +1952,7 @@
 			"create": "Créer un formulaire",
 			"edit": "Modifier le formulaire",
 			"field": {
-				"itensLabel": "Éléments d'étiquette",
+				"itemsLabel": "Éléments d'étiquette",
 				"label": "Étiquette",
 				"name": "Nom du champ",
 				"usedIn": "Utilisé par"
