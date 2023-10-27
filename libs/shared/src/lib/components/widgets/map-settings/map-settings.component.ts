@@ -42,7 +42,7 @@ export class MapSettingsComponent
   tileForm!: UntypedFormGroup;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() widget: any;
   public openedLayers: (LayerModel | undefined)[] = [];
 
   // === EMIT THE CHANGES APPLIED ===
@@ -76,8 +76,8 @@ export class MapSettingsComponent
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.tileForm = extendWidgetForm(
-      createMapWidgetFormGroup(this.tile.id, this.tile.settings),
-      this.tile.settings?.widgetDisplay
+      createMapWidgetFormGroup(this.widget.id, this.widget.settings),
+      this.widget.settings?.widgetDisplay
     );
 
     this.change.emit(this.tileForm);

@@ -63,7 +63,7 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
   tileForm!: EditorFormType;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() widget: any;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -98,7 +98,7 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = createEditorForm(this.tile);
+    this.tileForm = createEditorForm(this.widget);
     this.change.emit(this.tileForm);
 
     // Initialize the selected resource, layout and record from the form
@@ -132,11 +132,11 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
-      this.tile.settings.text = this.tileForm.value.text;
-      this.tile.settings.record = this.tileForm.value.record;
-      this.tile.settings.title = this.tileForm.value.title;
-      this.tile.settings.resource = this.tileForm.value.resource;
-      this.tile.settings.layout = this.tileForm.value.layout;
+      this.widget.settings.text = this.tileForm.value.text;
+      this.widget.settings.record = this.tileForm.value.record;
+      this.widget.settings.title = this.tileForm.value.title;
+      this.widget.settings.resource = this.tileForm.value.resource;
+      this.widget.settings.layout = this.tileForm.value.layout;
     });
     this.updateFields();
   }

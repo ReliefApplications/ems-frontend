@@ -114,7 +114,7 @@ export class SummaryCardSettingsComponent
   implements OnInit, AfterViewInit
 {
   /** Widget */
-  @Input() tile: any;
+  @Input() widget: any;
   /** Emit changes applied to the settings */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
@@ -151,7 +151,7 @@ export class SummaryCardSettingsComponent
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = createSummaryCardForm(this.tile);
+    this.tileForm = createSummaryCardForm(this.widget);
     this.change.emit(this.tileForm);
 
     const resourceID = this.tileForm?.get('card.resource')?.value;
@@ -224,7 +224,7 @@ export class SummaryCardSettingsComponent
    * Adds sortFields to the tileForm
    */
   initSortFields(): void {
-    this.tile.settings.sortFields?.forEach((item: any) => {
+    this.widget.settings.sortFields?.forEach((item: any) => {
       const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
