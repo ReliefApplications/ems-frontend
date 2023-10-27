@@ -1,20 +1,15 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  startWith,
-} from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
-import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+
+/*
+All the autocompletion logic has been removed since is not useful because this component is used
+to invite users that are not already part of the platform/application users. If we need to restore
+the functionality, please look at the file history
+*/
 
 /** Model for the input  */
 interface DialogData {
@@ -29,10 +24,7 @@ interface DialogData {
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
 })
-export class SafeAddUserComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class SafeAddUserComponent {
   form = this.fb.group({
     email: ['', Validators.minLength(1)],
     role: ['', Validators.required],
@@ -47,8 +39,6 @@ export class SafeAddUserComponent
       ),
     }),
   });
-  public filteredUsers?: Observable<User[]>;
-  private users: User[] = [];
 
   /** @returns The position attributes available */
   get positionAttributes(): UntypedFormArray | null {
@@ -63,65 +53,12 @@ export class SafeAddUserComponent
    * @param fb The form builder service
    * @param dialogRef The Dialog reference service
    * @param data The input data
-   * @param apollo The apollo client
    * @param translate The translation service
    */
   constructor(
     private fb: FormBuilder,
     public dialogRef: DialogRef<SafeAddUserComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
-    private apollo: Apollo,
     public translate: TranslateService
-  ) {
-    super();
-  }
-
-  ngOnInit(): void {
-    const getUsersByEmail = this.form.controls.email.valueChanges.pipe(
-      debounceTime(1000),
-      distinctUntilChanged(),
-      startWith(''),
-      map((value) => (typeof value === 'string' ? value : '')),
-      map((x) => this.filterUsers(x)),
-      takeUntil(this.destroy$)
-    );
-
-    this.filteredUsers = getUsersByEmail;
-
-    this.apollo
-      .query<GetUsersQueryResponse>({
-        query: GET_USERS,
-      })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        const flatInvitedUsers = this.data.users.map((x) => x.username);
-        const dataFiltered = data.users.edges.filter(
-          (x) => !flatInvitedUsers.includes(x.node.username)
-        );
-        let user: User;
-        this.users = dataFiltered.map((d: any) => {
-          user = {
-            id: d.node.id,
-            username: d.node.username,
-            name: d.node.name,
-            oid: d.node.oid,
-          };
-          return user;
-        });
-        this.filteredUsers = getUsersByEmail;
-      });
-  }
-
-  /**
-   * Filter the users
-   *
-   * @param value The value to filter on
-   * @returns The filtered list of users
-   */
-  private filterUsers(value: string): User[] {
-    const filterValue = value.toLowerCase();
-    return this.users
-      .filter((x) => x.username?.toLowerCase().indexOf(filterValue) === 0)
-      .slice(0, 25);
-  }
+  ) {}
 }

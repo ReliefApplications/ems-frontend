@@ -7,6 +7,11 @@
       <div class="flex flex-col">
         <div uiFormFieldDirective>
           <label>{{ 'common.email.one' | translate }}</label>
+          <input [placeholder]="'common.placeholder.email' | translate" #emailInput formControlName="email" />
+          <!--
+            Removing the autocompletion here, the feature is not useful since this component is used to invite users that are not already part of the platform/application users.
+          -->
+          <!--
           <input
             [placeholder]="'common.placeholder.email' | translate"
             #emailInput
@@ -21,6 +26,7 @@
               {{ user.username }}
             </ui-option>
           </ui-autocomplete>
+          -->
         </div>
         <div uiFormFieldDirective>
           <label>{{
