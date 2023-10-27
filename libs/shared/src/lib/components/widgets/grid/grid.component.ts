@@ -496,11 +496,7 @@ export class GridWidgetComponent
           this.dashboardService.dashboard$
         );
         if (!dashboard?.id) return;
-        this.workflowService.setContext(
-          dashboard.id,
-          this.settings.id,
-          this.grid.selectedRows
-        );
+        this.workflowService.setContext(this.grid.selectedRows);
       };
 
       if (options.goToNextStep) {

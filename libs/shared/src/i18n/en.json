@@ -2066,6 +2066,7 @@
 			"create": "Create a Form",
 			"edit": "Edit form",
 			"field": {
+				"itensLabel": "Itens label",
 				"label": "Label",
 				"name": "Field name",
 				"usedIn": "Used in"

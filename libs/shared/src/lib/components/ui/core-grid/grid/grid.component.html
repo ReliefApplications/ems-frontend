@@ -527,6 +527,7 @@
                 "
               >
                 {{
+                  field.itensLabel ? evaluateLabel(field, dataItem) :
                   (dataItem[field.name].length > 1
                     ? 'components.widget.grid.item.few'
                     : 'components.widget.grid.item.one'

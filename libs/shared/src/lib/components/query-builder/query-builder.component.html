@@ -64,6 +64,17 @@
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
+        <div
+          uiFormFieldDirective
+          [defaultMargin]="false"
+          >
+          <label>{{ 'models.form.field.itensLabel' | translate }}</label>
+          <input 
+            formControlName="itensLabel"
+            type="text"
+            [placeholder]="'{{count}}'"
+          />
+        </div>
       </div>
     </ng-container>
     <ui-tabs *ngIf="form.getRawValue().name">
