@@ -318,7 +318,7 @@
           "baseHref": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/alimentaide"]
           }
         },
         "oort-demo": {
@@ -368,7 +368,7 @@
           "baseHref": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/lift"]
           }
         },
         "oort-expertisefr": {

@@ -304,7 +304,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/alimentaide"]
           }
         },
         "oort-demo": {
@@ -352,7 +352,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/lift"]
           }
         },
         "oort-expertisefr": {
