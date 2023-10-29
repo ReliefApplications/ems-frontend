@@ -1,7 +1,7 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
-import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
+import { generateMonochromePalette } from '../../ui/charts/const/palette';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -10,9 +10,10 @@ const fb = new FormBuilder();
  * Create chart form group
  *
  * @param value chart settings
+ * @param primary primary color to generate palette from
  * @returns chart form group
  */
-export const createChartForm = (value: any) => {
+export const createChartForm = (value: any, primary: string) => {
   const legend = get(value, 'legend', null);
   const title = get(value, 'title', null);
   const labels = get(value, 'labels', null);
@@ -84,7 +85,7 @@ export const createChartForm = (value: any) => {
           value:
             palette.length > 0
               ? palette
-              : JSON.parse(JSON.stringify(DEFAULT_PALETTE)),
+              : JSON.parse(JSON.stringify(generateMonochromePalette(primary))),
           disabled: !get(value, 'palette.enabled', false),
         },
       ],
@@ -320,13 +321,14 @@ const DEFAULT_CONTEXT_FILTER = `{
  *
  * @param id widget id
  * @param value chart widget settings
+ * @param primary primary color to generate palette from
  * @returns chart widget form group
  */
-export const createChartWidgetForm = (id: any, value: any) =>
+export const createChartWidgetForm = (id: any, value: any, primary: string) =>
   fb.group({
     id,
     title: [get(value, 'title', ''), Validators.required],
-    chart: createChartForm(get(value, 'chart')),
+    chart: createChartForm(get(value, 'chart'), primary),
     resource: [get(value, 'resource', null), Validators.required],
     contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
     at: [get(value, 'at', '')],

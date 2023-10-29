@@ -17,6 +17,7 @@ import {
   CREATE_DASHBOARD_WITH_CONTEXT,
 } from './graphql/mutations';
 import get from 'lodash/get';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -36,14 +37,24 @@ export class DashboardService {
     return this.dashboard.asObservable();
   }
 
+  /** @returns The id of the currently loaded template record, if any */
+  get templateRecord() {
+    return this.route.snapshot.queryParamMap.get('id');
+  }
+
   /**
    * Shared dashboard service. Handles dashboard events.
    * TODO: rename all tiles into widgets
    *
    * @param environment environment in which we run the application
    * @param apollo Apollo client
+   * @param route Angular route
    */
-  constructor(@Inject('environment') environment: any, private apollo: Apollo) {
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private route: ActivatedRoute
+  ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );

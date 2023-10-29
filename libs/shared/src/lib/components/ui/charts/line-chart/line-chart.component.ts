@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
 import {
   Plugin,
@@ -14,7 +14,7 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartLegend, ChartTitle } from '../interfaces';
-import { DEFAULT_PALETTE } from '../const/palette';
+import { generateMonochromePalette } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import { isEqual, isNil } from 'lodash';
 import Color from 'color';
@@ -54,7 +54,7 @@ export class LineChartComponent implements OnChanges {
   @Input() series: any[] = [];
   /** Input decorator for options. */
   @Input() options: any = {
-    palette: DEFAULT_PALETTE,
+    palette: generateMonochromePalette(this.environment.theme.primary),
     axes: null,
   };
   /** ViewChild decorator for chart. */
@@ -80,11 +80,16 @@ export class LineChartComponent implements OnChanges {
     datasets: [],
   };
 
+  /** Uses chart.js to render the data as a line chart */
+  constructor(@Inject('environment') private environment: any) {}
+
   /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.showValueLabels = get(this.options, 'labels.showValue', false);
     const series = get(this.options, 'series', []);
-    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
+    const palette =
+      get(this.options, 'palette') ||
+      generateMonochromePalette(this.environment.theme.primary);
     // Build series and filter out the hidden series
     this.chartData.datasets = this.series
       .map((x, i) => {

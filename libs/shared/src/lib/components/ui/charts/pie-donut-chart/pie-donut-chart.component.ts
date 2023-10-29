@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnChanges, ViewChild } from '@angular/core';
 import { Plugin, ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { get, flatten, isEqual, isNil } from 'lodash';
@@ -7,7 +7,7 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartLegend, ChartTitle } from '../interfaces';
-import { DEFAULT_PALETTE } from '../const/palette';
+import { generateMonochromePalette } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import Color from 'color';
 
@@ -45,7 +45,7 @@ export class PieDonutChartComponent implements OnChanges {
   @Input() series: any[] = [];
   /** Input decorator for options.  */
   @Input() options: any = {
-    palette: DEFAULT_PALETTE,
+    palette: generateMonochromePalette(this.environment.theme.primary),
   };
   /** ViewChild decorator for chart. */
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
@@ -62,6 +62,9 @@ export class PieDonutChartComponent implements OnChanges {
     datasets: [],
   };
 
+  /** Uses chart.js to render the data as a pie chart */
+  constructor(@Inject('environment') private environment: any) {}
+
   /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.showCategoryLabel = get(this.options, 'labels.showCategory', false);
@@ -74,7 +77,9 @@ export class PieDonutChartComponent implements OnChanges {
       ) || 0;
 
     const series = get(this.options, 'series', []);
-    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
+    const palette =
+      get(this.options, 'palette') ||
+      generateMonochromePalette(this.environment.theme.primary);
 
     // Build series and filter out the hidden series
     this.chartData.datasets = this.series

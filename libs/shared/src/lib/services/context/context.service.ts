@@ -9,6 +9,7 @@ import {
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
 import { isNil, isEmpty, get, isEqual } from 'lodash';
+import { DashboardService } from '../dashboard/dashboard.service';
 
 /**
  * Application context service
@@ -81,8 +82,12 @@ export class ContextService {
    * Application context service
    *
    * @param applicationService Shared application service
+   * @param dashboardService Shared dashboard service
    */
-  constructor(private applicationService: ApplicationService) {
+  constructor(
+    private applicationService: ApplicationService,
+    private dashboardService: DashboardService
+  ) {
     this.applicationService.application$.subscribe(
       (application: Application | null) => {
         if (application) {
@@ -125,7 +130,12 @@ export class ContextService {
     T extends CompositeFilterDescriptor | FilterDescriptor
   >(f: T): T {
     const filter = cloneDeep(f);
-    if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
+    if (
+      !this.isFilterEnabled.getValue() &&
+      'filters' in filter &&
+      // Filtering by context record happens even if filter is disabled
+      !this.dashboardService.templateRecord
+    ) {
       filter.filters = [];
       return filter;
     }
@@ -142,6 +152,8 @@ export class ContextService {
           filter.value = this.currentApplicationDescription;
         } else if (filter.value === '{{application.id}}') {
           filter.value = this.currentApplicationId;
+        } else if (filter.value === '{{context.record}}') {
+          filter.value = this.dashboardService.templateRecord;
         }
       }
     } else if ('filters' in filter && filter.filters) {

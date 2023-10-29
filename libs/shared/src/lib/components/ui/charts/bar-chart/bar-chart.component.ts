@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
 import {
   ChartArea,
@@ -13,7 +13,7 @@ import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartLegend, ChartTitle } from '../interfaces';
-import { DEFAULT_PALETTE } from '../const/palette';
+import { generateMonochromePalette } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import { isEqual, isNil } from 'lodash';
 import Color from 'color';
@@ -47,7 +47,7 @@ export class BarChartComponent implements OnChanges {
   @Input() series: any[] = [];
   /** Input decorator for options. */
   @Input() options: any = {
-    palette: DEFAULT_PALETTE,
+    palette: generateMonochromePalette(this.environment.theme.primary),
     stack: false,
   };
   /** Input decorator for gap. */
@@ -68,6 +68,9 @@ export class BarChartComponent implements OnChanges {
     datasets: [],
   };
 
+  /** Uses chart.js to render the data as a bar chart */
+  constructor(@Inject('environment') private environment: any) {}
+
   /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     const isBar = this.orientation === 'horizontal';
@@ -76,7 +79,9 @@ export class BarChartComponent implements OnChanges {
       this.showValueLabels = get(this.options, 'labels.valueType', false);
     if (this.usePercentage) this.normalizeDataset();
     const series = get(this.options, 'series', []);
-    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
+    const palette =
+      get(this.options, 'palette') ||
+      generateMonochromePalette(this.environment.theme.primary);
     // Build series and filter out the hidden series
     this.chartData.datasets = this.series
       .map((x, i) => {
