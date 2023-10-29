@@ -17,6 +17,7 @@ import searchEnterpriseName from './searchEnterpriseName';
 import push from './push';
 import getComplaintsByType from './getComplaintsByType';
 import getNumberOfMembers from './getNumberOfMembers';
+import getLoadedRecord from './getLoadedRecord';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -37,6 +38,7 @@ export const functions = [
   { fn: summarizeAids, name: 'summarizeAids' },
   { fn: push, name: 'push' },
   { fn: getNumberOfMembers, name: 'getNumberOfMembers' },
+  { fn: getLoadedRecord, name: 'getLoadedRecord' },
 ];
 
 /** Generators for each async custom function available  */

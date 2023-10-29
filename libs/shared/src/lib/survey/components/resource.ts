@@ -586,6 +586,8 @@ export const init = (
     },
     // Display of add button for resource question
     onAfterRender: (question: QuestionResource, el: HTMLElement): void => {
+      (question.survey as SurveyModel).loadedRecords = loadedRecords;
+
       // support the placeholder field
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = get(
