@@ -1,4 +1,5 @@
 import { RawEditorSettings } from 'tinymce';
+import { createFontAwesomeIcon } from '../components/ui/map/utils/create-div-icon';
 
 /** Language tinymce keys paired with the default ones */
 export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
@@ -16,7 +17,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   imagetools_cors_hosts: ['picsum.photos'],
   menubar: 'edit view insert format tools table help',
   toolbar:
-    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar',
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor',
   toolbar_sticky: true,
   image_advtab: true,
   importcss_append: true,
@@ -31,12 +32,24 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  extended_valid_elements:
+    'a[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],animate[*],animateMotion[*],animateTransform[*],circle[*],clipPath[*],color-profile[*],cursor[*],defs[*],desc[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],foreignObject[*],g[*],glyph[*],glyphRef[*],hkern[*],image[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],missing-glyph[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],stop[*],style[*],svg[*],switch[*],symbol[*],text[*],textPath[*],title[*],tref[*],tspan[*],use[*],view[*],vkern[*],a[*],animate[*],animateMotion[*],animateTransform[*],circle[*],clipPath[*],defs[*],desc[*],discard[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],foreignObject[*],g[*],hatch[*],hatchpath[*],image[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],stop[*],style[*],svg[*],switch[*],symbol[*],text[*],textPath[*],title[*],tspan[*],use[*],view[*],g[*],animate[*],animateColor[*],animateMotion[*],animateTransform[*],discard[*],mpath[*],set[*],circle[*],ellipse[*],line[*],polygon[*],polyline[*],rect[*],a[*],defs[*],g[*],marker[*],mask[*],missing-glyph[*],pattern[*],svg[*],switch[*],symbol[*],desc[*],metadata[*],title[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],feSpecularLighting[*],feTile[*],feTurbulence[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],hkern[*],vkern[*],linearGradient[*],radialGradient[*],stop[*],circle[*],ellipse[*],image[*],line[*],path[*],polygon[*],polyline[*],rect[*],text[*],use[*],use[*],feDistantLight[*],fePointLight[*],feSpotLight[*],clipPath[*],defs[*],hatch[*],linearGradient[*],marker[*],mask[*],metadata[*],pattern[*],radialGradient[*],script[*],style[*],symbol[*],title[*],hatch[*],linearGradient[*],pattern[*],radialGradient[*],solidcolor[*],a[*],circle[*],ellipse[*],foreignObject[*],g[*],image[*],line[*],path[*],polygon[*],polyline[*],rect[*],svg[*],switch[*],symbol[*],text[*],textPath[*],tspan[*],use[*],g[*],circle[*],ellipse[*],line[*],path[*],polygon[*],polyline[*],rect[*],defs[*],g[*],svg[*],symbol[*],use[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],glyph[*],glyphRef[*],textPath[*],text[*],tref[*],tspan[*],altGlyph[*],textPath[*],tref[*],tspan[*],clipPath[*],cursor[*],filter[*],foreignObject[*],hatchpath[*],script[*],style[*],view[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],animateColor[*],cursor[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],glyph[*],glyphRef[*],hkern[*],missing-glyph[*],tref[*],vkern[*]',
   convert_urls: false,
   setup: (editor) => {
     editor.ui.registry.addIcon(
       'avatar-icon',
       '<svg width="24" height="24"><ellipse style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" cx="12.051" cy="8.44" rx="4.407" ry="4.457"></ellipse><ellipse style="fill: none; stroke: rgb(0, 0, 0);" cx="12" cy="12" ry="11" rx="11"></ellipse><path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 3.859 19.172 C 4.12 10.79 20.414 11.589 20.143 19.122 C 20.141 19.179 3.857 19.247 3.859 19.172 Z"></path></svg>'
     );
+    const iconEdit = createFontAwesomeIcon(
+      {
+        icon: 'edit',
+        color: 'none',
+        opacity: 1,
+        size: 21,
+      },
+      (editor.editorManager as any).DOM.doc
+    );
+    editor.ui.registry.addIcon('record-icon', iconEdit.innerHTML);
     editor.ui.registry.addButton('avatar', {
       icon: 'avatar-icon',
       tooltip: 'Avatar',
@@ -124,6 +137,29 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
             },
           ],
         });
+      },
+    });
+    editor.ui.registry.addButton('recordeditor', {
+      icon: 'record-icon',
+      tooltip: 'Edit record',
+      onAction: async () => {
+        const iconEdit = createFontAwesomeIcon(
+          {
+            icon: 'edit',
+            color: '#000000',
+            opacity: 1,
+            size: 21,
+          },
+          (editor.editorManager as any).DOM.doc
+        );
+        const iconButton = (editor.editorManager as any).DOM.doc.createElement(
+          'button'
+        );
+        iconButton.innerHTML = iconEdit?.innerHTML;
+        iconButton.style.border = '0';
+        iconButton.id = 'record-editor';
+        const set = `&nbsp;${iconButton?.outerHTML}&nbsp;`;
+        editor.insertContent(set);
       },
     });
   },
