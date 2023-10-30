@@ -65,6 +65,7 @@
     "@storybook/addon-console": "^1.2.3",
     "@tinymce/tinymce-angular": "^7.0.0",
     "@turf/centroid": "^6.5.0",
+    "angular-gridster2": "^15.0.4",
     "angular-oauth2-oidc": "~13.0.1",
     "apollo-angular": "^4.2.0",
     "chart.js": "^4.3.3",

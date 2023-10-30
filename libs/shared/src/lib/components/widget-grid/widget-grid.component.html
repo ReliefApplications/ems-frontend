@@ -14,41 +14,19 @@
     </shared-widget-choice>
   </div>
   <!-- GRID OF WIDGETS -->
-  <kendo-tilelayout
-    [columns]="colsNumber"
-    [rowHeight]="200"
-    [resizable]="canUpdate"
-    [reorderable]="canUpdate"
-    (reorder)="onReorder($event)"
-    (resize)="onResize($event)"
-    class="-m-4"
-  >
-    <kendo-tilelayout-item
+  <gridster [options]="gridOptions">
+    <gridster-item
+      [item]="widget"
       *ngFor="let widget of widgets; let i = index"
-      [colSpan]="
-        widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1)
-          ? colsNumber
-          : widget.defaultCols
-      "
-      [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
-      class="!rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
-      [ngClass]="{
-        '!shadow-sm !border-gray-300':
-          widget.settings.widgetDisplay?.showBorder ?? true,
-        '!border-transparent': !(
-          widget.settings.widgetDisplay?.showBorder ?? true
-        ),
-        'hover:!border-gray-400 hover:!shadow-sm': canUpdate
-      }"
     >
       <shared-widget
+        #widgetElement
         [widget]="widget"
         (changeStep)="triggerChangeStepAction($event)"
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"
         [headerLeftTemplate]="headerLeftTemplate"
         [headerRightTemplate]="headerRightTemplate"
-        class="flex flex-col flex-1 h-full w-full"
       ></shared-widget>
       <!-- Left header template -->
       <ng-template #headerLeftTemplate>
@@ -81,8 +59,31 @@
         >
         </shared-widget-actions>
       </ng-template>
+    </gridster-item>
+  </gridster>
+  <!-- <kendo-tilelayout
+    [columns]="colsNumber"
+    [rowHeight]="200"
+    [resizable]="canUpdate"
+    [reorderable]="canUpdate"
+    (reorder)="onReorder($event)"
+    (resize)="onResize($event)"
+    class="-m-4"
+  >
+    <kendo-tilelayout-item
+      *ngFor="let widget of widgets; let i = index"
+      class="!rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
+      [ngClass]="{
+        '!shadow-sm !border-gray-300':
+          widget.settings.widgetDisplay?.showBorder ?? true,
+        '!border-transparent': !(
+          widget.settings.widgetDisplay?.showBorder ?? true
+        ),
+        'hover:!border-gray-400 hover:!shadow-sm': canUpdate
+      }"
+    >
     </kendo-tilelayout-item>
-  </kendo-tilelayout>
+  </kendo-tilelayout> -->
 </ng-container>
 <!-- LOADING INDICATOR -->
 <ng-template #emptyTemplate>

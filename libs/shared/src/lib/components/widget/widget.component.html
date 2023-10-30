@@ -1,103 +1,107 @@
-<ng-container *ngIf="header">
-  <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
-    <kendo-tilelayout-item-header
-      class="floating-widget-header"
-      *ngIf="canUpdate && !fullscreen"
-    >
-      <ng-container
-        *ngIf="headerLeftTemplate"
-        [ngTemplateOutlet]="headerLeftTemplate"
-      ></ng-container>
-      <div class="bg-white/70 rounded-2xl">
+<div
+  class="flex flex-col h-full w-full !rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 overflow-hidden"
+  [ngClass]="{
+    '!shadow-sm !border-gray-300': showBorder,
+    '!border-transparent': !showBorder || fullscreen,
+    'hover:!border-gray-400 hover:!shadow-sm': canUpdate && !fullscreen
+  }"
+>
+  <ng-container *ngIf="header">
+    <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
+      <div class="floating-widget-header" *ngIf="canUpdate && !fullscreen">
         <ng-container
-          *ngIf="headerRightTemplate"
+          *ngIf="headerLeftTemplate"
+          [ngTemplateOutlet]="headerLeftTemplate"
+        ></ng-container>
+        <div class="bg-white/70 rounded-2xl">
+          <ng-container
+            *ngIf="headerRightTemplate"
+            [ngTemplateOutlet]="headerRightTemplate"
+            [ngTemplateOutletContext]="{ $implicit: id }"
+          ></ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #defaultHeaderTemplate>
+      <div
+        class="widget-header border-b"
+        [ngClass]="{
+          '!border-transparent': !showBorder,
+          '!border-b-gray-300': showBorder
+        }"
+      >
+        <ng-container
+          *ngIf="headerLeftTemplate && !fullscreen"
+          [ngTemplateOutlet]="headerLeftTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="widgetContentComponent?.headerTemplate"
+          [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="headerRightTemplate && !fullscreen"
           [ngTemplateOutlet]="headerRightTemplate"
           [ngTemplateOutletContext]="{ $implicit: id }"
         ></ng-container>
       </div>
-    </kendo-tilelayout-item-header>
+    </ng-template>
   </ng-container>
 
-  <ng-template #defaultHeaderTemplate>
-    <kendo-tilelayout-item-header
-      class="widget-header border-b"
-      [ngClass]="{
-        '!border-transparent': !(
-          widget.settings.widgetDisplay?.showBorder ?? true
-        ),
-        '!border-b-gray-300': widget.settings.widgetDisplay?.showBorder ?? true
-      }"
+  <ng-container [ngSwitch]="widget.component">
+    <!-- CHART -->
+    <shared-chart
+      *ngSwitchCase="'chart'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden"
+    ></shared-chart>
+    <!-- GRID -->
+    <shared-grid-widget
+      *ngSwitchCase="'grid'"
+      #widgetContent
+      [settings]="widget.settings"
+      (changeStep)="changeStep.emit($event)"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+      [canUpdate]="canUpdate"
+      class="flex-1 overflow-hidden"
+    ></shared-grid-widget>
+    <!-- MAP -->
+    <shared-map-widget
+      *ngSwitchCase="'map'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden"
+    ></shared-map-widget>
+    <!-- TEXT EDITOR -->
+    <shared-editor
+      *ngSwitchCase="'editor'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden"
     >
-      <ng-container
-        *ngIf="headerLeftTemplate && !fullscreen"
-        [ngTemplateOutlet]="headerLeftTemplate"
-      ></ng-container>
-      <ng-container
-        *ngIf="widgetContentComponent?.headerTemplate"
-        [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
-      ></ng-container>
-      <ng-container
-        *ngIf="headerRightTemplate && !fullscreen"
-        [ngTemplateOutlet]="headerRightTemplate"
-        [ngTemplateOutletContext]="{ $implicit: id }"
-      ></ng-container>
-    </kendo-tilelayout-item-header>
-  </ng-template>
-</ng-container>
-
-<ng-container [ngSwitch]="widget.component">
-  <!-- CHART -->
-  <shared-chart
-    *ngSwitchCase="'chart'"
-    #widgetContent
-    [settings]="widget.settings"
-    class="flex-1 overflow-hidden"
-  ></shared-chart>
-  <!-- GRID -->
-  <shared-grid-widget
-    *ngSwitchCase="'grid'"
-    #widgetContent
-    [settings]="widget.settings"
-    (changeStep)="changeStep.emit($event)"
-    (edit)="edit.emit($event)"
-    [widget]="widget"
-    [canUpdate]="canUpdate"
-    class="flex-1 overflow-hidden"
-  ></shared-grid-widget>
-  <!-- MAP -->
-  <shared-map-widget
-    *ngSwitchCase="'map'"
-    #widgetContent
-    [settings]="widget.settings"
-    class="flex-1 overflow-hidden"
-  ></shared-map-widget>
-  <!-- TEXT EDITOR -->
-  <shared-editor
-    *ngSwitchCase="'editor'"
-    #widgetContent
-    [settings]="widget.settings"
-    class="flex-1 overflow-hidden"
-  >
-  </shared-editor>
-  <!-- SUMMARY CARD -->
-  <shared-summary-card
-    *ngSwitchCase="'summaryCard'"
-    #widgetContent
-    [settings]="widget.settings"
-    (edit)="edit.emit($event)"
-    [widget]="widget"
-    class="flex-1 overflow-hidden"
-  >
-  </shared-summary-card>
-  <!-- Tabs -->
-  <shared-tabs
-    *ngSwitchCase="'tabs'"
-    #widgetContent
-    [settings]="widget.settings"
-    (edit)="edit.emit($event)"
-    [canUpdate]="canUpdate"
-    [widget]="widget"
-    class="flex-1 overflow-hidden"
-  >
-  </shared-tabs>
-</ng-container>
+    </shared-editor>
+    <!-- SUMMARY CARD -->
+    <shared-summary-card
+      *ngSwitchCase="'summaryCard'"
+      #widgetContent
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+      class="flex-1 overflow-hidden"
+    >
+    </shared-summary-card>
+    <!-- Tabs -->
+    <shared-tabs
+      *ngSwitchCase="'tabs'"
+      #widgetContent
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [canUpdate]="canUpdate"
+      [widget]="widget"
+      class="flex-1 overflow-hidden"
+    >
+    </shared-tabs>
+  </ng-container>
+</div>

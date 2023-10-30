@@ -6,19 +6,23 @@ import {
   OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
 } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
-import {
-  TileLayoutReorderEvent,
-  TileLayoutResizeEvent,
-} from '@progress/kendo-angular-layout';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
+import {
+  CompactType,
+  DisplayGrid,
+  GridType,
+  GridsterConfig,
+  GridsterItem,
+} from 'angular-gridster2';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -70,6 +74,8 @@ export class WidgetGridComponent
     unknown,
     ExpandedWidgetComponent
   > | null;
+  /** Gridster options */
+  gridOptions!: GridsterConfig;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -109,6 +115,18 @@ export class WidgetGridComponent
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+    this.setGridOptions();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['canUpdate'] &&
+      Boolean(changes['canUpdate'].previousValue) !==
+        Boolean(changes['canUpdate'].currentValue) &&
+      Boolean(changes['canUpdate'].currentValue)
+    ) {
+      this.setGridOptions(true);
+    }
   }
 
   /**
@@ -131,6 +149,42 @@ export class WidgetGridComponent
       return 6;
     }
     return MAX_COL_SPAN;
+  }
+
+  setGridOptions(isDashboardSet = false) {
+    this.gridOptions = {
+      ...this.gridOptions,
+      ...(isDashboardSet && {
+        itemChangeCallback: (item: GridsterItem) => this.onEditWidget(item),
+      }),
+      gridType: GridType.ScrollVertical,
+      compactType: CompactType.None,
+      displayGrid: DisplayGrid.OnDragAndResize,
+      margin: 10,
+      maxCols: this.colsNumber,
+      minCols: this.colsNumber,
+      minItemRows: 2,
+      draggable: {
+        enabled: this.canUpdate,
+      },
+      resizable: {
+        enabled: this.canUpdate,
+      },
+      pushItems: true,
+      swap: true,
+      swapWhileDragging: false,
+      disablePushOnDrag: true,
+      disablePushOnResize: false,
+      pushDirections: { north: true, east: true, south: true, west: true },
+      disableScrollHorizontal: true,
+      scrollToNewItems: true,
+      setGridSize: true,
+    };
+
+    this.widgets.map((gridItem) => {
+      gridItem.resizeEnabled = this.canUpdate;
+      gridItem.dragEnabled = this.canUpdate;
+    });
   }
 
   /**
@@ -244,34 +298,34 @@ export class WidgetGridComponent
    *
    * @param e reorder event.
    */
-  public onReorder(e: TileLayoutReorderEvent): void {
-    this.move.emit(e);
-  }
+  // public onReorder(e: TileLayoutReorderEvent): void {
+  //   this.move.emit(e);
+  // }
 
   /**
    * Handles resize widget event.
    *
    * @param e resize event.
    */
-  public onResize(e: TileLayoutResizeEvent) {
-    const widgetDefinition = this.availableWidgets.find(
-      (x) => x.component === this.widgets[e.item.order].component
-    );
-    // Prevent widgets to be smaller than minimum width ( definition per widget )
-    if (e.newRowSpan < widgetDefinition.minRow) {
-      e.newRowSpan = widgetDefinition.minRow;
-    }
-    // Prevent widgets to be greater than maximum width ( fixed limit in the widget grid )
-    if (e.newColSpan > MAX_COL_SPAN) {
-      e.newColSpan = MAX_COL_SPAN;
-    }
-    const target = this.widgets[e.item.order];
-    target.defaultCols = e.newColSpan;
-    target.defaultRows = e.newRowSpan;
-    this.edit.emit({
-      type: 'display',
-    });
-  }
+  // public onResize(e: TileLayoutResizeEvent) {
+  //   const widgetDefinition = this.availableWidgets.find(
+  //     (x) => x.component === this.widgets[e.item.order].component
+  //   );
+  //   // Prevent widgets to be smaller than minimum width ( definition per widget )
+  //   if (e.newRowSpan < widgetDefinition.minRow) {
+  //     e.newRowSpan = widgetDefinition.minRow;
+  //   }
+  //   // Prevent widgets to be greater than maximum width ( fixed limit in the widget grid )
+  //   if (e.newColSpan > MAX_COL_SPAN) {
+  //     e.newColSpan = MAX_COL_SPAN;
+  //   }
+  //   const target = this.widgets[e.item.order];
+  //   target.defaultCols = e.newColSpan;
+  //   target.defaultRows = e.newRowSpan;
+  //   this.edit.emit({
+  //     type: 'display',
+  //   });
+  // }
 
   /**
    * Generates a list of skeletongs, for loading.
