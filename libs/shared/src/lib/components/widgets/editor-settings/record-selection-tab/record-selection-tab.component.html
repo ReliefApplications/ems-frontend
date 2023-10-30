@@ -52,7 +52,7 @@
       ></ui-button>
     </div>
 
-    <ng-container *ngIf="selectedLayout && selectedRecordID">
+    <ng-container *ngIf="selectedLayout && selectedRecord">
       <h2>
         {{
           'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
@@ -107,7 +107,7 @@
       [multiSelect]="false"
       [selectable]="true"
       [showExport]="false"
-      [selectedRows]="selectedRecordID ? [selectedRecordID] : []"
+      [selectedRows]="selectedRecord!.id ? [selectedRecord!.id] : []"
       (selectionChange)="onSelectionChange($event)"
     >
     </shared-core-grid>

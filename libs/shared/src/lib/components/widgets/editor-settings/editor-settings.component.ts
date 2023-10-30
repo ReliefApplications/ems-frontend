@@ -19,6 +19,7 @@ import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import { Record } from '../../../models/record.model';
 
 /**
  * Creates the form for the editor widget settings.
@@ -34,7 +35,7 @@ const createEditorForm = (value: any) => {
     // for record selection
     resource: new FormControl<string>(get(value, 'settings.resource', null)),
     layout: new FormControl<string>(get(value, 'settings.layout', null)),
-    record: new FormControl<string>(get(value, 'settings.record', null)),
+    record: new FormControl<Record>(get(value, 'settings.record', null)),
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),

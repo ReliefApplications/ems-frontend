@@ -2,6 +2,7 @@
   <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
     <div class="w-full h-fit" (click)="onClick($event)">
       <shared-html-widget-content
+        [dataSource]="{ record: settings.record, layout: settings.layout }"
         [html]="formattedHtml"
         [style]="formattedStyle"
       ></shared-html-widget-content>

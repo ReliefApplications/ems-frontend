@@ -6,17 +6,21 @@
   <div class="floating-button"></div>
 </div>
 <!-- HTML content -->
-<shared-summary-card-item-content
+<ng-container
   *ngIf="
     card.html &&
     card.wholeCardStyles !== null &&
     card.wholeCardStyles !== undefined
   "
-  [html]="card.html"
-  [fields]="fields"
-  [fieldsValue]="fieldsValue"
-  [styles]="card.useStyles ? styles : []"
-  [wholeCardStyles]="card.wholeCardStyles"
-  class="flex-1 overflow-auto p-[14px]"
 >
-</shared-summary-card-item-content>
+  <shared-summary-card-item-content
+    [dataSource]="{ record: card.record, layout: card.layout }"
+    [html]="card.html"
+    [fields]="fields"
+    [fieldsValue]="fieldsValue"
+    [styles]="card.useStyles ? styles : []"
+    [wholeCardStyles]="card.wholeCardStyles"
+    class="flex-1 overflow-auto p-[14px]"
+  >
+  </shared-summary-card-item-content>
+</ng-container>

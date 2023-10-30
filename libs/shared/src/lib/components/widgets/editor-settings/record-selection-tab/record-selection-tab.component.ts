@@ -12,6 +12,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { GET_RESOURCES } from '../graphql/queries';
+import { Record } from '../../../../models/record.model';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -33,7 +34,7 @@ export class RecordSelectionTabComponent
   @Output() resourceChange = new EventEmitter<Resource | null>();
   @Output() layoutChange = new EventEmitter<Layout | null>();
 
-  public selectedRecordID: string | null = null;
+  public selectedRecord: Record | null = null;
 
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
@@ -53,7 +54,7 @@ export class RecordSelectionTabComponent
   }
 
   ngOnInit(): void {
-    this.selectedRecordID = this.form.get('record')?.value || null;
+    this.selectedRecord = this.form.get('record')?.value || null;
     this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
@@ -171,11 +172,11 @@ export class RecordSelectionTabComponent
    */
   onSelectionChange(event: any) {
     if (event.selectedRows.length > 0) {
-      this.form.get('record')?.setValue(event.selectedRows[0].dataItem.id);
-      this.selectedRecordID = event.selectedRows[0].dataItem.id;
+      this.form.get('record')?.setValue(event.selectedRows[0].dataItem);
+      this.selectedRecord = event.selectedRows[0].dataItem;
     } else {
       this.form.get('record')?.setValue(null);
-      this.selectedRecordID = null;
+      this.selectedRecord = null;
     }
   }
 }

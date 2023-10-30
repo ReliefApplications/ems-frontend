@@ -154,7 +154,7 @@ export class EditorComponent implements OnInit {
                 {
                   field: 'id',
                   operator: 'eq',
-                  value: this.settings.record,
+                  value: this.settings.record.id,
                 },
               ],
             },

@@ -1,3 +1,7 @@
 <div (click)="onClick($event)" class="w-full h-fit">
-  <shared-html-widget-content [html]="formattedHtml" [style]="formattedStyle" />
+  <shared-html-widget-content
+    [dataSource]="dataSource"
+    [html]="formattedHtml"
+    [style]="formattedStyle"
+  />
 </div>
