@@ -23,7 +23,6 @@ import {
   DisplayGrid,
   GridType,
   GridsterConfig,
-  GridsterItem,
 } from 'angular-gridster2';
 
 /** Maximum height of the widget in row units when loading grid */
@@ -56,8 +55,6 @@ export class WidgetGridComponent
   @Input() canUpdate = false;
   /** Number of columns */
   colsNumber = MAX_COL_SPAN;
-  /** Move event emitter */
-  @Output() move: EventEmitter<any> = new EventEmitter();
   /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
   /** Edit event emitter */
@@ -108,16 +105,13 @@ export class WidgetGridComponent
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.availableWidgets = this.dashboardService.availableWidgets;
-    // this.colsNumber = this.setColsNumber(window.innerWidth);
-    // this.skeletons = this.getSkeletons();
-    // this.setGridOptions();
-    this.setGridOptions();
     this.resizeObserver = new ResizeObserver(() => {
       this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
       this.skeletons = this.getSkeletons();
       this.setGridOptions();
     });
     this.resizeObserver.observe(this._host.nativeElement);
+    this.setGridOptions();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -127,7 +121,7 @@ export class WidgetGridComponent
         Boolean(changes['canUpdate'].currentValue) &&
       Boolean(changes['canUpdate'].currentValue)
     ) {
-      this.setGridOptions(true);
+      this.setGridOptions();
     }
   }
 
@@ -158,16 +152,16 @@ export class WidgetGridComponent
     return MAX_COL_SPAN;
   }
 
-  setGridOptions(isDashboardSet = false) {
+  setGridOptions() {
     this.gridOptions = {
       ...this.gridOptions,
-      ...(isDashboardSet && {
-        itemChangeCallback: (item: GridsterItem) => this.onEditWidget(item),
-      }),
+      // itemChangeCallback: () => this.onEditWidget({ type: 'display' }),
+      // itemResizeCallback: () => this.onEditWidget({ type: 'display' }),
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
       margin: 10,
+      outerMargin: false,
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
       maxCols: this.colsNumber,
@@ -192,7 +186,6 @@ export class WidgetGridComponent
       disableWindowResize: true,
     };
 
-    console.log('resize & drag');
     this.widgets.map((gridItem) => {
       gridItem.resizeEnabled = this.canUpdate;
       gridItem.dragEnabled = this.canUpdate;

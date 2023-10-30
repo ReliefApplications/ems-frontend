@@ -52,20 +52,6 @@ export class TabSettingsComponent implements OnDestroy {
   }
 
   /**
-   * Move widget in the list
-   *
-   * @param e reorder event
-   */
-  onMove(e: any): void {
-    const widgets = this.structure?.value.slice() || [];
-    [widgets[e.oldIndex], widgets[e.newIndex]] = [
-      widgets[e.newIndex],
-      widgets[e.oldIndex],
-    ];
-    this.structure?.setValue(widgets);
-  }
-
-  /**
    * Edit a widget
    *
    * @param e edition event

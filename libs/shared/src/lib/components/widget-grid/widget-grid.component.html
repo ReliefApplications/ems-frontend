@@ -48,9 +48,7 @@
           class="-mr-3"
           [id]="id"
           [canUpdate]="canUpdate"
-          [collapsed]="
-            widgetElement.elementRef.nativeElement.clientWidth < 500
-          "
+          [collapsed]="widgetElement.elementRef.nativeElement.clientWidth < 500"
           [widget]="widget"
           (edit)="onEditWidget($event)"
           (delete)="onDeleteWidget($event)"
@@ -61,29 +59,6 @@
       </ng-template>
     </gridster-item>
   </gridster>
-  <!-- <kendo-tilelayout
-    [columns]="colsNumber"
-    [rowHeight]="200"
-    [resizable]="canUpdate"
-    [reorderable]="canUpdate"
-    (reorder)="onReorder($event)"
-    (resize)="onResize($event)"
-    class="-m-4"
-  >
-    <kendo-tilelayout-item
-      *ngFor="let widget of widgets; let i = index"
-      class="!rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
-      [ngClass]="{
-        '!shadow-sm !border-gray-300':
-          widget.settings.widgetDisplay?.showBorder ?? true,
-        '!border-transparent': !(
-          widget.settings.widgetDisplay?.showBorder ?? true
-        ),
-        'hover:!border-gray-400 hover:!shadow-sm': canUpdate
-      }"
-    >
-    </kendo-tilelayout-item>
-  </kendo-tilelayout> -->
 </ng-container>
 <!-- LOADING INDICATOR -->
 <ng-template #emptyTemplate>
