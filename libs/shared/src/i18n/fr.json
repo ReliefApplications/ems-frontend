@@ -1501,6 +1501,10 @@
 					"tooltip": {
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
 						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
+					},
+					"warnings": {
+						"add": "Veuillez sélectionner un modèle",
+						"general": "Attention: les actions contiennent des erreurs"
 					}
 				},
 				"iconPicker": {
