@@ -37,7 +37,7 @@
       }}</span>
       <!-- Icon with warning if any -->
       <ui-icon
-        *ngIf="actionsWarnings"
+        *ngIf="formGroup.get('actions')?.invalid"
         class="ml-1 cursor-help self-center"
         variant="danger"
         icon="warning"
@@ -47,7 +47,7 @@
       ></ui-icon>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-actions [formGroup]="formGroup" (warnings)="actionsWarnings = $event"></shared-tab-actions>
+      <shared-tab-actions [formGroup]="formGroup"></shared-tab-actions>
     </ng-template>
   </ui-tab>
   <!-- BUTTONS -->

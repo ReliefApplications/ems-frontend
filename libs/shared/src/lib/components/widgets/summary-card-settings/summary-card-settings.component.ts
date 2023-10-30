@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import {
   Validators,
-  FormGroup,
   FormControl,
   FormArray,
   FormBuilder,
@@ -23,82 +22,11 @@ import {
 } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_GRID_RESOURCE_META, GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 import { Form } from '../../../models/form.model';
-import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
+import { createSummaryCardForm } from './summary-card-settings.forms';
 
-// todo: put in common
-/** Default context filter value. */
-const DEFAULT_CONTEXT_FILTER = `{
-  "logic": "and",
-  "filters": []
-}`;
-
-/**
- * Create a card form
- *
- * @param value card value, optional
- * @returns card as form group
- */
-const createCardForm = (value?: any) => {
-  return new FormGroup({
-    title: new FormControl<string>(get(value, 'title', 'New Card')),
-    resource: new FormControl<string>(get(value, 'resource', null)),
-    template: new FormControl<string>(get(value, 'template', null)),
-    layout: new FormControl<string>(get(value, 'layout', null)),
-    aggregation: new FormControl<string>(get(value, 'aggregation', null)),
-    html: new FormControl<string>(get(value, 'html', null)),
-    showDataSourceLink: new FormControl<boolean>(
-      get(value, 'showDataSourceLink', false)
-    ),
-    useStyles: new FormControl<boolean>(get(value, 'useStyles', true)),
-    wholeCardStyles: new FormControl<boolean>(
-      get(value, 'wholeCardStyles', false)
-    ),
-  });
-};
-
-/**
- * Create a summary card form from definition
- *
- * @param def Widget definition
- * @returns Summary card widget form
- */
-const createSummaryCardForm = (def: any) => {
-  const settings = get(def, 'settings', {});
-
-  const form = new FormGroup({
-    id: new FormControl<number>(def.id),
-    title: new FormControl<string>(get(settings, 'title', '')),
-    card: createCardForm(get(settings, 'card', null)),
-    sortFields: new FormArray([]),
-    contextFilters: new FormControl(
-      get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
-    ),
-    actions: createGridActionsFormGroup(settings),
-    at: new FormControl(get(settings, 'at', '')),
-  });
-
-  const isUsingAggregation = !!get(settings, 'card.aggregation', null);
-  const searchable = isUsingAggregation
-    ? false
-    : get<boolean>(settings, 'widgetDisplay.searchable', false);
-
-  const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
-    searchable: new FormControl(searchable),
-    usePagination: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.usePagination', false)
-    ),
-  });
-
-  // disable searchable if aggregation is selected
-  if (isUsingAggregation)
-    extendedForm.get('widgetDisplay.searchable')?.disable();
-
-  return extendedForm;
-};
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
 /**
@@ -131,8 +59,6 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
   public templates: Form[] = [];
-  /** To show the tooltip warning icon if grid actions has warnings */
-  public actionsWarnings = false;
 
   /**
    * Summary Card Settings component.
@@ -153,7 +79,7 @@ export class SummaryCardSettingsComponent
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = createSummaryCardForm(this.tile);
+    this.tileForm = createSummaryCardForm(this.tile.id, this.tile.settings);
     this.change.emit(this.tileForm);
 
     const resourceID = this.tileForm?.get('card.resource')?.value;
@@ -200,15 +126,6 @@ export class SummaryCardSettingsComponent
       });
 
     this.getTemplates();
-
-    // Subscribe to form template changes to display warning if necessary
-    this.checkActionsWarning();
-    this.tileForm
-      .get('card.template')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.checkActionsWarning();
-      });
   }
 
   /**
@@ -401,15 +318,5 @@ export class SummaryCardSettingsComponent
   handleAggregationChange(aggregation: Aggregation | null) {
     this.selectedAggregation = aggregation;
     this.getCustomAggregation();
-  }
-
-  /**
-   * Checks if If addRecord action is enabled but missing template to display warning
-   */
-  private checkActionsWarning(): void {
-    this.actionsWarnings =
-      (!this.tileForm?.get('card.template')?.value &&
-        this.tileForm?.get('actions.addRecord')?.value) ??
-      false;
   }
 }

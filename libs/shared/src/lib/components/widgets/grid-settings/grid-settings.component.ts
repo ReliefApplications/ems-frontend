@@ -28,7 +28,6 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
@@ -63,14 +62,11 @@ export class GridSettingsComponent
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
-  private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
 
   /** Stores the selected tab */
   public selectedTab = 0;
-  /** To show the tooltip warning icon if grid actions has warnings */
-  public actionsWarnings = false;
 
   /** @returns application templates */
   get appTemplates(): any[] {
@@ -104,10 +100,7 @@ export class GridSettingsComponent
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-    this.formGroup = extendWidgetForm(
-      createGridWidgetFormGroup(this.tile.id, tileSettings),
-      tileSettings?.widgetDisplay
-    );
+    this.formGroup = createGridWidgetFormGroup(this.tile.id, tileSettings);
 
     this.change.emit(this.formGroup);
 
@@ -184,15 +177,6 @@ export class GridSettingsComponent
     if (this.formGroup.get('layouts')?.value.length > 0) {
       this.formGroup.controls.aggregations.clearValidators();
     }
-
-    // Subscribe to form template changes to display warning if necessary
-    this.checkActionsWarning();
-    this.formGroup
-      .get('template')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.checkActionsWarning();
-      });
 
     this.initSortFields();
   }
@@ -366,15 +350,5 @@ export class GridSettingsComponent
           }
         });
     }
-  }
-
-  /**
-   * Checks if If addRecord action is enabled but missing template to display warning
-   */
-  private checkActionsWarning(): void {
-    console.log('checkTemplateWarning');
-    this.actionsWarnings =
-      !this.formGroup.get('template')?.value &&
-      this.formGroup.get('actions.addRecord')?.value;
   }
 }
