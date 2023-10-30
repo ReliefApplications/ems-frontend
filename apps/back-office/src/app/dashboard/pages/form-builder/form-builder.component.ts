@@ -400,7 +400,6 @@ export class FormBuilderComponent implements OnInit {
     const loadingSnackbarRef = this.snackBarMessageInit();
     const overlayRef = this.createLoadingOverlay();
 
-    overlayRef.attach(new ComponentPortal(SpinnerComponent));
     if (formName && formName !== this.form?.name) {
       this.apollo
         .mutate<EditFormMutationResponse>({
