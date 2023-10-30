@@ -1,8 +1,10 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
-  HostListener,
   Input,
+  OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -40,7 +42,7 @@ const MAX_COL_SPAN = 8;
 })
 export class WidgetGridComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges, OnDestroy
 {
   /** Available widgets */
   public availableWidgets: any[] = WIDGET_TYPES;
@@ -76,6 +78,8 @@ export class WidgetGridComponent
   > | null;
   /** Gridster options */
   gridOptions!: GridsterConfig;
+  /** Resize observer for the parent container */
+  private resizeObserver!: ResizeObserver;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -87,35 +91,32 @@ export class WidgetGridComponent
   }
 
   /**
-   * Changes display when windows size changes.
-   *
-   * @param event window resize event
-   */
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-    this.skeletons = this.getSkeletons();
-  }
-
-  /**
    * Constructor of the grid widget component
    *
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
+   * @param _host host element ref
    */
   constructor(
     public dialog: Dialog,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private _host: ElementRef
   ) {
     super();
   }
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
-    this.colsNumber = this.setColsNumber(window.innerWidth);
-    this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
-    this.setGridOptions();
+    // this.colsNumber = this.setColsNumber(window.innerWidth);
+    // this.skeletons = this.getSkeletons();
+    // this.setGridOptions();
+    this.resizeObserver = new ResizeObserver(() => {
+      this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
+      this.skeletons = this.getSkeletons();
+      this.setGridOptions();
+    });
+    this.resizeObserver.observe(this._host.nativeElement);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -127,6 +128,11 @@ export class WidgetGridComponent
     ) {
       this.setGridOptions(true);
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 
   /**
@@ -157,13 +163,15 @@ export class WidgetGridComponent
       ...(isDashboardSet && {
         itemChangeCallback: (item: GridsterItem) => this.onEditWidget(item),
       }),
-      gridType: GridType.ScrollVertical,
-      compactType: CompactType.None,
+      gridType: GridType.VerticalFixed,
+      compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
       margin: 10,
+      minItemCols: 1, // min item number of columns
+      minItemRows: 1, // min item number of rows
       maxCols: this.colsNumber,
       minCols: this.colsNumber,
-      minItemRows: 2,
+      fixedRowHeight: 200,
       draggable: {
         enabled: this.canUpdate,
       },
@@ -179,8 +187,10 @@ export class WidgetGridComponent
       disableScrollHorizontal: true,
       scrollToNewItems: true,
       setGridSize: true,
+      mobileBreakpoint: 640,
     };
 
+    console.log('resize & drag');
     this.widgets.map((gridItem) => {
       gridItem.resizeEnabled = this.canUpdate;
       gridItem.dragEnabled = this.canUpdate;

@@ -14,7 +14,7 @@
     </shared-widget-choice>
   </div>
   <!-- GRID OF WIDGETS -->
-  <gridster [options]="gridOptions">
+  <gridster [options]="gridOptions" class="max-w-full">
     <gridster-item
       [item]="widget"
       *ngFor="let widget of widgets; let i = index"
@@ -49,7 +49,7 @@
           [id]="id"
           [canUpdate]="canUpdate"
           [collapsed]="
-            widgetComponents.get(i)?.elementRef?.nativeElement.clientWidth < 500
+            widgetElement.elementRef.nativeElement.clientWidth < 500
           "
           [widget]="widget"
           (edit)="onEditWidget($event)"
