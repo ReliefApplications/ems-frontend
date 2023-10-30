@@ -24,7 +24,7 @@ import { UIPageChangeEvent } from '@oort-front/ui';
 import {
   getCachedValues,
   updateQueryUniqueValues,
-} from '../../../../../../apps/back-office/src/app/utils/update-queries';
+} from '../utils/update-queries';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
