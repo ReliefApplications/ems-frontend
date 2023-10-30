@@ -19,7 +19,7 @@ import {
   EditFormMutationResponse,
   SafeSnackbarSpinnerComponent,
 } from '@oort-front/safe';
-import { SpinnerComponent } from 'libs/ui/src/lib/spinner/spinner.component';
+import { SpinnerComponent } from '@oort-front/ui';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
