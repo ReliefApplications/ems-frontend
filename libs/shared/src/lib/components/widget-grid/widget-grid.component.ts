@@ -15,7 +15,7 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
-import { takeUntil } from 'rxjs';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import {
@@ -77,6 +77,7 @@ export class WidgetGridComponent
   gridOptions!: GridsterConfig;
   /** Resize observer for the parent container */
   private resizeObserver!: ResizeObserver;
+  changes = new Subject<boolean>();
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -112,6 +113,13 @@ export class WidgetGridComponent
     });
     this.resizeObserver.observe(this._host.nativeElement);
     this.setGridOptions();
+    this.changes
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.canUpdate) {
+          console.log('changes');
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -152,11 +160,14 @@ export class WidgetGridComponent
     return MAX_COL_SPAN;
   }
 
+  /**
+   * Set Gridster options.
+   */
   setGridOptions() {
     this.gridOptions = {
       ...this.gridOptions,
-      // itemChangeCallback: () => this.onEditWidget({ type: 'display' }),
-      // itemResizeCallback: () => this.onEditWidget({ type: 'display' }),
+      itemChangeCallback: () => this.changes.next(true),
+      itemResizeCallback: () => this.changes.next(true),
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
