@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 import { SafeRestService } from '../rest/rest.service';
 import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
-import { SafeSnackbarSpinnerComponent } from '@oort-front/safe';
+import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
