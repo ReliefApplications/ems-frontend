@@ -5,7 +5,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Role } from 'libs/safe/src/lib/models/user.model';
+import { Role } from '../../../../models/user.model';
 
 /**
  * Filter component of users page.
