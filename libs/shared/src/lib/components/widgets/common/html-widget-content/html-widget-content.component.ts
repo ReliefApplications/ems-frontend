@@ -63,14 +63,14 @@ export class HtmlWidgetContentComponent extends UnsubscribeComponent {
    * Opens the form corresponding to selected summary card in order to update it
    */
   private async openEditRecordModal() {
-    const { FormModalComponent } = await import(
-      '../../../../components/form-modal/form-modal.component'
-    );
     if (
       this.dataSource.record &&
       this.dataSource.record.canUpdate &&
       this.dataSource.layout
     ) {
+      const { FormModalComponent } = await import(
+        '../../../../components/form-modal/form-modal.component'
+      );
       const dialogRef = this.dialog.open(FormModalComponent, {
         disableClose: true,
         data: {
