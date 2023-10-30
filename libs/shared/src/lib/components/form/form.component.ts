@@ -77,6 +77,8 @@ export class FormComponent
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
   public pages$ = this.pages.asObservable();
+  /** Disables the save as draft button */
+  public disableSaveAsDraft = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -211,6 +213,8 @@ export class FormComponent
    * Handles the value change event when the user completes the survey
    */
   public valueChange(): void {
+    // Allow user to save as draft
+    this.disableSaveAsDraft = false;
     // Cache the survey data, but remove the files from it
     // to avoid hitting the local storage limit
     const data = cloneDeep(this.survey.data);
@@ -363,6 +367,7 @@ export class FormComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       this.survey.data = value.data;
+      this.disableSaveAsDraft = true;
     });
   }
 
