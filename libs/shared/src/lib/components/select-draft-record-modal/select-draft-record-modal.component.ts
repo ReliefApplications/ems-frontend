@@ -19,6 +19,9 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 
+/**
+ * Modal that displays a list of draft records to select from
+ */
 @Component({
   standalone: true,
   imports: [
@@ -62,6 +65,9 @@ export class SelectDraftRecordModalComponent implements OnInit {
     this.fetchDraftRecords();
   }
 
+  /**
+   * Fetches all the draft records associated to the current form
+   */
   fetchDraftRecords() {
     const formId = this.data;
     this.apollo
@@ -78,6 +84,11 @@ export class SelectDraftRecordModalComponent implements OnInit {
       });
   }
 
+  /**
+   * Handles the deletion of a specific draft record
+   *
+   * @param element Draft record to delete
+   */
   onDeleteDraft(element: any) {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant(
