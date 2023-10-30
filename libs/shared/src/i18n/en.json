@@ -714,6 +714,20 @@
 			"display": {
 				"submissionMessage": "The form has successfully been submitted."
 			},
+			"draftRecords": {
+				"buttonLoad": "Load draft record",
+				"confirmModal": {
+					"confirmDelete": "Do you really want to delete this draft record ?",
+					"confirmLoad": "Do you really want to load this draft record ?",
+					"delete": "Delete this draft",
+					"load": "Load this draft"
+				},
+				"creationDate": "Creation date",
+				"delete": "Delete this draft",
+				"load": "Load this draft",
+				"preview": "Preview this draft",
+				"select": "Select draft record"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"

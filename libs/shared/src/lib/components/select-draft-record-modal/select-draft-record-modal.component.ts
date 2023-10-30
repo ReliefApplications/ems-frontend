@@ -80,8 +80,12 @@ export class SelectDraftRecordModalComponent implements OnInit {
 
   onDeleteDraft(element: any) {
     const dialogRef = this.confirmService.openConfirmModal({
-      title: 'Delete this draft',
-      content: 'Do you really want to delete this draft record ?',
+      title: this.translate.instant(
+        'components.form.draftRecords.confirmModal.delete'
+      ),
+      content: this.translate.instant(
+        'components.form.draftRecords.confirmModal.confirmDelete'
+      ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'danger',
     });
@@ -109,8 +113,12 @@ export class SelectDraftRecordModalComponent implements OnInit {
    */
   closeModal(element: any): void {
     const confirmDialogRef = this.confirmService.openConfirmModal({
-      title: 'Load this draft',
-      content: 'Do you really want to load this draft record ?',
+      title: this.translate.instant(
+        'components.form.draftRecords.confirmModal.load'
+      ),
+      content: this.translate.instant(
+        'components.form.draftRecords.confirmModal.confirmLoad'
+      ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
     });

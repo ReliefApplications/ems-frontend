@@ -1,6 +1,8 @@
 <ui-dialog [size]="'medium'">
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">Select draft record</h3>
+    <h3 class="font-semibold">
+      {{ 'components.form.draftRecords.select' | translate }}
+    </h3>
   </ng-container>
 
   <ng-container ngProjectAs="content" *ngIf="!loading; else loadingTmpl">
@@ -11,7 +13,9 @@
         <table cdk-table uiTableWrapper [dataSource]="draftRecords">
           <ng-container cdkColumnDef="createdAt">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle"> Creation date </span>
+              <span class="headerTitle">
+                {{ 'components.form.draftRecords.creationDate' | translate }}
+              </span>
             </th>
             <td
               uiCell
@@ -31,7 +35,9 @@
                   icon="refresh"
                   variant="primary"
                   [disabled]="loading"
-                  uiTooltip="Load this draft"
+                  uiTooltip=" {{
+                    'components.form.draftRecords.load' | translate
+                  }}"
                   (click)="closeModal(element)"
                 >
                 </ui-button>
@@ -40,7 +46,9 @@
                   icon="visibility"
                   variant="primary"
                   [disabled]="loading"
-                  uiTooltip="Preview this draft"
+                  uiTooltip=" {{
+                    'components.form.draftRecords.preview' | translate
+                  }}"
                 >
                 </ui-button>
                 <ui-button
@@ -48,7 +56,9 @@
                   icon="delete"
                   variant="danger"
                   [disabled]="loading"
-                  uiTooltip="Delete this draft"
+                  uiTooltip=" {{
+                    'components.form.draftRecords.delete' | translate
+                  }}"
                   (click)="onDeleteDraft(element)"
                 >
                 </ui-button>

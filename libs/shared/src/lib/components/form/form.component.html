@@ -15,7 +15,7 @@
       [isIcon]="true"
       icon="format_list_bulleted_add"
       (click)="openSelectDraftRecord()"
-      uiTooltip="Load draft record"
+      uiTooltip="{{ 'components.form.draftRecords.buttonLoad' | translate }}"
     ></ui-button>
   </div>
 </div>
@@ -59,7 +59,9 @@
           >{{ 'common.next' | translate }}</ui-button
         >
       </ng-container>
-      <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">Save as draft</ui-button>
+      <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()"
+        >Save as draft</ui-button
+      >
       <ui-button variant="primary" category="secondary" (click)="submit()">{{
         'common.save' | translate
       }}</ui-button>

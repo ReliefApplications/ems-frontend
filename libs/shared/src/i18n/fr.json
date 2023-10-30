@@ -728,6 +728,20 @@
 			"display": {
 				"submissionMessage": "Le formulaire a été sauvegardé."
 			},
+			"draftRecords": {
+				"buttonLoad": "Charger un brouillon",
+				"confirmModal": {
+					"confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
+					"confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",
+					"delete": "Supprimer ce brouillon",
+					"load": "Charger ce brouillon"
+				},
+				"creationDate": "Date de création",
+				"delete": "Supprimer ce brouillon",
+				"load": "Charger ce brouillon",
+				"preview": "Prévisualiser ce brouillon",
+				"select": "Sélectionner le brouillon"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"

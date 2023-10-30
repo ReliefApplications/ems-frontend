@@ -714,6 +714,20 @@
 			"display": {
 				"submissionMessage": "******"
 			},
+			"draftRecords": {
+				"buttonLoad": "******",
+				"confirmModal": {
+					"confirmDelete": "******",
+					"confirmLoad": "******",
+					"delete": "******",
+					"load": "******"
+				},
+				"creationDate": "******",
+				"delete": "******",
+				"load": "******",
+				"preview": "******",
+				"select": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
