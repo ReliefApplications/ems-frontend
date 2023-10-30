@@ -1,0 +1,53 @@
+<div [formGroup]="form" class="flex flex-col gap-x-4">
+    <!-- Default filter -->
+    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
+      <!-- Search text filter -->
+      <div uiFormFieldDirective>
+        <ui-icon icon="search" uiPrefix></ui-icon>
+        <input
+          [formControl]="search"
+          [placeholder]="'common.placeholder.search' | translate"
+          type="text"
+        />
+      </div>
+      <!-- Toggle advanced filters -->
+      <ui-button
+        class="max-sm:!w-auto"
+        icon="filter_list"
+        category="tertiary"
+        variant="primary"
+        (click)="show = !show"
+      >
+        {{
+          show
+            ? ('common.filter.hide' | translate)
+            : ('common.filter.show' | translate)
+        }}
+      </ui-button>
+    </div>
+    <!-- Advanced filters -->
+    <div
+      class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"
+      *ngIf="show"
+    >
+      <!-- Roles filter -->
+      <div uiFormFieldDirective class="w-44" [defaultMargin]="false">
+        <label>{{ 'common.role.one' | translate }}</label>
+        <ui-select-menu
+          formControlName="role"
+        >
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option [value]="role.id" *ngFor="let role of roles">
+            {{ role.title }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Clear filters -->
+      <ui-button
+        class="max-sm:!w-auto"
+        variant="danger"
+        (click)="clear()"
+        >{{ 'common.filter.clear' | translate }}</ui-button
+      >
+    </div>
+  </div>

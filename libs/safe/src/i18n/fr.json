@@ -1055,6 +1055,10 @@
 				"confirm": "Inviter des utilisateurs",
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
 			},
+			"onAlreadyInvited": {
+				"plural": "Erreur, certains de ces utilisateurs ont déjà été invités.",
+				"singular": "L'utilisateur a déjà été invité."
+			},
 			"onDelete": {
 				"plural": "Les utilisateurs ont été correctement supprimés.",
 				"singular": "L'utilisateur a été correctement supprimé."

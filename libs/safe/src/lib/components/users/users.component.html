@@ -1,60 +1,12 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row items-start">
   <!-- Filters -->
-  <div class="flex flex-col gap-x-4">
-    <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
-      <!-- Search text filter -->
-      <div uiFormFieldDirective>
-        <ui-icon icon="search" uiPrefix></ui-icon>
-        <input
-          [ngModel]="searchText"
-          (keyup)="applyFilter('search', $event)"
-          [placeholder]="'common.placeholder.search' | translate"
-          type="text"
-        />
-      </div>
-      <!-- Toggle advanced filters -->
-      <ui-button
-        class="max-sm:!w-auto"
-        icon="filter_list"
-        category="tertiary"
-        variant="primary"
-        (click)="showFilters = !showFilters"
-      >
-        {{
-          showFilters
-            ? ('common.filter.hide' | translate)
-            : ('common.filter.show' | translate)
-        }}
-      </ui-button>
-    </div>
-    <!-- Advanced filters -->
-    <div
-      class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"
-      *ngIf="showFilters"
-    >
-      <!-- Roles filter -->
-      <div uiFormFieldDirective class="w-44" [defaultMargin]="false">
-        <label>{{ 'common.role.one' | translate }}</label>
-        <ui-select-menu
-          [ngModel]="roleFilter"
-          (selectedOption)="applyFilter('role', $event)"
-        >
-          <ui-select-option>-</ui-select-option>
-          <ui-select-option [value]="role.id" *ngFor="let role of roles">
-            {{ role.title }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
-      <!-- Clear filters -->
-      <ui-button
-        class="max-sm:!w-auto"
-        variant="danger"
-        (click)="clearAllFilters()"
-        >{{ 'common.filter.clear' | translate }}</ui-button
-      >
-    </div>
-  </div>
+  <safe-filter
+    [roles]="roles"
+    class="block"
+    [loading]="loading"
+    (filter)="onFilter($event)"
+  >
+  </safe-filter>
   <!-- Actions -->
   <div class="flex gap-2">
     <!-- Actions when selected items -->
@@ -106,7 +58,7 @@
       *ngIf="!loading"
       cdk-table
       uiTableWrapper
-      [dataSource]="filteredUsers"
+      [dataSource]="users"
     >
       <!-- Checkbox Column -->
       <ng-container cdkColumnDef="select">
@@ -215,3 +167,13 @@
     </safe-skeleton-table>
   </div>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.users.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

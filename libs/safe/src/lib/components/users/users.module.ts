@@ -11,14 +11,16 @@ import {
   SpinnerModule,
   FormWrapperModule,
   SelectMenuModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
+import { FilterComponent } from './components/filter/filter.component';
 
 /** Module for components related to users */
 @NgModule({
-  declarations: [SafeUsersComponent],
+  declarations: [SafeUsersComponent, FilterComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -34,6 +36,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     ButtonModule,
     TableModule,
     SelectMenuModule,
+    PaginatorModule,
   ],
   exports: [SafeUsersComponent],
 })

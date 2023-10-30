@@ -1,7 +1,54 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../models/user.model';
+import { User } from '@oort-front/safe';
+
+// === GET ROLES ===
+/** Graphql query for getting roles (of an application or all) */
+export const GET_ROLES = gql`
+  query GetRoles($all: Boolean, $application: ID) {
+    roles(all: $all, application: $application) {
+      id
+      title
+      permissions {
+        id
+        type
+      }
+      usersCount
+      application {
+        name
+      }
+    }
+  }
+`;
 
 // === GET USERS ===
+/** Graphql query for getting users */
+export const GET_USERS = gql`
+  query GetUsers($first: Int, $afterCursor: ID, $filter: JSON) {
+    users(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          username
+          name
+          roles {
+            id
+            title
+            application {
+              id
+            }
+          }
+          oid
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
 
 /** Model for GetUsersQueryResponse object */
 export interface GetUsersQueryResponse {
@@ -17,24 +64,3 @@ export interface GetUsersQueryResponse {
     totalCount: number;
   };
 }
-
-/** Graphql request for getting users (optionnally by a list of application ids) */
-export const GET_USERS = gql`
-  query GetUsers($applications: [ID]) {
-    users(applications: $applications) {
-      edges {
-        node {
-          id
-          username
-          name
-          oid
-        }
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;

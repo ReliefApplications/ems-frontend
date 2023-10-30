@@ -1049,6 +1049,10 @@
 				"confirm": "Invite users",
 				"description": "Select existing users, invite new users or import from Excel file"
 			},
+			"onAlreadyInvited": {
+				"plural": "Error, some of these users have already been invited.",
+				"singular": "User has already been invited."
+			},
 			"onDelete": {
 				"plural": "Users were correctly deleted.",
 				"singular": "User was correctly deleted."

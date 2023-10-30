@@ -1,16 +1,11 @@
-import { Apollo } from 'apollo-angular';
-import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { ApolloQueryResult } from '@apollo/client';
+import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   User,
   Role,
+  RolesQueryResponse,
   AddUsersMutationResponse,
   DeleteUsersMutationResponse,
 } from '../../models/user.model';
@@ -21,9 +16,18 @@ import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { takeUntil, debounceTime } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import uniqBy from 'lodash/uniqBy';
+import { GET_USERS, GET_ROLES } from './graphql/queries';
+import { GetUsersQueryResponse } from './graphql/queries';
+import { UIPageChangeEvent } from '@oort-front/ui';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../../../../apps/back-office/src/app/utils/update-queries';
+
+/** Default items per page for pagination. */
+const ITEMS_PER_PAGE = 10;
 
 /**
  * A component to display the list of users
@@ -35,15 +39,21 @@ import uniqBy from 'lodash/uniqBy';
 })
 export class SafeUsersComponent
   extends SafeUnsubscribeComponent
-  implements OnChanges
+  implements OnInit
 {
-  // === INPUT DATA ===
-  @Input() users: Array<User> = new Array<User>();
-  @Input() roles: Role[] = [];
-  @Input() loading = true;
+  // === DATA ===
+  public loading = true;
+  public users = new Array<User>();
+  public roles: Role[] = [];
+  private usersQuery!: QueryRef<GetUsersQueryResponse>;
+  public cachedUsers: User[] = [];
 
-  @Output() changeUsers = new EventEmitter();
-  @Output() changeFilter = new EventEmitter();
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: '',
+  };
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = [
@@ -56,10 +66,13 @@ export class SafeUsersComponent
   ];
 
   // === FILTERS ===
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
   public searchText = '';
   public roleFilter = '';
   public showFilters = false;
-  public filteredUsers = new Array<User>();
   selection = new SelectionModel<User>(true, []);
 
   /**
@@ -87,10 +100,155 @@ export class SafeUsersComponent
     super();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.users) {
-      this.filteredUsers = this.users;
+  ngOnInit(): void {
+    this.usersQuery = this.apollo.watchQuery<GetUsersQueryResponse>({
+      query: GET_USERS,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        afterCursor: null,
+        filter: this.filter,
+      },
+    });
+    this.usersQuery.valueChanges
+      .pipe(debounceTime(2000), takeUntil(this.destroy$))
+      .subscribe((resUsers) => {
+        this.loading = true;
+        this.updateValues(resUsers.data, resUsers.loading);
+        this.apollo
+          .watchQuery<RolesQueryResponse>({
+            query: GET_ROLES,
+          })
+          .valueChanges.pipe(takeUntil(this.destroy$))
+          .subscribe(({ data, loading }) => {
+            this.roles = data.roles;
+            this.loading = loading;
+          });
+      });
+  }
+
+  /**
+   * Handles page event.
+   *
+   * @param e page event.
+   */
+  onPage(e: UIPageChangeEvent): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    // Checks if with new page/size more data needs to be fetched
+    if (
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
+        e.pageSize > this.pageInfo.pageSize) &&
+      e.totalItems > this.cachedUsers.length
+    ) {
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        first -= this.pageInfo.pageSize;
+      }
+      this.pageInfo.pageSize = first;
+      this.fetchUsers();
+    } else {
+      this.users = this.cachedUsers.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
     }
+    this.pageInfo.pageSize = e.pageSize;
+  }
+
+  /**
+   * Update users query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchUsers(refetch?: boolean): void {
+    this.loading = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
+    };
+    const cachedValues: GetUsersQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_USERS,
+      variables
+    );
+    if (refetch) {
+      this.cachedUsers = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        // Rebuild the query
+        this.usersQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.usersQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results: ApolloQueryResult<GetUsersQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
+    }
+  }
+
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(data: GetUsersQueryResponse, loading: boolean): void {
+    const mappedValues = data.users.edges.map((x) => x.node);
+    this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
+    this.pageInfo.length = data.users.totalCount;
+    this.pageInfo.endCursor = data.users.pageInfo.endCursor;
+    this.users = this.cachedUsers.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.loading = loading;
+  }
+
+  /**
+   * Change page length on invite or delete users
+   *
+   * @param action action
+   * @param value users modified.
+   */
+  public changePageLength(action: string, value: any) {
+    if (action === 'add') {
+      if (this.cachedUsers.length === this.pageInfo.length) {
+        value.forEach((usr: any) => {
+          this.cachedUsers = this.cachedUsers.concat([usr]);
+        });
+        this.users = this.cachedUsers.slice(
+          ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+          ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+        );
+      }
+      this.pageInfo.length += value.length;
+    } else {
+      value.forEach((id: any) => {
+        this.cachedUsers = this.cachedUsers.filter((x) => x.id !== id);
+      });
+      this.pageInfo.length -= value.length;
+      this.users = this.cachedUsers.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+      );
+    }
+    // clear(evict) users query in cache
+    this.apollo.client.cache.evict({
+      id: 'ROOT_QUERY',
+      fieldName: 'users',
+    });
   }
 
   /**
@@ -103,7 +261,7 @@ export class SafeUsersComponent
     const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       data: {
         roles: this.roles,
-        users: this.filteredUsers,
+        users: this.users,
         downloadPath: 'download/invite',
         uploadPath: 'upload/invite',
       },
@@ -121,20 +279,46 @@ export class SafeUsersComponent
           .subscribe({
             next: ({ errors, data }) => {
               if (!errors) {
-                this.changeUsers.emit({ op: 'add', data: data?.addUsers });
-                if (data?.addUsers.length) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.plural')
-                  );
+                let alreadyInvited = false;
+                // verify if users have already been invited
+                this.users.forEach((usr: any) => {
+                  data?.addUsers.forEach((usrData: any) => {
+                    if (usrData.username === usr.username) {
+                      alreadyInvited = true;
+                    }
+                  });
+                });
+                // if users have already been invited
+                if (alreadyInvited) {
+                  if (data?.addUsers.length && data?.addUsers.length > 1) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onAlreadyInvited.plural'
+                      ),
+                      { error: true }
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onAlreadyInvited.singular'
+                      ),
+                      { error: true }
+                    );
+                  }
                 } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.singular')
-                  );
+                  this.changePageLength('add', data?.addUsers);
+                  if (data?.addUsers.length && data?.addUsers.length > 1) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant('components.users.onInvite.plural')
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onInvite.singular'
+                      )
+                    );
+                  }
                 }
-                this.users = uniqBy(
-                  [...(data?.addUsers || []), ...this.users],
-                  'username'
-                );
               } else {
                 if (value.length > 1) {
                   this.snackBar.openSnackBar(
@@ -236,7 +420,7 @@ export class SafeUsersComponent
               } else {
                 this.loading = false;
                 if (data?.deleteUsers) {
-                  this.changeUsers.emit({ op: 'delete', data: ids });
+                  this.changePageLength('delete', ids);
                   if (data.deleteUsers > 1) {
                     this.snackBar.openSnackBar(
                       this.translate.instant('components.users.onDelete.plural')
@@ -249,7 +433,6 @@ export class SafeUsersComponent
                     );
                   }
                   this.users = this.users.filter((u) => !ids.includes(u.id));
-                  this.filteredUsers = this.users;
                 } else {
                   if (ids.length > 1) {
                     this.snackBar.openSnackBar(
@@ -277,30 +460,13 @@ export class SafeUsersComponent
   }
 
   /**
-   * Apply the filters to the list
+   * Filters users and updates table.
    *
-   * @param column The column used for filtering
-   * @param event The event triggered on filter action
+   * @param filter filter event.
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'role') {
-      this.roleFilter = event?.trim() ?? '';
-      this.changeFilter.emit({ column: column, event: this.roleFilter });
-    } else if (column === 'search') {
-      this.searchText = event ? event.target.value.trim() : this.searchText;
-      this.changeFilter.emit({ column: column, event: this.searchText });
-    } else {
-      this.changeFilter.emit({ column: '' });
-    }
-  }
-
-  /**
-   * Clear all the filters
-   */
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.roleFilter = '';
-    this.applyFilter('', null);
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.fetchUsers(true);
   }
 
   /**
@@ -310,7 +476,7 @@ export class SafeUsersComponent
    */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.filteredUsers.length;
+    const numRows = this.users.length;
     return numSelected === numRows;
   }
 
@@ -321,7 +487,7 @@ export class SafeUsersComponent
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected()
       ? this.selection.clear()
-      : this.filteredUsers.forEach((row) => this.selection.select(row));
+      : this.users.forEach((row) => this.selection.select(row));
   }
 
   /**

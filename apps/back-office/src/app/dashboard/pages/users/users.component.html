@@ -1,18 +1,1 @@
-<safe-users
-  [loading]="loading"
-  [users]="users"
-  [roles]="roles"
-  (changeUsers)="changePageLength($event)"
-  (changeFilter)="onFilterChange($event)"
->
-</safe-users>
-<ui-paginator
-  [disabled]="loading"
-  [pageIndex]="pageInfo.pageIndex"
-  [pageSize]="pageInfo.pageSize"
-  [pageSizeOptions]="[10, 25, 50]"
-  [totalItems]="pageInfo.length"
-  [ariaLabel]="'components.users.paginator.ariaLabel' | translate"
-  (pageChange)="onPage($event)"
->
-</ui-paginator>
+<safe-users></safe-users>
