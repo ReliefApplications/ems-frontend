@@ -29,11 +29,22 @@
         [uiTooltip]="'models.dashboard.tooltip.dashboardFilter' | translate"
       ></ui-icon>
     </h2>
-    <shared-filter
-        [form]="$any(form.get('contextFilters'))"
-        [fields]="filterFields"
-      >
-    </shared-filter>
+    <ng-container ngProjectAs="content">
+      <ng-container *ngIf="!loading; else loadingTmpl">
+        <div class="flex flex-col">
+          <shared-query-builder
+            *ngIf="form.value.name"
+            [form]="$any(form)"
+            [canSelectDataSet]="false"
+          ></shared-query-builder>
+        </div>
+      </ng-container>
+      <ng-template #loadingTmpl>
+        <div class="w-full h-full flex">
+          <ui-spinner class="my-auto mx-auto" [size]="'large'"></ui-spinner>
+        </div>
+      </ng-template>
+    </ng-container>
 
 <!--
     <ng-container ngProjectAs="content">
