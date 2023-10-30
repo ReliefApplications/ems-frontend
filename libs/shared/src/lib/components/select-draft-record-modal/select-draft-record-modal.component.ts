@@ -1,6 +1,6 @@
 import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { ConfirmService } from '../../services/confirm/confirm.service';
-import { GET_DRAFT_RECORDS } from '../roles/graphql/queries';
+import { GET_DRAFT_RECORDS } from './graphql/queries';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DateModule } from '../../pipes/date/date.module';
 import { Component, OnInit, Inject } from '@angular/core';
