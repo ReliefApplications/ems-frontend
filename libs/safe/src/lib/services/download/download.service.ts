@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { SafeRestService } from '../rest/rest.service';
 import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeSnackbarSpinnerComponent } from '@oort-front/safe';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
@@ -43,6 +43,28 @@ export class SafeDownloadService {
   ) {}
 
   /**
+   * Set up a snackbar element with the given message and duration
+   *
+   * @param {string} translationKey Translation key for the file download snackbar message
+   * @param {duration} duration Time duration of the opened snackbar element
+   * @returns snackbar reference
+   */
+  private createLoadingSnackbarRef(translationKey: string, duration = 0) {
+    // Opens a loader in a snackbar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration,
+        data: {
+          message: this.translate.instant(translationKey),
+          loading: true,
+        },
+      }
+    );
+    return snackBarRef;
+  }
+
+  /**
    * Set up needed headers and response information for the file download action
    *
    * @param translationKey Translation key for the file download snackbar message
@@ -50,21 +72,11 @@ export class SafeDownloadService {
    */
   private triggerFileDownloadMessage(translationKey: string) {
     // Opens a loader in a snackbar
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SafeSnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(translationKey),
-          loading: true,
-        },
-      }
-    );
+    const snackBarRef = this.createLoadingSnackbarRef(translationKey);
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-
     return { snackBarRef, headers };
   }
 
@@ -261,19 +273,9 @@ export class SafeDownloadService {
    * @returns The path of the uploaded file
    */
   uploadBlob(file: any, type: BlobType, entity: string): Promise<string> {
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SafeSnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.file.upload.processing'
-          ),
-          loading: true,
-        },
-      }
+    const snackBarRef = this.createLoadingSnackbarRef(
+      'common.notifications.file.upload.processing'
     );
-
     const path = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -26,8 +26,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
-import { Overlay } from '@angular/cdk/overlay';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+
+/** Default snackbar config for after request complete  */
+const REQUEST_SNACKBAR_CONF = {
+  error: false,
+  duration: 2000,
+  data: { loading: false },
+};
 
 /**
  * Form builder page
@@ -195,32 +202,34 @@ export class FormBuilderComponent implements OnInit {
   /**
    * Set up needed headers and response information for the file download action
    *
-   * @param translationKey Translation key for the file download snackbar message
+   * @param {string} translationKey Translation key for the file download snackbar message
+   * @param {number} duration Time duration of the opened snackbar element
    * @returns snackbar reference and header for the file download request
    */
-  private snackBarMessageInit(translationKey: string) {
+  private snackBarMessageInit(
+    translationKey: string = 'kendo.grid.loading',
+    duration: number = 0
+  ) {
     // Opens a loader in a snackbar
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
       {
-        duration: 0,
+        duration,
         data: {
           message: this.translate.instant(translationKey),
           loading: true,
         },
       }
     );
-    return { snackBarRef };
+    return snackBarRef;
   }
 
   /**
-   * Save form structure
+   * Create a loading overlay that covers the whole viewport using cdk overlay
    *
-   * @param structure form structure
+   * @returns {OverlayRef} Overlay reference
    */
-  public async onSave(structure: any): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
-    const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
+  private createLoadingOverlay(): OverlayRef {
     const overlayRef = this.overlay.create({
       positionStrategy: this.overlay
         .position()
@@ -230,6 +239,17 @@ export class FormBuilderComponent implements OnInit {
       hasBackdrop: true,
     });
     overlayRef.attach(new ComponentPortal(SpinnerComponent));
+    return overlayRef;
+  }
+
+  /**
+   * Save form structure
+   *
+   * @param structure form structure
+   */
+  public async onSave(structure: any): Promise<void> {
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
     if (!this.form?.id) {
       alert('not valid');
     } else {
@@ -243,19 +263,24 @@ export class FormBuilderComponent implements OnInit {
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              snackBarData.loading = false;
-              snackBarData.error = true;
-              snackBarData.message = errors[0].message;
-            } else {
-              snackBarData.message = this.translate.instant(
-                'common.notifications.objectUpdated',
-                {
+            // Dismiss the loading snackbar
+            loadingSnackbarRef.instance.dismiss();
+            // Detach the current set overlay
+            overlayRef.detach();
+            // Open new snackbar with the request error or success message
+            const message = errors
+              ? errors[0].message
+              : this.translate.instant('common.notifications.objectUpdated', {
                   type: this.translate.instant('common.form.one').toLowerCase(),
                   value: '',
-                }
-              );
-              snackBarData.loading = false;
+                });
+            const snackbarConfig = {
+              ...REQUEST_SNACKBAR_CONF,
+              error: errors ? true : false,
+            };
+            this.snackBar.openSnackBar(message, snackbarConfig);
+
+            if (!errors) {
               this.form = { ...data?.editForm, structure };
               this.structure = structure;
               localStorage.removeItem(`form:${this.id}`);
@@ -264,14 +289,12 @@ export class FormBuilderComponent implements OnInit {
             }
           },
           error: (err) => {
-            snackBarData.loading = false;
-            snackBarData.message = err;
-            snackBarData.error = true;
+            loadingSnackbarRef.instance.dismiss();
+            overlayRef.detach();
+            this.snackBar.openSnackBar(err.message, { error: true });
           },
         });
     }
-    setTimeout(() => snackBarRef.instance.dismiss(), 3000);
-    overlayRef.detach();
   }
 
   /**
@@ -280,17 +303,9 @@ export class FormBuilderComponent implements OnInit {
    * @param status new status
    */
   private async updateStatus(status: string): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
-    const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
-    const overlayRef = this.overlay.create({
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .centerHorizontally()
-        .centerVertically(),
-      hasBackdrop: true,
-    });
-    overlayRef.attach(new ComponentPortal(SpinnerComponent));
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
+
     this.apollo
       .mutate<EditFormMutationResponse>({
         mutation: EDIT_FORM_STATUS,
@@ -301,25 +316,27 @@ export class FormBuilderComponent implements OnInit {
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            snackBarData.loading = false;
-            snackBarData.message = this.translate.instant(
-              'common.notifications.objectNotUpdated',
-              {
+          // Dismiss the loading snackbar
+          loadingSnackbarRef.instance.dismiss();
+          // Detach the current set overlay
+          overlayRef.detach();
+          // Open new snackbar with the request error or success message
+          const message = errors
+            ? this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.status'),
                 error: errors ? errors[0].message : '',
-              }
-            );
-            snackBarData.error = true;
-          } else {
-            snackBarData.message = this.translate.instant(
-              'common.notifications.objectUpdated',
-              {
+              })
+            : this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.status'),
                 value: status,
-              }
-            );
-            snackBarData.loading = false;
+              });
+          const snackbarConfig = {
+            ...REQUEST_SNACKBAR_CONF,
+            error: errors ? true : false,
+          };
+          this.snackBar.openSnackBar(message, snackbarConfig);
+
+          if (!errors) {
             this.form = { ...this.form, status: data?.editForm.status };
             this.statusControl.setValue(data?.editForm.status, {
               emitEvent: false,
@@ -327,13 +344,11 @@ export class FormBuilderComponent implements OnInit {
           }
         },
         error: (err) => {
-          snackBarData.loading = false;
-          snackBarData.message = err;
-          snackBarData.error = true;
+          loadingSnackbarRef.instance.dismiss();
+          overlayRef.detach();
+          this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
-    setTimeout(() => snackBarRef.instance.dismiss(), 3000);
-    overlayRef.detach();
   }
 
   /**
@@ -382,16 +397,9 @@ export class FormBuilderComponent implements OnInit {
    * @param {string} formName new form name
    */
   public async saveName(formName: string): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
-    const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
-    const overlayRef = this.overlay.create({
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .centerHorizontally()
-        .centerVertically(),
-      hasBackdrop: true,
-    });
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
+
     overlayRef.attach(new ComponentPortal(SpinnerComponent));
     if (formName && formName !== this.form?.name) {
       this.apollo
@@ -402,36 +410,46 @@ export class FormBuilderComponent implements OnInit {
             name: formName,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            snackBarData.loading = false;
-            snackBarData.message = this.translate.instant(
-              'common.notifications.objectNotUpdated',
-              {
-                type: this.translate.instant('common.form.one'),
-                error: errors[0].message,
-              }
-            );
-            snackBarData.error = true;
-          } else {
-            snackBarData.message = this.translate.instant(
-              'common.notifications.objectUpdated',
-              {
-                type: this.translate.instant('common.form.one').toLowerCase(),
-                value: formName,
-              }
-            );
-            snackBarData.loading = false;
-            this.form = { ...this.form, name: data?.editForm.name };
-            this.breadcrumbService.setBreadcrumb(
-              '@form',
-              this.form.name as string
-            );
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            // Dismiss the loading snackbar
+            loadingSnackbarRef.instance.dismiss();
+            // Detach the current set overlay
+            overlayRef.detach();
+            // Open new snackbar with the request error or success message
+            const message = errors
+              ? this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate.instant('common.form.one'),
+                    error: errors[0].message,
+                  }
+                )
+              : this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.form.one').toLowerCase(),
+                  value: formName,
+                });
+            const snackbarConfig = {
+              ...REQUEST_SNACKBAR_CONF,
+              error: errors ? true : false,
+            };
+            this.snackBar.openSnackBar(message, snackbarConfig);
+
+            if (!errors) {
+              this.form = { ...this.form, name: data?.editForm.name };
+              this.breadcrumbService.setBreadcrumb(
+                '@form',
+                this.form.name as string
+              );
+            }
+          },
+          error: (err) => {
+            loadingSnackbarRef.instance.dismiss();
+            overlayRef.detach();
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
-    setTimeout(() => snackBarRef.instance.dismiss(), 3000);
-    overlayRef.detach();
   }
 
   /**
@@ -440,17 +458,9 @@ export class FormBuilderComponent implements OnInit {
    * @param e new permissions
    */
   async saveAccess(e: any): Promise<void> {
-    const { snackBarRef } = this.snackBarMessageInit('kendo.grid.loading');
-    const snackBarData = snackBarRef.instance.nestedComponent.instance.data;
-    const overlayRef = this.overlay.create({
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .centerHorizontally()
-        .centerVertically(),
-      hasBackdrop: true,
-    });
-    overlayRef.attach(new ComponentPortal(SpinnerComponent));
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
+
     this.apollo
       .mutate<EditFormMutationResponse>({
         mutation: EDIT_FORM_PERMISSIONS,
@@ -461,34 +471,35 @@ export class FormBuilderComponent implements OnInit {
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            snackBarData.loading = false;
-            snackBarData.message = this.translate.instant(
-              'common.notifications.objectNotUpdated',
-              {
+          // Dismiss the loading snackbar
+          loadingSnackbarRef.instance.dismiss();
+          // Detach the current set overlay
+          overlayRef.detach();
+          // Open new snackbar with the request error or success message
+          const message = errors
+            ? this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.access'),
                 error: errors ? errors[0].message : '',
-              }
-            );
-            snackBarData.error = true;
-          } else {
-            snackBarData.message = this.translate.instant(
-              'common.notifications.objectUpdated',
-              {
+              })
+            : this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.access'),
                 value: '',
-              }
-            );
-            snackBarData.loading = false;
+              });
+          const snackbarConfig = {
+            ...REQUEST_SNACKBAR_CONF,
+            error: errors ? true : false,
+          };
+          this.snackBar.openSnackBar(message, snackbarConfig);
+          if (!errors) {
             this.form = { ...data?.editForm, structure: this.structure };
           }
         },
         error: (err) => {
+          loadingSnackbarRef.instance.dismiss();
+          overlayRef.detach();
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
-    setTimeout(() => snackBarRef.instance.dismiss(), 3000);
-    overlayRef.detach();
   }
 
   /**

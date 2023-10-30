@@ -1,9 +1,9 @@
 import {
   Component,
-  ComponentRef,
   ElementRef,
   EventEmitter,
   Inject,
+  OnDestroy,
   Output,
   TemplateRef,
   ViewChild,
@@ -22,7 +22,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './snackbar.component.html',
   styleUrls: ['./snackbar.component.scss'],
 })
-export class SnackbarComponent {
+export class SnackbarComponent implements OnDestroy {
   @Output() actionComplete = new EventEmitter<void>();
   @ViewChild('snackBarContent', { static: true, read: ViewContainerRef })
   snackBarContentView!: ViewContainerRef;
@@ -30,9 +30,9 @@ export class SnackbarComponent {
   data!: BehaviorSubject<SnackBarData>;
   message!: string;
   error = false;
-  displaySnackBar = false;
   action!: string;
-  public nestedComponent?: ComponentRef<any>;
+  displaySnackBar = false;
+  private snackbarRemovalTimeoutListener!: NodeJS.Timeout;
   durationResolver = (duration: number) =>
     new Promise((resolve) => setTimeout(resolve, duration));
 
@@ -81,7 +81,7 @@ export class SnackbarComponent {
    */
   dismiss() {
     this.displaySnackBar = false;
-    setTimeout(() => {
+    this.snackbarRemovalTimeoutListener = setTimeout(() => {
       this.host.nativeElement.remove();
     }, 300);
   }
@@ -113,9 +113,7 @@ export class SnackbarComponent {
    */
   openFromComponent(component: ComponentType<any>, config: SnackBarConfig) {
     this.setSnackbarProperties(config);
-    const ref = this.snackBarContentView?.createComponent(component);
-    this.nestedComponent = ref;
-    ref.changeDetectorRef.detectChanges();
+    this.snackBarContentView?.createComponent(component);
     this.triggerSnackBar(config.duration);
   }
 
@@ -129,5 +127,11 @@ export class SnackbarComponent {
     this.setSnackbarProperties(config);
     this.snackBarContentView?.createEmbeddedView(template);
     this.triggerSnackBar(config.duration);
+  }
+
+  ngOnDestroy(): void {
+    if (this.snackbarRemovalTimeoutListener) {
+      clearTimeout(this.snackbarRemovalTimeoutListener);
+    }
   }
 }
