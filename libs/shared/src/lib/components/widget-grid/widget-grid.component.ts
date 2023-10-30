@@ -338,7 +338,7 @@ export class WidgetGridComponent
   // }
 
   /**
-   * Generates a list of skeletongs, for loading.
+   * Generates a list of skeletons, for loading.
    *
    * @returns List of skeletons.
    */
