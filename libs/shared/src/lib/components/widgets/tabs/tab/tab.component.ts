@@ -16,7 +16,9 @@ import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component'
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent implements AfterViewInit {
+  /** Structure of the tab ( list of widgets ) */
   @Input() structure: any;
+  /** Reference to content view container */
   @ViewChild('content', { read: ViewContainerRef })
   content!: ViewContainerRef;
 

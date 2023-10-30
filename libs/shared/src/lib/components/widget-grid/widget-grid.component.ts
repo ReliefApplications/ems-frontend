@@ -111,6 +111,7 @@ export class WidgetGridComponent
     // this.colsNumber = this.setColsNumber(window.innerWidth);
     // this.skeletons = this.getSkeletons();
     // this.setGridOptions();
+    this.setGridOptions();
     this.resizeObserver = new ResizeObserver(() => {
       this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
       this.skeletons = this.getSkeletons();
@@ -188,6 +189,7 @@ export class WidgetGridComponent
       scrollToNewItems: true,
       setGridSize: true,
       mobileBreakpoint: 640,
+      disableWindowResize: true,
     };
 
     console.log('resize & drag');
