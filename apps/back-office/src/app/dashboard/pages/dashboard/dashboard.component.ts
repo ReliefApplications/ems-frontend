@@ -407,6 +407,7 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
+    console.log(e);
     switch (e.type) {
       case 'display': {
         this.autoSaveChanges();

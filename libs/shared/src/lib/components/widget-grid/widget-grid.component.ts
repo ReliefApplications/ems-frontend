@@ -79,6 +79,8 @@ export class WidgetGridComponent
   private resizeObserver!: ResizeObserver;
   changes = new Subject<boolean>();
 
+  private time = false;
+
   /**
    * Indicate if the widget grid can be deactivated or not.
    *
@@ -115,14 +117,16 @@ export class WidgetGridComponent
     this.setGridOptions();
     this.changes
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe((value: any) => {
         if (this.canUpdate) {
-          console.log('changes');
+          console.log(value);
+          this.onEditWidget({ type: 'display' });
         }
       });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
@@ -137,6 +141,14 @@ export class WidgetGridComponent
     super.ngOnDestroy();
     this.resizeObserver.disconnect();
   }
+
+  // static itemChange(item: any, itemComponent: any) {
+  //   console.info('itemChanged', item, itemComponent);
+  // }
+
+  // static itemResize(item: a, itemComponent: any) {
+  //   console.info('itemResized', item, itemComponent);
+  // }
 
   /**
    * Changes the number of displayed columns.
