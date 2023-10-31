@@ -30,7 +30,7 @@ const DISABLED_FIELDS = [
 
 /**
  * Shared grid service for the dashboards.
- * Exposes the available tiles, and find the settings from a widget.
+ * Exposes the available widgets, and find the settings from a widget.
  */
 @Injectable({
   providedIn: 'root',
@@ -38,7 +38,7 @@ const DISABLED_FIELDS = [
 export class GridService {
   /**
    * Shared grid service for the dashboards.
-   * Exposes the available tiles, and find the settings from a widget.
+   * Exposes the available wigets, and find the settings from a widget.
    *
    * @param fb Angular form builder
    * @param apiProxyService Shared API proxy service

@@ -66,21 +66,22 @@ export class EditorSettingsComponent
   extends UnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  // === REACTIVE FORM ===
-  tileForm!: EditorFormType;
-
-  // === WIDGET ===
-  @Input() tile: any;
+  /** Widget configuration */
+  @Input() widget: any;
+  /** Widget form group */
+  widgetFormGroup!: EditorFormType;
+  /** Change event emitter */
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
+  /** tinymce editor configuration */
 
-  /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;
   private editorContainer!: any;
 
   public selectedResource: Resource | null = null;
+  /** Current layout */
   public selectedLayout: Layout | null = null;
 
   /**
@@ -109,12 +110,12 @@ export class EditorSettingsComponent
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = createEditorForm(this.tile);
-    this.change.emit(this.tileForm);
+    this.widgetFormGroup = createEditorForm(this.widget);
+    this.change.emit(this.widgetFormGroup);
 
     // Initialize the selected resource, layout and record from the form
-    const resourceID = this.tileForm?.get('resource')?.value;
-    const layoutID = this.tileForm?.get('layout')?.value;
+    const resourceID = this.widgetFormGroup?.get('resource')?.value;
+    const layoutID = this.widgetFormGroup?.get('layout')?.value;
     if (resourceID) {
       this.apollo
         .query<ResourceQueryResponse>({
@@ -141,14 +142,14 @@ export class EditorSettingsComponent
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.change.emit(this.tileForm);
-      this.tile.settings.text = this.tileForm.value.text;
-      this.tile.settings.record = this.tileForm.value.record;
-      this.tile.settings.title = this.tileForm.value.title;
-      this.tile.settings.resource = this.tileForm.value.resource;
-      this.tile.settings.layout = this.tileForm.value.layout;
-      const visibilityType = this.tile.settings.record?.canUpdate
+    this.widgetFormGroup?.valueChanges.subscribe(() => {
+      this.change.emit(this.widgetFormGroup);
+      this.widget.settings.text = this.widgetFormGroup.value.text;
+      this.widget.settings.record = this.widgetFormGroup.value.record;
+      this.widget.settings.title = this.widgetFormGroup.value.title;
+      this.widget.settings.resource = this.widgetFormGroup.value.resource;
+      this.widget.settings.layout = this.widgetFormGroup.value.layout;
+      const visibilityType = this.widget.settings.record?.canUpdate
         ? 'visible'
         : 'hidden';
       this.updateRecordEditionButton(visibilityType);
@@ -197,7 +198,10 @@ export class EditorSettingsComponent
    */
   userAllowToEditRecord(event: any) {
     this.editorContainer = event.editor.container;
-    if (!this.tile.settings.record || !this.tile.settings.record.canUpdate) {
+    if (
+      !this.widget.settings.record ||
+      !this.widget.settings.record.canUpdate
+    ) {
       this.updateRecordEditionButton('hidden');
     }
   }
