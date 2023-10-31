@@ -165,25 +165,17 @@ export class RecordModalComponent
    * Initializes the form
    */
   private initSurvey() {
-    this.data.isTemporary
-      ? (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata,
-          this.record
-        ))
-      : (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata
-        ));
-
+    this.survey = this.formBuilderService.createSurvey(
+      this.form?.structure || '',
+      this.form?.metadata,
+      this.record
+    );
     addCustomFunctions({
       record: this.record,
       authService: this.authService,
       apollo: this.apollo,
       form: this.form,
     });
-
-    this.survey.data = this.record.data;
 
     this.survey.mode = 'display';
     // After the survey is created we add common callback to survey events
@@ -192,6 +184,7 @@ export class RecordModalComponent
       this.selectedPageIndex,
       {}
     );
+    this.survey.data = this.record.data;
 
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
