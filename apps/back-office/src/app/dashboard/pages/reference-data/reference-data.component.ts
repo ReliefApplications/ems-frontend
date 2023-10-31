@@ -583,7 +583,6 @@ export class ReferenceDataComponent
     try {
       this.triedToGetFields = true;
       // get the fields
-      console.log(apiConfData.apiConfiguration, path, query, type);
       const fields = await this.refDataService.getFields(
         apiConfData.apiConfiguration,
         path || '',

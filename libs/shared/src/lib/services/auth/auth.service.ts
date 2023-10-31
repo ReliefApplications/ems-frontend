@@ -146,7 +146,6 @@ export class AuthService {
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        console.log('init code flow');
         this.oauthService.initCodeFlow();
       });
     // Redirect to previous path
@@ -169,22 +168,6 @@ export class AuthService {
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.user$.subscribe((user) => this.updateAbility(user));
-  }
-
-  private async onReceivedFirstToken() {
-    const scopes = this.oauthService.getGrantedScopes() as string[];
-    this.oauthService.scope = `openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user`;
-
-    if (
-      !scopes.includes(
-        'api://75deca06-ae07-4765-85c0-23e719062833/access_as_user'
-      )
-    ) {
-      console.log('trying to get the api');
-      this.oauthService.initImplicitFlow();
-      console.log('yeah, might have worked');
-      return;
-    }
   }
 
   /**

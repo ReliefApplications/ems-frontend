@@ -13,6 +13,7 @@ import { GET_REFERENCE_DATA_BY_ID } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
+import { HttpHeaders } from '@angular/common/http';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -271,8 +272,15 @@ export class ReferenceDataService {
         (referenceData.apiConfiguration?.name ?? '') +
         (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
       const body = { query: this.processQuery(referenceData) };
-      console.log(url, body);
-      data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+      const options =
+        referenceData.apiConfiguration?.authType === 'authorizationCode'
+          ? {
+              headers: new HttpHeaders({
+                AccessToken: localStorage.getItem('access_token') ?? '',
+              }),
+            }
+          : {};
+      data = (await this.apiProxy.buildPostRequest(url, body, options)) as any;
     } else if (referenceDataType.rest) {
       const url =
         this.apiProxy.baseUrl +
