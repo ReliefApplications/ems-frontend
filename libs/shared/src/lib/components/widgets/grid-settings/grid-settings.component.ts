@@ -28,7 +28,6 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
@@ -63,7 +62,6 @@ export class GridSettingsComponent
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
-  private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
 
@@ -101,10 +99,9 @@ export class GridSettingsComponent
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    const tileSettings = this.widget.settings;
-    this.formGroup = extendWidgetForm(
-      createGridWidgetFormGroup(this.widget.id, tileSettings),
-      tileSettings?.widgetDisplay
+    this.formGroup = createGridWidgetFormGroup(
+      this.widget.id,
+      this.widget.settings
     );
 
     this.change.emit(this.formGroup);

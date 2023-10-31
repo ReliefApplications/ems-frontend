@@ -1,3 +1,24 @@
+# [2.2.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.5...v2.2.0-beta.6) (2023-10-30)
+
+
+### Bug Fixes
+
+* incorrect style of aggregation grids & some settings could be saved even if unused ([#1984](https://github.com/ReliefApplications/oort-frontend/issues/1984)) ([210b8e7](https://github.com/ReliefApplications/oort-frontend/commit/210b8e774d3bce21ae0d20f93cac1e1614f0af1c))
+* notification not initializing recipientsType ([#2006](https://github.com/ReliefApplications/oort-frontend/issues/2006)) ([ea29578](https://github.com/ReliefApplications/oort-frontend/commit/ea29578c824156b6c9a61719dbf6fdbc0478c5d0))
+
+
+### Features
+
+* added filter record option when context datasource is coming from a resource ([#2022](https://github.com/ReliefApplications/oort-frontend/issues/2022)) ([e750a47](https://github.com/ReliefApplications/oort-frontend/commit/e750a4776f36d6e3c8e4103d4ef5aaf5742895f4))
+* allow to activate / deactivate edition in back-office, to preview changes ([a54c4a5](https://github.com/ReliefApplications/oort-frontend/commit/a54c4a5cd805e66c4052a4c480af41bbb66a03dc))
+* last update map control ([#2002](https://github.com/ReliefApplications/oort-frontend/issues/2002)) ([2c92dd6](https://github.com/ReliefApplications/oort-frontend/commit/2c92dd6dd8b90da71e4b49116a4a0bddc29bb54d))
+* Show/Hide widget header ([#2005](https://github.com/ReliefApplications/oort-frontend/issues/2005)) ([20a964d](https://github.com/ReliefApplications/oort-frontend/commit/20a964d937b306161fd1af579498dd52df09d5f7))
+
+
+### Performance Improvements
+
+* Add storybook for front-office & back-office ([#1990](https://github.com/ReliefApplications/oort-frontend/issues/1990)) ([ee42d8d](https://github.com/ReliefApplications/oort-frontend/commit/ee42d8d613ccdb40093f971a2904760ece5dd844)), closes [#77550](https://github.com/ReliefApplications/oort-frontend/issues/77550) [#77550](https://github.com/ReliefApplications/oort-frontend/issues/77550)
+
 # [2.2.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.4...v2.2.0-beta.5) (2023-10-20)
 
 

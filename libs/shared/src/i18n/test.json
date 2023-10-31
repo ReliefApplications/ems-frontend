@@ -1485,6 +1485,10 @@
 					"tooltip": {
 						"template": "******",
 						"useRecordId": "******"
+					},
+					"warnings": {
+						"add": "******",
+						"general": "******"
 					}
 				},
 				"iconPicker": {
