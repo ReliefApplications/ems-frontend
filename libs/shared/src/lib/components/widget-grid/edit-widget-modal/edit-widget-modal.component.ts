@@ -15,11 +15,14 @@ import { ButtonModule, DialogModule } from '@oort-front/ui';
 
 /** Model for dialog data */
 interface DialogData {
-  tile: any;
+  widget: any;
   template: any;
 }
 
-/** Component for a data tile */
+/**
+ * Edition of widget configuration in modal.
+ * The component is generic and inject specific settings component, based on the type of widget to edit.
+ */
 @Component({
   standalone: true,
   selector: 'shared-edit-widget-modal',
@@ -40,7 +43,8 @@ export class EditWidgetModalComponent
   settingsContainer: any;
 
   /**
-   * Constructor of a data tile
+   * Edition of widget configuration in modal.
+   * The component is generic and inject specific settings component, based on the type of widget to edit.
    *
    * @param dialogRef Reference to a dialog opened via the Dialog service
    * @param data The dialog data
@@ -61,14 +65,14 @@ export class EditWidgetModalComponent
     const componentRef = this.settingsContainer.createComponent(
       this.data.template
     );
-    componentRef.instance.tile = this.data.tile;
+    componentRef.instance.widget = this.data.widget;
     componentRef.instance.change.subscribe((e: any) => {
       this.widgetForm = e;
     });
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending widget form value.
    */
   onSubmit(): void {
     this.dialogRef.close(this.widgetForm?.getRawValue());

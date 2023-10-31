@@ -55,7 +55,7 @@ export class CustomWidgetStyleComponent
   private initialStyle = '';
 
   @Input() widgetComp: any;
-  @Input() save!: (tile: any) => void;
+  @Input() save!: (widget: any) => void;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.

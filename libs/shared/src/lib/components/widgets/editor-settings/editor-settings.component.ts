@@ -59,20 +59,18 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
   styleUrls: ['./editor-settings.component.scss'],
 })
 export class EditorSettingsComponent implements OnInit, AfterViewInit {
-  // === REACTIVE FORM ===
-  tileForm!: EditorFormType;
-
-  // === WIDGET ===
-  @Input() tile: any;
-
-  // === EMIT THE CHANGES APPLIED ===
+  /** Widget configuration */
+  @Input() widget: any;
+  /** Widget form group */
+  widgetFormGroup!: EditorFormType;
+  /** Change event emitter */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
-  /** tinymce editor */
+  /** tinymce editor configuration */
   public editor: any = WIDGET_EDITOR_CONFIG;
-
+  /** Current resource */
   public selectedResource: Resource | null = null;
+  /** Current layout */
   public selectedLayout: Layout | null = null;
 
   /**
@@ -98,12 +96,12 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = createEditorForm(this.tile);
-    this.change.emit(this.tileForm);
+    this.widgetFormGroup = createEditorForm(this.widget);
+    this.change.emit(this.widgetFormGroup);
 
     // Initialize the selected resource, layout and record from the form
-    const resourceID = this.tileForm?.get('resource')?.value;
-    const layoutID = this.tileForm?.get('layout')?.value;
+    const resourceID = this.widgetFormGroup?.get('resource')?.value;
+    const layoutID = this.widgetFormGroup?.get('layout')?.value;
     if (resourceID) {
       this.apollo
         .query<ResourceQueryResponse>({
@@ -130,13 +128,13 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.tileForm?.valueChanges.subscribe(() => {
-      this.change.emit(this.tileForm);
-      this.tile.settings.text = this.tileForm.value.text;
-      this.tile.settings.record = this.tileForm.value.record;
-      this.tile.settings.title = this.tileForm.value.title;
-      this.tile.settings.resource = this.tileForm.value.resource;
-      this.tile.settings.layout = this.tileForm.value.layout;
+    this.widgetFormGroup?.valueChanges.subscribe(() => {
+      this.change.emit(this.widgetFormGroup);
+      this.widget.settings.text = this.widgetFormGroup.value.text;
+      this.widget.settings.record = this.widgetFormGroup.value.record;
+      this.widget.settings.title = this.widgetFormGroup.value.title;
+      this.widget.settings.resource = this.widgetFormGroup.value.resource;
+      this.widget.settings.layout = this.widgetFormGroup.value.layout;
     });
     this.updateFields();
   }
