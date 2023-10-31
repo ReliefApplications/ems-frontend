@@ -14,7 +14,7 @@ import {
 } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { filter, first, map, mergeMap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import {
   Ability,
