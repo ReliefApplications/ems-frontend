@@ -225,9 +225,7 @@ export class SafeUsersComponent
   public changePageLength(action: string, value: any) {
     if (action === 'add') {
       if (this.cachedUsers.length === this.pageInfo.length) {
-        value.forEach((usr: any) => {
-          this.cachedUsers = this.cachedUsers.concat([usr]);
-        });
+        this.cachedUsers = this.cachedUsers.concat(value);
         this.users = this.cachedUsers.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
