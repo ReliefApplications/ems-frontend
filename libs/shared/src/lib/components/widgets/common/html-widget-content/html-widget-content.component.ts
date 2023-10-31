@@ -6,7 +6,6 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { EditRecordMutationResponse } from '../../../../models/record.model';
 import { Apollo } from 'apollo-angular';
 import { SnackbarService } from '@oort-front/ui';
-import { TranslateService } from '@ngx-translate/core';
 import { EDIT_RECORD } from './graphql/mutations';
 
 /**
@@ -33,14 +32,12 @@ export class HtmlWidgetContentComponent extends UnsubscribeComponent {
    * @param {Dialog} dialog Angular - CDK Dialog API
    * @param {Apollo} apollo Angular - Apollo provider
    * @param {SnackbarService} snackBar UI - Snackbar service for displaying floating messages
-   * @param {TranslateService} translate NGX - Translate service
    */
   constructor(
     private el: ElementRef,
     private dialog: Dialog,
     private apollo: Apollo,
-    private snackBar: SnackbarService,
-    private translate: TranslateService
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -95,23 +92,6 @@ export class HtmlWidgetContentComponent extends UnsubscribeComponent {
                 },
               })
               .subscribe({
-                next: ({ errors }) => {
-                  if (errors) {
-                    this.snackBar.openSnackBar(errors[0].message, {
-                      error: true,
-                    });
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'common.notifications.objectUpdated',
-                        {
-                          type: this.translate.instant('common.record.one'),
-                          value: '',
-                        }
-                      )
-                    );
-                  }
-                },
                 error: (err) => {
                   this.snackBar.openSnackBar(err[0].message, { error: true });
                 },

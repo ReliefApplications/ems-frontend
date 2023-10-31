@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   AfterViewInit,
+  Renderer2,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
@@ -20,6 +21,8 @@ import { GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Record } from '../../../models/record.model';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Creates the form for the editor widget settings.
@@ -59,7 +62,10 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
   templateUrl: './editor-settings.component.html',
   styleUrls: ['./editor-settings.component.scss'],
 })
-export class EditorSettingsComponent implements OnInit, AfterViewInit {
+export class EditorSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === REACTIVE FORM ===
   tileForm!: EditorFormType;
 
@@ -72,6 +78,7 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
 
   /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;
+  private editorContainer!: any;
 
   public selectedResource: Resource | null = null;
   public selectedLayout: Layout | null = null;
@@ -82,12 +89,15 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
    * @param editorService Editor service used to get main URL and current language
    * @param apollo Apollo service
    * @param dataTemplateService Shared data template service
+   * @param {Renderer2} renderer Angular - renderer to manipulate DOM elements safely
    */
   constructor(
     private editorService: EditorService,
     private apollo: Apollo,
-    private dataTemplateService: DataTemplateService
+    private dataTemplateService: DataTemplateService,
+    private renderer: Renderer2
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -131,13 +141,17 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.tileForm?.valueChanges.subscribe(() => {
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.change.emit(this.tileForm);
       this.tile.settings.text = this.tileForm.value.text;
       this.tile.settings.record = this.tileForm.value.record;
       this.tile.settings.title = this.tileForm.value.title;
       this.tile.settings.resource = this.tileForm.value.resource;
       this.tile.settings.layout = this.tileForm.value.layout;
+      const visibilityType = this.tile.settings.record?.canUpdate
+        ? 'visible'
+        : 'hidden';
+      this.updateRecordEditionButton(visibilityType);
     });
     this.updateFields();
   }
@@ -159,5 +173,32 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
       ...this.dataTemplateService.getAutoCompleterKeys(fields),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
     ]);
+  }
+
+  /**
+   * Update record editor current visibility status
+   *
+   * @param visibility Visibility for the record editor button
+   */
+  private updateRecordEditionButton(visibility: string) {
+    const button = this.editorContainer.querySelector(
+      "button[title='Edit record']"
+    );
+    if (button) {
+      this.renderer.setStyle(button, 'visibility', visibility);
+    }
+  }
+
+  /**
+   * Check if current user has record editor permission, and if not, delete the record edit option
+   * from the tinymce toolbar
+   *
+   * @param event Event thrown by the tinymce editor on init
+   */
+  userAllowToEditRecord(event: any) {
+    this.editorContainer = event.editor.container;
+    if (!this.tile.settings.record || !this.tile.settings.record.canUpdate) {
+      this.updateRecordEditionButton('hidden');
+    }
   }
 }

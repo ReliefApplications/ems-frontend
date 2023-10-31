@@ -107,7 +107,7 @@
       [multiSelect]="false"
       [selectable]="true"
       [showExport]="false"
-      [selectedRows]="selectedRecord!.id ? [selectedRecord!.id] : []"
+      [selectedRows]="selectedRecord && selectedRecord!.id ? [selectedRecord!.id] : []"
       (selectionChange)="onSelectionChange($event)"
     >
     </shared-core-grid>

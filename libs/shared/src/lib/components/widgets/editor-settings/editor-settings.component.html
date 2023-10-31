@@ -18,7 +18,11 @@
               <input formControlName="title" type="string" />
             </div>
           </div>
-          <editor [init]="editor" formControlName="text"></editor>
+          <editor
+            [init]="editor"
+            formControlName="text"
+            (onInit)="userAllowToEditRecord($event)"
+          ></editor>
         </form>
       </ng-template>
     </ui-tab>

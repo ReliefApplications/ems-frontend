@@ -17,7 +17,36 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   public styles: any[] = [];
 
   ngOnInit(): void {
+    this.checkEditRecordButtonContent();
     this.setContent();
+  }
+
+  /**
+   * Check if there is an edit record button set in the widget content and updates it's access accordingly
+   */
+  private checkEditRecordButtonContent() {
+    const editRecordTest = new RegExp(/<button id="record-editor"/gim);
+    const editRecordIsHidden = new RegExp(
+      /style="border: 0px; padding: 0px; visibility: hidden"/gim
+    );
+    // If edit record button is set for this widget, but current user it's not allowed to edit, hide it
+    if (editRecordTest.test(this.card.html ?? '')) {
+      if (!this.card.record?.canUpdate) {
+        if (!editRecordIsHidden.test(this.card.html ?? '')) {
+          this.card.html = (this.card.html as string).replace(
+            'style="border: 0px; padding: 0px;"',
+            'style="border: 0px; padding: 0px; visibility: hidden"'
+          );
+        }
+      } else {
+        if (editRecordIsHidden.test(this.card.html ?? '')) {
+          this.card.html = (this.card.html as string).replace(
+            'style="border: 0px; padding: 0px; visibility: hidden"',
+            'style="border: 0px; padding: 0px;"'
+          );
+        }
+      }
+    }
   }
 
   ngOnChanges() {
