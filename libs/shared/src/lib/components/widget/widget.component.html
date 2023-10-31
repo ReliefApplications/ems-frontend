@@ -9,10 +9,12 @@
   <ng-container *ngIf="header">
     <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
       <div class="floating-widget-header" *ngIf="canUpdate && !fullscreen">
-        <ng-container
-          *ngIf="headerLeftTemplate"
-          [ngTemplateOutlet]="headerLeftTemplate"
-        ></ng-container>
+        <div class="bg-white/70 rounded-2xl">
+          <ng-container
+            *ngIf="headerLeftTemplate"
+            [ngTemplateOutlet]="headerLeftTemplate"
+          ></ng-container>
+        </div>
         <div class="bg-white/70 rounded-2xl">
           <ng-container
             *ngIf="headerRightTemplate"

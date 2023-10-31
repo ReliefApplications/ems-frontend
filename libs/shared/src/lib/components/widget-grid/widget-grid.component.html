@@ -34,7 +34,7 @@
         <ui-button
           *ngIf="canUpdate"
           icon="drag_indicator"
-          class="cursor-grab -ml-3 pointer-events-none"
+          class="cursor-grab pointer-events-none"
           variant="grey"
           [isIcon]="true"
           [uiTooltip]="'models.page.tooltip.drag' | translate"
@@ -45,7 +45,7 @@
       <ng-template #headerRightTemplate let-id>
         <!-- Widget actions -->
         <shared-widget-actions
-          class="-mr-3"
+          class="widget-actions"
           [id]="id"
           [canUpdate]="canUpdate"
           [collapsed]="widgetElement.elementRef.nativeElement.clientWidth < 500"

@@ -192,6 +192,7 @@ export class WidgetGridComponent
       fixedRowHeight: 200,
       draggable: {
         enabled: this.canUpdate,
+        ignoreContentClass: 'widget-actions',
       },
       resizable: {
         enabled: this.canUpdate,
