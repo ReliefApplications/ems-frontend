@@ -386,8 +386,7 @@ export class DashboardComponent
    */
   onAdd(e: any): void {
     const widget = cloneDeep(e);
-    this.widgets = [...this.widgets, widget];
-    this.autoSaveChanges();
+    this.widgets.push(widget);
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }

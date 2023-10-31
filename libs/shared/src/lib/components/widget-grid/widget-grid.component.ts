@@ -15,7 +15,7 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import {
@@ -78,7 +78,7 @@ export class WidgetGridComponent
   /** Resize observer for the parent container */
   private resizeObserver!: ResizeObserver;
   changes = new Subject<boolean>();
-
+  gridOptionsTimeoutListener!: NodeJS.Timeout;
   private time = false;
 
   /**
@@ -115,25 +115,39 @@ export class WidgetGridComponent
     });
     this.resizeObserver.observe(this._host.nativeElement);
     this.setGridOptions();
-    this.changes
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        if (this.canUpdate) {
-          console.log(value);
-          this.onEditWidget({ type: 'display' });
-        }
-      });
+    this.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.canUpdate) {
+        this.onEditWidget({ type: 'display' });
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
+    }
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue) &&
       Boolean(changes['canUpdate'].currentValue)
     ) {
-      this.setGridOptions();
+      this.gridOptionsTimeoutListener = setTimeout(() => {
+        this.setGridOptions(true);
+      }, 0);
+    }
+    if (changes['widgets']) {
+      // First load
+      if (
+        !changes['widgets'].previousValue ||
+        !changes['widgets'].previousValue?.length
+      ) {
+        // If there is something to display, set layout
+        if (changes['widgets'].currentValue.length) {
+          this.setLayout();
+        }
+      }
     }
   }
 
@@ -174,12 +188,15 @@ export class WidgetGridComponent
 
   /**
    * Set Gridster options.
+   *
+   *  @param isDashboardSet Property to add item change callback handler once the dashboard is ready and editable
    */
-  setGridOptions() {
+  setGridOptions(isDashboardSet = false) {
     this.gridOptions = {
       ...this.gridOptions,
-      itemChangeCallback: () => this.changes.next(true),
-      itemResizeCallback: () => this.changes.next(true),
+      ...(isDashboardSet && {
+        itemChangeCallback: () => this.changes.next(true),
+      }),
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
@@ -315,6 +332,10 @@ export class WidgetGridComponent
               this.add.emit({
                 ...tile,
                 settings: value,
+                ...{
+                  resizeEnabled: this.canUpdate,
+                  dragEnabled: this.canUpdate,
+                },
               });
             }
           });
@@ -376,5 +397,59 @@ export class WidgetGridComponent
       });
     }
     return skeletons;
+  }
+
+  /**
+   * Set the given widget in the grid using given source coordinates
+   *
+   * @param {number} yAxis y axis point from where start
+   * @param {number} xAxis x axis point from where start
+   * @param widget widget to set in the grid
+   * @returns new coordinates from where to set the given widget in the grid
+   */
+  private setXYAxisValues(
+    yAxis: number,
+    xAxis: number,
+    widget: any
+  ): { x: number; y: number } {
+    // Update with the last values of the grid item pointer
+    xAxis += widget.cols ?? widget.defaultCols;
+    if (xAxis > 8) {
+      yAxis += widget.rows ?? widget.defaultRows;
+    }
+
+    if (xAxis + (widget.cols ?? widget.defaultCols) > 8) {
+      xAxis = 0;
+      yAxis += widget.rows ?? widget.defaultRows;
+    }
+    return { x: xAxis, y: yAxis };
+  }
+
+  /**
+   * Updates layout based on the passed widget array.
+   */
+  private setLayout(): void {
+    const yAxis = 0;
+    const xAxis = 0;
+    this.widgets.map((widget, index) => {
+      const { x, y } =
+        index === 0
+          ? { x: 0, y: 0 }
+          : this.setXYAxisValues(yAxis, xAxis, widget);
+      const minItemRows = widget.minRow;
+      delete widget.minRow;
+      const gridItem = {
+        ...widget,
+        cols: widget.cols ?? widget.defaultCols,
+        rows: widget.rows ?? widget.defaultRows,
+        minItemRows,
+        y: widget.y ?? y,
+        x: widget.x ?? x,
+      };
+      if (index === 0) {
+        this.setXYAxisValues(yAxis, xAxis, widget);
+      }
+      return gridItem;
+    });
   }
 }
