@@ -142,18 +142,20 @@ export class EditorSettingsComponent
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.widgetFormGroup?.valueChanges.subscribe(() => {
-      this.change.emit(this.widgetFormGroup);
-      this.widget.settings.text = this.widgetFormGroup.value.text;
-      this.widget.settings.record = this.widgetFormGroup.value.record;
-      this.widget.settings.title = this.widgetFormGroup.value.title;
-      this.widget.settings.resource = this.widgetFormGroup.value.resource;
-      this.widget.settings.layout = this.widgetFormGroup.value.layout;
-      const visibilityType = this.widget.settings.record?.canUpdate
-        ? 'visible'
-        : 'hidden';
-      this.updateRecordEditionButton(visibilityType);
-    });
+    this.widgetFormGroup?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.change.emit(this.widgetFormGroup);
+        this.widget.settings.text = this.widgetFormGroup.value.text;
+        this.widget.settings.record = this.widgetFormGroup.value.record;
+        this.widget.settings.title = this.widgetFormGroup.value.title;
+        this.widget.settings.resource = this.widgetFormGroup.value.resource;
+        this.widget.settings.layout = this.widgetFormGroup.value.layout;
+        const visibilityType = this.widget.settings.record?.canUpdate
+          ? 'visible'
+          : 'hidden';
+        this.updateRecordEditionButton(visibilityType);
+      });
     this.updateFields();
   }
 

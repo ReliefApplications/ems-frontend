@@ -81,7 +81,7 @@ export class EditorComponent implements OnInit {
     );
     // If edit record button is set for this widget, but current user it's not allowed to edit, hide it
     if (editRecordTest.test(this.settings.text)) {
-      if (!this.settings.record.canUpdate) {
+      if (!this.settings.record?.canUpdate) {
         if (!editRecordIsHidden.test(this.settings.text)) {
           this.settings.text = (this.settings.text as string).replace(
             'style="border: 0px; padding: 0px;"',
