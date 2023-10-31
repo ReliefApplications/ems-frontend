@@ -96,7 +96,7 @@ export class DateFilterMenuComponent
     this.operatorsList.forEach((o) => {
       o.text = this.translate.instant(o.label);
     });
-    popupService.onClose
+    this.popupService.onClose
       .pipe(takeUntil(this.destroy$))
       .subscribe((e: PopupCloseEvent) => {
         if (
