@@ -280,14 +280,6 @@ export class ApiConfigurationComponent
       this.apiForm.controls.settings.touched && {
         settings: {
           ...(this.apiForm.value.authType === authType.serviceToService &&
-            this.apiForm.value.settings?.callbackUrl !== ENCRYPTED_VALUE && {
-              callbackUrl: this.apiForm.value.settings?.callbackUrl,
-            }),
-          ...(this.apiForm.value.authType === authType.serviceToService &&
-            this.apiForm.value.settings?.authUrl !== ENCRYPTED_VALUE && {
-              authUrl: this.apiForm.value.settings?.authUrl,
-            }),
-          ...(this.apiForm.value.authType === authType.serviceToService &&
             this.apiForm.value.settings?.authTargetUrl !== ENCRYPTED_VALUE && {
               authTargetUrl: this.apiForm.value.settings?.authTargetUrl,
             }),

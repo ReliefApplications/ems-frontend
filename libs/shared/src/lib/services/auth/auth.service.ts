@@ -136,13 +136,6 @@ export class AuthService {
         localStorage.setItem('idtoken', this.oauthService.getIdToken());
         this.oauthService.loadUserProfile();
       });
-    // this.oauthService.events
-    //   .pipe(
-    //     filter((e) => e.type === 'token_received'),
-    //     first(),
-    //     mergeMap(() => this.onReceivedFirstToken())
-    //   )
-    //   .subscribe();
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {

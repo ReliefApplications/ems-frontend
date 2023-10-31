@@ -39,7 +39,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
     createClient({
       url: `${environment.subscriptionApiUrl}/graphql`,
       connectionParams: {
-        authToken: localStorage.getItem('id_token'),
+        authToken: localStorage.getItem('idtoken'),
       },
     })
   );

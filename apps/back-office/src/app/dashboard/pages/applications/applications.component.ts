@@ -31,8 +31,6 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { GET_APPLICATIONS } from './graphql/queries';
-import { HttpClient } from '@angular/common/http';
-import { DomSanitizer } from '@angular/platform-browser';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -92,9 +90,7 @@ export class ApplicationsComponent
     private snackBar: SnackbarService,
     private previewService: PreviewService,
     private confirmService: ConfirmService,
-    private translate: TranslateService,
-    private http: HttpClient,
-    private sanitizer: DomSanitizer
+    private translate: TranslateService
   ) {
     super();
   }
