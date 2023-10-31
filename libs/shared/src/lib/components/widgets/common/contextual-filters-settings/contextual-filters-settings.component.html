@@ -17,7 +17,7 @@
     </div>
   </div>
   <!-- Dashboard filter -->
-  <div class="flex-1 flex flex-col"> <!-- change here, in case of widgets-->
+  <div class="flex-1 flex flex-col" *ngIf="!loading;">  <!-- create a variable to control this-->
     <h2 class="flex">
       {{ 'models.dashboard.dashboardFilter' | translate
       }}<ui-icon
@@ -45,10 +45,5 @@
         </div>
       </ng-template>
     </ng-container>
-
-<!--
-    <ng-container ngProjectAs="content">
-      <shared-filter [form]="$any(form.get('contextFilters'))" [fields]="filterFields"></shared-filter>
-    </ng-container> -->
   </div>
 </div>

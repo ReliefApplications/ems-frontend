@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
+  Inject,
 } from '@angular/core';
 import {
   UntypedFormGroup,
@@ -29,6 +30,15 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
+
+/**
+ * Interface that describes the structure of the data shown in the dialog
+ */
+interface DialogData {
+  form: any;
+  resourceName: string;
+}
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -86,13 +96,15 @@ export class GridSettingsComponent
    * @param queryBuilder The query builder service
    * @param fb FormBuilder instance
    * @param aggregationService Shared aggregation service
+   * @param data
    */
   constructor(
     private apollo: Apollo,
     private applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
     private fb: FormBuilder,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {
     super();
   }
@@ -181,6 +193,21 @@ export class GridSettingsComponent
     }
 
     this.initSortFields();
+  }
+
+  /**
+   * Set a form group with the given grid settings values
+   *
+   * @param gridSettingsRaw Grid settings
+   * @returns  Form containing grid settings values
+   */
+  convertFromRawToFormGroup(gridSettingsRaw: any): UntypedFormGroup | null {
+    if (!gridSettingsRaw.fields) {
+      return null;
+    }
+    const auxForm = this.fb.group(gridSettingsRaw);
+    auxForm.controls.fields.setValue(gridSettingsRaw.fields);
+    return auxForm;
   }
 
   /**
@@ -306,6 +333,17 @@ export class GridSettingsComponent
               this.fields = this.queryBuilder.getFields(
                 this.resource.queryName as string
               );
+            }
+            if (data.resource && data.resource.name) {
+              const nameTrimmed = data.resource.name
+                .replace(/\s/g, '')
+                .toLowerCase();
+              this.data = {
+                form: !this.fields
+                  ? null
+                  : this.convertFromRawToFormGroup(this.fields),
+                resourceName: nameTrimmed,
+              }; // stoped here
             }
           } else {
             this.relatedForms = [];

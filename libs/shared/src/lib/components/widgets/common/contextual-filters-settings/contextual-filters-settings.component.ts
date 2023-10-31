@@ -1,14 +1,9 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
-import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
@@ -42,7 +37,8 @@ interface DialogData {
   ],
 })
 export class ContextualFiltersSettingsComponent implements OnInit {
-  @Input() form: UntypedFormGroup = new UntypedFormGroup({});
+  @Input() form!: FormGroup;
+  @Input() data!: DialogData;
   public filterFields: any[] = [];
   public editorOptions = {
     theme: 'vs-dark',
@@ -55,13 +51,9 @@ export class ContextualFiltersSettingsComponent implements OnInit {
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param data The data to be shown in the modal
    * @param queryBuilder The service used to build queries
    */
-  constructor(
-    @Inject(DIALOG_DATA) public data: DialogData,
-    private queryBuilder: QueryBuilderService
-  ) {}
+  constructor(private queryBuilder: QueryBuilderService) {}
 
   /**
    * On initialization of editor, format code
@@ -102,3 +94,43 @@ export class ContextualFiltersSettingsComponent implements OnInit {
     });
   }
 }
+/*
+openResourceFieldsModal() {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_SHORT_RESOURCE_BY_ID,
+        variables: {
+          id: this.model.obj.resource,
+        },
+      })
+      .subscribe(async ({ data }) => {
+        if (data.resource && data.resource.name) {
+          const nameTrimmed = data.resource.name
+            .replace(/\s/g, '')
+            .toLowerCase();
+          const { ConfigDisplayGridFieldsModalComponent } = await import(
+            '../../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
+          );
+          const dialogRef = this.dialog.open(
+            ConfigDisplayGridFieldsModalComponent,
+            {
+              data: {
+                form: !this.model.obj.gridFieldsSettings
+                  ? null
+                  : this.convertFromRawToFormGroup(
+                      this.model.obj.gridFieldsSettings
+                    ),
+                resourceName: nameTrimmed,
+              },
+            }
+          );
+          dialogRef.closed
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res: any) => {
+              if (res && res.value.fields) {
+                this.model.obj.gridFieldsSettings = res.getRawValue();
+              }
+            });
+        }
+      });
+*/
