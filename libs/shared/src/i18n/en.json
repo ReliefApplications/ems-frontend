@@ -734,8 +734,10 @@
 				"creationDate": "Creation date",
 				"delete": "Delete this draft",
 				"load": "Load this draft",
+				"noDrafts": "No drafts available.",
 				"preview": "Preview this draft",
 				"previewTitle": "Draft record",
+				"save": "Save as draft",
 				"select": "Select draft record",
 				"successEdit": "Successfully edited draft",
 				"successSave": "Successfully saved as draft"

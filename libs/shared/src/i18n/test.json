@@ -734,8 +734,10 @@
 				"creationDate": "******",
 				"delete": "******",
 				"load": "******",
+				"noDrafts": "******",
 				"preview": "******",
 				"previewTitle": "******",
+				"save": "******",
 				"select": "******",
 				"successEdit": "******",
 				"successSave": "******"

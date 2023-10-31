@@ -53,9 +53,9 @@
           >{{ 'common.next' | translate }}</ui-button
         >
       </ng-container>
-      <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()"
-        >Save as draft</ui-button
-      >
+      <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
+        'components.form.draftRecords.save' | translate
+      }}</ui-button>
       <ui-button variant="primary" category="secondary" (click)="submit()">{{
         'common.save' | translate
       }}</ui-button>

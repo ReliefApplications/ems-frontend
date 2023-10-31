@@ -748,8 +748,10 @@
 				"creationDate": "Date de création",
 				"delete": "Supprimer ce brouillon",
 				"load": "Charger ce brouillon",
+				"noDrafts": "Aucun enregistrement brouillon disponible",
 				"preview": "Prévisualiser ce brouillon",
 				"previewTitle": "Enregistrement brouillon",
+				"save": "Enregistrer comme brouillon",
 				"select": "Sélectionner le brouillon",
 				"successEdit": "Brouillon modifié avec succès",
 				"successSave": "Enregistré dans les brouillons avec succès"

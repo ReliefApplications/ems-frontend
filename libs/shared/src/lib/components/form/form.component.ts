@@ -411,9 +411,11 @@ export class FormComponent
       data: this.form.id,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      this.survey.data = value.data;
-      this.lastDraftRecord = value.id;
-      this.disableSaveAsDraft = true;
+      if (value) {
+        this.survey.data = value.data;
+        this.lastDraftRecord = value.id;
+        this.disableSaveAsDraft = true;
+      }
     });
   }
 

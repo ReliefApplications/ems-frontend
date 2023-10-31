@@ -20,6 +20,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { DraftRecordModalComponent } from '../draft-record-modal/draft-record-modal.component';
+import { EmptyModule } from '../ui/empty/empty.module';
 
 /**
  * Modal that displays a list of draft records to select from
@@ -34,16 +35,26 @@ import { DraftRecordModalComponent } from '../draft-record-modal/draft-record-mo
     ButtonModule,
     SkeletonTableModule,
     TooltipModule,
+    EmptyModule,
   ],
   selector: 'shared-select-draft-record-modal',
   templateUrl: './select-draft-record-modal.component.html',
   styleUrls: ['./select-draft-record-modal.component.scss'],
 })
 export class SelectDraftRecordModalComponent implements OnInit {
+  /** Array of available draft records */
   public draftRecords: Array<DraftRecord> = new Array<DraftRecord>();
+  /** Displayed table columns */
   public displayedColumns = ['createdAt', 'actions'];
+  /** Displayed skeleton table columns */
   public displayedColumnsForSkeleton = ['createdAt'];
+  /** Loading indicator */
   public loading = true;
+
+  /** @returns True if the draft records table is empty */
+  get empty(): boolean {
+    return !this.loading && this.draftRecords.length === 0;
+  }
 
   /**
    * Modal for selection of a draft record
@@ -51,6 +62,7 @@ export class SelectDraftRecordModalComponent implements OnInit {
    * @param confirmService Service that handles confirming modals
    * @param translate Translating service
    * @param apollo Apollo service
+   * @param dialog Dialog service
    * @param dialogRef Dialog reference of the component
    * @param data Data passed to the dialog, here the formId of the current form
    */
@@ -87,12 +99,14 @@ export class SelectDraftRecordModalComponent implements OnInit {
       });
   }
 
+  /**
+   * Opens an existing draft record on modal
+   *
+   * @param element draft record selected
+   */
   previewDraftRecord(element: any) {
-    const dialogRef = this.dialog.open(DraftRecordModalComponent, {
+    this.dialog.open(DraftRecordModalComponent, {
       data: element,
-    });
-    dialogRef.closed.pipe().subscribe((value) => {
-      console.log('VALUE', value);
     });
   }
 
