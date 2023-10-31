@@ -19,6 +19,7 @@ import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
+import { cloneDeep } from 'lodash';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -211,8 +212,8 @@ export class WidgetGridComponent
    */
   async onAdd(e: any): Promise<void> {
     if (e) {
-      const tile = JSON.parse(JSON.stringify(e));
-      if (tile) {
+      const widget = cloneDeep(e);
+      if (widget) {
         /** Open settings dialog component from the widget.  */
         const { EditWidgetModalComponent } = await import(
           './edit-widget-modal/edit-widget-modal.component'
@@ -220,8 +221,8 @@ export class WidgetGridComponent
         const dialogRef = this.dialog.open(EditWidgetModalComponent, {
           disableClose: true,
           data: {
-            tile: tile,
-            template: this.dashboardService.findSettingsTemplate(tile),
+            widget,
+            template: this.dashboardService.findSettingsTemplate(widget),
           },
         });
         dialogRef.closed
@@ -230,7 +231,7 @@ export class WidgetGridComponent
             // Should save the value, and so, add the widget to the grid
             if (value) {
               this.add.emit({
-                ...tile,
+                ...widget,
                 settings: value,
               });
             }
