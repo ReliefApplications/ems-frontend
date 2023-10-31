@@ -88,3 +88,19 @@ export const EDIT_RECORD = gql`
     }
   }
 `;
+
+// === EDIT DRAFT RECORD ===
+
+/** Graphql request for editing a draft record by its id */
+export const EDIT_DRAFT_RECORD = gql`
+  mutation editDraftRecord($id: ID!, $data: JSON) {
+    editDraftRecord(id: $id, data: $data) {
+      id
+      data
+      createdAt
+      createdBy {
+        name
+      }
+    }
+  }
+`;

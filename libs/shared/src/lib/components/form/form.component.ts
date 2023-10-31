@@ -11,12 +11,18 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { SurveyModel } from 'survey-core';
-import { ADD_RECORD, EDIT_RECORD, ADD_DRAFT_RECORD } from './graphql/mutations';
+import {
+  ADD_RECORD,
+  EDIT_RECORD,
+  ADD_DRAFT_RECORD,
+  EDIT_DRAFT_RECORD,
+} from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
   EditRecordMutationResponse,
   AddDraftRecordMutationResponse,
+  EditDraftRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
@@ -79,6 +85,8 @@ export class FormComponent
   public pages$ = this.pages.asObservable();
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** The id of the last draft record that was loaded */
+  public lastDraftRecord = '';
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -249,31 +257,60 @@ export class FormComponent
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
-    // Add a new draft record to the database
-    const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
-      mutation: ADD_DRAFT_RECORD,
-      variables: {
-        form: this.form.id,
-        data: this.survey.data,
-      },
-    });
-    mutation.subscribe(({ errors }: any) => {
-      if (errors) {
-        this.survey.clear(false, true);
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
-      } else {
-        localStorage.removeItem(this.storageId);
-        this.snackBar.openSnackBar('Successfully saved as draft', {
-          error: false,
-        });
-      }
-      this.surveyActive = true;
-      // Emit but stay in record addition mode
-      this.save.emit({
-        completed: false,
-        hideNewRecord: true,
+    // Check if a draft has already been loaded
+    if (this.lastDraftRecord === '') {
+      // Add a new draft record to the database
+      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+        mutation: ADD_DRAFT_RECORD,
+        variables: {
+          form: this.form.id,
+          data: this.survey.data,
+        },
       });
-    });
+      mutation.subscribe(({ errors }: any) => {
+        if (errors) {
+          this.survey.clear(false, true);
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
+        } else {
+          localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar('Successfully saved as draft', {
+            error: false,
+          });
+        }
+        this.surveyActive = true;
+        // Emit but stay in record addition mode
+        this.save.emit({
+          completed: false,
+          hideNewRecord: true,
+        });
+      });
+    } else {
+      // Edit last added draft record in the database
+      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
+        mutation: EDIT_DRAFT_RECORD,
+        variables: {
+          id: this.lastDraftRecord,
+          data: this.survey.data,
+        },
+      });
+      mutation.subscribe(({ errors }: any) => {
+        if (errors) {
+          this.survey.clear(false, true);
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
+        } else {
+          localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar('Successfully edited draft', {
+            error: false,
+          });
+        }
+        this.surveyActive = true;
+        // Emit but stay in record addition mode
+        this.save.emit({
+          completed: false,
+          hideNewRecord: true,
+        });
+      });
+    }
   }
 
   /**
@@ -367,6 +404,7 @@ export class FormComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       this.survey.data = value.data;
+      this.lastDraftRecord = value.id;
       this.disableSaveAsDraft = true;
     });
   }
