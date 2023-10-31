@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,6 +36,7 @@ interface DialogData {
   selector: 'shared-cron-expression-control-modal',
   templateUrl: './cron-expression-control-modal.component.html',
   styleUrls: ['./cron-expression-control-modal.component.scss'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CronExpressionControlModalComponent {
   public control: FormControl = new FormControl();

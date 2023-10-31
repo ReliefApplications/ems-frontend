@@ -32,9 +32,4 @@ export class AddApiConfigurationComponent {
     private fb: FormBuilder,
     public dialogRef: DialogRef<AddApiConfigurationComponent>
   ) {}
-
-  /** Close the modal without sending data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

@@ -40,6 +40,7 @@ export class MapPropertiesComponent
   get controlsFormGroup() {
     return this.form.get('controls') as UntypedFormGroup;
   }
+
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
 

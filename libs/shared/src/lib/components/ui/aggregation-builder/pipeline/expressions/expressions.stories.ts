@@ -9,6 +9,7 @@ import {
 
 export default {
   component: ExpressionsComponent,
+  tags: ['autodocs'],
   ...SHARED_PIPELINE_STORIES_CONFIG,
   title: 'UI/Aggregation builder/Stages/Expressions',
 } as Meta;

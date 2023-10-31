@@ -9,6 +9,7 @@ import {
 
 export default {
   component: AddFieldStageComponent,
+  tags: ['autodocs'],
   ...SHARED_PIPELINE_STORIES_CONFIG,
   title: 'UI/Aggregation builder/Stages/Add fields',
 } as Meta;

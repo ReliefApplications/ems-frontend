@@ -24,15 +24,12 @@ import {
   ReferenceDataService,
   Record,
   ButtonActionT,
-  LayoutService,
   ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
-  EditStepMutationResponse,
-  EditPageMutationResponse,
   RecordQueryResponse,
 } from '@oort-front/shared';
-import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
+import { EDIT_DASHBOARD } from './graphql/mutations';
 import {
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
@@ -50,7 +47,7 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
@@ -113,6 +110,8 @@ export class DashboardComponent
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
 
+  private timeoutListener!: NodeJS.Timeout;
+
   /** @returns get newest widget id from existing ids */
   get newestId(): number {
     const widgets = this.widgets?.slice() || [];
@@ -174,7 +173,7 @@ export class DashboardComponent
     private refDataService: ReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard
   ) {
@@ -199,7 +198,13 @@ export class DashboardComponent
         this.loading = true;
         // Reset context
         this.contextRecord = null;
-        this.contextId.reset(undefined, { emitEvent: false });
+        this.contextId.setValue(null, {
+          emitEvent: false,
+          emitModelToViewChange: false,
+          emitViewToModelChange: false,
+        });
+        this.contextId.markAsPristine();
+        this.contextId.markAsUntouched();
         // Reset scroll when changing page
         const pageContainer = this.document.getElementById('appPageContainer');
         if (pageContainer) {
@@ -284,7 +289,10 @@ export class DashboardComponent
    * @returns Promise
    */
   private async loadDashboard(id: string) {
-    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
+    // don't init the dashboard if the id is the same
+    if (this.dashboard?.id === id) {
+      return;
+    }
 
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
@@ -322,6 +330,7 @@ export class DashboardComponent
           this.showFilter = this.dashboard.showFilter ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
+          this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
@@ -345,6 +354,9 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'contextualFilter');
     this.dashboardService.closeDashboard();
@@ -385,8 +397,11 @@ export class DashboardComponent
     widget.id = this.newestId;
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     // scroll to the element once it is created
-    setTimeout(() => {
+    this.timeoutListener = setTimeout(() => {
       const el = this.document.getElementById(`widget-${widget.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
     });
@@ -489,21 +504,11 @@ export class DashboardComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.dashboard.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.dashboard.one'),
-                value: '',
-              })
-            );
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.dashboard.one')
+          );
+          if (!errors) {
             this.dashboardService.openDashboard({
               ...this.dashboard,
               structure: this.widgets,
@@ -512,93 +517,6 @@ export class DashboardComponent
         },
         complete: () => (this.loading = false),
       });
-  }
-
-  /**
-   * Edit the permissions layer.
-   *
-   * @param e edit event
-   */
-  saveAccess(e: any): void {
-    if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one'),
-                  value: '',
-                })
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editStep.permissions,
-              };
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one'),
-                  value: '',
-                })
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editPage.permissions,
-              };
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    }
   }
 
   /**
@@ -613,6 +531,7 @@ export class DashboardComponent
       this.formActive = !this.formActive;
     }
   }
+
   /**
    * Update the name of the dashboard and the step or page linked to it.
    *
@@ -665,33 +584,20 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ data, errors }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.dashboard.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.dashboard.one'),
-                  value: '',
-                })
-              );
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.dashboard.one')
+            );
+            if (!errors) {
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                showFilter: data?.editDashboard.showFilter,
+                ...(data && { showFilter: data?.editDashboard.showFilter }),
               });
             }
           },
           complete: () => {
-            this.loading = false;
             this.contextService.isFilterEnabled.next(this.showFilter);
+            this.loading = false;
           },
         });
     }
@@ -704,34 +610,6 @@ export class DashboardComponent
     this.snackBar.openSnackBar(
       this.translate.instant('common.notifications.copiedToClipboard')
     );
-  }
-
-  /**
-   * Duplicate page, in a new ( or same ) application
-   *
-   * @param event duplication event
-   */
-  public onDuplicate(event: any): void {
-    this.applicationService.duplicatePage(event.id, {
-      pageId: this.dashboard?.page?.id,
-      stepId: this.dashboard?.step?.id,
-    });
-  }
-
-  /**
-   * Toggle visibility of application menu
-   * Get applications
-   */
-  public onAppSelection(): void {
-    this.showAppMenu = !this.showAppMenu;
-    const authSubscription = this.authService.user$.subscribe(
-      (user: any | null) => {
-        if (user) {
-          this.applications = user.applications;
-        }
-      }
-    );
-    authSubscription.unsubscribe();
   }
 
   /** Open modal to add new button action */
@@ -908,24 +786,65 @@ export class DashboardComponent
   }
 
   /**
-   * Toggle page visibility.
+   * Open settings modal.
    */
-  togglePageVisibility() {
-    const callback = () => {
-      this.dashboard = {
-        ...this.dashboard,
-        page: {
-          ...this.dashboard?.page,
-          visible: !this.dashboard?.page?.visible,
-        },
-      };
-    };
-    this.applicationService.togglePageVisibility(
-      {
-        id: this.dashboard?.page?.id,
-        visible: this.dashboard?.page?.visible,
-      },
-      callback
+  public async onOpenSettings(): Promise<void> {
+    const { ViewSettingsModalComponent } = await import(
+      '../../../components/view-settings-modal/view-settings-modal.component'
     );
+    const dialogRef = this.dialog.open(ViewSettingsModalComponent, {
+      data: {
+        type: this.isStep ? 'step' : 'page',
+        applicationId: this.applicationId,
+        page: this.isStep ? undefined : this.dashboard?.page,
+        step: this.isStep ? this.dashboard?.step : undefined,
+        visible: this.dashboard?.page?.visible,
+        icon: this.isStep
+          ? this.dashboard?.step?.icon
+          : this.dashboard?.page?.icon,
+        accessData: {
+          access: this.dashboard?.permissions,
+          application: this.applicationId,
+          objectTypeName: this.translate.instant(
+            'common.' + this.isStep ? 'step' : 'page' + '.one'
+          ),
+        },
+        canUpdate: this.dashboard?.page
+          ? this.dashboard?.page.canUpdate
+          : this.dashboard?.step
+          ? this.dashboard?.step.canUpdate
+          : false,
+      },
+    });
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updates: any) => {
+        if (updates) {
+          if (this.isStep) {
+            this.dashboard = {
+              ...this.dashboard,
+              ...(updates.permissions && updates),
+              step: {
+                ...this.dashboard?.step,
+                ...(!updates.permissions && updates),
+              },
+            };
+          } else {
+            this.dashboard = {
+              ...this.dashboard,
+              ...(updates.permissions && updates),
+              page: {
+                ...this.dashboard?.page,
+                ...(!updates.permissions && updates),
+              },
+            };
+          }
+        }
+      });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
+    });
   }
 }

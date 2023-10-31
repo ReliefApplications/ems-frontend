@@ -21,6 +21,7 @@ export const EDIT_STEP = gql`
   mutation editStep(
     $id: ID!
     $name: String
+    $icon: String
     $type: String
     $content: ID
     $permissions: JSON
@@ -28,12 +29,14 @@ export const EDIT_STEP = gql`
     editStep(
       id: $id
       name: $name
+      icon: $icon
       type: $type
       content: $content
       permissions: $permissions
     ) {
       id
       name
+      icon
       type
       content
       createdAt

@@ -212,14 +212,16 @@
       </kendo-grid>
     </div>
   </form>
-  <!-- Submit button -->
-  <ui-button
-    class="!w-auto"
-    category="secondary"
-    variant="primary"
-    (click)="onSave()"
-    [disabled]="referenceForm.invalid || !referenceForm.dirty"
-  >
-    {{ 'common.save' | translate }}
-  </ui-button>
+  <!-- Floating div for actions buttons -->
+  <ui-fixed-wrapper>
+    <!-- Submit button -->
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSave()"
+      [disabled]="referenceForm.invalid || !referenceForm.dirty"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
 </ng-container>

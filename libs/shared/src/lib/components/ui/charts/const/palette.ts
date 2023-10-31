@@ -1,23 +1,36 @@
-/** Default list of colors for series */
-export const DEFAULT_PALETTE = [
-  '#ff6358',
-  '#ffd246',
-  '#78d237',
-  '#28b4c8',
-  '#2d73f5',
-  '#aa46be',
-  '#FF8A82',
-  '#FFDD74',
-  '#9ADD69',
-  '#5EC7D6',
-  '#6296F8',
-  '#BF74CE',
-  '#BF4A42',
-  '#BF9E35',
-  '#5A9E29',
-  '#1E8796',
-  '#2256B8',
-  '#80358F',
-  '#FFB1AC',
-  '#FFE9A3',
-];
+import Color from 'color';
+
+/**
+ * Generate a monochrome palette of 20 colors based on a hex color.
+ *
+ * @param baseColor - The base hex color to generate the palette from.
+ * @returns An array of 20 monochrome colors in hex format.
+ */
+export const generateMonochromePalette = (baseColor: string): string[] => {
+  // Regular expression to validate the input hex color
+  const hexColorRegex = /^#([0-9A-Fa-f]{3}){1,2}$/;
+
+  if (!hexColorRegex.test(baseColor)) {
+    throw new Error('Invalid hex color provided.');
+  }
+
+  const color = Color(baseColor);
+  const palette: string[] = [];
+
+  // Calculate steps to generate a monochrome palette
+  const step = 100 / 19; // Divide the range into 20 steps (0-100%)
+
+  // Generate the palette
+  for (let i = 0; i < 20; i++) {
+    const modifiedColor = color.lightness(i * step);
+    if (modifiedColor.lightness() < 10) {
+      palette.push(color.darken(0.1).hex());
+    } else if (modifiedColor.lightness() > 90) {
+      palette.push(color.lighten(0.1).hex());
+    } else {
+      palette.push(modifiedColor.hex());
+    }
+  }
+
+  return palette;
+};

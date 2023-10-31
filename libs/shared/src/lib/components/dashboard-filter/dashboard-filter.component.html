@@ -153,6 +153,7 @@
               icon="{{ position + '_panel_open' }}"
               [isOutlined]="true"
               (click)="changeFilterPosition(position)"
+              [uiTooltip]="FilterPositionTooltips[position] | translate"
             ></ui-button>
           </ng-container>
         </div>
@@ -179,7 +180,9 @@
           #dashboardSurveyCreatorContainer
           class="overflow-scroll"
           [ngClass]="{ hidden: empty }"
-        ></div>
+        >
+          <survey [model]="survey"></survey>
+        </div>
         <!-- <form
         [ngClass]="{
           'flex-col':

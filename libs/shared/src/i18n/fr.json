@@ -2,7 +2,10 @@
 	"common": {
 		"access": "Accès",
 		"accessDenied": "Accès refusé",
+		"account": "Compte",
+		"actions": "Actions",
 		"add": "Ajouter",
+		"adminField": "Champ administrateur",
 		"aggregation": {
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
@@ -20,21 +23,21 @@
 		},
 		"archive": {
 			"delete": "Supprimer",
-			"few": "@TODO",
+			"few": "Archives",
 			"modal": {
 				"delete": {
 					"action": "Supprimer",
 					"confirmationMessage": "Voulez-vous supprimer l'archive {{name}}?",
 					"title": "Supprimer?"
 				},
-				"one": "@TODO",
+				"one": "@page",
 				"restore": {
 					"action": "Restaurer",
 					"confirmationMessage": "Voulez-vous restaurer {{name}}?",
 					"title": "Restaurer?"
 				}
 			},
-			"none": "@TODO",
+			"none": "Aucun élément archivé",
 			"restore": "Restaurer"
 		},
 		"ariaLabel": {
@@ -42,6 +45,7 @@
 				"clear": "Supprimer la recherche"
 			}
 		},
+		"asc": "Croissant",
 		"attribute": {
 			"few": "Attributs",
 			"none": "Aucun attribut",
@@ -76,6 +80,68 @@
 		"copy": "Copier",
 		"create": "Créer",
 		"createdOn": "Date de création",
+		"cronEditor": {
+			"advanced": "Avancé",
+			"atTime": "À",
+			"daily": "Quotidien",
+			"day": "Jour",
+			"days": "Jour(s)",
+			"every": {
+				"feminine": "Toutes les",
+				"masculine": "Tous les"
+			},
+			"firstWeekDay": "Premier jour de la semaine",
+			"hourly": "Horaire",
+			"hours": "Heure(s)",
+			"lastDay": "Dernier jour",
+			"lastWeekDay": "Dernier jour de la semaine",
+			"minutely": "Chaque minute",
+			"minutes": "Minute(s)",
+			"month": "Mois",
+			"monthly": "Mensuel",
+			"months": {
+				"april": "Avril",
+				"august": "Août",
+				"december": "Décembre",
+				"february": "Février",
+				"january": "Janvier",
+				"july": "Juillet",
+				"june": "Juin",
+				"march": "Mars",
+				"may": "Mai",
+				"november": "Novembre",
+				"october": "Octobre",
+				"september": "Septembre"
+			},
+			"of": "du",
+			"ofEvery": "de chaque",
+			"onThe": {
+				"feminine": "Pendant la",
+				"masculine": "Pendant le"
+			},
+			"seconds": "Seconde(s)",
+			"week": "Semaine",
+			"weekDay": "Jour de la semaine (LUN-VEN)",
+			"weekDays": {
+				"friday": "Vendredi",
+				"monday": "Lundi",
+				"saturday": "Samedi",
+				"sunday": "Dimanche",
+				"thursday": "Jeudi",
+				"tuesday": "Mardi",
+				"wednesday": "Mercredi"
+			},
+			"weekNumber": {
+				"fifth": "Cinquième",
+				"first": "Première",
+				"fourth": "Quatrième",
+				"last": "Dernière",
+				"second": "Deuxième",
+				"third": "Troisième"
+			},
+			"weekly": "Hebdomadaire",
+			"yearly": "Annuel"
+		},
 		"customNotification": {
 			"few": "Notifications",
 			"none": "Aucune notification",
@@ -89,6 +155,7 @@
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
+		"desc": "Décroissant",
 		"dismiss": "Fermer",
 		"display": "Afficher",
 		"distributionList": {
@@ -106,6 +173,7 @@
 			"one": "Email"
 		},
 		"errors": {
+			"few": "Erreurs",
 			"objectDuplicated": "{{type}} {{value}} existe déjà."
 		},
 		"exitFullscreen": "Quitter le mode plein écran",
@@ -209,10 +277,10 @@
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
 			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
-			"objectNotRestored": "{{type}} non restauré. {{error}}",
+			"objectNotRestored": "{{value}} non restauré. {{error}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
-			"objectRestored": "{{type}} restauré.",
+			"objectRestored": "{{value}} restauré.",
 			"objectUpdated": "{{value}} {{type}} a été modifié.",
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
@@ -271,6 +339,7 @@
 			"none": "Aucune référence de données",
 			"one": "Référence de données"
 		},
+		"remove": "Retirer",
 		"resource": {
 			"few": "Ressources",
 			"none": "Aucune ressource",
@@ -320,6 +389,7 @@
 			"none": "Aucun abonnement",
 			"one": "Abonnement"
 		},
+		"tabs": "Onglets",
 		"template": {
 			"few": "Modèles de notification",
 			"none": "Aucun modèle",
@@ -455,6 +525,12 @@
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"filterPosition": {
+						"bottom": "Afficher le filtre en bas",
+						"left": "Afficher le filtre à gauche",
+						"right": "Afficher le filtre à droite",
+						"top": "Afficher le filtre en haut"
+					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
 				},
@@ -483,6 +559,13 @@
 				"reordered": {
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
+				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Sélectionnez une icône",
+					"tooltip": {
+						"autoSave": "Les modifications sont automatiquement enregistrées"
+					}
 				},
 				"show": "Afficher la page dans la barre latérale de navigation"
 			},
@@ -696,6 +779,12 @@
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "Champs de grille disponibles",
+					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"
+				}
+			},
 			"saveSurvey": "Sauvegarde du questionnaire"
 		},
 		"formMapProperties": {
@@ -748,6 +837,12 @@
 				"select": "Sélectionner un champ"
 			},
 			"preview": "Prévisualiser et revenir"
+		},
+		"icon": {
+			"modal": {
+				"select": "Sélectionner une icône",
+				"use": "Utiliser l'icône"
+			}
 		},
 		"logout": {
 			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
@@ -946,6 +1041,7 @@
 		"records": {
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
+			"editAs": "Editer en tant que",
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'enregistrements"
 			},
@@ -1107,6 +1203,7 @@
 			"invite": {
 				"confirm": "Inviter",
 				"role": {
+					"additionalAttributes": "Définir des attributs supplémentaires",
 					"description": "Sélectionner le rôle à assigner"
 				}
 			},
@@ -1174,6 +1271,7 @@
 				"actions": {
 					"detail": "Ouvrir le détail",
 					"downloadReport": "Télécharger",
+					"goTo": "Aller à la page",
 					"history": "Voir l'historique"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
@@ -1236,6 +1334,7 @@
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"displayMap": "Afficher la carte",
+					"openPage": "Aller à la page",
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
@@ -1324,11 +1423,21 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"navigateToPage": "Accédez à la page",
+						"pageUrl": {
+							"label": "Url de la source de la page",
+							"placeholder": "Entrez l'id de la page"
+						},
+						"pageUrlTitle": {
+							"label": "Nom de la colonne",
+							"placeholder": "Entrez un nom pour la colonne..."
+						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
-						"update": "Modifier les enregistrements"
+						"update": "Modifier les enregistrements",
+						"useRecordId": "Injecter l'identifiant comme paramètre de navigation"
 					},
 					"aggregations": {
 						"add": {
@@ -1388,6 +1497,7 @@
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
+							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
@@ -1412,7 +1522,8 @@
 						"title": "Mise en page de la grille"
 					},
 					"tooltip": {
-						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
+						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
 					}
 				},
 				"iconPicker": {
@@ -1426,11 +1537,16 @@
 					"edit": {
 						"aggregation": "Agrégation",
 						"cluster": {
+							"autoSizeCluster": "Taille automatique des clusters",
 							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
+							"clustering": "Clustering",
 							"fields": "Champs de groupes",
+							"font": "Police",
+							"fontSize": "Taille de la police",
 							"high": "Haut",
 							"label": "Libellé du groupes",
+							"lightMode": "Mode lumineux",
 							"low": "Faible",
 							"max": "Max",
 							"min": "Min",
@@ -1448,6 +1564,7 @@
 						"groupLayers": "Regrouper les calques",
 						"labels": "Étiquettes",
 						"layerDatasource": "Source de données de la couche",
+						"layerEdition": "Edition de couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"popup": "Popup",
@@ -1596,6 +1713,10 @@
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
+						"cluster": {
+							"autoSize": "La taille des clusters est automatique si activé, sinon, vous pouvez la définir.",
+							"lightMode": "Le texte s'affichera en blanc si activé, sinon en noir."
+						},
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
 							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
@@ -1630,6 +1751,10 @@
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},
+						"gridActions": {
+							"title": "Actions de grille",
+							"tooltip": "Actions de grille activées"
+						},
 						"preview": {
 							"title": "Prévisualisation"
 						},
@@ -1661,6 +1786,10 @@
 						"ariaLabel": "***"
 					},
 					"static": "Statique"
+				},
+				"tabs": {
+					"addNewTab": "Ajouter un nouvel onglet",
+					"deleteTab": "Supprimer l'onglet"
 				}
 			},
 			"styling": "Modifier le style",
@@ -2059,6 +2188,7 @@
 			"sorting": {
 				"add": "Ajouter un champ",
 				"delete": "Supprimer le champ de tri",
+				"empty": "Aucun champ de tri défini",
 				"field": "Champ",
 				"label": "Étiquette",
 				"management": "Gestion des champs de tri",

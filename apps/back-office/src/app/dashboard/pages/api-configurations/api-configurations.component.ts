@@ -28,6 +28,7 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { GET_API_CONFIGURATIONS } from './graphql/queries';
+import { FormBuilder } from '@angular/forms';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -56,6 +57,7 @@ export class ApiConfigurationsComponent
   sort?: TableSort;
 
   // === FILTERS ===
+  form = this.fb.group({});
   public showFilters = false;
   public searchText = '';
   public statusFilter = '';
@@ -76,6 +78,7 @@ export class ApiConfigurationsComponent
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param fb Angular Form Builder
    */
   constructor(
     private apollo: Apollo,
@@ -83,7 +86,8 @@ export class ApiConfigurationsComponent
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private router: Router,
-    private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
+    private translate: TranslateService, // private uiTableWrapper: TableWrapperDirective
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -150,27 +154,20 @@ export class ApiConfigurationsComponent
   /**
    * Applies the filter to the data source.
    *
-   * @param column Column to filter on.
-   * @param event Value of the filter.
+   * @param event event value of the filter.
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = event ?? '';
+  applyFilter(event: any): void {
+    if (event.statusFilter) {
+      this.statusFilter = event.statusFilter;
     } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
+      this.statusFilter = '';
+    }
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
     }
     this.filterPredicate();
-  }
-
-  /**
-   * Removes all the filters.
-   */
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.applyFilter('', null);
   }
 
   /**

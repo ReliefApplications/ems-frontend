@@ -8,6 +8,8 @@ import {
   OnInit,
   OnDestroy,
   Inject,
+  TemplateRef,
+  ElementRef,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -29,6 +31,8 @@ export class WidgetComponent implements OnInit, OnDestroy {
   @Input() widget: any;
   @Input() header = true;
   @Input() canUpdate = false;
+  @Input() headerLeftTemplate?: TemplateRef<any>;
+  @Input() headerRightTemplate?: TemplateRef<any>;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -63,10 +67,12 @@ export class WidgetComponent implements OnInit, OnDestroy {
    *
    * @param restService Shared rest service
    * @param document document
+   * @param elementRef reference to element
    */
   constructor(
     private restService: RestService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    public elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {

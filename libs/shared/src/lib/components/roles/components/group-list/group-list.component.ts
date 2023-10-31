@@ -17,6 +17,7 @@ import {
   GroupsQueryResponse,
 } from '../../../../models/user.model';
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
+import { FormBuilder } from '@angular/forms';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -35,6 +36,7 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
   public manualCreation = true;
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
+  form = this.fb.group({});
   public searchText = '';
 
   /**
@@ -46,6 +48,7 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
    * @param confirmService This is the service that will be used to display the confirm window.
    * @param translate This is the service that is used to
    * @param restService This is the service that will be used to make http requests.
+   * @param fb This is the Angular form builder.
    */
   constructor(
     private apollo: Apollo,
@@ -53,7 +56,8 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
-    private restService: RestService
+    private restService: RestService,
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -78,18 +82,6 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
             .toLowerCase()
             .includes(this.searchText.trim().toLowerCase()))
     );
-  }
-
-  /**
-   * Applies filters to the list of roles on event
-   *
-   * @param event The event
-   */
-  applyFilter(event: any): void {
-    this.searchText = event
-      ? event.target.value.trim().toLowerCase()
-      : this.searchText;
-    this.filterPredicate();
   }
 
   /**
@@ -120,6 +112,20 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((res) => {
         this.manualCreation = get(res, 'groups.local', true);
       });
+  }
+
+  /**
+   * Applies filters to the list of groups on event
+   *
+   * @param event event
+   */
+  applyFilter(event: any): void {
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
+    }
+    this.filterPredicate();
   }
 
   /**
@@ -188,6 +194,7 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
         },
       }
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     this.apollo
       .mutate<FetchGroupsMutationResponse>({ mutation: FETCH_GROUPS })
       .pipe(takeUntil(this.destroy$))
@@ -196,19 +203,19 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
           if (data) this.groups = data.fetchGroups || [];
           this.filteredGroups = this.groups;
           this.loadingFetch = loading;
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.groups.ready'
           );
-          snackBarRef.instance.loading = false;
+          snackBarSpinner.instance.loading = false;
 
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
         error: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.groups.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
 
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },

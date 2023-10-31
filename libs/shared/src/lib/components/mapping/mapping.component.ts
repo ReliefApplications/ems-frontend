@@ -14,10 +14,11 @@ import { Dialog } from '@angular/cdk/dialog';
   styleUrls: ['./mapping.component.scss'],
 })
 export class MappingComponent extends UnsubscribeComponent implements OnInit {
-  // === DATA ===
+  /** Input decorator for mappingForm. */
   @Input() mappingForm!: UntypedFormArray;
-  // === TABLE ===
+  /** Array of column names to be displayed in the table. */
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];
+  /** Array to hold the data source for the table. */
   dataSource = new Array<Mapping>();
 
   /**
@@ -29,6 +30,7 @@ export class MappingComponent extends UnsubscribeComponent implements OnInit {
     super();
   }
 
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.dataSource = [...this.mappingForm.value];
     this.mappingForm.valueChanges

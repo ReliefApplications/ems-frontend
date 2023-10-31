@@ -4,6 +4,7 @@ import { TabSettingsComponent } from './tab-settings.component';
 import { WidgetGridModule } from '../../../widget-grid/widget-grid.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Tab settings module, part of tabs widget settings.
@@ -17,6 +18,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     ReactiveFormsModule,
     FormWrapperModule,
     ButtonModule,
+    TranslateModule,
   ],
   exports: [TabSettingsComponent],
 })

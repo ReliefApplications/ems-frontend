@@ -1,4 +1,4 @@
-<ui-dialog size="big" [closable]="true">
+<ui-dialog size="big">
   <ng-container ngProjectAs="header">
     <ng-container *ngIf="!loading">
       <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
@@ -38,22 +38,23 @@
     </ng-container>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <ng-container *ngIf="!data.compareTo">
-      <div #formContainer class="grow"></div>
-    </ng-container>
-    <ng-container *ngIf="data.compareTo">
-      <div class="flex flex-row">
-        <div #formContainerNext class="grow max-w-[50%]"></div>
-        <div #formContainer class="grow max-w-[50%]"></div>
+    <div class="flex flex-row">
+      <ng-container *ngIf="data.compareTo && surveyNext">
+        <div class="grow max-w-[50%]">
+          <survey [model]="surveyNext"></survey>
+        </div>
+      </ng-container>
+      <div class="grow" [ngClass]="{ 'max-w-[50%]': surveyNext }">
+        <survey [model]="survey"></survey>
       </div>
-    </ng-container>
+    </div>
     <div *ngIf="loading" class="h-full w-full flex">
       <ui-spinner class="m-auto block"></ui-spinner>
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ng-container *ngIf="!loading && data.compareTo">
-      <ui-button (click)="onClose()">
+      <ui-button uiDialogClose variant="default">
         {{ 'common.close' | translate }}
       </ui-button>
       <ui-button
@@ -66,10 +67,9 @@
       </ui-button>
     </ng-container>
     <ng-container *ngIf="!loading && !data.compareTo">
-      <ui-button (click)="onClose()" variant="danger">
+      <ui-button uiDialogClose variant="danger">
         {{ 'common.close' | translate }}
       </ui-button>
-
       <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
         <ui-button
           category="secondary"

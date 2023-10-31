@@ -55,15 +55,5 @@
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <div uiChipList>
-    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
-      {{ 'common.status_active' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
-      {{ 'common.status_pending' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
-      {{ 'common.status_archived' | translate | titlecase }}
-    </ui-chip>
-  </div>
+  <shared-status-options [status]="status"></shared-status-options>
 </ng-template>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AppAbility } from '@oort-front/shared';
+import { AppAbility, UnsubscribeComponent } from '@oort-front/shared';
+import { takeUntil } from 'rxjs';
 
 /**
  * Main BO dashboard component
@@ -10,7 +11,7 @@ import { AppAbility } from '@oort-front/shared';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent {
+export class DashboardComponent extends UnsubscribeComponent {
   // === HEADER TITLE ===
   public title = 'Back-office';
 
@@ -27,8 +28,9 @@ export class DashboardComponent {
     private translate: TranslateService,
     private ability: AppAbility
   ) {
+    super();
     this.setNavGroups();
-    translate.onLangChange.subscribe(() => {
+    translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.setNavGroups();
     });
   }

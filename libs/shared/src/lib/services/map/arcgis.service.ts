@@ -269,7 +269,7 @@ export class ArcgisService {
    * @param {L.Map} map to add to
    * @param {*} layer layer
    * @param {any[]} layers array to save the created layers
-   * @param {boolean} [visibility=true] visibility of the layer
+   * @param {boolean} visibility visibility of the layer
    */
   private async addLayer(
     map: L.Map,

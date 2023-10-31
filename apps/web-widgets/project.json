@@ -41,11 +41,6 @@
             "glob": "**/*",
             "input": "node_modules/leaflet/dist/images/",
             "output": "/assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
-            "output": "/assets/webfonts/"
           }
         ],
         "styles": [
@@ -54,24 +49,20 @@
             "inject": true
           },
           "apps/web-widgets/src/styles.scss",
-          "libs/styles/src/lib/tailwind/tailwind.scss",
-          "libs/styles/src/lib/kendo/theme.scss",
-          "libs/styles/src/lib/shared/shared.scss",
+          "libs/safe/src/lib/style/styles.scss",
+          "libs/safe/src/lib/style/widgets.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
         ],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -79,13 +70,14 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular",
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
           "fast-sha256",
           "leaflet",
           "esri-leaflet-vector",
           "leaflet.markercluster",
-          "jsonpath",
-          "color"
+          "jsonpath"
         ]
       },
       "configurations": {

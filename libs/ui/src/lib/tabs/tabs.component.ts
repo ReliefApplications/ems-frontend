@@ -26,6 +26,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
 
 /**
  * UI Tabs component
+ * Tabs are used to split content between multiple sections. Tabs can be either horizontal or vertical.
  */
 @Component({
   selector: 'ui-tabs',
@@ -66,9 +67,9 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */
   @Output() selectedIndexChange = new EventEmitter<number>();
-
+  /** Event emitter for when a tab is opened. */
   @Output() openedTab = new EventEmitter<TabComponent>();
-
+  /** Reference to the TabBodyHostDirective. */
   @ViewChild(TabBodyHostDirective)
   tabBodyHost!: TabBodyHostDirective;
 
@@ -106,11 +107,10 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       .pipe(startWith(this.tabs), takeUntil(this.destroy$))
       .subscribe((tabs: QueryList<TabComponent>) => {
         this.cdr.detectChanges();
-        if (tabs.length !== this.previousTabsLength) {
-          this.reorder$.next();
-          this.previousTabsLength = tabs.length;
-          this.subscribeToOpenTabEvents();
-        }
+        this.reorder$.next();
+        this.previousTabsLength = tabs.length;
+        this.subscribeToOpenTabEvents();
+        this.setSelectedTab();
       });
   }
 

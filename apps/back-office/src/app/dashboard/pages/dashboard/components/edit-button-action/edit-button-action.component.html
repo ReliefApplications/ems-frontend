@@ -1,13 +1,13 @@
 <ui-dialog size="medium" [closable]="true">
   <ng-container ngProjectAs="header">
-    <h2>
+    <h3 class="font-semibold">
       {{
         (isNew
           ? 'models.dashboard.buttonActions.add'
           : 'models.dashboard.buttonActions.edit'
         ) | translate
       }}
-    </h2>
+    </h3>
   </ng-container>
 
   <ng-container ngProjectAs="content">
@@ -69,7 +69,7 @@
       </ui-toggle>
 
       <ui-divider class="my-4"></ui-divider>
-      <h3>{{ 'common.preview' | translate }}</h3>
+      <h3 class="font-semibold">{{ 'common.preview' | translate }}</h3>
       <div>
         <!-- Button preview -->
         <ui-button

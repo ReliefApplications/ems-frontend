@@ -117,10 +117,12 @@ export class SubscriptionModalComponent
   get routingKey(): string | null | undefined {
     return this.subscriptionForm.value.routingKey;
   }
+
   /** Set subscription key */
   set routingKey(value: string | null | undefined) {
     this.subscriptionForm.controls.routingKey.setValue(value);
   }
+
   /** @returns default convert to form */
   get defaultForm(): Form | null {
     return get(this.data, 'subscription.convertTo', null);
@@ -196,11 +198,6 @@ export class SubscriptionModalComponent
     } else {
       return this.applications.getValue();
     }
-  }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
   }
 
   /**

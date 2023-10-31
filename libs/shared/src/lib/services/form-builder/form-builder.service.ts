@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as Survey from 'survey-angular';
+import {
+  Model,
+  QuestionPanelDynamicModel,
+  SurveyModel,
+  settings,
+} from 'survey-core';
+import { QuestionText } from '../../survey/types';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -15,7 +21,7 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { difference } from 'lodash';
+import { difference, set } from 'lodash';
 
 /**
  * Gets the payload for the update mutation
@@ -26,7 +32,7 @@ import { difference } from 'lodash';
  */
 const getUpdateData = (
   op: string,
-  survey: Survey.SurveyModel
+  survey: SurveyModel
 ): Record<string, any> | null => {
   if (!op) return null;
   // Op can either be a stringified JSON object or
@@ -61,6 +67,57 @@ const getUpdateData = (
         }
       : null;
   }
+};
+
+/**
+ * Applies custom logic to survey data values.
+ *
+ * @param survey Survey instance
+ * @returns Transformed survey data
+ */
+const transformSurveyData = (survey: SurveyModel) => {
+  const data = survey.data ?? {};
+
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  };
+
+  // Change date questions to only include the date part
+  survey.getAllQuestions(true).forEach((question) => {
+    if (question.getType() === 'text' && question.inputType === 'date') {
+      data[question.name] = formatDate(question.value);
+    } else if (question.getType() === 'paneldynamic') {
+      const nestedQuestions = (
+        question as QuestionPanelDynamicModel
+      ).templateElements.filter(
+        (v) =>
+          v.getType() === 'text' && (v as QuestionText).inputType === 'date'
+      ) as QuestionText[];
+      // Update nested questions inside panel dynamic
+      (question as QuestionPanelDynamicModel).panels.forEach((panel, index) => {
+        nestedQuestions.forEach((nestedQuestion) => {
+          const panelValue = panel.getValue();
+          if (panelValue[nestedQuestion.name]) {
+            set(
+              data,
+              `${question.name}.${index}.${nestedQuestion.name}`,
+              formatDate(panelValue[nestedQuestion.name])
+            );
+          }
+        });
+      });
+    }
+  });
+
+  // Removes data that isn't in the structure, that might've come from prefilling data
+  Object.keys(data).forEach((filed) => {
+    if (!survey.getQuestionByName(filed)) {
+      delete data[filed];
+    }
+  });
+
+  return data;
 };
 
 /**
@@ -105,10 +162,10 @@ export class FormBuilderService {
     structure: string,
     fields: Metadata[] = [],
     record?: RecordModel
-  ): Survey.SurveyModel {
-    Survey.settings.useCachingForChoicesRestful = false;
-    Survey.settings.useCachingForChoicesRestfull = false;
-    const survey = new Survey.Model(structure);
+  ): SurveyModel {
+    settings.useCachingForChoicesRestful = false;
+    settings.useCachingForChoicesRestfull = false;
+    const survey = new Model(structure);
 
     // Add custom variables
     this.formHelpersService.addUserVariables(survey);
@@ -119,6 +176,10 @@ export class FormBuilderService {
     }
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
+    );
+    //Add tooltips to questions if exist
+    survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips
     );
 
     // For each question, if validateOnValueChange is true, we will add a listener to the value change event
@@ -167,6 +228,9 @@ export class FormBuilderService {
           }
         }
       });
+
+      // Apply custom logic to survey data values
+      survey.parsedData = transformSurveyData(survey);
     });
     if (fields.length > 0) {
       for (const f of fields.filter((x) => !x.automated)) {
@@ -198,6 +262,7 @@ export class FormBuilderService {
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
+    survey.applyTheme({ isPanelless: true });
     return survey;
   }
 
@@ -210,7 +275,7 @@ export class FormBuilderService {
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
@@ -248,10 +313,7 @@ export class FormBuilderService {
     survey.onDownloadFile.add((_, options: any) =>
       this.onDownloadFile(options)
     );
-    survey.onUpdateQuestionCssClasses.add((_, options: any) =>
-      this.onSetCustomCss(options)
-    );
-    survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+    survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
     });
@@ -348,15 +410,6 @@ export class FormBuilderService {
     }
   }
 
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += 'shared-qst-content';
-  }
   /**
    * Updates the field with the specified information.
    *

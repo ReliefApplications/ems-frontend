@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SkeletonModule } from '../../directives/skeleton/skeleton.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * ApplicationsSummaryModule is a class used to manage all the modules and components
@@ -29,6 +30,7 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     DividerModule,
     ButtonModule,
     TooltipModule,
+    AbilityModule,
   ],
   exports: [
     ApplicationsSummaryComponent,

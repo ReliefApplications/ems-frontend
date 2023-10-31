@@ -1,9 +1,8 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
-  <!-- Default filter -->
-  <app-filter
+  <app-reference-data-filter
     (filter)="onFilter($event)"
     [loading]="filterLoading"
-  ></app-filter>
+  ></app-reference-data-filter>
   <!-- Actions -->
   <ui-button
     icon="add"
@@ -92,7 +91,7 @@
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
-            [uiTooltip]="'common.options' | translate"
+            [uiTooltip]="'common.actions' | translate"
           >
           </ui-button>
           <ui-menu #menu>

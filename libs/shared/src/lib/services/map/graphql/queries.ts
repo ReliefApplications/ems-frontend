@@ -27,6 +27,9 @@ export const GET_LAYER_BY_ID = gql`
         featureReduction {
           type
           clusterRadius
+          lightMode
+          fontSize
+          autoSizeCluster
           drawingInfo {
             renderer {
               type

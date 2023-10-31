@@ -15,6 +15,8 @@ import {
   templateUrl: './menu.component.html',
 })
 export class MenuComponent {
+  /** Reference to the menu template. */
   @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;
+  /** Event emitter for when the menu is closed. */
   @Output() closed = new EventEmitter<void>();
 }
