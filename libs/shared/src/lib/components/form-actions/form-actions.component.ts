@@ -38,6 +38,9 @@ export class FormActionsComponent implements OnInit {
     this.currentLocaleSurvey =
       this.usedLocalesSurvey.find((x) => x.code === this.survey?.locale) ||
       DEFAULT_LOCALE_SURVEY;
+
+    console.log(this.surveyActive);
+    console.log(this.survey);
   }
 
   /**

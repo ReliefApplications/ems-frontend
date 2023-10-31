@@ -99,22 +99,14 @@ export const init = (environment: any): void => {
       choicesCallback(pages);
     },
   });
-  // Adds a property to the survey settings to delete or not unticket translations in the translations tab from the JSON Object
+  // Add multiplevalues to survey settings to select the allowed languages
   serializer.addProperty('survey', {
-    name: 'deleteUnusedTranslations',
+    name: 'translationsAllowed',
     category: 'general',
-    type: 'dropdown',
-    choices: [
-      {
-        value: true,
-        text: 'Yes',
-      },
-      {
-        value: false,
-        text: 'No',
-      },
-    ],
-    default: false,
+    type: 'multiplevalues',
+    choices: (survey: SurveyModel, choicesCallback: any) => {
+      choicesCallback(survey.getUsedLocales());
+    },
   });
   // Adds a property to the survey settings to hide the page tabs
   serializer.addProperty('survey', {
