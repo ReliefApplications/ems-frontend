@@ -17,6 +17,7 @@ import {
 } from '@progress/kendo-angular-grid';
 import {
   CompositeFilterDescriptor,
+  FilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -39,7 +40,7 @@ import {
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
-import { get, isEqual } from 'lodash';
+import { get, isEqual, cloneDeep } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -202,13 +203,15 @@ export class CoreGridComponent
     if (this.settings?.query?.filter) {
       gridFilters.push(this.settings?.query?.filter);
     }
+    const filterCpy = cloneDeep(gridFilters);
+    this.parseDateFilters({ logic: 'and', filters: filterCpy });
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
       const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
-          { logic: 'and', filters: gridFilters },
+          { logic: 'and', filters: filterCpy },
           {
             logic: 'or',
             filters: searchFilters(
@@ -222,7 +225,7 @@ export class CoreGridComponent
     } else {
       filter = {
         logic: 'and',
-        filters: gridFilters,
+        filters: filterCpy,
       };
     }
     return {
@@ -499,7 +502,23 @@ export class CoreGridComponent
     items.map((x) => {
       for (const [key] of Object.entries(x)) {
         if (dateFields.includes(key) || timeFields.includes(key)) {
-          x[key] = x[key] && new Date(x[key]);
+          if (
+            this.fields.find((f) => f.name === key)?.type === 'Date' &&
+            !isNaN(new Date(x[key])?.getTime()) &&
+            !x[key].includes('T')
+          ) {
+            // Create date from parts
+            const dateParts = x[key].split('-');
+            if (dateParts.length === 3) {
+              const date = new Date();
+              date.setFullYear(+dateParts[0]);
+              date.setMonth(+dateParts[1] - 1);
+              date.setDate(+dateParts[2]);
+              x[key] = date;
+            }
+          } else {
+            x[key] = x[key] && new Date(x[key]);
+          }
           if (timeFields.includes(key)) {
             x[key] =
               x[key] &&
@@ -1502,5 +1521,28 @@ export class CoreGridComponent
     return this.environment.module === 'backoffice'
       ? `applications/${pageUrlParams}`
       : `${pageUrlParams}`;
+  }
+
+  /**
+   * Replaces the values for date fields in the filter
+   *
+   * @param filter filter to update
+   */
+  private parseDateFilters(
+    filter: CompositeFilterDescriptor | FilterDescriptor
+  ) {
+    if ('filters' in filter && filter.filters) {
+      filter.filters.forEach((f) => {
+        this.parseDateFilters(f);
+      });
+    } else if ('field' in filter && filter.field) {
+      const field = this.fields.find((x) => x.name === filter.field);
+      if (field?.type === 'Date') {
+        const date = filter.value;
+        filter.value = `${date.getFullYear()}-${
+          date.getMonth() + 1
+        }-${date.getDate()}`;
+      }
+    }
   }
 }
