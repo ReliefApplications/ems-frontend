@@ -34,7 +34,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
-import { cloneDeep, isNil } from 'lodash';
+import { isNil } from 'lodash';
+// import { cloneDeep } from 'lodash';
 import { SelectDraftRecordModalComponent } from '../select-draft-record-modal/select-draft-record-modal.component';
 
 /**
@@ -154,25 +155,26 @@ export class FormComponent
       });
     }
     // Fetch cached data from local storage
-    this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
-    const storedData = localStorage.getItem(this.storageId);
-    const cachedData = storedData ? JSON.parse(storedData).data : null;
-    this.storageDate = storedData
-      ? new Date(JSON.parse(storedData).date)
-      : undefined;
-    this.isFromCacheData = !!cachedData;
-    if (this.isFromCacheData) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.loadedFromCache', {
-          type: this.translate.instant('common.record.one'),
-        })
-      );
-    }
+    //this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
+    //const storedData = localStorage.getItem(this.storageId);
+    //const cachedData = storedData ? JSON.parse(storedData).data : null;
+    //this.storageDate = storedData
+    //? new Date(JSON.parse(storedData).date)
+    //: undefined;
+    // this.isFromCacheData = !!cachedData;
+    //if (this.isFromCacheData) {
+    //this.snackBar.openSnackBar(
+    //this.translate.instant('common.notifications.loadedFromCache', {
+    //type: this.translate.instant('common.record.one'),
+    //})
+    //);
+    //}
 
-    if (cachedData) {
-      this.survey.data = cachedData;
-      // this.setUserVariables();
-    } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+    //if (cachedData) {
+    //this.survey.data = cachedData;
+    // this.setUserVariables();
+    //}
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
     } else if (this.record && this.record.data) {
@@ -225,18 +227,18 @@ export class FormComponent
     this.disableSaveAsDraft = false;
     // Cache the survey data, but remove the files from it
     // to avoid hitting the local storage limit
-    const data = cloneDeep(this.survey.data);
-    Object.keys(data).forEach((key) => {
-      const question = this.survey.getQuestionByName(key);
-      if (question && question.getType() === 'file') {
-        delete data[key];
-      }
-    });
+    //const data = cloneDeep(this.survey.data);
+    //Object.keys(data).forEach((key) => {
+    //const question = this.survey.getQuestionByName(key);
+    //if (question && question.getType() === 'file') {
+    //delete data[key];
+    //}
+    //});
 
-    localStorage.setItem(
-      this.storageId,
-      JSON.stringify({ data, date: new Date() })
-    );
+    //localStorage.setItem(
+    //this.storageId,
+    //JSON.stringify({ data, date: new Date() })
+    //);
   }
 
   /**
@@ -336,7 +338,7 @@ export class FormComponent
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     // await Promise.allSettled(promises);
-    await this.formHelpersService.createCachedRecords(this.survey);
+    // await this.formHelpersService.createCachedRecords(this.survey);
     // this.survey.data = surveyData;
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
@@ -429,10 +431,10 @@ export class FormComponent
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
     );
-    localStorage.removeItem(this.storageId);
-    this.formHelpersService.cleanCachedRecords(this.survey);
-    this.isFromCacheData = false;
-    this.storageDate = undefined;
+    //localStorage.removeItem(this.storageId);
+    //this.formHelpersService.cleanCachedRecords(this.survey);
+    //this.isFromCacheData = false;
+    //this.storageDate = undefined;
   }
 
   /**
@@ -496,8 +498,8 @@ export class FormComponent
   /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    localStorage.removeItem(this.storageId);
-    this.formHelpersService.cleanCachedRecords(this.survey);
+    //localStorage.removeItem(this.storageId);
+    //this.formHelpersService.cleanCachedRecords(this.survey);
     this.survey?.dispose();
   }
 }

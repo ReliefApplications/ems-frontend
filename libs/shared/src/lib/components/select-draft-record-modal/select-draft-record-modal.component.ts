@@ -1,12 +1,13 @@
 import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { ConfirmService } from '../../services/confirm/confirm.service';
-import { GET_DRAFT_RECORDS } from './graphql/queries';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DateModule } from '../../pipes/date/date.module';
 import { Component, OnInit, Inject } from '@angular/core';
 import { DELETE_DRAFT_RECORD } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
+import { GET_DRAFT_RECORDS } from './graphql/queries';
 import { CommonModule } from '@angular/common';
+import { Dialog } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import {
   DraftRecordsQueryResponse,
@@ -18,6 +19,7 @@ import {
   ButtonModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { DraftRecordModalComponent } from '../draft-record-modal/draft-record-modal.component';
 
 /**
  * Modal that displays a list of draft records to select from
@@ -56,6 +58,7 @@ export class SelectDraftRecordModalComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private apollo: Apollo,
+    public dialog: Dialog,
     public dialogRef: DialogRef<SelectDraftRecordModalComponent>,
     @Inject(DIALOG_DATA)
     public data: any
@@ -82,6 +85,15 @@ export class SelectDraftRecordModalComponent implements OnInit {
         this.draftRecords = data.draftRecords;
         this.loading = false;
       });
+  }
+
+  previewDraftRecord(element: any) {
+    const dialogRef = this.dialog.open(DraftRecordModalComponent, {
+      data: element,
+    });
+    dialogRef.closed.pipe().subscribe((value) => {
+      console.log('VALUE', value);
+    });
   }
 
   /**

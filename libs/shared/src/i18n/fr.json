@@ -740,6 +740,7 @@
 				"delete": "Supprimer ce brouillon",
 				"load": "Charger ce brouillon",
 				"preview": "Prévisualiser ce brouillon",
+				"previewTitle": "Enregistrement brouillon",
 				"select": "Sélectionner le brouillon",
 				"successEdit": "Brouillon modifié avec succès",
 				"successSave": "Enregistré dans les brouillons avec succès"

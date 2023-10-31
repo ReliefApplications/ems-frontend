@@ -1,0 +1,19 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">{{ 'components.form.draftRecords.previewTitle' | translate }}</h3>
+  </ng-container>
+  <ng-container *ngIf="!loading; else loadingTmpl" ngProjectAs="content">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+      <div class="grow">
+        <survey [model]="survey"></survey>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingTmpl>
+    <!-- Loading indicator -->
+    <div class="h-full w-full flex">
+      <ui-spinner class="m-auto block"></ui-spinner>
+    </div>
+  </ng-template>
+</ui-dialog>

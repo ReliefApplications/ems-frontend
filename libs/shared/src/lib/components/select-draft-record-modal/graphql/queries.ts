@@ -9,6 +9,16 @@ export const GET_DRAFT_RECORDS = gql`
       id
       createdAt
       data
+      form {
+        id
+        structure
+        metadata {
+          name
+          automated
+          canSee
+          canUpdate
+        }
+      }
     }
   }
 `;
