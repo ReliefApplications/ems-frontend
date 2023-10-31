@@ -86,7 +86,7 @@ export class EditLayoutModalComponent implements AfterViewInit {
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending form value.
    */
   onSubmit(): void {
     this.dialogRef.close(this.form?.getRawValue() as any);
