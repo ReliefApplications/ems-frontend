@@ -7,6 +7,7 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   Renderer2,
   ViewChild,
@@ -32,11 +33,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-// import {
-//   CalendarDOMService,
-//   MonthViewService,
-//   WeekNamesService,
-// } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
@@ -50,6 +46,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
+import { WidgetComponent } from '../../../widget/widget.component';
 
 /**
  * Test if an element match a css selector
@@ -72,14 +69,12 @@ export class GridComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy, AfterViewInit, OnChanges
 {
-  /** Array of multi-select types. */
-  public multiSelectTypes: string[] = MULTISELECT_TYPES;
-  /** Environment of the grid. */
-  public environment: 'frontoffice' | 'backoffice';
-  /** Status message of the grid. */
-  public statusMessage = '';
-
-  // === DATA ===
+  /** Input decorator for widget. */
+  @Input() widget: any;
+  /** If inlineEdition is allowed */
+  @Input() editable = false;
+  /* If the grid has changes */
+  @Input() hasChanges = false;
   /** Input decorator for fields.   */
   @Input() fields: any[] = [];
   /** Input decorator for data. */
@@ -97,38 +92,8 @@ export class GridComponent
   };
   /** Input decorator for blank. */
   @Input() blank = false;
-  /** Input decorator for widget. */
-  @Input() widget: any;
   /** Input decorator for canUpdate. */
   @Input() canUpdate = false;
-
-  // === EXPORT ===
-  /** Input decorator for exportSettings. */
-  public exportSettings = EXPORT_SETTINGS;
-  /** Output decorator for export */
-  @Output() export = new EventEmitter();
-
-  // === EDITION ===
-  /** If inlineEdition is allowed */
-  @Input() editable = false;
-  /* If the grid has changes */
-  @Input() hasChanges = false;
-  /** Output decorator for edit */
-  @Output() edit: EventEmitter<any> = new EventEmitter();
-  /** Form group for the component */
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
-  /** Current edited row */
-  private currentEditedRow = 0;
-  /** Current edited item */
-  private currentEditedItem: any;
-  /** Gradient settings for the component */
-  public gradientSettings = GRADIENT_SETTINGS;
-  /** Indicates if the component is in editing mode */
-  public editing = false;
-  /** Row actions for the component */
-  private readonly rowActions = ['update', 'delete', 'history', 'convert'];
-
-  // === ACTIONS ===
   /** Input decorator for actions */
   @Input() actions = {
     add: false,
@@ -148,8 +113,93 @@ export class GridComponent
   };
   /** Input decorator */
   @Input() hasDetails = true;
+  /** Resizable status */
+  @Input() resizable = true;
+  /** Resizable status */
+  @Input() reorderable = true;
+  /** Add permission */
+  @Input() canAdd = false;
+  /** Selectable status */
+  @Input() selectable = true;
+  /** Multi-select status */
+  @Input() multiSelect = true;
+  /** Selected rows */
+  @Input() selectedRows: string[] = [];
+  /** Filterable status */
+  @Input() filterable = true;
+  /** Filter visibility */
+  @Input() showFilter = false;
+  /** Filter descriptor */
+  @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  /** Searchable status */
+  @Input() searchable = true;
+  /** Sortable status */
+  @Input() sortable = true;
+  /** Sort descriptor */
+  @Input() sort: SortDescriptor[] = [];
+  /** Page size */
+  @Input() pageSize = 10;
+  /** Skip value */
+  @Input() skip = 0;
+  /** Admin mode status */
+  @Input() admin = false;
   /** Output decorator for action */
   @Output() action = new EventEmitter();
+  /** Output decorator for export */
+  @Output() export = new EventEmitter();
+  /** Output decorator for edit */
+  @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Filter change event emitter */
+  @Output() filterChange = new EventEmitter();
+  /** Show filter change event emitter */
+  @Output() showFilterChange = new EventEmitter();
+  /** Search change event emitter */
+  @Output() searchChange = new EventEmitter();
+  /** Selection change event emitter */
+  @Output() selectionChange = new EventEmitter();
+  /** Page change event emitter */
+  @Output() pageChange = new EventEmitter();
+  /** Sort change event emitter */
+  @Output() sortChange = new EventEmitter();
+  /** Column change event emitter */
+  @Output() columnChange = new EventEmitter();
+  /** KendoGridComponent view child */
+  @ViewChild(KendoGridComponent)
+  public grid?: KendoGridComponent;
+  /** Array of multi-select types. */
+  public multiSelectTypes: string[] = MULTISELECT_TYPES;
+  /** Environment of the grid. */
+  public environment: 'frontoffice' | 'backoffice';
+  /** Status message of the grid. */
+  public statusMessage = '';
+  /** Form group for the component */
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  /** Current edited row */
+  private currentEditedRow = 0;
+  /** Current edited item */
+  private currentEditedItem: any;
+  /** Gradient settings for the component */
+  public gradientSettings = GRADIENT_SETTINGS;
+  /** Selectable settings */
+  public selectableSettings = SELECTABLE_SETTINGS;
+  /** Pager settings */
+  public pagerSettings = PAGER_SETTINGS;
+  /** Input decorator for exportSettings. */
+  public exportSettings = EXPORT_SETTINGS;
+  /** Indicates if the component is in editing mode */
+  public editing = false;
+  /** Selected items */
+  public selectedItems: any[] = [];
+  /** Column chooser visibility */
+  public showColumnChooser = false;
+  /** Search control */
+  public search = new UntypedFormControl('');
+  /** Row actions for the component */
+  private readonly rowActions = ['update', 'delete', 'history', 'convert'];
+  /** Snackbar reference */
+  private snackBarRef!: any;
+  /** Timeout listeners */
+  private columnChangeTimeoutListener!: NodeJS.Timeout;
 
   /** @returns A boolean indicating if actions are enabled */
   get hasEnabledActions(): boolean {
@@ -168,14 +218,6 @@ export class GridComponent
     return get(this.widget, 'settings.widgetDisplay.showBorder', true);
   }
 
-  // === DISPLAY ===
-  /** Resizable status */
-  @Input() resizable = true;
-  /** Resizable status */
-  @Input() reorderable = true;
-  /** Add permission */
-  @Input() canAdd = false;
-
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
     return {
@@ -184,79 +226,54 @@ export class GridComponent
     };
   }
 
-  // === SELECT ===
-  /** Selectable status */
-  @Input() selectable = true;
-  /** Multi-select status */
-  @Input() multiSelect = true;
-  /** Selectable settings */
-  public selectableSettings = SELECTABLE_SETTINGS;
-  /** Selected rows */
-  @Input() selectedRows: string[] = [];
-  /** Selection change event emitter */
-  @Output() selectionChange = new EventEmitter();
-  /** Selected items */
-  public selectedItems: any[] = [];
-  /** Column chooser visibility */
-  public showColumnChooser = false;
+  /** @returns Visible columns of the grid. */
+  get visibleFields(): any {
+    const extractFieldFromColumn = (column: any): any => ({
+      [column.field]: {
+        field: column.field,
+        title: column.title,
+        width: column.width,
+        hidden: column.hidden,
+        order: column.orderIndex,
+        subFields:
+          this.fields.find((x) => x.name === column.field)?.subFields || [],
+      },
+    });
+    return this.grid?.columns
+      .toArray()
+      .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
+      .filter((x: any) => x.field || x.hasChildren)
+      .reduce(
+        (obj, c: any) => ({
+          ...obj,
+          ...(c.field && extractFieldFromColumn(c)),
+          ...(c.hasChildren &&
+            c.childrenArray.reduce(
+              (objChildren: any, y: any) => ({
+                ...objChildren,
+                ...(y.field && extractFieldFromColumn(y)),
+              }),
+              {}
+            )),
+        }),
+        {}
+      );
+  }
 
-  // === FILTER ===
-  /** Filterable status */
-  @Input() filterable = true;
-  /** Filter visibility */
-  @Input() showFilter = false;
-  /** Filter descriptor */
-  @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
-  /** Filter change event emitter */
-  @Output() filterChange = new EventEmitter();
-  /** Show filter change event emitter */
-  @Output() showFilterChange = new EventEmitter();
-  /** Searchable status */
-  @Input() searchable = true;
-  /** Search control */
-  public search = new UntypedFormControl('');
-  /** Search change event emitter */
-  @Output() searchChange = new EventEmitter();
-
-  // === PAGINATION ===
-  /** Page size */
-  @Input() pageSize = 10;
-  /** Skip value */
-  @Input() skip = 0;
-  /** Pager settings */
-  public pagerSettings = PAGER_SETTINGS;
-  /** Page change event emitter */
-  @Output() pageChange = new EventEmitter();
-
-  // === SORT ===
-  /** Sortable status */
-  @Input() sortable = true;
-  /** Sort descriptor */
-  @Input() sort: SortDescriptor[] = [];
-  /** Sort change event emitter */
-  @Output() sortChange = new EventEmitter();
-
-  // === TEMPLATE ===
-  /** KendoGridComponent view child */
-  @ViewChild(KendoGridComponent)
-  public grid?: KendoGridComponent;
-
-  // === ADMIN ===
-  /** Admin mode status */
-  @Input() admin = false;
-  /** Column change event emitter */
-  @Output() columnChange = new EventEmitter();
-
-  // === SNACKBAR ===
-  /** Snackbar reference */
-  private snackBarRef!: any;
-
-  /** Timeout listeners */
-  private columnChangeTimeoutListener!: NodeJS.Timeout;
+  /** @returns Current grid layout. */
+  get layout(): GridLayout {
+    return {
+      fields: this.visibleFields,
+      sort: this.sort,
+      filter: this.filter,
+      showFilter: this.showFilter,
+    };
+  }
 
   /**
    * Constructor of the grid component
    *
+   * @param widgetComponent parent widget component ( optional )
    * @param environment Current environment
    * @param dialog The Dialog service
    * @param gridService The grid service
@@ -268,6 +285,7 @@ export class GridComponent
    * @param document document
    */
   constructor(
+    @Optional() public widgetComponent: WidgetComponent,
     @Inject('environment') environment: any,
     private dialog: Dialog,
     private gridService: GridService,
@@ -282,7 +300,6 @@ export class GridComponent
     this.environment = environment.module || 'frontoffice';
   }
 
-  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.setSelectedItems();
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
@@ -306,7 +323,6 @@ export class GridComponent
     this.statusMessage = this.getStatusMessage();
   }
 
-  /** OnAfterViewInit lifecycle hook. */
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
@@ -321,7 +337,13 @@ export class GridComponent
     });
   }
 
-  // === DATA ===
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.columnChangeTimeoutListener) {
+      clearTimeout(this.columnChangeTimeoutListener);
+    }
+  }
+
   /**
    * Returns property value in object from path.
    *
@@ -376,21 +398,6 @@ export class GridComponent
     }
   }
 
-  // find field with the path name
-  // const field = this.fields.find((x) => x.name === path);
-  // const fieldMeta = field?.meta ?? {};
-  // if (!fieldMeta) return '';
-
-  // const graphQLName = Object.keys(fieldMeta).find(
-  //   (x) => fieldMeta[x].name === attribute
-  // );
-  // if (!graphQLName) return '';
-
-  // const values = get(item, path);
-  // if (Array.isArray(values)) {
-  //   return values.map((x) => x[graphQLName]).join(', ');
-  // }
-
   /**
    * Returns property value in object from path. Specific for multiselect reference data.
    *
@@ -441,7 +448,6 @@ export class GridComponent
     }
   }
 
-  // === FILTER ===
   /**
    * Handles filter change event.
    *
@@ -477,7 +483,6 @@ export class GridComponent
     this.searchChange.emit(search);
   }
 
-  // === SORT ===
   /**
    * Handles sort change event.
    *
@@ -490,7 +495,6 @@ export class GridComponent
     }
   }
 
-  // === PAGINATION ===
   /**
    * Handles page change event.
    *
@@ -504,7 +508,6 @@ export class GridComponent
     }
   }
 
-  // === SELECT ===
   /**
    * Handles selection change event.
    *
@@ -564,7 +567,6 @@ export class GridComponent
     }
   }
 
-  // === LAYOUT ===
   /**
    * Set and emit new grid configuration after column reorder event.
    */
@@ -586,51 +588,6 @@ export class GridComponent
     this.columnChange.emit();
   }
 
-  /** @returns Visible columns of the grid. */
-  get visibleFields(): any {
-    const extractFieldFromColumn = (column: any): any => ({
-      [column.field]: {
-        field: column.field,
-        title: column.title,
-        width: column.width,
-        hidden: column.hidden,
-        order: column.orderIndex,
-        subFields:
-          this.fields.find((x) => x.name === column.field)?.subFields || [],
-      },
-    });
-    return this.grid?.columns
-      .toArray()
-      .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-      .filter((x: any) => x.field || x.hasChildren)
-      .reduce(
-        (obj, c: any) => ({
-          ...obj,
-          ...(c.field && extractFieldFromColumn(c)),
-          ...(c.hasChildren &&
-            c.childrenArray.reduce(
-              (objChildren: any, y: any) => ({
-                ...objChildren,
-                ...(y.field && extractFieldFromColumn(y)),
-              }),
-              {}
-            )),
-        }),
-        {}
-      );
-  }
-
-  /** @returns Current grid layout. */
-  get layout(): GridLayout {
-    return {
-      fields: this.visibleFields,
-      sort: this.sort,
-      filter: this.filter,
-      showFilter: this.showFilter,
-    };
-  }
-
-  // === INLINE EDITION ===
   /**
    * Detects cell click event and opens row form if user is authorized.
    *
@@ -863,21 +820,27 @@ export class GridComponent
    * Emit an event to open settings window
    */
   public async openSettings(): Promise<void> {
-    const { EditWidgetModalComponent } = await import(
-      '../../../widget-grid/edit-widget-modal/edit-widget-modal.component'
-    );
-    const dialogRef = this.dialog.open(EditWidgetModalComponent, {
-      disableClose: true,
-      data: {
-        tile: this.widget,
-        template: this.dashboardService.findSettingsTemplate(this.widget),
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if (res) {
-        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
-      }
-    });
+    if (this.widgetComponent) {
+      const { EditWidgetModalComponent } = await import(
+        '../../../widget-grid/edit-widget-modal/edit-widget-modal.component'
+      );
+      const dialogRef = this.dialog.open(EditWidgetModalComponent, {
+        disableClose: true,
+        data: {
+          widget: this.widget,
+          template: this.dashboardService.findSettingsTemplate(this.widget),
+        },
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if (res) {
+          this.edit.emit({
+            type: 'data',
+            id: this.widgetComponent.id,
+            options: res,
+          });
+        }
+      });
+    }
   }
 
   /**
@@ -967,12 +930,5 @@ export class GridComponent
       item: dataItem,
       field,
     });
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    if (this.columnChangeTimeoutListener) {
-      clearTimeout(this.columnChangeTimeoutListener);
-    }
   }
 }

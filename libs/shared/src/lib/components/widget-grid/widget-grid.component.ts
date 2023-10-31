@@ -2,14 +2,13 @@ import {
   Component,
   EventEmitter,
   HostListener,
-  Inject,
   Input,
   OnInit,
   Output,
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import {
   TileLayoutReorderEvent,
@@ -19,6 +18,8 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
+import { cloneDeep } from 'lodash';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -48,12 +49,8 @@ export class WidgetGridComponent
   @Input() widgets: any[] = [];
   /** Update permission */
   @Input() canUpdate = false;
-
-  // === GRID ===
   /** Number of columns */
   colsNumber = MAX_COL_SPAN;
-
-  // === EVENT EMITTER ===
   /** Move event emitter */
   @Output() move: EventEmitter<any> = new EventEmitter();
   /** Delete event emitter */
@@ -64,13 +61,16 @@ export class WidgetGridComponent
   @Output() add: EventEmitter<any> = new EventEmitter();
   /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
-
-  // === STEP CHANGE FOR WORKFLOW ===
   /** Change step event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
   /** Widget components view children */
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
+  /** Expanded widget dialog ref, to be closed when navigating */
+  public expandWidgetDialogRef!: DialogRef<
+    unknown,
+    ExpandedWidgetComponent
+  > | null;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -80,8 +80,6 @@ export class WidgetGridComponent
   get canDeactivate() {
     return !this.widgetComponents.some((x) => !x.canDeactivate);
   }
-
-  public isBackOffice = false;
 
   /**
    * Changes display when windows size changes.
@@ -97,19 +95,14 @@ export class WidgetGridComponent
   /**
    * Constructor of the grid widget component
    *
-   * @param environment This is the environment in which we are running the application
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(
-    @Inject('environment') environment: any,
     public dialog: Dialog,
     private dashboardService: DashboardService
   ) {
     super();
-    if (environment.module === 'backoffice') {
-      this.isBackOffice = true;
-    }
   }
 
   /** OnInit lifecycle hook. */
@@ -165,11 +158,8 @@ export class WidgetGridComponent
    * @param e widget to style.
    */
   onStyleWidget(e: any): void {
-    const widgetComp = this.widgetComponents.find(
-      (v) => v.widget.id == e.widget.id
-    );
     this.style.emit({
-      domId: widgetComp?.id,
+      id: e.id,
       widget: e.widget,
     });
   }
@@ -180,22 +170,38 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
-    const widget = this.widgets.find((x) => x.id === e.id);
-    const { ExpandedWidgetComponent } = await import(
-      './expanded-widget/expanded-widget.component'
-    );
-    const dialogRef = this.dialog.open(ExpandedWidgetComponent, {
-      data: {
-        widget,
-      },
-      autoFocus: false,
-    });
-    dialogRef.componentInstance?.changeStep
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event: any) => {
-        this.changeStep.emit(event);
-        dialogRef.close();
+    const target = this.widgetComponents.find((x) => x.id === e.id);
+    if (target) {
+      target.fullscreen = true;
+      const { ExpandedWidgetComponent } = await import(
+        './expanded-widget/expanded-widget.component'
+      );
+      this.expandWidgetDialogRef = this.dialog.open(ExpandedWidgetComponent, {
+        data: {
+          element: target?.elementRef,
+        },
+        autoFocus: false,
       });
+      // Destroy dialog ref after closed to show the widget header actions again
+      this.expandWidgetDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          target.fullscreen = false;
+          this.expandWidgetDialogRef = null;
+        });
+    }
+  }
+
+  /**
+   * Emits current change step and close the expand widget dialog if triggered from there
+   *
+   * @param event Step emitted by child grid widget component
+   */
+  triggerChangeStepAction(event: number) {
+    this.changeStep.emit(event);
+    if (this.expandWidgetDialogRef) {
+      this.expandWidgetDialogRef?.close();
+    }
   }
 
   /**
@@ -206,8 +212,8 @@ export class WidgetGridComponent
    */
   async onAdd(e: any): Promise<void> {
     if (e) {
-      const tile = JSON.parse(JSON.stringify(e));
-      if (tile) {
+      const widget = cloneDeep(e);
+      if (widget) {
         /** Open settings dialog component from the widget.  */
         const { EditWidgetModalComponent } = await import(
           './edit-widget-modal/edit-widget-modal.component'
@@ -215,8 +221,8 @@ export class WidgetGridComponent
         const dialogRef = this.dialog.open(EditWidgetModalComponent, {
           disableClose: true,
           data: {
-            tile: tile,
-            template: this.dashboardService.findSettingsTemplate(tile),
+            widget,
+            template: this.dashboardService.findSettingsTemplate(widget),
           },
         });
         dialogRef.closed
@@ -225,7 +231,7 @@ export class WidgetGridComponent
             // Should save the value, and so, add the widget to the grid
             if (value) {
               this.add.emit({
-                ...tile,
+                ...widget,
                 settings: value,
               });
             }
@@ -260,14 +266,11 @@ export class WidgetGridComponent
     if (e.newColSpan > MAX_COL_SPAN) {
       e.newColSpan = MAX_COL_SPAN;
     }
+    const target = this.widgets[e.item.order];
+    target.defaultCols = e.newColSpan;
+    target.defaultRows = e.newRowSpan;
     this.edit.emit({
       type: 'display',
-      id: this.widgets[e.item.order].id,
-      options: {
-        id: this.widgets[e.item.order].id,
-        cols: e.newColSpan,
-        rows: e.newRowSpan,
-      },
     });
   }
 

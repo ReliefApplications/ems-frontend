@@ -1,10 +1,6 @@
 <ui-dialog size="fullscreen">
   <ng-container ngProjectAs="content">
-    <shared-widget
-      [widget]="data.widget"
-      [header]="false"
-      (changeStep)="changeStep.emit($event)"
-    ></shared-widget>
+    <ng-template [cdkPortalOutlet]="portal"></ng-template>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button uiDialogClose>

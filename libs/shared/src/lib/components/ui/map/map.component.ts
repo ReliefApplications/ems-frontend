@@ -146,11 +146,14 @@ export class MapComponent
   public searchControl?: L.Control;
   @Output() search = new EventEmitter();
 
-  // === QUERY UPDATE INFO ===
+  /** Last update control */
+  public lastUpdateControl?: L.Control;
+
+  /** query Update info */
   public lastUpdate = '';
   private appliedDashboardFilters: Record<string, any>;
 
-  // === LAYERS ===
+  /** Layers */
   layers: Layer[] = [];
   private layerIds: string[] = [];
 
@@ -611,6 +614,7 @@ export class MapComponent
       this.searchControl?.remove();
       this.searchControl = undefined;
     }
+    this.refreshLastUpdate();
   }
 
   /**
@@ -707,6 +711,7 @@ export class MapComponent
             layersTree.push(parseTreeNode(layer));
           });
           Promise.all(layersTree).then((layersTree) => {
+            this.refreshLastUpdate();
             resolve({ layers: layersTree });
           });
         });
@@ -1067,5 +1072,29 @@ export class MapComponent
     (this.map as any)['_handlers']?.forEach((handler: L.Handler) => {
       disable ? handler.disable() : handler.enable();
     });
+  }
+
+  /**
+   * Updates the last update control with the latest map refresh time
+   */
+  private refreshLastUpdate(): void {
+    const controls = this.extractSettings().controls;
+    if (!isNil(controls.lastUpdate)) {
+      if (!this.lastUpdateControl) {
+        this.lastUpdateControl = this.mapControlsService.getLastUpdateControl(
+          this.map,
+          this.extractSettings().controls.lastUpdate as L.ControlPosition
+        );
+      } else {
+        this.lastUpdateControl.remove();
+        this.lastUpdateControl = this.mapControlsService.getLastUpdateControl(
+          this.map,
+          this.extractSettings().controls.lastUpdate as L.ControlPosition
+        );
+      }
+    } else {
+      this.lastUpdateControl?.remove();
+      this.lastUpdateControl = undefined;
+    }
   }
 }

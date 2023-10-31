@@ -205,6 +205,7 @@
 			"none": "Pas de groupes",
 			"one": "Groupe"
 		},
+		"hide": "Cacher",
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "Back-Office"
+		},
+		"position": {
+			"bottomleft": "En bas à gauche",
+			"bottomright": "En bas à droite",
+			"topleft": "En haut à gauche",
+			"topright": "En haut à droite"
 		},
 		"positionAttribute": {
 			"few": "Attributs de position",
@@ -1494,6 +1501,10 @@
 					"tooltip": {
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
 						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
+					},
+					"warnings": {
+						"add": "Veuillez sélectionner un modèle",
+						"general": "Attention: les actions contiennent des erreurs"
 					}
 				},
 				"iconPicker": {
@@ -1660,6 +1671,8 @@
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
+							"lastUpdate": "Dernière mise à jour le",
+							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
 							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",

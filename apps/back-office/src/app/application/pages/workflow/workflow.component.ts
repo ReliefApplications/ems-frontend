@@ -19,6 +19,7 @@ import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { Subscription } from 'rxjs';
 
 /**
  * Application workflow page component.
@@ -45,6 +46,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
 
   // === ACTIVE STEP ===
   public activeStep = 0;
+  /** Subscription to change step events */
+  private changeStepSubscription!: Subscription;
 
   // === DUP APP SELECTION ===
   public showAppMenu = false;
@@ -276,14 +279,23 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: number) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
+      this.changeStepSubscription = elementRef.changeStep.subscribe(
+        (event: number) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
         }
-      });
+      );
     }
+  }
+
+  /**
+   * Clear subscriptions set from the router-outlet
+   */
+  clearSubscriptions() {
+    this.changeStepSubscription?.unsubscribe();
   }
 
   /**

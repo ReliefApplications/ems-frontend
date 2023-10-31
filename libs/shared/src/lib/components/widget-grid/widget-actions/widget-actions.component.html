@@ -2,7 +2,7 @@
   <div class="flex items-center" *ngIf="!collapsed">
     <ui-button
       [isIcon]="true"
-      icon="insert_chart"
+      icon="tune"
       [uiTooltip]="'common.settings' | translate"
       (click)="onClick('settings')"
       [disabled]="!this.widget || !this.widget.settings"
@@ -48,7 +48,7 @@
       (click)="onClick('settings')"
       [disabled]="!this.widget || !this.widget.settings"
     >
-      <ui-icon icon="insert_chart" variant="grey"></ui-icon>
+      <ui-icon icon="tune" variant="grey"></ui-icon>
       <span>{{ 'common.settings' | translate }}</span>
     </button>
     <button uiMenuItem (click)="onClick('style')">

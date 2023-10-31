@@ -18,8 +18,8 @@ export class TabActionsComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Widget reactive form group */
   @Input() formGroup!: UntypedFormGroup;
-
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
   /** Available pages from the application */
@@ -55,6 +55,7 @@ export class TabActionsComponent
       name: 'addRecord',
       text: 'components.widget.settings.grid.actions.add',
       tooltip: 'components.widget.settings.grid.hint.actions.add',
+      toolTipWarning: 'components.widget.settings.grid.warnings.add',
     },
     {
       name: 'export',

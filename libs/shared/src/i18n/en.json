@@ -205,6 +205,7 @@
 			"none": "No groups",
 			"one": "Group"
 		},
+		"hide": "Hide",
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "Back-Office"
+		},
+		"position": {
+			"bottomleft": "Bottom left",
+			"bottomright": "Bottom right",
+			"topleft": "Top left",
+			"topright": "Top right"
 		},
 		"positionAttribute": {
 			"few": "Position attributes",
@@ -1478,6 +1485,10 @@
 					"tooltip": {
 						"template": "Select a template for addition and edition of records",
 						"useRecordId": "Url will contain id of the item, in order to redirect to contextual page, if configured"
+					},
+					"warnings": {
+						"add": "Please select a template",
+						"general": "Warning: actions contain errors"
 					}
 				},
 				"iconPicker": {
@@ -1644,6 +1655,8 @@
 						"basemap": "Base map",
 						"controls": {
 							"download": "Download",
+							"lastUpdate": "Last updated on",
+							"lastUpdateError": "Last modified time could not be loaded",
 							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",

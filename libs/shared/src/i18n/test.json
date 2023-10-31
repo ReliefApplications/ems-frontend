@@ -205,6 +205,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"hide": "******",
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "******"
+		},
+		"position": {
+			"bottomleft": "******",
+			"bottomright": "******",
+			"topleft": "******",
+			"topright": "******"
 		},
 		"positionAttribute": {
 			"few": "******",
@@ -1478,6 +1485,10 @@
 					"tooltip": {
 						"template": "******",
 						"useRecordId": "******"
+					},
+					"warnings": {
+						"add": "******",
+						"general": "******"
 					}
 				},
 				"iconPicker": {
@@ -1644,6 +1655,8 @@
 						"basemap": "******",
 						"controls": {
 							"download": "******",
+							"lastUpdate": "******",
+							"lastUpdateError": "******",
 							"layer": "******",
 							"legend": "******",
 							"measure": "******",

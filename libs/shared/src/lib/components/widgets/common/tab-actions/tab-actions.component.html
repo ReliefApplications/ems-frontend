@@ -20,6 +20,19 @@
               [uiTooltip]="action.tooltip | translate"
               uiTooltipPosition="right"
             ></ui-icon>
+            <!-- Icon with warning if any -->
+            <ui-icon
+              *ngIf="
+                formGroup.get('actions')?.get(action.name)?.invalid &&
+                action.toolTipWarning
+              "
+              class="ml-1 cursor-help self-center"
+              variant="danger"
+              icon="warning"
+              [size]="18"
+              [uiTooltip]="action.toolTipWarning | translate"
+              uiTooltipPosition="right"
+            ></ui-icon>
           </ng-container>
         </ui-toggle>
       </div>
@@ -69,7 +82,7 @@
             {{
               'components.widget.settings.grid.actions.useRecordId' | translate
             }}<ui-icon
-              class="ml-1 cursor-help "
+              class="ml-1 cursor-help"
               variant="grey"
               icon="info_outline"
               [size]="18"

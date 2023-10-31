@@ -27,7 +27,7 @@ describe('EditWidgetModalComponent', () => {
         {
           provide: DIALOG_DATA,
           useValue: {
-            tile: {},
+            widget: {},
             template: ChartSettingsComponent,
           },
         },

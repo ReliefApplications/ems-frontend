@@ -13,7 +13,7 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-map-properties
-        [form]="tileForm"
+        [form]="widgetFormGroup"
         [mapSettings]="mapSettings"
         [destroyTab$]="destroyTab$"
         [currentMapContainerRef]="currentMapContainerRef"
@@ -28,7 +28,7 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-map-layers
-        [control]="$any(tileForm.get('layers'))"
+        [control]="$any(widgetFormGroup.get('layers'))"
         [mapComponent]="mapComponent"
         [destroyTab$]="destroyTab$"
         [currentMapContainerRef]="currentMapContainerRef"
@@ -42,7 +42,9 @@
       <span>{{ 'models.widget.display.title' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-display-settings [formGroup]="tileForm"></shared-display-settings>
+      <shared-display-settings
+        [formGroup]="widgetFormGroup"
+      ></shared-display-settings>
     </ng-template>
   </ui-tab>
 </ui-tabs>
