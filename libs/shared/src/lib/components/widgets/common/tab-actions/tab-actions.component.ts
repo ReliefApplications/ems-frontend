@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { GET_RESOURCE_BY_ID } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
-import { ResourceQueryResponse } from '@oort-front/shared';
+import { ResourceQueryResponse } from 'libs/shared/src/lib/models/resource.model';
 
 /**
  * Actions tab of grid widget configuration modal.
