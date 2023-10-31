@@ -1414,6 +1414,10 @@
 							"label": "Nom de la colonne",
 							"placeholder": "Entrez un nom pour la colonne..."
 						},
+						"recordField": {
+							"label": "Passer le champ comme paramètre de requête",
+							"placeholder": "Sélectionnez un champ"
+						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",

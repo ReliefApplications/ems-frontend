@@ -1398,6 +1398,10 @@
 							"label": "Column name",
 							"placeholder": "Type a title for the column..."
 						},
+						"recordField": {
+							"label": "Pass field as query parameter",
+							"placeholder": "Select a field"
+						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",

@@ -5,6 +5,9 @@ import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { GET_RESOURCE_BY_ID } from './graphql/queries';
+import { Apollo } from 'apollo-angular';
+import { ResourceQueryResponse } from '@oort-front/shared';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -22,6 +25,8 @@ export class TabActionsComponent
   @Input() formGroup!: UntypedFormGroup;
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
+  /** Selected resource fields */
+  public resourceFields: string[] = [];
   /** Available pages from the application */
   public pages: any[] = [];
   /** Grid actions */
@@ -78,12 +83,30 @@ export class TabActionsComponent
    * Constructor of the grid component
    *
    * @param applicationService Application service
+   * @param apollo Apollo service
    */
-  constructor(public applicationService: ApplicationService) {
+  constructor(
+    public applicationService: ApplicationService,
+    private apollo: Apollo
+  ) {
     super();
   }
 
   ngOnInit(): void {
+    if (this.formGroup.get('resource')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_BY_ID,
+          variables: {
+            id: this.formGroup.get('resource')?.value,
+          },
+        })
+        .subscribe(({ data }) => {
+          data.resource.fields.forEach((field: any) => {
+            this.resourceFields.push(field.name);
+          });
+        });
+    }
     this.showSelectPage =
       this.formGroup.controls.actions.get('navigateToPage')?.value;
     // Add available pages to the list of available keys

@@ -1398,6 +1398,10 @@
 							"label": "******",
 							"placeholder": "******"
 						},
+						"recordField": {
+							"label": "******",
+							"placeholder": "******"
+						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",

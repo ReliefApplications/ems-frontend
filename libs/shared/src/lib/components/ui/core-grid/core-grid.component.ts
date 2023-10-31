@@ -273,7 +273,7 @@ export class CoreGridComponent
     showDetails: true,
     navigateToPage: false,
     navigateSettings: {
-      useRecordId: false,
+      recordField: '',
       pageUrl: '',
       title: '',
     },
@@ -369,9 +369,9 @@ export class CoreGridComponent
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
-        useRecordId: get(
+        recordField: get(
           this.settings,
-          'actions.navigateSettings.useRecordId',
+          'actions.navigateSettings.recordField',
           false
         ),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
@@ -851,7 +851,7 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
-   * @param event.useRecordId boolean to use record id
+   * @param event.recordField boolean to use record id
    */
   public onAction(event: {
     action: string;
@@ -860,7 +860,7 @@ export class CoreGridComponent
     value?: any;
     field?: any;
     pageUrl?: string;
-    useRecordId?: boolean;
+    recordField?: string;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -898,9 +898,15 @@ export class CoreGridComponent
       case 'goTo': {
         if (event.item) {
           let fullUrl = this.getPageUrl(event.pageUrl as string);
-          if (event.useRecordId) {
-            const recordId = event.item.id;
-            fullUrl = `${fullUrl}?id=${recordId}`;
+          if (event.recordField) {
+            const field = event.recordField;
+            let recordField = '';
+            if (field === 'id') {
+              recordField = event.item.id;
+            } else {
+              recordField = event.item[field].Value;
+            }
+            fullUrl = `${fullUrl}?id=${recordField}`;
           }
           this.router.navigateByUrl(fullUrl);
         }

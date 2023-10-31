@@ -520,10 +520,10 @@ export class SummaryCardComponent
         navigateToPage: get(this.settings, 'actions.navigateToPage', false),
         navigateSettings: {
           pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
-          useRecordId: get(
+          recordField: get(
             this.settings,
-            'actions.navigateSettings.useRecordId',
-            false
+            'actions.navigateSettings.recordField',
+            ''
           ),
           title: get(this.settings, 'actions.navigateSettings.title', ''),
         },
