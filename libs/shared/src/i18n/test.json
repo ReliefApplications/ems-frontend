@@ -726,7 +726,9 @@
 				"delete": "******",
 				"load": "******",
 				"preview": "******",
-				"select": "******"
+				"select": "******",
+				"successEdit": "******",
+				"successSave": "******"
 			},
 			"layout": {
 				"delete": {

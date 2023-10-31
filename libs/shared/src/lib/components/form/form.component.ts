@@ -273,9 +273,12 @@ export class FormComponent
           this.snackBar.openSnackBar(errors[0].message, { error: true });
         } else {
           localStorage.removeItem(this.storageId);
-          this.snackBar.openSnackBar('Successfully saved as draft', {
-            error: false,
-          });
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successSave'),
+            {
+              error: false,
+            }
+          );
         }
         this.surveyActive = true;
         // Emit but stay in record addition mode
@@ -299,9 +302,12 @@ export class FormComponent
           this.snackBar.openSnackBar(errors[0].message, { error: true });
         } else {
           localStorage.removeItem(this.storageId);
-          this.snackBar.openSnackBar('Successfully edited draft', {
-            error: false,
-          });
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successEdit'),
+            {
+              error: false,
+            }
+          );
         }
         this.surveyActive = true;
         // Emit but stay in record addition mode

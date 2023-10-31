@@ -726,7 +726,9 @@
 				"delete": "Delete this draft",
 				"load": "Load this draft",
 				"preview": "Preview this draft",
-				"select": "Select draft record"
+				"select": "Select draft record",
+				"successEdit": "Successfully edited draft",
+				"successSave": "Successfully saved as draft"
 			},
 			"layout": {
 				"delete": {
