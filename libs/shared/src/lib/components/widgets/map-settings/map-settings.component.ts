@@ -39,10 +39,10 @@ export class MapSettingsComponent
     'parameters';
   public mapSettings!: MapConstructorSettings;
   // === REACTIVE FORM ===
-  tileForm!: UntypedFormGroup;
+  widgetFormGroup!: UntypedFormGroup;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() widget: any;
   public openedLayers: (LayerModel | undefined)[] = [];
 
   // === EMIT THE CHANGES APPLIED ===
@@ -75,19 +75,19 @@ export class MapSettingsComponent
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.tileForm = extendWidgetForm(
-      createMapWidgetFormGroup(this.tile.id, this.tile.settings),
-      this.tile.settings?.widgetDisplay
+    this.widgetFormGroup = extendWidgetForm(
+      createMapWidgetFormGroup(this.widget.id, this.widget.settings),
+      this.widget.settings?.widgetDisplay
     );
 
-    this.change.emit(this.tileForm);
+    this.change.emit(this.widgetFormGroup);
 
     const defaultMapSettings: MapConstructorSettings = {
-      basemap: this.tileForm.value.basemap,
-      initialState: this.tileForm.get('initialState')?.value,
-      controls: this.tileForm.value.controls,
-      arcGisWebMap: this.tileForm.value.arcGisWebMap,
-      layers: this.tileForm.value.layers,
+      basemap: this.widgetFormGroup.value.basemap,
+      initialState: this.widgetFormGroup.get('initialState')?.value,
+      controls: this.widgetFormGroup.value.controls,
+      arcGisWebMap: this.widgetFormGroup.value.arcGisWebMap,
+      layers: this.widgetFormGroup.value.layers,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
@@ -131,12 +131,14 @@ export class MapSettingsComponent
    * Set form listeners
    */
   private setUpFormListeners() {
-    if (!this.tileForm) return;
+    if (!this.widgetFormGroup) return;
 
-    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.change.emit(this.tileForm);
-    });
-    this.tileForm
+    this.widgetFormGroup?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.change.emit(this.widgetFormGroup);
+      });
+    this.widgetFormGroup
       .get('initialState')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
@@ -144,13 +146,13 @@ export class MapSettingsComponent
           initialState: value,
         } as MapConstructorSettings)
       );
-    this.tileForm
+    this.widgetFormGroup
       .get('basemap')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
-    this.tileForm
+    this.widgetFormGroup
       .get('controls')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -158,7 +160,7 @@ export class MapSettingsComponent
           controls: value,
         } as MapConstructorSettings);
       });
-    this.tileForm
+    this.widgetFormGroup
       .get('arcGisWebMap')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
@@ -166,7 +168,7 @@ export class MapSettingsComponent
           arcGisWebMap: value,
         } as MapConstructorSettings)
       );
-    this.tileForm
+    this.widgetFormGroup
       .get('layers')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
@@ -188,13 +190,15 @@ export class MapSettingsComponent
       (this.currentTab !== 'layer' && tab === 'layer')
     ) {
       this.mapSettings = {
-        basemap: this.tileForm?.value.basemap,
-        initialState: this.tileForm?.get('initialState')?.value,
+        basemap: this.widgetFormGroup?.value.basemap,
+        initialState: this.widgetFormGroup?.get('initialState')?.value,
         controls:
-          tab !== 'layer' ? this.tileForm?.value.controls : DefaultMapControls,
-        arcGisWebMap: this.tileForm?.value.arcGisWebMap,
+          tab !== 'layer'
+            ? this.widgetFormGroup?.value.controls
+            : DefaultMapControls,
+        arcGisWebMap: this.widgetFormGroup?.value.arcGisWebMap,
         ...(tab !== 'layer' && {
-          layers: this.tileForm?.value.layers,
+          layers: this.widgetFormGroup?.value.layers,
         }),
       };
     }
@@ -227,7 +231,7 @@ export class MapSettingsComponent
    * @param event leaflet map event
    */
   handleMapEvent(event: MapEvent) {
-    if (!this.tileForm) return;
+    if (!this.widgetFormGroup) return;
     switch (event.type) {
       case MapEventType.MOVE_END:
         this.mapSettings.initialState.viewpoint.center.latitude =
@@ -237,7 +241,7 @@ export class MapSettingsComponent
         break;
       case MapEventType.ZOOM_END:
         this.mapSettings.initialState.viewpoint.zoom = event.content.zoom;
-        this.tileForm
+        this.widgetFormGroup
           .get('initialState.viewpoint.zoom')
           ?.setValue(this.mapSettings.initialState.viewpoint.zoom, {
             emitEvent: false,
@@ -247,122 +251,6 @@ export class MapSettingsComponent
         break;
     }
   }
-
-  // /**
-  //  * Open layer edition
-  //  *
-  //  * @param layer layer to open
-  //  */
-  // onEditLayer(layer?: LayerModel): void {
-  //   // this.openedLayers.unshift(layer);
-  //   // We initialize the map settings to default value once we display the map layer editor
-  //   (this.mapComponent as MapComponent).mapSettings = {
-  //     basemap: 'OSM',
-  //     initialState: {
-  //       viewpoint: {
-  //         center: {
-  //           longitude: 0,
-  //           latitude: 0,
-  //         },
-  //         zoom: 2,
-  //       },
-  //     },
-  //     controls: DefaultMapControls,
-  //   };
-  //   // this.openTab('layer');
-  // }
-
-  // /**
-  //  * Delete given layer id from the layers form and updates map view
-  //  *
-  //  * @param layerIdToDelete Layer id to  delete
-  //  */
-  // onDeleteLayer(layerIdToDelete: string): void {
-  //   // Update layer form
-  //   this.updateLayersForm(layerIdToDelete, true);
-  //   // Update map view
-  //   this.mapSettings = {
-  //     basemap: this.tileForm?.value.basemap,
-  //     initialState: this.tileForm?.get('initialState')?.value,
-  //     controls: this.tileForm?.value.controls,
-  //     arcGisWebMap: this.tileForm?.value.arcGisWebMap,
-  //     layers: this.tileForm?.value.layers,
-  //   };
-  // }
-
-  // /**
-  //  * Add or edit existing layer
-  //  *
-  //  * @param layerData layer to save
-  //  */
-  // saveLayer(layerData?: any) {
-  //   const goToNextScreen = () => {
-  //     // Go to the previous layer if we are editing an existing one
-  //     this.openedLayers.shift();
-
-  //     // If no more layers to edit, go back to the main layers list
-  //     if (this.openedLayers.length === 0) this.openTab('layers');
-  //   };
-
-  //   if (layerData) {
-  //     if (layerData.id) {
-  //       this.mapLayersService.editLayer(layerData).subscribe({
-  //         next: (result) => {
-  //           // We check if we are editing an already added layer to the tile form
-  //           // Or we are adding a new one from an existing layer
-  //           const layer = this.openedLayers[0];
-  //           const isInGroup = this.openedLayers.length > 1;
-  //           const layersArr = isInGroup
-  //             ? layer?.sublayers ?? []
-  //             : this.tileForm?.get('layers')?.value ?? [];
-
-  //           if (result && !layersArr?.includes(result.id)) {
-  //             this.updateLayersForm(result.id);
-  //           }
-  //           goToNextScreen();
-  //         },
-  //         error: (err) => console.log(err),
-  //       });
-  //     } else {
-  //     }
-  //   } else {
-  //     goToNextScreen();
-  //   }
-  // }
-
-  // /**
-  //  * Add given layer id to the layers form
-  //  *
-  //  * @param newLayerId New layer to set in the layers form
-  //  * @param toDelete Is to delete or not
-  //  */
-  // private updateLayersForm(newLayerId: string, toDelete = false) {
-  //   const isGroupForm = this.openedLayers.length > 1;
-
-  //   if (!isGroupForm) {
-  //     let layers = [...(this.tileForm?.get('layers')?.value ?? []), newLayerId];
-  //     if (toDelete) {
-  //       layers = this.tileForm
-  //         ?.get('layers')
-  //         ?.value.filter((layerId: string) => layerId !== newLayerId);
-  //     }
-  //     this.tileForm?.get('layers')?.setValue(layers);
-  //     this.tileForm?.markAsTouched();
-  //     this.tileForm?.markAsDirty();
-  //     return;
-  //   }
-
-  //   // This function will never be called when deleting a layer from a group
-  //   if (toDelete) return;
-
-  //   // Add to the second element, since that will be the group
-  //   // containing the sublayer that was just saved.
-  //   const layer = this.openedLayers[1];
-  //   if (!layer) return;
-
-  //   const currLayers = layer.sublayers ?? [];
-  //   layer.sublayers = [...new Set([...currLayers, newLayerId])];
-  // }
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'apollo-angular';
 
 // === GET FORM BY ID ===
 /** Get form query */

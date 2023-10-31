@@ -15,7 +15,7 @@ import {
 
 describe('EditLayoutModalComponent', () => {
   let component: EditLayoutModalComponent;
-  let fixture: ComponentFixture<sharedEditLayoutModalComponent>;
+  let fixture: ComponentFixture<EditLayoutModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

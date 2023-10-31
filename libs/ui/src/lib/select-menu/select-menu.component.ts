@@ -15,13 +15,16 @@ import {
   AfterContentInit,
   Optional,
   Self,
+  OnChanges,
 } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
 import {
   Observable,
   Subject,
   Subscription,
+  debounceTime,
+  distinctUntilChanged,
   merge,
   startWith,
   takeUntil,
@@ -41,7 +44,7 @@ import { isNil } from 'lodash';
   styleUrls: ['./select-menu.component.scss'],
 })
 export class SelectMenuComponent
-  implements ControlValueAccessor, AfterContentInit, OnDestroy
+  implements ControlValueAccessor, OnChanges, AfterContentInit, OnDestroy
 {
   /** Tells if the select menu should allow multi selection */
   @Input() multiselect = false;
@@ -49,6 +52,8 @@ export class SelectMenuComponent
   @Input() disabled = false;
   /** Tells if some styles to the current ul element should be applied */
   @Input() isGraphQlSelect = false;
+  /** If the option list is searchable or not */
+  @Input() filterable = false;
   /** Default selected value */
   @Input() value?: string | string[] | null;
   /** Any custom template provided for display */
@@ -71,13 +76,19 @@ export class SelectMenuComponent
 
   @ViewChild('optionPanel', { static: true }) optionPanel!: TemplateRef<any>;
 
+  /* Search control and loading state */
+  public searchControl = new FormControl('', { nonNullable: true });
+  public loading = false;
+  private searchSubscriptionActive!: Subscription;
+
   /** Array to store the values selected */
   public selectedValues: any[] = [];
   /** True if the box is focused, false otherwise */
   public listBoxFocused = false;
   /** Text to be displayed in the trigger when some selections are made */
   public displayTrigger = this.placeholder;
-
+  // Needed property for the components in survey that would use the select-menu component
+  public triggerUIChange$ = new Subject<boolean>();
   private destroy$ = new Subject<void>();
   private clickOutsideListener!: () => void;
   private selectClosingActionsSubscription!: Subscription;
@@ -88,6 +99,14 @@ export class SelectMenuComponent
   /** Control access value functions */
   onChange!: (value: any) => void;
   onTouch!: () => void;
+
+  /** @returns if current option list is empty by option number or option display number by search */
+  get emptyList() {
+    return (
+      this.optionList.toArray().every((option) => !option.display) ||
+      !this.optionList.length
+    );
+  }
 
   /**
    * Ui Select constructor
@@ -112,6 +131,24 @@ export class SelectMenuComponent
     }
   }
 
+  ngOnChanges(): void {
+    // Listen to search bar changes if filterable is available
+    if (this.filterable) {
+      if (this.searchSubscriptionActive) {
+        this.searchSubscriptionActive.unsubscribe();
+      }
+      this.searchSubscriptionActive = this.searchControl.valueChanges
+        .pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((searchValue: string) => {
+          this.filterOptionList(searchValue);
+        });
+    }
+  }
+
   ngAfterContentInit(): void {
     this.clickOutsideListener = this.renderer.listen(
       window,
@@ -120,7 +157,9 @@ export class SelectMenuComponent
         if (
           !(
             this.el.nativeElement.contains(event.target) ||
-            this.document.getElementById('optionList')?.contains(event.target)
+            this.document
+              .getElementById('optionsContainer')
+              ?.contains(event.target)
           )
         ) {
           this.closeSelectPanel();
@@ -427,6 +466,8 @@ export class SelectMenuComponent
     }
     this.closePanelTimeoutListener = setTimeout(() => {
       this.overlayRef.detach();
+      this.searchControl.setValue('');
+      this.triggerUIChange$.next(true);
     }, 100);
   }
 
@@ -456,6 +497,34 @@ export class SelectMenuComponent
       this.renderer.removeClass(selectList, 'translate-y-0');
       this.renderer.removeClass(selectList, 'opacity-100');
     }
+  }
+
+  /**
+   * Filter the current option list by the given search value
+   *
+   * @param searchValue value to filter current option list
+   */
+  private filterOptionList(searchValue: string) {
+    this.loading = true;
+    // Recursively set option display input, based on if the option is a group or not
+    const setOptionVisibility = (options: QueryList<SelectOptionComponent>) => {
+      options.forEach((option) => {
+        if (option.options.length) {
+          setOptionVisibility(option.options);
+          option.display = option.options.toArray().some((o) => o.display);
+        } else {
+          const regExTest = new RegExp(searchValue, 'gmi');
+          if (regExTest.test(option.label)) {
+            option.display = true;
+          } else {
+            option.display = false;
+          }
+        }
+      });
+    };
+    setOptionVisibility(this.optionList);
+    this.loading = false;
+    this.triggerUIChange$.next(true);
   }
 
   ngOnDestroy(): void {

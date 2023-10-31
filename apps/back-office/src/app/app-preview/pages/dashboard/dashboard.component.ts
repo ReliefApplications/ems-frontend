@@ -35,7 +35,7 @@ export class DashboardComponent
   /** Loading indicator */
   public loading = true;
   /** Current widgets */
-  public tiles = [];
+  public widgets = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Emit event when changing steps */
@@ -81,7 +81,7 @@ export class DashboardComponent
             if (data.dashboard) {
               this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.tiles = data.dashboard.structure
+              this.widgets = data.dashboard.structure
                 ? data.dashboard.structure
                 : [];
               this.loading = loading;

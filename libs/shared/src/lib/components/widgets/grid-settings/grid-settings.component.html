@@ -35,6 +35,16 @@
       <span>{{
         'components.widget.settings.grid.actions.title' | translate
       }}</span>
+      <!-- Icon with warning if any -->
+      <ui-icon
+        *ngIf="formGroup.get('actions')?.invalid"
+        class="ml-1 cursor-help self-center"
+        variant="danger"
+        icon="warning"
+        [size]="18"
+        [uiTooltip]="'components.widget.settings.grid.warnings.general' | translate"
+        uiTooltipPosition="right"
+      ></ui-icon>
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-actions [formGroup]="formGroup"></shared-tab-actions>

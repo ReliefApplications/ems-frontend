@@ -1,4 +1,4 @@
-<form [formGroup]="tileForm" class="flex flex-col gap-3">
+<form [formGroup]="formGroup" class="flex flex-col gap-3">
   <div uiFormFieldDirective>
     <label>{{ 'common.title' | translate }}</label>
     <input formControlName="title" type="string" />
@@ -46,7 +46,7 @@
     <!-- SELECT AGGREGATION OR LAYOUT -->
     <div
       class="flex flex-col mt-8 gap-8"
-      *ngIf="tileForm.get('card.resource')?.value"
+      *ngIf="formGroup.get('card.resource')?.value"
     >
       <div *ngIf="!selectedAggregation">
         <h2>{{ 'common.layout.one' | translate }}</h2>
@@ -84,7 +84,7 @@
 
     <!-- FROM LAYOUTS -->
     <ng-container
-      *ngIf="selectedLayout && tileForm.get('card.resource')?.value"
+      *ngIf="selectedLayout && formGroup.get('card.resource')?.value"
     >
       <div uiFormFieldDirective>
         <label>{{ 'common.layout.one' | translate }}</label>
@@ -107,7 +107,7 @@
           [isIcon]="true"
           icon="close"
           (click)="
-            tileForm.get('card.layout')?.setValue(null); layoutChange.emit(null)
+            formGroup.get('card.layout')?.setValue(null); layoutChange.emit(null)
           "
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
@@ -126,7 +126,7 @@
           }}
         </ng-container>
       </ui-checkbox>
-      <div *ngIf="this.tileForm.value.card?.useStyles">
+      <div *ngIf="this.formGroup.value.card?.useStyles">
         <p>
           {{
             'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
@@ -158,7 +158,7 @@
     </ng-container>
     <!-- FROM AGGREGATIONS -->
     <ng-container
-      *ngIf="selectedAggregation && tileForm.get('card.resource')?.value"
+      *ngIf="selectedAggregation && formGroup.get('card.resource')?.value"
     >
       <div uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
@@ -181,7 +181,7 @@
           [isIcon]="true"
           icon="close"
           (click)="
-            tileForm.get('card.aggregation')?.setValue(null);
+            formGroup.get('card.aggregation')?.setValue(null);
             aggregationChange.emit(null)
           "
           [uiTooltip]="'common.remove' | translate"

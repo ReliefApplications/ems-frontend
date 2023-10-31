@@ -11,11 +11,14 @@ import { UploadEvent } from '@progress/kendo-angular-upload';
   styleUrls: ['./upload-menu.component.scss'],
 })
 export class UploadMenuComponent {
+  /** Upload event emitter */
   @Output() upload = new EventEmitter<UploadEvent>();
+  /** Download event emitter, for template */
   @Output() download = new EventEmitter();
+  /** Close event emitter */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<null> = new EventEmitter();
-
+  /** Show upload menu */
   private show = true;
 
   /** Listen to click event on the document */

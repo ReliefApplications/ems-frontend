@@ -16,7 +16,6 @@ import {
   ApplicationService,
   WorkflowService,
   DashboardService,
-  AuthService,
   Application,
   UnsubscribeComponent,
   WidgetGridComponent,
@@ -45,7 +44,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -109,16 +108,10 @@ export class DashboardComponent
   public contextRecord: Record | null = null;
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
-
+  /** Timeout to scroll to newly added widget */
   private timeoutListener!: NodeJS.Timeout;
-
-  /** @returns get newest widget id from existing ids */
-  get newestId(): number {
-    const widgets = this.widgets?.slice() || [];
-    return widgets.length === 0
-      ? 0
-      : Math.max(...widgets.map((x: any) => x.id)) + 1;
-  }
+  /** Is edition active */
+  public editionActive = true;
 
   /** @returns type of context element */
   get contextType() {
@@ -147,7 +140,6 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
@@ -167,7 +159,6 @@ export class DashboardComponent
     private snackBar: SnackbarService,
     private dashboardService: DashboardService,
     private translate: TranslateService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private contextService: ContextService,
     private refDataService: ReferenceDataService,
@@ -294,6 +285,7 @@ export class DashboardComponent
       return;
     }
 
+    this.editionActive = true;
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
@@ -393,8 +385,7 @@ export class DashboardComponent
    * @param e add event
    */
   onAdd(e: any): void {
-    const widget = JSON.parse(JSON.stringify(e));
-    widget.id = this.newestId;
+    const widget = cloneDeep(e);
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
     if (this.timeoutListener) {
@@ -402,9 +393,12 @@ export class DashboardComponent
     }
     // scroll to the element once it is created
     this.timeoutListener = setTimeout(() => {
-      const el = this.document.getElementById(`widget-${widget.id}`);
+      const widgetComponents =
+        this.widgetGridComponent.widgetComponents.toArray();
+      const target = widgetComponents[widgetComponents.length - 1];
+      const el = this.document.getElementById(target.id);
       el?.scrollIntoView({ behavior: 'smooth' });
-    });
+    }, 1000);
   }
 
   /**
@@ -413,40 +407,40 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
-    // make sure that we save the default layout.
-    const index = this.widgets.findIndex((v: any) => v.id === e.id);
-    const options = this.widgets[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: this.widgets[index].settings.defaultLayout,
+    switch (e.type) {
+      case 'display': {
+        this.autoSaveChanges();
+        break;
+      }
+      case 'data': {
+        // Find the widget to be edited
+        const widgetComponents =
+          this.widgetGridComponent.widgetComponents.toArray();
+        const targetIndex = widgetComponents.findIndex(
+          (v: any) => v.id === e.id
+        );
+        if (targetIndex > -1) {
+          // Update the configuration
+          const options = this.widgets[targetIndex]?.settings?.defaultLayout
+            ? {
+                ...e.options,
+                defaultLayout: this.widgets[targetIndex].settings.defaultLayout,
+              }
+            : e.options;
+          if (options) {
+            // Save configuration
+            this.widgets[targetIndex] = {
+              ...this.widgets[targetIndex],
+              settings: options,
+            };
+            this.autoSaveChanges();
+          }
         }
-      : e.options;
-    if (options) {
-      switch (e.type) {
-        case 'display': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x.defaultCols = options.cols;
-              x.defaultRows = options.rows;
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        case 'data': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x = { ...x, settings: options };
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        default: {
-          break;
-        }
+
+        break;
+      }
+      default: {
+        break;
       }
     }
   }
@@ -457,8 +451,13 @@ export class DashboardComponent
    * @param e delete event
    */
   onDeleteTile(e: any): void {
-    this.widgets = this.widgets.filter((x) => x.id !== e.id);
-    this.autoSaveChanges();
+    const widgetComponents =
+      this.widgetGridComponent.widgetComponents.toArray();
+    const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
+    if (targetIndex > -1) {
+      this.widgets.splice(targetIndex, 1);
+      this.autoSaveChanges();
+    }
   }
 
   /**
@@ -846,5 +845,33 @@ export class DashboardComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       subscription?.unsubscribe();
     });
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  public onSearchChange(search: string): void {
+    const context = this.dashboard?.page?.context;
+    if (!context) return;
+    if ('resource' in context) {
+      this.recordsQuery.refetch({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          id: context.resource,
+        },
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              field: context.displayField,
+              operator: 'contains',
+              value: search,
+            },
+          ],
+        },
+      });
+    }
   }
 }

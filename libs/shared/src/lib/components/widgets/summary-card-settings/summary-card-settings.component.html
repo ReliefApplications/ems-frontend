@@ -1,4 +1,4 @@
-<ng-container *ngIf="tileForm">
+<ng-container *ngIf="widgetFormGroup">
   <ui-tabs
     [vertical]="true"
     class="grow"
@@ -16,7 +16,7 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-summary-card-general
-          [tileForm]="tileForm"
+          [formGroup]="widgetFormGroup"
           [selectedResource]="selectedResource"
           [templates]="templates"
           [selectedLayout]="selectedLayout"
@@ -39,13 +39,13 @@
       <ng-template uiTabContent>
         <shared-text-editor-tab
           *ngIf="activeTabIndex === 1"
-          [form]="tileForm"
+          [form]="widgetFormGroup"
           [fields]="fields"
         ></shared-text-editor-tab>
       </ng-template>
     </ui-tab>
     <!-- Card text preview -->
-    <ui-tab *ngIf="tileForm && !tileForm.invalid">
+    <ui-tab *ngIf="widgetFormGroup && !widgetFormGroup.invalid">
       <ng-container ngProjectAs="label">
         <ui-icon icon="preview" [size]="24"></ui-icon>
         <span>{{
@@ -54,7 +54,10 @@
         }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-summary-card [settings]="tileForm.value" [widget]="tile">
+        <shared-summary-card
+          [settings]="widgetFormGroup.value"
+          [widget]="widget"
+        >
         </shared-summary-card>
       </ng-template>
     </ui-tab>
@@ -73,9 +76,21 @@
           'components.widget.settings.summaryCard.card.gridActions.title'
             | translate
         }}</span>
+        <!-- Icon with warning if any -->
+        <ui-icon
+          *ngIf="widgetFormGroup.get('actions')?.invalid"
+          class="ml-1 cursor-help self-center"
+          variant="danger"
+          icon="warning"
+          [size]="18"
+          [uiTooltip]="
+            'components.widget.settings.grid.warnings.general' | translate
+          "
+          uiTooltipPosition="right"
+        ></ui-icon>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-tab-actions [formGroup]="tileForm"></shared-tab-actions>
+        <shared-tab-actions [formGroup]="widgetFormGroup"></shared-tab-actions>
       </ng-template>
     </ui-tab>
     <!-- Card display settings -->
@@ -85,7 +100,7 @@
         <span>{{ 'common.display' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-display-tab [form]="tileForm"></shared-display-tab>
+        <shared-display-tab [form]="widgetFormGroup"></shared-display-tab>
       </ng-template>
     </ui-tab>
     <!-- Context filter settings -->
@@ -96,7 +111,7 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-contextual-filters-settings
-          [form]="tileForm"
+          [form]="widgetFormGroup"
         ></shared-contextual-filters-settings>
       </ng-template>
     </ui-tab>
@@ -111,11 +126,13 @@
         <span>{{ 'models.widget.display.title' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-display-settings [formGroup]="tileForm">
+        <shared-display-settings [formGroup]="widgetFormGroup">
           <!-- Specific settings for summary card -->
           <ui-toggle
-            *ngIf="tileForm.get('widgetDisplay.searchable')?.enabled"
-            [formControl]="$any(tileForm.get('widgetDisplay.searchable'))"
+            *ngIf="widgetFormGroup.get('widgetDisplay.searchable')?.enabled"
+            [formControl]="
+              $any(widgetFormGroup.get('widgetDisplay.searchable'))
+            "
           >
             <ng-container ngProjectAs="label">{{
               'models.widget.display.searchable' | translate
@@ -129,7 +146,9 @@
               }}
             </p>
             <div
-              [formControl]="$any(tileForm.get('widgetDisplay.usePagination'))"
+              [formControl]="
+                $any(widgetFormGroup.get('widgetDisplay.usePagination'))
+              "
               class="flex flex-col gap-1 mt-2"
               uiRadioGroupDirective="usePaginationOptions"
             >
@@ -166,8 +185,8 @@
       <ng-template uiTabContent>
         <shared-sorting-settings
           [fields]="fields"
-          [formArray]="$any(tileForm.get('sortFields'))"
-          [formGroup]="tileForm"
+          [formArray]="$any(widgetFormGroup.get('sortFields'))"
+          [formGroup]="widgetFormGroup"
         ></shared-sorting-settings>
       </ng-template>
     </ui-tab>

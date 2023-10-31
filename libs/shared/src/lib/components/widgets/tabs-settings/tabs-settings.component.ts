@@ -30,7 +30,7 @@ export class TabsSettingsComponent
   /** Settings */
   public widgetForm!: FormGroup;
   /** Widget definition */
-  @Input() tile: any;
+  @Input() widget: any;
   /** Emit the applied change */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
@@ -38,8 +38,8 @@ export class TabsSettingsComponent
   ngOnInit(): void {
     // Create form group, and extend it to get display settings ( such as borderless )
     this.widgetForm = extendWidgetForm(
-      createTabsWidgetFormGroup(this.tile.id, this.tile.settings),
-      get(this.tile, 'settings.widgetDisplay')
+      createTabsWidgetFormGroup(this.widget.id, this.widget.settings),
+      get(this.widget, 'settings.widgetDisplay')
     );
     this.change.emit(this.widgetForm);
   }

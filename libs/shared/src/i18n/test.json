@@ -205,6 +205,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"hide": "******",
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "******"
+		},
+		"position": {
+			"bottomleft": "******",
+			"bottomright": "******",
+			"topleft": "******",
+			"topright": "******"
 		},
 		"positionAttribute": {
 			"few": "******",
@@ -512,6 +519,8 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"enterEditMode": "******",
+				"enterPreviewMode": "******",
 				"filter": {
 					"empty": "******",
 					"filterPosition": {
@@ -1493,6 +1502,10 @@
 					"tooltip": {
 						"template": "******",
 						"useRecordId": "******"
+					},
+					"warnings": {
+						"add": "******",
+						"general": "******"
 					}
 				},
 				"iconPicker": {
@@ -1659,6 +1672,8 @@
 						"basemap": "******",
 						"controls": {
 							"download": "******",
+							"lastUpdate": "******",
+							"lastUpdateError": "******",
 							"layer": "******",
 							"legend": "******",
 							"measure": "******",
@@ -2142,6 +2157,7 @@
 			},
 			"display": {
 				"border": "******",
+				"header": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"

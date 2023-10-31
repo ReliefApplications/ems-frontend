@@ -9,7 +9,7 @@ import {
 
 describe('TabStyleComponent', () => {
   let component: TabStyleComponent;
-  let fixture: ComponentFixture<sharedTabStyleComponent>;
+  let fixture: ComponentFixture<TabStyleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

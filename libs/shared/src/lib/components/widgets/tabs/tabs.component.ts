@@ -4,6 +4,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  Optional,
   Output,
   TemplateRef,
   ViewChild,
@@ -13,6 +14,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { takeUntil } from 'rxjs';
 import { DomPortal } from '@angular/cdk/portal';
 import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
+import { WidgetComponent } from '../../widget/widget.component';
 
 /**
  * Tabs widget component.
@@ -26,8 +28,6 @@ export class TabsComponent
   extends UnsubscribeComponent
   implements AfterViewInit
 {
-  /** Should display header */
-  @Input() header = true;
   /** Widget settings */
   @Input() settings: any;
   /** Widget definition */
@@ -49,10 +49,12 @@ export class TabsComponent
   /**
    * Tabs widget component.
    *
+   * @param widgetComponent parent widget component ( optional )
    * @param dialog Dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(
+    @Optional() public widgetComponent: WidgetComponent,
     private dialog: Dialog,
     private dashboardService: DashboardService
   ) {
@@ -68,20 +70,26 @@ export class TabsComponent
    * Open settings
    */
   async openSettings(): Promise<void> {
-    const { EditWidgetModalComponent } = await import(
-      '../../widget-grid/edit-widget-modal/edit-widget-modal.component'
-    );
-    const dialogRef = this.dialog.open(EditWidgetModalComponent, {
-      disableClose: true,
-      data: {
-        tile: this.widget,
-        template: this.dashboardService.findSettingsTemplate(this.widget),
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if (res) {
-        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
-      }
-    });
+    if (this.widgetComponent) {
+      const { EditWidgetModalComponent } = await import(
+        '../../widget-grid/edit-widget-modal/edit-widget-modal.component'
+      );
+      const dialogRef = this.dialog.open(EditWidgetModalComponent, {
+        disableClose: true,
+        data: {
+          widget: this.widget,
+          template: this.dashboardService.findSettingsTemplate(this.widget),
+        },
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if (res) {
+          this.edit.emit({
+            type: 'data',
+            id: this.widgetComponent.id,
+            options: res,
+          });
+        }
+      });
+    }
   }
 }

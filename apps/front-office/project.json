@@ -59,8 +59,7 @@
           "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
           "node_modules/leaflet-measure/dist/leaflet-measure.css",
           "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
-          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
-          "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
+          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
         ],
         "scripts": [
           "node_modules/tinymce/tinymce.js",

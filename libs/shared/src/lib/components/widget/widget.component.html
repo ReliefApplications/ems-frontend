@@ -1,30 +1,55 @@
-<kendo-tilelayout-item-header
-  *ngIf="header"
-  class="widget-header border-b"
-  [ngClass]="{
-    '!border-transparent': !(widget.settings.widgetDisplay?.showBorder ?? true),
-    '!border-b-gray-300': widget.settings.widgetDisplay?.showBorder ?? true
-  }"
->
-  <ng-container
-    *ngIf="headerLeftTemplate"
-    [ngTemplateOutlet]="headerLeftTemplate"
-  ></ng-container>
-  <ng-container
-    *ngIf="widgetContentComponent?.headerTemplate"
-    [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
-  ></ng-container>
-  <ng-container
-    *ngIf="headerRightTemplate"
-    [ngTemplateOutlet]="headerRightTemplate"
-  ></ng-container>
-</kendo-tilelayout-item-header>
+<ng-container *ngIf="header">
+  <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
+    <kendo-tilelayout-item-header
+      class="floating-widget-header"
+      *ngIf="canUpdate && !fullscreen"
+    >
+      <ng-container
+        *ngIf="headerLeftTemplate"
+        [ngTemplateOutlet]="headerLeftTemplate"
+      ></ng-container>
+      <div class="bg-white/70 rounded-2xl">
+        <ng-container
+          *ngIf="headerRightTemplate"
+          [ngTemplateOutlet]="headerRightTemplate"
+          [ngTemplateOutletContext]="{ $implicit: id }"
+        ></ng-container>
+      </div>
+    </kendo-tilelayout-item-header>
+  </ng-container>
+
+  <ng-template #defaultHeaderTemplate>
+    <kendo-tilelayout-item-header
+      class="widget-header border-b"
+      [ngClass]="{
+        '!border-transparent': !(
+          widget.settings.widgetDisplay?.showBorder ?? true
+        ),
+        '!border-b-gray-300': widget.settings.widgetDisplay?.showBorder ?? true
+      }"
+    >
+      <ng-container
+        *ngIf="headerLeftTemplate && !fullscreen"
+        [ngTemplateOutlet]="headerLeftTemplate"
+      ></ng-container>
+      <ng-container
+        *ngIf="widgetContentComponent?.headerTemplate"
+        [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+      ></ng-container>
+      <ng-container
+        *ngIf="headerRightTemplate && !fullscreen"
+        [ngTemplateOutlet]="headerRightTemplate"
+        [ngTemplateOutletContext]="{ $implicit: id }"
+      ></ng-container>
+    </kendo-tilelayout-item-header>
+  </ng-template>
+</ng-container>
+
 <ng-container [ngSwitch]="widget.component">
   <!-- CHART -->
   <shared-chart
     *ngSwitchCase="'chart'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     class="flex-1 overflow-hidden"
   ></shared-chart>
@@ -32,7 +57,6 @@
   <shared-grid-widget
     *ngSwitchCase="'grid'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     (changeStep)="changeStep.emit($event)"
     (edit)="edit.emit($event)"
@@ -44,7 +68,6 @@
   <shared-map-widget
     *ngSwitchCase="'map'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     class="flex-1 overflow-hidden"
   ></shared-map-widget>
@@ -52,7 +75,6 @@
   <shared-editor
     *ngSwitchCase="'editor'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     class="flex-1 overflow-hidden"
   >
@@ -61,7 +83,6 @@
   <shared-summary-card
     *ngSwitchCase="'summaryCard'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     (edit)="edit.emit($event)"
     [widget]="widget"
@@ -72,7 +93,6 @@
   <shared-tabs
     *ngSwitchCase="'tabs'"
     #widgetContent
-    [header]="header"
     [settings]="widget.settings"
     (edit)="edit.emit($event)"
     [canUpdate]="canUpdate"
