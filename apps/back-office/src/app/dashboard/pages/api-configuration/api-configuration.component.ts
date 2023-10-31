@@ -173,52 +173,6 @@ export class ApiConfigurationComponent
    * @returns settings form group
    */
   private buildSettingsForm(type: string) {
-    if (type === authType.authorizationCode) {
-      return this.fb.group({
-        callbackUrl: [
-          this.apiConfiguration?.settings &&
-          this.apiConfiguration?.settings.callbackUrl
-            ? ENCRYPTED_VALUE
-            : '',
-          Validators.required,
-        ],
-        authUrl: [
-          this.apiConfiguration?.settings &&
-          this.apiConfiguration?.settings.authUrl
-            ? ENCRYPTED_VALUE
-            : '',
-          Validators.required,
-        ],
-        authTargetUrl: [
-          this.apiConfiguration?.settings &&
-          this.apiConfiguration?.settings.authTargetUrl
-            ? ENCRYPTED_VALUE
-            : '',
-          Validators.required,
-        ],
-        apiClientID: [
-          this.apiConfiguration?.settings &&
-          this.apiConfiguration?.settings.apiClientID
-            ? ENCRYPTED_VALUE
-            : '',
-          Validators.minLength(3),
-        ],
-        safeSecret: [
-          this.apiConfiguration?.settings &&
-          this.apiConfiguration?.settings.safeSecret
-            ? ENCRYPTED_VALUE
-            : '',
-          Validators.minLength(3),
-        ],
-        scope: [
-          this.apiConfiguration?.settings &&
-          this.apiConfiguration?.settings.scope
-            ? ENCRYPTED_VALUE
-            : '',
-          null,
-        ],
-      });
-    }
     if (type === authType.serviceToService) {
       return this.fb.group({
         authTargetUrl: [
@@ -325,33 +279,27 @@ export class ApiConfigurationComponent
       // If settings is touched we will go through each settings param to save only the ones that are not the encrypted display value and that exist
       this.apiForm.controls.settings.touched && {
         settings: {
-          ...((this.apiForm.value.authType === authType.serviceToService ||
-            this.apiForm.value.authType === authType.authorizationCode) &&
+          ...(this.apiForm.value.authType === authType.serviceToService &&
             this.apiForm.value.settings?.callbackUrl !== ENCRYPTED_VALUE && {
               callbackUrl: this.apiForm.value.settings?.callbackUrl,
             }),
-          ...((this.apiForm.value.authType === authType.serviceToService ||
-            this.apiForm.value.authType === authType.authorizationCode) &&
+          ...(this.apiForm.value.authType === authType.serviceToService &&
             this.apiForm.value.settings?.authUrl !== ENCRYPTED_VALUE && {
               authUrl: this.apiForm.value.settings?.authUrl,
             }),
-          ...((this.apiForm.value.authType === authType.serviceToService ||
-            this.apiForm.value.authType === authType.authorizationCode) &&
+          ...(this.apiForm.value.authType === authType.serviceToService &&
             this.apiForm.value.settings?.authTargetUrl !== ENCRYPTED_VALUE && {
               authTargetUrl: this.apiForm.value.settings?.authTargetUrl,
             }),
-          ...((this.apiForm.value.authType === authType.serviceToService ||
-            this.apiForm.value.authType === authType.authorizationCode) &&
+          ...(this.apiForm.value.authType === authType.serviceToService &&
             this.apiForm.value.settings?.apiClientID !== ENCRYPTED_VALUE && {
               apiClientID: this.apiForm.value.settings?.apiClientID,
             }),
-          ...((this.apiForm.value.authType === authType.serviceToService ||
-            this.apiForm.value.authType === authType.authorizationCode) &&
+          ...(this.apiForm.value.authType === authType.serviceToService &&
             this.apiForm.value.settings?.safeSecret !== ENCRYPTED_VALUE && {
               safeSecret: this.apiForm.value.settings?.safeSecret,
             }),
-          ...((this.apiForm.value.authType === authType.serviceToService ||
-            this.apiForm.value.authType === authType.authorizationCode) &&
+          ...(this.apiForm.value.authType === authType.serviceToService &&
             this.apiForm.value.settings?.scope !== ENCRYPTED_VALUE && {
               scope: this.apiForm.value.settings?.scope,
             }),

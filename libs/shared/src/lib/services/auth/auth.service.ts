@@ -14,7 +14,7 @@ import {
 } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { filter, map } from 'rxjs/operators';
+import { filter, first, map, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import {
   Ability,
@@ -136,6 +136,13 @@ export class AuthService {
         localStorage.setItem('idtoken', this.oauthService.getIdToken());
         this.oauthService.loadUserProfile();
       });
+    // this.oauthService.events
+    //   .pipe(
+    //     filter((e) => e.type === 'token_received'),
+    //     first(),
+    //     mergeMap(() => this.onReceivedFirstToken())
+    //   )
+    //   .subscribe();
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
@@ -162,6 +169,22 @@ export class AuthService {
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.user$.subscribe((user) => this.updateAbility(user));
+  }
+
+  private async onReceivedFirstToken() {
+    const scopes = this.oauthService.getGrantedScopes() as string[];
+    this.oauthService.scope = `openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user`;
+
+    if (
+      !scopes.includes(
+        'api://75deca06-ae07-4765-85c0-23e719062833/access_as_user'
+      )
+    ) {
+      console.log('trying to get the api');
+      this.oauthService.initImplicitFlow();
+      console.log('yeah, might have worked');
+      return;
+    }
   }
 
   /**
@@ -232,10 +255,6 @@ export class AuthService {
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => {
-        const url =
-          'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/oauth2/authorize?resource=75deca06-ae07-4765-85c0-23e719062833&response_type=code&client_id=021202ac-d23b-4757-83e3-f6ecde12266b&scope=api%3A%2F%2F75deca06-ae07-4765-85c0-23e719062833%2Faccess_as_user';
-
-        window.open(url);
         this.isDoneLoading.next(true);
       })
       .catch((err) => {

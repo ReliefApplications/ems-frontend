@@ -5,11 +5,12 @@ import { Environment } from './environment.type';
 
 const authConfig: AuthConfig = {
   issuer:
-    'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f/v2.0',
+    'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
-  clientId: 'd62083d8-fdc0-4a6a-8618-652380eebdb9',
-  scope: 'openid profile email offline_access',
+  clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
+  scope:
+    'openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user',
   responseType: 'code',
   showDebugInformation: true,
   strictDiscoveryDocumentValidation: false,
