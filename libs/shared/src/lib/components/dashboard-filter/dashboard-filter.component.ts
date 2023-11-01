@@ -2,12 +2,14 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   HostListener,
   Input,
   NgZone,
   OnChanges,
   OnDestroy,
   Optional,
+  Output,
   SimpleChanges,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
@@ -104,6 +106,8 @@ export class DashboardFilterComponent
 
   @Input() editable = false;
   @Input() isFullScreen = false;
+
+  @Output() isDrawerOpenEmitter: EventEmitter<any> = new EventEmitter();
 
   /**
    * Class constructor
@@ -548,5 +552,16 @@ export class DashboardFilterComponent
     }
     // force change detection
     this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * toggle isDrawerOpen, and emit its value to the parent component
+   */
+  public toggleDrawer() {
+    this.isDrawerOpen = !this.isDrawerOpen;
+    this.isDrawerOpenEmitter.emit({
+      isDrawerOpen: this.isDrawerOpen,
+      position: this.position,
+    });
   }
 }

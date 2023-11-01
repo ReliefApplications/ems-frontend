@@ -59,3 +59,24 @@
 .text-side {
   writing-mode: vertical-lr;
 }
+
+
+
+.is-drawer-open {
+  transition: transform 0.3s ease;
+  &.top {
+    transform: translateY(100%);
+  }
+
+  &.bottom {
+    transform: translateY(-100%);
+  }
+
+  &.left {
+    transform: translateX(100%);
+  }
+
+  &.right {
+    transform: translateX(-100%);
+  }
+}
