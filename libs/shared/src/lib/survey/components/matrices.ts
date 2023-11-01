@@ -16,6 +16,7 @@ import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
  * @param domService Dom service
  */
 export const init = (domService: DomService): void => {
+  //todo
   // @TODO: Update this code to work with new version of SurveyJS
   // const serializer: JsonMetadata = Serializer;
   // // Adds a dropdown to the matrix section with all the questions in the form
