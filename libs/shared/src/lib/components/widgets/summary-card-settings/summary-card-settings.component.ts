@@ -42,12 +42,12 @@ export class SummaryCardSettingsComponent
   implements OnInit, AfterViewInit
 {
   /** Widget */
-  @Input() tile: any;
+  @Input() widget: any;
   /** Emit changes applied to the settings */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-  /** Form */
-  public tileForm: SummaryCardFormT | undefined;
+  /** Widget form group */
+  public widgetFormGroup: SummaryCardFormT | undefined;
   /** Current resource */
   public selectedResource: Resource | null = null;
   /** Current layout */
@@ -79,28 +79,31 @@ export class SummaryCardSettingsComponent
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = createSummaryCardForm(this.tile.id, this.tile.settings);
-    this.change.emit(this.tileForm);
+    this.widgetFormGroup = createSummaryCardForm(
+      this.widget.id,
+      this.widget.settings
+    );
+    this.change.emit(this.widgetFormGroup);
 
-    const resourceID = this.tileForm?.get('card.resource')?.value;
+    const resourceID = this.widgetFormGroup?.get('card.resource')?.value;
     if (resourceID) {
       this.getResource(resourceID);
     }
 
     // Subscribe to aggregation changes
-    this.tileForm
+    this.widgetFormGroup
       .get('card.aggregation')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((aggregationID) => {
         // disable searchable if aggregation is selected
         if (aggregationID) {
-          const searchableControl = this.tileForm?.get(
+          const searchableControl = this.widgetFormGroup?.get(
             'widgetDisplay.searchable'
           );
           searchableControl?.setValue(false);
           searchableControl?.disable();
           // disable form actions if aggregation selected
-          const actionsForm = this.tileForm?.controls.actions;
+          const actionsForm = this.widgetFormGroup?.controls.actions;
           // Prefer disabling all nested controls, so it automatically checks validation
           if (actionsForm) {
             Object.keys(actionsForm.controls).forEach((controlName: any) => {
@@ -108,20 +111,20 @@ export class SummaryCardSettingsComponent
             });
           }
         } else {
-          this.tileForm?.get('widgetDisplay.searchable')?.enable();
+          this.widgetFormGroup?.get('widgetDisplay.searchable')?.enable();
           // enable form actions if aggregation selected
-          this.tileForm?.controls.actions.enable();
+          this.widgetFormGroup?.controls.actions.enable();
         }
       });
 
     this.initSortFields();
 
     // Subscribe to form resource changes to get the templates on change
-    this.tileForm
+    this.widgetFormGroup
       .get('card.resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.tileForm?.get('card.template')?.setValue(null);
+        this.widgetFormGroup?.get('card.template')?.setValue(null);
         this.getTemplates();
       });
 
@@ -132,12 +135,12 @@ export class SummaryCardSettingsComponent
    * Gets the templates for the selected resource
    */
   private getTemplates(): void {
-    if (this.tileForm?.get('card.resource')?.value) {
+    if (this.widgetFormGroup?.get('card.resource')?.value) {
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
-            resource: this.tileForm?.get('card.resource')?.value,
+            resource: this.widgetFormGroup?.get('card.resource')?.value,
           },
         })
         .subscribe(({ data }) => {
@@ -149,36 +152,38 @@ export class SummaryCardSettingsComponent
   }
 
   /**
-   * Adds sortFields to the tileForm
+   * Adds sortFields to the form group
    */
   initSortFields(): void {
-    this.tile.settings.sortFields?.forEach((item: any) => {
+    this.widget.settings.sortFields?.forEach((item: any) => {
       const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
         label: [item.label, Validators.required],
       });
-      (this.tileForm?.get('sortFields') as any).push(row);
+      (this.widgetFormGroup?.get('sortFields') as any).push(row);
     });
   }
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.searchable') as any;
+    return this.widgetFormGroup?.get('widgetDisplay.searchable') as any;
   }
 
   /** @returns a FormControl for the usePagination field */
   get usePaginationControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.usePagination') as any;
+    return this.widgetFormGroup?.get('widgetDisplay.usePagination') as any;
   }
 
   /**
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.change.emit(this.tileForm);
-    });
+    this.widgetFormGroup?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.change.emit(this.widgetFormGroup);
+      });
   }
 
   /**
@@ -196,7 +201,7 @@ export class SummaryCardSettingsComponent
    * @param id resource id
    */
   private getResource(id: string): void {
-    const form = this.tileForm;
+    const form = this.widgetFormGroup;
     if (!form) return;
     const layoutID = form.get('card.layout')?.value;
     const aggregationID = form.get('card.aggregation')?.value;
@@ -274,15 +279,15 @@ export class SummaryCardSettingsComponent
    */
   handleResourceChange(resource: Resource | null) {
     // clear sort fields array
-    const sortFields = this.tileForm?.get('sortFields') as FormArray;
+    const sortFields = this.widgetFormGroup?.get('sortFields') as FormArray;
     sortFields.clear();
 
     this.selectedResource = resource;
     this.fields = [];
 
     // clear layout and record
-    this.tileForm?.get('card.layout')?.setValue(null);
-    this.tileForm?.get('card.aggregation')?.setValue(null);
+    this.widgetFormGroup?.get('card.layout')?.setValue(null);
+    this.widgetFormGroup?.get('card.aggregation')?.setValue(null);
     this.selectedLayout = null;
     this.selectedAggregation = null;
     this.customAggregation = null;

@@ -47,7 +47,7 @@ export class GridSettingsComponent
   public filtersFormArray: any = null;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() widget: any;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -99,8 +99,10 @@ export class GridSettingsComponent
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    const tileSettings = this.tile.settings;
-    this.formGroup = createGridWidgetFormGroup(this.tile.id, tileSettings);
+    this.formGroup = createGridWidgetFormGroup(
+      this.widget.id,
+      this.widget.settings
+    );
 
     this.change.emit(this.formGroup);
 
@@ -185,7 +187,7 @@ export class GridSettingsComponent
    * Adds sortFields to the formGroup
    */
   initSortFields(): void {
-    this.tile.settings.sortFields?.forEach((item: any) => {
+    this.widget.settings.sortFields?.forEach((item: any) => {
       const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],

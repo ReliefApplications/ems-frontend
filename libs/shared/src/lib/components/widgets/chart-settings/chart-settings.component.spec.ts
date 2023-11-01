@@ -37,7 +37,7 @@ describe('ChartSettingsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ChartSettingsComponent);
     component = fixture.componentInstance;
-    component.tile = {
+    component.widget = {
       settings: {
         title: '',
         chart: {
