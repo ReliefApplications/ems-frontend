@@ -55,6 +55,7 @@ export class QueryBuilderComponent
   @Input() showStyle = true;
   @Input() showFilter = true;
   @Input() showSort = true;
+  @Input() showFields = true;
 
   // Tab options
   @Input() showLimit = false;

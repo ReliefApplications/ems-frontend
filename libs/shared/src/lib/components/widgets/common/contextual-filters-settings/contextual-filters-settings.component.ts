@@ -1,11 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { SpinnerModule } from '@oort-front/ui';
 
@@ -75,6 +79,7 @@ export class ContextualFiltersSettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.form);
     this.queryBuilder.availableQueries$.subscribe((res) => {
       if (res.length > 0) {
         const hasDataForm = this.data.form !== null;
@@ -83,54 +88,21 @@ export class ContextualFiltersSettingsComponent implements OnInit {
           : this.queryBuilder.getQueryNameFromResourceName(
               this.data.resourceName
             );
-        this.form = createQueryForm({
-          name: queryName,
-          fields: hasDataForm ? this.data.form.value.fields : [],
-          sort: hasDataForm ? this.data.form.value.sort : {},
-          filter: hasDataForm ? this.data.form.value.filter : {},
-        });
+        this.form?.setControl(
+          'dashboardFilters',
+          new FormGroup({
+            name: new FormControl(queryName),
+            fields: new FormControl(
+              hasDataForm ? this.data.form.value.fields : []
+            ),
+            sort: new FormControl(hasDataForm ? this.data.form.value.sort : {}),
+            filter: new FormControl(
+              hasDataForm ? this.data.form.value.filter : {}
+            ),
+          })
+        );
         this.loading = false;
       }
     });
   }
 }
-/*
-openResourceFieldsModal() {
-    this.apollo
-      .query<ResourceQueryResponse>({
-        query: GET_SHORT_RESOURCE_BY_ID,
-        variables: {
-          id: this.model.obj.resource,
-        },
-      })
-      .subscribe(async ({ data }) => {
-        if (data.resource && data.resource.name) {
-          const nameTrimmed = data.resource.name
-            .replace(/\s/g, '')
-            .toLowerCase();
-          const { ConfigDisplayGridFieldsModalComponent } = await import(
-            '../../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
-          );
-          const dialogRef = this.dialog.open(
-            ConfigDisplayGridFieldsModalComponent,
-            {
-              data: {
-                form: !this.model.obj.gridFieldsSettings
-                  ? null
-                  : this.convertFromRawToFormGroup(
-                      this.model.obj.gridFieldsSettings
-                    ),
-                resourceName: nameTrimmed,
-              },
-            }
-          );
-          dialogRef.closed
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res: any) => {
-              if (res && res.value.fields) {
-                this.model.obj.gridFieldsSettings = res.getRawValue();
-              }
-            });
-        }
-      });
-*/
