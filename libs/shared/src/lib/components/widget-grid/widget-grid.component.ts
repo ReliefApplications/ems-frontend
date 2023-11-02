@@ -53,6 +53,8 @@ export class WidgetGridComponent
   @Input() widgets: any[] = [];
   /** Update permission */
   @Input() canUpdate = false;
+  /** Additional grid configuration */
+  @Input() options?: GridsterConfig;
   /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
   /** Edit event emitter */
@@ -220,6 +222,7 @@ export class WidgetGridComponent
       setGridSize: true,
       mobileBreakpoint: 640,
       disableWindowResize: true,
+      ...this.options,
     };
 
     this.widgets.map((gridItem) => {

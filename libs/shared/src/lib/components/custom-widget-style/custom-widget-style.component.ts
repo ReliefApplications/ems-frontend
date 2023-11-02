@@ -82,8 +82,6 @@ export class CustomWidgetStyleComponent
     this.formControl.valueChanges
       .pipe(debounceTime(1000))
       .subscribe((value: any) => {
-        console.log(this.widgetComp);
-        console.log(this.widgetComp.id);
         const scss = `#${this.widgetComp.id} {
         ${value}
       }`;
