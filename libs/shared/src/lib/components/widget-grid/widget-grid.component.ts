@@ -23,6 +23,7 @@ import {
   DisplayGrid,
   GridType,
   GridsterConfig,
+  GridsterItem,
 } from 'angular-gridster2';
 import { cloneDeep } from 'lodash';
 
@@ -49,7 +50,7 @@ export class WidgetGridComponent
   /** Loading status */
   @Input() loading = false;
   /** Skeletons for loading */
-  public skeletons: { colSpan: number; rowSpan: number }[] = [];
+  public skeletons: GridsterItem[] = [];
   /** Widgets */
   @Input() widgets: any[] = [];
   /** Update permission */
@@ -110,9 +111,9 @@ export class WidgetGridComponent
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.availableWidgets = this.dashboardService.availableWidgets;
+    this.skeletons = this.getSkeletons();
     this.resizeObserver = new ResizeObserver(() => {
       this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
-      this.skeletons = this.getSkeletons();
       this.setGridOptions();
     });
     this.resizeObserver.observe(this._host.nativeElement);
@@ -201,6 +202,11 @@ export class WidgetGridComponent
       ...this.gridOptions,
       ...(isDashboardSet && {
         itemChangeCallback: () => this.structureChanges.next(true),
+        scrollToNewItems: true,
+      }),
+      ...(!isDashboardSet && {
+        // Prevent dashboard to scroll to bottom widget by default
+        scrollToNewItems: false,
       }),
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
@@ -228,7 +234,6 @@ export class WidgetGridComponent
       disablePushOnResize: false,
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
-      scrollToNewItems: true,
       setGridSize: true,
       mobileBreakpoint: 640,
       disableWindowResize: true,
@@ -355,7 +360,7 @@ export class WidgetGridComponent
    *
    * @returns List of skeletons.
    */
-  private getSkeletons(): { colSpan: number; rowSpan: number }[] {
+  private getSkeletons(): GridsterItem[] {
     const skeletons = [];
     let remainingColsNumber = this.colsNumber;
     for (let i = 0; i < 10; i++) {
@@ -365,11 +370,26 @@ export class WidgetGridComponent
         remainingColsNumber = this.colsNumber;
       }
       skeletons.push({
-        colSpan,
-        rowSpan: Math.floor(Math.random() * MAX_ROW_SPAN_LOADING) + 1,
+        cols: colSpan,
+        rows: Math.floor(Math.random() * MAX_ROW_SPAN_LOADING) + 1,
       });
     }
-    return skeletons;
+    const yAxis = 0;
+    const xAxis = 0;
+    return skeletons.map((skeleton, index) => {
+      const { x, y } =
+        index === 0
+          ? { x: 0, y: 0 }
+          : this.setXYAxisValues(yAxis, xAxis, skeleton);
+      return {
+        cols: skeleton.cols,
+        rows: skeleton.rows,
+        resizeEnabled: false,
+        dragEnabled: false,
+        x,
+        y,
+      };
+    });
   }
 
   /**

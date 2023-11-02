@@ -61,20 +61,16 @@
 </ng-container>
 <!-- LOADING INDICATOR -->
 <ng-template #emptyTemplate>
-  <div class="mt-6">
-    <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber" class="-m-4">
-      <kendo-tilelayout-item
-        *ngFor="let skeleton of skeletons"
-        [colSpan]="skeleton.colSpan"
-        [rowSpan]="skeleton.rowSpan"
-      >
+  <gridster [options]="gridOptions" class="!w-full">
+    <gridster-item [item]="skeleton" *ngFor="let skeleton of skeletons">
+      <div class="gridster-item-content h-full">
         <kendo-skeleton
           shape="rectangle"
           animation="pulse"
           [width]="'100%'"
           [height]="'100%'"
         ></kendo-skeleton>
-      </kendo-tilelayout-item>
-    </kendo-tilelayout>
-  </div>
+      </div>
+    </gridster-item>
+  </gridster>
 </ng-template>
