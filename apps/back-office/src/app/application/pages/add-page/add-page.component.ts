@@ -223,7 +223,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
     const structure = [
       {
         ...widget,
-        defaultCols: 8,
+        cols: 8,
       },
     ];
     // Directly call application service to add page with structure
