@@ -21,7 +21,6 @@ import formatDate from './formatDate';
 import getLoadedRecord from './getLoadedRecord';
 import getListByProp from './getListByProp';
 
-
 /** Generators for each custom function available  */
 export const functions = [
   { fn: getTotalAids, name: 'getTotalAids' },
