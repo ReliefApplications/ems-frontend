@@ -24,30 +24,36 @@ import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
 import { MapComponent } from '../../components/ui/map';
 import { createFontAwesomeIcon } from '../../components/ui/map/utils/create-div-icon';
 import { DOCUMENT } from '@angular/common';
+import { DatePipe } from '../../pipes/date/date.pipe';
 
 /**
  * Shared map control service.
  */
 @Injectable()
 export class MapControlsService {
-  public addressMarker: any;
-  public measureControls: any = {};
-  public fullscreenControl!: L.Control;
+  /** Current lang */
   public lang!: any;
-  // === THEME ===
+  /** Platform theme */
   private primaryColor = '';
-  // === Time Dimension ===
-  // private timeDimensionLayer!: any | null;
-  // private timeDimensionControl!: L.Control | null;
-  // === Map controls ===
+  /** Current address marker */
+  public addressMarker: any;
+  /** Active measure controls */
+  public measureControls: any = {};
+  /** Active fullscreen control */
+  public fullscreenControl!: L.Control;
+  /** Active download control */
   private downloadControl!: L.Control | null;
+  /** Active legend control */
   private legendControl!: L.Control | null;
-
-  // === Listeners ===
+  /** Angular renderer */
   private renderer!: Renderer2;
+  /** Listener on sidenav control click */
   private sidenavControlClickListener!: any;
+  /** Listener on sidenav control wheel */
   private sidenavControlWheelListener!: any;
+  /** Listener on download control click */
   private downloadControlClickListener!: any;
+  /** Listener on download control wheel */
   private downloadControlWheelListener!: any;
 
   /**
@@ -58,13 +64,15 @@ export class MapControlsService {
    * @param translate Angular translate service
    * @param domService Shared dom service
    * @param _renderer RendererFactory2
+   * @param datePipe Shared date pipe
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private domService: DomService,
-    private _renderer: RendererFactory2
+    private _renderer: RendererFactory2,
+    private datePipe: DatePipe
   ) {
     this.renderer = _renderer.createRenderer(null, null);
     this.lang = this.translate.currentLang;
@@ -485,19 +493,25 @@ export class MapControlsService {
         this.document
       );
       const spanText = modifiedAt
-        ? `${lastUpdateText} ${new Date(
-            modifiedAt
-          ).toLocaleDateString()} at ${new Date(
-            modifiedAt
-          ).toLocaleTimeString()}`
+        ? `${lastUpdateText} ${this.formatDate(new Date(modifiedAt))}`
         : `${lastUpdateError}`;
-      const innerSpan = `<span class="pl-1 whitespace-nowrap hidden group-hover:inline"> ${spanText} </span>`;
-      const innerDiv = `<div class="flex bg-white p-1 rounded-md overflow-hidden w-6 h-6 transition-all hover:w-[250px] group">${innerIcon.innerHTML} ${innerSpan} </div>`;
+      const innerSpan = `<span class="pl-1 whitespace-nowrap hidden group-hover/lastUpdate:inline"> ${spanText} </span>`;
+      const innerDiv = `<div class="flex bg-white p-1 rounded-md overflow-hidden h-6 transition-all group/lastUpdate">${innerIcon.innerHTML} ${innerSpan} </div>`;
       div.innerHTML = innerDiv;
       return div;
     };
     map.addControl(customLastUpdatedControl);
     return customLastUpdatedControl;
+  }
+
+  /**
+   * Formats the date at the format 'DDsuffix Month Year', supports french and english
+   *
+   * @param date date to format
+   * @returns date at the format '1st November 2023'
+   */
+  private formatDate(date: Date) {
+    return this.datePipe.transform(date, 'medium');
   }
 
   /**

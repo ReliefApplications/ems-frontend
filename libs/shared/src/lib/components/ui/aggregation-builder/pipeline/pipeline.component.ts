@@ -110,7 +110,6 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
    * @param event positions to move.
    */
   drop(event: CdkDragDrop<string[]>) {
-    console.log('drop');
     const temp = this.pipelineForm.at(event.previousIndex);
 
     this.pipelineForm.removeAt(event.previousIndex);

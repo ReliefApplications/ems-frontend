@@ -386,8 +386,7 @@ export class DashboardComponent
    */
   onAdd(e: any): void {
     const widget = cloneDeep(e);
-    this.widgets = [...this.widgets, widget];
-    this.autoSaveChanges();
+    this.widgets.push(widget);
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
@@ -474,21 +473,6 @@ export class DashboardComponent
       },
     });
     this.layoutService.closeRightSidenav = true;
-  }
-
-  /**
-   * Drags and drops a widget to move it.
-   *
-   * @param e move event.
-   */
-  onMove(e: any): void {
-    // Duplicates array, some times the arrays is write protected
-    this.widgets = this.widgets.slice();
-    [this.widgets[e.oldIndex], this.widgets[e.newIndex]] = [
-      this.widgets[e.newIndex],
-      this.widgets[e.oldIndex],
-    ];
-    this.autoSaveChanges();
   }
 
   /** Save the dashboard changes in the database. */
