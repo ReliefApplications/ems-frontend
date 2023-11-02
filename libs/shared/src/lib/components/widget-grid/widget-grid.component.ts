@@ -117,7 +117,6 @@ export class WidgetGridComponent
     this.skeletons = this.getSkeletons();
     this.setLayout();
     this.resizeObserver = new ResizeObserver(() => {
-      console.log('resize');
       this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
       this.setGridOptions();
     });
@@ -130,12 +129,14 @@ export class WidgetGridComponent
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }
+    if (changes['widgets']) {
+      this.setLayout();
+    }
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue)
     ) {
-      console.log('can update???');
       this.setLayout();
       this.gridOptionsTimeoutListener = setTimeout(() => {
         this.setGridOptions(true);
@@ -397,7 +398,9 @@ export class WidgetGridComponent
    * Updates layout based on the passed widget array.
    */
   private setLayout(): void {
-    console.log('layouts');
+    if (this.changesSubscription) {
+      this.changesSubscription.unsubscribe();
+    }
     this.widgets.forEach((widget) => {
       if (isNil(widget.cols) || isNil(widget.rows)) {
         widget.cols = widget.cols ?? widget.defaultCols;
@@ -410,9 +413,6 @@ export class WidgetGridComponent
         delete widget.minItemRows;
       }
     });
-    if (this.changesSubscription) {
-      this.changesSubscription.unsubscribe();
-    }
     // Prevent changes to be saved too often
     this.changesSubscription = this.structureChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
