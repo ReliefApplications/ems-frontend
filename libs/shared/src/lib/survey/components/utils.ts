@@ -26,12 +26,10 @@ export const buildSearchButton = (
   document: Document
 ): any => {
   const searchButton = document.createElement('button');
-  searchButton.innerText =
-    question.addRecordText ??
-    surveyLocalization.getString(
-      'oort:search',
-      (question.survey as SurveyModel).locale
-    );
+  searchButton.innerText = surveyLocalization.getString(
+    'oort:search',
+    (question.survey as SurveyModel).locale
+  );
   searchButton.className = 'sd-btn !px-3 !py-1';
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
@@ -92,10 +90,12 @@ export const buildAddButton = (
   document: Document
 ): any => {
   const addButton = document.createElement('button');
-  addButton.innerText = surveyLocalization.getString(
-    'oort:addNewRecord',
-    (question.survey as SurveyModel).locale
-  );
+  addButton.innerText =
+    question.addRecordText ??
+    surveyLocalization.getString(
+      'oort:addNewRecord',
+      (question.survey as SurveyModel).locale
+    );
   addButton.className = 'sd-btn !px-3 !py-1';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
