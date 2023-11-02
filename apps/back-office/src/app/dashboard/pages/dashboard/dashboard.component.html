@@ -187,7 +187,6 @@
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
-    [ngStyle]="{'margin-top': isDrawerOpen ? drawerHeight + 50 + 'px' : '0'}"
   ></shared-widget-grid>
   <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"
