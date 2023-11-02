@@ -10,7 +10,6 @@ import {
   FullScreenModule,
   DashboardFilterModule,
   ButtonActionModule,
-  DatePipe,
 } from '@oort-front/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { IconModule } from '@oort-front/ui';
@@ -59,6 +58,5 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     ButtonActionModule,
   ],
   exports: [DashboardComponent],
-  providers: [DatePipe],
 })
 export class DashboardModule {}

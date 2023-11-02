@@ -31,24 +31,29 @@ import { DatePipe } from '../../pipes/date/date.pipe';
  */
 @Injectable()
 export class MapControlsService {
-  public addressMarker: any;
-  public measureControls: any = {};
-  public fullscreenControl!: L.Control;
+  /** Current lang */
   public lang!: any;
-  // === THEME ===
+  /** Platform theme */
   private primaryColor = '';
-  // === Time Dimension ===
-  // private timeDimensionLayer!: any | null;
-  // private timeDimensionControl!: L.Control | null;
-  // === Map controls ===
+  /** Current address marker */
+  public addressMarker: any;
+  /** Active measure controls */
+  public measureControls: any = {};
+  /** Active fullscreen control */
+  public fullscreenControl!: L.Control;
+  /** Active download control */
   private downloadControl!: L.Control | null;
+  /** Active legend control */
   private legendControl!: L.Control | null;
-
-  // === Listeners ===
+  /** Angular renderer */
   private renderer!: Renderer2;
+  /** Listener on sidenav control click */
   private sidenavControlClickListener!: any;
+  /** Listener on sidenav control wheel */
   private sidenavControlWheelListener!: any;
+  /** Listener on download control click */
   private downloadControlClickListener!: any;
+  /** Listener on download control wheel */
   private downloadControlWheelListener!: any;
 
   /**

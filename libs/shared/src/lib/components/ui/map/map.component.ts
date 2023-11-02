@@ -86,15 +86,6 @@ export class MapComponent
     }
   }
 
-  @Output() mapEvent: EventEmitter<MapEvent> = new EventEmitter<MapEvent>();
-
-  // === MAP ===
-  public mapId: string;
-  public map!: L.Map;
-  private basemap: any;
-  private currentBasemapKey!: string;
-  private esriApiKey!: string;
-
   /**
    * Update map settings and redraw it with those
    */
@@ -107,18 +98,10 @@ export class MapComponent
     }
   }
 
-  private mapSettingsValue: MapConstructorSettings = {
-    initialState: {
-      viewpoint: {
-        center: {
-          longitude: 0,
-          latitude: 0,
-        },
-        zoom: 2,
-      },
-    },
-    controls: DefaultMapControls,
-  };
+  /** Map even emitter */
+  @Output() mapEvent: EventEmitter<MapEvent> = new EventEmitter<MapEvent>();
+  /** Search event emitter */
+  @Output() search = new EventEmitter();
 
   /**
    * Get current map settings without the layers
@@ -131,42 +114,57 @@ export class MapComponent
     return { settings: rest };
   }
 
-  private arcGisWebMap: any;
-
-  // === ZOOM ===
+  /** Current map id */
+  public mapId: string;
+  /** Leaflet map */
+  public map!: L.Map;
+  /** Leaflet current zoom level */
   public currentZoom = 2;
+  /** Active zoom control */
   public zoomControl: any = undefined;
-
-  // === MARKERS ===
-  // private baseTree!: L.Control.Layers.TreeObject;
-  private layerControlButtons: any;
-
-  // === Controls ===
-  // Search
+  /** Active search control */
   public searchControl?: L.Control;
-  @Output() search = new EventEmitter();
-
-  /** Last update control */
+  /** Active last update control */
   public lastUpdateControl?: L.Control;
-
-  /** query Update info */
-  public lastUpdate = '';
+  /** Leaflet active layers */
+  public layers: Layer[] = [];
+  /** Leaflet basemap */
+  private basemap: any;
+  /** Esri basemap key */
+  private currentBasemapKey!: string;
+  /** Esri API key */
+  private esriApiKey!: string;
+  /** Map constructor settings */
+  private mapSettingsValue: MapConstructorSettings = {
+    initialState: {
+      viewpoint: {
+        center: {
+          longitude: 0,
+          latitude: 0,
+        },
+        zoom: 2,
+      },
+    },
+    controls: DefaultMapControls,
+  };
+  /** Current arcgis web map */
+  private arcGisWebMap: any;
+  /** Layer control buttons */
+  private layerControlButtons: any;
+  /** Applied dashboard filters */
   private appliedDashboardFilters: Record<string, any>;
-
-  /** Layers */
-  layers: Layer[] = [];
+  /** Current layer ids */
   private layerIds: string[] = [];
-
+  /** Resize observer on map container */
   private resizeObserver?: ResizeObserver;
-
+  /** First load timeout */
+  private firstLoadEmitTimeoutListener!: NodeJS.Timeout;
+  /** Current basemap tree */
   private basemapTree: L.Control.Layers.TreeObject[][] = [];
+  /** Current layers tree */
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
-
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
-
-  /** Timeout listeners */
-  firstLoadEmitTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Map widget component
