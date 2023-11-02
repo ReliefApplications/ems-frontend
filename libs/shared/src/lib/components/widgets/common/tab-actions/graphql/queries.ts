@@ -1,22 +1,13 @@
 import { gql } from 'apollo-angular';
 
-// === GET RESOURCE BY ID ===
+// === GET PAGE BY ID ===
 
-/** Graphql query for getting a resource by its id */
-export const GET_RESOURCE_BY_ID = gql`
-  query GetResourceById($id: ID!) {
-    resource(id: $id) {
+/** Graphql query for getting a page data by its id */
+export const GET_PAGE_BY_ID = gql`
+  query GetPageById($id: ID!) {
+    page(id: $id) {
       id
-      name
-      queryName
-      createdAt
-      fields
-      forms {
-        id
-        name
-        core
-      }
-      canUpdate
+      context
     }
   }
 `;
