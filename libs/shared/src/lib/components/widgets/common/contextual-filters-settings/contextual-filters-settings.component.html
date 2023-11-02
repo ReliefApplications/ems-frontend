@@ -17,7 +17,7 @@
     </div>
   </div>
   <!-- Dashboard filter -->
-  <div class="flex-1 flex flex-col" >  <!-- create a variable to control this-->
+  <div class="flex-1 flex flex-col" *ngIf="!loading;">  <!-- create a variable to control this-->
     <h2 class="flex">
       {{ 'models.dashboard.dashboardFilter' | translate
       }}<ui-icon
@@ -32,13 +32,9 @@
     <ng-container ngProjectAs="content">
       <ng-container *ngIf="!loading; else loadingTmpl">
         <div class="flex flex-col">
-          <shared-query-builder
-            [form]="$any(form.get('dashboardFilters'))"
-            [canSelectDataSet]="false"
-            [showStyle]="false"
-            [showSort]="false"
-            [showFields]="false"
-          ></shared-query-builder>
+          <shared-filter-builder
+          [form]="$any(form.get('dashboardFilters'))"
+          ></shared-filter-builder>
         </div>
       </ng-container>
       <ng-template #loadingTmpl>

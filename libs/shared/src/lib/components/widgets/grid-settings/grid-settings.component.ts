@@ -96,7 +96,7 @@ export class GridSettingsComponent
    * @param queryBuilder The query builder service
    * @param fb FormBuilder instance
    * @param aggregationService Shared aggregation service
-   * @param data
+   * @param data The data to be shown in the modal
    */
   constructor(
     private apollo: Apollo,
@@ -175,6 +175,7 @@ export class GridSettingsComponent
           this.onAggregationChange(value[0]);
         }
       });
+
     // If some aggregations are selected, remove validators on layouts field
     if (this.formGroup.get('aggregations')?.value.length > 0) {
       this.formGroup.controls.layouts.clearValidators();
@@ -339,11 +340,13 @@ export class GridSettingsComponent
                 .replace(/\s/g, '')
                 .toLowerCase();
               this.data = {
-                form: !this.fields
+                form: !this.formGroup.get('dashboardFilters')
                   ? null
-                  : this.convertFromRawToFormGroup(this.fields),
+                  : this.convertFromRawToFormGroup(
+                      this.formGroup.get('dashboardFilters')
+                    ),
                 resourceName: nameTrimmed,
-              }; // stoped here
+              };
             }
           } else {
             this.relatedForms = [];
