@@ -52,7 +52,8 @@ ui-checkbox {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  @apply bg-white border-b border-b-gray-300 #{!important};
+  overflow: hidden;
+  @apply bg-white border-b border-b-gray-300 px-3 #{!important};
 
   .widget-title {
     overflow: hidden;
@@ -79,6 +80,7 @@ ui-checkbox {
   left: 0;
   right: 0;
   border: unset !important;
+  @apply px-3 #{!important};
 }
 
 // === TINYMCE ===

@@ -8,21 +8,20 @@
 >
   <ng-container *ngIf="header">
     <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
-      <div class="floating-widget-header pointer-events-none" *ngIf="canUpdate && !fullscreen">
-        <!-- Setting pointer-events so buttons below header are still accessible -->
-        <div class="bg-white/70 rounded-2xl pointer-events-auto">
-          <ng-container
-            *ngIf="headerLeftTemplate"
-            [ngTemplateOutlet]="headerLeftTemplate"
-          ></ng-container>
-        </div>
-        <div class="bg-white/70 rounded-2xl pointer-events-auto">
-          <ng-container
-            *ngIf="headerRightTemplate"
-            [ngTemplateOutlet]="headerRightTemplate"
-            [ngTemplateOutletContext]="{ $implicit: id }"
-          ></ng-container>
-        </div>
+      <div
+        class="floating-widget-header pointer-events-none"
+        *ngIf="canUpdate && !fullscreen"
+      >
+        <!-- Setting pointer-events to none so buttons below header are still accessible -->
+        <ng-container
+          *ngIf="headerLeftTemplate"
+          [ngTemplateOutlet]="headerLeftTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="headerRightTemplate"
+          [ngTemplateOutlet]="headerRightTemplate"
+          [ngTemplateOutletContext]="{ $implicit: id }"
+        ></ng-container>
       </div>
     </ng-container>
 
@@ -31,7 +30,7 @@
         class="widget-header border-b"
         [ngClass]="{
           '!border-transparent': !showBorder,
-          '!border-b-gray-300': showBorder
+          '!border-b-gray-300': showBorder,
         }"
       >
         <ng-container
