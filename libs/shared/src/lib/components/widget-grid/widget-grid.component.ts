@@ -49,14 +49,10 @@ export class WidgetGridComponent
   public availableWidgets: any[] = WIDGET_TYPES;
   /** Loading status */
   @Input() loading = false;
-  /** Skeletons for loading */
-  public skeletons: GridsterItem[] = [];
   /** Widgets */
   @Input() widgets: any[] = [];
   /** Update permission */
   @Input() canUpdate = false;
-  /** Number of columns */
-  colsNumber = MAX_COL_SPAN;
   /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
   /** Edit event emitter */
@@ -75,14 +71,18 @@ export class WidgetGridComponent
     unknown,
     ExpandedWidgetComponent
   > | null;
+  /** Number of columns */
+  public colsNumber = MAX_COL_SPAN;
+  /** Skeletons for loading */
+  public skeletons: GridsterItem[] = [];
   /** Gridster options */
-  gridOptions!: GridsterConfig;
+  public gridOptions!: GridsterConfig;
+  /** Detect structure changes */
+  public structureChanges = new Subject<boolean>();
   /** Resize observer for the parent container */
   private resizeObserver!: ResizeObserver;
-  /** Detect structure changes */
-  structureChanges = new Subject<boolean>();
   /** Set grid options timeout, to enable events that can save dashboard */
-  gridOptionsTimeoutListener!: NodeJS.Timeout;
+  private gridOptionsTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -161,14 +161,6 @@ export class WidgetGridComponent
     super.ngOnDestroy();
     this.resizeObserver.disconnect();
   }
-
-  // static itemChange(item: any, itemComponent: any) {
-  //   console.info('itemChanged', item, itemComponent);
-  // }
-
-  // static itemResize(item: a, itemComponent: any) {
-  //   console.info('itemResized', item, itemComponent);
-  // }
 
   /**
    * Changes the number of displayed columns.
@@ -431,15 +423,24 @@ export class WidgetGridComponent
           : this.setXYAxisValues(yAxis, xAxis, widget);
       const minItemRows = widget.minRow;
       delete widget.minRow;
+      console.log({
+        cols: widget.defaultCols,
+        rows: widget.defaultRows,
+      });
+      widget.cols = widget.cols ?? widget.defaultCols;
+      widget.rows = widget.rows ?? widget.defaultRows;
+      widget.minItemRows = minItemRows;
       const gridItem = {
         ...widget,
         cols: widget.cols ?? widget.defaultCols,
         rows: widget.rows ?? widget.defaultRows,
         minItemRows,
-        y: widget.y ?? y,
-        x: widget.x ?? x,
+        // y: widget.y ?? y,
+        // x: widget.x ?? x,
       };
+      console.log(gridItem);
       if (index === 0) {
+        console.log('index is 000');
         this.setXYAxisValues(yAxis, xAxis, widget);
       }
       return gridItem;

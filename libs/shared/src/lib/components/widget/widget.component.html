@@ -8,14 +8,15 @@
 >
   <ng-container *ngIf="header">
     <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
-      <div class="floating-widget-header" *ngIf="canUpdate && !fullscreen">
-        <div class="bg-white/70 rounded-2xl">
+      <div class="floating-widget-header pointer-events-none" *ngIf="canUpdate && !fullscreen">
+        <!-- Setting pointer-events so buttons below header are still accessible -->
+        <div class="bg-white/70 rounded-2xl pointer-events-auto">
           <ng-container
             *ngIf="headerLeftTemplate"
             [ngTemplateOutlet]="headerLeftTemplate"
           ></ng-container>
         </div>
-        <div class="bg-white/70 rounded-2xl">
+        <div class="bg-white/70 rounded-2xl pointer-events-auto">
           <ng-container
             *ngIf="headerRightTemplate"
             [ngTemplateOutlet]="headerRightTemplate"
