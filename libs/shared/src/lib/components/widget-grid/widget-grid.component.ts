@@ -210,7 +210,9 @@ export class WidgetGridComponent
       fixedRowHeight: 200,
       draggable: {
         enabled: this.canUpdate,
-        ignoreContentClass: 'widget-actions',
+        ignoreContentClass: 'gridster-item-content',
+        ignoreContent: true,
+        dragHandleClass: 'drag-handler',
       },
       resizable: {
         enabled: this.canUpdate,
