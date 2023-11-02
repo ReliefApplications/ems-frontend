@@ -135,15 +135,13 @@ export class WidgetGridComponent
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }
-    if (changes['widgets']) {
-      this.setLayout();
-    }
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue) &&
       Boolean(changes['canUpdate'].currentValue)
     ) {
+      this.setLayout();
       this.gridOptionsTimeoutListener = setTimeout(() => {
         this.setGridOptions(true);
       }, 0);
