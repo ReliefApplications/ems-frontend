@@ -281,7 +281,7 @@ export class ReferenceDataService {
             }
           : {};
       data = (await this.apiProxy.buildPostRequest(url, body, options)) as any;
-    } else if (referenceDataType.rest) {
+    } else if (type === referenceDataType.rest) {
       const url =
         this.apiProxy.baseUrl +
         referenceData.apiConfiguration?.name +
