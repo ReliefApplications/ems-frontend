@@ -61,7 +61,7 @@
 </ng-container>
 <!-- LOADING INDICATOR -->
 <ng-template #emptyTemplate>
-  <gridster [options]="gridOptions" class="!w-full">
+  <gridster [options]="gridOptions" class="!w-full mt-6">
     <gridster-item [item]="skeleton" *ngFor="let skeleton of skeletons">
       <div class="gridster-item-content h-full">
         <kendo-skeleton

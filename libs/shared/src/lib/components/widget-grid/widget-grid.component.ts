@@ -25,7 +25,7 @@ import {
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -133,6 +133,9 @@ export class WidgetGridComponent
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }
+    if (changes['widgets']) {
+      this.setLayout();
+    }
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
@@ -142,18 +145,6 @@ export class WidgetGridComponent
       this.gridOptionsTimeoutListener = setTimeout(() => {
         this.setGridOptions(true);
       }, 0);
-    }
-    if (changes['widgets']) {
-      // First load
-      if (
-        !changes['widgets'].previousValue ||
-        !changes['widgets'].previousValue?.length
-      ) {
-        // If there is something to display, set layout
-        if (changes['widgets'].currentValue.length) {
-          this.setLayout();
-        }
-      }
     }
   }
 
@@ -414,36 +405,15 @@ export class WidgetGridComponent
    * Updates layout based on the passed widget array.
    */
   private setLayout(): void {
-    const yAxis = 0;
-    const xAxis = 0;
-    this.widgets.map((widget, index) => {
-      const { x, y } =
-        index === 0
-          ? { x: 0, y: 0 }
-          : this.setXYAxisValues(yAxis, xAxis, widget);
-      const minItemRows = widget.minRow;
-      delete widget.minRow;
-      console.log({
-        cols: widget.defaultCols,
-        rows: widget.defaultRows,
-      });
-      widget.cols = widget.cols ?? widget.defaultCols;
-      widget.rows = widget.rows ?? widget.defaultRows;
-      widget.minItemRows = minItemRows;
-      const gridItem = {
-        ...widget,
-        cols: widget.cols ?? widget.defaultCols,
-        rows: widget.rows ?? widget.defaultRows,
-        minItemRows,
-        // y: widget.y ?? y,
-        // x: widget.x ?? x,
-      };
-      console.log(gridItem);
-      if (index === 0) {
-        console.log('index is 000');
-        this.setXYAxisValues(yAxis, xAxis, widget);
+    this.widgets.forEach((widget) => {
+      if (isNil(widget.cols) || isNil(widget.rows)) {
+        widget.cols = widget.cols ?? widget.defaultCols;
+        widget.rows = widget.rows ?? widget.defaultRows;
+        widget.minItemRows = widget.minItemRows ?? widget.minRow;
+        delete widget.defaultCols;
+        delete widget.defaultRows;
+        delete widget.minItemRows;
       }
-      return gridItem;
     });
   }
 }
