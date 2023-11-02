@@ -470,6 +470,9 @@ export class MapControlsService {
     const lastUpdateText = this.translate.instant(
       'components.widget.settings.map.properties.controls.lastUpdate'
     );
+    const at = this.translate.instant(
+      'components.widget.settings.map.properties.controls.at'
+    );
     const lastUpdateError = this.translate.instant(
       'components.widget.settings.map.properties.controls.lastUpdateError'
     );
@@ -485,19 +488,54 @@ export class MapControlsService {
         this.document
       );
       const spanText = modifiedAt
-        ? `${lastUpdateText} ${new Date(
-            modifiedAt
-          ).toLocaleDateString()} at ${new Date(
-            modifiedAt
-          ).toLocaleTimeString()}`
+        ? `${lastUpdateText} ${this.formatDate(
+            new Date(modifiedAt)
+          )} ${at} ${new Date(modifiedAt).toLocaleTimeString()}`
         : `${lastUpdateError}`;
-      const innerSpan = `<span class="pl-1 whitespace-nowrap hidden group-hover:inline"> ${spanText} </span>`;
-      const innerDiv = `<div class="flex bg-white p-1 rounded-md overflow-hidden w-6 h-6 transition-all hover:w-[250px] group">${innerIcon.innerHTML} ${innerSpan} </div>`;
+      const innerSpan = `<span class="pl-1 whitespace-nowrap hidden group-hover/lastUpdate:inline"> ${spanText} </span>`;
+      const innerDiv = `<div class="flex bg-white p-1 rounded-md overflow-hidden h-6 transition-all group/lastUpdate">${innerIcon.innerHTML} ${innerSpan} </div>`;
       div.innerHTML = innerDiv;
       return div;
     };
     map.addControl(customLastUpdatedControl);
     return customLastUpdatedControl;
+  }
+
+  /**
+   * Formats the date at the format 'DDsuffix Month Year', supports french and english
+   *
+   * @param date date to format
+   * @returns date at the format '1st November 2023'
+   */
+  private formatDate(date: Date) {
+    const day = date.getDate();
+    const currentLang = this.translate.currentLang;
+    const formattedDate = new Intl.DateTimeFormat(currentLang, {
+      year: 'numeric',
+      month: 'long',
+    }).format(date);
+
+    let suffix = '';
+
+    switch (currentLang) {
+      case 'fr':
+        if (day === 1) {
+          suffix = 'er';
+        }
+        break;
+      default:
+        suffix = 'th';
+        if (day === 1 || day === 21 || day === 31) {
+          suffix = 'st';
+        } else if (day === 2 || day === 22) {
+          suffix = 'nd';
+        } else if (day === 3 || day === 23) {
+          suffix = 'rd';
+        }
+        break;
+    }
+
+    return `${day}${suffix} ${formattedDate}`;
   }
 
   /**
