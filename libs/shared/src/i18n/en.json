@@ -1654,7 +1654,6 @@
 					"properties": {
 						"basemap": "Base map",
 						"controls": {
-							"at": "at",
 							"download": "Download",
 							"lastUpdate": "Last updated on",
 							"lastUpdateError": "Last modified time could not be loaded",

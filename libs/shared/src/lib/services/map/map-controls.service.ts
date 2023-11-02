@@ -24,6 +24,7 @@ import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
 import { MapComponent } from '../../components/ui/map';
 import { createFontAwesomeIcon } from '../../components/ui/map/utils/create-div-icon';
 import { DOCUMENT } from '@angular/common';
+import { DatePipe } from '../../pipes/date/date.pipe';
 
 /**
  * Shared map control service.
@@ -58,13 +59,15 @@ export class MapControlsService {
    * @param translate Angular translate service
    * @param domService Shared dom service
    * @param _renderer RendererFactory2
+   * @param datePipe Shared date pipe
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private domService: DomService,
-    private _renderer: RendererFactory2
+    private _renderer: RendererFactory2,
+    private datePipe: DatePipe
   ) {
     this.renderer = _renderer.createRenderer(null, null);
     this.lang = this.translate.currentLang;
@@ -470,9 +473,6 @@ export class MapControlsService {
     const lastUpdateText = this.translate.instant(
       'components.widget.settings.map.properties.controls.lastUpdate'
     );
-    const at = this.translate.instant(
-      'components.widget.settings.map.properties.controls.at'
-    );
     const lastUpdateError = this.translate.instant(
       'components.widget.settings.map.properties.controls.lastUpdateError'
     );
@@ -488,9 +488,7 @@ export class MapControlsService {
         this.document
       );
       const spanText = modifiedAt
-        ? `${lastUpdateText} ${this.formatDate(
-            new Date(modifiedAt)
-          )} ${at} ${new Date(modifiedAt).toLocaleTimeString()}`
+        ? `${lastUpdateText} ${this.formatDate(new Date(modifiedAt))}`
         : `${lastUpdateError}`;
       const innerSpan = `<span class="pl-1 whitespace-nowrap hidden group-hover/lastUpdate:inline"> ${spanText} </span>`;
       const innerDiv = `<div class="flex bg-white p-1 rounded-md overflow-hidden h-6 transition-all group/lastUpdate">${innerIcon.innerHTML} ${innerSpan} </div>`;
@@ -508,34 +506,7 @@ export class MapControlsService {
    * @returns date at the format '1st November 2023'
    */
   private formatDate(date: Date) {
-    const day = date.getDate();
-    const currentLang = this.translate.currentLang;
-    const formattedDate = new Intl.DateTimeFormat(currentLang, {
-      year: 'numeric',
-      month: 'long',
-    }).format(date);
-
-    let suffix = '';
-
-    switch (currentLang) {
-      case 'fr':
-        if (day === 1) {
-          suffix = 'er';
-        }
-        break;
-      default:
-        suffix = 'th';
-        if (day === 1 || day === 21 || day === 31) {
-          suffix = 'st';
-        } else if (day === 2 || day === 22) {
-          suffix = 'nd';
-        } else if (day === 3 || day === 23) {
-          suffix = 'rd';
-        }
-        break;
-    }
-
-    return `${day}${suffix} ${formattedDate}`;
+    return this.datePipe.transform(date, 'medium');
   }
 
   /**

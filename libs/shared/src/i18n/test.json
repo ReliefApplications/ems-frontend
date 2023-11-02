@@ -1654,7 +1654,6 @@
 					"properties": {
 						"basemap": "******",
 						"controls": {
-							"at": "******",
 							"download": "******",
 							"lastUpdate": "******",
 							"lastUpdateError": "******",

@@ -1670,7 +1670,6 @@
 					"properties": {
 						"basemap": "Fond de carte",
 						"controls": {
-							"at": "à",
 							"download": "Télécharger",
 							"lastUpdate": "Dernière mise à jour le",
 							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
