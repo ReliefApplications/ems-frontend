@@ -77,13 +77,18 @@ const getUpdateData = (
  */
 const transformSurveyData = (survey: SurveyModel) => {
   const data = survey.data ?? {};
+  const formatDate = (value: string | null) => {
+    if (!value) {
+      return value;
+    }
 
-  const formatDate = (value: string) => {
     const date = new Date(value);
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return new Date(Date.UTC(year, month, day)).toISOString();
   };
 
-  // Change date questions to only include the date part
   survey.getAllQuestions(true).forEach((question) => {
     if (question.getType() === 'text' && question.inputType === 'date') {
       data[question.name] = formatDate(question.value);

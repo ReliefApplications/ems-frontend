@@ -504,12 +504,13 @@ export class CoreGridComponent
         if (dateFields.includes(key) || timeFields.includes(key)) {
           if (
             this.fields.find((f) => f.name === key)?.type === 'Date' &&
-            !isNaN(new Date(x[key])?.getTime()) &&
-            !x[key].includes('T')
+            !isNaN(new Date(x[key])?.getTime())
           ) {
-            // Create date from parts
-            const dateParts = x[key].split('-');
-            if (dateParts.length === 3) {
+            // We assume the server sends dates in ISO format
+            // For dates, we disregard the time zone
+            const withoutTimezone = x[key]?.split('T')[0];
+            const dateParts = withoutTimezone?.split('-');
+            if (dateParts?.length === 3) {
               const date = new Date();
               date.setFullYear(+dateParts[0]);
               date.setMonth(+dateParts[1] - 1);
@@ -1537,11 +1538,12 @@ export class CoreGridComponent
       });
     } else if ('field' in filter && filter.field) {
       const field = this.fields.find((x) => x.name === filter.field);
-      if (field?.type === 'Date') {
+      if (field?.type === 'Date' && filter.value instanceof Date) {
         const date = filter.value;
-        filter.value = `${date.getFullYear()}-${
-          date.getMonth() + 1
-        }-${date.getDate()}`;
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        filter.value = new Date(Date.UTC(year, month, day)).toISOString();
       }
     }
   }
