@@ -172,6 +172,7 @@ export class FormBuilderService {
     this.formHelpersService.addApplicationVariables(survey);
     this.formHelpersService.setWorkflowContextVariable(survey);
     if (record) {
+      this.recordId = record.id;
       this.formHelpersService.addRecordIDVariable(survey, record);
     }
     survey.onAfterRenderQuestion.add(
