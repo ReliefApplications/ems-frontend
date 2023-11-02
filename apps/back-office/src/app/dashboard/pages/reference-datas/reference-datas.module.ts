@@ -20,17 +20,13 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-import { FilterComponent } from './components/filter/filter.component';
+import { FilterComponent } from './filter/filter.component';
 
 /**
  * List of reference data page module
  */
 @NgModule({
-  declarations: [
-    ReferenceDatasComponent,
-    AddReferenceDataComponent,
-    FilterComponent,
-  ],
+  declarations: [ReferenceDatasComponent, AddReferenceDataComponent],
   imports: [
     CommonModule,
     MenuModule,
@@ -48,6 +44,7 @@ import { FilterComponent } from './components/filter/filter.component';
     FormWrapperModule,
     TableModule,
     TooltipModule,
+    FilterComponent,
   ],
   exports: [ReferenceDatasComponent],
 })

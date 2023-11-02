@@ -111,11 +111,4 @@ export class DuplicateApplicationModalComponent {
         },
       });
   }
-
-  /**
-   * Close dialog.
-   */
-  onCancel(): void {
-    this.dialogRef.close();
-  }
 }

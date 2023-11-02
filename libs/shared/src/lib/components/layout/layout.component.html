@@ -31,23 +31,17 @@
     >
     </ui-button>
   </div>
-  <div class="min-w-0 overflow-hidden flex items-center">
+  <div class="min-w-0 flex items-center overflow-hidden">
     <div id="app-logo"></div>
-    <ng-container *ngIf="!header">
-      <h1
-        class="text-xl mb-0 whitespace-nowrap text-clip font-medium"
-        *ngIf="!route"
-      >
+    <ng-container *ngIf="header; else defaultHeader">
+      <ng-container *ngTemplateOutlet="header"></ng-container>
+    </ng-container>
+    <ng-template #defaultHeader>
+      <h1 class="text-xl mb-0 whitespace-nowrap text-clip font-medium">
         {{ theme.prefix }}
         {{ 'common.platform.backOffice' | translate }}
       </h1>
-      <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
-        {{ 'common.back' | translate }}
-      </h1>
-    </ng-container>
-    <ng-container *ngIf="header">
-      <ng-container *ngTemplateOutlet="header"></ng-container>
-    </ng-container>
+    </ng-template>
   </div>
   <!-- Account icon and info -->
   <div
@@ -62,7 +56,7 @@
     icon="account_circle"
     [uiMenuTriggerFor]="accountMenu"
     variant="light"
-    [uiTooltip]="'common.options' | translate"
+    [uiTooltip]="'common.account' | translate"
   >
   </ui-button>
   <span class="relative">
@@ -167,10 +161,6 @@
     </ui-button>
   </ui-menu>
 </nav>
-<!-- Sub-header -->
-<ng-container *ngIf="toolbar">
-  <ng-container *ngTemplateOutlet="toolbar"></ng-container>
-</ng-container>
 <!-- Vertical navigation -->
 <ng-container *ngIf="!sideMenu && largeDevice">
   <ng-container *ngIf="leftSidenav">

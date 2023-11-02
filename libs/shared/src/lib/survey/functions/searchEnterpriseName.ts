@@ -4,7 +4,7 @@ import {
   QueryVariables,
 } from '../../services/query-builder/query-builder.service';
 import { gql } from 'apollo-angular';
-import { SurveyModel } from 'survey-angular';
+import { SurveyModel } from 'survey-core';
 import { firstValueFrom } from 'rxjs';
 
 /** Default number similar names to query */

@@ -79,17 +79,31 @@
               (click)="largeDevice ? null : nav.toggle()"
               [routerLink]="item.path"
             >
-              <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
+              <ui-icon
+                variant="grey"
+                [icon]="item.icon"
+                [fontFamily]="item.fontFamily"
+                [size]="vertical ? 24 : 18"
+              >
+              </ui-icon>
               <p class="truncate m-0" [uiTooltip]="item.name">
                 {{ item.name }}
               </p>
             </a>
             <div
               class="flex flex-row items-center"
-              *ngIf="item.action || item.orderable"
+              *ngIf="item.action || item.orderable || item.visible === false"
             >
+              <ui-icon
+                variant="grey"
+                class="eye-icon"
+                [size]="18"
+                *ngIf="!item.visible"
+                icon="visibility_off"
+                >S
+              </ui-icon>
               <ui-button
-                [variant]="!vertical ? 'danger' : 'default'"
+                [variant]="!vertical ? 'danger' : 'primary'"
                 class="hide-icons hover:text-primary-600"
                 [isIcon]="true"
                 *ngIf="item.action"
@@ -100,7 +114,7 @@
               >
               </ui-button>
               <ui-button
-                [variant]="!vertical ? 'grey' : 'default'"
+                [variant]="!vertical ? 'grey' : 'primary'"
                 [ngClass]="{ 'hide-icons': vertical }"
                 class="hover:text-primary-600"
                 [isIcon]="true"

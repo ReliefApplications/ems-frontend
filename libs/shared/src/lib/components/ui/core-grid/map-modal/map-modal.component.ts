@@ -27,6 +27,7 @@ interface DialogData {
 })
 export class MapModalComponent implements AfterViewInit {
   @ViewChild(MapComponent) mapComponent?: MapComponent;
+
   /**
    * Modal to show markers in a map
    *

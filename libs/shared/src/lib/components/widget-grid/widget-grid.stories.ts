@@ -3,13 +3,26 @@ import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { WidgetGridComponent } from './widget-grid.component';
 import { WidgetGridModule } from './widget-grid.module';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { Apollo } from 'apollo-angular';
 
+/**
+ * Export default metadata
+ */
+const environment = {
+  module: 'backoffice',
+};
 export default {
   component: WidgetGridComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [BrowserAnimationsModule, WidgetGridModule],
-      providers: [],
+      providers: [
+        { provide: 'environment', useValue: environment },
+        DashboardService,
+        Apollo,
+      ],
     }),
   ],
   title: 'Dashboard/Widget Grid',
@@ -24,7 +37,7 @@ export default {
  * @param args Properties
  * @returns A story component
  */
-const TEMPLATE: StoryFn<sharedWidgetGridComponent> = (args) => ({
+const TEMPLATE: StoryFn<WidgetGridComponent> = (args) => ({
   props: {
     ...args,
     widgetTypes: WIDGET_TYPES,

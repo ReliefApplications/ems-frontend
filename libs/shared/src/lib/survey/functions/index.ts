@@ -18,6 +18,9 @@ import push from './push';
 import getComplaintsByType from './getComplaintsByType';
 import getNumberOfMembers from './getNumberOfMembers';
 import formatDate from './formatDate';
+import getLoadedRecord from './getLoadedRecord';
+import getListByProp from './getListByProp';
+
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -39,6 +42,8 @@ export const functions = [
   { fn: push, name: 'push' },
   { fn: getNumberOfMembers, name: 'getNumberOfMembers' },
   { fn: formatDate, name: 'formatDate' },
+  { fn: getLoadedRecord, name: 'getLoadedRecord' },
+  { fn: getListByProp, name: 'getListByProp' },
 ];
 
 /** Generators for each async custom function available  */

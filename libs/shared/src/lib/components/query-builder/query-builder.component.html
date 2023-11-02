@@ -64,6 +64,22 @@
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
+        <!-- Only show in resources -->
+        <div
+          uiFormFieldDirective
+          [defaultMargin]="false"
+          *ngIf="form?.value.kind === 'LIST'"
+        >
+          <label>{{ 'models.form.field.itemsLabel' | translate }}</label>
+          <input
+            formControlName="itemsLabel"
+            type="text"
+            [placeholder]="
+              'components.widget.grid.item.few'
+                | translate : { count: '\{\{count\}\}' }
+            "
+          />
+        </div>
       </div>
     </ng-container>
     <ui-tabs *ngIf="form.getRawValue().name">

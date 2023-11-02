@@ -1,15 +1,7 @@
-<div class="h-full flex flex-col">
-  <kendo-tilelayout-item-header
-    *ngIf="header"
-    class="widget-header border-b"
-    [ngClass]="{
-      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
-    }"
-  >
-    <span class="widget-title" [title]="settings ? settings.title : ''">{{
-      settings.title
-    }}</span>
-  </kendo-tilelayout-item-header>
-  <shared-map class="flex-1" [mapSettings]="settings" />
-</div>
+<shared-map class="flex-1" [mapSettings]="settings" />
+
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings ? settings.title : ''">{{
+    settings.title
+  }}</span>
+</ng-template>

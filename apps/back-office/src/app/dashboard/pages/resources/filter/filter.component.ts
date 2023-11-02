@@ -1,44 +1,55 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, UntypedFormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  TemplateRef,
+} from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { UnsubscribeComponent } from '@oort-front/shared';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 /**
  * Filter used by the resources component
  */
 @Component({
-  selector: 'app-filter',
+  selector: 'app-resources-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent extends UnsubscribeComponent implements OnInit {
   @Input() loading = false;
   @Output() filter = new EventEmitter<any>();
+  /** Reference to expanded filter template */
+  @ViewChild('expandedFilter')
+  expandedFilter!: TemplateRef<any>;
+
   public form = this.fb.group({
-    name: [''],
     startDate: [null],
     endDate: [null],
   });
-  public search = new UntypedFormControl('');
   public show = false;
 
   /**
-   * FilterComponent contructor.
+   * FilterComponent constructor.
    *
    * @param fb Used to create reactive forms.
    */
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.emitFilter(value);
-      });
-    // this way we can wait for 0.2s before sending an update
-    this.search.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
-        this.form.controls.name.setValue(value);
       });
   }
 
@@ -49,8 +60,12 @@ export class FilterComponent implements OnInit {
    */
   private emitFilter(value: any): void {
     const filters: any[] = [];
-    if (value.name) {
-      filters.push({ field: 'name', operator: 'contains', value: value.name });
+    if (value.search) {
+      filters.push({
+        field: 'name',
+        operator: 'contains',
+        value: value.search,
+      });
     }
     if (value.startDate) {
       filters.push({
@@ -78,7 +93,6 @@ export class FilterComponent implements OnInit {
    */
   clear(): void {
     this.form.reset();
-    this.search.reset();
   }
 
   /**

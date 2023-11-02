@@ -3,20 +3,84 @@
     <h2>
       {{ 'components.widget.settings.grid.actions.title' | translate }}
     </h2>
-    <div class="flex flex-col gap-2">
-      <ui-toggle *ngFor="let action of actions" [formControlName]="action.name">
-        <ng-container ngProjectAs="label">
-          {{ action.text | translate
-          }}<ui-icon
-            *ngIf="action.tooltip"
-            class="ml-2"
-            variant="grey"
-            icon="info_outline"
-            [size]="18"
-            [uiTooltip]="action.tooltip | translate"
-          ></ui-icon>
-        </ng-container>
-      </ui-toggle>
+    <div class="flex flex-col gap-2 pb-0.5">
+      <div class="flex flex-col gap-2 mb-2">
+        <ui-toggle
+          *ngFor="let action of actions"
+          [formControlName]="action.name"
+        >
+          <ng-container ngProjectAs="label">
+            {{ action.text | translate
+            }}<ui-icon
+              *ngIf="action.tooltip"
+              class="ml-2 cursor-help"
+              variant="grey"
+              icon="info_outline"
+              [size]="18"
+              [uiTooltip]="action.tooltip | translate"
+              uiTooltipPosition="right"
+            ></ui-icon>
+          </ng-container>
+        </ui-toggle>
+      </div>
+      <!-- Redirect to specific page action details -->
+      <div
+        *ngIf="showSelectPage"
+        formGroupName="navigateSettings"
+        class="flex flex-col ml-[55px]"
+      >
+        <div uiFormFieldDirective class="w-80">
+          <label>{{
+            'components.widget.settings.grid.actions.pageUrlTitle.label'
+              | translate
+          }}</label>
+          <input
+            formControlName="title"
+            [placeholder]="
+              'components.widget.settings.grid.actions.pageUrlTitle.placeholder'
+                | translate
+            "
+          />
+        </div>
+        <div uiFormFieldDirective class="w-80">
+          <label>
+            {{
+              'components.widget.settings.grid.actions.pageUrl.label'
+                | translate
+            }}
+          </label>
+          <ui-select-menu
+            formControlName="pageUrl"
+            [placeholder]="
+              'components.widget.settings.grid.actions.pageUrl.placeholder'
+                | translate
+            "
+          >
+            <ui-select-option
+              *ngFor="let page of pages"
+              [value]="page.urlParams"
+            >
+              {{ page.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <ui-checkbox formControlName="useRecordId">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.actions.useRecordId' | translate
+            }}<ui-icon
+              class="ml-2 cursor-help"
+              variant="grey"
+              icon="info_outline"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.tooltip.useRecordId'
+                  | translate
+              "
+            ></ui-icon>
+          </ng-container>
+        </ui-checkbox>
+      </div>
     </div>
   </div>
 </form>

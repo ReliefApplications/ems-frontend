@@ -1,5 +1,5 @@
 import { flatten } from 'lodash';
-import { SurveyModel } from 'survey-angular';
+import { SurveyModel } from 'survey-core';
 import { GlobalOptions } from '../types';
 
 /**

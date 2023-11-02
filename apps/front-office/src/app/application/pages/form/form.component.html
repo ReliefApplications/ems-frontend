@@ -1,6 +1,11 @@
 <ng-container *ngIf="!loading && form && canCreateRecords">
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
-    <ui-button category="secondary" (click)="clearForm()">New record</ui-button>
+    <ui-button
+      class="ml-auto w-fit"
+      category="secondary"
+      (click)="clearForm()"
+      >{{ 'models.record.new' | translate }}</ui-button
+    >
   </ng-container>
 </ng-container>

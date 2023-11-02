@@ -38,28 +38,37 @@ export class WidgetGridComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Available widgets */
   public availableWidgets: any[] = WIDGET_TYPES;
-
+  /** Loading status */
   @Input() loading = false;
   /** Skeletons for loading */
   public skeletons: { colSpan: number; rowSpan: number }[] = [];
-
+  /** Widgets */
   @Input() widgets: any[] = [];
+  /** Update permission */
   @Input() canUpdate = false;
 
   // === GRID ===
+  /** Number of columns */
   colsNumber = MAX_COL_SPAN;
 
   // === EVENT EMITTER ===
+  /** Move event emitter */
   @Output() move: EventEmitter<any> = new EventEmitter();
+  /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
+  /** Edit event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Add event emitter */
   @Output() add: EventEmitter<any> = new EventEmitter();
+  /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
+  /** Change step event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-
+  /** Widget components view children */
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
 
@@ -103,6 +112,7 @@ export class WidgetGridComponent
     }
   }
 
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
@@ -199,10 +209,10 @@ export class WidgetGridComponent
       const tile = JSON.parse(JSON.stringify(e));
       if (tile) {
         /** Open settings dialog component from the widget.  */
-        const { TileDataComponent } = await import(
-          './floating-options/menu/tile-data/tile-data.component'
+        const { EditWidgetModalComponent } = await import(
+          './edit-widget-modal/edit-widget-modal.component'
         );
-        const dialogRef = this.dialog.open(TileDataComponent, {
+        const dialogRef = this.dialog.open(EditWidgetModalComponent, {
           disableClose: true,
           data: {
             tile: tile,

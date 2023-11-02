@@ -16,8 +16,11 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
-
+import {
+  CldrIntlService,
+  IntlModule,
+  IntlService,
+} from '@progress/kendo-angular-intl';
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
   languages: string[];
@@ -38,6 +41,7 @@ interface PreferencesDialogData {
     ButtonModule,
     TooltipModule,
     SelectMenuModule,
+    IntlModule,
     FormWrapperModule,
   ],
   selector: 'shared-preferences-modal',
@@ -45,10 +49,9 @@ interface PreferencesDialogData {
   styleUrls: ['./preferences-modal.component.scss'],
 })
 export class PreferencesModalComponent implements OnInit {
-  // === REACTIVE FORM ===
+  /** Reactive form */
   public preferencesForm!: ReturnType<typeof this.createPreferencesForm>;
-
-  // === DATA ===
+  /** Data */
   languages: { name: string; value: string }[] = [];
   currLang: string;
   dateFormats: { name: string | null; value: string }[] = [];
@@ -61,7 +64,7 @@ export class PreferencesModalComponent implements OnInit {
    * @param fb This is the service that will be used to build forms.
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Shared service for Date Translation
-   * @param kendoIntl Kendo internationalization service
+   * @param kendoIntl Kendo Intl Service
    */
   constructor(
     @Inject(DIALOG_DATA) public data: PreferencesDialogData,

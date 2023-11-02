@@ -8,6 +8,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 export default {
   component: MappingModalComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [
@@ -55,7 +56,7 @@ export default {
  *
  * @returns story
  */
-const TEMPLATE: StoryFn<sharedMappingModalComponent> = () => ({
+const TEMPLATE: StoryFn<MappingModalComponent> = () => ({
   template: '<shared-mapping-modal></shared-mapping-modal>',
 });
 

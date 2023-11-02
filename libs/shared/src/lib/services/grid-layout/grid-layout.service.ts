@@ -41,11 +41,11 @@ export class GridLayoutService {
   /**
    * Gets list of layouts from source
    *
-   *
    * @param source source id
    * @param options query options
    * @param options.ids list of layout id
    * @param options.first number of items to get
+   * @returns {Promise<Connection<Layout>>} A promise with a connection layout of the given source
    */
   async getLayouts(
     source: string,

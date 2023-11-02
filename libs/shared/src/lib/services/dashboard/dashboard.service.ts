@@ -17,6 +17,7 @@ import {
   CREATE_DASHBOARD_WITH_CONTEXT,
 } from './graphql/mutations';
 import get from 'lodash/get';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -30,9 +31,15 @@ export class DashboardService {
   public availableWidgets = WIDGET_TYPES;
   /** Current dashboard */
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
+
   /** @returns Current dashboard as observable */
   get dashboard$(): Observable<Dashboard | null> {
     return this.dashboard.asObservable();
+  }
+
+  /** @returns The id of the currently loaded template record, if any */
+  get templateRecord() {
+    return this.route.snapshot.queryParamMap.get('id');
   }
 
   /**
@@ -41,8 +48,13 @@ export class DashboardService {
    *
    * @param environment environment in which we run the application
    * @param apollo Apollo client
+   * @param route Angular route
    */
-  constructor(@Inject('environment') environment: any, private apollo: Apollo) {
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private route: ActivatedRoute
+  ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
@@ -62,103 +74,6 @@ export class DashboardService {
    */
   closeDashboard(): void {
     this.dashboard.next(null);
-  }
-
-  /**
-   * Returns widget layout, comparing the one saved in local storage and the one saved in DB.
-   *
-   * @param widget widget to get layout of.
-   * @returns widget layout to apply.
-   */
-  getWidgetLayout(widget: any): any {
-    try {
-      const defaultLayout = JSON.parse(
-        widget.settings.defaultLayout || JSON.stringify({})
-      );
-      const defaultDate = new Date(defaultLayout.timestamp || null);
-      const dashboardId = this.dashboard.getValue()?.id;
-      const cachedLayout = JSON.parse(
-        localStorage.getItem(`widget:${dashboardId}:${widget.id}`) ||
-          JSON.stringify({})
-      );
-      const cachedDate = new Date(cachedLayout.timestamp || null);
-      if (defaultDate > cachedDate) {
-        return defaultLayout;
-      } else {
-        return cachedLayout;
-      }
-    } catch {
-      const dashboardId = this.dashboard.getValue()?.id;
-      const cachedLayout = JSON.parse(
-        localStorage.getItem(`widget:${dashboardId}:${widget.id}`) ||
-          JSON.stringify({})
-      );
-      return cachedLayout;
-    }
-  }
-
-  /**
-   * Resets the default layout for logged user.
-   *
-   * @param id dashboard id.
-   */
-  resetDefaultWidgetLayout(id: number): void {
-    try {
-      const dashboardId = this.dashboard.getValue()?.id;
-      localStorage.removeItem(`widget:${dashboardId}:${id}`);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  /**
-   * Stores layout of a widget in local storage.
-   *
-   * @param id dashboard id.
-   * @param layout layout to save.
-   * @returns Stored event.
-   */
-  saveWidgetLayout(id: number, layout: any): void {
-    const dashboardId = this.dashboard.getValue()?.id;
-    return localStorage.setItem(
-      `widget:${dashboardId}:${id}`,
-      JSON.stringify({ ...layout, timestamp: +new Date() })
-    );
-  }
-
-  /**
-   * Saves in DB the new default layout.
-   *
-   * @param id dashboard id.
-   * @param layout layout to save.
-   */
-  saveWidgetDefaultLayout(id: number, layout: any): void {
-    const dashboardId = this.dashboard.getValue()?.id;
-    const dashboardStructure = this.dashboard.getValue()?.structure;
-    const defaultLayout = { ...layout, timestamp: +new Date() };
-    const index = dashboardStructure.findIndex((v: any) => v.id === id);
-    const widgetTemp = {
-      ...dashboardStructure[index],
-      settings: {
-        ...dashboardStructure[index].settings,
-        defaultLayout: JSON.stringify(defaultLayout),
-      },
-    };
-    const updatedDashboardStructure = JSON.parse(
-      JSON.stringify(dashboardStructure)
-    );
-    updatedDashboardStructure[index] = widgetTemp;
-    this.apollo
-      .mutate<EditDashboardMutationResponse>({
-        mutation: EDIT_DASHBOARD,
-        variables: {
-          id: dashboardId,
-          structure: updatedDashboardStructure,
-        },
-      })
-      .subscribe({
-        error: (error) => console.log(error),
-      });
   }
 
   /**

@@ -3,7 +3,7 @@ import {
   QuestionMatrixDynamicModel,
   QuestionMatrixModel,
   SurveyModel,
-} from 'survey-angular';
+} from 'survey-core';
 import { isArray, isNil } from 'lodash';
 import { GlobalOptions } from '../types';
 

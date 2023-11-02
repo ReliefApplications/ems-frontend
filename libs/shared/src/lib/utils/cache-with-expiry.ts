@@ -40,7 +40,7 @@ export const getWithExpiry = async (key: string): Promise<null | any> => {
     return item;
   }
   if (new Date().getTime() > item.expiry) {
-    localForage.removeItem(key);
+    await localForage.removeItem(key);
     return null;
   }
   return item.value;

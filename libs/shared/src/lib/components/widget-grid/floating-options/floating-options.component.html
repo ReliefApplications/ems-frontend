@@ -1,11 +1,14 @@
-<ui-button
-  [isIcon]="true"
-  icon="more_vert"
-  [uiMenuTriggerFor]="menu"
-  variant="grey"
-  [uiTooltip]="'common.options' | translate"
->
-</ui-button>
+<div class="flex space-x-0">
+  <ui-button
+    [isIcon]="true"
+    icon="more_vert"
+    [uiMenuTriggerFor]="menu"
+    variant="grey"
+    [uiTooltip]="'common.options' | translate"
+  >
+  </ui-button>
+</div>
+
 <ui-menu #menu>
   <button
     uiMenuItem

@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -66,6 +67,8 @@ export class SummaryCardComponent
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];
 
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+
   public gridSettings: any = null;
 
   public displayMode: 'cards' | 'grid' = 'cards';
@@ -94,6 +97,7 @@ export class SummaryCardComponent
     logic: 'and',
     filters: [],
   };
+
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
@@ -200,13 +204,25 @@ export class SummaryCardComponent
 
     this.setupDynamicCards();
     this.setupGridSettings();
-    this.searchControl.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
-      .subscribe((value) => {
-        this.handleSearch(value || '');
-      });
+    this.searchControl.valueChanges.pipe(
+      debounceTime(2000),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    );
 
     this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.onPage({
+          pageSize: DEFAULT_PAGE_SIZE,
+          skip: 0,
+          previousPageIndex: 0,
+          pageIndex: 0,
+          totalItems: 0,
+        });
+      });
+    this.contextService.isFilterEnabled$
+
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.onPage({
@@ -514,20 +530,30 @@ export class SummaryCardComponent
   private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
     if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
-
     const settings = {
       template: get(this.settings, 'template', null), //TO MODIFY
       resource: card.resource,
+      summaryCard: true,
       actions: {
         //default actions, might need to modify later
-        addRecord: false,
-        convert: true,
-        delete: true,
-        export: true,
-        history: true,
-        inlineEdition: true,
-        showDetails: true,
-        update: true,
+        addRecord: get(this.settings, 'actions.addRecord', false),
+        convert: get(this.settings, 'actions.convert', true),
+        delete: get(this.settings, 'actions.delete', true),
+        export: get(this.settings, 'actions.export', true),
+        history: get(this.settings, 'actions.history', true),
+        inlineEdition: get(this.settings, 'actions.inlineEdition', true),
+        showDetails: get(this.settings, 'actions.showDetails', true),
+        update: get(this.settings, 'actions.update', true),
+        navigateToPage: get(this.settings, 'actions.navigateToPage', false),
+        navigateSettings: {
+          pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
+          useRecordId: get(
+            this.settings,
+            'actions.navigateSettings.useRecordId',
+            false
+          ),
+          title: get(this.settings, 'actions.navigateSettings.title', ''),
+        },
       },
       contextFilters: JSON.stringify(this.contextFilters),
     };
@@ -675,6 +701,7 @@ export class SummaryCardComponent
       this.dataQuery
         .refetch({
           first: this.pageInfo.pageSize,
+          contextFilters: this.queryFilter,
           filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,

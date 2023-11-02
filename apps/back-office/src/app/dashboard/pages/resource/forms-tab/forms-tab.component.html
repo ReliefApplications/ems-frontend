@@ -30,29 +30,9 @@
           {{ 'common.status' | translate }}
         </th>
         <td uiCell *cdkCellDef="let element">
-          <div uiChipList>
-            <ui-chip
-              class="!rounded-lg"
-              variant="success"
-              *ngIf="element.status === 'active'"
-            >
-              {{ 'common.status_active' | translate | titlecase }}
-            </ui-chip>
-            <ui-chip
-              class="!rounded-lg"
-              variant="warning"
-              *ngIf="element.status === 'pending'"
-            >
-              {{ 'common.status_pending' | translate | titlecase }}
-            </ui-chip>
-            <ui-chip
-              class="!rounded-lg"
-              variant="danger"
-              *ngIf="element.status === 'archived'"
-            >
-              {{ 'common.status_archived' | translate | titlecase }}
-            </ui-chip>
-          </div>
+          <shared-status-options
+            [status]="element.status"
+          ></shared-status-options>
         </td>
       </ng-container>
 
@@ -87,7 +67,7 @@
             [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
-            [uiTooltip]="'common.options' | translate"
+            [uiTooltip]="'common.actions' | translate"
           >
           </ui-button>
           <ui-menu #resMenu>

@@ -4,6 +4,7 @@ import { DialogSize } from './types/dialog-size';
 
 /**
  * Dialog component.
+ * Dialogs are modal UI overlays that provide contextual app information.
  */
 @Component({
   selector: 'ui-dialog',
@@ -11,8 +12,11 @@ import { DialogSize } from './types/dialog-size';
   styleUrls: ['./dialog.component.scss'],
 })
 export class DialogComponent implements OnChanges, OnInit {
+  /** Boolean indicating whether the dialog is closable. */
   @Input() closable = false;
+  /** Should display padding around dialog */
   @Input() padding = true;
+  /** Size of the dialog: small - medium - big - fullscreen */
   @Input() size!: DialogSize;
 
   /** Close Dialog. */

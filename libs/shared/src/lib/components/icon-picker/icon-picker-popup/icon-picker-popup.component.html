@@ -23,10 +23,7 @@
           *ngFor="let icon of filteredIcons$ | async"
           (click)="select(icon)"
         >
-          <i
-            [style.color]="color"
-            class="{{ icon | sharedIconDisplay : fontFamily }}"
-          ></i>
+          <span [innerHTML]="svgIcons[icon] | sharedSanitizeHtml"></span>
         </button>
       </div>
     </div>

@@ -53,6 +53,7 @@ export const addNewField = (field: any, newField?: boolean) => {
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         label: [field.label],
+        itemsLabel: [field.itemsLabel],
         width: [newField ? null : field.width],
         type: [newField ? field.type.ofType.name : field.type],
         kind: [newField ? field.type.kind : field.kind],

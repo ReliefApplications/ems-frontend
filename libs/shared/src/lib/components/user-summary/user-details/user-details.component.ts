@@ -19,7 +19,6 @@ import { RestService } from '../../../services/rest/rest.service';
 })
 export class UserDetailsComponent implements OnInit {
   @Input() user!: User;
-  public form!: UntypedFormGroup;
 
   @Output() edit = new EventEmitter();
 
@@ -33,6 +32,7 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  public form!: UntypedFormGroup;
   public attributes: { text: string; value: string }[] = [];
 
   /**
