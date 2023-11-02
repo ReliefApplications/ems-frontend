@@ -207,7 +207,7 @@ export class FormBuilderComponent implements OnInit {
    * @returns snackbar reference and header for the file download request
    */
   private snackBarMessageInit(
-    translationKey: string = 'kendo.grid.loading',
+    translationKey: string = 'common.loading',
     duration: number = 0
   ) {
     // Opens a loader in a snackbar
@@ -265,8 +265,6 @@ export class FormBuilderComponent implements OnInit {
           next: ({ errors, data }) => {
             // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
-            // Detach the current set overlay
-            overlayRef.detach();
             // Open new snackbar with the request error or success message
             const message = errors
               ? errors[0].message
@@ -290,8 +288,11 @@ export class FormBuilderComponent implements OnInit {
           },
           error: (err) => {
             loadingSnackbarRef.instance.dismiss();
-            overlayRef.detach();
             this.snackBar.openSnackBar(err.message, { error: true });
+          },
+          complete: () => {
+            // Detach the current set overlay
+            overlayRef.detach();
           },
         });
     }
@@ -318,8 +319,6 @@ export class FormBuilderComponent implements OnInit {
         next: ({ errors, data }) => {
           // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
-          // Detach the current set overlay
-          overlayRef.detach();
           // Open new snackbar with the request error or success message
           const message = errors
             ? this.translate.instant('common.notifications.objectNotUpdated', {
@@ -345,8 +344,11 @@ export class FormBuilderComponent implements OnInit {
         },
         error: (err) => {
           loadingSnackbarRef.instance.dismiss();
-          overlayRef.detach();
           this.snackBar.openSnackBar(err.message, { error: true });
+        },
+        complete: () => {
+          // Detach the current set overlay
+          overlayRef.detach();
         },
       });
   }
@@ -413,8 +415,6 @@ export class FormBuilderComponent implements OnInit {
           next: ({ errors, data }) => {
             // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
-            // Detach the current set overlay
-            overlayRef.detach();
             // Open new snackbar with the request error or success message
             const message = errors
               ? this.translate.instant(
@@ -444,8 +444,11 @@ export class FormBuilderComponent implements OnInit {
           },
           error: (err) => {
             loadingSnackbarRef.instance.dismiss();
-            overlayRef.detach();
             this.snackBar.openSnackBar(err.message, { error: true });
+          },
+          complete: () => {
+            // Detach the current set overlay
+            overlayRef.detach();
           },
         });
     }
@@ -472,8 +475,6 @@ export class FormBuilderComponent implements OnInit {
         next: ({ errors, data }) => {
           // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
-          // Detach the current set overlay
-          overlayRef.detach();
           // Open new snackbar with the request error or success message
           const message = errors
             ? this.translate.instant('common.notifications.objectNotUpdated', {
@@ -495,8 +496,11 @@ export class FormBuilderComponent implements OnInit {
         },
         error: (err) => {
           loadingSnackbarRef.instance.dismiss();
-          overlayRef.detach();
           this.snackBar.openSnackBar(err.message, { error: true });
+        },
+        complete: () => {
+          // Detach the current set overlay
+          overlayRef.detach();
         },
       });
   }
