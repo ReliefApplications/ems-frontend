@@ -116,6 +116,8 @@ export class DashboardComponent
   public isDrawerOpen = false;
   //** Drawer position*/
   public drawerPosition = '';
+  //** Drawer content height */
+  public drawerHeight = 0;
 
   /** @returns type of context element */
   get contextType() {
@@ -886,8 +888,8 @@ export class DashboardComponent
    * @param {boolean} drawerObj Object that indicates whether the drawer is open or closed and its position.
    */
   drawerToggleChange(drawerObj: any): void {
-    console.log(drawerObj);
     this.isDrawerOpen = drawerObj.isDrawerOpen;
     this.drawerPosition = drawerObj.position;
+    this.drawerHeight = drawerObj.drawerHeight;
   }
 }

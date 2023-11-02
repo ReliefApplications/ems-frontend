@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   HostListener,
   Input,
@@ -11,6 +12,7 @@ import {
   Optional,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
@@ -108,6 +110,8 @@ export class DashboardFilterComponent
   @Input() isFullScreen = false;
 
   @Output() isDrawerOpenEmitter: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild('drawerContent', { static: false }) drawerContent!: ElementRef;
 
   /**
    * Class constructor
@@ -562,6 +566,7 @@ export class DashboardFilterComponent
     this.isDrawerOpenEmitter.emit({
       isDrawerOpen: this.isDrawerOpen,
       position: this.position,
+      drawerHeight: this.drawerContent.nativeElement.offsetHeight,
     });
   }
 }

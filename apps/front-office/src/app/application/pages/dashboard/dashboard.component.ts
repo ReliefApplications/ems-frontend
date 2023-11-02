@@ -62,6 +62,12 @@ export class DashboardComponent
   public showFilter!: boolean;
   /** Show name ( contextual pages ) */
   public showName = false;
+  //** Is filter drawer open */
+  public isDrawerOpen = false;
+  //** Drawer position*/
+  public drawerPosition = '';
+  //** Drawer content height */
+  public drawerHeight = 0;
 
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
@@ -264,5 +270,17 @@ export class DashboardComponent
       );
     }
     return true;
+  }
+
+  /**
+   * Method called when there is a change in the drawer state.
+   * Updates the isDrawerOpen variable with the new value.
+   *
+   * @param {boolean} drawerObj Object that indicates whether the drawer is open or closed and its position.
+   */
+  drawerToggleChange(drawerObj: any): void {
+    this.isDrawerOpen = drawerObj.isDrawerOpen;
+    this.drawerPosition = drawerObj.position;
+    this.drawerHeight = drawerObj.drawerHeight;
   }
 }
