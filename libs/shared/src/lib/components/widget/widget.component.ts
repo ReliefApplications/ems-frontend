@@ -68,14 +68,19 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** @returns should show widget header, based on widget settings */
+  /** @returns should widget show header, based on widget settings */
   get showHeader() {
     return get(this.widget, 'settings.widgetDisplay.showHeader') ?? true;
   }
 
-  /** @returns should show widget border, based on widget settings */
+  /** @returns should widget show border, based on widget settings */
   get showBorder() {
     return get(this.widget, 'settings.widgetDisplay.showBorder') ?? true;
+  }
+
+  /** @returns should widget use padding, based on widget settings */
+  get usePadding() {
+    return get(this.widget, 'settings.widgetDisplay.usePadding') ?? true;
   }
 
   /**

@@ -2141,6 +2141,7 @@
 			"display": {
 				"border": "******",
 				"header": "******",
+				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"

@@ -2141,6 +2141,7 @@
 			"display": {
 				"border": "Show widget border",
 				"header": "Show widget header",
+				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
 				"title": "Widget display"
