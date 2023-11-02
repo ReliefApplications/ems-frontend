@@ -11,6 +11,7 @@ export * from './lib/icon/icon.component';
 export * from './lib/table/table.module';
 export * from './lib/tooltip/tooltip.module';
 export * from './lib/tooltip/tooltip.directive';
+export * from './lib/spinner/spinner.component';
 export * from './lib/spinner/spinner.module';
 export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
