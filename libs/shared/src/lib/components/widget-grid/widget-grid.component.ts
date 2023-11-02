@@ -15,7 +15,7 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import {
@@ -78,9 +78,10 @@ export class WidgetGridComponent
   gridOptions!: GridsterConfig;
   /** Resize observer for the parent container */
   private resizeObserver!: ResizeObserver;
-  changes = new Subject<boolean>();
+  /** Detect structure changes */
+  structureChanges = new Subject<boolean>();
+  /** Set grid options timeout, to enable events that can save dashboard */
   gridOptionsTimeoutListener!: NodeJS.Timeout;
-  private time = false;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -116,11 +117,14 @@ export class WidgetGridComponent
     });
     this.resizeObserver.observe(this._host.nativeElement);
     this.setGridOptions();
-    this.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.canUpdate) {
-        this.onEditWidget({ type: 'display' });
-      }
-    });
+    // Prevent changes to be saved too often
+    this.structureChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.canUpdate) {
+          this.onEditWidget({ type: 'display' });
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -196,7 +200,7 @@ export class WidgetGridComponent
     this.gridOptions = {
       ...this.gridOptions,
       ...(isDashboardSet && {
-        itemChangeCallback: () => this.changes.next(true),
+        itemChangeCallback: () => this.structureChanges.next(true),
       }),
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
@@ -345,40 +349,6 @@ export class WidgetGridComponent
       }
     }
   }
-
-  /**
-   * Emits reorder event.
-   *
-   * @param e reorder event.
-   */
-  // public onReorder(e: TileLayoutReorderEvent): void {
-  //   this.move.emit(e);
-  // }
-
-  /**
-   * Handles resize widget event.
-   *
-   * @param e resize event.
-   */
-  // public onResize(e: TileLayoutResizeEvent) {
-  //   const widgetDefinition = this.availableWidgets.find(
-  //     (x) => x.component === this.widgets[e.item.order].component
-  //   );
-  //   // Prevent widgets to be smaller than minimum width ( definition per widget )
-  //   if (e.newRowSpan < widgetDefinition.minRow) {
-  //     e.newRowSpan = widgetDefinition.minRow;
-  //   }
-  //   // Prevent widgets to be greater than maximum width ( fixed limit in the widget grid )
-  //   if (e.newColSpan > MAX_COL_SPAN) {
-  //     e.newColSpan = MAX_COL_SPAN;
-  //   }
-  //   const target = this.widgets[e.item.order];
-  //   target.defaultCols = e.newColSpan;
-  //   target.defaultRows = e.newRowSpan;
-  //   this.edit.emit({
-  //     type: 'display',
-  //   });
-  // }
 
   /**
    * Generates a list of skeletons, for loading.

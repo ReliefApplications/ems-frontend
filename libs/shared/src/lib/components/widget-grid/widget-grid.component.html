@@ -31,15 +31,14 @@
       <!-- Left header template -->
       <ng-template #headerLeftTemplate>
         <!-- Drag n drop indicator -->
-        <ui-button
+        <ui-icon
           *ngIf="canUpdate"
           icon="drag_indicator"
-          class="cursor-grab drag-handler"
+          class="cursor-grab drag-handler flex items-center justify-center h-[40px] w-[40px]"
           variant="grey"
-          [isIcon]="true"
           [uiTooltip]="'models.page.tooltip.drag' | translate"
         >
-        </ui-button>
+        </ui-icon>
       </ng-template>
       <!-- Right header template -->
       <ng-template #headerRightTemplate let-id>
