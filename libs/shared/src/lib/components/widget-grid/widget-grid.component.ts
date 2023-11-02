@@ -15,7 +15,7 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, Subscription, debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import {
@@ -85,6 +85,7 @@ export class WidgetGridComponent
   private resizeObserver!: ResizeObserver;
   /** Set grid options timeout, to enable events that can save dashboard */
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
+  private changesSubscription?: Subscription;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -114,20 +115,13 @@ export class WidgetGridComponent
   ngOnInit(): void {
     this.availableWidgets = this.dashboardService.availableWidgets;
     this.skeletons = this.getSkeletons();
+    this.setLayout();
     this.resizeObserver = new ResizeObserver(() => {
       this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
       this.setGridOptions();
     });
     this.resizeObserver.observe(this._host.nativeElement);
     this.setGridOptions();
-    // Prevent changes to be saved too often
-    this.structureChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.canUpdate) {
-          this.onEditWidget({ type: 'display' });
-        }
-      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -222,11 +216,10 @@ export class WidgetGridComponent
       disableWindowResize: true,
       ...this.options,
     };
-
-    this.widgets.map((gridItem) => {
-      gridItem.resizeEnabled = this.canUpdate;
-      gridItem.dragEnabled = this.canUpdate;
-    });
+    // this.widgets.map((gridItem) => {
+    //   gridItem.resizeEnabled = this.canUpdate;
+    //   gridItem.dragEnabled = this.canUpdate;
+    // });
   }
 
   /**
@@ -411,10 +404,23 @@ export class WidgetGridComponent
         widget.cols = widget.cols ?? widget.defaultCols;
         widget.rows = widget.rows ?? widget.defaultRows;
         widget.minItemRows = widget.minItemRows ?? widget.minRow;
+        widget.resizeEnabled = this.canUpdate;
+        widget.dragEnabled = this.canUpdate;
         delete widget.defaultCols;
         delete widget.defaultRows;
         delete widget.minItemRows;
       }
     });
+    if (this.changesSubscription) {
+      this.changesSubscription.unsubscribe();
+    }
+    // Prevent changes to be saved too often
+    this.changesSubscription = this.structureChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.canUpdate) {
+          this.onEditWidget({ type: 'display' });
+        }
+      });
   }
 }
