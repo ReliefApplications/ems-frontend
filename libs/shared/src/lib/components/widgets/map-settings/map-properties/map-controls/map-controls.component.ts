@@ -62,13 +62,6 @@ export class MapControlsComponent implements ControlValueAccessor {
   constructor(private translate: TranslateService) {}
 
   /**
-   * Removes the last update control position.
-   */
-  public removeLastUpdatePosition() {
-    this.form.get('lastUpdate')?.setValue(null);
-  }
-
-  /**
    * Write new value
    *
    * @param value cron expression
