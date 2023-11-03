@@ -416,6 +416,14 @@ export class SelectMenuComponent
                 offsetX: 0,
                 offsetY: 5,
               },
+              {
+                originX: 'start',
+                originY: 'top',
+                overlayX: 'start',
+                overlayY: 'bottom',
+                offsetX: 0,
+                offsetY: -5,
+              },
             ]),
           minWidth:
             this.el.nativeElement.parentElement?.clientWidth &&
