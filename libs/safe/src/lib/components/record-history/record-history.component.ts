@@ -57,6 +57,8 @@ export class SafeRecordHistoryComponent
   @Input() id!: string;
   @Input() revert!: (version: Version) => void;
   @Input() template?: string;
+  /** Show history header ( need to disable it when in modal mode ) */
+  @Input() showHeader = true;
   @Output() cancel = new EventEmitter();
 
   public record!: Record;

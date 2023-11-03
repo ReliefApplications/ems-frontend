@@ -14,6 +14,7 @@ import { SafeDateModule } from '../../pipes/date/date.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 /**
  * SafeRecordHistoryModule is a class used to manage all the modules and components
@@ -34,6 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     SelectMenuModule,
     ReactiveFormsModule,
     FormWrapperModule,
+    FormsModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

@@ -155,6 +155,13 @@ export const init = (Survey: any, domService: DomService): void => {
               'px-2'
             );
 
+            // disable the button if the question is read only
+            if (question.isReadOnly) {
+              button.disabled = true;
+              button.style.cursor = 'default';
+              button.classList.add('opacity-50');
+            }
+
             const icon = domService.appendComponentToBody(
               IconComponent,
               button
