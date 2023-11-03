@@ -2,23 +2,19 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormGroup } from '@angular/forms';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { QueryBuilderService } from 'libs/shared/src/lib/services/query-builder/query-builder.service';
 import { cloneDeep } from 'lodash';
 import { FilterModule } from '../../../../filter/filter.module';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FILTER_OPERATORS } from '../../../../filter/filter.const';
 
 /**
@@ -37,7 +33,7 @@ const formBuilder = new FormBuilder();
 })
 export class FilterBuilderComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
   @Input() form!: FormGroup;
   @Input() canExpand = true;
@@ -72,12 +68,8 @@ export class FilterBuilderComponent
    * created.
    *
    * @param queryBuilder This is the service that will be used to build the query.
-   * @param fb This is the Angular FormBuilder service.
    */
-  constructor(
-    private queryBuilder: QueryBuilderService,
-    private fb: FormBuilder
-  ) {
+  constructor(private queryBuilder: QueryBuilderService) {
     super();
   }
 
@@ -90,12 +82,6 @@ export class FilterBuilderComponent
       this.filterFields = cloneFields;
     });
     this.formUntyped = this.form.controls.filter as UntypedFormGroup;
-    console.log(
-      this.form,
-      this.form,
-      this.query,
-      'estou aqui dentro filterbuilder'
-    );
   }
 
   /**
@@ -167,56 +153,7 @@ export class FilterBuilderComponent
           }
         }
       });
-      const setFormBuilderControls = (
-        fieldControlRequired: boolean = false
-      ) => {
-        this.form?.setControl('filter', this.createFilterGroup(null));
-        this.form?.setControl(
-          'fields',
-          fieldControlRequired
-            ? this.fb.array([], Validators.required)
-            : this.fb.array([])
-        );
-        this.form?.setControl(
-          'sort',
-          this.fb.group({
-            field: [''],
-            order: ['asc'],
-          })
-        );
-      };
-      this.form?.controls.name.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          if (value !== this.form?.value.name) {
-            if (this.allQueries.find((x) => x === value)) {
-              this.availableFields = this.queryBuilder.getFields(value);
-              setFormBuilderControls(true);
-            } else {
-              this.availableFields = [];
-              setFormBuilderControls();
-            }
-            this.filteredQueries = this.filterQueries(value);
-          }
-        });
     }
-  }
-
-  /**
-   * Closes the form.
-   */
-  onCloseField(): void {
-    this.closeField.emit(true);
-  }
-
-  /**
-   * Sets a new value for the form.
-   *
-   * @param newForm new form value.
-   */
-  setForm(newForm: FormGroup): void {
-    this.form = newForm;
-    this.buildSettings();
   }
 
   /**

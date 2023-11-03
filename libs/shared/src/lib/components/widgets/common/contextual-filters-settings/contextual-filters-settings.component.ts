@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
@@ -47,7 +54,7 @@ interface DialogData {
 })
 export class ContextualFiltersSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   @Input() form!: FormGroup;
   @Input() data!: DialogData;
@@ -57,6 +64,7 @@ export class ContextualFiltersSettingsComponent
   public filteredQueries: any[] = [];
   public allQueries: any[] = [];
   public query: any;
+  public showFilterBuilder = true;
 
   /**
    * Getter for the available scalar fields
@@ -116,7 +124,10 @@ export class ContextualFiltersSettingsComponent
   }
 
   ngOnInit(): void {
-    console.log(this.form.get('dashboardFilters'), 'init');
+    if (!this.data) {
+      this.showFilterBuilder = false;
+      return;
+    }
     this.queryBuilder.availableQueries$.subscribe((res) => {
       if (res.length > 0) {
         const hasDataForm = this.data.form !== null;
@@ -144,6 +155,8 @@ export class ContextualFiltersSettingsComponent
   }
 
   override ngOnDestroy(): void {
-    this.data.form = this.form?.get('dashboardFilters');
+    if (this.showFilterBuilder) {
+      this.data.form = this.form?.get('dashboardFilters');
+    }
   }
 }

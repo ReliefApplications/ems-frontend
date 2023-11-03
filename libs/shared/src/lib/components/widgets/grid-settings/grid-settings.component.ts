@@ -74,7 +74,7 @@ export class GridSettingsComponent
   public templates: Form[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
-
+  public dataFilter: any;
   /** Stores the selected tab */
   public selectedTab = 0;
 
@@ -96,15 +96,13 @@ export class GridSettingsComponent
    * @param queryBuilder The query builder service
    * @param fb FormBuilder instance
    * @param aggregationService Shared aggregation service
-   * @param data The data to be shown in the modal
    */
   constructor(
     private apollo: Apollo,
     private applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
     private fb: FormBuilder,
-    private aggregationService: AggregationService,
-    @Inject(DIALOG_DATA) public data: DialogData
+    private aggregationService: AggregationService
   ) {
     super();
   }
@@ -335,11 +333,12 @@ export class GridSettingsComponent
                 this.resource.queryName as string
               );
             }
+            // verify how to the dashboardFilters is, if is necessary to convert to formGroup
             if (data.resource && data.resource.name) {
               const nameTrimmed = data.resource.name
                 .replace(/\s/g, '')
                 .toLowerCase();
-              this.data = {
+              this.dataFilter = {
                 form: !this.formGroup.get('dashboardFilters')
                   ? null
                   : this.convertFromRawToFormGroup(

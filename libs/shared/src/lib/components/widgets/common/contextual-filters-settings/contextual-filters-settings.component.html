@@ -17,7 +17,7 @@
     </div>
   </div>
   <!-- Dashboard filter -->
-  <div class="flex-1 flex flex-col" *ngIf="!loading;">  <!-- create a variable to control this-->
+  <div class="flex-1 flex flex-col" *ngIf="showFilterBuilder">  <!-- create a variable to control this-->
     <h2 class="flex">
       {{ 'models.dashboard.dashboardFilter' | translate
       }}<ui-icon
