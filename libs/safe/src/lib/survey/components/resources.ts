@@ -22,7 +22,6 @@ import {
 } from './utils';
 import { QuestionResource } from '../types';
 import { SurveyModel } from 'survey-angular';
-import localForage from 'localforage';
 import { NgZone } from '@angular/core';
 
 /** Create the list of filter values for resources */
