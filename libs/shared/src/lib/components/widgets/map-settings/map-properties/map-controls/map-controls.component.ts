@@ -45,10 +45,6 @@ export class MapControlsComponent implements ControlValueAccessor {
       text: this.translate.instant('common.position.topright'),
       value: 'topright',
     },
-    {
-      text: this.translate.instant('common.hide'),
-      value: null,
-    },
   ];
   /** Disable ControlValueAccessor */
   private disabled = false;
