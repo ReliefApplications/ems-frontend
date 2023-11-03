@@ -358,9 +358,20 @@ export class ButtonConfigComponent
     this.modificationsArray.push(
       this.formBuilder.group({
         field: ['', Validators.required],
-        value: ['', Validators.required],
+        value: [''],
       })
     );
+  }
+
+  /**
+   * Set the value of a modification to null
+   *
+   * @param index The index of the modification
+   */
+  public setModificationValueToNull(index: number): void {
+    const modifications = this.modificationsArray.value;
+    modifications[index].value = '';
+    this.modificationsArray.setValue(modifications);
   }
 
   /**

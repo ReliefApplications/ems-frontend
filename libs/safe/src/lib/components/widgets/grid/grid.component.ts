@@ -29,7 +29,6 @@ import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
-import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { SafeApplicationService } from '../../../services/application/application.service';
@@ -480,10 +479,13 @@ export class SafeGridWidgetComponent
     const update: any = {};
     for (const modification of modifications) {
       if (modification.field) {
+        if (modification.value === undefined || modification.value === '') {
+          modification.value = null;
+        }
         set(update, modification.field, modification.value);
       }
     }
-    const data = cleanRecord(update);
+    const data = update;
     return firstValueFrom(
       this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
