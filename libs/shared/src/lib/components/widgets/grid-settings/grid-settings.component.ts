@@ -6,7 +6,6 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
-  Inject,
 } from '@angular/core';
 import {
   UntypedFormGroup,
@@ -30,15 +29,6 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { DIALOG_DATA } from '@angular/cdk/dialog';
-
-/**
- * Interface that describes the structure of the data shown in the dialog
- */
-interface DialogData {
-  form: any;
-  resourceName: string;
-}
 
 /**
  * Modal content for the settings of the grid widgets.
