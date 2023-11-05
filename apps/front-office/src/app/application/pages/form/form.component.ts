@@ -17,7 +17,7 @@ import {
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -184,11 +184,9 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     this.hideNewRecord = e.hideNewRecord || false;
 
     // Checks if should go to next step if in an workflow
-    firstValueFrom(this.workflowService.workflow$).then((workflow) => {
-      if (workflow?.nextStepOnSave) {
-        this.workflowService.nextStep.emit();
-      }
-    });
+    if (this.step?.nextStepOnSave) {
+      this.workflowService.nextStep.emit();
+    }
   }
 
   /**

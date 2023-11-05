@@ -12,6 +12,7 @@ export const GET_STEP_BY_ID = gql`
       createdAt
       modifiedAt
       content
+      nextStepOnSave
       workflow {
         id
         name

@@ -9,7 +9,6 @@ import {
   ContentType,
   ApplicationService,
   WorkflowService,
-  AuthService,
   Application,
   UnsubscribeComponent,
   DeleteStepMutationResponse,
@@ -60,7 +59,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param translate Angular translate module.
    */
@@ -72,7 +70,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
