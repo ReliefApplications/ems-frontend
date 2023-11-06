@@ -1,7 +1,9 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
+  HostListener,
   Inject,
   Input,
   OnChanges,
@@ -9,8 +11,11 @@ import {
   OnInit,
   Optional,
   Output,
+  QueryList,
   Renderer2,
+  SimpleChanges,
   ViewChild,
+  ViewChildren,
 } from '@angular/core';
 import {
   GridComponent as KendoGridComponent,
@@ -18,6 +23,7 @@ import {
   PageChangeEvent,
   RowArgs,
   SelectionEvent,
+  ColumnComponent,
 } from '@progress/kendo-angular-grid';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -47,6 +53,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
 import { WidgetComponent } from '../../../widget/widget.component';
+import { DatePipe } from '../../../../pipes/date/date.pipe';
 
 /**
  * Test if an element match a css selector
@@ -63,7 +70,7 @@ const matches = (el: any, selector: any) =>
   selector: 'shared-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
-  providers: [PopupService, ResizeBatchService],
+  providers: [PopupService, ResizeBatchService, DatePipe],
 })
 export class GridComponent
   extends UnsubscribeComponent
@@ -166,6 +173,10 @@ export class GridComponent
   /** KendoGridComponent view child */
   @ViewChild(KendoGridComponent)
   public grid?: KendoGridComponent;
+  /** Reference to kendo grid as element ref */
+  @ViewChild(KendoGridComponent, { read: ElementRef }) gridRef!: ElementRef;
+  /** Reference to kendo columns */
+  @ViewChildren(ColumnComponent) columns!: QueryList<ColumnComponent>;
   /** Array of multi-select types. */
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
   /** Environment of the grid. */
@@ -200,6 +211,8 @@ export class GridComponent
   private snackBarRef!: any;
   /** Timeout listeners */
   private columnChangeTimeoutListener!: NodeJS.Timeout;
+  /** Listen to click events to determine if editor should be closed */
+  private closeEditorListener!: any;
 
   /** @returns A boolean indicating if actions are enabled */
   get hasEnabledActions(): boolean {
@@ -271,10 +284,19 @@ export class GridComponent
   }
 
   /**
+   * Listen to window resize event in order to trigger the column automatic width update
+   */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.setColumnsWidth();
+  }
+
+  /**
    * Constructor of the grid component
    *
    * @param widgetComponent parent widget component ( optional )
    * @param environment Current environment
+   * @param datePipe Shared date pipe
    * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
@@ -287,6 +309,7 @@ export class GridComponent
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
     @Inject('environment') environment: any,
+    @Inject(DatePipe) private datePipe: DatePipe,
     private dialog: Dialog,
     private gridService: GridService,
     private renderer: Renderer2,
@@ -302,7 +325,14 @@ export class GridComponent
 
   ngOnInit(): void {
     this.setSelectedItems();
-    this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+    if (this.closeEditorListener) {
+      this.closeEditorListener();
+    }
+    this.closeEditorListener = this.renderer.listen(
+      'document',
+      'click',
+      this.onDocumentClick.bind(this)
+    );
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
       .pipe(
@@ -319,8 +349,16 @@ export class GridComponent
     };
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
+    if (
+      changes['loadingRecords']?.previousValue &&
+      !changes['loadingRecords']?.currentValue
+    ) {
+      setTimeout(() => {
+        this.setColumnsWidth();
+      }, 0);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -341,6 +379,9 @@ export class GridComponent
     super.ngOnDestroy();
     if (this.columnChangeTimeoutListener) {
       clearTimeout(this.columnChangeTimeoutListener);
+    }
+    if (this.closeEditorListener) {
+      this.closeEditorListener();
     }
   }
 
@@ -586,6 +627,7 @@ export class GridComponent
    */
   onColumnVisibilityChange(): void {
     this.columnChange.emit();
+    this.setColumnsWidth();
   }
 
   /**
@@ -929,6 +971,192 @@ export class GridComponent
       action: 'map',
       item: dataItem,
       field,
+    });
+  }
+
+  /**
+   * Automatically set the width of each column
+   */
+  private setColumnsWidth() {
+    const gridElement = this.gridRef.nativeElement;
+    const gridTotalWidth = gridElement.offsetWidth;
+
+    // Stores the columns width percentage
+    const activeColumns: { [key: string]: number } = {};
+
+    // Verify what kind of field is and deal with this logic
+    const typesFields: any = [];
+    this.fields.forEach((field: any) => {
+      typesFields.push({
+        field: field.name,
+        type: field.meta.type,
+        title: field.title,
+      });
+    });
+    // Get all the columns with a title or that are not hidden from the grid
+    const availableColumns = this.columns.filter(
+      (column) => !column.hidden && !!column.title && column.title !== 'Details'
+    );
+    // Get average column width given the active columns and the grid's actual width
+    const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
+    // Max size of the column is the average * 2
+    const maxPixelsPerColumn = averagePixelsPerColumn * 2;
+    // Min size of the column is the average / 2
+    const minPixelsPerColumn = averagePixelsPerColumn / 2;
+    // Most of font sizes follow a 3:5 aspect ratio
+    const pixelWidthPerCharacter =
+      parseInt(window.getComputedStyle(document.body).fontSize) * 0.6;
+
+    // Get each column content with the max length
+    // or the column title if no content is added in the current data
+    typesFields.forEach((type: any) => {
+      this.data.data.forEach((data: any) => {
+        if (
+          activeColumns[type.field] === undefined ||
+          (data[type.field] &&
+            activeColumns[type.field] < data[type.field].length) ||
+          (type.title && activeColumns[type.field] < type.title.length)
+        ) {
+          let defaultLengthValue = type.title.length;
+          switch (type.type) {
+            case 'time':
+            case 'datetime-local':
+            case 'datetime':
+            case 'date': {
+              const contentDefaultValue = (
+                this.datePipe.transform(data[type.field]) || ''
+              ).length;
+              if (contentDefaultValue > defaultLengthValue) {
+                defaultLengthValue = contentDefaultValue;
+              }
+              activeColumns[type.field] = defaultLengthValue;
+              break;
+            }
+            case 'file': {
+              if (data[type.field][0]?.name?.length > defaultLengthValue) {
+                defaultLengthValue = data[type.field][0]?.name.length;
+              }
+              activeColumns[type.field] = defaultLengthValue;
+              break;
+            }
+            case 'numeric': {
+              const contentDefaultValue = data[type.field]?.toString()?.length;
+              if (contentDefaultValue > defaultLengthValue) {
+                defaultLengthValue = contentDefaultValue;
+              }
+              activeColumns[type.field] = defaultLengthValue;
+              break;
+            }
+            case 'checkbox':
+            case 'tagbox': {
+              let checkboxLength = 0;
+              (data[type.field] || []).forEach((obj: any) => {
+                checkboxLength += obj.length;
+              });
+              if (checkboxLength > defaultLengthValue) {
+                defaultLengthValue = checkboxLength;
+              }
+              activeColumns[type.field] = defaultLengthValue;
+              break;
+            }
+            case 'boolean':
+            case 'color': {
+              //min size
+              activeColumns[type.field] = type.title;
+              break;
+            }
+            default: {
+              const contentDefaultValue = (data[type.field] || '').length;
+              if (contentDefaultValue > defaultLengthValue) {
+                defaultLengthValue = contentDefaultValue;
+              }
+              activeColumns[type.field] = defaultLengthValue;
+            }
+          }
+        }
+      });
+    });
+
+    // Calculates the widest column in character number
+    const maxCharacterToDisplay = Math.floor(
+      maxPixelsPerColumn / pixelWidthPerCharacter
+    );
+
+    // Calculates the smallest column in character number
+    const minCharacterToDisplay = Math.floor(
+      minPixelsPerColumn / pixelWidthPerCharacter
+    );
+
+    // Total character count after set the max width
+    let totalCharacterCountColumns = 0;
+    let entries = Object.entries(activeColumns);
+    for (const [key, value] of entries) {
+      if (value > maxCharacterToDisplay) {
+        activeColumns[key] = maxCharacterToDisplay;
+      } else if (value < minCharacterToDisplay) {
+        activeColumns[key] = minCharacterToDisplay;
+      }
+      if (activeColumns[key]) {
+        totalCharacterCountColumns += activeColumns[key];
+      }
+    }
+
+    entries = Object.entries(activeColumns);
+    const min_percentage = Math.floor(
+      (minCharacterToDisplay / totalCharacterCountColumns) * 100
+    );
+    let total_percentage = 0;
+    const arrayColumns = [];
+    for (const [key, value] of entries) {
+      activeColumns[key] = Math.floor(
+        (value / totalCharacterCountColumns) * 100
+      );
+      total_percentage += activeColumns[key];
+      arrayColumns.push({ key: key, value: activeColumns[key] });
+    }
+
+    // Now adjust the percentages of each column
+    // Order the values from thinner to wider column element
+    arrayColumns.sort((a, b) => a.value - b.value);
+
+    const widestColumnIndex = arrayColumns.length - 1;
+    // if the value of the smallest element is 4x times smaller than the widest one
+    // or the total percentage did not reach 100% after all conversions
+    // we adjust the overall percentages set for columns
+    while (
+      arrayColumns[0].value < 0.25 * arrayColumns[widestColumnIndex].value ||
+      total_percentage < 100
+    ) {
+      // Add the percentage available
+      if (total_percentage < 100) {
+        activeColumns[arrayColumns[0].key] += 1;
+        total_percentage += 1;
+        arrayColumns[0].value += 1;
+      } else {
+        // Remove percentage from the biggest and put in the smallest
+        activeColumns[arrayColumns[0].key] += 1;
+        activeColumns[arrayColumns[widestColumnIndex].key] -= 1;
+        arrayColumns[0].value += 1;
+        arrayColumns[widestColumnIndex].value -= 1;
+      }
+      arrayColumns.sort((a, b) => a.value - b.value);
+    }
+
+    // Finally, resize the columns
+    this.columns.forEach((column) => {
+      const columnFieldType = typesFields.find(
+        (type: any) => column.title === type.title && activeColumns[type.field]
+      );
+      if (columnFieldType) {
+        column.width = Math.floor(
+          (activeColumns[columnFieldType.field] * gridTotalWidth) / 100
+        );
+      } else {
+        // If contains a title, we set the min_percentage
+        if (column.title) {
+          column.width = Math.floor((min_percentage * gridTotalWidth) / 100);
+        }
+      }
     });
   }
 }
