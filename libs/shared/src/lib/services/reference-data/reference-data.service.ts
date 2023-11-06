@@ -272,15 +272,7 @@ export class ReferenceDataService {
         (referenceData.apiConfiguration?.name ?? '') +
         (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
       const body = { query: this.processQuery(referenceData) };
-      const options =
-        referenceData.apiConfiguration?.authType === 'authorizationCode'
-          ? {
-              headers: new HttpHeaders({
-                AccessToken: localStorage.getItem('access_token') ?? '',
-              }),
-            }
-          : {};
-      data = (await this.apiProxy.buildPostRequest(url, body, options)) as any;
+      data = (await this.apiProxy.buildPostRequest(url, body)) as any;
     } else if (type === referenceDataType.rest) {
       const url =
         this.apiProxy.baseUrl +
