@@ -1,3 +1,22 @@
+## [2.1.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.4...v2.1.5) (2023-11-03)
+
+
+### Bug Fixes
+
+* disable the button clear button if the question is read only ([#2038](https://github.com/ReliefApplications/oort-frontend/issues/2038)) ([4656d2e](https://github.com/ReliefApplications/oort-frontend/commit/4656d2eb5297f5dbba624122e9f9cad08d5e49b0))
+* fields not being correctly removed in history ([#2036](https://github.com/ReliefApplications/oort-frontend/issues/2036)) ([8aaf87a](https://github.com/ReliefApplications/oort-frontend/commit/8aaf87a17430e1d23056834961892335f08d9c80))
+* incorrect style of record history modal ([7011939](https://github.com/ReliefApplications/oort-frontend/commit/701193988a52b19a58c21f5ae863a57c93cab319))
+* resources question grid actions could appear in display mode ([#2037](https://github.com/ReliefApplications/oort-frontend/issues/2037)) ([dd56837](https://github.com/ReliefApplications/oort-frontend/commit/dd56837ff34b903a3a56fd45093e6bfde4d57363))
+* search was shared between instances of dropdown & tagbox questions ([ce748fa](https://github.com/ReliefApplications/oort-frontend/commit/ce748faa88eeb8dc65a0f2f0d76b52662b9800a2))
+
+## [2.1.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.3...v2.1.4) (2023-10-25)
+
+
+### Bug Fixes
+
+* createdBy & modifiedBy would not appear in grids ([8b18cc6](https://github.com/ReliefApplications/oort-frontend/commit/8b18cc65a8deb0f32a9c8adcaec701bc0b14b9a8))
+* dialog close directive could sometimes send empty string instead of undefined ([ef6a3af](https://github.com/ReliefApplications/oort-frontend/commit/ef6a3afc7e33f658e50aa0ce5fa1265674d1010e))
+
 ## [2.1.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.2...v2.1.3) (2023-10-24)
 
 

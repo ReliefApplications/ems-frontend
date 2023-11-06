@@ -384,7 +384,7 @@
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
-				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
 		},
