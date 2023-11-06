@@ -247,6 +247,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"remove": "******",
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -1263,6 +1264,9 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
+						"placeholder": {
+							"modifyValue": "******"
+						},
 						"title": "******",
 						"tooltip": {
 							"attach": "******",
