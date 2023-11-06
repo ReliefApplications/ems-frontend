@@ -13,7 +13,6 @@ import { GET_REFERENCE_DATA_BY_ID } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
-import { HttpHeaders } from '@angular/common/http';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
