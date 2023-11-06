@@ -1,34 +1,32 @@
-<ui-divider class="m-0"></ui-divider>
-<div class="shared-steps" *ngIf="loading">
-  <kendo-skeleton
-    shape="rectangle"
-    animation="pulse"
-    width="100px"
-    height="100px"
-    class="rounded-lg"
-    *ngFor="let number of [0, 1, 2]"
-  ></kendo-skeleton>
-</div>
-<div
-  class="shared-steps"
-  *ngIf="!loading"
-  cdkDropList
+<ui-tabs
+  (selectedIndexChange)="onStep($event)"
+  [selectedIndex]="activeStep"
   cdkDropListOrientation="horizontal"
-  (cdkDropListDropped)="dropStep($event)"
+  cdkDropList
+  (cdkDropListDropped)="onReorder($event)"
 >
-  <shared-step
-    *ngFor="let step of steps; let index = index"
-    [step]="step"
-    [uiTooltip]="step.name!"
-    [canUpdate]="canUpdate"
-    [active]="index === activeStep"
-    (click)="onStep(index)"
-    (delete)="delete.emit(index)"
-    cdkDragLockAxis="x"
-    (cdkDragStarted)="onDragStart()"
-    cdkDrag
-    [cdkDragDisabled]="!canUpdate"
-  ></shared-step>
-  <shared-add-step *ngIf="canUpdate" (click)="add.emit()"></shared-add-step>
-</div>
-<ui-divider class="m-0"></ui-divider>
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <ui-tab *ngFor="let step of steps; let i = index" cdkDrag>
+      <ng-container ngProjectAs="label">
+        <shared-step
+          [step]="step"
+          [canUpdate]="canUpdate"
+          (delete)="delete.emit(i)"
+        ></shared-step>
+      </ng-container>
+    </ui-tab>
+  </ng-container>
+  <ng-template #loadingTemplate>
+    <ui-tab *ngFor="let step of steps; let i = index">
+      <ng-container ngProjectAs="label">
+        <kendo-skeleton
+          shape="rectangle"
+          animation="pulse"
+          width="100px"
+          height="32px"
+          class="rounded-lg"
+        ></kendo-skeleton>
+      </ng-container>
+    </ui-tab>
+  </ng-template>
+</ui-tabs>

@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import * as Survey from 'survey-angular';
+import { StylesManager, SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../../../../services/form-builder/form-builder.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -27,10 +27,10 @@ interface DialogData {
   standalone: true,
   imports: [CommonModule, DialogModule, ButtonModule, TranslateModule],
   templateUrl: './popup-editor.component.html',
-  styleUrls: ['./popup-editor.component.scss'],
+  styleUrls: ['../../../../style/survey.scss', './popup-editor.component.scss'],
 })
 export class PopupEditorComponent implements OnInit, AfterViewInit {
-  public survey!: Survey.SurveyModel;
+  public survey!: SurveyModel;
   @ViewChild('formContainer') formContainer!: ElementRef;
 
   /**
@@ -65,7 +65,7 @@ export class PopupEditorComponent implements OnInit, AfterViewInit {
         },
       ],
     };
-    Survey.StylesManager.applyTheme();
+    StylesManager.applyTheme();
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
       []

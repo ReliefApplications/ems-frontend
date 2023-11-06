@@ -85,7 +85,7 @@
           (click)="
             tileForm.get('card.layout')?.setValue(null); layoutChange.emit(null)
           "
-          [uiTooltip]="'common.delete' | translate"
+          [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
       <h2>
@@ -160,7 +160,7 @@
             tileForm.get('card.aggregation')?.setValue(null);
             aggregationChange.emit(null)
           "
-          [uiTooltip]="'common.delete' | translate"
+          [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
     </ng-container>

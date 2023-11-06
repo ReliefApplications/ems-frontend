@@ -1,15 +1,3 @@
-<kendo-tilelayout-item-header
-  *ngIf="header"
-  class="widget-header border-b"
-  [ngClass]="{
-    '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-    '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
-  }"
->
-  <span class="widget-title" [title]="settings.title">{{
-    settings.title
-  }}</span>
-</kendo-tilelayout-item-header>
 <ng-container *ngIf="!hasError && (series$ | async) as series">
   <ui-button
     *ngIf="export"
@@ -109,3 +97,8 @@
     {{ 'components.widget.chart.errors.aggregation.invalid' | translate }}
   </p>
 </div>
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings.title">{{
+    settings.title
+  }}</span>
+</ng-template>

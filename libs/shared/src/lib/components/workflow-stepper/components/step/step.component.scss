@@ -1,55 +1,10 @@
-.shared-step {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  border-radius: 8px;
-  box-sizing: border-box;
-
-  &:not(.active) {
-    border: 1px solid #2f383e33;
-    img {
-      filter: grayscale(1);
-    }
+.show-icons {
+  .hide-icons {
+    display: none;
   }
-
-  span {
-    font-weight: 500;
-    margin-bottom: 8px;
-    margin-top: auto;
-    color: #6e7478;
-    font-size: 12px;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 30px;
-    white-space: nowrap;
-  }
-
-  .step-actions {
-    background: rgba(255, 255, 255, 0.5);
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-
-  &:not(:hover) {
-    .step-actions {
-      display: none;
+  &:hover {
+    .hide-icons {
+      display: block;
     }
   }
 }

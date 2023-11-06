@@ -34,6 +34,7 @@ export class TabStyleComponent implements OnInit {
   get styles$(): UntypedFormArray {
     return this.form.get('style') as UntypedFormArray;
   }
+
   public fieldForm: UntypedFormGroup | null = null;
   public fields: any[] = [];
 

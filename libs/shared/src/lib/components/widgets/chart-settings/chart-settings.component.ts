@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  Inject,
+} from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
@@ -40,10 +47,17 @@ export class ChartSettingsComponent implements OnInit {
   /** Stores the selected tab */
   public selectedTab = 0;
 
+  /** Charts settings component */
+  constructor(@Inject('environment') private environment: any) {}
+
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.formGroup = extendWidgetForm(
-      createChartWidgetForm(this.tile.id, this.tile.settings),
+      createChartWidgetForm(
+        this.tile.id,
+        this.tile.settings,
+        this.environment.theme.primary
+      ),
       this.tile.settings?.widgetDisplay
     );
     this.type = this.types.find((x) => x.name === this.chartForm.value.type);

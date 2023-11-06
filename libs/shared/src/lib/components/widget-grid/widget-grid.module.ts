@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { WidgetGridComponent } from './widget-grid.component';
 import { WidgetModule } from '../widget/widget.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FloatingOptionsComponent } from './floating-options/floating-options.component';
-import { TileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
+import { WidgetActionsComponent } from './widget-actions/widget-actions.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import { WidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,8 +21,7 @@ import {
 @NgModule({
   declarations: [
     WidgetGridComponent,
-    FloatingOptionsComponent,
-    TileDataComponent,
+    WidgetActionsComponent,
     ExpandedWidgetComponent,
   ],
   imports: [
@@ -43,6 +41,6 @@ import {
     SelectMenuModule,
     TooltipModule,
   ],
-  exports: [WidgetGridComponent, TileDataComponent],
+  exports: [WidgetGridComponent],
 })
 export class WidgetGridModule {}

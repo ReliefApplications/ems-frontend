@@ -11,9 +11,13 @@ import { addFieldsForm } from '../../aggregation-builder-forms';
   styleUrls: ['./add-field-stage.component.scss'],
 })
 export class AddFieldStageComponent {
+  /** Input decorator for form. */
   @Input() form!: UntypedFormArray;
+  /** Input decorator for fields. */
   @Input() fields: any[] = [];
+  /** Input decorator for operators. */
   @Input() operators: any;
+  /** Input decorator for displayName. */
   @Input() displayName = true;
 
   /**

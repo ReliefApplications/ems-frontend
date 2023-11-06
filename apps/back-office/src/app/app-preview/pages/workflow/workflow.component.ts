@@ -7,6 +7,7 @@ import {
   Workflow,
   UnsubscribeComponent,
   WorkflowQueryResponse,
+  WorkflowService,
 } from '@oort-front/shared';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,6 +46,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param previewService Shared preview service
    * @param translate Angular translate service
+   * @param workflowService Shared workflow service
    */
   constructor(
     private apollo: Apollo,
@@ -52,7 +54,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private router: Router,
     private previewService: PreviewService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private workflowService: WorkflowService
   ) {
     super();
   }
@@ -66,6 +69,13 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((role) => {
         this.role = role;
       });
+
+    this.workflowService.nextStep
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.goToNextStep();
+      });
+
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
@@ -77,7 +87,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
             asRole: this.role,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             if (data.workflow) {
               this.workflow = data.workflow;

@@ -1,20 +1,14 @@
 import { Apollo } from 'apollo-angular';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Inject,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { SurveyModel } from 'survey-core';
+import { SurveyModule } from 'survey-angular-ui';
 import { Form, FormQueryResponse } from '../../models/form.model';
 import {
   EditRecordMutationResponse,
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import * as Survey from 'survey-angular';
 import { GET_RECORD_BY_ID, GET_FORM_STRUCTURE } from './graphql/queries';
 import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
@@ -63,10 +57,11 @@ interface DialogData {
     DateModule,
     ButtonModule,
     SpinnerModule,
+    SurveyModule,
   ],
   selector: 'shared-record-modal',
   templateUrl: './record-modal.component.html',
-  styleUrls: ['./record-modal.component.scss'],
+  styleUrls: ['../../style/survey.scss', './record-modal.component.scss'],
 })
 export class RecordModalComponent
   extends UnsubscribeComponent
@@ -77,14 +72,9 @@ export class RecordModalComponent
   public form?: Form;
   public record: Record = {};
   public modifiedAt: Date | null = null;
-  public survey!: Survey.SurveyModel;
-  public surveyNext?: Survey.SurveyModel;
+  public survey!: SurveyModel;
+  public surveyNext?: SurveyModel;
   public canEdit: boolean | undefined = false;
-
-  @ViewChild('formContainer', { static: false })
-  formContainer!: ElementRef;
-  @ViewChild('formContainerNext', { static: false })
-  formContainerNext!: ElementRef;
 
   environment: any;
 
@@ -124,7 +114,6 @@ export class RecordModalComponent
 
   async ngAfterViewInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
-    Survey.StylesManager.applyTheme();
 
     const promises: Promise<FormQueryResponse | RecordQueryResponse | void>[] =
       [];
@@ -176,24 +165,17 @@ export class RecordModalComponent
    * Initializes the form
    */
   private initSurvey() {
-    this.data.isTemporary
-      ? (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata,
-          this.record
-        ))
-      : (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata
-        ));
-
-    addCustomFunctions(Survey, {
+    this.survey = this.formBuilderService.createSurvey(
+      this.form?.structure || '',
+      this.form?.metadata,
+      this.record
+    );
+    addCustomFunctions({
       record: this.record,
       authService: this.authService,
       apollo: this.apollo,
       form: this.form,
     });
-    this.survey.data = this.record.data;
 
     this.survey.mode = 'display';
     // After the survey is created we add common callback to survey events
@@ -202,7 +184,7 @@ export class RecordModalComponent
       this.selectedPageIndex,
       {}
     );
-    this.survey.render(this.formContainer.nativeElement);
+    this.survey.data = this.record.data;
 
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
@@ -210,37 +192,39 @@ export class RecordModalComponent
         this.form?.metadata,
         this.record
       );
-      this.surveyNext.data = this.data.compareTo.data;
-      this.surveyNext.mode = 'display';
+      if (this.surveyNext) {
+        this.surveyNext.data = this.data.compareTo.data;
+        this.surveyNext.mode = 'display';
+      }
       // After the survey is created we add common callback to survey events
       this.formBuilderService.addEventsCallBacksToSurvey(
         this.surveyNext,
         this.selectedPageIndex,
         {}
       );
-      this.surveyNext.render(this.formContainerNext.nativeElement);
+
       // Set list of updated questions
       const updatedQuestions: string[] = [];
-      const allQuestions = [this.surveyNext.data, this.survey.data].reduce(
+      const allQuestions = [this.surveyNext?.data, this.survey.data].reduce(
         (keys, object) => keys.concat(Object.keys(object)),
         []
       );
       for (const question of allQuestions) {
-        const valueNext = this.surveyNext.data[question];
+        const valueNext = this.surveyNext?.data[question];
         const value = this.survey.data[question];
         if (!isEqual(value, valueNext) && (value || valueNext)) {
           updatedQuestions.push(question);
         }
       }
       this.survey.onAfterRenderQuestion.add(
-        (survey: Survey.SurveyModel, options: any): void => {
+        (survey: SurveyModel, options: any): void => {
           if (updatedQuestions.includes(options.question.valueName)) {
             options.htmlElement.style.background = '#b2ebbf';
           }
         }
       );
-      this.surveyNext.onAfterRenderQuestion.add(
-        (survey: Survey.SurveyModel, options: any): void => {
+      this.surveyNext?.onAfterRenderQuestion.add(
+        (survey: SurveyModel, options: any): void => {
           if (updatedQuestions.includes(options.question.valueName)) {
             options.htmlElement.style.background = '#EBB2B2';
           }
@@ -267,13 +251,6 @@ export class RecordModalComponent
    */
   public onEdit(): void {
     this.dialogRef.close(true as any);
-  }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
   }
 
   /**

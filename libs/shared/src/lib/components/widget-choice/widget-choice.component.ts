@@ -10,14 +10,17 @@ import { IWidgetType } from '../../models/dashboard.model';
   styleUrls: ['./widget-choice.component.scss'],
 })
 export class WidgetChoiceComponent {
+  /** Hovered status */
   public hovered = '';
+  /** Collapsed status */
   public collapsed = false;
-
+  /** Floating status */
   @Input() floating = false;
-
+  /** Widget types */
   @Input() widgetTypes?: IWidgetType[];
-
+  /** Add event emitter */
   @Output() add: EventEmitter<string> = new EventEmitter();
+  /** Close event emitter */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
 

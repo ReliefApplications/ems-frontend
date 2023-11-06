@@ -4,7 +4,7 @@ import { ApplicationUsersComponent } from './application-users.component';
 
 describe('ApplicationUsersComponent', () => {
   let component: ApplicationUsersComponent;
-  let fixture: ComponentFixture<sharedApplicationUsersComponent>;
+  let fixture: ComponentFixture<ApplicationUsersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

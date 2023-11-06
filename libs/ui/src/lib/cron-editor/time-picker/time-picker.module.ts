@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TimePickerComponent } from './time-picker.component';
 import { SelectMenuModule } from '../../select-menu/select-menu.module';
 import { FormWrapperModule } from '../../form-wrapper/form-wrapper.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * TimePicker Module
@@ -16,6 +17,7 @@ import { FormWrapperModule } from '../../form-wrapper/form-wrapper.module';
     ReactiveFormsModule,
     SelectMenuModule,
     FormWrapperModule,
+    TranslateModule,
   ],
   exports: [TimePickerComponent],
 })

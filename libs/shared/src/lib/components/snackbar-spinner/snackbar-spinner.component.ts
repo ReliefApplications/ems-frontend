@@ -12,7 +12,12 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./snackbar-spinner.component.scss'],
 })
 export class SnackbarSpinnerComponent {
-  data!: SnackBarData;
+  /** Message displayed in snackbar */
+  public message!: string;
+  /** Boolean indicating whether there is an error. */
+  public error?: boolean;
+  /** Loading indicator */
+  public loading = true;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -24,6 +29,9 @@ export class SnackbarSpinnerComponent {
     @Inject(SNACKBAR_DATA)
     public dataToken: BehaviorSubject<SnackBarData>
   ) {
-    this.data = this.dataToken.getValue();
+    const data = this.dataToken.getValue();
+    this.message = data.message;
+    this.error = data.error;
+    this.loading = data.loading;
   }
 }

@@ -17,17 +17,16 @@ import {
 } from '@progress/kendo-angular-grid';
 import {
   CompositeFilterDescriptor,
+  FilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { AuthService } from '../../../services/auth/auth.service';
 import { DownloadService } from '../../../services/download/download.service';
-import { LayoutService } from '../../../services/layout/layout.service';
 import {
   QueryBuilderService,
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
-import { RecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   CONVERT_RECORD,
   DELETE_RECORDS,
@@ -41,7 +40,7 @@ import {
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
-import { get, isEqual } from 'lodash';
+import { get, isEqual, cloneDeep } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -52,10 +51,11 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
 import { searchFilters } from '../../../utils/filter/search-filters';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
+import { Router } from '@angular/router';
 
 /**
  * Default file name when exporting grid data.
@@ -203,13 +203,15 @@ export class CoreGridComponent
     if (this.settings?.query?.filter) {
       gridFilters.push(this.settings?.query?.filter);
     }
+    const filterCpy = cloneDeep(gridFilters);
+    this.parseDateFilters({ logic: 'and', filters: filterCpy });
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
       const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
-          { logic: 'and', filters: gridFilters },
+          { logic: 'and', filters: filterCpy },
           {
             logic: 'or',
             filters: searchFilters(
@@ -223,7 +225,7 @@ export class CoreGridComponent
     } else {
       filter = {
         logic: 'and',
-        filters: gridFilters,
+        filters: filterCpy,
       };
     }
     return {
@@ -272,10 +274,19 @@ export class CoreGridComponent
     convert: false,
     export: this.showExport,
     showDetails: true,
+    navigateToPage: false,
+    navigateSettings: {
+      useRecordId: false,
+      pageUrl: '',
+      title: '',
+    },
     remove: false,
   };
 
   public editable = false;
+
+  /** Current environment */
+  private environment: any;
 
   /**
    * Main Grid data component to display Records.
@@ -285,7 +296,7 @@ export class CoreGridComponent
    * @param apollo Apollo service
    * @param dialog Dialog
    * @param queryBuilder Shared query builder
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param snackBar Shared snackbar service
    * @param downloadService Shared download service
    * @param authService Shared authentication service
@@ -295,13 +306,14 @@ export class CoreGridComponent
    * @param dateTranslate Shared date translate service
    * @param applicationService Shared application service
    * @param contextService Shared context service
+   * @param router Angular Router
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: Dialog,
     private queryBuilder: QueryBuilderService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private snackBar: SnackbarService,
     private downloadService: DownloadService,
     private authService: AuthService,
@@ -310,9 +322,11 @@ export class CoreGridComponent
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private applicationService: ApplicationService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private router: Router
   ) {
     super();
+    this.environment = environment;
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
 
@@ -321,6 +335,7 @@ export class CoreGridComponent
       .subscribe(() => {
         if (this.dataQuery) this.reloadData();
       });
+
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.configureGrid();
     });
@@ -359,6 +374,16 @@ export class CoreGridComponent
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
+      navigateToPage: get(this.settings, 'actions.navigateToPage', false),
+      navigateSettings: {
+        useRecordId: get(
+          this.settings,
+          'actions.navigateSettings.useRecordId',
+          false
+        ),
+        pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
+        title: get(this.settings, 'actions.navigateSettings.title', ''),
+      },
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
@@ -481,16 +506,17 @@ export class CoreGridComponent
             this.fields.find((f) => f.name === key)?.type === 'Date' &&
             !isNaN(new Date(x[key])?.getTime())
           ) {
-            // If it's a date field, we remove the time before converting it
-            const utcDate = new Date(
-              `${x[key].split('T')[0]}T00:00:00.000Z` ?? x[key]
-            );
-            const timezoneOffset = new Date().getTimezoneOffset();
-            const localDate = new Date(
-              utcDate.getTime() + timezoneOffset * 60 * 1000
-            );
-
-            x[key] = localDate;
+            // We assume the server sends dates in ISO format
+            // For dates, we disregard the time zone
+            const withoutTimezone = x[key]?.split('T')[0];
+            const dateParts = withoutTimezone?.split('-');
+            if (dateParts?.length === 3) {
+              const date = new Date();
+              date.setFullYear(+dateParts[0]);
+              date.setMonth(+dateParts[1] - 1);
+              date.setDate(+dateParts[2]);
+              x[key] = date;
+            }
           } else {
             x[key] = x[key] && new Date(x[key]);
           }
@@ -807,7 +833,8 @@ export class CoreGridComponent
   public reloadData(): void {
     // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
-    this.selectedRows = [];
+    // this.selectedRows = [];
+    // this.updatedItems = [];
     this.refresh$.next(true);
   }
 
@@ -847,6 +874,8 @@ export class CoreGridComponent
    * @param event.items list of items to perform the action on
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
+   * @param event.pageUrl url of page
+   * @param event.useRecordId boolean to use record id
    */
   public onAction(event: {
     action: string;
@@ -854,6 +883,8 @@ export class CoreGridComponent
     items?: any[];
     value?: any;
     field?: any;
+    pageUrl?: string;
+    useRecordId?: boolean;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -885,6 +916,17 @@ export class CoreGridComponent
       case 'details': {
         if (event.items) {
           this.onShowDetails(event.items, event.field);
+        }
+        break;
+      }
+      case 'goTo': {
+        if (event.item) {
+          let fullUrl = this.getPageUrl(event.pageUrl as string);
+          if (event.useRecordId) {
+            const recordId = event.item.id;
+            fullUrl = `${fullUrl}?id=${recordId}`;
+          }
+          this.router.navigateByUrl(fullUrl);
         }
         break;
       }
@@ -1190,15 +1232,19 @@ export class CoreGridComponent
    * @param item item to get history of
    */
   public onViewHistory(item: any): void {
-    this.layoutService.setRightSidenav({
-      component: RecordHistoryComponent,
-      inputs: {
-        id: item.id,
-        revert: (version: any) => this.confirmRevertDialog(item, version),
-        template: this.settings.template || null,
-        refresh$: this.refresh$,
-      },
-    });
+    import('../../record-history/record-history.component').then(
+      ({ RecordHistoryComponent }) => {
+        this.layoutService.setRightSidenav({
+          component: RecordHistoryComponent,
+          inputs: {
+            id: item.id,
+            revert: (version: any) => this.confirmRevertDialog(item, version),
+            template: this.settings.template || null,
+            refresh$: this.refresh$,
+          },
+        });
+      }
+    );
   }
 
   /**
@@ -1464,5 +1510,41 @@ export class CoreGridComponent
     );
     this.items = [...this.gridData.data];
     this.removeRowIds.emit(selected);
+  }
+
+  /**
+   * Get page url full link taking into account the environment.
+   *
+   * @param pageUrlParams page url params
+   * @returns url of the page
+   */
+  private getPageUrl(pageUrlParams: string): string {
+    return this.environment.module === 'backoffice'
+      ? `applications/${pageUrlParams}`
+      : `${pageUrlParams}`;
+  }
+
+  /**
+   * Replaces the values for date fields in the filter
+   *
+   * @param filter filter to update
+   */
+  private parseDateFilters(
+    filter: CompositeFilterDescriptor | FilterDescriptor
+  ) {
+    if ('filters' in filter && filter.filters) {
+      filter.filters.forEach((f) => {
+        this.parseDateFilters(f);
+      });
+    } else if ('field' in filter && filter.field) {
+      const field = this.fields.find((x) => x.name === filter.field);
+      if (field?.type === 'Date' && filter.value instanceof Date) {
+        const date = filter.value;
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        filter.value = new Date(Date.UTC(year, month, day)).toISOString();
+      }
+    }
   }
 }

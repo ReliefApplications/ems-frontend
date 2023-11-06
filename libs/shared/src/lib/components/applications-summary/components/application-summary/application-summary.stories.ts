@@ -3,13 +3,15 @@ import { ApplicationSummaryComponent } from './application-summary.component';
 import { ApplicationsSummaryModule } from '../../applications-summary.module';
 import { status } from '../../../../models/form.model';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
+import { DateTranslateService } from '../../../../services/date-translate/date-translate.service';
 
 export default {
   component: ApplicationSummaryComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [ApplicationsSummaryModule, StorybookTranslateModule],
-      providers: [],
+      providers: [DateTranslateService],
     }),
   ],
   title: 'UI/Applications/Application Summary',
@@ -22,7 +24,7 @@ export default {
  * @param args the properties of the instance of ApplicationSummaryComponent
  * @returns the template
  */
-const TEMPLATE: StoryFn<sharedApplicationSummaryComponent> = (args) => ({
+const TEMPLATE: StoryFn<ApplicationSummaryComponent> = (args) => ({
   props: {
     ...args,
   },

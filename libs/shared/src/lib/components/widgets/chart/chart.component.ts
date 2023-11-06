@@ -1,11 +1,12 @@
 import {
-  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
   SimpleChanges,
   ViewChild,
   Inject,
+  OnInit,
+  TemplateRef,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -13,7 +14,7 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
@@ -32,7 +33,10 @@ const DEFAULT_FILE_NAME = 'chart';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class ChartComponent extends UnsubscribeComponent implements OnChanges {
+export class ChartComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // === DATA ===
   public loading = true;
   public options: any = null;
@@ -48,6 +52,7 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
   @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   /**
    * Get filename from the date and widget title
@@ -78,38 +83,22 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
-   * @param cdr Angular change detector
    * @param document document
    */
   constructor(
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private cdr: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document
   ) {
     super();
+  }
 
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadChart();
-        this.getOptions();
-      });
-
-    this.contextService.isFilterEnabled$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadChart();
-        this.getOptions();
-      });
-
-    // Not entirely sure why the change detection is not happening automatically
-    // when the series are updated, but this forces it to happen
-    this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        this.cdr.detectChanges();
-      }, 100);
+  ngOnInit(): void {
+    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.series.next([]);
+      this.loadChart();
+      this.getOptions();
     });
   }
 
@@ -133,7 +122,9 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
       },
     };
 
-    if (!isEqual(previousDatasource, currentDatasource)) this.loadChart();
+    if (!isEqual(previousDatasource, currentDatasource)) {
+      this.loadChart();
+    }
     this.getOptions();
   }
 

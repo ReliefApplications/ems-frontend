@@ -1,5 +1,4 @@
-import { SurveyModel } from 'survey-angular';
-import { isNil } from 'lodash';
+import { QuestionCustomModel, SurveyModel } from 'survey-core';
 import { GlobalOptions } from '../types';
 
 /**
@@ -7,18 +6,31 @@ import { GlobalOptions } from '../types';
  *
  * @param this survey instance
  * @param this.survey survey instance
- * @param params params passed to the function (dashboardId, widgetId)
+ * @param this.question question invoking the function
  * @returns The specified workflow context variable
  */
-function getWorkflowContext(this: { survey: SurveyModel }, params: any[]) {
-  // First param is the dashboard id
-  const dashboardId = params[0];
-  if (!dashboardId) return null;
-  // Second param is the widget id
-  const widgetId = params[1];
-  if (isNil(widgetId)) return null;
-  // Return the variable
-  return this.survey.getVariable(`workflow_${dashboardId}_${widgetId}`);
+function getWorkflowContext(this: {
+  survey: SurveyModel;
+  question: QuestionCustomModel;
+}) {
+  if (!this.question || !this.survey) {
+    return null;
+  }
+
+  // Get rows from workflow context
+  const rows: string[] = this.survey.getVariable('__WORKFLOW_CONTEXT__') ?? [];
+  const sourceQuestionType = this.question.getType();
+  switch (sourceQuestionType) {
+    case 'resource':
+      // Return the first row, if in resource question
+      return rows[0] ?? null;
+    case 'resources':
+      // Return all rows, if in resources question
+      return rows;
+    default:
+      // For now, we only support resource and resources
+      return null;
+  }
 }
 
 /**

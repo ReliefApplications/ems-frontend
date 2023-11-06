@@ -119,10 +119,9 @@
         class="cursor-move"
       ></ui-icon>
       <div class="flex flex-1 gap-2 items-center" (click)="openedIndex = index">
-        <i
-          [style.color]="value.symbol.color"
-          class="{{ value.symbol.style | sharedIconDisplay : 'fa' }}"
-        ></i>
+        <span
+          [innerHTML]="svgIcons[value.symbol.style] | sharedSanitizeHtml"
+        ></span>
         <span>{{ value.label }}</span>
       </div>
     </div>

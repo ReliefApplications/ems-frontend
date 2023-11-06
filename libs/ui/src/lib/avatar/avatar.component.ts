@@ -5,6 +5,7 @@ import { AvatarShape } from './types/avatar-shape';
 
 /**
  * UI Avatar Component
+ * Display an avatar with initials or image.
  */
 @Component({
   selector: 'ui-avatar',

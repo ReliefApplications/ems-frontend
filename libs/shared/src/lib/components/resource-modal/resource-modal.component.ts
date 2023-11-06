@@ -14,6 +14,7 @@ import {
   SpinnerModule,
   TabsModule,
 } from '@oort-front/ui';
+import { SurveyModule } from 'survey-angular-ui';
 
 /**
  * Factory for creating scroll strategy
@@ -44,6 +45,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     DialogModule,
     SpinnerModule,
     TabsModule,
+    SurveyModule,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {
@@ -77,14 +79,17 @@ export class ResourceModalComponent extends FormModalComponent {
         const temporaryId = uuidv4();
         await localForage.setItem(
           temporaryId.toString(),
-          JSON.stringify({ data: survey.data, template: this.data.template })
+          JSON.stringify({
+            data: survey.parsedData ?? survey.data,
+            template: this.data.template,
+          })
         ); //We save the question temporarily before applying the mutation.
         this.ngZone.run(() => {
           this.dialogRef.close({
             template: this.data.template,
             data: {
               id: temporaryId,
-              data: survey.data,
+              data: survey.parsedData ?? survey.data,
             },
           } as any);
         });

@@ -71,10 +71,12 @@ export class GridSettingsComponent
 
   /** Stores the selected tab */
   public selectedTab = 0;
+
   /** @returns application templates */
   get appTemplates(): any[] {
     return this.applicationService.templates || [];
   }
+
   /** @returns application distribution lists */
   get distributionLists(): DistributionList[] {
     return this.applicationService.distributionLists || [];

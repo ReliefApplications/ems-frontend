@@ -80,7 +80,8 @@ export class ApplicationComponent
                   x.type === ContentType.form
                     ? `./${x.type}/${x.id}`
                     : `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type || ''),
+                icon: x.icon || this.getNavIcon(x.type || ''),
+                fontFamily: x.icon ? 'fa' : 'material',
                 class: null,
                 orderable: true,
                 visible: x.visible ?? true,

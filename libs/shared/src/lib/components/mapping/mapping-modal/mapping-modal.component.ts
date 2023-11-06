@@ -37,7 +37,9 @@ interface MappingDialogData {
   styleUrls: ['./mapping-modal.component.scss'],
 })
 export class MappingModalComponent implements OnInit {
+  /** UntypedFormGroup instance for the form. */
   public form: UntypedFormGroup = new UntypedFormGroup({});
+  /** Boolean to track if the form is new. */
   public isNew = false;
 
   /**
@@ -51,6 +53,7 @@ export class MappingModalComponent implements OnInit {
     private dialogRef: DialogRef<MappingModalComponent>
   ) {}
 
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     if (this.data && this.data.mapping) {
       this.form = createFormGroup(this.data.mapping);
@@ -58,10 +61,5 @@ export class MappingModalComponent implements OnInit {
       this.form = createFormGroup(null);
       this.isNew = true;
     }
-  }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
   }
 }

@@ -1,66 +1,83 @@
-<!-- CHART -->
-<ng-container *ngIf="widget.component === 'chart'">
+<kendo-tilelayout-item-header
+  *ngIf="header"
+  class="widget-header border-b"
+  [ngClass]="{
+    '!border-transparent': !(widget.settings.widgetDisplay?.showBorder ?? true),
+    '!border-b-gray-300': widget.settings.widgetDisplay?.showBorder ?? true
+  }"
+>
+  <ng-container
+    *ngIf="headerLeftTemplate"
+    [ngTemplateOutlet]="headerLeftTemplate"
+  ></ng-container>
+  <ng-container
+    *ngIf="widgetContentComponent?.headerTemplate"
+    [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+  ></ng-container>
+  <ng-container
+    *ngIf="headerRightTemplate"
+    [ngTemplateOutlet]="headerRightTemplate"
+  ></ng-container>
+</kendo-tilelayout-item-header>
+<ng-container [ngSwitch]="widget.component">
+  <!-- CHART -->
   <shared-chart
+    *ngSwitchCase="'chart'"
     #widgetContent
-    class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
+    class="flex-1 overflow-hidden"
   ></shared-chart>
-</ng-container>
-<!-- GRID -->
-<ng-container *ngIf="widget.component === 'grid'">
+  <!-- GRID -->
   <shared-grid-widget
+    *ngSwitchCase="'grid'"
     #widgetContent
-    class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
     (changeStep)="changeStep.emit($event)"
     (edit)="edit.emit($event)"
     [widget]="widget"
     [canUpdate]="canUpdate"
+    class="flex-1 overflow-hidden"
   ></shared-grid-widget>
-</ng-container>
-<!-- MAP -->
-<ng-container *ngIf="widget.component === 'map'">
+  <!-- MAP -->
   <shared-map-widget
+    *ngSwitchCase="'map'"
     #widgetContent
-    class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
+    class="flex-1 overflow-hidden"
   ></shared-map-widget>
-</ng-container>
-<!-- TEXT EDITOR -->
-<ng-container *ngIf="widget.component === 'editor'">
+  <!-- TEXT EDITOR -->
   <shared-editor
+    *ngSwitchCase="'editor'"
     #widgetContent
-    class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
+    class="flex-1 overflow-hidden"
   >
   </shared-editor>
-</ng-container>
-<!-- SUMMARY CARD -->
-<ng-container *ngIf="widget.component === 'summaryCard'">
+  <!-- SUMMARY CARD -->
   <shared-summary-card
+    *ngSwitchCase="'summaryCard'"
     #widgetContent
-    class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
     (edit)="edit.emit($event)"
     [widget]="widget"
+    class="flex-1 overflow-hidden"
   >
   </shared-summary-card>
-</ng-container>
-<!-- Tabs -->
-<ng-container *ngIf="widget.component === 'tabs'">
+  <!-- Tabs -->
   <shared-tabs
+    *ngSwitchCase="'tabs'"
     #widgetContent
-    class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
     (edit)="edit.emit($event)"
     [canUpdate]="canUpdate"
     [widget]="widget"
+    class="flex-1 overflow-hidden"
   >
   </shared-tabs>
 </ng-container>

@@ -10,6 +10,7 @@ import { UntypedFormControl } from '@angular/forms';
 
 export default {
   component: TagboxComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [
@@ -31,7 +32,7 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: StoryFn<sharedTagboxComponent> = (args) => ({
+const TEMPLATE: StoryFn<TagboxComponent> = (args) => ({
   template:
     '<shared-tagbox [choices$]=choices$ [parentControl]=parentControl [label]=label></shared-tagbox>',
   props: {

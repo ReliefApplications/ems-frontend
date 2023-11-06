@@ -41,11 +41,4 @@ export class AddResourceModalComponent {
     private fb: FormBuilder,
     public dialogRef: DialogRef<AddResourceModalComponent>
   ) {}
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

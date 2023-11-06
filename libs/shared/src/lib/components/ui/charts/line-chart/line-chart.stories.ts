@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   component: LineChartComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [LineChartModule, BrowserAnimationsModule],
@@ -37,7 +38,7 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: StoryFn<sharedLineChartComponent> = (args) => ({
+const TEMPLATE: StoryFn<LineChartComponent> = (args) => ({
   props: {
     ...args,
   },

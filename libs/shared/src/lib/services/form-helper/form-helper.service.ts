@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as Survey from 'survey-angular';
+import { PageModel, QuestionPanelDynamicModel, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../confirm/confirm.service';
@@ -12,9 +12,9 @@ import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import { AddRecordMutationResponse } from '../../models/record.model';
+import { Question } from '../../survey/types';
 import { WorkflowService } from '../workflow/workflow.service';
 import { ApplicationService } from '../application/application.service';
-
 /**
  * Shared survey helper service.
  */
@@ -74,7 +74,7 @@ export class FormHelpersService {
    *
    * @param survey Current survey to set up empty questions
    */
-  setEmptyQuestions(survey: Survey.SurveyModel): void {
+  setEmptyQuestions(survey: SurveyModel): void {
     // We get all the questions from the survey and check which ones contains values
     const questions = survey.getAllQuestions();
     const data = { ...survey.data };
@@ -106,7 +106,7 @@ export class FormHelpersService {
    * @param formId Form where to upload the files
    */
   async uploadFiles(
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     temporaryFilesStorage: any,
     formId: string | undefined
   ): Promise<void> {
@@ -158,7 +158,7 @@ export class FormHelpersService {
    * @param survey The form of the parent record
    * @returns A promise with all the requests to upload files
    */
-  uploadTemporaryRecords(survey: Survey.SurveyModel): Promise<any>[] {
+  uploadTemporaryRecords(survey: SurveyModel): Promise<any>[] {
     const promises: Promise<any>[] = [];
     const surveyData = survey.data;
     const questions = survey.getAllQuestions();
@@ -234,7 +234,7 @@ export class FormHelpersService {
    *
    * @param survey Survey from which we need to clean cached records.
    */
-  cleanCachedRecords(survey: Survey.SurveyModel): void {
+  cleanCachedRecords(survey: SurveyModel): void {
     if (!survey) return;
     survey.getAllQuestions().forEach((question) => {
       if (question.value) {
@@ -255,7 +255,7 @@ export class FormHelpersService {
    *
    * @param survey Survey to get questions from
    */
-  public async createCachedRecords(survey: Survey.SurveyModel): Promise<void> {
+  public async createCachedRecords(survey: SurveyModel): Promise<void> {
     const promises: Promise<any>[] = [];
     const questions = survey.getAllQuestions();
     const nestedRecordsToAdd: string[] = [];
@@ -265,34 +265,31 @@ export class FormHelpersService {
       [key in string]: (arg0: string) => void;
     } = {};
 
-    const nestedQuestions: Survey.Question[] = [];
+    const nestedQuestions: Question[] = [];
     // Get questions nested in panels
     survey
       .getAllQuestions()
       .filter((q) => q.getType() === 'paneldynamic')
       .forEach((question) => {
-        const panel = question as Survey.QuestionPanelDynamicModel;
+        const panel = question as QuestionPanelDynamicModel;
         const embeddedResourcesQuestions: string[] = [];
-
         // Filter questions of type resource or resources in the panel
         panel.templateElements.forEach((element) => {
           if (['resource', 'resources'].includes(element.getType())) {
             embeddedResourcesQuestions.push(element.name);
           }
         });
-
         // Extract each element from the panel
         embeddedResourcesQuestions.forEach((name) => {
           (panel.value || []).forEach((_: any, index: number) => {
             const question = panel.getQuestionFromArray(
               name,
               index
-            ) as Survey.Question;
-            nestedQuestions.push(question as Survey.Question);
+            ) as Question;
+            nestedQuestions.push(question as Question);
           });
         });
       });
-
     const updateResourcesExpressions: ((arg1: string, arg2: string) => void)[] =
       [];
 
@@ -315,6 +312,7 @@ export class FormHelpersService {
         });
         return;
       }
+
       const uuidv4Pattern =
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -373,7 +371,7 @@ export class FormHelpersService {
    *
    * @param survey Survey instance
    */
-  public addUserVariables = (survey: Survey.SurveyModel) => {
+  public addUserVariables = (survey: SurveyModel) => {
     const user = this.authService.user.getValue();
 
     // set user variables
@@ -398,7 +396,7 @@ export class FormHelpersService {
    *
    * @param survey Survey instance
    */
-  public addApplicationVariables = (survey: Survey.SurveyModel) => {
+  public addApplicationVariables = (survey: SurveyModel) => {
     const application = this.applicationService.application.getValue();
     survey.setVariable('application.id', application?.id ?? null);
     survey.setVariable('application.name', application?.name ?? null);
@@ -407,7 +405,6 @@ export class FormHelpersService {
       application?.description ?? null
     );
   };
-
   /**
    * Registration of new custom variables for the survey.
    * Custom variables can be used in the logic fields.
@@ -419,7 +416,7 @@ export class FormHelpersService {
    * @param record.incrementalId Record incremental id
    */
   public addRecordIDVariable = (
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     record: { id?: string; incrementalId?: string }
   ) => {
     survey.setVariable('record.id', record.id);
@@ -432,12 +429,14 @@ export class FormHelpersService {
    *
    * @param survey Survey instance
    */
-  public setWorkflowContextVariable = (survey: Survey.SurveyModel) => {
-    firstValueFrom(this.workflowService.workflowContext$).then((context) => {
-      if (!context) return;
-      const { dashboard, widget, rows } = context;
-      survey.setVariable(`workflow_${dashboard}_${widget}`, rows);
-    });
+  public setWorkflowContextVariable = (survey: SurveyModel) => {
+    survey.setVariable(
+      `__WORKFLOW_CONTEXT__`,
+      this.workflowService.workflowContextValue ?? []
+    );
+
+    // After the workflow context is set, we clear it
+    this.workflowService.setContext([]);
   };
 
   /**
@@ -451,6 +450,31 @@ export class FormHelpersService {
     Object.keys(storage).forEach((key) => {
       delete storage[key];
     });
+  }
+
+  /**
+   * Add tooltip to the survey question if exists
+   *
+   * @param _ Default value of afterRenderQuestion callback
+   * @param options current survey question options
+   */
+  public addQuestionTooltips(_: any, options: any): void {
+    //Return if there is no description to show in popup
+    if (!options.question.tooltip) {
+      return;
+    }
+    const titleElement = (options.htmlElement as HTMLElement).querySelector(
+      '.sd-question__title'
+    );
+    if (titleElement) {
+      titleElement.querySelectorAll('.sv-string-viewer').forEach((el: any) => {
+        const tooltip = document.createElement('span');
+        tooltip.title = options.question.tooltip;
+        tooltip.innerHTML = '?';
+        tooltip.classList.add('survey-title__tooltip');
+        el.appendChild(tooltip);
+      });
+    }
   }
 
   /**
@@ -475,10 +499,7 @@ export class FormHelpersService {
    * @param page The page of the form
    * @returns if valueName is set and in the correct format (snake_case)
    */
-  public setValueName(
-    question: Survey.Question,
-    page: Survey.PageModel
-  ): boolean {
+  public setValueName(question: Question, page: PageModel): boolean {
     if (!question.valueName) {
       if (question.title) {
         question.valueName = this.toSnakeCase(question.title);

@@ -11,23 +11,28 @@ import {
   FormWrapperModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { ListFilterComponent } from '../../../list-filter/list-filter.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FilterComponent } from './filter/filter.component';
 
 /**
  * GroupsModule manages modules and components
  * related to the groups tab
  */
 @NgModule({
-  declarations: [GroupListComponent],
+  declarations: [GroupListComponent, FilterComponent],
   imports: [
     CommonModule,
     TranslateModule,
     IconModule,
     FormWrapperModule,
+    ReactiveFormsModule,
     SkeletonTableModule,
     MenuModule,
     TableModule,
     ButtonModule,
     TooltipModule,
+    ListFilterComponent,
   ],
   exports: [GroupListComponent],
 })

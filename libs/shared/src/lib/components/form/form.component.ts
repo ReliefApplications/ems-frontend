@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -11,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import * as Survey from 'survey-angular';
+import { SurveyModel } from 'survey-core';
 import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
@@ -20,16 +19,15 @@ import {
   Record as RecordModel,
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
+import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
-import { LayoutService } from '../../services/layout/layout.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { cloneDeep } from 'lodash';
-import addCustomFunctions from '../../survey/custom-functions';
 
 /**
  * This component is used to display forms
@@ -37,34 +35,37 @@ import addCustomFunctions from '../../survey/custom-functions';
 @Component({
   selector: 'shared-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form.component.scss'],
 })
 export class FormComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  implements OnInit, OnDestroy
 {
+  /** Form input */
   @Input() form!: Form;
+  /** Record input, optional */
   @Input() record?: RecordModel;
+  /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
   }> = new EventEmitter();
-
-  // === SURVEYJS ===
-  public survey!: Survey.SurveyModel;
+  /** Survey model */
+  public survey!: SurveyModel;
+  /** Indicates whether the search is active */
   public surveyActive = true;
+  /** Temporary storage for files */
   public temporaryFilesStorage: Record<string, Array<File>> = {};
-
+  /** Reference to the form container element */
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  // === MODIFIED AT ===
+  /** Date when the form was last modified */
   public modifiedAt: Date | null = null;
-
-  // === LOCALE STORAGE ===
+  /** ID for local storage */
   private storageId = '';
+  /** Date of local storage */
   public storageDate?: Date;
+  /** indicates whether the data is from the cache */
   public isFromCacheData = false;
-
   /** Selected page index */
   public selectedPageIndex: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
@@ -83,7 +84,7 @@ export class FormComponent
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param authService This is the service that handles authentication.
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
@@ -93,7 +94,7 @@ export class FormComponent
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private authService: AuthService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     private formHelpersService: FormHelpersService,
     private translate: TranslateService
@@ -101,9 +102,9 @@ export class FormComponent
     super();
   }
 
+  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    Survey.StylesManager.applyTheme();
-    addCustomFunctions(Survey, {
+    addCustomFunctions({
       record: this.record,
       authService: this.authService,
       apollo: this.apollo,
@@ -122,6 +123,7 @@ export class FormComponent
       this.form.metadata,
       this.record
     );
+
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
@@ -141,7 +143,6 @@ export class FormComponent
       if (field.readOnly && this.survey.getQuestionByName(field.name))
         this.survey.getQuestionByName(field.name).readOnly = true;
     });
-
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
@@ -160,6 +161,7 @@ export class FormComponent
 
     if (cachedData) {
       this.survey.data = cachedData;
+      // this.setUserVariables();
     } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -192,26 +194,6 @@ export class FormComponent
     this.survey.locale = formStructure?.locale || 'en';
   }
 
-  ngAfterViewInit(): void {
-    this.survey?.render(this.formContainer.nativeElement);
-    // this.translate.onLangChange.subscribe(() => {
-    //   const currentLang = this.usedLocales.find(
-    //     (lang) => lang.value === this.translate.currentLang
-    //   );
-    //   if (currentLang && currentLang.text !== this.survey.locale) {
-    //     this.setLanguage(currentLang.text);
-    //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-    //   } else if (
-    //     !currentLang &&
-    //     this.survey.locale !== this.translate.currentLang
-    //   ) {
-    //     this.survey.locale = this.translate.currentLang;
-    //     this.surveyLanguage = (LANGUAGES as any).en;
-    //     this.survey.render();
-    //   }
-    // });
-  }
-
   /**
    * Reset the survey to empty
    */
@@ -226,7 +208,6 @@ export class FormComponent
     this.survey.fromJSON(this.survey.toJSON());
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
-    this.survey.render();
     setTimeout(() => (this.surveyActive = true), 100);
   }
 
@@ -282,7 +263,6 @@ export class FormComponent
     // We wait for the resources questions to update their ids
     // await Promise.allSettled(promises);
     await this.formHelpersService.createCachedRecords(this.survey);
-    // this.survey.data = surveyData;
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
@@ -292,7 +272,7 @@ export class FormComponent
         mutation: EDIT_RECORD,
         variables: {
           id: recordId,
-          data: this.survey.data,
+          data: this.survey.parsedData ?? this.survey.data,
           template:
             this.form.id !== this.record?.form?.id ? this.form.id : null,
         },
@@ -303,7 +283,7 @@ export class FormComponent
         mutation: ADD_RECORD,
         variables: {
           form: this.form.id,
-          data: this.survey.data,
+          data: this.survey.parsedData ?? this.survey.data,
         },
       });
     }
@@ -364,7 +344,6 @@ export class FormComponent
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;
     this.storageDate = undefined;
-    this.survey.render();
   }
 
   /**
@@ -425,6 +404,7 @@ export class FormComponent
     });
   }
 
+  /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
