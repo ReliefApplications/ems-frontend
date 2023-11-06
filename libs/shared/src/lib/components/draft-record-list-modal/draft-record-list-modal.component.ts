@@ -12,18 +12,23 @@ import { Apollo } from 'apollo-angular';
 import {
   DraftRecordsQueryResponse,
   DraftRecord,
-} from '../../models/draftRecord.model';
+} from '../../models/draft-record.model';
 import {
   TableModule,
   DialogModule,
   ButtonModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { DraftRecordModalComponent } from '../draft-record-modal/draft-record-modal.component';
 import { EmptyModule } from '../ui/empty/empty.module';
+import { Form, FormQueryResponse } from '../../models/form.model';
+
+/** Dialog data interface */
+interface DialogData {
+  form: string;
+}
 
 /**
- * Modal that displays a list of draft records to select from
+ * Display list of available drafts for form & user, in a modal.
  */
 @Component({
   standalone: true,
@@ -37,11 +42,11 @@ import { EmptyModule } from '../ui/empty/empty.module';
     TooltipModule,
     EmptyModule,
   ],
-  selector: 'shared-select-draft-record-modal',
-  templateUrl: './select-draft-record-modal.component.html',
-  styleUrls: ['./select-draft-record-modal.component.scss'],
+  selector: 'shared-draft-record-list-modal',
+  templateUrl: './draft-record-list-modal.component.html',
+  styleUrls: ['./draft-record-list-modal.component.scss'],
 })
-export class SelectDraftRecordModalComponent implements OnInit {
+export class DraftRecordListModalComponent implements OnInit {
   /** Array of available draft records */
   public draftRecords: Array<DraftRecord> = new Array<DraftRecord>();
   /** Displayed table columns */
@@ -50,6 +55,8 @@ export class SelectDraftRecordModalComponent implements OnInit {
   public displayedColumnsForSkeleton = ['createdAt'];
   /** Loading indicator */
   public loading = true;
+  /** Current form */
+  private form!: Form;
 
   /** @returns True if the draft records table is empty */
   get empty(): boolean {
@@ -57,13 +64,13 @@ export class SelectDraftRecordModalComponent implements OnInit {
   }
 
   /**
-   * Modal for selection of a draft record
+   * Display list of available drafts for form & user, in a modal.
    *
-   * @param confirmService Service that handles confirming modals
-   * @param translate Translating service
+   * @param confirmService Shared confirm service modal
+   * @param translate Angular translate service
    * @param apollo Apollo service
-   * @param dialog Dialog service
-   * @param dialogRef Dialog reference of the component
+   * @param dialog CDK Dialog service
+   * @param dialogRef Dialog reference
    * @param data Data passed to the dialog, here the formId of the current form
    */
   constructor(
@@ -71,9 +78,9 @@ export class SelectDraftRecordModalComponent implements OnInit {
     private translate: TranslateService,
     private apollo: Apollo,
     public dialog: Dialog,
-    public dialogRef: DialogRef<SelectDraftRecordModalComponent>,
+    public dialogRef: DialogRef<DraftRecordListModalComponent>,
     @Inject(DIALOG_DATA)
-    public data: any
+    public data: DialogData
   ) {}
 
   ngOnInit(): void {
@@ -84,16 +91,16 @@ export class SelectDraftRecordModalComponent implements OnInit {
    * Fetches all the draft records associated to the current form
    */
   fetchDraftRecords() {
-    const formId = this.data;
     this.apollo
-      .query<DraftRecordsQueryResponse>({
+      .query<DraftRecordsQueryResponse & FormQueryResponse>({
         query: GET_DRAFT_RECORDS,
         variables: {
-          formId,
+          form: this.data.form,
         },
       })
       .pipe()
       .subscribe(({ data }) => {
+        this.form = data.form;
         this.draftRecords = data.draftRecords;
         this.loading = false;
       });
@@ -104,9 +111,15 @@ export class SelectDraftRecordModalComponent implements OnInit {
    *
    * @param element draft record selected
    */
-  previewDraftRecord(element: any) {
+  async onPreview(element: DraftRecord) {
+    const { DraftRecordModalComponent } = await import(
+      '../draft-record-modal/draft-record-modal.component'
+    );
     this.dialog.open(DraftRecordModalComponent, {
-      data: element,
+      data: {
+        form: this.form,
+        data: element.data,
+      },
     });
   }
 
@@ -115,7 +128,7 @@ export class SelectDraftRecordModalComponent implements OnInit {
    *
    * @param element Draft record to delete
    */
-  onDeleteDraft(element: any) {
+  onDelete(element: DraftRecord) {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant(
         'components.form.draftRecords.confirmModal.delete'
@@ -148,7 +161,7 @@ export class SelectDraftRecordModalComponent implements OnInit {
    *
    * @param element Draft record to be returned to form component
    */
-  closeModal(element: any): void {
+  onClose(element: DraftRecord): void {
     const confirmDialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant(
         'components.form.draftRecords.confirmModal.load'

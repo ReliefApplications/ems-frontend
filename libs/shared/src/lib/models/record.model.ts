@@ -1,4 +1,4 @@
-import { DraftRecord } from './draftRecord.model';
+import { DraftRecord } from './draft-record.model';
 import { Form } from './form.model';
 import { User } from './user.model';
 

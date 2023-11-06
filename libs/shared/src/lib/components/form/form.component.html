@@ -1,5 +1,9 @@
 <!-- Form header -->
 <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+  <shared-record-summary
+    [record]="record"
+    (showHistory)="onShowHistory()"
+  ></shared-record-summary>
   <shared-form-actions
     [survey]="survey"
     [surveyActive]="surveyActive"
@@ -8,7 +12,7 @@
     <ui-button
       [isIcon]="true"
       icon="format_list_bulleted_add"
-      (click)="openSelectDraftRecord()"
+      (click)="onOpenDrafts()"
       uiTooltip="{{ 'components.form.draftRecords.buttonLoad' | translate }}"
     ></ui-button>
   </div>

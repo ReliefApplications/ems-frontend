@@ -35,8 +35,6 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
-// import { cloneDeep } from 'lodash';
-import { SelectDraftRecordModalComponent } from '../select-draft-record-modal/select-draft-record-modal.component';
 
 /**
  * This component is used to display forms
@@ -225,20 +223,6 @@ export class FormComponent
   public valueChange(): void {
     // Allow user to save as draft
     this.disableSaveAsDraft = false;
-    // Cache the survey data, but remove the files from it
-    // to avoid hitting the local storage limit
-    //const data = cloneDeep(this.survey.data);
-    //Object.keys(data).forEach((key) => {
-    //const question = this.survey.getQuestionByName(key);
-    //if (question && question.getType() === 'file') {
-    //delete data[key];
-    //}
-    //});
-
-    //localStorage.setItem(
-    //this.storageId,
-    //JSON.stringify({ data, date: new Date() })
-    //);
   }
 
   /**
@@ -404,11 +388,17 @@ export class FormComponent
   }
 
   /**
-   * Opens the modal to select a draft record to fill the form
+   * Open draft list.
    */
-  public openSelectDraftRecord(): void {
-    const dialogRef = this.dialog.open(SelectDraftRecordModalComponent, {
-      data: this.form.id,
+  public async onOpenDrafts(): Promise<void> {
+    // Lazy load modal
+    const { DraftRecordListModalComponent } = await import(
+      '../draft-record-list-modal/draft-record-list-modal.component'
+    );
+    const dialogRef = this.dialog.open(DraftRecordListModalComponent, {
+      data: {
+        form: this.form.id,
+      },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

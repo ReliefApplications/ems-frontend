@@ -1,7 +1,5 @@
 import { gql } from 'apollo-angular';
 
-// === ADD RECORD ===
-
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
   mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
@@ -26,35 +24,6 @@ export const ADD_RECORD = gql`
     }
   }
 `;
-
-// === ADD DRAFT RECORD ===
-
-/** Graphql request for adding a new draft record to a form */
-export const ADD_DRAFT_RECORD = gql`
-  mutation addDraftRecord($form: ID!, $data: JSON!, $display: Boolean) {
-    addDraftRecord(form: $form, data: $data) {
-      id
-      createdAt
-      modifiedAt
-      createdBy {
-        name
-      }
-      data(display: $display)
-      form {
-        uniqueRecord {
-          id
-          modifiedAt
-          createdBy {
-            name
-          }
-          data
-        }
-      }
-    }
-  }
-`;
-
-// === EDIT RECORD ===
 
 /** Graphql request for editing a record by its id */
 export const EDIT_RECORD = gql`
@@ -89,7 +58,30 @@ export const EDIT_RECORD = gql`
   }
 `;
 
-// === EDIT DRAFT RECORD ===
+/** Graphql request for adding a new draft record to a form */
+export const ADD_DRAFT_RECORD = gql`
+  mutation addDraftRecord($form: ID!, $data: JSON!, $display: Boolean) {
+    addDraftRecord(form: $form, data: $data) {
+      id
+      createdAt
+      modifiedAt
+      createdBy {
+        name
+      }
+      data(display: $display)
+      form {
+        uniqueRecord {
+          id
+          modifiedAt
+          createdBy {
+            name
+          }
+          data
+        }
+      }
+    }
+  }
+`;
 
 /** Graphql request for editing a draft record by its id */
 export const EDIT_DRAFT_RECORD = gql`

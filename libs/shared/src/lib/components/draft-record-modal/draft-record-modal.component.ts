@@ -1,36 +1,50 @@
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { DialogModule, SpinnerModule } from '@oort-front/ui';
+import { ButtonModule, DialogModule, SpinnerModule } from '@oort-front/ui';
 import { Component, OnInit, Inject } from '@angular/core';
 import { SurveyModule } from 'survey-angular-ui';
 import { CommonModule } from '@angular/common';
 import { SurveyModel } from 'survey-core';
+import { Form } from '../../models/form.model';
+
+/** Dialog data interface */
+interface DialogData {
+  form: Form;
+  data: any;
+}
 
 /**
- * Modal that displays a draft record saved
+ * Display a draft record in a modal.
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, DialogModule, SurveyModule, SpinnerModule],
+  imports: [
+    CommonModule,
+    DialogModule,
+    SurveyModule,
+    SpinnerModule,
+    ButtonModule,
+  ],
   selector: 'shared-draft-record-modal',
   templateUrl: './draft-record-modal.component.html',
   styleUrls: ['./draft-record-modal.component.scss'],
 })
 export class DraftRecordModalComponent implements OnInit {
-  /** Data */
+  /** Loading indicator */
   public loading = true;
+  /** Survey instance */
   public survey!: SurveyModel;
 
   /**
-   * Creates an instance of DraftRecordModalComponent.
+   * Display a draft record in a modal.
    *
    * @param formBuilderService Form builder service
-   * @param data Data passed to the dialog, here the draft form data
+   * @param data Data passed to the dialog
    */
   constructor(
     private formBuilderService: FormBuilderService,
     @Inject(DIALOG_DATA)
-    public data: any
+    public data: DialogData
   ) {}
 
   ngOnInit(): void {
