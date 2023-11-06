@@ -57,7 +57,13 @@
       'components.widget.settings.map.properties.controls.lastUpdate'
         | translate
     }}</label>
-    <ui-select-menu formControlName="lastUpdate">
+    <ui-select-menu
+      formControlName="lastUpdate"
+      [placeholder]="
+        'components.widget.settings.map.properties.controls.lastUpdatePosition'
+          | translate
+      "
+    >
       <ui-select-option
         *ngFor="let option of controlPositions"
         [value]="option.value"
@@ -65,5 +71,14 @@
         {{ option.text }}
       </ui-select-option>
     </ui-select-menu>
+    <!-- Remove value -->
+    <ui-button
+      uiSuffix
+      (click)="this.form.get('lastUpdate')?.setValue(null);"
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      [uiTooltip]="'common.remove' | translate"
+    ></ui-button>
   </div>
 </form>

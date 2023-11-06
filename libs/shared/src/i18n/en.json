@@ -1676,6 +1676,7 @@
 							"download": "Download",
 							"lastUpdate": "Last updated on",
 							"lastUpdateError": "Last modified time could not be loaded",
+							"lastUpdatePosition": "Select a position to display the control",
 							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",

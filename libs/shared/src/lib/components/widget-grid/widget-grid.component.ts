@@ -1,25 +1,31 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
-  HostListener,
   Input,
+  OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
 } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
-import {
-  TileLayoutReorderEvent,
-  TileLayoutResizeEvent,
-} from '@progress/kendo-angular-layout';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
-import { takeUntil } from 'rxjs';
+import { Subject, Subscription, debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import { cloneDeep } from 'lodash';
+import {
+  CompactType,
+  DisplayGrid,
+  GridType,
+  GridsterConfig,
+  GridsterItem,
+} from 'angular-gridster2';
+import { cloneDeep, isNil } from 'lodash';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -37,22 +43,18 @@ const MAX_COL_SPAN = 8;
 })
 export class WidgetGridComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges, OnDestroy
 {
   /** Available widgets */
   public availableWidgets: any[] = WIDGET_TYPES;
   /** Loading status */
   @Input() loading = false;
-  /** Skeletons for loading */
-  public skeletons: { colSpan: number; rowSpan: number }[] = [];
   /** Widgets */
   @Input() widgets: any[] = [];
   /** Update permission */
   @Input() canUpdate = false;
-  /** Number of columns */
-  colsNumber = MAX_COL_SPAN;
-  /** Move event emitter */
-  @Output() move: EventEmitter<any> = new EventEmitter();
+  /** Additional grid configuration */
+  @Input() options?: GridsterConfig;
   /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
   /** Edit event emitter */
@@ -71,6 +73,19 @@ export class WidgetGridComponent
     unknown,
     ExpandedWidgetComponent
   > | null;
+  /** Number of columns */
+  public colsNumber = MAX_COL_SPAN;
+  /** Skeletons for loading */
+  public skeletons: GridsterItem[] = [];
+  /** Gridster options */
+  public gridOptions!: GridsterConfig;
+  /** Detect structure changes */
+  public structureChanges = new Subject<boolean>();
+  /** Resize observer for the parent container */
+  private resizeObserver!: ResizeObserver;
+  /** Set grid options timeout, to enable events that can save dashboard */
+  private gridOptionsTimeoutListener!: NodeJS.Timeout;
+  private changesSubscription?: Subscription;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -82,34 +97,56 @@ export class WidgetGridComponent
   }
 
   /**
-   * Changes display when windows size changes.
-   *
-   * @param event window resize event
-   */
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-    this.skeletons = this.getSkeletons();
-  }
-
-  /**
    * Constructor of the grid widget component
    *
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
+   * @param _host host element ref
    */
   constructor(
     public dialog: Dialog,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private _host: ElementRef
   ) {
     super();
   }
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
-    this.colsNumber = this.setColsNumber(window.innerWidth);
-    this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+    this.skeletons = this.getSkeletons();
+    this.setLayout();
+    this.resizeObserver = new ResizeObserver(() => {
+      this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
+      this.setGridOptions();
+    });
+    this.resizeObserver.observe(this._host.nativeElement);
+    this.setGridOptions();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
+    }
+    if (changes['widgets']) {
+      this.setLayout();
+    }
+    if (
+      changes['canUpdate'] &&
+      Boolean(changes['canUpdate'].previousValue) !==
+        Boolean(changes['canUpdate'].currentValue)
+    ) {
+      this.setLayout();
+      this.gridOptionsTimeoutListener = setTimeout(() => {
+        this.setGridOptions(true);
+      }, 0);
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 
   /**
@@ -132,6 +169,56 @@ export class WidgetGridComponent
       return 6;
     }
     return MAX_COL_SPAN;
+  }
+
+  /**
+   * Set Gridster options.
+   *
+   *  @param isDashboardSet Property to add item change callback handler once the dashboard is ready and editable
+   */
+  setGridOptions(isDashboardSet = false) {
+    this.gridOptions = {
+      ...this.gridOptions,
+      ...(isDashboardSet && {
+        itemChangeCallback: () => this.structureChanges.next(true),
+        scrollToNewItems: true,
+      }),
+      ...(!isDashboardSet && {
+        // Prevent dashboard to scroll to bottom widget by default
+        scrollToNewItems: false,
+      }),
+      gridType: GridType.VerticalFixed,
+      compactType: CompactType.CompactLeftAndUp,
+      displayGrid: DisplayGrid.OnDragAndResize,
+      margin: 10,
+      outerMargin: false,
+      minItemCols: 1, // min item number of columns
+      minItemRows: 1, // min item number of rows
+      maxCols: this.colsNumber,
+      minCols: this.colsNumber,
+      fixedRowHeight: 200,
+      draggable: {
+        enabled: this.canUpdate,
+        ignoreContentClass: 'gridster-item-content',
+        ignoreContent: true,
+        dragHandleClass: 'drag-handler',
+      },
+      resizable: {
+        enabled: this.canUpdate,
+      },
+      pushItems: true,
+      swap: true,
+      swapWhileDragging: false,
+      disablePushOnDrag: true,
+      disablePushOnResize: false,
+      pushDirections: { north: true, east: true, south: true, west: true },
+      disableScrollHorizontal: true,
+      setGridSize: true,
+      mobileBreakpoint: 640,
+      disableWindowResize: true,
+      keepFixedHeightInMobile: true,
+      ...this.options,
+    };
   }
 
   /**
@@ -233,6 +320,10 @@ export class WidgetGridComponent
               this.add.emit({
                 ...widget,
                 settings: value,
+                ...{
+                  resizeEnabled: this.canUpdate,
+                  dragEnabled: this.canUpdate,
+                },
               });
             }
           });
@@ -241,45 +332,11 @@ export class WidgetGridComponent
   }
 
   /**
-   * Emits reorder event.
-   *
-   * @param e reorder event.
-   */
-  public onReorder(e: TileLayoutReorderEvent): void {
-    this.move.emit(e);
-  }
-
-  /**
-   * Handles resize widget event.
-   *
-   * @param e resize event.
-   */
-  public onResize(e: TileLayoutResizeEvent) {
-    const widgetDefinition = this.availableWidgets.find(
-      (x) => x.component === this.widgets[e.item.order].component
-    );
-    // Prevent widgets to be smaller than minimum width ( definition per widget )
-    if (e.newRowSpan < widgetDefinition.minRow) {
-      e.newRowSpan = widgetDefinition.minRow;
-    }
-    // Prevent widgets to be greater than maximum width ( fixed limit in the widget grid )
-    if (e.newColSpan > MAX_COL_SPAN) {
-      e.newColSpan = MAX_COL_SPAN;
-    }
-    const target = this.widgets[e.item.order];
-    target.defaultCols = e.newColSpan;
-    target.defaultRows = e.newRowSpan;
-    this.edit.emit({
-      type: 'display',
-    });
-  }
-
-  /**
-   * Generates a list of skeletongs, for loading.
+   * Generates a list of skeletons, for loading.
    *
    * @returns List of skeletons.
    */
-  private getSkeletons(): { colSpan: number; rowSpan: number }[] {
+  private getSkeletons(): GridsterItem[] {
     const skeletons = [];
     let remainingColsNumber = this.colsNumber;
     for (let i = 0; i < 10; i++) {
@@ -289,10 +346,80 @@ export class WidgetGridComponent
         remainingColsNumber = this.colsNumber;
       }
       skeletons.push({
-        colSpan,
-        rowSpan: Math.floor(Math.random() * MAX_ROW_SPAN_LOADING) + 1,
+        cols: colSpan,
+        rows: Math.floor(Math.random() * MAX_ROW_SPAN_LOADING) + 1,
       });
     }
-    return skeletons;
+    const yAxis = 0;
+    const xAxis = 0;
+    return skeletons.map((skeleton, index) => {
+      const { x, y } =
+        index === 0
+          ? { x: 0, y: 0 }
+          : this.setXYAxisValues(yAxis, xAxis, skeleton);
+      return {
+        cols: skeleton.cols,
+        rows: skeleton.rows,
+        resizeEnabled: false,
+        dragEnabled: false,
+        x,
+        y,
+      };
+    });
+  }
+
+  /**
+   * Set the given widget in the grid using given source coordinates
+   *
+   * @param {number} yAxis y axis point from where start
+   * @param {number} xAxis x axis point from where start
+   * @param widget widget to set in the grid
+   * @returns new coordinates from where to set the given widget in the grid
+   */
+  private setXYAxisValues(
+    yAxis: number,
+    xAxis: number,
+    widget: any
+  ): { x: number; y: number } {
+    // Update with the last values of the grid item pointer
+    xAxis += widget.cols ?? widget.defaultCols;
+    if (xAxis > 8) {
+      yAxis += widget.rows ?? widget.defaultRows;
+    }
+
+    if (xAxis + (widget.cols ?? widget.defaultCols) > 8) {
+      xAxis = 0;
+      yAxis += widget.rows ?? widget.defaultRows;
+    }
+    return { x: xAxis, y: yAxis };
+  }
+
+  /**
+   * Updates layout based on the passed widget array.
+   */
+  private setLayout(): void {
+    if (this.changesSubscription) {
+      this.changesSubscription.unsubscribe();
+    }
+    this.widgets.forEach((widget) => {
+      if (isNil(widget.cols) || isNil(widget.rows)) {
+        widget.cols = widget.cols ?? widget.defaultCols;
+        widget.rows = widget.rows ?? widget.defaultRows;
+        widget.minItemRows = widget.minItemRows ?? widget.minRow;
+        widget.resizeEnabled = this.canUpdate;
+        widget.dragEnabled = this.canUpdate;
+        delete widget.defaultCols;
+        delete widget.defaultRows;
+        delete widget.minItemRows;
+      }
+    });
+    // Prevent changes to be saved too often
+    this.changesSubscription = this.structureChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.canUpdate) {
+          this.onEditWidget({ type: 'display' });
+        }
+      });
   }
 }

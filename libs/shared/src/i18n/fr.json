@@ -1692,6 +1692,7 @@
 							"download": "Télécharger",
 							"lastUpdate": "Dernière mise à jour le",
 							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
+							"lastUpdatePosition": "Choisissez une position pour afficher l'élément",
 							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",
