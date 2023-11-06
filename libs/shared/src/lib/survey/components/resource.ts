@@ -209,6 +209,14 @@ export const init = (
         visibleIf: visibleIfResource,
         visibleIndex: 4,
       });
+      Serializer.addProperty('resource', {
+        name: 'canSelectExistingRecords:boolean',
+        category: 'general',
+        dependsOn: 'resource',
+        default: true,
+        visibleIf: visibleIfResource,
+        visibleIndex: 3,
+      });
 
       // Build set available grid fields button
       serializer.addProperty('resource', {
@@ -257,7 +265,7 @@ export const init = (
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
-        default: true,
+        default: false,
         visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
@@ -566,9 +574,10 @@ export const init = (
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
+      if (!question.canSelectExistingRecords) question.canSearch = false;
     },
     populateChoices: (question: QuestionResource): void => {
-      if (question.resource) {
+      if (question.resource && question.canSelectExistingRecords) {
         getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
             const choices = mapQuestionChoices(data, question);
