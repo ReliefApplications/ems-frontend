@@ -186,6 +186,10 @@ export class FormComponent
     // } else {
     //   this.survey.locale = this.translate.currentLang;
     // }
+
+    // Sets the survey language as the form's default language
+    const formStructure = JSON.parse(this.form.structure || '');
+    this.survey.locale = formStructure?.locale || 'en';
   }
 
   ngAfterViewInit(): void {
