@@ -533,6 +533,7 @@
 					"title": "Vous modifiez les filtres du tableau de bord"
 				},
 				"filterSettings": "Paramètres du filtre",
+				"filterStyle": "Filter Style",
 				"settings": {
 					"defaultPosition": "Position par défaut du filtre"
 				}

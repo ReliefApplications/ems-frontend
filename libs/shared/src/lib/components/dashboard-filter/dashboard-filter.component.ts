@@ -2,13 +2,17 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  EventEmitter,
   HostListener,
   Input,
   NgZone,
   OnChanges,
   OnDestroy,
   Optional,
+  Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
@@ -27,12 +31,17 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
-import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
+import {
+  SidenavContainerComponent,
+  SnackbarService,
+  UILayoutService,
+} from '@oort-front/ui';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
+
 
 /**
  * Interface for quick filters
@@ -76,6 +85,8 @@ export class DashboardFilterComponent
 
   /** Current drawer state */
   public isDrawerOpen = false;
+  /** Current drawer state */
+  public filterStyle: 'LEGACY' | 'MODERN' = 'LEGACY';
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
@@ -105,6 +116,10 @@ export class DashboardFilterComponent
   @Input() editable = false;
   @Input() isFullScreen = false;
 
+  @Output() isDrawerOpenEmitter: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild('drawerContent', { static: false }) drawerContent!: ElementRef;
+
   /**
    * Class constructor
    *
@@ -119,6 +134,7 @@ export class DashboardFilterComponent
    * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
    * @param dateTranslate Service used for date formatting
+   * @param layoutService Service used for filter drawer state detection
    * @param _host sidenav container host
    */
   constructor(
@@ -133,6 +149,7 @@ export class DashboardFilterComponent
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
+    private layoutService: UILayoutService,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -174,6 +191,14 @@ export class DashboardFilterComponent
         }
         this.setFilterContainerDimensions();
       });
+    this.layoutService.isFilterDrawerOpen$.subscribe((filterDrawerState) => {
+      this.isDrawerOpen = filterDrawerState;
+      this.isDrawerOpenEmitter.emit({
+        isDrawerOpen: this.isDrawerOpen,
+        position: this.position,
+        drawerHeight: this.drawerContent.nativeElement.offsetHeight,
+      });
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -548,5 +573,28 @@ export class DashboardFilterComponent
     }
     // force change detection
     this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * toggle isDrawerOpen, and emit its value to the parent component
+   */
+  public toggleDrawer() {
+    this.layoutService.toggleFilterDrawer();
+    this.isDrawerOpenEmitter.emit({
+      isDrawerOpen: this.isDrawerOpen,
+      position: this.position,
+      drawerHeight: this.drawerContent.nativeElement.offsetHeight,
+      style: this.filterStyle,
+    });
+  }
+
+  /**
+   * Change the style layout
+   */
+  public changeFilterStyle() {
+    if (this.filterStyle == 'LEGACY') {
+      this.filterStyle = 'MODERN';
+    } else this.filterStyle = 'LEGACY';
+    console.log(this.filterStyle);
   }
 }

@@ -14,6 +14,11 @@ export class UILayoutService {
   public closeRightSidenav = true;
   /** Current right sidenav */
   private rightSidenav = new BehaviorSubject<any>(null);
+  /** Current filter drawer state */
+  private isFilterDrawerOpenSubject: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+  /** Observable for filter drawer state */
+  public isFilterDrawerOpen$ = this.isFilterDrawerOpenSubject.asObservable();
 
   /** @returns Current right sidenav as observable */
   get rightSidenav$(): Observable<any> {
@@ -59,5 +64,13 @@ export class UILayoutService {
    */
   setFixedWrapperActions(container: TemplateRef<any> | null): void {
     this.fixedWrapperActions.next(container);
+  }
+
+  /**
+   * Toggles the filter drawer state and emits the updated state to its subscribers.
+   */
+  toggleFilterDrawer() {
+    const currentState = this.isFilterDrawerOpenSubject.getValue();
+    this.isFilterDrawerOpenSubject.next(!currentState);
   }
 }

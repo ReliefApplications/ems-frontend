@@ -20,17 +20,18 @@
     class="flex"
   >
     <header
-      [ngClass]="{
-        'order-1':
-          position === filterPosition.BOTTOM ||
-          position === filterPosition.RIGHT,
-        'order-2':
-          position === filterPosition.TOP || position === filterPosition.LEFT,
-        'h-full':
-          position === filterPosition.LEFT || position === filterPosition.RIGHT,
-        'w-full':
-          position === filterPosition.TOP || position === filterPosition.BOTTOM
-      }"
+    [ngClass]="{
+      'order-1':
+      position === filterPosition.BOTTOM ||
+      position === filterPosition.RIGHT,
+      'order-2':
+      position === filterPosition.TOP || position === filterPosition.LEFT,
+      'h-full':
+      position === filterPosition.LEFT || position === filterPosition.RIGHT,
+      'w-full':
+      position === filterPosition.TOP || position === filterPosition.BOTTOM,
+      'modern-style': filterStyle !== 'LEGACY'
+    }"
       class="relative flex justify-between text-white"
     >
       <!-- Toggle opened status -->
@@ -42,7 +43,8 @@
           left: position === filterPosition.LEFT
         }"
         class="dashboard-filter-tab h-10 py-2 px-3 flex bg-primary-500"
-        (click)="isDrawerOpen = !isDrawerOpen"
+        (click)="toggleDrawer()"
+        *ngIf="filterStyle === 'LEGACY'"
       >
         <div class="pointer-events-auto">
           <ui-icon icon="view_stream" class="cursor-pointer"></ui-icon>
@@ -110,6 +112,16 @@
             (click)="openSettings()"
             [uiTooltip]="
               'components.application.dashboard.filterSettings' | translate
+            "
+          >
+          </ui-button>
+          <ui-button
+            [variant]="filterStyle === 'LEGACY' ? 'light' : 'success'"
+            [isIcon]="true"
+            icon="style"
+            (click)="changeFilterStyle()"
+            [uiTooltip]="
+              'components.application.dashboard.filterStyle' | translate
             "
           >
           </ui-button>
@@ -182,7 +194,19 @@
           [ngClass]="{ hidden: empty }"
         >
           <survey [model]="survey"></survey>
+    
         </div>
+        <ui-button
+          *ngIf="filterStyle !== 'LEGACY'"
+          [variant]="filterStyle === 'MODERN' ? 'success' : 'light'"
+          [isIcon]="true"
+          icon="style"
+          (click)="changeFilterStyle()"
+          [uiTooltip]="
+            'components.application.dashboard.filterStyle' | translate
+          "
+        >
+        </ui-button>
         <!-- <form
         [ngClass]="{
           'flex-col':

@@ -379,4 +379,12 @@ export class LayoutComponent
     }
     return language;
   }
+
+  /**
+   * toggle isDrawerOpen, and emit its value to the parent component
+   */
+  toggleFilterDrawer(): void {
+    this.layoutService.toggleFilterDrawer();
+    console.log('drawer open');
+  }
 }

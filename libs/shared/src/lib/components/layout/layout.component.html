@@ -42,6 +42,16 @@
         {{ 'common.platform.backOffice' | translate }}
       </h1>
     </ng-template>
+    <ui-button
+      [isIcon]="true"
+      [size]="'large'"
+      variant="light"
+      icon="filter_alt"
+      (click)="toggleFilterDrawer()"
+      [disabled]="false"
+      [uiTooltip]="'components.queryBuilder.filter.title' | translate"
+    >
+    </ui-button>
   </div>
   <!-- Account icon and info -->
   <div

@@ -533,6 +533,7 @@
 					"title": "Dashboard filters configuration"
 				},
 				"filterSettings": "Filter settings",
+				"filterStyle": "Filter Style",
 				"settings": {
 					"defaultPosition": "Default position for the filter"
 				}
