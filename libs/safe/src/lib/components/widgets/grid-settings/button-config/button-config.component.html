@@ -172,9 +172,9 @@
           <form
             [formGroup]="$any(modification)"
             *ngFor="let modification of modificationsArray.controls; index as i"
-            class="update-row"
+            class="flex gap-2"
           >
-            <div uiFormFieldDirective [defaultMargin]="false">
+            <div uiFormFieldDirective class="flex-1">
               <label>{{
                 'components.widget.settings.grid.buttons.callback.modifyField'
                   | translate
@@ -205,7 +205,7 @@
             >
               <ng-container
                 *ngTemplateOutlet="
-                  modificationTemplate;
+                  modificationTmpl;
                   context: {
                     formGroup: $any(modification),
                     field: scalarField(modification.value.field),
@@ -431,44 +431,56 @@
 
 <!-- Template for auto modification -->
 <ng-template
-  #modificationTemplate
+  #modificationTmpl
   let-field="field"
   let-index="index"
   let-formGroup="formGroup"
 >
-  <div [formGroup]="formGroup">
+  <ng-container [formGroup]="formGroup">
     <!-- @todo: replace with ngSwitch and better manage all types -->
 
     <ng-container *ngIf="['Int', 'Float'].includes(field.type.name)">
-      <div class="flex gap-3 items-end">
-        <div uiFormFieldDirective class="flex-1">
-          <label>{{
-            'components.widget.settings.grid.buttons.callback.modifyValue'
-              | translate
-          }}</label>
-          <input formControlName="value" type="number" placeholder="null" />
-          <ui-button
-            uiSuffix
-            icon="close"
-            [isIcon]="true"
-            (click)="setModificationValueToNull(index)"
-          ></ui-button>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="field.type.name === 'Boolean'">
-      <div uiFormFieldDirective>
+      <div uiFormFieldDirective class="flex-1">
         <label>{{
           'components.widget.settings.grid.buttons.callback.modifyValue'
             | translate
         }}</label>
-        <ui-select-menu formControlName="value">
+        <input
+          formControlName="value"
+          type="number"
+          [placeholder]="
+            'components.widget.settings.grid.buttons.placeholder.modifyValue'
+              | translate
+          "
+        />
+        <ui-button
+          uiSuffix
+          icon="close"
+          [isIcon]="true"
+          (click)="setModificationValueToNull(index)"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="field.type.name === 'Boolean'">
+      <div uiFormFieldDirective class="flex-1">
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <ui-select-menu
+          formControlName="value"
+          [placeholder]="
+            'components.widget.settings.grid.buttons.placeholder.modifyValue'
+              | translate
+          "
+        >
           <ui-select-option>--</ui-select-option>
           <ui-select-option [value]="true">{{
             'common.true' | translate
           }}</ui-select-option>
-          <ui-select-option value="false">{{
+          <ui-select-option [value]="false">{{
             'common.false' | translate
           }}</ui-select-option>
         </ui-select-menu>
@@ -481,21 +493,27 @@
         field.type.name !== 'Boolean'
       "
     >
-      <div class="flex gap-3 items-end">
-        <div uiFormFieldDirective class="flex-1">
-          <label>{{
-            'components.widget.settings.grid.buttons.callback.modifyValue'
+      <div uiFormFieldDirective class="flex-1">
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <input
+          formControlName="value"
+          type="string"
+          [placeholder]="
+            'components.widget.settings.grid.buttons.placeholder.modifyValue'
               | translate
-          }}</label>
-          <input formControlName="value" type="string" placeholder="null" />
-          <ui-button
-            uiSuffix
-            icon="close"
-            [isIcon]="true"
-            (click)="setModificationValueToNull(index)"
-          ></ui-button>
-        </div>
+          "
+        />
+        <ui-button
+          uiSuffix
+          icon="close"
+          [isIcon]="true"
+          (click)="setModificationValueToNull(index)"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
       </div>
     </ng-container>
-  </div>
+  </ng-container>
 </ng-template>

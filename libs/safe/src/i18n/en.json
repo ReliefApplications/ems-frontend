@@ -247,6 +247,7 @@
 			"none": "No Reference Data",
 			"one": "Reference Data"
 		},
+		"remove": "Remove",
 		"resource": {
 			"few": "Resources",
 			"none": "No resource",
@@ -1263,6 +1264,9 @@
 						"create": "Add a button",
 						"defaultName": "Action button",
 						"enable": "Enable",
+						"placeholder": {
+							"modifyValue": "Set as null"
+						},
 						"title": "Quick action buttons",
 						"tooltip": {
 							"attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",

@@ -370,7 +370,7 @@ export class ButtonConfigComponent
    */
   public setModificationValueToNull(index: number): void {
     const modifications = this.modificationsArray.value;
-    modifications[index].value = '';
+    modifications[index].value = null;
     this.modificationsArray.setValue(modifications);
   }
 
