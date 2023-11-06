@@ -1,3 +1,10 @@
+## [2.1.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.5...v2.1.6) (2023-11-06)
+
+
+### Bug Fixes
+
+* could not set as null in auto modify fields grid action ([#2041](https://github.com/ReliefApplications/oort-frontend/issues/2041)) ([a92230c](https://github.com/ReliefApplications/oort-frontend/commit/a92230c4c2e445aa4978b970293570f43d1c682d))
+
 ## [2.1.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.4...v2.1.5) (2023-11-03)
 
 
