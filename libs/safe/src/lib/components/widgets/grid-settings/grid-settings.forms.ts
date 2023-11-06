@@ -48,7 +48,7 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
         ? value.modifications.map((x: any) =>
             fb.group({
               field: [x.field, Validators.required],
-              value: [x.value, Validators.required],
+              value: [x.value],
             })
           )
         : []
