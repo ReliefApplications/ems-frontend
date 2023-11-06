@@ -73,4 +73,5 @@ export interface QuestionResource
   customFilter: string;
   displayAsGrid: boolean;
   remove?: boolean;
+  template?: string;
 }

@@ -1,19 +1,55 @@
-<ui-dialog size="medium">
+<ui-dialog size="big">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
       {{ 'components.form.draftRecords.previewTitle' | translate }}
     </h3>
+    <ui-tabs
+      [selectedIndex]="(selectedPageIndex$ | async)!"
+      (selectedIndexChange)="onShowPage($event)"
+    >
+      <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
+        <ng-container ngProjectAs="label">
+          {{ page.title ? page.title : page.name }}
+          <ui-icon
+            *ngIf="page.containsErrors"
+            icon="error"
+            variant="danger"
+            [size]="20"
+          ></ui-icon>
+        </ng-container>
+      </ui-tab>
+    </ui-tabs>
   </ng-container>
 
   <ng-container *ngIf="!loading; else loadingTmpl" ngProjectAs="content">
-    <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
-      <div class="grow">
-        <survey [model]="survey"></survey>
-      </div>
+    <div class="grow max-h-full">
+      <survey [model]="survey"></survey>
     </div>
   </ng-container>
 
   <ng-container ngProjectAs="actions">
+    <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
+      <ui-button
+        category="secondary"
+        variant="primary"
+        *ngIf="pages.length > 1"
+        (click)="survey && survey.prevPage()"
+        cdkFocusInitial
+        [disabled]="!survey || survey.isFirstPage"
+      >
+        {{ 'common.previous' | translate }}
+      </ui-button>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        *ngIf="pages.length > 1"
+        (click)="survey && survey.nextPage()"
+        cdkFocusInitial
+        [disabled]="!survey || survey.isLastPage"
+      >
+        {{ 'common.next' | translate }}
+      </ui-button>
+    </ng-container>
     <ui-button uiDialogClose variant="default">{{
       'common.close' | translate
     }}</ui-button>

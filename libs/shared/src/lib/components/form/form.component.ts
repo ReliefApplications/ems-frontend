@@ -11,18 +11,11 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { SurveyModel } from 'survey-core';
-import {
-  ADD_RECORD,
-  EDIT_RECORD,
-  ADD_DRAFT_RECORD,
-  EDIT_DRAFT_RECORD,
-} from './graphql/mutations';
+import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
   EditRecordMutationResponse,
-  AddDraftRecordMutationResponse,
-  EditDraftRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
@@ -67,10 +60,6 @@ export class FormComponent
   @ViewChild('formContainer') formContainer!: ElementRef;
   /** Date when the form was last modified */
   public modifiedAt: Date | null = null;
-  /** ID for local storage */
-  private storageId = '';
-  /** Date of local storage */
-  public storageDate?: Date;
   /** indicates whether the data is from the cache */
   public isFromCacheData = false;
   /** Selected page index */
@@ -82,10 +71,12 @@ export class FormComponent
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
   public pages$ = this.pages.asObservable();
-  /** Disables the save as draft button */
-  public disableSaveAsDraft = false;
-  /** The id of the last draft record that was loaded */
-  public lastDraftRecord = '';
+
+  /** As we save the draft record in the db, the local storage is no longer used */
+  /** ID for local storage */
+  // private storageId = '';
+  /** Date of local storage */
+  // public storageDate?: Date;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -107,7 +98,7 @@ export class FormComponent
     private authService: AuthService,
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
-    private formHelpersService: FormHelpersService,
+    public formHelpersService: FormHelpersService,
     private translate: TranslateService
   ) {
     super();
@@ -141,7 +132,6 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onValueChanged.add(this.valueChange.bind(this));
     this.survey.onComplete.add(this.onComplete);
 
     // Unset readOnly fields if it's the record creation
@@ -218,14 +208,6 @@ export class FormComponent
   }
 
   /**
-   * Handles the value change event when the user completes the survey
-   */
-  public valueChange(): void {
-    // Allow user to save as draft
-    this.disableSaveAsDraft = false;
-  }
-
-  /**
    * Calls the complete method of the survey if no error.
    */
   public submit(): void {
@@ -243,66 +225,16 @@ export class FormComponent
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
-    // Check if a draft has already been loaded
-    if (this.lastDraftRecord === '') {
-      // Add a new draft record to the database
-      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
-        mutation: ADD_DRAFT_RECORD,
-        variables: {
-          form: this.form.id,
-          data: this.survey.data,
-        },
-      });
-      mutation.subscribe(({ errors }: any) => {
-        if (errors) {
-          this.survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
-        } else {
-          localStorage.removeItem(this.storageId);
-          this.snackBar.openSnackBar(
-            this.translate.instant('components.form.draftRecords.successSave'),
-            {
-              error: false,
-            }
-          );
-        }
-        this.surveyActive = true;
-        // Emit but stay in record addition mode
-        this.save.emit({
-          completed: false,
-          hideNewRecord: true,
-        });
-      });
-    } else {
-      // Edit last added draft record in the database
-      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
-        mutation: EDIT_DRAFT_RECORD,
-        variables: {
-          id: this.lastDraftRecord,
-          data: this.survey.data,
-        },
-      });
-      mutation.subscribe(({ errors }: any) => {
-        if (errors) {
-          this.survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
-        } else {
-          localStorage.removeItem(this.storageId);
-          this.snackBar.openSnackBar(
-            this.translate.instant('components.form.draftRecords.successEdit'),
-            {
-              error: false,
-            }
-          );
-        }
-        this.surveyActive = true;
-        // Emit but stay in record addition mode
-        this.save.emit({
-          completed: false,
-          hideNewRecord: true,
-        });
-      });
-    }
+    const callback = (details: any) => {
+      this.surveyActive = true;
+      // Updates parent component
+      this.save.emit(details.save);
+    };
+    this.formHelpersService.saveAsDraft(
+      this.survey,
+      this.form.id as string,
+      callback
+    );
   }
 
   /**
@@ -355,7 +287,7 @@ export class FormComponent
         this.surveyActive = true;
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
-        localStorage.removeItem(this.storageId);
+        // localStorage.removeItem(this.storageId);
         if (data.editRecord || data.addRecord.form.uniqueRecord) {
           this.survey.clear(false, false);
           if (data.addRecord) {
@@ -385,28 +317,6 @@ export class FormComponent
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
-  }
-
-  /**
-   * Open draft list.
-   */
-  public async onOpenDrafts(): Promise<void> {
-    // Lazy load modal
-    const { DraftRecordListModalComponent } = await import(
-      '../draft-record-list-modal/draft-record-list-modal.component'
-    );
-    const dialogRef = this.dialog.open(DraftRecordListModalComponent, {
-      data: {
-        form: this.form.id,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.survey.data = value.data;
-        this.lastDraftRecord = value.id;
-        this.disableSaveAsDraft = true;
-      }
-    });
   }
 
   /**
@@ -490,8 +400,9 @@ export class FormComponent
   /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    //localStorage.removeItem(this.storageId);
-    //this.formHelpersService.cleanCachedRecords(this.survey);
+    // localStorage.removeItem(this.storageId);
+    this.formHelpersService.lastDraftRecord = '';
+    this.formHelpersService.cleanCachedRecords(this.survey);
     this.survey?.dispose();
   }
 }

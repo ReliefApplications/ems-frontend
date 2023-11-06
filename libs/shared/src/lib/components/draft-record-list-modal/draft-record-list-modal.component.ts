@@ -3,7 +3,6 @@ import { ConfirmService } from '../../services/confirm/confirm.service';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DateModule } from '../../pipes/date/date.module';
 import { Component, OnInit, Inject } from '@angular/core';
-import { DELETE_DRAFT_RECORD } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { GET_DRAFT_RECORDS } from './graphql/queries';
 import { CommonModule } from '@angular/common';
@@ -21,6 +20,7 @@ import {
 } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { Form, FormQueryResponse } from '../../models/form.model';
+import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /** Dialog data interface */
 interface DialogData {
@@ -71,6 +71,7 @@ export class DraftRecordListModalComponent implements OnInit {
    * @param apollo Apollo service
    * @param dialog CDK Dialog service
    * @param dialogRef Dialog reference
+   * @param formHelpersService This is the service that will handle forms.
    * @param data Data passed to the dialog, here the formId of the current form
    */
   constructor(
@@ -79,6 +80,7 @@ export class DraftRecordListModalComponent implements OnInit {
     private apollo: Apollo,
     public dialog: Dialog,
     public dialogRef: DialogRef<DraftRecordListModalComponent>,
+    public formHelpersService: FormHelpersService,
     @Inject(DIALOG_DATA)
     public data: DialogData
   ) {}
@@ -142,16 +144,13 @@ export class DraftRecordListModalComponent implements OnInit {
     dialogRef.closed.pipe().subscribe((value) => {
       if (value) {
         this.loading = true;
-        this.apollo
-          .mutate<any>({
-            mutation: DELETE_DRAFT_RECORD,
-            variables: {
-              id: element.id,
-            },
-          })
-          .subscribe(() => {
-            this.fetchDraftRecords();
-          });
+        const callback = () => {
+          this.fetchDraftRecords();
+        };
+        this.formHelpersService.deleteRecordDraft(
+          element.id as string,
+          callback
+        );
       }
     });
   }

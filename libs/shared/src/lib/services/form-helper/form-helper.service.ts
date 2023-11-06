@@ -11,9 +11,17 @@ import localForage from 'localforage';
 import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
-import { AddRecordMutationResponse } from '../../models/record.model';
+import {
+  AddDraftRecordMutationResponse,
+  AddRecordMutationResponse,
+  EditDraftRecordMutationResponse,
+} from '../../models/record.model';
 import { Question } from '../../survey/types';
-
+import {
+  ADD_DRAFT_RECORD,
+  DELETE_DRAFT_RECORD,
+  EDIT_DRAFT_RECORD,
+} from './graphql/mutations';
 /**
  * Shared survey helper service.
  */
@@ -21,6 +29,11 @@ import { Question } from '../../survey/types';
   providedIn: 'root',
 })
 export class FormHelpersService {
+  /** The id of the last draft record that was loaded */
+  public lastDraftRecord = '';
+  /** Disables the save as draft button */
+  public disableSaveAsDraft = false;
+
   /**
    * Shared survey helper service.
    *
@@ -431,6 +444,116 @@ export class FormHelpersService {
       }
     }
     return true;
+  }
+
+  /**
+   * Saves the current data as a draft record
+   *
+   * @param survey Survey where to add the callbacks
+   * @param formId Form id of the survey
+   * @param callback callback method
+   */
+  public saveAsDraft(
+    survey: SurveyModel,
+    formId: string,
+    callback?: any
+  ): void {
+    // Check if a draft has already been loaded
+    if (this.lastDraftRecord === '') {
+      // Add a new draft record to the database
+      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+        mutation: ADD_DRAFT_RECORD,
+        variables: {
+          form: formId,
+          data: survey.data,
+        },
+      });
+      mutation.subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            survey.clear(false, true);
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          } else {
+            // localStorage.removeItem(this.storageId);
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.form.draftRecords.successSave'
+              ),
+              {
+                error: false,
+              }
+            );
+          }
+          // Callback to emit save but stay in record addition mode
+          if (callback) {
+            callback({
+              id: data?.addDraftRecord.id,
+              save: {
+                completed: false,
+                hideNewRecord: true,
+              },
+            });
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
+    } else {
+      // Edit last added draft record in the database
+      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
+        mutation: EDIT_DRAFT_RECORD,
+        variables: {
+          id: this.lastDraftRecord,
+          data: survey.data,
+        },
+      });
+      mutation.subscribe(({ errors }: any) => {
+        if (errors) {
+          survey.clear(false, true);
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
+        } else {
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successEdit'),
+            {
+              error: false,
+            }
+          );
+        }
+        // Callback to emit save but stay in record addition mode
+        if (callback) {
+          callback({
+            id: this.lastDraftRecord,
+            save: {
+              completed: false,
+              hideNewRecord: true,
+            },
+          });
+        }
+      });
+    }
+  }
+
+  /**
+   * Handles the deletion of a specific draft record
+   *
+   * @param draftId Id of the draft record to delete
+   * @param callback callback method
+   */
+  public deleteRecordDraft(draftId: string, callback?: any): void {
+    this.apollo
+      .mutate<any>({
+        mutation: DELETE_DRAFT_RECORD,
+        variables: {
+          id: draftId,
+        },
+      })
+      .subscribe(() => {
+        if (callback) {
+          callback();
+        }
+      });
   }
 
   /**

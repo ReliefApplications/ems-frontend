@@ -40,6 +40,7 @@ import { SpinnerModule } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
+import { DraftRecordComponent } from '../draft-record/draft-record.component';
 
 /**
  * Interface of Dialog data.
@@ -75,6 +76,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     ButtonModule,
     SpinnerModule,
     SurveyModule,
+    DraftRecordComponent,
   ],
 })
 export class FormModalComponent
@@ -607,10 +609,18 @@ export class FormModalComponent
   }
 
   /**
+   * Saves the current data as a draft record
+   */
+  public saveAsDraft(): void {
+    this.formHelpersService.saveAsDraft(this.survey, this.form?.id as string);
+  }
+
+  /**
    * Clears the cache for the records created by resource questions
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.formHelpersService.lastDraftRecord = '';
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.survey?.dispose();
   }

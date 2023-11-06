@@ -11,6 +11,10 @@
           *ngIf="survey"
           [survey]="survey"
         ></shared-form-actions>
+        <shared-draft-record
+          [survey]="survey"
+          [formId]="form?.id ?? ''"
+        ></shared-draft-record>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"
@@ -66,6 +70,9 @@
         {{ 'common.next' | translate }}
       </ui-button>
     </ng-container>
+    <ui-button [disabled]="formHelpersService.disableSaveAsDraft" (click)="saveAsDraft()">{{
+      'components.form.draftRecords.save' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

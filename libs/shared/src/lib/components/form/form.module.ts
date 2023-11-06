@@ -5,8 +5,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormComponent } from './form.component';
 import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
-import { ButtonModule, TooltipModule } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
+import { DraftRecordComponent } from '../draft-record/draft-record.component';
 
 /**
  * FormModule is a class used to manage all the modules and components
@@ -25,7 +26,7 @@ import { SurveyModule } from 'survey-angular-ui';
     SurveyModule,
     SurveyModule,
     FixedWrapperModule,
-    TooltipModule,
+    DraftRecordComponent,
   ],
   exports: [FormComponent],
 })

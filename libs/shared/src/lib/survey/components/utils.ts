@@ -118,6 +118,7 @@ export const buildAddButton = (
         dialogRef.closed.subscribe((result: any) => {
           if (result) {
             const { data } = result;
+            question.template = result.template;
             // TODO: call reload method
             // if (question.displayAsGrid && gridComponent) {
             //   gridComponent.availableRecords.push({
@@ -186,6 +187,18 @@ export const processNewCreatedRecords = (
   if (multiselect) {
     question.newCreatedRecords?.forEach((recordId: string) => {
       const promise = new Promise<void>((resolve, reject) => {
+        // TODO: replace localForage usage for draft records
+        //   const draftChoice = question.contentQuestion.choices.find(
+        //     (choice: any) => choice.value === draftRecordId
+        //   );
+        //   if (draftChoice) {
+        //     temporaryRecords.push({
+        //       id: draftRecordId,
+        //       template: question.template,
+        //       data: survey.data // get it from the ResourceModalComponent
+        //       isTemporary: true,
+        //     });
+        //   }
         localForage
           .getItem(recordId)
           .then((data: any) => {
@@ -246,6 +259,7 @@ export const processNewCreatedRecords = (
               field: 'ids',
               operator: 'eq',
               value:
+                // TODO: check if works for draft records
                 question.value.filter((id: string) => !uuidRegExpr.test(id)) ||
                 [], //We exclude the temporary records by excluding id in UUID format
             },

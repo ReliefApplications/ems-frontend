@@ -1,11 +1,18 @@
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { ButtonModule, DialogModule, SpinnerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  DialogModule,
+  IconModule,
+  SpinnerModule,
+  TabsModule,
+} from '@oort-front/ui';
 import { Component, OnInit, Inject } from '@angular/core';
 import { SurveyModule } from 'survey-angular-ui';
 import { CommonModule } from '@angular/common';
 import { SurveyModel } from 'survey-core';
 import { Form } from '../../models/form.model';
+import { BehaviorSubject } from 'rxjs';
 
 /** Dialog data interface */
 interface DialogData {
@@ -24,16 +31,23 @@ interface DialogData {
     SurveyModule,
     SpinnerModule,
     ButtonModule,
+    TabsModule,
+    IconModule,
   ],
   selector: 'shared-draft-record-modal',
   templateUrl: './draft-record-modal.component.html',
-  styleUrls: ['./draft-record-modal.component.scss'],
+  styleUrls: ['../../style/survey.scss', './draft-record-modal.component.scss'],
 })
 export class DraftRecordModalComponent implements OnInit {
   /** Loading indicator */
   public loading = true;
   /** Survey instance */
   public survey!: SurveyModel;
+  /** Selected page index */
+  public selectedPageIndex: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0);
+  /** Selected page index as observable */
+  public selectedPageIndex$ = this.selectedPageIndex.asObservable();
 
   /**
    * Display a draft record in a modal.
@@ -43,8 +57,7 @@ export class DraftRecordModalComponent implements OnInit {
    */
   constructor(
     private formBuilderService: FormBuilderService,
-    @Inject(DIALOG_DATA)
-    public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {
@@ -54,5 +67,16 @@ export class DraftRecordModalComponent implements OnInit {
     );
     this.survey.data = this.data.data;
     this.loading = false;
+  }
+
+  /**
+   * Handles the show page event
+   *
+   * @param i The index of the page
+   */
+  public onShowPage(i: number): void {
+    if (this.survey) {
+      this.survey.currentPageNo = i;
+    }
   }
 }

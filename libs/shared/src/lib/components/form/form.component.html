@@ -1,6 +1,7 @@
 <!-- Form header -->
 <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
   <shared-record-summary
+    *ngIf="record"
     [record]="record"
     (showHistory)="onShowHistory()"
   ></shared-record-summary>
@@ -8,14 +9,10 @@
     [survey]="survey"
     [surveyActive]="surveyActive"
   ></shared-form-actions>
-  <div>
-    <ui-button
-      [isIcon]="true"
-      icon="format_list_bulleted_add"
-      (click)="onOpenDrafts()"
-      uiTooltip="{{ 'components.form.draftRecords.buttonLoad' | translate }}"
-    ></ui-button>
-  </div>
+  <shared-draft-record
+    [survey]="survey"
+    [formId]="form.id ?? ''"
+  ></shared-draft-record>
 </div>
 <!-- Form pages -->
 <ui-tabs
@@ -57,7 +54,7 @@
           >{{ 'common.next' | translate }}</ui-button
         >
       </ng-container>
-      <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
+      <ui-button [disabled]="formHelpersService.disableSaveAsDraft" (click)="saveAsDraft()">{{
         'components.form.draftRecords.save' | translate
       }}</ui-button>
       <ui-button variant="primary" category="secondary" (click)="submit()">{{
