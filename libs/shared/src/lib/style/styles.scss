@@ -46,14 +46,14 @@ ui-checkbox {
   height: 40px;
   position: relative;
   z-index: 1001;
-  color: black;
   text-align: left;
   line-height: 40px;
-  padding: 0 12px !important;
+  padding: 0 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  @apply bg-white border-b border-b-gray-300 #{!important};
+  overflow: hidden;
+  @apply bg-white border-b border-b-gray-300 px-3 #{!important};
 
   .widget-title {
     overflow: hidden;
@@ -61,6 +61,7 @@ ui-checkbox {
     text-overflow: ellipsis;
     flex: 1;
     margin: unset;
+    font-size: 14px;
   }
 
   .hide-border & {
@@ -73,13 +74,13 @@ ui-checkbox {
   position: absolute !important;
   z-index: 1001 !important;
   line-height: 40px;
-  padding: 0 12px !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   left: 0;
   right: 0;
   border: unset !important;
+  @apply px-3 #{!important};
 }
 
 // === TINYMCE ===

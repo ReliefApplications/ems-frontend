@@ -13,6 +13,7 @@ import { CustomWidgetStyleModalComponent } from '../custom-widget-style-modal/cu
 import { cloneDeep } from 'lodash';
 import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component';
 import { DOCUMENT } from '@angular/common';
+import { GridsterConfig } from 'angular-gridster2';
 
 /**
  * Edition of a single tab, in tabs widget
@@ -30,6 +31,10 @@ export class TabSettingsComponent implements OnDestroy {
   /** Widget grid reference */
   @ViewChild(WidgetGridComponent)
   widgetGridComponent!: WidgetGridComponent;
+  /** Additional grid configuration */
+  public gridOptions: GridsterConfig = {
+    outerMargin: false,
+  };
   /** Reference to style dialog, when opened */
   private styleDialog?: DialogRef<any, any>;
   /** Timeout to scroll to newly added widget */
@@ -49,20 +54,6 @@ export class TabSettingsComponent implements OnDestroy {
   /** @returns structure of the widget ( nested widgets ) */
   get structure() {
     return this.tabGroup.get('structure');
-  }
-
-  /**
-   * Move widget in the list
-   *
-   * @param e reorder event
-   */
-  onMove(e: any): void {
-    const widgets = this.structure?.value.slice() || [];
-    [widgets[e.oldIndex], widgets[e.newIndex]] = [
-      widgets[e.newIndex],
-      widgets[e.oldIndex],
-    ];
-    this.structure?.setValue(widgets);
   }
 
   /**
@@ -120,7 +111,6 @@ export class TabSettingsComponent implements OnDestroy {
     if (targetIndex > -1) {
       const widgets = this.structure?.value.slice() || [];
       widgets.splice(targetIndex, 1);
-      console.log(widgets);
       this.structure?.setValue(widgets);
     }
   }

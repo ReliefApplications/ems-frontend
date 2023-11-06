@@ -15,7 +15,7 @@
 <shared-widget-grid
   [widgets]="tabGroup.value.structure"
   [canUpdate]="true"
-  (move)="onMove($event)"
+  [options]="gridOptions"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"
   (style)="onStyle($event)"
