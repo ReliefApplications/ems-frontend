@@ -35,10 +35,7 @@ import {
   QuestionDateTypeDisplayerModel,
   DateTypeDisplayerComponent,
 } from '../date-type-displayer/public-api';
-// import {
-  
-// }
-
+// import { }
 
 /**
  * Custom component types for the survey creator property grid editor

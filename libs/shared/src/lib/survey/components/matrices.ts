@@ -62,7 +62,7 @@ export const init = (domService: DomService): void => {
     },
   };
   // registerCustomPropertyEditor(
-    // CustomPropertyGridComponentTypes.copyToOthers,
+  // CustomPropertyGridComponentTypes.copyToOthers,
   // );
 };
 
