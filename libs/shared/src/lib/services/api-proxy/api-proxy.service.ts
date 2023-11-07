@@ -28,13 +28,11 @@ export class ApiProxyService {
   /**
    * Build headers with the authentication token to API url.
    *
+   * @param headers previous headers
    * @returns new Http headers, with token
    */
-  private buildHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'application/json',
-    });
+  private buildHeaders(headers: HttpHeaders = new HttpHeaders()): HttpHeaders {
+    return headers.append('Content-Type', 'application/json');
   }
 
   /**
@@ -85,7 +83,7 @@ export class ApiProxyService {
     body: any,
     options: any = {}
   ): Promise<ArrayBuffer> {
-    const headers = this.buildHeaders();
+    const headers = this.buildHeaders(options.headers);
     return firstValueFrom(
       this.restService.post(url, body, { ...options, headers })
     );
