@@ -272,7 +272,7 @@ export class ReferenceDataService {
         (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
       const body = { query: this.processQuery(referenceData) };
       data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-    } else if (referenceDataType.rest) {
+    } else if (type === referenceDataType.rest) {
       const url =
         this.apiProxy.baseUrl +
         referenceData.apiConfiguration?.name +
