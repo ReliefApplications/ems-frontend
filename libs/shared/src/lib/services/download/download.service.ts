@@ -247,13 +247,19 @@ export class DownloadService {
    * @returns http upload request
    */
   uploadFile(path: string, file: any): Observable<any> {
-    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+    const { snackBarRef } = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     const formData = new FormData();
     formData.append('excelFile', file, file.name);
+
+    const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'application/json',
+    });
+
     return this.restService.post(path, formData, { headers }).pipe(
       tap({
         next: () => {
