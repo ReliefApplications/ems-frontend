@@ -897,6 +897,7 @@ export class CoreGridComponent
       }
       case 'goTo': {
         if (event.item) {
+          console.log(event);
           // fix this function
           let fullUrl = this.getPageUrl(event.pageUrl as string);
           if (event.recordField) {
@@ -905,7 +906,21 @@ export class CoreGridComponent
             if (field === 'id') {
               recordField = event.item.id;
             } else {
-              recordField = event.item[field].Value;
+              const splitField = field.split('+');
+              // if not a scalar field
+              if (typeof event.item[splitField[0]] === 'string') {
+                recordField = event.item[splitField[0]];
+              } else {
+                //get the obj
+                const obj = event.item[splitField[0]];
+                // verify each field of the object
+                for (const key in obj) {
+                  if (key.toLowerCase() === splitField[1]) {
+                    // get the valueField of the object
+                    recordField = obj[key];
+                  }
+                }
+              }
             }
             fullUrl = `${fullUrl}?id=${recordField}`;
           }

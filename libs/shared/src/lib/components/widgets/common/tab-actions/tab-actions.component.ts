@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { GET_PAGE_BY_ID } from './graphql/queries';
+import { GET_RESOURCE_BY_ID } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
-import { PageQueryResponse } from '../../../../models/page.model';
+import { ResourceQueryResponse } from '../../../../models/resource.model';
 import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
 
 /**
@@ -27,7 +27,7 @@ export class TabActionsComponent
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
   /** Selected resource fields */
-  public resourceData: any[] = [];
+  public resourceFields: any[] = [];
   /** Available pages from the application */
   public pages: any[] = [];
   /** Grid actions */
@@ -96,6 +96,35 @@ export class TabActionsComponent
   }
 
   ngOnInit(): void {
+    if (this.formGroup.get('resource')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_BY_ID,
+          variables: {
+            id: this.formGroup.get('resource')?.value,
+          },
+        })
+        .subscribe(({ data }) => {
+          data.resource.fields.forEach((field: any) => {
+            if (field.referenceData) {
+              const referenceData = field.referenceData.id;
+              this.referenceDataService
+                .loadReferenceData(referenceData)
+                .then((refData: any) => {
+                  this.resourceFields.push({
+                    name: field.name,
+                    value: refData.valueField,
+                  });
+                });
+            } else {
+              this.resourceFields.push({
+                name: field.name,
+                value: field.name,
+              });
+            }
+          });
+        });
+    }
     this.showSelectPage =
       this.formGroup.controls.actions.get('navigateToPage')?.value;
     // Add available pages to the list of available keys
@@ -106,43 +135,6 @@ export class TabActionsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((val: boolean) => {
         this.showSelectPage = val;
-      });
-    const navigateSettings = this.formGroup.controls.actions.get(
-      'navigateSettings'
-    ) as FormGroup;
-    navigateSettings.controls.pageUrl.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((val: any) => {
-        //get page id
-        const pageId = this.pages.filter(
-          (page: any) => page.urlParams === val
-        )[0].id;
-        this.apollo
-          .query<PageQueryResponse>({
-            query: GET_PAGE_BY_ID,
-            variables: {
-              id: pageId,
-            },
-          })
-          .subscribe(({ data }) => {
-            console.log(data);
-            if (data.page.id && data.page.context) {
-              const refData = data.page.context as any;
-              this.referenceDataService
-                .loadReferenceData(refData.refData)
-                .then((refData: any) => {
-                  this.referenceDataService
-                    .fetchItems(refData)
-                    .then((items) => {
-                      console.log(items);
-                      // need to get valueField
-                      // items.forEach((item: any) => {
-                      //   this.resourceData.push({"displayField": item[refData.displayField], "value": item[]})
-                      // })
-                    });
-                });
-            }
-          });
       });
   }
 

@@ -97,8 +97,8 @@
             <ui-select-option value="id">
               {{ 'common.id' | translate }}
             </ui-select-option>
-            <ui-select-option *ngFor="let field of resourceData" [value]="field">
-              {{ field }}
+            <ui-select-option *ngFor="let field of resourceFields" [value]="field.name + '+' +field.value">
+              {{ field.name }}
             </ui-select-option>
           </ui-select-menu>
         </div>
