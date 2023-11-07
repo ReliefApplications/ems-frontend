@@ -12,9 +12,66 @@ import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import { AddRecordMutationResponse } from '../../models/record.model';
-import { Question } from '../../survey/types';
+import { Question, QuestionText } from '../../survey/types';
 import { WorkflowService } from '../workflow/workflow.service';
 import { ApplicationService } from '../application/application.service';
+
+/**
+ * Applies custom logic to survey data values.
+ *
+ * @param survey Survey instance
+ * @returns Transformed survey data
+ */
+export const transformSurveyData = (survey: SurveyModel) => {
+  const data = survey.data ?? {};
+  const formatDate = (value: string | null) => {
+    if (!value) {
+      return value;
+    }
+
+    const date = new Date(value);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return new Date(Date.UTC(year, month, day)).toISOString();
+  };
+
+  survey.getAllQuestions(true).forEach((question) => {
+    if (question.getType() === 'text' && question.inputType === 'date') {
+      data[question.name] = formatDate(question.value);
+    } else if (question.getType() === 'paneldynamic') {
+      const nestedQuestions = (
+        question as QuestionPanelDynamicModel
+      ).templateElements.filter(
+        (v) =>
+          v.getType() === 'text' && (v as QuestionText).inputType === 'date'
+      ) as QuestionText[];
+      // Update nested questions inside panel dynamic
+      (question as QuestionPanelDynamicModel).panels.forEach((panel, index) => {
+        nestedQuestions.forEach((nestedQuestion) => {
+          const panelValue = panel.getValue();
+          if (panelValue[nestedQuestion.name]) {
+            set(
+              data,
+              `${question.name}.${index}.${nestedQuestion.name}`,
+              formatDate(panelValue[nestedQuestion.name])
+            );
+          }
+        });
+      });
+    }
+  });
+
+  // Removes data that isn't in the structure, that might've come from prefilling data
+  Object.keys(data).forEach((filed) => {
+    if (!survey.getQuestionByName(filed)) {
+      delete data[filed];
+    }
+  });
+
+  return data;
+};
+
 /**
  * Shared survey helper service.
  */
@@ -363,6 +420,8 @@ export class FormHelpersService {
     }
 
     await Promise.all(promises);
+    // We need to apply the transformations to the data again
+    survey.parsedData = transformSurveyData(survey);
   }
 
   /**

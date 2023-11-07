@@ -78,6 +78,7 @@ export interface QuestionResource
   customFilter: string;
   displayAsGrid: boolean;
   remove?: boolean;
+  canOnlyCreateRecords?: boolean;
 }
 
 export type GlobalOptions = {
