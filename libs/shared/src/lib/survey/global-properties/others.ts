@@ -7,7 +7,7 @@ import {
   matrixDropdownColumnTypes,
   settings,
 } from 'survey-core';
-import { Question } from '../types';
+import { Question, QuestionResource } from '../types';
 import { SurveyModel, PageModel } from 'survey-core';
 
 /**
@@ -134,6 +134,65 @@ export const init = (environment: any): void => {
     isLocalizable: true,
     onExecuteExpression: (obj: QuestionPanelDynamicModel, res: any) => {
       obj.allowAddPanel = !!res;
+    },
+  }); 
+  // Add a property to the single select matrix to copy the value of a question from another matrix
+  serializer.addProperty('matrix', {
+    name: 'copyOtherSingleSelectMatrixValue',
+    category: 'general',
+    type: 'dropdown',
+    choices: (question: Question, choicesCallback: any) => {
+      let choices: string[] = [''];
+      const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
+      for (let question of questions) {
+        if (question.getType() === 'matrix') {
+          choices.push(question.toJSON().name);
+        }
+      }
+      choicesCallback(choices);
+    },
+    onSetValue: (question: QuestionResource, nameMatrix: any) => {
+      
+    },
+  });
+  // Add a property to the single select matrix to copy the value of a question from another matrix
+  serializer.addProperty('matrixdropdown', {
+    name: 'copyOtherMultiSelectMatrixValue',
+    category: 'general',
+    type: 'dropdown',
+    choices: (question: Question, choicesCallback: any) => {
+      let choices: string[] = [''];
+      const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
+      for (let question of questions) {
+        if (question.getType() === 'matrixdropdown') {
+          choices.push(question.toJSON().name);
+        }
+      }
+      choicesCallback(choices);
+    },
+    onSetValue: (question: QuestionResource, nameMatrix: any) => {
+      
+    },
+  });
+  // Add a property to the matrix dynamic to copy the value of a question from another matrix
+  serializer.addProperty('matrixdynamic', {
+    name: 'copyOtherDynamicMatrixValue',
+    category: 'general',
+    type: 'dropdown',
+    choices: (question: Question, choicesCallback: any) => {
+      let actualQuestion = question.toJSON().name;
+      console.log(question.toJSON());
+      let choices: string[] = [''];
+      const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
+      for (let question of questions) {
+        if (question.getType() === 'matrixdynamic' && question.toJSON().name !== actualQuestion) {
+          choices.push(question.toJSON().name);
+        }
+      }
+      choicesCallback(choices);
+    },
+    onSetValue: (question: QuestionResource, nameMatrix: any) => {
+      
     },
   });
 };
