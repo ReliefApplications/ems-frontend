@@ -27,6 +27,7 @@ export class ApiProxyService {
 
   /**
    * Build headers with the authentication token to API url.
+   *
    * @param headers previous headers
    * @returns new Http headers, with token
    */

@@ -166,6 +166,7 @@ export class AuthService {
   /**
    * Check if user has permission.
    * If user profile is empty, tries to get it.
+   *
    * @param permission permission.s required
    * @param global is the permission global or not
    * @returns Does the user have access
@@ -196,6 +197,7 @@ export class AuthService {
 
   /**
    * Check if user is admin. If user profile is empty, tries to get it.
+   *
    * @returns A boolean value.
    */
   get userIsAdmin(): boolean {
@@ -209,6 +211,7 @@ export class AuthService {
 
   /**
    * Initiate the login sequence
+   *
    * @returns A promise that resolves to void.
    */
   public initLoginSequence(): Promise<void> {
@@ -265,6 +268,7 @@ export class AuthService {
 
   /**
    * Gets the profile from the database, using GraphQL.
+   *
    * @returns Apollo query of profile
    */
   getProfile(): Observable<ApolloQueryResult<ProfileQueryResponse>> {
@@ -277,6 +281,7 @@ export class AuthService {
 
   /**
    * Get the authentication token from local storage if it exists
+   *
    * @returns token as stored in local storage
    */
   public getAuthToken(): string | null {
@@ -285,6 +290,7 @@ export class AuthService {
 
   /**
    * Update user ability, based on its permissions
+   *
    * @param user active user
    */
   private updateAbility(user: User | null) {
@@ -382,6 +388,7 @@ export class AuthService {
 
   /**
    * Extend user ability on application
+   *
    * @param app Application to extend ability on
    */
   public extendAbilityForApplication(app: Application) {
