@@ -22,14 +22,12 @@ export const init = (domService: DomService): void => {
   // serializer.addProperty('matrix', {
   //   name: 'copyToOthers',
   //   category: 'rows',
-  //   // type: 'copyToOthers',
-  //   // CustomPropertyGridComponentTypes.,
+  //   type: 'copyToOthers',
   // });
   // serializer.addProperty('matrixdropdown', {
   //   name: 'copyToOthers',
   //   category: 'rows',
-  //   // type: 'copyToOthers',
-  //   // CustomPropertyGridComponentTypes.,
+  //   type: 'copyToOthers',
   // });
   // const copyToOthers = {
   //   render: (editor: any, htmlElement: HTMLElement) => {
@@ -59,9 +57,9 @@ export const init = (domService: DomService): void => {
   //     };
   //   },
   // };
-  // registerCustomPropertyEditor(
-  // CustomPropertyGridComponentTypes.copyToOthers,
-  // );
+  // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+  //   'copyToOthers',
+  // copyToOthers
 };
 
 /**

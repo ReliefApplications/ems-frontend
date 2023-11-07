@@ -159,9 +159,8 @@ export const init = (environment: any): void => {
       const matrixToBeCopied = (
         actualMatrix.survey as SurveyModel
       )?.getQuestionByName(nameMatrix);
-      actualMatrix.rowCounter = matrixToBeCopied.rowCounter;
       actualMatrix.choices = matrixToBeCopied.choices;
-      //need be changed
+      actualMatrix.rows = matrixToBeCopied.rows;
     },
   });
   // Add a property to the single select matrix to copy the value of a question from another matrix
@@ -197,7 +196,6 @@ export const init = (environment: any): void => {
     category: 'general',
     type: 'dropdown',
     choices: (question: Question, choicesCallback: any) => {
-      console.log(question);
       const actualQuestion = question.toJSON().name;
       const choices: string[] = [''];
       const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
@@ -211,12 +209,14 @@ export const init = (environment: any): void => {
       }
       choicesCallback(choices);
     },
-    onSetValue: (actualMatrix: QuestionResource, nameMatrix: any) => {
+    onSetValue: (actualMatrix: Question, nameMatrix: any) => {
       const matrixToBeCopied = (
         actualMatrix.survey as SurveyModel
       )?.getQuestionByName(nameMatrix);
-      actualMatrix.rows = matrixToBeCopied.rows;
       actualMatrix.choices = matrixToBeCopied.choices;
+      for (let q = actualMatrix.rowCount; q < matrixToBeCopied.rowCount; q++) {
+        actualMatrix.addRow();
+      }
     },
   });
 };
