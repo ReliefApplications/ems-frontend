@@ -48,7 +48,7 @@ export enum CustomPropertyGridComponentTypes {
   resourceCustomFilters = 'customFilter',
   resourcesDropdown = 'resourcesDropdown',
   resourceSelectText = 'selectResourceText',
-  resourceTestService = 'resourceTestService'
+  resourceTestService = 'resourceTestService',
 }
 
 /**
@@ -93,5 +93,5 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.resourceTestService]: {
     component: TestServiceDropdownComponent,
     model: QuestionTestServiceDropdownModel,
-  }
+  },
 };
