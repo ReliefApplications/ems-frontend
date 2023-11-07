@@ -897,8 +897,6 @@ export class CoreGridComponent
       }
       case 'goTo': {
         if (event.item) {
-          console.log(event);
-          // fix this function
           let fullUrl = this.getPageUrl(event.pageUrl as string);
           if (event.recordField) {
             const field = event.recordField;
