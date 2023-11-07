@@ -1,3 +1,10 @@
+## [2.1.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.6...v2.1.7) (2023-11-07)
+
+
+### Bug Fixes
+
+* add resource fields to history ([30c0846](https://github.com/ReliefApplications/oort-frontend/commit/30c0846a36a34db56f4024c4f482ad1bdce6ff71))
+
 ## [2.1.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.5...v2.1.6) (2023-11-06)
 
 
