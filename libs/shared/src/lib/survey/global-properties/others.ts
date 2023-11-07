@@ -135,7 +135,7 @@ export const init = (environment: any): void => {
     onExecuteExpression: (obj: QuestionPanelDynamicModel, res: any) => {
       obj.allowAddPanel = !!res;
     },
-  }); 
+  });
   // Add a property to the single select matrix to copy the value of a question from another matrix
   serializer.addProperty('matrix', {
     name: 'copyOtherSingleSelectMatrixValue',
@@ -151,9 +151,7 @@ export const init = (environment: any): void => {
       }
       choicesCallback(choices);
     },
-    onSetValue: (question: QuestionResource, nameMatrix: any) => {
-      
-    },
+    onSetValue: (question: QuestionResource, nameMatrix: any) => {},
   });
   // Add a property to the single select matrix to copy the value of a question from another matrix
   serializer.addProperty('matrixdropdown', {
@@ -170,9 +168,7 @@ export const init = (environment: any): void => {
       }
       choicesCallback(choices);
     },
-    onSetValue: (question: QuestionResource, nameMatrix: any) => {
-      
-    },
+    onSetValue: (question: QuestionResource, nameMatrix: any) => {},
   });
   // Add a property to the matrix dynamic to copy the value of a question from another matrix
   serializer.addProperty('matrixdynamic', {
@@ -185,15 +181,16 @@ export const init = (environment: any): void => {
       let choices: string[] = [''];
       const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
       for (let question of questions) {
-        if (question.getType() === 'matrixdynamic' && question.toJSON().name !== actualQuestion) {
+        if (
+          question.getType() === 'matrixdynamic' &&
+          question.toJSON().name !== actualQuestion
+        ) {
           choices.push(question.toJSON().name);
         }
       }
       choicesCallback(choices);
     },
-    onSetValue: (question: QuestionResource, nameMatrix: any) => {
-      
-    },
+    onSetValue: (question: QuestionResource, nameMatrix: any) => {},
   });
 };
 
