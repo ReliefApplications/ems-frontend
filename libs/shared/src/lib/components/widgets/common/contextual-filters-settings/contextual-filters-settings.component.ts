@@ -99,25 +99,6 @@ export class ContextualFiltersSettingsComponent
     super();
   }
 
-  /**
-   * On initialization of editor, format code
-   *
-   * @param editor monaco editor used for scss edition
-   */
-  public initEditor(editor: any): void {
-    if (editor) {
-      setTimeout(() => {
-        editor
-          .getAction('editor.action.formatDocument')
-          .run()
-          .finally(() => {
-            const control = this.form.get('dashboardFilters');
-            control?.markAsPristine();
-          });
-      }, 100);
-    }
-  }
-
   ngOnInit(): void {
     if (!this.data) {
       this.showFilterBuilder = false;
@@ -137,10 +118,16 @@ export class ContextualFiltersSettingsComponent
     });
 
     this.queryBuilderForm?.valueChanges.subscribe(() => {
-      this.data.form = this.queryBuilderForm?.get('filter')?.value;
-      this.form
-        .get('contextFilters')
-        ?.setValue(JSON.stringify(this.queryBuilderForm?.get('filter')?.value));
+      this.updateForm();
     });
+  }
+
+  /**
+   * Set custom editors for contextFilters.
+   */
+  private updateForm(): void {
+    this.form
+      .get('contextFilters')
+      ?.setValue(JSON.stringify(this.queryBuilderForm?.get('filter')?.value));
   }
 }

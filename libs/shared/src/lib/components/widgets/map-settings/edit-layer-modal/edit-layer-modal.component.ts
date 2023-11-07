@@ -117,6 +117,7 @@ export class EditLayerModalComponent
   public currentZoom!: number;
   private currentLayer!: L.Layer;
   public isDatasourceValid = false;
+  public dataFilter: any;
 
   // This property would handle the form change side effects to be triggered once all
   // layer related updates are done in order to avoid multiple mismatches and duplications between
@@ -483,6 +484,17 @@ export class EditLayerModalComponent
                   : []
               );
             }
+          }
+          if (data.resource && data.resource.name) {
+            const nameTrimmed = data.resource.name
+              .replace(/\s/g, '')
+              .toLowerCase();
+            const formValue = this.form.get('contextFilters')?.value;
+            this.dataFilter = {
+              form:
+                typeof formValue === 'string' ? JSON.parse(formValue) : null,
+              resourceName: nameTrimmed,
+            };
           }
         });
     }

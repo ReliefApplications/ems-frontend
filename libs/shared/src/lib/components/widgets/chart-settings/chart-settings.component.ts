@@ -3,6 +3,9 @@ import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { Apollo } from 'apollo-angular';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { GET_RESOURCE_METADATA } from '../summary-card/graphql/queries';
 
 /**
  * Chart settings component
@@ -27,10 +30,18 @@ export class ChartSettingsComponent implements OnInit {
   // === DATA ===
   public types = CHART_TYPES;
   public type: any;
+  public dataFilter: any;
 
   // === DISPLAY PREVIEW ===
   public settings: any;
   public grid: any;
+
+  /**
+   * The constructor function
+   *
+   * @param apollo Apollo client
+   */
+  constructor(private apollo: Apollo) {}
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -56,6 +67,38 @@ export class ChartSettingsComponent implements OnInit {
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find((x) => x.name === value);
     });
+
+    this.getQueryMetaData();
+  }
+
+  /**
+   * Gets query metadata for grid settings, from the query name
+   */
+  private getQueryMetaData(): void {
+    if (this.formGroup.get('resource')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_METADATA,
+          variables: {
+            id: this.formGroup.get('resource')?.value,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            if (data.resource && data.resource.name) {
+              const nameTrimmed = data.resource.name
+                .replace(/\s/g, '')
+                .toLowerCase();
+              this.dataFilter = {
+                form: !this.formGroup.get('contextFilters')
+                  ? null
+                  : JSON.parse(this.formGroup.get('contextFilters')?.value),
+                resourceName: nameTrimmed,
+              };
+            }
+          }
+        });
+    }
   }
 
   /**

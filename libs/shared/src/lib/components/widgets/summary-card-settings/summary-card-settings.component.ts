@@ -59,6 +59,7 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
   public templates: Form[] = [];
+  public dataFilter: any;
 
   /**
    * Summary Card Settings component.
@@ -146,6 +147,22 @@ export class SummaryCardSettingsComponent
         .subscribe(({ data }) => {
           if (data) {
             this.templates = data.resource.forms || [];
+            if (
+              data.resource &&
+              data.resource.name &&
+              this.widgetFormGroup !== undefined
+            ) {
+              const nameTrimmed = data.resource.name
+                .replace(/\s/g, '')
+                .toLowerCase();
+              const formValue =
+                this.widgetFormGroup.get('contextFilters')?.value;
+              this.dataFilter = {
+                form:
+                  typeof formValue === 'string' ? JSON.parse(formValue) : null,
+                resourceName: nameTrimmed,
+              };
+            }
           }
         });
     }
