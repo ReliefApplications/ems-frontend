@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  JsonMetadata,
+  // JsonMetadata,
   QuestionFileModel,
   SurveyModel,
   PageModel,
-  Serializer,
+  // Serializer,
 } from 'survey-core';
 import { Question } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
-import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { registerCustomPropertyEditor } from './utils/component-register';
 
 /**
  * Add support for custom properties to the survey
@@ -19,48 +17,48 @@ import { registerCustomPropertyEditor } from './utils/component-register';
  */
 export const init = (domService: DomService): void => {
   // @TODO: Update this code to work with new version of SurveyJS
-  const serializer: JsonMetadata = Serializer;
-  // Adds a dropdown to the matrix section with all the questions in the form
-  serializer.addProperty('matrix', {
-    name: 'copyToOthers',
-    category: 'rows',
-    // type: 'copyToOthers',
-    // CustomPropertyGridComponentTypes.,
-  });
-  serializer.addProperty('matrixdropdown', {
-    name: 'copyToOthers',
-    category: 'rows',
-    // type: 'copyToOthers',
-    // CustomPropertyGridComponentTypes.,
-  });
-  const copyToOthers = {
-    render: (editor: any, htmlElement: HTMLElement) => {
-      const data = getMatrix(
-        editor.object,
-        editor.object.selectedElementInDesign
-      );
-      const tagbox = domService.appendComponentToBody(
-        MultiSelectComponent,
-        htmlElement
-      );
-      const instance: MultiSelectComponent = tagbox.instance;
-      instance.value = editor.value;
-      instance.data = data;
-      instance.valueChange.subscribe((res) => editor.onChanged(res));
-      const btn = document.createElement('input');
-      btn.type = 'button';
-      btn.value = 'Copy';
-      btn.className = 'svd-items-control-footer btn sv-btn btn-primary';
-      htmlElement.appendChild(btn);
-      btn.onclick = () => {
-        updateListMatrix(
-          editor.object.selectedElementInDesign as Question,
-          instance,
-          editor.object
-        );
-      };
-    },
-  };
+  // const serializer: JsonMetadata = Serializer;
+  // // Adds a dropdown to the matrix section with all the questions in the form
+  // serializer.addProperty('matrix', {
+  //   name: 'copyToOthers',
+  //   category: 'rows',
+  //   // type: 'copyToOthers',
+  //   // CustomPropertyGridComponentTypes.,
+  // });
+  // serializer.addProperty('matrixdropdown', {
+  //   name: 'copyToOthers',
+  //   category: 'rows',
+  //   // type: 'copyToOthers',
+  //   // CustomPropertyGridComponentTypes.,
+  // });
+  // const copyToOthers = {
+  //   render: (editor: any, htmlElement: HTMLElement) => {
+  //     const data = getMatrix(
+  //       editor.object,
+  //       editor.object.selectedElementInDesign
+  //     );
+  //     const tagbox = domService.appendComponentToBody(
+  //       MultiSelectComponent,
+  //       htmlElement
+  //     );
+  //     const instance: MultiSelectComponent = tagbox.instance;
+  //     instance.value = editor.value;
+  //     instance.data = data;
+  //     instance.valueChange.subscribe((res) => editor.onChanged(res));
+  //     const btn = document.createElement('input');
+  //     btn.type = 'button';
+  //     btn.value = 'Copy';
+  //     btn.className = 'svd-items-control-footer btn sv-btn btn-primary';
+  //     htmlElement.appendChild(btn);
+  //     btn.onclick = () => {
+  //       updateListMatrix(
+  //         editor.object.selectedElementInDesign as Question,
+  //         instance,
+  //         editor.object
+  //       );
+  //     };
+  //   },
+  // };
   // registerCustomPropertyEditor(
   // CustomPropertyGridComponentTypes.copyToOthers,
   // );

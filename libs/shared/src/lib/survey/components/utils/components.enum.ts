@@ -35,7 +35,6 @@ import {
   QuestionDateTypeDisplayerModel,
   DateTypeDisplayerComponent,
 } from '../date-type-displayer/public-api';
-// import { }
 
 /**
  * Custom component types for the survey creator property grid editor
@@ -49,8 +48,7 @@ export enum CustomPropertyGridComponentTypes {
   resourceCustomFilters = 'customFilter',
   resourcesDropdown = 'resourcesDropdown',
   resourceSelectText = 'selectResourceText',
-  resourceTestService = 'resourceTestService',
-  // copyToOthers = 'copyToOthers',
+  resourceTestService = 'resourceTestService'
 }
 
 /**
@@ -95,9 +93,5 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.resourceTestService]: {
     component: TestServiceDropdownComponent,
     model: QuestionTestServiceDropdownModel,
-  },
-  // [CustomPropertyGridComponentTypes.copyToOthers]: {
-  //   component: null,
-  //   model: null,
-  // },
+  }
 };
