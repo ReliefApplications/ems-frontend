@@ -886,6 +886,7 @@
         [title]="field.title"
         *ngIf="field.type === 'JSON' && field.meta.type === 'file'"
         [columnMenu]="false"
+        [field]="field.name"
         [editable]="false"
         [width]="field.width"
         [hidden]="field.hidden"
