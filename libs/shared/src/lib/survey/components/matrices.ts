@@ -59,7 +59,8 @@ export const init = (domService: DomService): void => {
   // };
   // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
   //   'copyToOthers',
-  // copyToOthers
+  //   copyToOthers
+  // );
 };
 
 /**
