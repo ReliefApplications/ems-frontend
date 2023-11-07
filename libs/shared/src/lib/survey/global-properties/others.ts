@@ -6,7 +6,7 @@ import {
   Serializer,
   matrixDropdownColumnTypes,
   settings,
-} from 'survey-core';  
+} from 'survey-core';
 import { Question } from '../types';
 import { SurveyModel, PageModel, surveyLocalization } from 'survey-core';
 
