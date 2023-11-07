@@ -86,6 +86,8 @@ export class AppPreviewComponent
    * Use side menu or not.
    */
   public sideMenu = false;
+  /** Should hide menu by default ( only when vertical ) */
+  public hideMenu = false;
   /**
    * Is large device.
    */
@@ -140,7 +142,8 @@ export class AppPreviewComponent
           this.title = application.name + ' (Preview)';
           const ability = getAbilityForAppPreview(application, this.role);
           const adminNavItems: any[] = [];
-          this.sideMenu = application?.sideMenu ?? false;
+          this.sideMenu = this.application?.sideMenu ?? true;
+          this.hideMenu = this.application?.hideMenu ?? false;
           if (ability.can('read', 'User')) {
             adminNavItems.push({
               name: this.translate.instant('common.user.few'),
