@@ -128,15 +128,19 @@ export class TabActionsComponent
             console.log(data);
             if (data.page.id && data.page.context) {
               const refData = data.page.context as any;
-              this.referenceDataService.loadReferenceData(refData.refData).then((refData: any) => {
-                this.referenceDataService.fetchItems(refData).then((items) => {
-                  console.log(items);
-                  // need to get valueField
-                  // items.forEach((item: any) => {
-                  //   this.resourceData.push({"displayField": item[refData.displayField], "value": item[]})
-                  // })
+              this.referenceDataService
+                .loadReferenceData(refData.refData)
+                .then((refData: any) => {
+                  this.referenceDataService
+                    .fetchItems(refData)
+                    .then((items) => {
+                      console.log(items);
+                      // need to get valueField
+                      // items.forEach((item: any) => {
+                      //   this.resourceData.push({"displayField": item[refData.displayField], "value": item[]})
+                      // })
+                    });
                 });
-              });
             }
           });
       });
