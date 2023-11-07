@@ -14,7 +14,7 @@
     <!-- Dashboard options -->
     <ng-container *ngIf="dashboard">
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4" 
-      [ngStyle]="{'margin-top': isDrawerOpen ? drawerHeight + 50 + 'px' : '0'}"
+      [ngStyle]="{'margin-top': isDrawerOpen && filterStyle === 'MODERN' ? drawerHeight + 10 + 'px' : '0'}"
       >
 
         <!-- Dashboard title -->
@@ -187,7 +187,6 @@
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
-    [ngStyle]="{'margin-top': isDrawerOpen ? drawerHeight + 50 + 'px' : '0'}"
   ></shared-widget-grid>
   <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"

@@ -26,7 +26,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 
 /**
@@ -68,6 +68,8 @@ export class DashboardComponent
   public drawerPosition = '';
   //** Drawer content height */
   public drawerHeight = 0;
+  //** Drawer content style */
+  public filterStyle = '';
 
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
@@ -96,6 +98,7 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param document Document
    * @param contextService Dashboard context service
+   * @param layoutService Service used for filter drawer state detection
    */
   constructor(
     private apollo: Apollo,
@@ -109,7 +112,8 @@ export class DashboardComponent
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private layoutService: UILayoutService
   ) {
     super();
   }
@@ -118,6 +122,10 @@ export class DashboardComponent
    * Subscribes to the route to load the dashboard accordingly.
    */
   ngOnInit(): void {
+    // Get all filter settings
+    this.layoutService.drawerObj$.subscribe((drawerObj) => {
+      this.drawerToggleChange(drawerObj);
+    });
     /** Listen to router events navigation end, to get last version of params & queryParams. */
     this.router.events
       .pipe(
@@ -274,13 +282,14 @@ export class DashboardComponent
 
   /**
    * Method called when there is a change in the drawer state.
-   * Updates the isDrawerOpen variable with the new value.
+   * Updates the isDrawerOpen, drawerPosition, drawerHeight and filterStyle variables with the new values.
    *
-   * @param {boolean} drawerObj Object that indicates whether the drawer is open or closed and its position.
+   * @param {any} drawerObj Object that indicates whether the drawer is open or closed, its position, height and style.
    */
   drawerToggleChange(drawerObj: any): void {
     this.isDrawerOpen = drawerObj.isDrawerOpen;
     this.drawerPosition = drawerObj.position;
     this.drawerHeight = drawerObj.drawerHeight;
+    this.filterStyle = drawerObj.style;
   }
 }

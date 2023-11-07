@@ -192,10 +192,11 @@ export class DashboardFilterComponent
       });
     this.layoutService.isFilterDrawerOpen$.subscribe((filterDrawerState) => {
       this.isDrawerOpen = filterDrawerState;
-      this.isDrawerOpenEmitter.emit({
+      this.layoutService.setDrawerObj({
         isDrawerOpen: this.isDrawerOpen,
         position: this.position,
         drawerHeight: this.drawerContent.nativeElement.offsetHeight,
+        style: this.filterStyle,
       });
     });
   }
@@ -578,13 +579,13 @@ export class DashboardFilterComponent
    * toggle isDrawerOpen, and emit its value to the parent component
    */
   public toggleDrawer() {
-    this.layoutService.toggleFilterDrawer();
-    this.isDrawerOpenEmitter.emit({
+    this.layoutService.setDrawerObj({
       isDrawerOpen: this.isDrawerOpen,
       position: this.position,
       drawerHeight: this.drawerContent.nativeElement.offsetHeight,
       style: this.filterStyle,
     });
+    this.layoutService.toggleFilterDrawer();
   }
 
   /**
@@ -594,6 +595,5 @@ export class DashboardFilterComponent
     if (this.filterStyle == 'LEGACY') {
       this.filterStyle = 'MODERN';
     } else this.filterStyle = 'LEGACY';
-    console.log(this.filterStyle);
   }
 }

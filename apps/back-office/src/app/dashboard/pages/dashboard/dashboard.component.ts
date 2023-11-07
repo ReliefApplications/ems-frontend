@@ -118,6 +118,8 @@ export class DashboardComponent
   public drawerPosition = '';
   //** Drawer content height */
   public drawerHeight = 0;
+  //** Drawer content style */
+  public filterStyle = '';
 
   /** @returns type of context element */
   get contextType() {
@@ -875,5 +877,6 @@ export class DashboardComponent
     this.isDrawerOpen = drawerObj.isDrawerOpen;
     this.drawerPosition = drawerObj.position;
     this.drawerHeight = drawerObj.drawerHeight;
+    this.filterStyle = drawerObj.style;
   }
 }
