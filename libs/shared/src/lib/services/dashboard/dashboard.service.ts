@@ -20,7 +20,6 @@ import get from 'lodash/get';
 
 /**
  * Shared dashboard service. Handles dashboard events.
- * TODO: rename all tiles into widgets
  */
 @Injectable({
   providedIn: 'root',
@@ -38,7 +37,6 @@ export class DashboardService {
 
   /**
    * Shared dashboard service. Handles dashboard events.
-   * TODO: rename all tiles into widgets
    *
    * @param environment environment in which we run the application
    * @param apollo Apollo client
@@ -66,17 +64,17 @@ export class DashboardService {
   }
 
   /**
-   * Finds the settings component from the widget passed as 'tile'.
+   * Finds the settings component from the widget.
    *
-   * @param tile tile to get settings of.
-   * @returns Tile settings template.
+   * @param widget widget to get settings of.
+   * @returns Widget settings template.
    */
-  public findSettingsTemplate(tile: any): any {
-    const availableTile = this.availableWidgets.find(
-      (x) => x.component === tile.component
+  public findSettingsTemplate(widget: any): any {
+    const availableWidget = this.availableWidgets.find(
+      (x) => x.component === widget.component
     );
-    return availableTile && availableTile.settingsTemplate
-      ? availableTile.settingsTemplate
+    return availableWidget && availableWidget.settingsTemplate
+      ? availableWidget.settingsTemplate
       : null;
   }
 

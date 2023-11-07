@@ -4,7 +4,7 @@ import {
   LayerSymbolOutline,
   PopupElement,
 } from '../../../../models/layer.model';
-import { IconName } from '../../../icon-picker/icon-picker.const';
+import { FaIconName } from '@oort-front/ui';
 
 export type GeoJSON =
   | Geometry
@@ -34,7 +34,7 @@ export interface LayerFormData {
           color: string;
           type: string;
           size: number;
-          style: IconName;
+          style: FaIconName;
           outline?: LayerSymbolOutline;
         };
       };

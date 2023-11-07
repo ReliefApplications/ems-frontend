@@ -9,7 +9,7 @@ import { EmailPreviewComponent } from './email-preview.component';
 
 describe('EmailPreviewComponent', () => {
   let component: EmailPreviewComponent;
-  let fixture: ComponentFixture<sharedEmailPreviewComponent>;
+  let fixture: ComponentFixture<EmailPreviewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

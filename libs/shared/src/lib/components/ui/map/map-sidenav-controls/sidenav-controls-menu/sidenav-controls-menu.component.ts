@@ -55,7 +55,7 @@ export class SidenavControlsMenuComponent implements OnInit {
    * returns an array of flattened basemaps
    *
    * @param basemapsTree the nested array of basemaps
-   * @param [layers=[]] the array of flattened basemaps
+   * @param {L.Layer[]} layers the array of flattened basemaps
    * @returns the array of flattened basemaps
    */
   getAllBasemaps(

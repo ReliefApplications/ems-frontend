@@ -1,66 +1,109 @@
-<!-- CHART -->
-<ng-container *ngIf="widget.component === 'chart'">
-  <shared-chart
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-  ></shared-chart>
-</ng-container>
-<!-- GRID -->
-<ng-container *ngIf="widget.component === 'grid'">
-  <shared-grid-widget
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-    (changeStep)="changeStep.emit($event)"
-    (edit)="edit.emit($event)"
-    [widget]="widget"
-    [canUpdate]="canUpdate"
-  ></shared-grid-widget>
-</ng-container>
-<!-- MAP -->
-<ng-container *ngIf="widget.component === 'map'">
-  <shared-map-widget
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-  ></shared-map-widget>
-</ng-container>
-<!-- TEXT EDITOR -->
-<ng-container *ngIf="widget.component === 'editor'">
-  <shared-editor
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-  >
-  </shared-editor>
-</ng-container>
-<!-- SUMMARY CARD -->
-<ng-container *ngIf="widget.component === 'summaryCard'">
-  <shared-summary-card
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-    (edit)="edit.emit($event)"
-    [widget]="widget"
-  >
-  </shared-summary-card>
-</ng-container>
-<!-- Tabs -->
-<ng-container *ngIf="widget.component === 'tabs'">
-  <shared-tabs
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-    (edit)="edit.emit($event)"
-    [canUpdate]="canUpdate"
-    [widget]="widget"
-  >
-  </shared-tabs>
-</ng-container>
+<div
+  class="flex flex-col h-full w-full !rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 overflow-hidden"
+  [ngClass]="{
+    '!shadow-sm !border-gray-300': showBorder,
+    '!border-transparent': !showBorder || fullscreen,
+    'hover:!border-gray-400 hover:!shadow-sm': canUpdate && !fullscreen
+  }"
+>
+  <ng-container *ngIf="header">
+    <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
+      <div
+        class="floating-widget-header pointer-events-none"
+        *ngIf="canUpdate && !fullscreen"
+      >
+        <!-- Setting pointer-events to none so buttons below header are still accessible -->
+        <ng-container
+          *ngIf="headerLeftTemplate"
+          [ngTemplateOutlet]="headerLeftTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="headerRightTemplate"
+          [ngTemplateOutlet]="headerRightTemplate"
+          [ngTemplateOutletContext]="{ $implicit: id }"
+        ></ng-container>
+      </div>
+    </ng-container>
+
+    <ng-template #defaultHeaderTemplate>
+      <div
+        class="widget-header border-b"
+        [ngClass]="{
+          '!border-transparent': !showBorder,
+          '!border-b-gray-300': showBorder,
+        }"
+      >
+        <ng-container
+          *ngIf="headerLeftTemplate && !fullscreen"
+          [ngTemplateOutlet]="headerLeftTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="widgetContentComponent?.headerTemplate"
+          [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="headerRightTemplate && !fullscreen"
+          [ngTemplateOutlet]="headerRightTemplate"
+          [ngTemplateOutletContext]="{ $implicit: id }"
+        ></ng-container>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <ng-container [ngSwitch]="widget.component">
+    <!-- CHART -->
+    <shared-chart
+      *ngSwitchCase="'chart'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden gridster-item-content"
+    ></shared-chart>
+    <!-- GRID -->
+    <shared-grid-widget
+      *ngSwitchCase="'grid'"
+      #widgetContent
+      [settings]="widget.settings"
+      (changeStep)="changeStep.emit($event)"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+      [canUpdate]="canUpdate"
+      class="flex-1 overflow-hidden gridster-item-content"
+    ></shared-grid-widget>
+    <!-- MAP -->
+    <shared-map-widget
+      *ngSwitchCase="'map'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden gridster-item-content"
+    ></shared-map-widget>
+    <!-- TEXT EDITOR -->
+    <shared-editor
+      *ngSwitchCase="'editor'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden gridster-item-content"
+    >
+    </shared-editor>
+    <!-- SUMMARY CARD -->
+    <shared-summary-card
+      *ngSwitchCase="'summaryCard'"
+      #widgetContent
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+      class="flex-1 overflow-hidden gridster-item-content"
+    >
+    </shared-summary-card>
+    <!-- Tabs -->
+    <shared-tabs
+      *ngSwitchCase="'tabs'"
+      #widgetContent
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [canUpdate]="canUpdate"
+      [widget]="widget"
+      class="flex-1 overflow-hidden gridster-item-content"
+    >
+    </shared-tabs>
+  </ng-container>
+</div>

@@ -4,7 +4,7 @@ import { PaletteControlComponent } from './palette-control.component';
 
 describe('PaletteControlComponent', () => {
   let component: PaletteControlComponent;
-  let fixture: ComponentFixture<sharedPaletteControlComponent>;
+  let fixture: ComponentFixture<PaletteControlComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

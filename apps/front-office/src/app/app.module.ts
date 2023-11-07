@@ -28,6 +28,7 @@ import {
   KendoTranslationService,
   AuthInterceptorService,
   FormService,
+  DatePipe,
 } from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -57,6 +58,9 @@ import {
 // Sentry
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular-ivy';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
 
 /**
  * Initialize application.
@@ -72,6 +76,8 @@ const initializeApp =
   () => {
     oauth.configure(environment.authConfig);
     formService.initialize();
+    // Add fa icon font to check in the application
+    library.add(fas, fab);
   };
 
 /**
@@ -147,6 +153,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     PopupService,
     ResizeBatchService,
     IconsService,
+    DatePipe,
     { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
     // Sentry
     ...(environment.sentry

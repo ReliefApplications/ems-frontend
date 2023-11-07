@@ -1,6 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -26,14 +25,14 @@ import { AutocompleteModule } from '@oort-front/ui';
 
 describe('GridSettingsComponent', () => {
   let component: GridSettingsComponent;
-  let fixture: ComponentFixture<sharedGridSettingsComponent>;
+  let fixture: ComponentFixture<GridSettingsComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,

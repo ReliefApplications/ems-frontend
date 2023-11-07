@@ -7,50 +7,55 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfirmService } from '../../../../../services/confirm/confirm.service';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { ConfirmService } from '../../../services/confirm/confirm.service';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ButtonModule, DialogModule } from '@oort-front/ui';
 
 /** Model for dialog data */
 interface DialogData {
-  tile: any;
+  widget: any;
   template: any;
 }
 
-/** Component for a data tile */
+/**
+ * Edition of widget configuration in modal.
+ * The component is generic and inject specific settings component, based on the type of widget to edit.
+ */
 @Component({
-  selector: 'shared-tile-data',
-  templateUrl: './tile-data.component.html',
-  styleUrls: ['./tile-data.component.scss'],
+  standalone: true,
+  selector: 'shared-edit-widget-modal',
+  templateUrl: './edit-widget-modal.component.html',
+  styleUrls: ['./edit-widget-modal.component.scss'],
+  imports: [DialogModule, ButtonModule],
 })
 /** Modal content to edit the settings of a component. */
-export class TileDataComponent
+export class EditWidgetModalComponent
   extends UnsubscribeComponent
   implements AfterViewInit
 {
-  // === REACTIVE FORM ===
-  tileForm?: UntypedFormGroup;
+  /** Widget reactive form */
+  widgetForm?: UntypedFormGroup;
 
-  // === TEMPLATE REFERENCE ===
+  /** Reference to widget settings container */
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
 
   /**
-   * Constructor of a data tile
+   * Edition of widget configuration in modal.
+   * The component is generic and inject specific settings component, based on the type of widget to edit.
    *
    * @param dialogRef Reference to a dialog opened via the Dialog service
    * @param data The dialog data
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
-   * @param dialog Dialog service
    */
   constructor(
-    public dialogRef: DialogRef<TileDataComponent>,
+    public dialogRef: DialogRef<EditWidgetModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private confirmService: ConfirmService,
-    private translate: TranslateService,
-    private dialog: Dialog
+    private translate: TranslateService
   ) {
     super();
   }
@@ -60,17 +65,17 @@ export class TileDataComponent
     const componentRef = this.settingsContainer.createComponent(
       this.data.template
     );
-    componentRef.instance.tile = this.data.tile;
+    componentRef.instance.widget = this.data.widget;
     componentRef.instance.change.subscribe((e: any) => {
-      this.tileForm = e;
+      this.widgetForm = e;
     });
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending widget form value.
    */
   onSubmit(): void {
-    this.dialogRef.close(this.tileForm?.getRawValue());
+    this.dialogRef.close(this.widgetForm?.getRawValue());
   }
 
   /**
@@ -78,7 +83,7 @@ export class TileDataComponent
    * Check if the form is updated or not, and display a confirmation modal if changes detected.
    */
   onClose(): void {
-    if (this.tileForm?.pristine) {
+    if (this.widgetForm?.pristine) {
       this.dialogRef.close();
     } else {
       const confirmDialogRef = this.confirmService.openConfirmModal({

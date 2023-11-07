@@ -1,22 +1,22 @@
 // === Measure plugin ===
 ::ng-deep .leaflet-control-measure a.start::before {
-  content: '► ';
+  content: "► ";
 }
 
 ::ng-deep .leaflet-control-measure a.finish::before {
-  content: '✔ ';
+  content: "✔ ";
 }
 
 ::ng-deep .leaflet-control-measure a.cancel::before {
-  content: '✖ ';
+  content: "✖ ";
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.zoomto::before {
-  content: '⇱ ';
+  content: "⇱ ";
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.deletemarkup::before {
-  content: '♻ ';
+  content: "♻ ";
 }
 
 // Clustering

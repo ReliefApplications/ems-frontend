@@ -30,13 +30,15 @@ export class DashboardComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === DATA ===
+  /** Id of loaded dashboard */
   public id = '';
+  /** Loading indicator */
   public loading = true;
-  public tiles = [];
+  /** Current widgets */
+  public widgets = [];
+  /** Current dashboard */
   public dashboard?: Dashboard;
-
-  // === STEP CHANGE FOR WORKFLOW ===
+  /** Emit event when changing steps */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   /**
@@ -79,7 +81,7 @@ export class DashboardComponent
             if (data.dashboard) {
               this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.tiles = data.dashboard.structure
+              this.widgets = data.dashboard.structure
                 ? data.dashboard.structure
                 : [];
               this.loading = loading;

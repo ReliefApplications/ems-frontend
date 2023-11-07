@@ -19,6 +19,7 @@ import {
   Output,
   EventEmitter,
   Inject,
+  TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -66,6 +67,7 @@ export class GridWidgetComponent
   // === TEMPLATE REFERENCE ===
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   // === DATA ===
   @Input() widget: any;
@@ -88,7 +90,6 @@ export class GridWidgetComponent
   public isAdmin: boolean;
 
   // === SETTINGS ===
-  @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
   @Input() canUpdate = false;
@@ -113,6 +114,11 @@ export class GridWidgetComponent
     return this.coreGridComponent
       ? this.coreGridComponent.updatedItems.length === 0
       : true;
+  }
+
+  /** @returns list of active floating buttons */
+  get floatingButtons() {
+    return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
 
   @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
@@ -551,6 +557,7 @@ export class GridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @returns Promise resolving when execution done
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],

@@ -6,7 +6,7 @@ import { SeriesMappingComponent } from './series-mapping.component';
 
 describe('SeriesMappingComponent', () => {
   let component: SeriesMappingComponent;
-  let fixture: ComponentFixture<sharedSeriesMappingComponent>;
+  let fixture: ComponentFixture<SeriesMappingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

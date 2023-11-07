@@ -9,7 +9,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -38,6 +37,7 @@ import {
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { GET_RESOURCES } from '../graphql/queries';
+import { Form } from '../../../../models/form.model';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -53,7 +53,6 @@ const MAX_COL_SPAN = 8;
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    LayoutModule,
     ButtonModule,
     IconModule,
     SummaryCardItemModule,
@@ -73,11 +72,12 @@ export class SummaryCardGeneralComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  @Input() tileForm!: SummaryCardFormT;
+  @Input() formGroup!: SummaryCardFormT;
 
   @Input() selectedResource: Resource | null = null;
   @Input() selectedLayout: Layout | null = null;
   @Input() selectedAggregation: Aggregation | null = null;
+  @Input() templates: Form[] = [];
 
   @Output() resourceChange = new EventEmitter<Resource | null>();
   @Output() layoutChange = new EventEmitter<Layout | null>();
@@ -128,7 +128,7 @@ export class SummaryCardGeneralComponent
     });
 
     // Resource change
-    this.tileForm
+    this.formGroup
       .get('card.resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((resource) => {
@@ -182,9 +182,9 @@ export class SummaryCardGeneralComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         if (typeof value === 'string') {
-          this.tileForm.get('card.layout')?.setValue(value);
+          this.formGroup.get('card.layout')?.setValue(value);
         } else {
-          this.tileForm.get('card.layout')?.setValue((value as any).id);
+          this.formGroup.get('card.layout')?.setValue((value as any).id);
           this.layoutChange.emit(value);
         }
       }
@@ -233,9 +233,9 @@ export class SummaryCardGeneralComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         if (typeof value === 'string') {
-          this.tileForm.get('card.aggregation')?.setValue(value);
+          this.formGroup.get('card.aggregation')?.setValue(value);
         } else {
-          this.tileForm.get('card.aggregation')?.setValue((value as any).id);
+          this.formGroup.get('card.aggregation')?.setValue((value as any).id);
           this.aggregationChange.emit(value);
         }
       }

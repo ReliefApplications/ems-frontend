@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -62,9 +63,9 @@ export class SummaryCardComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   @Input() widget: any;
-  @Input() header = true;
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   public gridSettings: any = null;
 
@@ -503,7 +504,7 @@ export class SummaryCardComponent
     const card = this.settings.card;
     if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
     const settings = {
-      template: get(this.settings, 'template', null), //TO MODIFY
+      template: card.template,
       resource: card.resource,
       summaryCard: true,
       actions: {

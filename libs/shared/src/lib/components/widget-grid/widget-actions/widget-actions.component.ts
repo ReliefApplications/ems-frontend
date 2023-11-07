@@ -11,19 +11,26 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
  * actions for that widget.
  */
 @Component({
-  selector: 'shared-floating-options',
-  templateUrl: './floating-options.component.html',
-  styleUrls: ['./floating-options.component.scss'],
+  selector: 'shared-widget-actions',
+  templateUrl: './widget-actions.component.html',
+  styleUrls: ['./widget-actions.component.scss'],
 })
-export class FloatingOptionsComponent extends UnsubscribeComponent {
-  // === WIDGET ===
+export class WidgetActionsComponent extends UnsubscribeComponent {
+  /** Current widget */
   @Input() widget: any;
-  @Input() canExpand = true;
-
-  // === EMIT ACTION SELECTED ===
+  /** Widget id */
+  @Input() id!: string;
+  /** Can user edit widget */
+  @Input() canUpdate = false;
+  /** Collapse actions into a single button */
+  @Input() collapsed = true;
+  /** Edit event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
+  /** Expand event emitter */
   @Output() expand: EventEmitter<any> = new EventEmitter();
+  /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
 
   /**
@@ -49,31 +56,33 @@ export class FloatingOptionsComponent extends UnsubscribeComponent {
    *
    * @param action action
    */
-  async onClick(action: any): Promise<void> {
-    if (action === 'Settings') {
-      const { TileDataComponent } = await import(
-        './menu/tile-data/tile-data.component'
+  async onClick(
+    action: 'settings' | 'expand' | 'style' | 'delete'
+  ): Promise<void> {
+    if (action === 'settings') {
+      const { EditWidgetModalComponent } = await import(
+        '../edit-widget-modal/edit-widget-modal.component'
       );
-      const dialogRef = this.dialog.open(TileDataComponent, {
+      const dialogRef = this.dialog.open(EditWidgetModalComponent, {
         disableClose: true,
         data: {
-          tile: this.widget,
+          widget: this.widget,
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if (res) {
-          this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+          this.edit.emit({ type: 'data', id: this.id, options: res });
         }
       });
     }
-    if (action === 'Expand') {
-      this.expand.emit({ id: this.widget.id });
+    if (action === 'expand') {
+      this.expand.emit({ id: this.id });
     }
-    if (action === 'Style') {
-      this.style.emit({ widget: this.widget });
+    if (action === 'style') {
+      this.style.emit({ id: this.id, widget: this.widget });
     }
-    if (action === 'Delete') {
+    if (action === 'delete') {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('models.widget.delete.title'),
         content: this.translate.instant(
@@ -86,7 +95,7 @@ export class FloatingOptionsComponent extends UnsubscribeComponent {
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.delete.emit({ id: this.widget.id });
+            this.delete.emit({ id: this.id });
           }
         });
     }

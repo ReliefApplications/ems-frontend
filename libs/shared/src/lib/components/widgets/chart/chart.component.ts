@@ -6,6 +6,7 @@ import {
   ViewChild,
   Inject,
   OnInit,
+  TemplateRef,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -48,9 +49,9 @@ export class ChartComponent
   public hasError = false;
 
   // === WIDGET CONFIGURATION ===
-  @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   /**
    * Get filename from the date and widget title

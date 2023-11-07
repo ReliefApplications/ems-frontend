@@ -135,7 +135,11 @@
             <a
               class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
             >
-              <ui-icon variant="grey" [icon]="item.icon"></ui-icon>
+              <ui-icon
+                variant="grey"
+                [icon]="item.icon"
+                [fontFamily]="item.fontFamily"
+              ></ui-icon>
               <div class="pl-2">{{ item.name }}</div>
             </a>
           </li>

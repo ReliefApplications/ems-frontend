@@ -205,6 +205,7 @@
 			"none": "Pas de groupes",
 			"one": "Groupe"
 		},
+		"hide": "Cacher",
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -309,6 +310,12 @@
 		},
 		"platform": {
 			"backOffice": "Back-Office"
+		},
+		"position": {
+			"bottomleft": "En bas à gauche",
+			"bottomright": "En bas à droite",
+			"topleft": "En haut à gauche",
+			"topright": "En haut à droite"
 		},
 		"positionAttribute": {
 			"few": "Attributs de position",
@@ -470,7 +477,7 @@
 				"week": "Semaine",
 				"year": "Année"
 			},
-			"sourceFields": "Sélectionner les champs",
+			"sourceFields": "Choisissez les champs à inclure dans l'agrégation",
 			"stages": {
 				"addFields": "Ajouter des champs",
 				"custom": "Personnaliser",
@@ -512,6 +519,8 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"enterEditMode": "Entrer en mode édition",
+				"enterPreviewMode": "Entrer en mode prévisualisation",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
 					"filterPosition": {
@@ -1492,6 +1501,10 @@
 					"tooltip": {
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
 						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
+					},
+					"warnings": {
+						"add": "Veuillez sélectionner un modèle",
+						"general": "Attention: les actions contiennent des erreurs"
 					}
 				},
 				"iconPicker": {
@@ -1658,6 +1671,9 @@
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
+							"lastUpdate": "Dernière mise à jour le",
+							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
+							"lastUpdatePosition": "Choisissez une position pour afficher l'élément",
 							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",
@@ -2141,6 +2157,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"header": "Afficher l'en-tête du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"

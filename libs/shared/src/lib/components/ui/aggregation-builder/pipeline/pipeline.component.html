@@ -1,24 +1,45 @@
-<cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+<cdk-accordion
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+  cdkDropListOrientation="vertical"
+>
   <ui-expansion-panel
-    cdkDrag
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
     [index]="index"
-    class="bg-white"
+    class="bg-white block"
+    cdkDrag
+    [cdkDragDisabled]="!dragEnabled"
   >
     <ng-container ngProjectAs="title">
-      {{
-        'components.aggregationBuilder.stages.' + stageForm.value.type
-          | translate
-      }}
-      <ui-icon
-        icon="info_outline"
-        variant="grey"
-        [size]="18"
-        [uiTooltip]="
-          'components.aggregationBuilder.tooltip.' + stageForm.value.type
-            | translate
-        "
-      ></ui-icon>
+      <div class="flex items-center">
+        <p>
+          {{
+            'components.aggregationBuilder.stages.' + stageForm.value.type
+              | translate
+          }}
+        </p>
+        <ui-icon
+          class="cursor-help ml-1 self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'components.aggregationBuilder.tooltip.' + stageForm.value.type
+              | translate
+          "
+        ></ui-icon>
+        <ui-button
+          (mouseenter)="dragEnabled = true"
+          cdkDragHandle
+          (mouseleave)="dragEnabled = false"
+          [isIcon]="true"
+          variant="grey"
+          icon="drag_indicator"
+          class="nav-item-handle"
+          [uiTooltip]="'models.page.tooltip.drag' | translate"
+        >
+        </ui-button>
+      </div>
     </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">
@@ -55,11 +76,12 @@
         <div uiFormFieldDirective>
           <label>{{ 'common.input.rawJson' | translate }}</label>
           <ui-textarea
+            #monacoEditor
+            class="!h-full"
             [formControl]="$any(stageForm).controls.form.controls.raw"
             [minRows]="4"
             [maxRows]="20"
-          >
-          </ui-textarea>
+          ></ui-textarea>
         </div>
       </ng-container>
     </ng-container>
@@ -74,6 +96,7 @@
     </div>
   </ui-expansion-panel>
 </cdk-accordion>
+
 <div class="flex justify-center">
   <ui-button
     icon="add"

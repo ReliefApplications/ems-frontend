@@ -522,6 +522,7 @@ export class QueryBuilderService {
    * Format fields for filters.
    *
    * @param query custom query.
+   * @returns filter fields as Promise
    */
   public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {

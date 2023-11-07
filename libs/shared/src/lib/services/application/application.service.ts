@@ -95,7 +95,11 @@ import {
   UpdateCustomNotificationMutationResponse,
 } from '../../models/custom-notification.model';
 import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UILayoutService,
+  faV4toV6Mapper,
+} from '@oort-front/ui';
 import {
   AddPositionAttributeCategoryMutationResponse,
   DeletePositionAttributeCategoryMutationResponse,
@@ -235,8 +239,16 @@ export class ApplicationService {
       })
       .subscribe(async ({ data }) => {
         // extend user abilities for application
-        if (data.application)
+        if (data.application) {
+          // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
+          data.application.pages?.map((page: Page) => {
+            if (faV4toV6Mapper[page.icon as string]) {
+              (page as Page).icon = faV4toV6Mapper[page.icon as string];
+            }
+            return page;
+          });
           this.authService.extendAbilityForApplication(data.application);
+        }
         await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
