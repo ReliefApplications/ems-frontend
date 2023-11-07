@@ -1,4 +1,5 @@
 import { Form } from './form.model';
+import { Resource } from './resource.model';
 import { User } from './user.model';
 
 /** Model for version attributes. */
@@ -18,6 +19,7 @@ export interface Record {
   deleted?: boolean;
   data?: any;
   form?: Form;
+  resource?: Resource;
   versions?: Version[];
   createdBy?: User;
   modifiedBy?: User;
