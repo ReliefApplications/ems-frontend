@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription } from 'rxjs';
 import {
   Form,
   Page,
@@ -223,11 +223,9 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     this.hideNewRecord = e.hideNewRecord || false;
 
     // Checks if should go to next step if in an workflow
-    firstValueFrom(this.workflowService.workflow$).then((workflow) => {
-      if (workflow?.nextStepOnSave) {
-        this.workflowService.nextStep.emit();
-      }
-    });
+    if (this.step?.nextStepOnSave) {
+      this.workflowService.nextStep.emit();
+    }
   }
 
   /**

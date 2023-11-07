@@ -82,6 +82,14 @@
                 </ng-container>
               </div>
             </ng-container>
+            <!-- Features available only for step -->
+            <ng-container *ngIf="data.type === 'step'">
+              <ui-toggle formControlName="nextStepOnSave">
+                <ng-container ngProjectAs="label">
+                  {{ 'components.application.pages.settings.goNextStepOnSave' | translate }}
+                </ng-container>
+              </ui-toggle>
+            </ng-container> 
           </div>
         </ui-tab>
         <!-- Access (visibility) settings -->

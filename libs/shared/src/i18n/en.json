@@ -562,6 +562,7 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"goNextStepOnSave": "Go to next step on save",
 					"selectIcon": "Select an icon",
 					"tooltip": {
 						"autoSave": "Changes are automatically saved"
@@ -687,9 +688,9 @@
 		"emailBuilder": {
 			"body": "Body",
 			"default": "Default",
-			"distribution": "Distribution list",
 			"fields": "Select fields to write in body",
 			"from": {
+				"distribution": "Distribution list",
 				"field": "Data field",
 				"title": "From:"
 			},

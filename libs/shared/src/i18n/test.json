@@ -562,6 +562,7 @@
 				},
 				"settings": {
 					"actions": "******",
+					"goNextStepOnSave": "******",
 					"selectIcon": "******",
 					"tooltip": {
 						"autoSave": "******"
@@ -687,9 +688,9 @@
 		"emailBuilder": {
 			"body": "******",
 			"default": "******",
-			"distribution": "******",
 			"fields": "******",
 			"from": {
+				"distribution": "******",
 				"field": "******",
 				"title": "******"
 			},

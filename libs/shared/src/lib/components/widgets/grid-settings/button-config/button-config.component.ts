@@ -317,6 +317,20 @@ export class ButtonConfigComponent
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
+
+    this.formGroup?.get('from')?.valueChanges.subscribe((value) => {
+      if (value === 'distribution') {
+        this.formGroup
+          ?.get('distributionList')
+          ?.setValidators(Validators.required);
+        this.formGroup?.get('field')?.clearValidators();
+      } else {
+        this.formGroup?.get('distributionList')?.clearValidators();
+        this.formGroup?.get('field')?.setValidators(Validators.required);
+      }
+      this.formGroup?.get('distributionList')?.updateValueAndValidity();
+      this.formGroup?.get('field')?.updateValueAndValidity();
+    });
   }
 
   /** Set list of resources user can attach a record to */

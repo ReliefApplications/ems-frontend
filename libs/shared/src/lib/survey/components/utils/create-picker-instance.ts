@@ -100,17 +100,17 @@ export const getDateDisplay = (value: any, inputType: string): Date => {
   const date = new Date(value);
   if (inputType === 'time') {
     return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-  } else if (inputType === 'date') {
-    const dateParts = value.split('-');
-    if (value.includes('T') || dateParts.length !== 3) {
-      return date;
-    }
-    const newDate = new Date();
-    newDate.setFullYear(+dateParts[0]);
-    newDate.setMonth(+dateParts[1] - 1);
-    newDate.setDate(+dateParts[2]);
-    return newDate;
   } else {
+    if (inputType === 'date') {
+      // make sure it's always in the current user's timezone
+      const dateParts = value?.split('T')[0]?.split('-');
+      if (dateParts?.length === 3) {
+        date.setFullYear(+dateParts[0]);
+        date.setMonth(+dateParts[1] - 1);
+        date.setDate(+dateParts[2]);
+      }
+    }
+
     return date;
   }
 };

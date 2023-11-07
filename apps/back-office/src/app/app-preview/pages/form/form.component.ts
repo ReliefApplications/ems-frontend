@@ -11,6 +11,7 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
+  WorkflowService,
 } from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
@@ -51,11 +52,13 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param apollo Apollo service
    * @param route Angular current route
    * @param router Angular router
+   * @param workflowService Shared workflow service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private workflowService: WorkflowService
   ) {
     super();
   }
@@ -128,6 +131,11 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
+
+    // Checks if should go to next step if in an workflow
+    if (this.step?.nextStepOnSave) {
+      this.workflowService.nextStep.emit();
+    }
   }
 
   /**

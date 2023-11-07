@@ -39,6 +39,9 @@ export class FormActionsComponent implements OnInit {
       }));
     this.currentLocaleSurvey =
       this.usedLocalesSurvey.find((x) => x.code === this.survey?.locale) ||
+      this.usedLocalesSurvey.find(
+        (x) => x.code === this.survey?.defaultLanguage
+      ) ||
       DEFAULT_LOCALE_SURVEY;
   }
 

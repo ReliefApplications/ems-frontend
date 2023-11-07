@@ -259,7 +259,29 @@ export const init = (
         dependsOn: ['resource'],
         default: true,
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 2,
+        onSetValue: (question: QuestionResource, value: boolean) => {
+          if (value) {
+            question.setPropertyValue('canOnlyCreateRecords', false);
+            question.setPropertyValue('canSearch', true);
+          }
+        },
+      });
+
+      // If checked, user can only create new records
+      serializer.addProperty('resource', {
+        name: 'canOnlyCreateRecords:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        visibleIndex: 2,
+        visibleIf: visibleIfResource,
+        onSetValue: (question: QuestionResource, value: boolean) => {
+          if (value) {
+            question.setPropertyValue('canSearch', false);
+            question.setPropertyValue('canOnlyCreateRecords', true);
+            question.setPropertyValue('addRecord', true);
+          }
+        },
       });
       serializer.addProperty('resource', {
         name: 'alwaysCreateRecord:boolean',
@@ -284,7 +306,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
-        visibleIndex: 3,
+        visibleIndex: 4,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
@@ -571,7 +593,12 @@ export const init = (
       if (question.resource) {
         getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
-            const choices = mapQuestionChoices(data, question);
+            const choices = mapQuestionChoices(data, question).filter(
+              (x: { value: string }) =>
+                // This makes it so if we have the canOnlyCreateRecords flag set to true,
+                // we can still see previously selected records when editing or seeing details of a record
+                !question.canOnlyCreateRecords || x.value === question.value
+            );
             question.contentQuestion.choices = choices;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =

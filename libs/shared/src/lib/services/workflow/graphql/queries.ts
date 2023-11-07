@@ -11,7 +11,6 @@ export const GET_WORKFLOW_BY_ID = gql`
       createdAt
       modifiedAt
       canUpdate
-      nextStepOnSave
       permissions {
         canSee {
           id

@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  Model,
-  QuestionPanelDynamicModel,
-  SurveyModel,
-  settings,
-} from 'survey-core';
-import { QuestionText } from '../../survey/types';
+import { Model, SurveyModel, settings } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -20,8 +14,11 @@ import { Metadata } from '../../models/metadata.model';
 import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
-import { FormHelpersService } from '../form-helper/form-helper.service';
-import { difference, set } from 'lodash';
+import {
+  FormHelpersService,
+  transformSurveyData,
+} from '../form-helper/form-helper.service';
+import { difference } from 'lodash';
 
 /**
  * Gets the payload for the update mutation
@@ -67,57 +64,6 @@ const getUpdateData = (
         }
       : null;
   }
-};
-
-/**
- * Applies custom logic to survey data values.
- *
- * @param survey Survey instance
- * @returns Transformed survey data
- */
-const transformSurveyData = (survey: SurveyModel) => {
-  const data = survey.data ?? {};
-
-  const formatDate = (value: string) => {
-    const date = new Date(value);
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  };
-
-  // Change date questions to only include the date part
-  survey.getAllQuestions(true).forEach((question) => {
-    if (question.getType() === 'text' && question.inputType === 'date') {
-      data[question.name] = formatDate(question.value);
-    } else if (question.getType() === 'paneldynamic') {
-      const nestedQuestions = (
-        question as QuestionPanelDynamicModel
-      ).templateElements.filter(
-        (v) =>
-          v.getType() === 'text' && (v as QuestionText).inputType === 'date'
-      ) as QuestionText[];
-      // Update nested questions inside panel dynamic
-      (question as QuestionPanelDynamicModel).panels.forEach((panel, index) => {
-        nestedQuestions.forEach((nestedQuestion) => {
-          const panelValue = panel.getValue();
-          if (panelValue[nestedQuestion.name]) {
-            set(
-              data,
-              `${question.name}.${index}.${nestedQuestion.name}`,
-              formatDate(panelValue[nestedQuestion.name])
-            );
-          }
-        });
-      });
-    }
-  });
-
-  // Removes data that isn't in the structure, that might've come from prefilling data
-  Object.keys(data).forEach((filed) => {
-    if (!survey.getQuestionByName(filed)) {
-      delete data[filed];
-    }
-  });
-
-  return data;
 };
 
 /**
@@ -172,6 +118,7 @@ export class FormBuilderService {
     this.formHelpersService.addApplicationVariables(survey);
     this.formHelpersService.setWorkflowContextVariable(survey);
     if (record) {
+      this.recordId = record.id;
       this.formHelpersService.addRecordIDVariable(survey, record);
     }
     survey.onAfterRenderQuestion.add(
@@ -257,6 +204,8 @@ export class FormBuilderService {
       const lang = this.translate.currentLang || this.translate.defaultLang;
       if (survey.getUsedLocales().includes(lang)) {
         survey.locale = lang;
+      } else {
+        survey.locale = survey.defaultLanguage || 'en';
       }
     }
     survey.showNavigationButtons = 'none';

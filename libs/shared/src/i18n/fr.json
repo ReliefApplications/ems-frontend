@@ -562,6 +562,7 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"goNextStepOnSave": "Aller à l'étape suivante après avoir enregistré",
 					"selectIcon": "Sélectionnez une icône",
 					"tooltip": {
 						"autoSave": "Les modifications sont automatiquement enregistrées"
@@ -687,9 +688,9 @@
 		"emailBuilder": {
 			"body": "Corps du texte",
 			"default": "Défaut",
-			"distribution": "Liste de distribution",
 			"fields": "Sélectionner les champs à écrire dans le corps du texte",
 			"from": {
+				"distribution": "Liste de distribution",
 				"field": "Champ de données",
 				"title": "Depuis:"
 			},

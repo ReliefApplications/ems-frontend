@@ -300,7 +300,11 @@ export class FormBuilderComponent
           renderGlobalProperties(this.referenceDataService)
         )
     );
-    this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
+    this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the default language property also
+
+    // Sets the default language to the one selected in the interface
+    const customDefaultLocale = this.surveyCreator.survey.defaultLanguage;
+    surveyLocalization.defaultLocale = customDefaultLocale || 'en';
 
     // add move up/down buttons
     this.addAdorners();
