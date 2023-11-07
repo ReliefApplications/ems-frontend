@@ -7,6 +7,8 @@ import {
   ToggleModule,
   SelectMenuModule,
   FormWrapperModule,
+  TooltipModule,
+  ButtonModule,
 } from '@oort-front/ui';
 
 /**
@@ -22,6 +24,8 @@ import {
     ToggleModule,
     SelectMenuModule,
     FormWrapperModule,
+    ButtonModule,
+    TooltipModule,
   ],
   exports: [MapControlsComponent],
 })
