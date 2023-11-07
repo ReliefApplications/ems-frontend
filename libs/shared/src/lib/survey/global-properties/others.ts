@@ -99,7 +99,7 @@ export const init = (environment: any): void => {
       choicesCallback(pages);
     },
   });
-  // Add multiplevalues to survey settings to select the allowed languages
+  // Add property to survey settings to allow translations
   serializer.addProperty('survey', {
     name: 'translationsAllowed',
     category: 'general',
