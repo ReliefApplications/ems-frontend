@@ -14,6 +14,7 @@
         <shared-draft-record
           [survey]="survey"
           [formId]="form?.id ?? ''"
+          (loadDraft)="onLoadDraftRecord($event)"
         ></shared-draft-record>
       </div>
       <ui-tabs
@@ -70,7 +71,7 @@
         {{ 'common.next' | translate }}
       </ui-button>
     </ng-container>
-    <ui-button [disabled]="formHelpersService.disableSaveAsDraft" (click)="saveAsDraft()">{{
+    <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
       'components.form.draftRecords.save' | translate
     }}</ui-button>
     <ui-button

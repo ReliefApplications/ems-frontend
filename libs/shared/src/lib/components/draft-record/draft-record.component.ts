@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
@@ -23,17 +22,15 @@ export class DraftRecordComponent extends UnsubscribeComponent {
   @Input() survey!: SurveyModel;
   /** Form input */
   @Input() formId!: string;
+  /** Emit event when selecting draft */
+  @Output() loadDraft: EventEmitter<string> = new EventEmitter();
 
   /**
    * Shared button to open list of available record drafts.
    *
    * @param dialog This is the Angular Dialog service.
-   * @param formHelpersService This is the service that will handle forms.
    */
-  constructor(
-    public dialog: Dialog,
-    private formHelpersService: FormHelpersService
-  ) {
+  constructor(public dialog: Dialog) {
     super();
   }
 
@@ -53,8 +50,7 @@ export class DraftRecordComponent extends UnsubscribeComponent {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.survey.data = value.data;
-        this.formHelpersService.lastDraftRecord = value.id;
-        this.formHelpersService.disableSaveAsDraft = true;
+        this.loadDraft.emit(value.id);
       }
     });
   }

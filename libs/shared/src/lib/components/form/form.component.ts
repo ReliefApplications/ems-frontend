@@ -71,7 +71,10 @@ export class FormComponent
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
   public pages$ = this.pages.asObservable();
-
+  /** The id of the last draft record that was loaded */
+  public lastDraftRecord?: string;
+  /** Disables the save as draft button */
+  public disableSaveAsDraft = false;
   /** As we save the draft record in the db, the local storage is no longer used */
   /** ID for local storage */
   // private storageId = '';
@@ -132,6 +135,10 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
+    this.survey.onValueChanged.add(() => {
+      // Allow user to save as draft
+      this.disableSaveAsDraft = false;
+    });
     this.survey.onComplete.add(this.onComplete);
 
     // Unset readOnly fields if it's the record creation
@@ -227,12 +234,14 @@ export class FormComponent
   public saveAsDraft(): void {
     const callback = (details: any) => {
       this.surveyActive = true;
+      this.lastDraftRecord = details.id;
       // Updates parent component
       this.save.emit(details.save);
     };
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form.id as string,
+      this.lastDraftRecord,
       callback
     );
   }
@@ -253,9 +262,7 @@ export class FormComponent
     );
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
-    // await Promise.allSettled(promises);
-    // await this.formHelpersService.createCachedRecords(this.survey);
-    // this.survey.data = surveyData;
+    await this.formHelpersService.createTemporaryRecords(this.survey);
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
@@ -287,6 +294,15 @@ export class FormComponent
         this.surveyActive = true;
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
+        if (!this.record && this.lastDraftRecord) {
+          const callback = () => {
+            this.lastDraftRecord = undefined;
+          };
+          this.formHelpersService.deleteRecordDraft(
+            this.lastDraftRecord,
+            callback
+          );
+        }
         // localStorage.removeItem(this.storageId);
         if (data.editRecord || data.addRecord.form.uniqueRecord) {
           this.survey.clear(false, false);
@@ -356,6 +372,16 @@ export class FormComponent
   }
 
   /**
+   * Handle draft record load .
+   *
+   * @param id if of the draft record loaded
+   */
+  public onLoadDraftRecord(id: string): void {
+    this.lastDraftRecord = id;
+    this.disableSaveAsDraft = true;
+  }
+
+  /**
    * Open a dialog modal to confirm the recovery of data
    *
    * @param record The record whose data we need to recover
@@ -401,8 +427,7 @@ export class FormComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     // localStorage.removeItem(this.storageId);
-    this.formHelpersService.lastDraftRecord = '';
-    this.formHelpersService.cleanCachedRecords(this.survey);
+    // this.formHelpersService.cleanCachedRecords(this.survey);
     this.survey?.dispose();
   }
 }

@@ -69,7 +69,6 @@ export class ResourceModalComponent extends FormModalComponent {
         this.updateData(this.data.recordId, survey);
       }
     } else {
-      // TODO: add possibility to edit/update existing draft ?
       const callback = (details: any) => {
         this.ngZone.run(() => {
           this.dialogRef.close({
@@ -85,6 +84,7 @@ export class ResourceModalComponent extends FormModalComponent {
       this.formHelpersService.saveAsDraft(
         this.survey,
         this.form?.id as string,
+        this.lastDraftRecord,
         callback
       );
 

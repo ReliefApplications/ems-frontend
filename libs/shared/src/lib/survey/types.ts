@@ -74,4 +74,5 @@ export interface QuestionResource
   displayAsGrid: boolean;
   remove?: boolean;
   template?: string;
+  draftData?: any;
 }

@@ -68,12 +68,6 @@ export class FormBuilderService {
       this.formHelpersService.addQuestionTooltips
     );
 
-    //Handles the value change event when the user completes the survey
-    survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.formHelpersService.disableSaveAsDraft = false;
-    });
-
     survey.onCompleting.add(() => {
       for (const page of survey.toJSON().pages) {
         if (!page.elements) continue;
