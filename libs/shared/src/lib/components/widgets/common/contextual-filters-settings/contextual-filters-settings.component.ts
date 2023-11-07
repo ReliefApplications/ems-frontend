@@ -54,7 +54,7 @@ interface DialogData {
 })
 export class ContextualFiltersSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   @Input() form!: FormGroup;
   @Input() data!: DialogData;
@@ -65,6 +65,7 @@ export class ContextualFiltersSettingsComponent
   public allQueries: any[] = [];
   public query: any;
   public showFilterBuilder = true;
+  public formChange = false;
 
   /**
    * Getter for the available scalar fields
@@ -89,6 +90,7 @@ export class ContextualFiltersSettingsComponent
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
   // === QUERY BUILDER ===
   public availableQueries?: Observable<any[]>;
+  public queryBuilderForm?: FormGroup;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -128,35 +130,24 @@ export class ContextualFiltersSettingsComponent
       this.showFilterBuilder = false;
       return;
     }
-    this.queryBuilder.availableQueries$.subscribe((res) => {
-      if (res.length > 0) {
-        const hasDataForm = this.data.form !== null;
-        const queryName = hasDataForm
-          ? this.data.form.value.name
-          : this.queryBuilder.getQueryNameFromResourceName(
-              this.data.resourceName
-            );
-        this.form?.setControl(
-          'dashboardFilters',
-          new FormGroup({
-            name: new FormControl(queryName),
-            fields: new FormControl(
-              hasDataForm ? this.data.form.value.fields : []
-            ),
-            sort: new FormControl(hasDataForm ? this.data.form.value.sort : {}),
-            filter: new FormControl(
-              hasDataForm ? this.data.form.value.filter : {}
-            ),
-          })
-        );
-        this.loading = false;
-      }
-    });
-  }
 
-  override ngOnDestroy(): void {
-    if (this.showFilterBuilder) {
-      this.data.form = this.form?.get('dashboardFilters');
-    }
+    this.queryBuilder.availableQueries$.subscribe(() => {
+      const hasDataForm = this.data.form !== null;
+      const queryName = this.queryBuilder.getQueryNameFromResourceName(
+        this.data.resourceName
+      );
+      this.queryBuilderForm = new FormGroup({
+        name: new FormControl(queryName),
+        filter: new FormControl(hasDataForm ? this.data.form : {}),
+      });
+      this.loading = false;
+    });
+
+    this.queryBuilderForm?.valueChanges.subscribe(() => {
+      this.data.form = this.queryBuilderForm?.get('filter')?.value;
+      this.form
+        .get('contextFilters')
+        ?.setValue(JSON.stringify(this.queryBuilderForm?.get('filter')?.value));
+    });
   }
 }

@@ -329,11 +329,9 @@ export class GridSettingsComponent
                 .replace(/\s/g, '')
                 .toLowerCase();
               this.dataFilter = {
-                form: !this.formGroup.get('dashboardFilters')
+                form: !this.formGroup.get('contextFilters')
                   ? null
-                  : this.convertFromRawToFormGroup(
-                      this.formGroup.get('dashboardFilters')
-                    ),
+                  : JSON.parse(this.formGroup.get('contextFilters')?.value),
                 resourceName: nameTrimmed,
               };
             }

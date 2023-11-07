@@ -33,7 +33,7 @@
       <ng-container *ngIf="!loading; else loadingTmpl">
         <div class="flex flex-col">
           <shared-filter-builder
-          [form]="$any(form.get('dashboardFilters'))"
+          [form]="$any(queryBuilderForm)"
           ></shared-filter-builder>
         </div>
       </ng-container>
