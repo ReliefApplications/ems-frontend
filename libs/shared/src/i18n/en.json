@@ -688,9 +688,9 @@
 		"emailBuilder": {
 			"body": "Body",
 			"default": "Default",
-			"distribution": "Distribution list",
 			"fields": "Select fields to write in body",
 			"from": {
+				"distribution": "Distribution list",
 				"field": "Data field",
 				"title": "From:"
 			},
