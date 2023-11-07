@@ -595,6 +595,8 @@ export const init = (
           ({ data }) => {
             const choices = mapQuestionChoices(data, question).filter(
               (x: { value: string }) =>
+                // This makes it so if we have the canOnlyCreateRecords flag set to true,
+                // we can still see previously selected records when editing or seeing details of a record
                 !question.canOnlyCreateRecords || x.value === question.value
             );
             question.contentQuestion.choices = choices;
