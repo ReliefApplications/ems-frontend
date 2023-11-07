@@ -179,7 +179,7 @@ export const init = (environment: any): void => {
       }
       choicesCallback(choices);
     },
-    onSetValue: (actualMatrix: QuestionResource, nameMatrix: any) => {
+    onSetValue: (actualMatrix: Question, nameMatrix: any) => {
       const matrixToBeCopied = (
         actualMatrix.survey as SurveyModel
       )?.getQuestionByName(nameMatrix);
@@ -206,7 +206,7 @@ export const init = (environment: any): void => {
       }
       choicesCallback(choices);
     },
-    onSetValue: (actualMatrix: QuestionResource, nameMatrix: any) => {
+    onSetValue: (actualMatrix: Question, nameMatrix: any) => {
       const matrixToBeCopied = (
         actualMatrix.survey as SurveyModel
       )?.getQuestionByName(nameMatrix);
