@@ -263,6 +263,8 @@ export class FormBuilderService {
       const lang = this.translate.currentLang || this.translate.defaultLang;
       if (survey.getUsedLocales().includes(lang)) {
         survey.locale = lang;
+      } else {
+        survey.locale = survey.defaultLanguage || 'en';
       }
     }
     survey.showNavigationButtons = 'none';

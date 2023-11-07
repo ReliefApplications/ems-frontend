@@ -8,7 +8,7 @@ import {
   settings,
 } from 'survey-core';
 import { Question } from '../types';
-import { SurveyModel, PageModel } from 'survey-core';
+import { SurveyModel, PageModel, surveyLocalization } from 'survey-core';
 
 /**
  * Add support for custom properties to the survey
@@ -133,6 +133,30 @@ export const init = (environment: any): void => {
     visibleIndex: 2,
     isRequired: false,
   });
+
+  // Allow user to select the default language of the survey
+  serializer.addProperty('survey', {
+    name: 'defaultLanguage:dropdown',
+    category: 'general',
+    visibleIndex: 3,
+    isRequired: false,
+    choices: (_: SurveyModel, choicesCallback: any) => {
+      const languages =
+        Object.keys(surveyLocalization.locales).map((locale) => ({
+          value: locale,
+          text:
+            surveyLocalization.localeNames[locale].charAt(0).toUpperCase() +
+            surveyLocalization.localeNames[locale].slice(1),
+        })) ?? [];
+      choicesCallback(languages);
+    },
+    default: 'en',
+    onSetValue: (survey: SurveyModel, newValue: string) => {
+      surveyLocalization.defaultLocale = newValue || 'en';
+      survey.setPropertyValue('defaultLanguage', newValue || 'en');
+    },
+  });
+
   // Add ability to conditionally allow dynamic panel add new panel
   serializer.addProperty('paneldynamic', {
     name: 'AllowNewPanelsExpression:expression',
