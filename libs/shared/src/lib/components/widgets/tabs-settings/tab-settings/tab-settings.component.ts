@@ -141,7 +141,13 @@ export class TabSettingsComponent implements OnDestroy {
    * @param e event
    */
   onAdd(e: any): void {
-    const widget = cloneDeep(e);
+    const widget = {
+      ...cloneDeep(e),
+      cols:
+        e.cols > 4
+          ? this.widgetGridComponent.colsNumber
+          : Math.floor(this.widgetGridComponent.colsNumber / 2), //set the number of columns so that each widget fills half of the widget grid in width, or all the width for wide widgets (grid and tabs)
+    };
     const widgets = this.structure?.value.slice() || [];
     this.structure?.setValue([...widgets, widget]);
     if (this.timeoutListener) {

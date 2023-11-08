@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -25,7 +26,7 @@ import { takeUntil } from 'rxjs';
 })
 export class TabsSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, OnDestroy
 {
   /** Settings */
   public widgetForm!: FormGroup;
@@ -53,5 +54,15 @@ export class TabsSettingsComponent
       .subscribe(() => {
         this.change.emit(this.widgetForm);
       });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.widgetForm.value.tabs.forEach((tab: any) => {
+      if (tab.structure.length == 1) {
+        //if only one widget, we set its height to the height of the tabs widget
+        tab.structure[0].rows = this.widget.rows;
+      }
+    });
   }
 }
