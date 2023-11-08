@@ -63,11 +63,34 @@
       >
       </ui-textarea>
     </div>
+    <!-- Side menu -->
     <div class="mb-6">
       <ui-toggle formControlName="sideMenu">
         <ng-container ngProjectAs="label">
-          {{ 'models.application.menu' | translate }}</ng-container
+          {{
+            'components.application.update.sideMenu' | translate
+          }}</ng-container
         >
+      </ui-toggle>
+    </div>
+    <!-- Default hide menu -->
+    <div class="mb-6">
+      <ui-toggle
+        *ngIf="settingsForm.controls.hideMenu.enabled"
+        formControlName="hideMenu"
+      >
+        <ng-container ngProjectAs="label">
+          {{ 'components.application.update.hideMenu' | translate
+          }}<ui-icon
+            class="ml-1 cursor-help self-center"
+            variant="grey"
+            [size]="18"
+            icon="info_outline"
+            [uiTooltip]="
+              'components.application.update.tooltip.hideMenu' | translate
+            "
+          ></ui-icon
+        ></ng-container>
       </ui-toggle>
     </div>
   </div>

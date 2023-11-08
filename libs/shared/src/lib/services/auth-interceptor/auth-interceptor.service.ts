@@ -51,15 +51,15 @@ export class AuthInterceptorService implements HttpInterceptor {
             : {}),
         },
       });
-    }
-    // Passing the accesstoken so backend can use it in proxy request involving authorization code flow
-    const accessToken = localStorage.getItem('access_token');
-    if (accessToken) {
-      request = request.clone({
-        setHeaders: {
-          AccessToken: accessToken,
-        },
-      });
+      // Passing the accesstoken so backend can use it in proxy request involving authorization code flow
+      const accessToken = localStorage.getItem('access_token');
+      if (accessToken) {
+        request = request.clone({
+          setHeaders: {
+            AccessToken: accessToken,
+          },
+        });
+      }
     }
     return next.handle(request).pipe(
       catchError((err) => {
