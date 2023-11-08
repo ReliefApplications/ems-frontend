@@ -720,6 +720,12 @@ export class ApplicationService {
     }
   }
 
+  /**
+   * Updates a specific page grid options in the opened application.
+   *
+   * @param page updated page
+   * @param gridOptions new grid options
+   */
   updatePageGridOptions(page: Page, gridOptions: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {

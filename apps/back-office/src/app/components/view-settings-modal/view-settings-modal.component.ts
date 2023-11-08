@@ -306,6 +306,11 @@ export class ViewSettingsModalComponent
     );
   }
 
+  /**
+   * Save grid settings on change.
+   *
+   * @param gridOptions grid options
+   */
   public onUpdateGrid(gridOptions: any): void {
     const callback = () => {
       this.page = {
