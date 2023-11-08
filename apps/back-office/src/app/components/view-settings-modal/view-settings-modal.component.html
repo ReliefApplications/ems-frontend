@@ -102,6 +102,65 @@
             ></shared-edit-access>
           </div>
         </ui-tab>
+        <!-- Grid layout style settings -->
+        <!-- Only show if data.page.type is not form -->
+        <ui-tab *ngIf="data.page?.type !== 'form'">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="style"
+              [size]="18"
+              uiTooltip="{{ 'common.gridStyle' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.gridStyle' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex gap-4 flex-col" formGroupName="gridOptions">
+            <!-- {{ data | json }}
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            {{ settingsForm.value | json }}
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            {{ applications | json }} -->
+
+            <!-- Number of columns -->
+            <label>{{ 'common.columns' | translate }}</label>
+            <input
+              type="number"
+              formControlName="columns"
+              class="w-1/2"
+              placeholder="{{ 'common.default' | translate }}"
+            />
+            <!-- Change default size of rows -->
+            <label>{{ 'common.rows' | translate }}</label>
+            <input
+              type="number"
+              formControlName="rows"
+              class="w-1/2"
+              placeholder="{{ 'common.default' | translate }}"
+            />
+            <!-- Specify inner gap in pixels -->
+            <label>{{ 'common.innerGap' | translate }}</label>
+            <input
+              type="number"
+              formControlName="innerGap"
+              class="w-1/2"
+              placeholder="{{ 'common.default' | translate }}"
+            />
+            <!-- Delete outer gap -->
+            <ui-toggle formControlName="deleteOuterGap">
+              <ng-container ngProjectAs="label">
+                {{ 'common.deleteOuterGap' | translate }}
+              </ng-container>
+            </ui-toggle>
+          </div>
+        </ui-tab>
       </ui-tabs>
     </form>
   </ng-container>

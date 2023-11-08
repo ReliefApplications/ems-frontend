@@ -1,4 +1,5 @@
 import { Application } from './application.model';
+import { GridsterConfig } from 'angular-gridster2';
 
 /**
  * Enum of content types.
@@ -70,6 +71,7 @@ export interface Page {
   type?: ContentType;
   content?: string;
   settings?: any;
+  gridOptions?: GridsterConfig;
   permissions?: any;
   application?: Application;
   canSee?: boolean;

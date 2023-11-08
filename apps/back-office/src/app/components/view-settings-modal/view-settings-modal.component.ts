@@ -21,6 +21,7 @@ import {
   AccessModule,
   ApplicationService,
   Page,
+  Dashboard,
   Step,
   UnsubscribeComponent,
   WorkflowService,
@@ -91,6 +92,8 @@ export class ViewSettingsModalComponent
   private step?: Step;
   /** Page object */
   private page?: Page;
+  /** Dashboard object */
+  private dashboard?: Dashboard;
 
   /**
    * Common settings of pages / steps.
@@ -142,6 +145,13 @@ export class ViewSettingsModalComponent
           }
         });
     }
+
+    // Listen to grid settings updates
+    this.settingsForm?.controls.gridOptions.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        this.onUpdateGrid(value);
+      });
   }
 
   /**
@@ -227,6 +237,12 @@ export class ViewSettingsModalComponent
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
+      gridOptions: this.fb.group({
+        columns: this.fb.control(1),
+        rows: this.fb.control(1),
+        innerGap: this.fb.control(1),
+        deleteOuterGap: this.fb.control(false),
+      }),
     });
   }
 
@@ -287,6 +303,23 @@ export class ViewSettingsModalComponent
         visible,
       },
       callback
+    );
+  }
+
+  public onUpdateGrid(gridOptions: any): void {
+    const callback = () => {
+      this.page = {
+        ...this.page,
+        gridOptions,
+      };
+      // Updates parent component
+      const updates = { gridOptions };
+      this.onUpdate.emit(updates);
+    };
+    this.applicationService.updatePageGridOptions(
+      this.page as Page,
+      gridOptions
+      // callback
     );
   }
 }
