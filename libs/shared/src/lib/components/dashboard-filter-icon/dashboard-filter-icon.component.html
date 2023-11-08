@@ -4,6 +4,9 @@
     variant="light"
     icon="filter_alt"
     size="large"
+    [uiTooltip]="'common.filter.one' | translate"
+    (click)="onToggleVisibility()"
+    [disabled]="(enabled | async) === false"
   ></ui-button>
   <kendo-badge
     shape="dot"
