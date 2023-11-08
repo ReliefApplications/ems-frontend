@@ -50,7 +50,6 @@ import { ApplicationService } from '../../../services/application/application.se
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
-import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -205,19 +204,11 @@ export class CoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
           { logic: 'and', filters: gridFilters },
-          {
-            logic: 'or',
-            filters: searchFilters(
-              this.search,
-              this.fields.map((field) => field.meta),
-              skippedFields
-            ),
-          },
+          { field: '_globalSearch', operator: 'contains', value: this.search },
         ],
       };
     } else {

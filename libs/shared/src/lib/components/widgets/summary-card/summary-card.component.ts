@@ -36,7 +36,6 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, cloneDeep, isNaN, isNil } from 'lodash';
-import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResourceQueryResponse } from '../../../models/resource.model';
@@ -136,18 +135,14 @@ export class SummaryCardComponent
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
     if (this.searchControl.value) {
-      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
-          { logic: 'and', filters: [this.layout?.query.filter] },
           {
             logic: 'or',
-            filters: searchFilters(
-              this.searchControl.value,
-              this.fields,
-              skippedFields
-            ),
+            field: '_globalSearch',
+            operator: 'contains',
+            value: this.searchControl.value,
           },
         ],
       };
