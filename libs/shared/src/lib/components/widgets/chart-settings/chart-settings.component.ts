@@ -84,18 +84,16 @@ export class ChartSettingsComponent implements OnInit {
           },
         })
         .subscribe(({ data }) => {
-          if (data) {
-            if (data.resource && data.resource.name) {
-              const nameTrimmed = data.resource.name
-                .replace(/\s/g, '')
-                .toLowerCase();
-              this.dataFilter = {
-                form: !this.formGroup.get('contextFilters')
-                  ? null
-                  : JSON.parse(this.formGroup.get('contextFilters')?.value),
-                resourceName: nameTrimmed,
-              };
-            }
+          if (data.resource && data.resource.queryName) {
+            const nameTrimmed = data.resource.queryName
+              .replace(/\s/g, '')
+              .toLowerCase();
+            this.dataFilter = {
+              form: !this.formGroup.get('contextFilters')
+                ? null
+                : JSON.parse(this.formGroup.get('contextFilters')?.value),
+              resourceName: nameTrimmed,
+            };
           }
         });
     }

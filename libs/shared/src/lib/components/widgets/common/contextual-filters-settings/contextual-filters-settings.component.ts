@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -90,16 +89,13 @@ export class ContextualFiltersSettingsComponent
    * created.
    *
    * @param queryBuilder The service used to build queries
-   * @param fb The Angular FormBuilder service
    */
-  constructor(
-    private queryBuilder: QueryBuilderService,
-    private fb: FormBuilder
-  ) {
+  constructor(private queryBuilder: QueryBuilderService) {
     super();
   }
 
   ngOnInit(): void {
+    console.log(this.data, this.form, 'aqui dentro');
     if (!this.data) {
       this.showFilterBuilder = false;
       return;
