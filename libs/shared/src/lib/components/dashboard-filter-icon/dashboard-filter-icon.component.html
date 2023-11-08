@@ -1,0 +1,18 @@
+<kendo-badge-container>
+  <ui-button
+    [isIcon]="true"
+    variant="light"
+    icon="filter_alt"
+    size="large"
+    [uiTooltip]="'common.filter.one' | translate"
+    (click)="onToggleVisibility()"
+    [disabled]="(enabled | async) === false"
+  ></ui-button>
+  <kendo-badge
+    shape="dot"
+    themeColor="error"
+    size="small"
+    class="!-translate-x-1/4 !translate-y-full"
+    *ngIf="active"
+  ></kendo-badge>
+</kendo-badge-container>

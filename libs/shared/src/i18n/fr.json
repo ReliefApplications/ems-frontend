@@ -598,8 +598,13 @@
 				"title": "Déverrouiller l'édition"
 			},
 			"update": {
+				"hideMenu": "Cacher le menu vertical de navigation par défaut",
 				"placeholder": {
 					"description": "Veuillez entrer une description pour l'application."
+				},
+				"sideMenu": "Afficher le menu sur le côté",
+				"tooltip": {
+					"hideMenu": "Ne s'applique que lorsque le menu est sur le côté"
 				}
 			},
 			"users": {

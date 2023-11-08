@@ -374,6 +374,7 @@ export class ApplicationService {
             name: value.name,
             description: value.description,
             sideMenu: value.sideMenu,
+            hideMenu: value.hideMenu,
             status: value.status,
           },
         })
@@ -390,6 +391,7 @@ export class ApplicationService {
                 name: data.editApplication.name,
                 description: data.editApplication.description,
                 sideMenu: value.sideMenu,
+                hideMenu: value.hideMenu,
                 status: data.editApplication.status,
               };
               this.application.next(newApplication);

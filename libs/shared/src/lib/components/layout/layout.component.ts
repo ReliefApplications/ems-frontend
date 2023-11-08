@@ -64,6 +64,8 @@ export class LayoutComponent
 
   @Input() sideMenu = true;
 
+  @Input() menuOpened = true;
+
   languages: string[] = [];
 
   // === NOTIFICATIONS ===

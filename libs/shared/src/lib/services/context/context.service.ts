@@ -30,6 +30,8 @@ export class ContextService {
   public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<any>(null);
+  /** Is filter opened */
+  public filterOpened = new BehaviorSubject<boolean>(false);
   /** The current application id */
   private currentApplicationId?: string | null = null;
 
@@ -55,6 +57,11 @@ export class ContextService {
   /** @returns filterPosition value as observable */
   get filterPosition$() {
     return this.filterPosition.asObservable();
+  }
+
+  /** @returns filterOpened value as observable */
+  get filterOpened$() {
+    return this.filterOpened.asObservable();
   }
 
   /** @returns key for storing position of filter */

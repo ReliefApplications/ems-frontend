@@ -598,8 +598,13 @@
 				"title": "Unlock edition"
 			},
 			"update": {
+				"hideMenu": "Hide menu by default",
 				"placeholder": {
 					"description": "Please enter a description for the application"
+				},
+				"sideMenu": "Show menu on the side",
+				"tooltip": {
+					"hideMenu": "Only applies when menu is located on the side"
 				}
 			},
 			"users": {
@@ -1976,7 +1981,6 @@
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
-			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",

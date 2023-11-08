@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   Application,
   ApplicationService,
@@ -27,7 +27,7 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 })
 export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public applications = new Array<Application>();
-  public settingsForm!: UntypedFormGroup;
+  public settingsForm!: ReturnType<typeof this.createSettingsForm>;
   public statusChoices = Object.values(status);
   /** Current application */
   public application?: Application;
@@ -72,6 +72,16 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
         if (application) {
           this.application = application;
           this.settingsForm = this.createSettingsForm(application);
+          this.settingsForm.controls.sideMenu.valueChanges
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((value) => {
+              if (value) {
+                this.settingsForm.controls.hideMenu.enable();
+              } else {
+                this.settingsForm.controls.hideMenu.disable();
+              }
+              this.settingsForm.updateValueAndValidity();
+            });
           this.locked = this.application?.locked;
           this.lockedByUser = this.application?.lockedByUser;
         }
@@ -89,6 +99,9 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
       id: [{ value: application.id, disabled: true }],
       name: [application.name, Validators.required],
       sideMenu: [application.sideMenu],
+      hideMenu: [
+        { value: application.hideMenu, disabled: !application.sideMenu },
+      ],
       description: [application.description],
       status: [application.status],
     });

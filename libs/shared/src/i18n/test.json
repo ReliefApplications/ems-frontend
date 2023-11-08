@@ -598,8 +598,13 @@
 				"title": "******"
 			},
 			"update": {
+				"hideMenu": "******",
 				"placeholder": {
 					"description": "******"
+				},
+				"sideMenu": "******",
+				"tooltip": {
+					"hideMenu": "******"
 				}
 			},
 			"users": {
@@ -1976,7 +1981,6 @@
 		"application": {
 			"description": "******",
 			"id": "******",
-			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
