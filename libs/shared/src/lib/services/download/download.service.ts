@@ -89,11 +89,22 @@ export class DownloadService {
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     this.restService
-      .get(path, { ...options, responseType: 'blob', headers })
+      .get(path, {
+        ...options,
+        responseType: 'blob',
+        headers,
+        observe: 'response',
+      })
       .subscribe({
         next: (res) => {
-          const blob = new Blob([res], { type });
-          this.saveFile(fileName, blob);
+          const blob = new Blob([res.body], { type });
+          const serverFileName = res.headers
+            .get('Content-Disposition')
+            ?.split('filename=')[1]
+            ?.trim();
+
+          // Prefer file name sent from server, if available
+          this.saveFile(serverFileName ?? fileName, blob);
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.ready'
           );
