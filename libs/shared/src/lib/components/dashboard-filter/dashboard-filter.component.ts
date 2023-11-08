@@ -42,7 +42,6 @@ import { FormBuilderService } from '../../services/form-builder/form-builder.ser
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 
-
 /**
  * Interface for quick filters
  */
