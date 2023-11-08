@@ -282,9 +282,9 @@ export class DashboardComponent
 
   /**
    * Method called when there is a change in the drawer state.
-   * Updates the isDrawerOpen, drawerPosition, drawerHeight and filterStyle variables with the new values.
+   * Updates the isDrawerOpen variable with the new value.
    *
-   * @param {any} drawerObj Object that indicates whether the drawer is open or closed, its position, height and style.
+   * @param {boolean} drawerObj Object that indicates whether the drawer is open or closed and its position.
    */
   drawerToggleChange(drawerObj: any): void {
     this.isDrawerOpen = drawerObj.isDrawerOpen;

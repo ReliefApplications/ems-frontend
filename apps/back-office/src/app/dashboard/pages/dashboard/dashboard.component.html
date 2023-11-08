@@ -198,4 +198,5 @@
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
   [isFullScreen]="isFullScreen"
+  (isDrawerOpenEmitter) = "drawerToggleChange($event)"
 ></shared-dashboard-filter>

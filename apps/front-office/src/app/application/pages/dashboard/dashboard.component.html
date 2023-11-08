@@ -55,4 +55,5 @@
 <shared-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [isFullScreen]="isFullScreen"
+  (isDrawerOpenEmitter) = "drawerToggleChange($event)"
 ></shared-dashboard-filter>
