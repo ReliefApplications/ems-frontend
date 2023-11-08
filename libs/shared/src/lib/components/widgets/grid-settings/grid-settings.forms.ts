@@ -219,9 +219,7 @@ export const createGridActionsFormGroup = (configuration: any) => {
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
     navigateSettings: fb.group({
       pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
-      recordField: [
-        get(configuration, 'actions.navigateSettings.recordField', ''),
-      ],
+      field: [get(configuration, 'actions.navigateSettings.field', '')],
       title: [
         get(configuration, 'actions.navigateSettings.title', 'Details view'),
       ],

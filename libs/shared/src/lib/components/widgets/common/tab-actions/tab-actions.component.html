@@ -88,7 +88,7 @@
               | translate 
           }}
           <ui-select-menu
-            formControlName="recordField"
+            formControlName="field"
             [placeholder]="
               'components.widget.settings.grid.actions.recordField.placeholder'
                 | translate
@@ -97,9 +97,30 @@
             <ui-select-option value="id">
               {{ 'common.id' | translate }}
             </ui-select-option>
-            <ui-select-option *ngFor="let field of resourceFields" [value]="field.name + '+' +field.value">
+
+            <!-- <ui-select-option *ngFor="let field of resourceFields" [value]="field.name + '+' +field.value">
               {{ field.name }}
-            </ui-select-option>
+            </ui-select-option> -->
+            <ng-container *ngFor="let field of resourceFields">
+              <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                {{ field.text || field.name }}
+              </ui-select-option>
+    
+              <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                {{ field.text || field.name }}
+                <ui-select-option
+                  *ngFor="let subField of field.fields"
+                  [value]="field.name + '.' + subField.name"
+                >
+                  {{
+                    field.name === '$attribute'
+                      ? subField.text || subField.name
+                      : field.name + ' - ' + (subField.text || subField.name)
+                  }}
+                </ui-select-option>
+              </ui-select-option>
+            </ng-container>
+          
           </ui-select-menu>
         </div>
       </div>

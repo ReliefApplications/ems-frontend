@@ -273,7 +273,7 @@ export class CoreGridComponent
     showDetails: true,
     navigateToPage: false,
     navigateSettings: {
-      recordField: '',
+      field: '',
       pageUrl: '',
       title: '',
     },
@@ -369,11 +369,7 @@ export class CoreGridComponent
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
-        recordField: get(
-          this.settings,
-          'actions.navigateSettings.recordField',
-          false
-        ),
+        field: get(this.settings, 'actions.navigateSettings.field', false),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
         title: get(this.settings, 'actions.navigateSettings.title', ''),
       },
@@ -851,7 +847,7 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
-   * @param event.recordField boolean to use record id
+   * @param event.recordField record field to navigate
    */
   public onAction(event: {
     action: string;
@@ -899,18 +895,17 @@ export class CoreGridComponent
         if (event.item) {
           let fullUrl = this.getPageUrl(event.pageUrl as string);
           if (event.recordField) {
-            const field = event.recordField;
+            const field = get(event, 'recordField', '');
             let recordField = '';
             if (field === 'id') {
-              recordField = event.item.id;
+              recordField = get(event, 'item.id');
             } else {
               const splitField = field.split('+');
+              recordField = get(event, `item.${splitField[0]}`);
               // if not a scalar field
-              if (typeof event.item[splitField[0]] === 'string') {
-                recordField = event.item[splitField[0]];
-              } else {
+              if (typeof recordField !== 'string') {
                 //get the obj
-                const obj = event.item[splitField[0]];
+                const obj = recordField as any;
                 // verify each field of the object
                 for (const key in obj) {
                   if (key.toLowerCase() === splitField[1]) {

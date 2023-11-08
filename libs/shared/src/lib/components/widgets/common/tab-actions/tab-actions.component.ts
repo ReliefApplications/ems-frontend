@@ -5,7 +5,7 @@ import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { GET_RESOURCE_BY_ID } from './graphql/queries';
+import { GET_LAYOUTS } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { ResourceQueryResponse } from '../../../../models/resource.model';
 import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
@@ -99,29 +99,25 @@ export class TabActionsComponent
     if (this.formGroup.get('resource')?.value) {
       this.apollo
         .query<ResourceQueryResponse>({
-          query: GET_RESOURCE_BY_ID,
+          query: GET_LAYOUTS,
           variables: {
-            id: this.formGroup.get('resource')?.value,
+            id: this.formGroup.get('layouts')?.value,
+            resource: this.formGroup.get('resource')?.value,
           },
         })
         .subscribe(({ data }) => {
-          data.resource.fields.forEach((field: any) => {
-            if (field.referenceData) {
-              const referenceData = field.referenceData.id;
-              this.referenceDataService
-                .loadReferenceData(referenceData)
-                .then((refData: any) => {
-                  this.resourceFields.push({
-                    name: field.name,
-                    value: refData.valueField,
-                  });
-                });
-            } else {
-              this.resourceFields.push({
-                name: field.name,
-                value: field.name,
+          data.resource.layouts?.edges.forEach((layout: any) => {
+            layout.node.query.fields.forEach((field: any) => {
+              let add = true;
+              this.resourceFields.forEach((val: any) => {
+                if (val.name === field.name) {
+                  add = false;
+                }
               });
-            }
+              if (add) {
+                this.resourceFields.push(field);
+              }
+            });
           });
         });
     }

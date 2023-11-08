@@ -112,7 +112,7 @@ export class GridComponent
     showDetails: false,
     navigateToPage: false,
     navigateSettings: {
-      recordField: '',
+      field: '',
       pageUrl: '',
       title: '',
     },
