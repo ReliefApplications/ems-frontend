@@ -745,7 +745,7 @@ export const init = (
     instance.multiSelect = true;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
-    if (!question.readOnlyGrid) {
+    if (!question.readOnly) {
       Object.assign(settings, {
         actions: {
           delete: question.canDelete,
