@@ -168,6 +168,13 @@ export const init = (environment: any): void => {
       obj.allowAddPanel = !!res;
     },
   });
+  // Add option to omit question from fields
+  serializer.addProperty('question', {
+    name: 'omitField:boolean',
+    category: 'general',
+    visibleIndex: 6,
+    default: false,
+  });
 };
 
 /**
