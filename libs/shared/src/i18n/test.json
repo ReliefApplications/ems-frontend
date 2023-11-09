@@ -728,6 +728,25 @@
 			"display": {
 				"submissionMessage": "******"
 			},
+			"draftRecords": {
+				"buttonLoad": "******",
+				"confirmModal": {
+					"confirmDelete": "******",
+					"confirmLoad": "******",
+					"delete": "******",
+					"load": "******"
+				},
+				"creationDate": "******",
+				"delete": "******",
+				"load": "******",
+				"noDrafts": "******",
+				"preview": "******",
+				"previewTitle": "******",
+				"save": "******",
+				"select": "******",
+				"successEdit": "******",
+				"successSave": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
