@@ -55,6 +55,11 @@ import { DOCUMENT } from '@angular/common';
 import { WidgetComponent } from '../../../widget/widget.component';
 import { DatePipe } from '../../../../pipes/date/date.pipe';
 
+/** Minimum column width */
+const MIN_COLUMN_WIDTH = 100;
+/** Maximum column width */
+const MAX_COLUMN_WIDTH = 250;
+
 /**
  * Test if an element match a css selector
  *
@@ -912,7 +917,7 @@ export class GridComponent
   }
 
   /**
-   * Calls layout format from utils.ts to get the formated fields
+   * Calls layout format from utils.ts to get the formatted fields
    *
    * @param name Content of the field as a string
    * @param field Field data
@@ -985,7 +990,7 @@ export class GridComponent
     const activeColumns: { [key: string]: number } = {};
 
     // Verify what kind of field is and deal with this logic
-    const typesFields: any = [];
+    const typesFields: { field: string; type: string; title: string }[] = [];
     this.fields.forEach((field: any) => {
       typesFields.push({
         field: field.name,
@@ -1017,34 +1022,23 @@ export class GridComponent
             activeColumns[type.field] < data[type.field].length) ||
           (type.title && activeColumns[type.field] < type.title.length)
         ) {
-          let defaultLengthValue = type.title.length;
+          const titleSize = type.title.length;
+          let contentSize = 0;
           switch (type.type) {
             case 'time':
             case 'datetime-local':
             case 'datetime':
             case 'date': {
-              const contentDefaultValue = (
-                this.datePipe.transform(data[type.field]) || ''
-              ).length;
-              if (contentDefaultValue > defaultLengthValue) {
-                defaultLengthValue = contentDefaultValue;
-              }
-              activeColumns[type.field] = defaultLengthValue;
+              contentSize = (this.datePipe.transform(data[type.field]) || '')
+                .length;
               break;
             }
             case 'file': {
-              if (data[type.field][0]?.name?.length > defaultLengthValue) {
-                defaultLengthValue = data[type.field][0]?.name.length;
-              }
-              activeColumns[type.field] = defaultLengthValue;
+              contentSize = data[type.field][0]?.name?.length || 0;
               break;
             }
             case 'numeric': {
-              const contentDefaultValue = data[type.field]?.toString()?.length;
-              if (contentDefaultValue > defaultLengthValue) {
-                defaultLengthValue = contentDefaultValue;
-              }
-              activeColumns[type.field] = defaultLengthValue;
+              contentSize = data[type.field]?.toString()?.length;
               break;
             }
             case 'checkbox':
@@ -1053,30 +1047,46 @@ export class GridComponent
               (data[type.field] || []).forEach((obj: any) => {
                 checkboxLength += obj.length;
               });
-              if (checkboxLength > defaultLengthValue) {
-                defaultLengthValue = checkboxLength;
-              }
-              activeColumns[type.field] = defaultLengthValue;
+              contentSize = checkboxLength;
               break;
             }
             case 'boolean':
             case 'color': {
               //min size
-              activeColumns[type.field] = type.title;
+              contentSize = 0;
               break;
             }
             default: {
-              const contentDefaultValue = (data[type.field] || '').length;
-              if (contentDefaultValue > defaultLengthValue) {
-                defaultLengthValue = contentDefaultValue;
-              }
-              activeColumns[type.field] = defaultLengthValue;
+              contentSize = (data[type.field] || '').length;
             }
           }
+
+          activeColumns[type.field] = Math.max(titleSize, contentSize);
         }
       });
     });
 
+    const avgPixelPerCol = gridTotalWidth / typesFields.length;
+
+    // If there are too many columns, we can't do the calculations by percentage
+    // Instead, clamp the columns to the min and max width
+    if (avgPixelPerCol < MIN_COLUMN_WIDTH * 1.1) {
+      this.columns.forEach((column) => {
+        const colWidth = activeColumns[column.field];
+        if (colWidth) {
+          column.width = Math.min(
+            Math.max(colWidth * pixelWidthPerCharacter, MIN_COLUMN_WIDTH),
+            MAX_COLUMN_WIDTH
+          );
+        }
+
+        // Make sure that every column has a width set
+        if (column.width <= 0) {
+          column.width = MIN_COLUMN_WIDTH;
+        }
+      });
+      return;
+    }
     // Calculates the widest column in character number
     const maxCharacterToDisplay = Math.floor(
       maxPixelsPerColumn / pixelWidthPerCharacter
@@ -1156,6 +1166,10 @@ export class GridComponent
         if (column.title) {
           column.width = Math.floor((min_percentage * gridTotalWidth) / 100);
         }
+      }
+      // Make sure that every column has a width set
+      if (column.width <= 0) {
+        column.width = MIN_COLUMN_WIDTH;
       }
     });
   }
