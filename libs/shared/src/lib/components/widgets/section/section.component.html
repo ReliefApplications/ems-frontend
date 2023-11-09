@@ -1,0 +1,15 @@
+<div class="h-full flex flex-col">
+  <ng-template #empty>
+    <div class="m-auto flex justify-center">
+      <ui-button variant="primary" category="secondary" (click)="openSettings()"
+        >{{ 'components.widget.grid.openSettings' | translate }}
+      </ui-button>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #headerTemplate>
+  <div class="flex-1 overflow-hidden">
+    <ng-template [cdkPortalOutlet]="portal"></ng-template>
+  </div>
+</ng-template>

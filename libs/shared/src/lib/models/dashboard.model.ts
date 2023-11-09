@@ -7,6 +7,7 @@ import { EditorSettingsComponent } from '../components/widgets/editor-settings/e
 import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
+import { SectionSettingsComponent } from '../components/widgets/section-settings/section-settings.component';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -221,7 +222,7 @@ export const WIDGET_TYPES = [
     rows: 8,
     minItemRows: 2,
     component: 'section',
-    settingsTemplate: TabsSettingsComponent,
+    settingsTemplate: SectionSettingsComponent,
   },
 ];
 
