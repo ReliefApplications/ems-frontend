@@ -1428,20 +1428,22 @@
 						"convert": "Convertir des enregistrements",
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
+						"goTo": {
+							"column": {
+								"label": "Nom de la colonne",
+								"placeholder": "Entrez un nom pour la colonne..."
+							},
+							"field": {
+								"label": "Passer le champ comme paramètre de requête",
+								"placeholder": "Sélectionnez un champ"
+							},
+							"label": "Accédez à la page",
+							"target": {
+								"label": "Naviguez vers la page",
+								"placeholder": "Sélectionnez une page"
+							}
+						},
 						"inline": "Modifier par ligne",
-						"navigateToPage": "Accédez à la page",
-						"pageUrl": {
-							"label": "Url de la source de la page",
-							"placeholder": "Entrez l'id de la page"
-						},
-						"pageUrlTitle": {
-							"label": "Nom de la colonne",
-							"placeholder": "Entrez un nom pour la colonne..."
-						},
-						"recordField": {
-							"label": "Passer le champ comme paramètre de requête",
-							"placeholder": "Sélectionnez un champ"
-						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",

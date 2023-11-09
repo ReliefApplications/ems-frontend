@@ -847,7 +847,6 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
-   * @param event.recordField record field to navigate
    */
   public onAction(event: {
     action: string;
@@ -856,7 +855,6 @@ export class CoreGridComponent
     value?: any;
     field?: any;
     pageUrl?: string;
-    recordField?: string;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -894,10 +892,10 @@ export class CoreGridComponent
       case 'goTo': {
         if (event.item) {
           let fullUrl = this.getPageUrl(event.pageUrl as string);
-          if (event.recordField) {
-            const field = get(event, 'recordField', '');
-            const recordField = get(event, `item.${field}`);
-            fullUrl = `${fullUrl}?id=${recordField}`;
+          if (event.field) {
+            const field = get(event, 'field', '');
+            const value = get(event, `item.${field}`);
+            fullUrl = `${fullUrl}?id=${value}`;
           }
           this.router.navigateByUrl(fullUrl);
         }
