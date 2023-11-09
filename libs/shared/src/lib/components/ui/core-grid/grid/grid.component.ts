@@ -978,7 +978,6 @@ export class GridComponent
    * Automatically set the width of each column
    */
   private setColumnsWidth() {
-    console.log(this.layout);
     const gridElement = this.gridRef.nativeElement;
     const gridTotalWidth = gridElement.offsetWidth;
 
