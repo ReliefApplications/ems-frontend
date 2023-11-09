@@ -90,7 +90,10 @@
         ></ui-icon>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-tab-actions [formGroup]="widgetFormGroup"></shared-tab-actions>
+        <shared-tab-actions
+          [formGroup]="widgetFormGroup"
+          [fields]="fields"
+        ></shared-tab-actions>
       </ng-template>
     </ui-tab>
     <!-- Card display settings -->

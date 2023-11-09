@@ -20,6 +20,8 @@ export class TabActionsComponent
 {
   /** Widget reactive form group */
   @Input() formGroup!: UntypedFormGroup;
+  /** Available fields */
+  @Input() fields: any[] = [];
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
   /** Available pages from the application */
@@ -69,8 +71,8 @@ export class TabActionsComponent
     },
     {
       name: 'navigateToPage',
-      text: 'components.widget.settings.grid.actions.navigateToPage',
-      tooltip: 'components.widget.settings.grid.hint.actions.navigateToPage',
+      text: 'components.widget.settings.grid.actions.goTo.label',
+      tooltip: 'components.widget.settings.grid.hint.actions.goTo',
     },
   ];
 

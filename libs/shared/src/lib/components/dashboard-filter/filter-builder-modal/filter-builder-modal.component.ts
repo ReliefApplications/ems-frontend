@@ -13,7 +13,7 @@ import { FormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SnackbarService, TooltipModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
@@ -153,6 +153,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     DialogModule,
     AlertModule,
     SurveyCreatorModule,
+    ButtonModule,
   ],
 })
 export class FilterBuilderModalComponent
