@@ -1,3 +1,20 @@
+# [2.2.0-beta.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.7...v2.2.0-beta.8) (2023-11-09)
+
+
+### Bug Fixes
+
+* auto sizing grid columns would create tiny columns when too many columns ([#2057](https://github.com/ReliefApplications/oort-frontend/issues/2057)) ([6afea60](https://github.com/ReliefApplications/oort-frontend/commit/6afea60bf26a5fb0d3951677605f94167078cfb9))
+* navigate to page action in grid / summary card would limit to only id field ([#2029](https://github.com/ReliefApplications/oort-frontend/issues/2029)) ([12eb046](https://github.com/ReliefApplications/oort-frontend/commit/12eb0466655bb4cecd27c00957e2cdd4ddd3fac9))
+* readonly would not be correctly considered in resources question ([#2054](https://github.com/ReliefApplications/oort-frontend/issues/2054)) ([498bb96](https://github.com/ReliefApplications/oort-frontend/commit/498bb969acf03b961d7ba7dbc9e4eff08dec9f10))
+* some widgets in tab widget could not be resized ([1413948](https://github.com/ReliefApplications/oort-frontend/commit/1413948528a752a0ce1584d8ba15fcbf2106ec19))
+
+
+### Features
+
+* Ability to save draft record ([#2030](https://github.com/ReliefApplications/oort-frontend/issues/2030)) ([2aeeca1](https://github.com/ReliefApplications/oort-frontend/commit/2aeeca1f0a056525f88fc39dde268d41441201f7))
+* implement filter icon ([356c39a](https://github.com/ReliefApplications/oort-frontend/commit/356c39a0f3a7d7e459376651eda82c11b1d441da))
+* implement filter icon & dashboard filter modern variant ([ed63923](https://github.com/ReliefApplications/oort-frontend/commit/ed63923e45e814e73ec8c668233486c354b7701d))
+
 # [2.2.0-beta.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.6...v2.2.0-beta.7) (2023-11-07)
 
 
