@@ -1412,16 +1412,22 @@
 						"convert": "******",
 						"delete": "******",
 						"export": "******",
+						"goTo": {
+							"column": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"field": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"label": "******",
+							"target": {
+								"label": "******",
+								"placeholder": "******"
+							}
+						},
 						"inline": "******",
-						"navigateToPage": "******",
-						"pageUrl": {
-							"label": "******",
-							"placeholder": "******"
-						},
-						"pageUrlTitle": {
-							"label": "******",
-							"placeholder": "******"
-						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
@@ -1481,8 +1487,8 @@
 							"convert": "******",
 							"delete": "******",
 							"export": "******",
+							"goTo": "******",
 							"inline": "******",
-							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
 							"update": "******"
