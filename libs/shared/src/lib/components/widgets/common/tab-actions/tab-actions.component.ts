@@ -8,7 +8,6 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { GET_LAYOUTS } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { ResourceQueryResponse } from '../../../../models/resource.model';
-import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -85,12 +84,10 @@ export class TabActionsComponent
    *
    * @param applicationService Application service
    * @param apollo Apollo service
-   * @param referenceDataService Reference data service
    */
   constructor(
     public applicationService: ApplicationService,
-    private apollo: Apollo,
-    private referenceDataService: ReferenceDataService
+    private apollo: Apollo
   ) {
     super();
   }
@@ -109,6 +106,7 @@ export class TabActionsComponent
           data.resource.layouts?.edges.forEach((layout: any) => {
             layout.node.query.fields.forEach((field: any) => {
               let add = true;
+              // verify if field already been added
               this.resourceFields.forEach((val: any) => {
                 if (val.name === field.name) {
                   add = false;

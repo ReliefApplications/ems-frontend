@@ -896,25 +896,7 @@ export class CoreGridComponent
           let fullUrl = this.getPageUrl(event.pageUrl as string);
           if (event.recordField) {
             const field = get(event, 'recordField', '');
-            let recordField = '';
-            if (field === 'id') {
-              recordField = get(event, 'item.id');
-            } else {
-              const splitField = field.split('+');
-              recordField = get(event, `item.${splitField[0]}`);
-              // if not a scalar field
-              if (typeof recordField !== 'string') {
-                //get the obj
-                const obj = recordField as any;
-                // verify each field of the object
-                for (const key in obj) {
-                  if (key.toLowerCase() === splitField[1]) {
-                    // get the valueField of the object
-                    recordField = obj[key];
-                  }
-                }
-              }
-            }
+            const recordField = get(event, `item.${field}`);
             fullUrl = `${fullUrl}?id=${recordField}`;
           }
           this.router.navigateByUrl(fullUrl);
