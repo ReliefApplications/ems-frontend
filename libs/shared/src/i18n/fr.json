@@ -1503,8 +1503,8 @@
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
-							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"

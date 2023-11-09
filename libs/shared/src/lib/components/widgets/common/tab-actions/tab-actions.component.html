@@ -77,30 +77,23 @@
             </ui-select-option>
           </ui-select-menu>
         </div>
-        <div 
-          uiFormFieldDirective 
-          class="w-80" 
-          *ngIf="formGroup.get('resource')?.value"
-        >
+        <div uiFormFieldDirective class="w-80">
           {{
-            'components.widget.settings.grid.actions.goTo.field.label' 
-              | translate 
+            'components.widget.settings.grid.actions.goTo.field.label'
+              | translate
           }}
           <ui-select-menu
             formControlName="field"
             [placeholder]="
               'components.widget.settings.grid.actions.goTo.field.placeholder'
                 | translate
-            " 
+            "
           >
-            <ui-select-option value="id">
-              {{ 'common.id' | translate }}
-            </ui-select-option>
-            <ng-container *ngFor="let field of resourceFields">
+            <ng-container *ngFor="let field of fields">
               <ui-select-option *ngIf="!field.fields" [value]="field.name">
                 {{ field.text || field.name }}
               </ui-select-option>
-    
+
               <ui-select-option *ngIf="field.fields" [isGroup]="true">
                 {{ field.text || field.name }}
                 <ui-select-option

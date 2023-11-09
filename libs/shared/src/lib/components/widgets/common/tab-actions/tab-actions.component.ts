@@ -5,9 +5,6 @@ import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { GET_LAYOUTS } from './graphql/queries';
-import { Apollo } from 'apollo-angular';
-import { ResourceQueryResponse } from '../../../../models/resource.model';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -23,10 +20,10 @@ export class TabActionsComponent
 {
   /** Widget reactive form group */
   @Input() formGroup!: UntypedFormGroup;
+  /** Available fields */
+  @Input() fields: any[] = [];
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
-  /** Selected resource fields */
-  public resourceFields: any[] = [];
   /** Available pages from the application */
   public pages: any[] = [];
   /** Grid actions */
@@ -74,8 +71,8 @@ export class TabActionsComponent
     },
     {
       name: 'navigateToPage',
-      text: 'components.widget.settings.grid.actions.navigateToPage',
-      tooltip: 'components.widget.settings.grid.hint.actions.navigateToPage',
+      text: 'components.widget.settings.grid.actions.goTo.label',
+      tooltip: 'components.widget.settings.grid.hint.actions.goTo',
     },
   ];
 
@@ -83,42 +80,12 @@ export class TabActionsComponent
    * Constructor of the grid component
    *
    * @param applicationService Application service
-   * @param apollo Apollo service
    */
-  constructor(
-    public applicationService: ApplicationService,
-    private apollo: Apollo
-  ) {
+  constructor(public applicationService: ApplicationService) {
     super();
   }
 
   ngOnInit(): void {
-    if (this.formGroup.get('resource')?.value) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_LAYOUTS,
-          variables: {
-            id: this.formGroup.get('layouts')?.value,
-            resource: this.formGroup.get('resource')?.value,
-          },
-        })
-        .subscribe(({ data }) => {
-          data.resource.layouts?.edges.forEach((layout: any) => {
-            layout.node.query.fields.forEach((field: any) => {
-              let add = true;
-              // verify if field already been added
-              this.resourceFields.forEach((val: any) => {
-                if (val.name === field.name) {
-                  add = false;
-                }
-              });
-              if (add) {
-                this.resourceFields.push(field);
-              }
-            });
-          });
-        });
-    }
     this.showSelectPage =
       this.formGroup.controls.actions.get('navigateToPage')?.value;
     // Add available pages to the list of available keys

@@ -1487,8 +1487,8 @@
 							"convert": "If authorized, user can convert record using another template of selected resource",
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
+							"goTo": "User can go to specified page on click",
 							"inline": "If authorized, user can edit records in the grid",
-							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
