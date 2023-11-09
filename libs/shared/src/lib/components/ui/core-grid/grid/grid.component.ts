@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  HostListener,
   Inject,
   Input,
   OnChanges,
@@ -54,6 +53,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { DOCUMENT } from '@angular/common';
 import { WidgetComponent } from '../../../widget/widget.component';
 import { DatePipe } from '../../../../pipes/date/date.pipe';
+import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -289,14 +289,6 @@ export class GridComponent
   }
 
   /**
-   * Listen to window resize event in order to trigger the column automatic width update
-   */
-  @HostListener('window:resize', ['$event'])
-  onWindowResize() {
-    this.setColumnsWidth();
-  }
-
-  /**
    * Constructor of the grid component
    *
    * @param widgetComponent parent widget component ( optional )
@@ -309,6 +301,7 @@ export class GridComponent
    * @param dashboardService Dashboard service
    * @param translate The translate service
    * @param snackBar The snackbar service
+   * @param el Ref to html element
    * @param document document
    */
   constructor(
@@ -322,6 +315,7 @@ export class GridComponent
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
+    private el: ElementRef,
     @Inject(DOCUMENT) private document: Document
   ) {
     super();
@@ -378,6 +372,9 @@ export class GridComponent
         500
       );
     });
+    new ResizeObservable(this.gridRef.nativeElement)
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .subscribe(() => this.setColumnsWidth());
   }
 
   override ngOnDestroy(): void {
@@ -757,7 +754,6 @@ export class GridComponent
     this.action.emit({ action: 'cancel' });
   }
 
-  // === EXPORT ===
   /**
    * Downloads file of record.
    *
@@ -794,7 +790,6 @@ export class GridComponent
     });
   }
 
-  // === UTILITIES ===
   /**
    * Checks if element overflows
    *
@@ -983,6 +978,7 @@ export class GridComponent
    * Automatically set the width of each column
    */
   private setColumnsWidth() {
+    console.log(this.layout);
     const gridElement = this.gridRef.nativeElement;
     const gridTotalWidth = gridElement.offsetWidth;
 
@@ -1129,27 +1125,29 @@ export class GridComponent
     // Order the values from thinner to wider column element
     arrayColumns.sort((a, b) => a.value - b.value);
 
-    const widestColumnIndex = arrayColumns.length - 1;
-    // if the value of the smallest element is 4x times smaller than the widest one
-    // or the total percentage did not reach 100% after all conversions
-    // we adjust the overall percentages set for columns
-    while (
-      arrayColumns[0].value < 0.25 * arrayColumns[widestColumnIndex].value ||
-      total_percentage < 100
-    ) {
-      // Add the percentage available
-      if (total_percentage < 100) {
-        activeColumns[arrayColumns[0].key] += 1;
-        total_percentage += 1;
-        arrayColumns[0].value += 1;
-      } else {
-        // Remove percentage from the biggest and put in the smallest
-        activeColumns[arrayColumns[0].key] += 1;
-        activeColumns[arrayColumns[widestColumnIndex].key] -= 1;
-        arrayColumns[0].value += 1;
-        arrayColumns[widestColumnIndex].value -= 1;
+    if (arrayColumns.length > 0) {
+      const widestColumnIndex = arrayColumns.length - 1;
+      // if the value of the smallest element is 4x times smaller than the widest one
+      // or the total percentage did not reach 100% after all conversions
+      // we adjust the overall percentages set for columns
+      while (
+        arrayColumns[0].value < 0.25 * arrayColumns[widestColumnIndex].value ||
+        total_percentage < 100
+      ) {
+        // Add the percentage available
+        if (total_percentage < 100) {
+          activeColumns[arrayColumns[0].key] += 1;
+          total_percentage += 1;
+          arrayColumns[0].value += 1;
+        } else {
+          // Remove percentage from the biggest and put in the smallest
+          activeColumns[arrayColumns[0].key] += 1;
+          activeColumns[arrayColumns[widestColumnIndex].key] -= 1;
+          arrayColumns[0].value += 1;
+          arrayColumns[widestColumnIndex].value -= 1;
+        }
+        arrayColumns.sort((a, b) => a.value - b.value);
       }
-      arrayColumns.sort((a, b) => a.value - b.value);
     }
 
     // Finally, resize the columns
