@@ -1,8 +1,28 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { EditorService } from '../../../../services/editor/editor.service';
-import { WIDGET_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
+import { RawEditorSettings } from 'tinymce';
+import { Form } from '../../../../models/form.model';
+import {
+  Resource,
+  ResourcesQueryResponse
+} from '../../../../models/resource.model';
+import { AggregationService } from '../../../../services/aggregation/aggregation.service';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { GET_RESOURCES } from '../graphql/queries';
+import { Apollo } from 'apollo-angular';
+
+/**
+ * Data needed for the dialog, should contain an aggregations array, a form and a resource
+ */
+interface DialogData {
+  hasAggregations: boolean;
+  form?: Form;
+  resource?: Resource;
+}
 
 /**
  * Component used in the card-modal-settings for editing the content of the card.
@@ -12,12 +32,17 @@ import { DataTemplateService } from '../../../../services/data-template/data-tem
   templateUrl: './text-editor-tab.component.html',
   styleUrls: ['./text-editor-tab.component.scss'],
 })
-export class TextEditorTabComponent implements OnChanges {
+export class TextEditorTabComponent
+  extends UnsubscribeComponent
+  implements OnChanges, OnInit
+{
   @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
 
   /** tinymce editor */
-  public editor = WIDGET_EDITOR_CONFIG;
+  public editor!: RawEditorSettings;
+  private resourceForm?: Form;
+  public resources: Resource[] = [];
 
   /**
    * TextEditorTabComponent constructor.
@@ -26,14 +51,35 @@ export class TextEditorTabComponent implements OnChanges {
    * @param dataTemplateService Shared data template service
    */
   constructor(
+    private apollo: Apollo,
     private editorService: EditorService,
-    private dataTemplateService: DataTemplateService
+    private dataTemplateService: DataTemplateService,
+    private dialog: Dialog,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    private aggregationService: AggregationService,
+    private dialogRef: DialogRef<TextEditorTabComponent>
   ) {
+    super();
+    this.configEditor();
+    this.resourceForm = data.form;
     // Set the editor base url based on the environment file
-    this.editor.base_url = editorService.url;
+    this.editor.base_url = editorService.url || '';
     // Set the editor language
     this.editor.language = editorService.language;
     this.dataTemplateService.setEditorLinkList(this.editor);
+  }
+
+  ngOnInit(): void {
+    this.apollo
+      .query<ResourcesQueryResponse>({
+        query: GET_RESOURCES,
+        variables: {},
+      })
+      .subscribe({
+        next: (data: any) => {
+          console.log(data);
+        },
+      });
   }
 
   ngOnChanges(): void {
@@ -42,5 +88,243 @@ export class TextEditorTabComponent implements OnChanges {
       ...this.dataTemplateService.getAutoCompleterKeys(this.fields),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
     ]);
+  }
+
+  configEditor(): void {
+    this.editor = {
+      suffix: '.min',
+      plugins:
+        'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
+      imagetools_cors_hosts: ['picsum.photos'],
+      menubar: 'edit view insert format tools table help',
+      toolbar:
+        'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar aggregation',
+      toolbar_sticky: true,
+      image_advtab: true,
+      importcss_append: true,
+      height: 600,
+      image_caption: true,
+      quickbars_selection_toolbar:
+        'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+      toolbar_mode: 'sliding',
+      contextmenu: 'link image imagetools table',
+      content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+      help_tabs: [
+        'shortcuts', // the default shortcuts tab
+        'keyboardnav', // the default keyboard navigation tab
+      ],
+      convert_urls: false,
+      setup: (editor) => {
+        editor.ui.registry.addIcon(
+          'avatar-icon',
+          '<svg width="24" height="24"><ellipse style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" cx="12.051" cy="8.44" rx="4.407" ry="4.457"></ellipse><ellipse style="fill: none; stroke: rgb(0, 0, 0);" cx="12" cy="12" ry="11" rx="11"></ellipse><path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 3.859 19.172 C 4.12 10.79 20.414 11.589 20.143 19.122 C 20.141 19.179 3.857 19.247 3.859 19.172 Z"></path></svg>'
+        );
+        editor.ui.registry.addButton('avatar', {
+          icon: 'avatar-icon',
+          tooltip: 'Avatar',
+          onAction: () => {
+            editor.windowManager.open({
+              title: 'Avatars',
+              body: {
+                type: 'panel',
+                items: [
+                  {
+                    type: 'input',
+                    name: 'avatarsSource',
+                    label: 'Source',
+                  },
+                  {
+                    type: 'input',
+                    name: 'avatarsMaxItems',
+                    label: 'Max items',
+                  },
+                  {
+                    type: 'listbox',
+                    name: 'shape',
+                    label: 'Shape',
+                    items: [
+                      { text: 'Circle', value: 'circle' },
+                      { text: 'Square', value: 'square' },
+                    ],
+                  },
+                  {
+                    type: 'bar',
+                    items: [
+                      {
+                        type: 'input',
+                        name: 'avatarsWidth',
+                        label: 'Width',
+                      },
+                      {
+                        type: 'input',
+                        name: 'avatarsHeight',
+                        label: 'Height',
+                      },
+                    ],
+                  },
+                ],
+              },
+              initialData: {
+                avatarsSource: '',
+                avatarsMaxItems: '3',
+                shape: 'circle',
+                avatarsWidth: '48',
+                avatarsHeight: '48',
+              },
+              onChange: (api) => {
+                // validate the data types
+                const data = api.getData();
+                const submitDisabled = !(
+                  !isNaN(Number(data.avatarsHeight)) &&
+                  Number(data.avatarsHeight) > 0 &&
+                  !isNaN(Number(data.avatarsWidth)) &&
+                  Number(data.avatarsWidth) > 0 &&
+                  !isNaN(Number(data.avatarsMaxItems)) &&
+                  Number(data.avatarsMaxItems) > 0 &&
+                  data.avatarsSource.length > 0
+                );
+                if (submitDisabled) api.disable('submit');
+                else api.enable('submit');
+              },
+              onSubmit: (api) => {
+                const data = api.getData();
+                const html = `{{avatars.${data.avatarsSource} ${data.shape} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
+                editor.insertContent(html);
+                api.close();
+              },
+              buttons: [
+                {
+                  text: 'Close',
+                  type: 'cancel',
+                },
+                {
+                  text: 'Insert',
+                  type: 'submit',
+                  name: 'submit',
+                  primary: true,
+                  disabled: true,
+                },
+              ],
+            });
+          },
+        });
+
+
+        editor.ui.registry.addIcon(
+          'aggregation-icon',
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>'
+        );
+        editor.ui.registry.addButton('aggregation', {
+          icon: 'aggregation-icon',
+          tooltip: 'Aggregation',
+          onAction: () => {
+            editor.windowManager.open({
+              title: 'Aggregation',
+              body: {
+                type: 'panel',
+                items: [
+                  {
+                    type: 'selectbox',
+                    items: [
+                      { text: 'Circle', value: 'circle' },
+                      { text: 'Square', value: 'square' },
+                    ],
+                    name: 'resource',
+                    label: 'Select a Resource',
+                  },
+                  {
+                    type: 'selectbox',
+                    items: [],
+                    name: 'aggregation',
+                    label: 'Select an Aggregation',
+                  },
+                  {
+                    type: 'button',
+                    name: 'createAggregation',
+                    text: 'Create a new aggregation',
+                  },
+                ],
+              },
+              initialData: {
+                resource: '',
+                aggregation: '',
+              },
+              onChange: (api) => {
+                console.log(api);
+                // validate the data types
+                // const data = api.getData();
+                // const submitDisabled = !(
+                //   !isNaN(Number(data.avatarsHeight)) &&
+                //   Number(data.avatarsHeight) > 0 &&
+                //   !isNaN(Number(data.avatarsWidth)) &&
+                //   Number(data.avatarsWidth) > 0 &&
+                //   !isNaN(Number(data.avatarsMaxItems)) &&
+                //   Number(data.avatarsMaxItems) > 0 &&
+                //   data.avatarsSource.length > 0
+                // );
+                // if (submitDisabled) api.disable('submit');
+                api.enable('submit');
+              },
+              onAction: async (api, details) => {
+                if (details.name === 'createAggregation') {
+                  console.log(api.setData({ resource: 'circle' }));
+                  console.log(details);
+                  // const { EditAggregationModalComponent } = await import(
+                  //   '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component'
+                  // );
+                  // const dialogRef = this.dialog.open(
+                  //   EditAggregationModalComponent,
+                  //   {
+                  //     disableClose: true,
+                  //     data: {
+                  //       resource: '',
+                  //     },
+                  //   }
+                  // );
+                  // dialogRef.closed
+                  //   .pipe(takeUntil(this.destroy$))
+                  //   .subscribe((aggregation: any) => {
+                  //     if (aggregation) {
+                  //       this.aggregationService
+                  //         .addAggregation(
+                  //           aggregation,
+                  //           '',
+                  //           this.resourceForm?.id
+                  //         )
+                  //         .subscribe(({ data }) => {
+                  //           if (data?.addAggregation) {
+                  //             this.dialogRef.close(data.addAggregation as any);
+                  //           } else {
+                  //             this.dialogRef.close();
+                  //           }
+                  //         });
+                  //     }
+                  //   });
+                }
+              },
+              onSubmit: (api) => {
+                const data = api.getData();
+                const html = `{{aggregations.${data.resource} ${data.aggregation}}}`;
+                editor.insertContent(html);
+                api.close();
+              },
+              buttons: [
+                {
+                  text: 'Close',
+                  type: 'cancel',
+                },
+                {
+                  text: 'Insert',
+                  type: 'submit',
+                  name: 'submit',
+                  primary: true,
+                  disabled: true,
+                },
+              ],
+            });
+          },
+        });
+      },
+    };
   }
 }
