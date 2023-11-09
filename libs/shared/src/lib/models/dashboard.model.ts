@@ -211,6 +211,18 @@ export const WIDGET_TYPES = [
     component: 'tabs',
     settingsTemplate: TabsSettingsComponent,
   },
+  {
+    id: 'section',
+    name: 'Section',
+    icon: '/assets/web_asset.svg',
+    color: '#7ED5C2',
+    settings: { title: 'Section' },
+    cols: 8,
+    rows: 8,
+    minItemRows: 2,
+    component: 'section',
+    settingsTemplate: TabsSettingsComponent,
+  },
 ];
 
 /** Model for Dashboard object. */
