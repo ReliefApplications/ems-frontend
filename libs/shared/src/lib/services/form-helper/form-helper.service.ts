@@ -233,27 +233,6 @@ export class FormHelpersService {
   }
 
   /**
-   * Clean cached records from passed survey.
-   *
-   * @param survey Survey from which we need to clean cached records.
-   */
-  // cleanCachedRecords(survey: SurveyModel): void {
-  //   if (!survey) return;
-  //   survey.getAllQuestions().forEach((question) => {
-  //     if (question.value) {
-  //       const type = question.getType();
-  //       if (type === 'resources') {
-  //         question.value.forEach((recordId: string) =>
-  //           localForage.removeItem(recordId)
-  //         );
-  //       } else if (type === 'resource') {
-  //         localForage.removeItem(question.value);
-  //       }
-  //     }
-  //   });
-  // }
-
-  /**
    * Create temporary records (from resource/s questions) of passed survey.
    *
    * @param survey Survey to get questions from

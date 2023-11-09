@@ -294,7 +294,7 @@ export class FormComponent
         this.surveyActive = true;
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
-        if (!this.record && this.lastDraftRecord) {
+        if (this.lastDraftRecord) {
           const callback = () => {
             this.lastDraftRecord = undefined;
           };
@@ -349,10 +349,6 @@ export class FormComponent
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
     );
-    //localStorage.removeItem(this.storageId);
-    //this.formHelpersService.cleanCachedRecords(this.survey);
-    //this.isFromCacheData = false;
-    //this.storageDate = undefined;
   }
 
   /**
@@ -426,8 +422,6 @@ export class FormComponent
   /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    // localStorage.removeItem(this.storageId);
-    // this.formHelpersService.cleanCachedRecords(this.survey);
     this.survey?.dispose();
   }
 }

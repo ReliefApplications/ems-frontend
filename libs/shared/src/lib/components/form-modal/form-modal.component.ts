@@ -58,7 +58,7 @@ interface DialogData {
 const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 
 /**
- * Component that displays a form in a modal
+ * Display a form instance in a modal.
  */
 @Component({
   standalone: true,
@@ -83,40 +83,42 @@ export class FormModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === DATA ===
-  public loading = true;
-  public saving = false;
-  public form?: Form;
-  public record?: Record;
-
-  public modifiedAt: Date | null = null;
-
-  protected isMultiEdition = false;
-  private storedMergedData: any;
-
-  public survey!: SurveyModel;
-  protected temporaryFilesStorage: any = {};
-
+  /** Reference to form container */
   @ViewChild('formContainer') formContainer!: ElementRef;
-
+  /** Current template */
+  public survey!: SurveyModel;
+  /** Loading indicator */
+  public loading = true;
+  /** Is form saving */
+  public saving = false;
+  /** Loaded form */
+  public form?: Form;
+  /** Loaded record (optional) */
+  public record?: Record;
+  /** Modification date */
+  public modifiedAt: Date | null = null;
   /** Selected page index */
   public selectedPageIndex: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
   /** Selected page index as observable */
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
-  /** Available pages*/
-  private pages = new BehaviorSubject<any[]>([]);
-  /** Pages as observable */
-  public pages$ = this.pages.asObservable();
-
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** Available pages*/
+  private pages = new BehaviorSubject<any[]>([]);
+  /** Pages as observable */
+  public pages$ = this.pages.asObservable();
+  /** Is multi edition of records enabled ( for grid actions ) */
+  protected isMultiEdition = false;
+  /** Temporary storage of files */
+  protected temporaryFilesStorage: any = {};
+  /** Stored merged data */
+  private storedMergedData: any;
 
   /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
+   * Display a form instance in a modal.
    *
    * @param data This is the data that is passed to the modal when it is opened.
    * @param dialog This is the Angular Dialog service.
@@ -430,6 +432,15 @@ export class FormModalComponent
       })
       .subscribe({
         next: ({ errors, data }) => {
+          if (this.lastDraftRecord) {
+            const callback = () => {
+              this.lastDraftRecord = undefined;
+            };
+            this.formHelpersService.deleteRecordDraft(
+              this.lastDraftRecord,
+              callback
+            );
+          }
           this.handleRecordMutationResponse({ data, errors }, 'editRecords');
         },
         error: (err) => {
@@ -656,7 +667,6 @@ export class FormModalComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    // this.formHelpersService.cleanCachedRecords(this.survey);
     this.survey?.dispose();
   }
 }
