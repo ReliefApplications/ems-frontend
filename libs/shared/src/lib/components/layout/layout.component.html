@@ -59,7 +59,7 @@
     [uiTooltip]="'common.account' | translate"
   >
   </ui-button>
-  <span class="relative">
+  <kendo-badge-container>
     <ui-button
       [size]="'large'"
       variant="light"
@@ -70,16 +70,14 @@
       [uiTooltip]="'components.notifications.title' | translate"
     >
     </ui-button>
-    <kendo-badge-container>
-      <kendo-badge
-        shape="dot"
-        themeColor="error"
-        size="small"
-        class="absolute -translate-x-1/4 translate-y-full scale-50"
-        *ngIf="notifications.length > 0"
-      ></kendo-badge>
-    </kendo-badge-container>
-  </span>
+    <kendo-badge
+      shape="dot"
+      themeColor="error"
+      size="small"
+      class="!-translate-x-1/4 !translate-y-full"
+      *ngIf="notifications.length > 0"
+    ></kendo-badge>
+  </kendo-badge-container>
   <ui-menu #accountMenu>
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
@@ -174,7 +172,7 @@
     uiSidenavDirective
     #nav="uiSidenavDirective"
     [mode]="largeDevice ? 'side' : 'over'"
-    [opened]="largeDevice && sideMenu"
+    [opened]="largeDevice && sideMenu && menuOpened"
   >
     <ng-container *ngIf="leftSidenav">
       <ng-container

@@ -1,3 +1,19 @@
+# [2.2.0-beta.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.6...v2.2.0-beta.7) (2023-11-07)
+
+
+### Bug Fixes
+
+* in some cases, the select overlay was hard to read, as it was too close to bottom. Overlay should now appear on top if not enough space ([238a9c0](https://github.com/ReliefApplications/oort-frontend/commit/238a9c0bad3e4a13b99eabe112dc25a217376816))
+* incorrect auth interceptor would make code fail locally ([a7aba87](https://github.com/ReliefApplications/oort-frontend/commit/a7aba87c9bf7b12ceb98a64cf976e5b9a99966e3))
+* widget grid would fail to get collapsed status of widgets ([1e2e9e0](https://github.com/ReliefApplications/oort-frontend/commit/1e2e9e012440e6378cdda1d53f8d42b2032d2441))
+
+
+### Features
+
+* add auth code APIs ([#1999](https://github.com/ReliefApplications/oort-frontend/issues/1999)) ([ba32de7](https://github.com/ReliefApplications/oort-frontend/commit/ba32de792a00cec66a9c5bafaa65892318120db0))
+* can now hide application menu by default ([5470097](https://github.com/ReliefApplications/oort-frontend/commit/5470097a0a4d21047d4184ef565495cc5a76f5a6))
+* grid columns should now automatically size ([915d895](https://github.com/ReliefApplications/oort-frontend/commit/915d8954be30518b907c621bd200539dcb85fade))
+
 # [2.2.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.5...v2.2.0-beta.6) (2023-10-30)
 
 
