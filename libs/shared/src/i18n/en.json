@@ -1262,6 +1262,9 @@
 						"invalid": "Invalid aggregation"
 					}
 				},
+				"filters": {
+					"select": "Select a filter..."
+				},
 				"other": "Other"
 			},
 			"expand": "Expand",
@@ -1347,6 +1350,12 @@
 					"axes": "Axes",
 					"categories": "Categories",
 					"color": "Color",
+					"filters": {
+						"add": "Add filter",
+						"delete": "Delete filter",
+						"empty": "No filters configured",
+						"title": "Predefined filters"
+					},
 					"grid": {
 						"title": "Gridlines",
 						"x": {

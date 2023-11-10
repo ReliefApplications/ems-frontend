@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
   IconModule,
+  SelectMenuModule,
   SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
@@ -27,6 +28,7 @@ import {
     TranslateModule,
     ButtonModule,
     TooltipModule,
+    SelectMenuModule,
   ],
   exports: [ChartComponent],
 })

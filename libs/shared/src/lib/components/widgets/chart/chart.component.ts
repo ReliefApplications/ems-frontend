@@ -19,11 +19,39 @@ import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Default file name for chart exports
  */
 const DEFAULT_FILE_NAME = 'chart';
+
+/**
+ * Joins context filters and predefined filters
+ *
+ * @param contextFilters Context filters, stringified JSON
+ * @param predefinedFilter Predefined filter coming from the dropdown
+ * @returns The joined filters
+ */
+const joinFilters = (
+  contextFilters: string | null,
+  predefinedFilter: CompositeFilterDescriptor | null
+): CompositeFilterDescriptor => {
+  const res: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
+
+  if (contextFilters) {
+    res.filters.push(JSON.parse(contextFilters));
+  }
+
+  if (predefinedFilter) {
+    res.filters.push(predefinedFilter);
+  }
+
+  return res;
+};
 
 /**
  * Chart widget component using KendoUI
@@ -48,6 +76,9 @@ export class ChartComponent
   public lastUpdate = '';
   public hasError = false;
 
+  /** Selected predefined filter */
+  private selectedFilter: CompositeFilterDescriptor | null = null;
+
   // === WIDGET CONFIGURATION ===
   @Input() export = true;
   @Input() settings: any = null;
@@ -67,6 +98,18 @@ export class ChartComponent
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
     } ${formatDate}.png`;
+  }
+
+  /**
+   * Get predefined filters from settings
+   *
+   * @returns array of filters
+   */
+  get predefinedFilters(): {
+    label: string;
+    filter: CompositeFilterDescriptor;
+  }[] {
+    return this.settings?.filters ?? [];
   }
 
   // === CHART ===
@@ -143,11 +186,7 @@ export class ChartComponent
               this.settings.resource,
               aggregation.id || '',
               get(this.settings, 'chart.mapping', null),
-              this.settings.contextFilters
-                ? this.contextService.injectDashboardFilterValues(
-                    JSON.parse(this.settings.contextFilters)
-                  )
-                : undefined,
+              joinFilters(this.settings.contextFilters, this.selectedFilter),
               this.settings.at
                 ? this.contextService.atArgumentValue(this.settings.at)
                 : undefined
@@ -303,5 +342,15 @@ export class ChartComponent
           this.loading = loading;
         }
       });
+  }
+
+  /**
+   * Applies selected filter to the query
+   *
+   * @param filter Filter to be applied
+   */
+  onFilterSelected(filter: (typeof this.predefinedFilters)[number]) {
+    this.selectedFilter = filter.filter;
+    this.loadChart();
   }
 }

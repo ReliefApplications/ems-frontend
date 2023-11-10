@@ -46,6 +46,18 @@
       ></shared-contextual-filters-settings>
     </ng-template>
   </ui-tab>
+  <!-- Chart filters tab -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_alt" [size]="24"></ui-icon>
+      <span>{{
+        'components.widget.settings.chart.filters.title' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-filters [formGroup]="formGroup"></shared-tab-filters>
+    </ng-template>
+  </ui-tab>
   <!-- Widget display options -->
   <ui-tab>
     <ng-container ngProjectAs="label">
