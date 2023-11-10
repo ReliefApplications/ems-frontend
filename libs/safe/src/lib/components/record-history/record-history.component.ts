@@ -6,18 +6,21 @@ import { Apollo } from 'apollo-angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Version } from '../../models/form.model';
-import { Record } from '../../models/record.model';
-import { Change, RecordHistory } from '../../models/recordsHistory';
+import { Record, RecordQueryResponse } from '../../models/record.model';
+import {
+  Change,
+  RecordHistory,
+  RecordHistoryResponse,
+} from '../../models/records-history.model';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
   GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
-  GetRecordByIdQueryResponse,
-  GetRecordHistoryByIdResponse,
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
+import { startCase } from 'lodash';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -55,6 +58,8 @@ export class SafeRecordHistoryComponent
   @Input() id!: string;
   @Input() revert!: (version: Version) => void;
   @Input() template?: string;
+  /** Show history header ( need to disable it when in modal mode ) */
+  @Input() showHeader = true;
   @Output() cancel = new EventEmitter();
 
   public record!: Record;
@@ -108,7 +113,7 @@ export class SafeRecordHistoryComponent
     // Set subscription to load records
     this.refresh$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.apollo
-        .query<GetRecordByIdQueryResponse>({
+        .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID_FOR_HISTORY,
           variables: {
             id: this.id,
@@ -120,7 +125,7 @@ export class SafeRecordHistoryComponent
         });
 
       this.apollo
-        .query<GetRecordHistoryByIdResponse>({
+        .query<RecordHistoryResponse>({
           query: GET_RECORD_HISTORY_BY_ID,
           variables: {
             id: this.id,
@@ -380,18 +385,23 @@ export class SafeRecordHistoryComponent
   private getFields(): any[] {
     const fields: any[] = [];
     // No form, break the display
-    if (this.record.form) {
+    if (this.record.resource) {
       // Take the fields from the form
-      this.record.form.fields?.map((field: any) => {
+      this.record.resource.fields?.map((field: any) => {
         fields.push(Object.assign({}, field));
       });
-      if (this.record.form.structure) {
+      if (this.record.form && this.record.form.structure) {
         const structure = JSON.parse(this.record.form.structure);
         if (!structure.pages || !structure.pages.length) {
           return [];
         }
         for (const page of structure.pages) {
           this.extractFields(page, fields);
+        }
+      }
+      for (const field of fields) {
+        if (!field.title) {
+          field.title = startCase(field.name);
         }
       }
     }

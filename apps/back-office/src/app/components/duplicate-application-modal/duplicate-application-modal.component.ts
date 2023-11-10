@@ -5,11 +5,11 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
+import { DUPLICATE_APPLICATION } from './graphql/mutations';
 import {
+  Application,
   DuplicateApplicationMutationResponse,
-  DUPLICATE_APPLICATION,
-} from './graphql/mutations';
-import { Application } from '@oort-front/safe';
+} from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -118,12 +118,5 @@ export class DuplicateApplicationModalComponent implements OnInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
-  }
-
-  /**
-   * Close dialog.
-   */
-  onCancel(): void {
-    this.dialogRef.close();
   }
 }

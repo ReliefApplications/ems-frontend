@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../models/record.model';
-import { RecordHistory } from '../../../models/recordsHistory';
 
 /** GraphQL query definition for getting record details for history purpose */
 export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
@@ -13,14 +11,12 @@ export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
         fields
         structure
       }
+      resource {
+        fields
+      }
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}
 
 /** GraphQL query definition to get record history by id */
 export const GET_RECORD_HISTORY_BY_ID = gql`
@@ -43,8 +39,3 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
     }
   }
 `;
-
-/** Get record history query response interface */
-export interface GetRecordHistoryByIdResponse {
-  recordHistory: RecordHistory;
-}

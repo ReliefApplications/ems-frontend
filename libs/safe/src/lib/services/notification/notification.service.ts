@@ -1,21 +1,16 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { SEE_NOTIFICATION, SEE_NOTIFICATIONS } from './graphql/mutations';
+import { GET_NOTIFICATIONS } from './graphql/queries';
+import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 import {
-  SeeNotificationMutationResponse,
-  SEE_NOTIFICATION,
-  SeeNotificationsMutationResponse,
-  SEE_NOTIFICATIONS,
-} from './graphql/mutations';
-import {
-  GetNotificationsQueryResponse,
-  GET_NOTIFICATIONS,
-} from './graphql/queries';
-import {
+  Notification,
   NotificationSubscriptionResponse,
-  NOTIFICATION_SUBSCRIPTION,
-} from './graphql/subscriptions';
-import { Notification } from '../../models/notification.model';
+  NotificationsQueryResponse,
+  SeeNotificationMutationResponse,
+  SeeNotificationsMutationResponse,
+} from '../../models/notification.model';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** Pagination: number of items per query */
@@ -31,16 +26,18 @@ export class SafeNotificationService {
   /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
   private cachedNotifications: Notification[] = [];
+
   /** @returns Current notifications as observable */
   get notifications$(): Observable<Notification[]> {
     return this.notifications.asObservable();
   }
 
   /** Notifications query */
-  public notificationsQuery!: QueryRef<GetNotificationsQueryResponse>;
+  public notificationsQuery!: QueryRef<NotificationsQueryResponse>;
 
   /** Is there more notifications to load */
   private hasNextPage = new BehaviorSubject<boolean>(true);
+
   /** @returns Is there more notifcations to load as observable */
   get hasNextPage$(): Observable<boolean> {
     return this.hasNextPage.asObservable();
@@ -69,7 +66,7 @@ export class SafeNotificationService {
   public init(): void {
     if (this.firstLoad) {
       this.notificationsQuery =
-        this.apollo.watchQuery<GetNotificationsQueryResponse>({
+        this.apollo.watchQuery<NotificationsQueryResponse>({
           query: GET_NOTIFICATIONS,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -161,7 +158,7 @@ export class SafeNotificationService {
    *
    * @param data query response data
    */
-  private updateValues(data: GetNotificationsQueryResponse) {
+  private updateValues(data: NotificationsQueryResponse) {
     this.cachedNotifications = updateQueryUniqueValues(
       this.cachedNotifications,
       data.notifications.edges.map((x) => x.node)

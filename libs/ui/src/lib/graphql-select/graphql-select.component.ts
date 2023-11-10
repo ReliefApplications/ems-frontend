@@ -50,6 +50,7 @@ export class GraphQLSelectComponent
   @Input('aria-describedby') userAriaDescribedBy!: string;
   /** Query reference for getting the available contents */
   @Input() query!: QueryRef<any>;
+
   /**
    * Gets the value
    *
@@ -58,12 +59,14 @@ export class GraphQLSelectComponent
   @Input() get value(): string | string[] | null {
     return this.ngControl?.value;
   }
+
   /** Sets the value */
   set value(val: string | string[] | null) {
     this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);
   }
+
   /**
    * Indicates whether the field is required
    *
@@ -73,6 +76,7 @@ export class GraphQLSelectComponent
   get required() {
     return this.isRequired;
   }
+
   /**
    * Sets whether the field is required
    */
@@ -80,6 +84,7 @@ export class GraphQLSelectComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+
   /**
    * Indicates whether the field is disabled
    *
@@ -89,6 +94,7 @@ export class GraphQLSelectComponent
   get disabled(): boolean {
     return this.ngControl?.disabled || false;
   }
+
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);

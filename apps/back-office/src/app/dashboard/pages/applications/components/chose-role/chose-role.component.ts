@@ -5,8 +5,8 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
-import { Role } from '@oort-front/safe';
+import { GET_ROLES } from '../../graphql/queries';
+import { Role, RolesQueryResponse } from '@oort-front/safe';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /**
@@ -26,7 +26,7 @@ export class ChoseRoleComponent implements OnInit {
   roleForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === ROLES QUERY ===
-  public rolesQuery!: QueryRef<GetRolesQueryResponse>;
+  public rolesQuery!: QueryRef<RolesQueryResponse>;
 
   /**
    * Chose role component, to preview application with selected role.
@@ -48,7 +48,7 @@ export class ChoseRoleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.rolesQuery = this.apollo.watchQuery<GetRolesQueryResponse>({
+    this.rolesQuery = this.apollo.watchQuery<RolesQueryResponse>({
       query: GET_ROLES,
       variables: {
         application: this.data.application,
@@ -61,10 +61,5 @@ export class ChoseRoleComponent implements OnInit {
     this.roleForm = this.formBuilder.group({
       role: [null, Validators.required],
     });
-  }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
   }
 }

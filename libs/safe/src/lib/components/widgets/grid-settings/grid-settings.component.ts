@@ -9,17 +9,15 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import {
-  GetChannelsQueryResponse,
-  GET_CHANNELS,
-  GET_GRID_RESOURCE_META,
-  GetResourceByIdQueryResponse,
-} from './graphql/queries';
+import { GET_CHANNELS, GET_GRID_RESOURCE_META } from './graphql/queries';
 import { Application } from '../../../models/application.model';
-import { Channel } from '../../../models/channel.model';
+import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
-import { Resource } from '../../../models/resource.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../models/resource.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -63,10 +61,12 @@ export class SafeGridSettingsComponent
 
   /** Stores the selected tab */
   public selectedTab = 0;
+
   /** @returns application templates */
   get appTemplates(): any[] {
     return this.applicationService.templates || [];
   }
+
   /** @returns application distribution lists */
   get distributionLists(): DistributionList[] {
     return this.applicationService.distributionLists || [];
@@ -143,34 +143,7 @@ export class SafeGridSettingsComponent
       .get('aggregations')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          // Some aggregations are selected
-          if (value.length > 0) {
-            // Remove validators on layouts fields
-            this.formGroup.controls.layouts.clearValidators();
-          } else {
-            // No aggregation selected
-            if (this.formGroup.controls.layouts.value.length > 0) {
-              // Remove validators on aggregations field if layouts are selected
-              this.formGroup.controls.aggregations.clearValidators();
-            } else {
-              // Else, reset all validators
-              this.formGroup.controls.aggregations.setValidators([
-                Validators.required,
-              ]);
-              this.formGroup.controls.layouts.setValidators([
-                Validators.required,
-              ]);
-            }
-          }
-        }
-        // Update fields without sending update events to prevent infinite loops
-        this.formGroup.controls.aggregations.updateValueAndValidity({
-          emitEvent: false,
-        });
-        this.formGroup.controls.layouts.updateValueAndValidity({
-          emitEvent: false,
-        });
+        this.updateValueAndValidityByType(value, 'aggregations');
       });
     // If some aggregations are selected, remove validators on layouts field
     if (this.formGroup.get('aggregations')?.value.length > 0) {
@@ -182,39 +155,51 @@ export class SafeGridSettingsComponent
       .get('layouts')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          // Some layouts are selected
-          if (value.length > 0) {
-            // Remove validators on aggregations field
-            this.formGroup.controls.aggregations.clearValidators();
-          } else {
-            // No layout selected
-            if (this.formGroup.controls.aggregations.value.length > 0) {
-              // Remove validators on layouts field if aggregations are selected
-              this.formGroup.controls.layouts.clearValidators();
-            } else {
-              // Else, reset all validators
-              this.formGroup.controls.layouts.setValidators([
-                Validators.required,
-              ]);
-              this.formGroup.controls.aggregations.setValidators([
-                Validators.required,
-              ]);
-            }
-          }
-        }
-        // Update fields without sending update events to prevent infinite loops
-        this.formGroup.controls.aggregations.updateValueAndValidity({
-          emitEvent: false,
-        });
-        this.formGroup.controls.layouts.updateValueAndValidity({
-          emitEvent: false,
-        });
+        this.updateValueAndValidityByType(value, 'layouts');
       });
     // If some layouts are selected, remove validators on aggregations field
     if (this.formGroup.get('layouts')?.value.length > 0) {
       this.formGroup.controls.aggregations.clearValidators();
     }
+  }
+
+  /**
+   * Update form group related to layouts and aggregations values and validity
+   *
+   * @param value of the given form control
+   * @param type form control key regarding to the type: layouts | aggregations
+   */
+  private updateValueAndValidityByType(
+    value: any,
+    type: 'aggregations' | 'layouts'
+  ) {
+    const otherType = type === 'aggregations' ? 'layouts' : 'aggregations';
+    if (value) {
+      // Some type are selected
+      if (value.length > 0) {
+        // Remove validators on other type fields fields
+        this.formGroup.controls[otherType].clearValidators();
+      } else {
+        // No type selected
+        if (this.formGroup.controls[otherType].value.length > 0) {
+          // Remove validators on type field if other type are selected
+          this.formGroup.controls[type].clearValidators();
+        } else {
+          // Else, reset all validators
+          this.formGroup.controls[type].setValidators([Validators.required]);
+          this.formGroup.controls[otherType].setValidators([
+            Validators.required,
+          ]);
+        }
+      }
+    }
+    // Update fields without sending update events to prevent infinite loops
+    this.formGroup.controls[type].updateValueAndValidity({
+      emitEvent: false,
+    });
+    this.formGroup.controls[otherType].updateValueAndValidity({
+      emitEvent: false,
+    });
   }
 
   ngAfterViewInit(): void {
@@ -230,7 +215,7 @@ export class SafeGridSettingsComponent
         .subscribe((application: Application | null) => {
           if (application) {
             this.apollo
-              .query<GetChannelsQueryResponse>({
+              .query<ChannelsQueryResponse>({
                 query: GET_CHANNELS,
                 variables: {
                   application: application.id,
@@ -242,7 +227,7 @@ export class SafeGridSettingsComponent
               });
           } else {
             this.apollo
-              .query<GetChannelsQueryResponse>({
+              .query<ChannelsQueryResponse>({
                 query: GET_CHANNELS,
               })
               .pipe(takeUntil(this.destroy$))
@@ -264,7 +249,7 @@ export class SafeGridSettingsComponent
       const aggregationIds: string[] | undefined =
         this.formGroup?.get('aggregations')?.value;
       this.apollo
-        .query<GetResourceByIdQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
             resource: this.formGroup.get('resource')?.value,

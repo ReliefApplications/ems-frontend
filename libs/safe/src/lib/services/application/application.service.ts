@@ -2,91 +2,106 @@ import { Apollo } from 'apollo-angular';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Role } from '../../models/user.model';
-import { Page, ContentType } from '../../models/page.model';
-import { Application } from '../../models/application.model';
-import { Channel } from '../../models/channel.model';
+import {
+  AddRoleMutationResponse,
+  DeleteRoleMutationResponse,
+  DeleteUsersFromApplicationMutationResponse,
+  EditRoleMutationResponse,
+  Role,
+} from '../../models/user.model';
+import {
+  Page,
+  ContentType,
+  DeletePageMutationResponse,
+  EditPageMutationResponse,
+  AddPageMutationResponse,
+  DuplicatePageMutationResponse,
+} from '../../models/page.model';
+import {
+  Application,
+  ApplicationEditedSubscriptionResponse,
+  ApplicationQueryResponse,
+  ApplicationUnlockedSubscriptionResponse,
+  EditApplicationMutationResponse,
+  ToggleApplicationLockMutationResponse,
+} from '../../models/application.model';
+import {
+  AddChannelMutationResponse,
+  Channel,
+  DeleteChannelMutationResponse,
+  EditChannelMutationResponse,
+} from '../../models/channel.model';
 import { HttpHeaders } from '@angular/common/http';
 import {
-  AddPageMutationResponse,
   ADD_PAGE,
-  AddRoleMutationResponse,
   ADD_ROLE,
-  DeletePageMutationResponse,
   DELETE_PAGE,
-  DeleteRoleMutationResponse,
   DELETE_ROLE,
-  EditApplicationMutationResponse,
   EDIT_APPLICATION,
-  EditRoleMutationResponse,
   EDIT_ROLE,
-  AddChannelMutationResponse,
   ADD_CHANNEL,
-  DeleteChannelMutationResponse,
   DELETE_CHANNEL,
-  AddSubscriptionMutationResponse,
   ADD_SUBSCRIPTION,
-  EditSubscriptionMutationResponse,
   EDIT_SUBSCRIPTION,
-  DeleteSubscriptionMutationResponse,
   DELETE_SUBSCRIPTION,
-  AddPositionAttributeCategoryMutationResponse,
   ADD_POSITION_ATTRIBUTE_CATEGORY,
-  DeleteUsersFromApplicationMutationResponse,
   DELETE_USERS_FROM_APPLICATION,
-  DeletePositionAttributeCategoryMutationResponse,
   DELETE_POSITION_ATTRIBUTE_CATEGORY,
-  EditPositionAttributeCategoryMutationResponse,
   EDIT_POSITION_ATTRIBUTE_CATEGORY,
-  EditChannelMutationResponse,
   EDIT_CHANNEL,
-  ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
-  duplicatePageMutationResponse,
   DUPLICATE_PAGE,
-  AddTemplateMutationResponse,
   ADD_TEMPLATE,
-  UpdateTemplateMutationResponse,
   UPDATE_TEMPLATE,
-  DeleteTemplateMutationResponse,
   DELETE_TEMPLATE,
-  UpdateDistributionListMutationResponse,
   UPDATE_DISTRIBUTION_LIST,
-  AddDistributionListMutationResponse,
   ADD_DISTRIBUTION_LIST,
-  DeleteDistributionListMutationResponse,
   DELETE_DISTRIBUTION_LIST,
-  EditPageMutationResponse,
   EDIT_PAGE,
-  AddCustomNotificationMutationResponse,
   ADD_CUSTOM_NOTIFICATION,
-  DeleteCustomNotificationMutationResponse,
   DELETE_CUSTOM_NOTIFICATION,
 } from './graphql/mutations';
-import {
-  GetApplicationByIdQueryResponse,
-  GET_APPLICATION_BY_ID,
-} from './graphql/queries';
+import { GET_APPLICATION_BY_ID } from './graphql/queries';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import {
-  ApplicationEditedSubscriptionResponse,
-  ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION,
   APPLICATION_UNLOCKED_SUBSCRIPTION,
 } from './graphql/subscriptions';
 import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Template } from '../../models/template.model';
-import { DistributionList } from '../../models/distribution-list.model';
-import { SafeDownloadService } from '../download/download.service';
-import { CustomNotification } from '../../models/custom-notification.model';
 import {
+  AddTemplateMutationResponse,
+  DeleteTemplateMutationResponse,
+  Template,
+  UpdateTemplateMutationResponse,
+} from '../../models/template.model';
+import {
+  AddDistributionListMutationResponse,
+  DeleteDistributionListMutationResponse,
+  DistributionList,
+  UpdateDistributionListMutationResponse,
+} from '../../models/distribution-list.model';
+import { SafeDownloadService } from '../download/download.service';
+import {
+  AddCustomNotificationMutationResponse,
+  CustomNotification,
+  DeleteCustomNotificationMutationResponse,
   UpdateCustomNotificationMutationResponse,
-  UPDATE_CUSTOM_NOTIFICATION,
-} from '../application-notifications/graphql/mutations';
+} from '../../models/custom-notification.model';
+import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
 import { SafeRestService } from '../rest/rest.service';
 import { SafeLayoutService } from '../layout/layout.service';
 import { SnackbarService } from '@oort-front/ui';
+import {
+  AddPositionAttributeCategoryMutationResponse,
+  DeletePositionAttributeCategoryMutationResponse,
+  EditPositionAttributeCategoryMutationResponse,
+} from '../../models/position-attribute.model';
+import {
+  AddSubscriptionMutationResponse,
+  DeleteSubscriptionMutationResponse,
+  EditSubscriptionMutationResponse,
+} from '../../models/subscription.model';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -97,6 +112,7 @@ import { SnackbarService } from '@oort-front/ui';
 export class SafeApplicationService {
   /** Current application */
   public application = new BehaviorSubject<Application | null>(null);
+
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -120,6 +136,7 @@ export class SafeApplicationService {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
+
   /** @returns Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;
@@ -192,7 +209,7 @@ export class SafeApplicationService {
    */
   loadApplication(id: string, asRole?: string): void {
     this.applicationSubscription = this.apollo
-      .query<GetApplicationByIdQueryResponse>({
+      .query<ApplicationQueryResponse>({
         query: GET_APPLICATION_BY_ID,
         variables: {
           id,
@@ -682,7 +699,7 @@ export class SafeApplicationService {
     content: { stepId?: string; pageId?: string }
   ): void {
     this.apollo
-      .mutate<duplicatePageMutationResponse>({
+      .mutate<DuplicatePageMutationResponse>({
         mutation: DUPLICATE_PAGE,
         variables: {
           application: applicationId,

@@ -37,6 +37,7 @@ export class SafeQueryBuilderComponent
 
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
+
   /**
    * Getter for the available scalar fields
    *
@@ -126,47 +127,37 @@ export class SafeQueryBuilderComponent
           );
         }
       });
+      const setFormBuilderControls = (
+        fieldControlRequired: boolean = false
+      ) => {
+        this.form?.setControl('filter', createFilterGroup(null));
+        this.form?.setControl(
+          'fields',
+          fieldControlRequired
+            ? this.formBuilder.array([], Validators.required)
+            : this.formBuilder.array([])
+        );
+        this.form?.setControl(
+          'sort',
+          this.formBuilder.group({
+            field: [''],
+            order: ['asc'],
+          })
+        );
+        if (this.form?.get('clorophlets')) {
+          this.form?.setControl('clorophlets', this.formBuilder.array([]));
+        }
+      };
       this.form?.controls.name.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
           if (value !== this.form?.value.name) {
             if (this.allQueries.find((x) => x === value)) {
               this.availableFields = this.queryBuilder.getFields(value);
-              this.form?.setControl('filter', createFilterGroup(null));
-              this.form?.setControl(
-                'fields',
-                this.formBuilder.array([], Validators.required)
-              );
-              this.form?.setControl(
-                'sort',
-                this.formBuilder.group({
-                  field: [''],
-                  order: ['asc'],
-                })
-              );
-              if (this.form?.get('clorophlets')) {
-                this.form?.setControl(
-                  'clorophlets',
-                  this.formBuilder.array([])
-                );
-              }
+              setFormBuilderControls(true);
             } else {
               this.availableFields = [];
-              this.form?.setControl('filter', createFilterGroup(null));
-              this.form?.setControl('fields', this.formBuilder.array([]));
-              this.form?.setControl(
-                'sort',
-                this.formBuilder.group({
-                  field: [''],
-                  order: ['asc'],
-                })
-              );
-              if (this.form?.get('clorophlets')) {
-                this.form?.setControl(
-                  'clorophlets',
-                  this.formBuilder.array([])
-                );
-              }
+              setFormBuilderControls();
             }
             this.filteredQueries = this.filterQueries(value);
           }

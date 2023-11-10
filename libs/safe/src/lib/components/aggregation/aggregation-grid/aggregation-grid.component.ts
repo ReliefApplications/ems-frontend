@@ -1,12 +1,14 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GetAggregationDataQueryResponse } from '../../../services/aggregation/graphql/queries';
-import { Aggregation } from '../../../models/aggregation.model';
+import {
+  Aggregation,
+  AggregationDataQueryResponse,
+} from '../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
-import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
+import { GET_RESOURCE } from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -15,6 +17,8 @@ import {
 } from '../../../services/query-builder/query-builder.service';
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { createDefaultField } from '../../query-builder/query-builder-forms';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { cloneDeep } from 'lodash';
 
 /**
  * Shared aggregation grid component.
@@ -39,7 +43,7 @@ export class SafeAggregationGridComponent
   };
   public pageSize = 10;
   public skip = 0;
-  private dataQuery!: QueryRef<GetAggregationDataQueryResponse>;
+  private dataQuery!: QueryRef<AggregationDataQueryResponse>;
   private dataSubscription?: Subscription;
   public pagerSettings = PAGER_SETTINGS;
   public showFilter = false;
@@ -105,21 +109,31 @@ export class SafeAggregationGridComponent
         this.updateValues(data, loading);
       },
       error: (err: any) => {
-        this.status = {
-          error: true,
-          message: this.translate.instant(
-            'components.widget.grid.errors.queryFetchFailed',
-            {
-              error:
-                err.networkError?.error?.errors
-                  ?.map((x: any) => x.message)
-                  .join(', ') || err,
-            }
-          ),
-        };
         this.loading = false;
+        this.setErrorStatus(
+          err,
+          'components.widget.grid.errors.queryFetchFailed'
+        );
       },
     });
+  }
+
+  /**
+   * Set error status given error and translation key for the error message
+   *
+   * @param err error type
+   * @param translationKey translation key used to build the error message
+   */
+  private setErrorStatus(err: any, translationKey: string) {
+    this.status = {
+      error: true,
+      message: this.translate.instant(translationKey, {
+        error:
+          err.networkError?.error?.errors
+            ?.map((x: any) => x.message)
+            .join(', ') || err,
+      }),
+    };
   }
 
   /**
@@ -128,7 +142,7 @@ export class SafeAggregationGridComponent
   private getAggregationFields(): void {
     this.loadingSettings = true;
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id: this.resourceId,
@@ -215,18 +229,10 @@ export class SafeAggregationGridComponent
               },
               error: (err: any) => {
                 this.loadingSettings = false;
-                this.status = {
-                  error: true,
-                  message: this.translate.instant(
-                    'components.widget.grid.errors.metaQueryFetchFailed',
-                    {
-                      error:
-                        err.networkError?.error?.errors
-                          ?.map((x: any) => x.message)
-                          .join(', ') || err,
-                    }
-                  ),
-                };
+                this.setErrorStatus(
+                  err,
+                  'components.widget.grid.errors.metaQueryFetchFailed'
+                );
               },
             });
           } else {
@@ -244,18 +250,10 @@ export class SafeAggregationGridComponent
         },
         error: (err: any) => {
           this.loadingSettings = false;
-          this.status = {
-            error: true,
-            message: this.translate.instant(
-              'components.widget.grid.errors.metaQueryFetchFailed',
-              {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
-              }
-            ),
-          };
+          this.setErrorStatus(
+            err,
+            'components.widget.grid.errors.metaQueryFetchFailed'
+          );
         },
       });
   }
@@ -287,12 +285,9 @@ export class SafeAggregationGridComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(
-    data: GetAggregationDataQueryResponse,
-    loading: boolean
-  ) {
+  private updateValues(data: AggregationDataQueryResponse, loading: boolean) {
     this.gridData = {
-      data: data.recordsAggregation.items,
+      data: cloneDeep(data.recordsAggregation.items),
       total: data.recordsAggregation.totalCount,
     };
     this.loading = loading;

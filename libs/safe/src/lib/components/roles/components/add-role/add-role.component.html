@@ -15,7 +15,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">
+    <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

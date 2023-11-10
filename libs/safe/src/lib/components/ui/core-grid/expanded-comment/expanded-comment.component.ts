@@ -9,20 +9,23 @@ interface DialogData {
   readonly?: boolean;
 }
 
-/** Component for expanded comments */
+/**
+ * Display full text of long text fields in a modal, and allow edition of the text when possible.
+ */
 @Component({
   selector: 'safe-expanded-comment',
   templateUrl: './expanded-comment.component.html',
   styleUrls: ['./expanded-comment.component.scss'],
 })
 export class SafeExpandedCommentComponent implements OnInit {
+  /** Form control containing the value */
   public formControl!: UntypedFormControl;
 
   /**
-   * Constructor of this component
+   * Display full text of long text fields in a modal, and allow edition of the text when possible.
    *
-   * @param dialogRef The reference to the opened dialog
-   * @param data The data inputs for the dialog
+   * @param dialogRef Reference to the opened dialog
+   * @param data Dialog data input
    * @param fb Angular form builder
    */
   constructor(

@@ -68,9 +68,4 @@ export class EditChannelModalComponent implements OnInit {
       title: [this.data.channel.title, Validators.required],
     });
   }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

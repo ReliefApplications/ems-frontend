@@ -1,14 +1,19 @@
 import { Inject, Injectable } from '@angular/core';
-import { Dashboard, WIDGET_TYPES } from '../../models/dashboard.model';
-import { PageContextT } from '../../models/page.model';
+import {
+  CreateDashboardWithContextMutationResponse,
+  Dashboard,
+  EditDashboardMutationResponse,
+  WIDGET_TYPES,
+} from '../../models/dashboard.model';
+import {
+  EditPageContextMutationResponse,
+  PageContextT,
+} from '../../models/page.model';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import {
   EDIT_DASHBOARD,
-  EditDashboardMutationResponse,
-  EditPageContextMutationResponse,
   UPDATE_PAGE_CONTEXT,
-  CreateDashboardWithContextMutationResponse,
   CREATE_DASHBOARD_WITH_CONTEXT,
 } from './graphql/mutations';
 import get from 'lodash/get';
@@ -25,6 +30,7 @@ export class SafeDashboardService {
   public availableWidgets = WIDGET_TYPES;
   /** Current dashboard */
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
+
   /** @returns Current dashboard as observable */
   get dashboard$(): Observable<Dashboard | null> {
     return this.dashboard.asObservable();

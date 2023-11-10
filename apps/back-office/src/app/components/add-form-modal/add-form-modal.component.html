@@ -84,9 +84,7 @@
                 <label>{{
                   'components.form.create.template.from' | translate
                 }}</label>
-                <ui-select-menu
-                  formControlName="template"
-                >
+                <ui-select-menu formControlName="template">
                   <ui-select-option
                     *ngFor="let template of templates"
                     [value]="template.id"
@@ -109,7 +107,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button [uiDialogClose]>{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

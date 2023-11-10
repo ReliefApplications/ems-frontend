@@ -1,17 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
-import { Application } from '../../../models/application.model';
-import { ContentType, Page } from '../../../models/page.model';
+import {
+  Application,
+  ApplicationQueryResponse,
+} from '../../../models/application.model';
+import {
+  ContentType,
+  EditPageMutationResponse,
+  Page,
+} from '../../../models/page.model';
 import { Role } from '../../../models/user.model';
-import {
-  EditPageAccessMutationResponse,
-  EDIT_PAGE_ACCESS,
-} from '../graphql/mutations';
-import {
-  GetApplicationFeaturesQueryResponse,
-  GET_APPLICATION_FEATURES,
-} from '../graphql/queries';
+import { EDIT_PAGE_ACCESS } from '../graphql/mutations';
+import { GET_APPLICATION_FEATURES } from '../graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -46,7 +47,7 @@ export class RoleFeaturesComponent implements OnInit {
 
   ngOnInit(): void {
     this.apollo
-      .query<GetApplicationFeaturesQueryResponse>({
+      .query<ApplicationQueryResponse>({
         query: GET_APPLICATION_FEATURES,
         variables: {
           id: this.application?.id,
@@ -81,7 +82,7 @@ export class RoleFeaturesComponent implements OnInit {
   onEditAccess(e: any): void {
     this.loading = true;
     this.apollo
-      .mutate<EditPageAccessMutationResponse>({
+      .mutate<EditPageMutationResponse>({
         mutation: EDIT_PAGE_ACCESS,
         variables: {
           id: e.page,

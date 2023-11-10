@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Group, Role } from '../../../models/user.model';
 
 // === DELETE ROLE ===
 
@@ -11,11 +10,6 @@ export const DELETE_ROLE = gql`
     }
   }
 `;
-
-/** Model for DeleteRoleMutationResponse object */
-export interface DeleteRoleMutationResponse {
-  deleteRole: Role;
-}
 
 // === ADD ROLE ===
 
@@ -33,11 +27,6 @@ export const ADD_ROLE = gql`
   }
 `;
 
-/** Model for AddRoleMutationResponse object */
-export interface AddRoleMutationResponse {
-  addRole: Role;
-}
-
 // === ADD GROUP ===
 
 /** Graphql request for adding a new group to an application */
@@ -50,11 +39,6 @@ export const ADD_GROUP = gql`
   }
 `;
 
-/** Model for AddGroupMutationResponse object */
-export interface AddGroupMutationResponse {
-  addGroup: Group;
-}
-
 // === DELETE GROUP ===
 
 /** Graphql request for deleting a group by its id */
@@ -65,11 +49,6 @@ export const DELETE_GROUP = gql`
     }
   }
 `;
-
-/** Model for DeleteGroupMutationResponse object */
-export interface DeleteGroupMutationResponse {
-  deleteGroup: Group;
-}
 
 // === FETCH GROUPS FROM SERVICE ===
 /** Graphql request for adding a new group to an application */
@@ -82,8 +61,3 @@ export const FETCH_GROUPS = gql`
     }
   }
 `;
-
-/** Model for AddGroupMutationResponse object */
-export interface FetchGroupsMutationResponse {
-  fetchGroups: Group[];
-}

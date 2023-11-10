@@ -1,4 +1,4 @@
-<ui-dialog [closable]="true">
+<ui-dialog>
   <ng-container ngProjectAs="header">
     <h3>
       {{
@@ -17,5 +17,10 @@
         ></ui-button>
       </ng-container>
     </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]>
+      {{ 'common.close' | translate }}
+    </ui-button>
   </ng-container>
 </ui-dialog>

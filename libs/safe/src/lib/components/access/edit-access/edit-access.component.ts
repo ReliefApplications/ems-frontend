@@ -1,8 +1,8 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { GetRolesQueryResponse, GET_ROLES } from './graphql/queries';
-import { Role } from '../../../models/user.model';
+import { GET_ROLES } from './graphql/queries';
+import { Role, RolesQueryResponse } from '../../../models/user.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
@@ -57,7 +57,7 @@ export class SafeEditAccessComponent
    */
   ngOnInit(): void {
     this.apollo
-      .query<GetRolesQueryResponse>({
+      .query<RolesQueryResponse>({
         query: GET_ROLES,
         variables: {
           application: this.data.application,
@@ -84,12 +84,5 @@ export class SafeEditAccessComponent
           : null,
       ],
     });
-  }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
   }
 }

@@ -4,13 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 
 import {
   Form,
+  FormQueryResponse,
   SafeBreadcrumbService,
   SafeFormComponent,
 } from '@oort-front/safe';
-import {
-  GetFormByIdQueryResponse,
-  GET_SHORT_FORM_BY_ID,
-} from './graphql/queries';
+import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 
 /**
  * Form answer page component.
@@ -47,7 +45,7 @@ export class FormAnswerComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
-        .watchQuery<GetFormByIdQueryResponse>({
+        .watchQuery<FormQueryResponse>({
           query: GET_SHORT_FORM_BY_ID,
           variables: {
             id: this.id,

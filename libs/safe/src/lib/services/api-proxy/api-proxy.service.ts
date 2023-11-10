@@ -2,7 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { SafeRestService } from '../rest/rest.service';
-import { ApiConfiguration } from '../../models/apiConfiguration.model';
+import { ApiConfiguration } from '../../models/api-configuration.model';
 
 /**
  * Shared API Proxy service.
@@ -14,6 +14,7 @@ import { ApiConfiguration } from '../../models/apiConfiguration.model';
 export class SafeApiProxyService {
   /** API url */
   public baseUrl = '';
+
   /**
    * Shared API Proxy service.
    * The API proxy service contacts the back-end generated proxy, based on the API definitions.

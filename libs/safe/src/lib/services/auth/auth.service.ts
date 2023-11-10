@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable, Inject } from '@angular/core';
-import { Permission, User } from '../../models/user.model';
-import { GetProfileQueryResponse, GET_PROFILE } from './graphql/queries';
+import {
+  Permission,
+  ProfileQueryResponse,
+  User,
+} from '../../models/user.model';
+import { GET_PROFILE } from './graphql/queries';
 import {
   BehaviorSubject,
   combineLatest,
@@ -66,6 +70,7 @@ export const AppAbility = Ability as AbilityClass<AppAbility>;
 export class SafeAuthService {
   /** Current user */
   public user = new BehaviorSubject<User | null>(null);
+
   /** @returns Current user as observable */
   get user$(): Observable<User | null> {
     return this.user.asObservable();
@@ -73,10 +78,12 @@ export class SafeAuthService {
 
   /** Current account info */
   public account: Account | null = null;
+
   /** @returns Current user value */
   get userValue(): User | null {
     return this.user.getValue();
   }
+
   /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 
@@ -268,8 +275,8 @@ export class SafeAuthService {
    *
    * @returns Apollo query of profile
    */
-  getProfile(): Observable<ApolloQueryResult<GetProfileQueryResponse>> {
-    return this.apollo.query<GetProfileQueryResponse>({
+  getProfile(): Observable<ApolloQueryResult<ProfileQueryResponse>> {
+    return this.apollo.query<ProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
       errorPolicy: 'all',

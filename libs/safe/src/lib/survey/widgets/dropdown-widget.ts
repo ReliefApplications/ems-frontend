@@ -13,13 +13,13 @@ import updateChoices from './utils/common-list-filters';
  * @param domService Shared dom service
  */
 export const init = (Survey: any, domService: DomService): void => {
-  let currentSearchValue = '';
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'dropdown',
     isDefaultRender: true,
     afterRender: (question: QuestionDropdown, el: HTMLInputElement): void => {
+      let currentSearchValue = '';
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();

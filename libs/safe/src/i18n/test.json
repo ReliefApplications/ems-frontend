@@ -129,6 +129,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"loading": "******",
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
@@ -246,6 +247,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"remove": "******",
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -1193,6 +1195,7 @@
 						"title": "******"
 					},
 					"size": "******",
+					"stepSize": "******",
 					"style": "******",
 					"text": "******",
 					"title": {
@@ -1200,7 +1203,8 @@
 						"format": "******"
 					},
 					"tooltip": {
-						"palette": "******"
+						"palette": "******",
+						"stepSize": "******"
 					},
 					"type": "******",
 					"xAxis": "******",
@@ -1260,6 +1264,9 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
+						"placeholder": {
+							"modifyValue": "******"
+						},
 						"title": "******",
 						"tooltip": {
 							"attach": "******",

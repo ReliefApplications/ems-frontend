@@ -2,7 +2,8 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeRecordHistoryModule } from '../record-history/record-history.module';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { DialogModule } from '@oort-front/ui';
+import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * This interface describes the structure of the data that will be displayed in the dialog modal
@@ -17,7 +18,13 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, SafeRecordHistoryModule, DialogModule],
+  imports: [
+    CommonModule,
+    SafeRecordHistoryModule,
+    DialogModule,
+    ButtonModule,
+    TranslateModule,
+  ],
   selector: 'safe-history-modal',
   templateUrl: './record-history-modal.component.html',
   styleUrls: ['./record-history-modal.component.scss'],

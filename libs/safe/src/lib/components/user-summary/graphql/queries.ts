@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '../../../models/application.model';
-import { Group, Role, User } from '../../../models/user.model';
 import { USER_FIELDS } from './fragments';
 
 /** Graphql query to get user by id */
@@ -12,11 +10,6 @@ export const GET_USER = gql`
   }
   ${USER_FIELDS}
 `;
-
-/** GraphQL interface of get user by id query */
-export interface GetUserQueryResponse {
-  user: User;
-}
 
 /** Get Applications query */
 export const GET_APPLICATIONS = gql`
@@ -42,20 +35,6 @@ export const GET_APPLICATIONS = gql`
   }
 `;
 
-/** Interface of Get Applications query */
-export interface GetApplicationsQueryResponse {
-  applications: {
-    edges: {
-      node: Application;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-  };
-}
-
 /** Get Roles query */
 export const GET_ROLES = gql`
   query GetRoles($application: ID) {
@@ -65,11 +44,6 @@ export const GET_ROLES = gql`
     }
   }
 `;
-
-/** Interface of Get Roles query */
-export interface GetRolesQueryResponse {
-  roles: Role[];
-}
 
 /** Graphql request for getting groups */
 export const GET_GROUPS = gql`
@@ -81,8 +55,3 @@ export const GET_GROUPS = gql`
     }
   }
 `;
-
-/** Model for GetGroupsQueryResponse object */
-export interface GetGroupsQueryResponse {
-  groups: Group[];
-}

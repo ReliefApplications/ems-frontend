@@ -102,6 +102,7 @@ export class SafeEmailPreviewComponent implements OnInit {
       files: [[]],
     });
   }
+
   /**
    * Add the inputs emails to the distribution list
    *

@@ -7,3 +7,23 @@ export interface Aggregation {
   sourceFields?: any;
   pipeline?: any;
 }
+
+/** Model for add aggregation mutation response */
+export interface AddAggregationMutationResponse {
+  addAggregation: Aggregation;
+}
+
+/** Model for edit aggregation mutation response */
+export interface EditAggregationMutationResponse {
+  editAggregation: Aggregation;
+}
+
+/** Model for delete aggregation mutation response */
+export interface DeleteAggregationMutationResponse {
+  deleteAggregation: Aggregation;
+}
+
+/** Model for aggregation data query response */
+export interface AggregationDataQueryResponse {
+  recordsAggregation: any | { items: any[]; totalCount: number };
+}

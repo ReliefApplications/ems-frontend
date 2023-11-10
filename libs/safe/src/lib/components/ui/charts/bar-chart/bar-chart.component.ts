@@ -12,19 +12,11 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-import { ChartTitle } from '../interfaces';
+import { ChartLegend, ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import { isEqual, isNil } from 'lodash';
 import Color from 'color';
-
-/**
- * Interface of chart legend.
- */
-interface ChartLegend {
-  visible: boolean;
-  position: 'top' | 'bottom' | 'left' | 'right';
-}
 
 /**
  * Bar/Column chart component, based on chart.js component.
@@ -161,6 +153,7 @@ export class SafeBarChartComponent implements OnChanges {
             autoSkip: isBar,
             maxRotation: 90,
             minRotation: 0,
+            stepSize: get(this.options, 'axes.x.stepSize', undefined),
           },
         },
         y: {
@@ -170,6 +163,9 @@ export class SafeBarChartComponent implements OnChanges {
           stacked: get(this.options, 'stack', false),
           min: !isBar ? get(this.options, 'axes.y.min', undefined) : undefined,
           max: !isBar ? get(this.options, 'axes.y.max', undefined) : undefined,
+          ticks: {
+            stepSize: get(this.options, 'axes.y.stepSize', undefined),
+          },
         },
       },
       plugins: {

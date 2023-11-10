@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Notification } from '../../../../models/notification.model';
-import { Record } from '../../../../models/record.model';
 
 // === EDIT RECORD ===
 
@@ -37,11 +35,6 @@ export const EDIT_RECORD = gql`
   }
 `;
 
-/** Model for EditRecordMutationResponse object */
-export interface EditRecordMutationResponse {
-  editRecord: Record;
-}
-
 // === EDIT RECORDS ===
 
 /** Graphql request for editing multiple records by their ids */
@@ -61,11 +54,6 @@ export const EDIT_RECORDS = gql`
   }
 `;
 
-/** Model for EditRecordsMutationResponse object */
-export interface EditRecordsMutationResponse {
-  editRecords: Record[];
-}
-
 // === PUBLISH RECORDS ===
 
 /** Graphql request for publishing rows to a channel */
@@ -74,11 +62,6 @@ export const PUBLISH = gql`
     publish(ids: $ids, channel: $channel)
   }
 `;
-
-/** Model for PublishMutationResponse object */
-export interface PublishMutationResponse {
-  publish: boolean;
-}
 
 // === PUBLISH NOTIFICATION ===
 
@@ -109,8 +92,3 @@ export const PUBLISH_NOTIFICATION = gql`
     }
   }
 `;
-
-/** Model for PublishNotificationMutationResponse object */
-export interface PublishNotificationMutationResponse {
-  publishNotification: Notification;
-}

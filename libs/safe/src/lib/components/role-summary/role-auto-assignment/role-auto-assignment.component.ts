@@ -5,11 +5,11 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
 import { isArray } from 'lodash';
 import get from 'lodash/get';
-import { Group, Role } from '../../../models/user.model';
+import { Group, GroupsQueryResponse, Role } from '../../../models/user.model';
 import { SafeRestService } from '../../../services/rest/rest.service';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
-import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
+import { GET_GROUPS } from '../graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -29,6 +29,7 @@ export class RoleAutoAssignmentComponent
   @Input() role!: Role;
   public formArray!: UntypedFormArray;
   @Output() edit = new EventEmitter();
+
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
     if (loading) {
@@ -74,7 +75,7 @@ export class RoleAutoAssignmentComponent
       this.rules = value;
     });
     this.apollo
-      .query<GetGroupsQueryResponse>({
+      .query<GroupsQueryResponse>({
         query: GET_GROUPS,
       })
       .subscribe(({ data }) => {

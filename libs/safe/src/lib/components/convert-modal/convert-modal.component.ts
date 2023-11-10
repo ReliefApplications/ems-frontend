@@ -6,10 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import {
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS,
-} from './graphql/queries';
+import { GET_RECORD_DETAILS } from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -25,6 +22,7 @@ import {
   FormWrapperModule,
   DialogModule,
 } from '@oort-front/ui';
+import { RecordQueryResponse } from '../../models/record.model';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -91,7 +89,7 @@ export class SafeConvertModalComponent
 
   ngOnInit(): void {
     this.apollo
-      .query<GetRecordDetailsQueryResponse>({
+      .query<RecordQueryResponse>({
         query: GET_RECORD_DETAILS,
         variables: {
           id: this.data.record,
@@ -124,12 +122,5 @@ export class SafeConvertModalComponent
             ) || [];
         }
       });
-  }
-
-  /**
-   * Closes the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
   }
 }

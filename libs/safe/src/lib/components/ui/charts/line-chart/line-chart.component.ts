@@ -13,19 +13,11 @@ import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-import { ChartTitle } from '../interfaces';
+import { ChartLegend, ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import { isEqual, isNil } from 'lodash';
 import Color from 'color';
-
-/**
- * Interface containing the settings of the chart legend
- */
-interface ChartLegend {
-  visible: boolean;
-  position: 'top' | 'bottom' | 'left' | 'right';
-}
 
 /** Interpolation modes */
 type Interpolation = 'linear' | 'cubic' | 'step';
@@ -167,7 +159,7 @@ export class SafeLineChartComponent implements OnChanges {
     const titleColor = get(this.title, 'color', undefined);
     const titleVisible = titleText !== '';
 
-    // log min an max
+    // Configure chartjs options based on widget settings
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
@@ -185,8 +177,11 @@ export class SafeLineChartComponent implements OnChanges {
           grid: {
             display: get(this.options, 'grid.y.display', true),
           },
-          min: this.min - 0.1 * this.min,
-          max: this.max + 0.1 * this.max,
+          min: get(this.options, 'axes.y.min', undefined),
+          max: get(this.options, 'axes.y.max', undefined),
+          ticks: {
+            stepSize: get(this.options, 'axes.y.stepSize', undefined),
+          },
         },
       },
       plugins: {

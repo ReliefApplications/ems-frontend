@@ -10,10 +10,13 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { Resource } from '../../../models/resource.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../models/resource.model';
 import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 
@@ -71,6 +74,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
 
   public selectedResource: Resource | null = null;
   public selectedLayout: Layout | null = null;
+
   /**
    * Modal content for the settings of the editor widgets.
    *
@@ -102,7 +106,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
     const layoutID = this.tileForm?.get('layout')?.value;
     if (resourceID) {
       this.apollo
-        .query<GetResourceByIdQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {
             id: resourceID,

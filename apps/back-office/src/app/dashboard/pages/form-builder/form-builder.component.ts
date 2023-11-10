@@ -2,16 +2,12 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  EditFormMutationResponse,
   EDIT_FORM_NAME,
   EDIT_FORM_PERMISSIONS,
   EDIT_FORM_STATUS,
   EDIT_FORM_STRUCTURE,
 } from './graphql/mutations';
-import {
-  GetFormByIdQueryResponse,
-  GET_SHORT_FORM_BY_ID,
-} from './graphql/queries';
+import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   SafeAuthService,
@@ -19,13 +15,26 @@ import {
   SafeConfirmService,
   SafeBreadcrumbService,
   status,
+  FormQueryResponse,
+  EditFormMutationResponse,
+  SafeSnackbarSpinnerComponent,
 } from '@oort-front/safe';
+import { SpinnerComponent } from '@oort-front/ui';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+
+/** Default snackbar config for after request complete  */
+const REQUEST_SNACKBAR_CONF = {
+  error: false,
+  duration: 2000,
+  data: { loading: false },
+};
 
 /**
  * Form builder page
@@ -65,6 +74,7 @@ export class FormBuilderComponent implements OnInit {
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
+   * @param overlay Angular overlay service
    */
   constructor(
     private apollo: Apollo,
@@ -75,7 +85,8 @@ export class FormBuilderComponent implements OnInit {
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: SafeBreadcrumbService,
+    private overlay: Overlay
   ) {}
 
   /**
@@ -115,7 +126,7 @@ export class FormBuilderComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
-        .watchQuery<GetFormByIdQueryResponse>({
+        .watchQuery<FormQueryResponse>({
           query: GET_SHORT_FORM_BY_ID,
           variables: {
             id: this.id,
@@ -189,22 +200,59 @@ export class FormBuilderComponent implements OnInit {
   }
 
   /**
+   * Set up needed headers and response information for the file download action
+   *
+   * @param {string} translationKey Translation key for the file download snackbar message
+   * @param {number} duration Time duration of the opened snackbar element
+   * @returns snackbar reference and header for the file download request
+   */
+  private snackBarMessageInit(
+    translationKey: string = 'common.loading',
+    duration: number = 0
+  ) {
+    // Opens a loader in a snackbar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration,
+        data: {
+          message: this.translate.instant(translationKey),
+          loading: true,
+        },
+      }
+    );
+    return snackBarRef;
+  }
+
+  /**
+   * Create a loading overlay that covers the whole viewport using cdk overlay
+   *
+   * @returns {OverlayRef} Overlay reference
+   */
+  private createLoadingOverlay(): OverlayRef {
+    const overlayRef = this.overlay.create({
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically(),
+      hasBackdrop: true,
+    });
+    overlayRef.attach(new ComponentPortal(SpinnerComponent));
+    return overlayRef;
+  }
+
+  /**
    * Save form structure
    *
    * @param structure form structure
    */
   public async onSave(structure: any): Promise<void> {
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
     if (!this.form?.id) {
       alert('not valid');
     } else {
-      const { SafeStatusModalComponent } = await import('@oort-front/safe');
-      const statusModal = this.dialog.open(SafeStatusModalComponent, {
-        disableClose: true,
-        data: {
-          title: this.translate.instant('components.formBuilder.saveSurvey'),
-          showSpinner: true,
-        },
-      });
       this.apollo
         .mutate<EditFormMutationResponse>({
           mutation: EDIT_FORM_STRUCTURE,
@@ -215,29 +263,36 @@ export class FormBuilderComponent implements OnInit {
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(errors[0].message, {
-                error: true,
-              });
-              statusModal.close();
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.form.one'),
-                  value: this.form?.name,
-                })
-              );
+            // Dismiss the loading snackbar
+            loadingSnackbarRef.instance.dismiss();
+            // Open new snackbar with the request error or success message
+            const message = errors
+              ? errors[0].message
+              : this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.form.one').toLowerCase(),
+                  value: '',
+                });
+            const snackbarConfig = {
+              ...REQUEST_SNACKBAR_CONF,
+              error: errors ? true : false,
+            };
+            this.snackBar.openSnackBar(message, snackbarConfig);
+
+            if (!errors) {
               this.form = { ...data?.editForm, structure };
               this.structure = structure;
               localStorage.removeItem(`form:${this.id}`);
               this.hasChanges = false;
               this.authService.canLogout.next(true);
-              statusModal.close();
             }
           },
           error: (err) => {
+            loadingSnackbarRef.instance.dismiss();
             this.snackBar.openSnackBar(err.message, { error: true });
-            statusModal.close();
+          },
+          complete: () => {
+            // Detach the current set overlay
+            overlayRef.detach();
           },
         });
     }
@@ -249,14 +304,9 @@ export class FormBuilderComponent implements OnInit {
    * @param status new status
    */
   private async updateStatus(status: string): Promise<void> {
-    const { SafeStatusModalComponent } = await import('@oort-front/safe');
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
-      disableClose: true,
-      data: {
-        title: 'Saving survey',
-        showSpinner: true,
-      },
-    });
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
+
     this.apollo
       .mutate<EditFormMutationResponse>({
         mutation: EDIT_FORM_STATUS,
@@ -267,30 +317,38 @@ export class FormBuilderComponent implements OnInit {
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+          // Dismiss the loading snackbar
+          loadingSnackbarRef.instance.dismiss();
+          // Open new snackbar with the request error or success message
+          const message = errors
+            ? this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.status'),
                 error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-            statusModal.close();
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.statusUpdated', {
-                value: status,
               })
-            );
+            : this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.status'),
+                value: status,
+              });
+          const snackbarConfig = {
+            ...REQUEST_SNACKBAR_CONF,
+            error: errors ? true : false,
+          };
+          this.snackBar.openSnackBar(message, snackbarConfig);
+
+          if (!errors) {
             this.form = { ...this.form, status: data?.editForm.status };
             this.statusControl.setValue(data?.editForm.status, {
               emitEvent: false,
             });
-            statusModal.close();
           }
         },
         error: (err) => {
+          loadingSnackbarRef.instance.dismiss();
           this.snackBar.openSnackBar(err.message, { error: true });
+        },
+        complete: () => {
+          // Detach the current set overlay
+          overlayRef.detach();
         },
       });
   }
@@ -302,7 +360,7 @@ export class FormBuilderComponent implements OnInit {
    */
   setTemplate(id: string): void {
     this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
+      .watchQuery<FormQueryResponse>({
         query: GET_SHORT_FORM_BY_ID,
         variables: {
           id,
@@ -341,15 +399,10 @@ export class FormBuilderComponent implements OnInit {
    * @param {string} formName new form name
    */
   public async saveName(formName: string): Promise<void> {
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
+
     if (formName && formName !== this.form?.name) {
-      const { SafeStatusModalComponent } = await import('@oort-front/safe');
-      const statusModal = this.dialog.open(SafeStatusModalComponent, {
-        disableClose: true,
-        data: {
-          title: 'Saving survey',
-          showSpinner: true,
-        },
-      });
       this.apollo
         .mutate<EditFormMutationResponse>({
           mutation: EDIT_FORM_NAME,
@@ -358,30 +411,45 @@ export class FormBuilderComponent implements OnInit {
             name: formName,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.form.one'),
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-            statusModal.close();
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.form.one').toLowerCase(),
-                value: formName,
-              })
-            );
-            this.form = { ...this.form, name: data?.editForm.name };
-            this.breadcrumbService.setBreadcrumb(
-              '@form',
-              this.form.name as string
-            );
-            statusModal.close();
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            // Dismiss the loading snackbar
+            loadingSnackbarRef.instance.dismiss();
+            // Open new snackbar with the request error or success message
+            const message = errors
+              ? this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate.instant('common.form.one'),
+                    error: errors[0].message,
+                  }
+                )
+              : this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.form.one').toLowerCase(),
+                  value: formName,
+                });
+            const snackbarConfig = {
+              ...REQUEST_SNACKBAR_CONF,
+              error: errors ? true : false,
+            };
+            this.snackBar.openSnackBar(message, snackbarConfig);
+
+            if (!errors) {
+              this.form = { ...this.form, name: data?.editForm.name };
+              this.breadcrumbService.setBreadcrumb(
+                '@form',
+                this.form.name as string
+              );
+            }
+          },
+          error: (err) => {
+            loadingSnackbarRef.instance.dismiss();
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
+          complete: () => {
+            // Detach the current set overlay
+            overlayRef.detach();
+          },
         });
     }
   }
@@ -392,14 +460,9 @@ export class FormBuilderComponent implements OnInit {
    * @param e new permissions
    */
   async saveAccess(e: any): Promise<void> {
-    const { SafeStatusModalComponent } = await import('@oort-front/safe');
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
-      disableClose: true,
-      data: {
-        title: 'Saving survey',
-        showSpinner: true,
-      },
-    });
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
+
     this.apollo
       .mutate<EditFormMutationResponse>({
         mutation: EDIT_FORM_PERMISSIONS,
@@ -410,28 +473,34 @@ export class FormBuilderComponent implements OnInit {
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+          // Dismiss the loading snackbar
+          loadingSnackbarRef.instance.dismiss();
+          // Open new snackbar with the request error or success message
+          const message = errors
+            ? this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.access'),
                 error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-            statusModal.close();
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
+              })
+            : this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.access'),
                 value: '',
-              })
-            );
+              });
+          const snackbarConfig = {
+            ...REQUEST_SNACKBAR_CONF,
+            error: errors ? true : false,
+          };
+          this.snackBar.openSnackBar(message, snackbarConfig);
+          if (!errors) {
             this.form = { ...data?.editForm, structure: this.structure };
-            statusModal.close();
           }
         },
         error: (err) => {
+          loadingSnackbarRef.instance.dismiss();
           this.snackBar.openSnackBar(err.message, { error: true });
+        },
+        complete: () => {
+          // Detach the current set overlay
+          overlayRef.detach();
         },
       });
   }

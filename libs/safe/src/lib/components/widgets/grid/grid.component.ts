@@ -1,22 +1,14 @@
 import { Apollo } from 'apollo-angular';
 import {
   EDIT_RECORD,
-  EditRecordMutationResponse,
   EDIT_RECORDS,
-  EditRecordsMutationResponse,
   PUBLISH,
   PUBLISH_NOTIFICATION,
-  PublishMutationResponse,
-  PublishNotificationMutationResponse,
 } from './graphql/mutations';
 import {
-  GetRecordDetailsQueryResponse,
   GET_RECORD_DETAILS,
-  GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-  GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
-  GetUserRolesPermissionsQueryResponse,
   GET_USER_ROLES_PERMISSIONS,
 } from './graphql/queries';
 import {
@@ -37,7 +29,6 @@ import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
-import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { SafeApplicationService } from '../../../services/application/application.service';
@@ -47,6 +38,17 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
+import {
+  EditRecordMutationResponse,
+  EditRecordsMutationResponse,
+  RecordQueryResponse,
+} from '../../../models/record.model';
+import {
+  PublishMutationResponse,
+  PublishNotificationMutationResponse,
+} from '../../../models/notification.model';
+import { FormQueryResponse } from '../../../models/form.model';
 
 /** Component for the grid widget */
 @Component({
@@ -156,7 +158,7 @@ export class SafeGridWidgetComponent
 
       // Get user permission on resource
       this.apollo
-        .query<GetUserRolesPermissionsQueryResponse>({
+        .query<RoleUsersNodesQueryResponse>({
           query: GET_USER_ROLES_PERMISSIONS,
           variables: {
             resource: this.settings.resource,
@@ -290,7 +292,7 @@ export class SafeGridWidgetComponent
         for (const record of this.grid.selectedItems) {
           promisedRecords.push(
             firstValueFrom(
-              this.apollo.query<GetRecordDetailsQueryResponse>({
+              this.apollo.query<RecordQueryResponse>({
                 query: GET_RECORD_DETAILS,
                 variables: {
                   id: record.id,
@@ -329,7 +331,6 @@ export class SafeGridWidgetComponent
         return;
       }
     }
-    console.log('there');
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
       await this.promisedRowsModifications(
@@ -478,16 +479,20 @@ export class SafeGridWidgetComponent
     const update: any = {};
     for (const modification of modifications) {
       if (modification.field) {
-        set(update, modification.field, modification.value);
+        // If no value, set at null
+        if (modification.value === undefined || modification.value === '') {
+          set(update, modification.field, null);
+        } else {
+          set(update, modification.field, modification.value);
+        }
       }
     }
-    const data = cleanRecord(update);
     return firstValueFrom(
       this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: update,
           template: get(this.settings, 'template', null),
         },
       })
@@ -503,6 +508,7 @@ export class SafeGridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @returns Attach to record promise
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
@@ -512,7 +518,7 @@ export class SafeGridWidgetComponent
   ): Promise<boolean> {
     return new Promise((resolve) => {
       this.apollo
-        .query<GetFormByIdQueryResponse>({
+        .query<FormQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
             id: targetForm,
@@ -537,7 +543,7 @@ export class SafeGridWidgetComponent
             );
             if (value && value.record) {
               this.apollo
-                .query<GetRecordByIdQueryResponse>({
+                .query<RecordQueryResponse>({
                   query: GET_RECORD_BY_ID,
                   variables: {
                     id: value.record,

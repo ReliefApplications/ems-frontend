@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '../../../../models/form.model';
 
 // === GET FORM BY ID ===
 
@@ -20,11 +19,6 @@ export const GET_FORM_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}
 
 // === GET QUERY TYPES ===
 

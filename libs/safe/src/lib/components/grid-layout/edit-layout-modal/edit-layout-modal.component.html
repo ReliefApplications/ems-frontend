@@ -1,4 +1,4 @@
-<ui-dialog [closable]="true" size="fullscreen">
+<ui-dialog size="fullscreen">
   <!-- Modal title -->
   <ng-container ngProjectAs="header">
     <h1>
@@ -27,7 +27,7 @@
   </ng-container>
   <!-- Modal actions -->
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

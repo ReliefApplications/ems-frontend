@@ -1,4 +1,4 @@
-<ui-dialog [closable]="true" size="medium">
+<ui-dialog size="medium">
   <ng-container ngProjectAs="header">
     <h2>
       {{ 'components.role.summary.autoAssignment.rule.edit' | translate }}
@@ -8,7 +8,7 @@
     <safe-filter [form]="formGroup" [fields]="fields"></safe-filter>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button [uiDialogClose]>{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
