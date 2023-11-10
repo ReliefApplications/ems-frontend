@@ -47,6 +47,6 @@ export class AppWidgetComponent
    */
   override ngOnInit(): void {
     super.ngOnInit();
-    this.authService.initLoginSequence();
+    // this.authService.initLoginSequence();
   }
 }

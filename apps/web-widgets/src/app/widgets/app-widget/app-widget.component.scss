@@ -6,8 +6,6 @@
   leafletgeocoder;
 @use 'node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css' as
   leafletgeoman;
-@use 'node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css'
-  as leaflettimedimension;
 
 // Shared ui styles
 @import 'ui.scss';
