@@ -45,6 +45,7 @@ import { ReferenceDataDropdownModule } from './survey/components/reference-data-
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
+import { SectionSettingsModule } from './components/widgets/section-settings/section-settings.module';
 
 /** Main module for the shared project */
 @NgModule({
@@ -57,6 +58,7 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     EditorSettingsModule,
     GridSettingsModule,
     MapSettingsModule,
+    SectionSettingsModule,
     WidgetGridModule,
     SortingSettingsModule,
     UsersModule,

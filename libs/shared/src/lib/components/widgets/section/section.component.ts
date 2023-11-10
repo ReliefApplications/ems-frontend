@@ -1,13 +1,10 @@
 import { Dialog } from '@angular/cdk/dialog';
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
   Optional,
   Output,
-  TemplateRef,
-  ViewChild,
 } from '@angular/core';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -15,17 +12,14 @@ import { takeUntil } from 'rxjs';
 import { WidgetComponent } from '../../widget/widget.component';
 
 /**
- * Tabs widget component.
+ * Section widget component.
  */
 @Component({
   selector: 'shared-section',
   templateUrl: './section.component.html',
   styleUrls: ['./section.component.scss'],
 })
-export class SectionComponent
-  extends UnsubscribeComponent
-  implements AfterViewInit
-{
+export class SectionComponent extends UnsubscribeComponent {
   /** Widget settings */
   @Input() settings: any;
   /** Widget definition */
@@ -34,8 +28,6 @@ export class SectionComponent
   @Input() canUpdate = false;
   /** Widget edit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  /** Header template reference */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   /**
    * Section widget component.
@@ -50,10 +42,6 @@ export class SectionComponent
     private dashboardService: DashboardService
   ) {
     super();
-  }
-
-  ngAfterViewInit(): void {
-    console.log('section');
   }
 
   /**

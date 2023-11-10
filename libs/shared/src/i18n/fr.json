@@ -365,6 +365,7 @@
 		"saveChanges": "Sauvegarder les changements",
 		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
+		"section": "Section",
 		"select": "Sélectionner",
 		"selectStatus": "Sélectionner un statut",
 		"semicolon": "point-virgule",

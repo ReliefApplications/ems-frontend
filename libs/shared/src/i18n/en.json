@@ -365,6 +365,7 @@
 		"saveChanges": "Save changes",
 		"search": "Search",
 		"searchObject": "Search {{name}}",
+		"section": "Section",
 		"select": "Select",
 		"selectStatus": "Select a status",
 		"semicolon": "semicolon",
