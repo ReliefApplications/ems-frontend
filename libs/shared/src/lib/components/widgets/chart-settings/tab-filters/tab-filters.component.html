@@ -68,9 +68,10 @@
             (mouseleave)="dragEnabled = false"
             cdkDragHandle
             [isIcon]="true"
+            variant="grey"
             icon="drag_indicator"
-            class="nav-item-handle"
-            [uiTooltip]="'models.page.tooltip.drag' | translate"
+            class="cursor-move"
+            [uiTooltip]="'common.tooltip.dragDrop' | translate"
           >
           </ui-button>
           <ui-button

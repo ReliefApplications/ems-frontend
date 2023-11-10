@@ -7,11 +7,13 @@ import { BarChartModule } from '../../ui/charts/bar-chart/bar-chart.module';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
+  FormWrapperModule,
   IconModule,
   SelectMenuModule,
   SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Module for the chart component
@@ -29,6 +31,8 @@ import {
     ButtonModule,
     TooltipModule,
     SelectMenuModule,
+    FormsModule,
+    FormWrapperModule,
   ],
   exports: [ChartComponent],
 })

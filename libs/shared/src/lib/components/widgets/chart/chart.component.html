@@ -111,6 +111,7 @@
 <ng-template #filterTemplate>
   <div uiFormFieldDirective class="!m-0 w-44 self-center">
     <ui-select-menu
+      [ngModel]="selectedFilter"
       (selectedOption)="onFilterSelected($any($event))"
       [placeholder]="'components.widget.chart.filters.select' | translate"
     >
