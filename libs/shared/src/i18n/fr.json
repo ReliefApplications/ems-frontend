@@ -1278,6 +1278,9 @@
 						"invalid": "Agrégation invalide"
 					}
 				},
+				"filters": {
+					"select": "Sélectionnez un filtre..."
+				},
 				"other": "Autre"
 			},
 			"expand": "Étendre",
@@ -1364,6 +1367,12 @@
 					"axes": "Axes",
 					"categories": "Catégories",
 					"color": "Couleur",
+					"filters": {
+						"add": "Ajouter un filtre",
+						"delete": "Supprimer le filtre",
+						"empty": "Aucun filtre configuré",
+						"title": "Filtres prédéfinis"
+					},
 					"grid": {
 						"title": "Grille",
 						"x": {

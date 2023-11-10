@@ -1,0 +1,99 @@
+<div class="flex justify-between">
+  <h2>{{ 'components.widget.settings.chart.filters.title' | translate }}</h2>
+
+  <ui-button
+    class="mb-6"
+    category="secondary"
+    variant="primary"
+    (click)="addRow()"
+  >
+    {{ 'components.widget.settings.chart.filters.add' | translate }}
+  </ui-button>
+</div>
+
+<shared-empty
+  *ngIf="formGroup.get('filters')!.value.length === 0"
+  [title]="'components.widget.settings.chart.filters.empty' | translate"
+></shared-empty>
+
+<form
+  [formGroup]="formGroup"
+  *ngIf="formGroup.get('filters')!.value.length > 0"
+>
+  <table
+    cdk-table
+    uiTableWrapper
+    [dataSource]="data"
+    formArrayName="filters"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+  >
+    <ng-container cdkColumnDef="label">
+      <th uiCellHeader *cdkHeaderCellDef class="w-1/5 min-w-[180px]">
+        {{ 'models.widget.sorting.label' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <div uiFormFieldDirective class="!m-0">
+          <input formControlName="label" />
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="filter">
+      <th uiCellHeader *cdkHeaderCellDef>
+        {{ 'common.filter.one' | translate }}
+      </th>
+      <td
+        uiCell
+        class="pt-4 pb-4"
+        *cdkCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <shared-filter
+          [form]="$any(formArray.at(rowIndex).get('filter'))"
+          [fields]="filterFields"
+        >
+        </shared-filter>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="actions">
+      <th uiCellHeader *cdkHeaderCellDef></th>
+      <td uiCell *cdkCellDef="let element; let rowIndex = index">
+        <div class="flex gap-2 text-neutral-500 justify-end">
+          <ui-button
+            (mouseenter)="dragEnabled = true"
+            (mouseleave)="dragEnabled = false"
+            cdkDragHandle
+            [isIcon]="true"
+            variant="grey"
+            icon="drag_indicator"
+            class="cursor-move"
+            [uiTooltip]="'common.tooltip.dragDrop' | translate"
+          >
+          </ui-button>
+          <ui-button
+            variant="danger"
+            [isIcon]="true"
+            icon="delete"
+            (click)="removeRow(rowIndex)"
+            [uiTooltip]="
+              'components.widget.settings.chart.filters.delete' | translate
+            "
+          >
+          </ui-button>
+        </div>
+      </td>
+    </ng-container>
+    <tr cdk-header-row *cdkHeaderRowDef="tableCols"></tr>
+    <tr
+      cdk-row
+      *cdkRowDef="let row; columns: tableCols"
+      cdkDrag
+      [cdkDragDisabled]="!dragEnabled"
+      class="bg-white"
+    ></tr>
+  </table>
+</form>

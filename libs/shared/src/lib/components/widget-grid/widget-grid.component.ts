@@ -412,7 +412,6 @@ export class WidgetGridComponent
       delete widget.defaultRows;
       delete widget.minItemRows;
     });
-    console.log(this.widgets);
     // Prevent changes to be saved too often
     this.changesSubscription = this.structureChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
