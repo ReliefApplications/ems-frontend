@@ -393,6 +393,7 @@
 		},
 		"title": "Titre",
 		"tooltip": {
+			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
 				"insert": "Tapez '{' pour utiliser des expressions et des variables"
 			}
@@ -2119,7 +2120,6 @@
 		"page": {
 			"add": "Ajouter une page",
 			"tooltip": {
-				"drag": "Glissez-déposez pour réorganiser",
 				"duplicate": "Sélectionner l'application où copier la page"
 			}
 		},

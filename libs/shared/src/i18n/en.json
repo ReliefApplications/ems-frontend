@@ -393,6 +393,7 @@
 		},
 		"title": "Title",
 		"tooltip": {
+			"dragDrop": "Drag and drop to reorder",
 			"editor": {
 				"insert": "Type '{' to inject expressions and variables"
 			}
@@ -2102,7 +2103,6 @@
 		"page": {
 			"add": "Add a Page",
 			"tooltip": {
-				"drag": "Drag and drop to reorder",
 				"duplicate": "Select the application you want to put the copy in"
 			}
 		},

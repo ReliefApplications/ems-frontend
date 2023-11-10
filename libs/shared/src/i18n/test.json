@@ -393,6 +393,7 @@
 		},
 		"title": "******",
 		"tooltip": {
+			"dragDrop": "******",
 			"editor": {
 				"insert": "******"
 			}
@@ -2102,7 +2103,6 @@
 		"page": {
 			"add": "******",
 			"tooltip": {
-				"drag": "******",
 				"duplicate": "******"
 			}
 		},
