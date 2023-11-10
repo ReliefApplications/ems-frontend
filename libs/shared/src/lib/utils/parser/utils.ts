@@ -1,6 +1,7 @@
 import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 import { Page } from '../../models/page.model';
+import { Aggregation } from '../../models/aggregation.model';
 import { REFERENCE_DATA_END } from '../../services/query-builder/query-builder.service';
 import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
 
@@ -444,6 +445,23 @@ export const getPageKeys = (
     value: `{{page(${page.id})}}`,
     text: page.name || `{{page(${page.id})}}`,
   }));
+};
+
+/**
+ * Return aggregation keys.
+ *
+ * @param aggregation aggregation
+ * @returns aggregation keys
+ */
+export const getAggregationKeys = (
+  aggregation: Aggregation
+): { value: string; text: string }[] => {
+  return [
+    {
+      value: `{{aggregation${aggregation.id}}}`,
+      text: aggregation.name || `{{aggregation(${aggregation.id})}}`,
+    },
+  ];
 };
 
 /**

@@ -7,12 +7,14 @@ import {
   getCardStyle,
   getDataKeys,
   getPageKeys,
+  getAggregationKeys,
   parseHtml,
 } from '../../utils/parser/utils';
 import { ApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { RawEditorSettings } from 'tinymce';
+import { Aggregation } from '../../models/aggregation.model';
 
 /**
  * Data template service
@@ -62,6 +64,16 @@ export class DataTemplateService {
     const application = this.applicationService.application.getValue();
     const pages = application?.pages || [];
     return getPageKeys(pages);
+  }
+
+  /**
+   * Get auto completer aggregation keys
+   *
+   * @param aggregation aggregation
+   * @returns aggregation keys for auto completer
+   */
+  public getAutoCompleteAggregation(aggregation: Aggregation) {
+    return getAggregationKeys(aggregation);
   }
 
   /**
