@@ -139,7 +139,7 @@ export class AuthService {
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        this.oauthService.initImplicitFlow();
+        this.oauthService.initCodeFlow();
       });
     // Redirect to previous path
     this.oauthService.events
@@ -217,17 +217,13 @@ export class AuthService {
   public initLoginSequence(): Promise<void> {
     if (!localStorage.getItem('idtoken')) {
       let redirectUri: URL;
+      const pathName = location.href.replace(
+        this.environment.backOfficeUri,
+        '/'
+      );
       if (this.environment.module === 'backoffice') {
-        const pathName = location.href.replace(
-          this.environment.backOfficeUri,
-          '/'
-        );
         redirectUri = new URL(pathName, this.environment.backOfficeUri);
       } else {
-        const pathName = location.href.replace(
-          this.environment.backOfficeUri,
-          '/'
-        );
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
       redirectUri.search = '';

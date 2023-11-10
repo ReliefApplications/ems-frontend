@@ -4,7 +4,7 @@ import { AggregationGridComponent } from './aggregation-grid.component';
 
 describe('AggregationGridComponent', () => {
   let component: AggregationGridComponent;
-  let fixture: ComponentFixture<sharedAggregationGridComponent>;
+  let fixture: ComponentFixture<AggregationGridComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

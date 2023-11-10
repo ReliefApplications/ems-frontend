@@ -22,7 +22,6 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public stageType = PipelineStage;
   /** Array to hold the list of stages. */
   public stageList: string[] = Object.values(PipelineStage);
-
   /** Input decorator for fields$. */
   @Input() public fields$!: Observable<any[]>;
   /** Input decorator for metaFields$. */
@@ -33,7 +32,8 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public initialFields: any[] = [];
   /** Array to hold the fields per stage. */
   public fieldsPerStage: any[] = [];
-
+  /** Enabled drag behavior, needed to set the drag on run time so cdkDragHandle directive works in the table */
+  public dragEnabled = false;
   /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
 
@@ -48,17 +48,16 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
-    this.fields$.subscribe((fields: any[]) => {
+    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields: any[]) => {
       this.initialFields = [...fields];
       this.fieldsPerStage = [];
       this.updateFieldsPerStage(this.pipelineForm.value);
     });
-    this.metaFields$.subscribe((meta: any) => {
+    this.metaFields$.pipe(takeUntil(this.destroy$)).subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
     });
     this.pipelineForm.valueChanges
-      .pipe(debounceTime(500))
-      .pipe(takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
   }
 

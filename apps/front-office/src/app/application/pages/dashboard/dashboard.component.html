@@ -1,5 +1,5 @@
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+<div [ngClass]="{ 'py-8 px-6 h-full bg-white overflow-auto': isFullScreen }">
   <ng-container
     sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
@@ -39,16 +39,16 @@
         </div>
       </div>
     </ng-container>
-    <shared-widget-grid
-      [loading]="loading"
-      [widgets]="widgets"
-      (changeStep)="changeStep.emit($event)"
-    ></shared-widget-grid>
-    <shared-dashboard-filter
-      *ngIf="showFilter && isFullScreen"
-      [isFullScreen]="isFullScreen"
-    ></shared-dashboard-filter>
   </ng-container>
+  <shared-widget-grid
+    [loading]="loading"
+    [widgets]="widgets"
+    (changeStep)="changeStep.emit($event)"
+  ></shared-widget-grid>
+  <shared-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [isFullScreen]="isFullScreen"
+  ></shared-dashboard-filter>
 </div>
 <shared-dashboard-filter
   *ngIf="showFilter && !isFullScreen"

@@ -44,6 +44,7 @@ import { ApplicationsArchiveModule } from './components/applications-archive/app
 import { ReferenceDataDropdownModule } from './survey/components/reference-data-dropdown/reference-data-dropdown.module';
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
+import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
 
 /** Main module for the shared project */
 @NgModule({
@@ -76,6 +77,7 @@ import { StatusOptionsComponent } from './components/status-options/status-optio
     CronExpressionControlModule,
     MapModule,
     DashboardFilterModule,
+    DashboardFilterIconComponent,
     ButtonActionModule,
     WidgetChoiceModule,
     TabsSettingsModule,
@@ -99,6 +101,10 @@ import { StatusOptionsComponent } from './components/status-options/status-optio
     ViewsModule,
   ],
   declarations: [],
-  imports: [ListFilterComponent, StatusOptionsComponent],
+  imports: [
+    ListFilterComponent,
+    StatusOptionsComponent,
+    DashboardFilterIconComponent,
+  ],
 })
 export class Module {}

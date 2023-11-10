@@ -11,9 +11,17 @@ import localForage from 'localforage';
 import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
-import { AddRecordMutationResponse } from '../../models/record.model';
+import {
+  AddDraftRecordMutationResponse,
+  AddRecordMutationResponse,
+  EditDraftRecordMutationResponse,
+} from '../../models/record.model';
 import { Question } from '../../survey/types';
-
+import {
+  ADD_DRAFT_RECORD,
+  DELETE_DRAFT_RECORD,
+  EDIT_DRAFT_RECORD,
+} from './graphql/mutations';
 /**
  * Shared survey helper service.
  */
@@ -225,35 +233,14 @@ export class FormHelpersService {
   }
 
   /**
-   * Clean cached records from passed survey.
-   *
-   * @param survey Survey from which we need to clean cached records.
-   */
-  cleanCachedRecords(survey: SurveyModel): void {
-    if (!survey) return;
-    survey.getAllQuestions().forEach((question) => {
-      if (question.value) {
-        const type = question.getType();
-        if (type === 'resources') {
-          question.value.forEach((recordId: string) =>
-            localForage.removeItem(recordId)
-          );
-        } else if (type === 'resource') {
-          localForage.removeItem(question.value);
-        }
-      }
-    });
-  }
-
-  /**
-   * Create cache records (from resource/s questions) of passed survey.
+   * Create temporary records (from resource/s questions) of passed survey.
    *
    * @param survey Survey to get questions from
    */
-  public async createCachedRecords(survey: SurveyModel): Promise<void> {
+  public async createTemporaryRecords(survey: SurveyModel): Promise<void> {
     const promises: Promise<any>[] = [];
     const questions = survey.getAllQuestions();
-    const nestedRecordsToAdd: string[] = [];
+    const nestedRecordsToAdd: { draftIds: []; question: Question }[] = [];
 
     // Callbacks to update the ids of new records
     const updateIds: {
@@ -261,18 +248,19 @@ export class FormHelpersService {
     } = {};
 
     // Get all nested records to add
-    questions.forEach((question) => {
+    questions.forEach((question: Question) => {
       const type = question.getType();
-      if (!['resource', 'resources'].includes(type)) return;
-      const uuidv4Pattern =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
+      if (!['resource', 'resources'].includes(type) || !question.draftData) {
+        return;
+      }
       const isResource = type === 'resource';
-
       const toAdd = (isResource ? [question.value] : question.value).filter(
-        (x: string) => uuidv4Pattern.test(x)
+        (id: string) => id in question.draftData
       );
-      nestedRecordsToAdd.push(...toAdd);
+      nestedRecordsToAdd.push({
+        draftIds: toAdd,
+        question,
+      });
 
       toAdd.forEach((id: string) => {
         updateIds[id] = (newId: string) => {
@@ -283,31 +271,46 @@ export class FormHelpersService {
       });
     });
 
-    for (const localID of nestedRecordsToAdd) {
-      // load them from localForage and add them to the promises
-      const cache = await localForage.getItem(localID);
-      if (!cache) continue;
+    for (const element of nestedRecordsToAdd) {
+      for (const draftId of element.draftIds) {
+        const data = element.question.draftData[draftId];
+        const template = element.question.template;
 
-      const { template, data } = JSON.parse(cache as string);
-
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: template,
-              data,
-            },
+        promises.push(
+          firstValueFrom(
+            this.apollo.mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: template,
+                data,
+              },
+            })
+          ).then((res) => {
+            // change the draftId to the new recordId
+            const newId = res.data?.addRecord?.id;
+            if (!newId) return;
+            updateIds[draftId](newId);
+            // update question.newCreatedRecords too
+            const isResource = element.question.getType() === 'resource';
+            const draftIndex = (
+              isResource
+                ? [element.question.newCreatedRecords]
+                : element.question.newCreatedRecords
+            ).indexOf(draftId);
+            if (draftIndex !== -1) {
+              if (isResource) {
+                element.question.newCreatedRecords = newId;
+              } else {
+                element.question.newCreatedRecords[draftIndex] = newId;
+              }
+            }
+            // delete old temporary/draft record and data
+            this.deleteRecordDraft(draftId);
+            delete element.question.draftData[draftId];
+            return;
           })
-        ).then((res) => {
-          // change the localID to the new recordId
-          const newId = res.data?.addRecord?.id;
-          if (!newId) return;
-          updateIds[localID](newId);
-          localForage.removeItem(localID);
-          return;
-        })
-      );
+        );
+      }
     }
 
     await Promise.all(promises);
@@ -431,6 +434,118 @@ export class FormHelpersService {
       }
     }
     return true;
+  }
+
+  /**
+   * Saves the current data as a draft record
+   *
+   * @param survey Survey where to add the callbacks
+   * @param formId Form id of the survey
+   * @param draftId Draft record id
+   * @param callback callback method
+   */
+  public saveAsDraft(
+    survey: SurveyModel,
+    formId: string,
+    draftId?: string,
+    callback?: any
+  ): void {
+    // Check if a draft has already been loaded
+    if (!draftId) {
+      // Add a new draft record to the database
+      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+        mutation: ADD_DRAFT_RECORD,
+        variables: {
+          form: formId,
+          data: survey.data,
+        },
+      });
+      mutation.subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            survey.clear(false, true);
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          } else {
+            // localStorage.removeItem(this.storageId);
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.form.draftRecords.successSave'
+              ),
+              {
+                error: false,
+              }
+            );
+          }
+          // Callback to emit save but stay in record addition mode
+          if (callback) {
+            callback({
+              id: data?.addDraftRecord.id,
+              save: {
+                completed: false,
+                hideNewRecord: true,
+              },
+            });
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
+    } else {
+      // Edit last added draft record in the database
+      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
+        mutation: EDIT_DRAFT_RECORD,
+        variables: {
+          id: draftId,
+          data: survey.data,
+        },
+      });
+      mutation.subscribe(({ errors }: any) => {
+        if (errors) {
+          survey.clear(false, true);
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
+        } else {
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successEdit'),
+            {
+              error: false,
+            }
+          );
+        }
+        // Callback to emit save but stay in record addition mode
+        if (callback) {
+          callback({
+            id: draftId,
+            save: {
+              completed: false,
+              hideNewRecord: true,
+            },
+          });
+        }
+      });
+    }
+  }
+
+  /**
+   * Handles the deletion of a specific draft record
+   *
+   * @param draftId Id of the draft record to delete
+   * @param callback callback method
+   */
+  public deleteRecordDraft(draftId: string, callback?: any): void {
+    this.apollo
+      .mutate<any>({
+        mutation: DELETE_DRAFT_RECORD,
+        variables: {
+          id: draftId,
+        },
+      })
+      .subscribe(() => {
+        if (callback) {
+          callback();
+        }
+      });
   }
 
   /**

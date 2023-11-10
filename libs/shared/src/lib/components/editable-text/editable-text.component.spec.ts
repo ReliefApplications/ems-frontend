@@ -4,7 +4,7 @@ import { EditableTextComponent } from './editable-text.component';
 
 describe('EditableTextComponent', () => {
   let component: EditableTextComponent;
-  let fixture: ComponentFixture<sharedEditableTextComponent>;
+  let fixture: ComponentFixture<EditableTextComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

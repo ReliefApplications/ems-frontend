@@ -16,7 +16,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('FormBuilderComponent', () => {
   let component: FormBuilderComponent;
-  let fixture: ComponentFixture<sharedFormBuilderComponent>;
+  let fixture: ComponentFixture<FormBuilderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

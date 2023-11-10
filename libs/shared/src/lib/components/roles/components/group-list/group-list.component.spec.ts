@@ -4,7 +4,7 @@ import { GroupListComponent } from './group-list.component';
 
 describe('GroupListComponent', () => {
   let component: GroupListComponent;
-  let fixture: ComponentFixture<sharedGroupListComponent>;
+  let fixture: ComponentFixture<GroupListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

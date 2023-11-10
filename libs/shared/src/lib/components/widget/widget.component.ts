@@ -28,11 +28,36 @@ import { DOCUMENT } from '@angular/common';
   styleUrls: ['./widget.component.scss'],
 })
 export class WidgetComponent implements OnInit, OnDestroy {
+  /** Current widget definition */
   @Input() widget: any;
+  // todo: rename or delete
+  /** Is widget in fullscreen mode */
   @Input() header = true;
+  /** Can user update widget */
   @Input() canUpdate = false;
+  /** Template to display on the left of widget header */
   @Input() headerLeftTemplate?: TemplateRef<any>;
+  /** Template to display on the right of widget header */
   @Input() headerRightTemplate?: TemplateRef<any>;
+  /** Is fullscreen mode activated */
+  @Input() fullscreen = false;
+  /** Edit widget event emitter */
+  @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Change step workflow event emitter */
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  /** Id of the ticket. Visible in the dom */
+  @HostBinding()
+  id = `widget-${uuidv4()}`;
+  /** Reference to widget inner component */
+  @ViewChild('widgetContent')
+  widgetContentComponent!:
+    | ChartComponent
+    | GridWidgetComponent
+    | MapWidgetComponent
+    | EditorComponent
+    | SummaryCardComponent;
+  /** Html element containing widget custom style */
+  private customStyle?: HTMLStyleElement;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -43,24 +68,15 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  private customStyle?: HTMLStyleElement;
+  /** @returns should show widget header, based on widget settings */
+  get showHeader() {
+    return get(this.widget, 'settings.widgetDisplay.showHeader') ?? true;
+  }
 
-  @HostBinding()
-  id = `widget-${uuidv4()}`;
-
-  @ViewChild('widgetContent')
-  widgetContentComponent!:
-    | ChartComponent
-    | GridWidgetComponent
-    | MapWidgetComponent
-    | EditorComponent
-    | SummaryCardComponent;
-
-  // === EMIT EVENT ===
-  @Output() edit: EventEmitter<any> = new EventEmitter();
-
-  // === STEP CHANGE FOR WORKFLOW ===
-  @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  /** @returns should show widget border, based on widget settings */
+  get showBorder() {
+    return get(this.widget, 'settings.widgetDisplay.showBorder') ?? true;
+  }
 
   /**
    * Widget component

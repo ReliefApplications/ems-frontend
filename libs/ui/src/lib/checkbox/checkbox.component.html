@@ -1,5 +1,5 @@
 <label for="{{ name }}" class="inline-flex">
-  <span class="mr-2">
+  <span class="mr-2 flex">
     <input
       [attr.aria-describedby]="name + '-description'"
       [attr.aria-label]="ariaLabel"
@@ -9,11 +9,11 @@
       [checked]="checked"
       [indeterminate]="indeterminate"
       [ngClass]="checkboxClasses"
-      class="form-checkbox h-4 w-4 rounded border-gray-300"
+      class="form-checkbox h-4 w-4 rounded border-gray-300 self-center"
       (click)="onSelect()"
     />
   </span>
-  <span class="text-sm text-dark-100 font-medium leading-6">
+  <span class="text-sm text-dark-100 font-medium leading-6 flex">
     <ng-content select="label"></ng-content>
     <ng-content select="icon"></ng-content>
     <p id="{{ name }}-description" class="m-0 font-normal text-gray-500">

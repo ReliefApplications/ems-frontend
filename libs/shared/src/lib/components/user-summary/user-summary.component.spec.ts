@@ -4,7 +4,7 @@ import { UserSummaryComponent } from './user-summary.component';
 
 describe('UserSummaryComponent', () => {
   let component: UserSummaryComponent;
-  let fixture: ComponentFixture<sharedUserSummaryComponent>;
+  let fixture: ComponentFixture<UserSummaryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -19,6 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Default file name for chart exports
@@ -26,7 +27,35 @@ import { DOCUMENT } from '@angular/common';
 const DEFAULT_FILE_NAME = 'chart';
 
 /**
- * Chart widget component using KendoUI
+ * Joins context filters and predefined filters
+ *
+ * @param contextFilters Context filters, stringified JSON
+ * @param predefinedFilter Predefined filter coming from the dropdown
+ * @returns The joined filters
+ */
+const joinFilters = (
+  contextFilters: string | null,
+  predefinedFilter: CompositeFilterDescriptor | null
+): CompositeFilterDescriptor => {
+  const res: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
+
+  if (contextFilters) {
+    res.filters.push(JSON.parse(contextFilters));
+  }
+
+  if (predefinedFilter) {
+    res.filters.push(predefinedFilter);
+  }
+
+  return res;
+};
+
+/**
+ * Chart widget component.
+ * Use Chartjs.
  */
 @Component({
   selector: 'shared-chart',
@@ -37,22 +66,34 @@ export class ChartComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
-  // === DATA ===
-  public loading = true;
-  public options: any = null;
-  private dataQuery: any;
-
-  private series = new BehaviorSubject<any[]>([]);
-  public series$ = this.series.asObservable();
-
-  public lastUpdate = '';
-  public hasError = false;
-
-  // === WIDGET CONFIGURATION ===
-  @Input() header = true;
+  /** Can chart be exported */
   @Input() export = true;
+  /** Widget settings */
   @Input() settings: any = null;
+  /** Widget header template reference */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  /** Chart component reference */
+  @ViewChild('chartWrapper')
+  private chartWrapper?:
+    | LineChartComponent
+    | PieDonutChartComponent
+    | BarChartComponent;
+  /** Loading indicator */
+  public loading = true;
+  /** Chart options */
+  public options: any = null;
+  /** Graphql query */
+  private dataQuery: any;
+  /** Chart series as behavior subject */
+  private series = new BehaviorSubject<any[]>([]);
+  /** Chart series as observable */
+  public series$ = this.series.asObservable();
+  /** Last update time */
+  public lastUpdate = '';
+  /** Is aggregation broken */
+  public hasError = false;
+  /** Selected predefined filter */
+  public selectedFilter: CompositeFilterDescriptor | null = null;
 
   /**
    * Get filename from the date and widget title
@@ -70,15 +111,21 @@ export class ChartComponent
     } ${formatDate}.png`;
   }
 
-  // === CHART ===
-  @ViewChild('chartWrapper')
-  private chartWrapper?:
-    | LineChartComponent
-    | PieDonutChartComponent
-    | BarChartComponent;
+  /**
+   * Get predefined filters from settings
+   *
+   * @returns array of filters
+   */
+  get predefinedFilters(): {
+    label: string;
+    filter: CompositeFilterDescriptor;
+  }[] {
+    return this.settings?.filters ?? [];
+  }
 
   /**
-   * Chart widget using KendoUI.
+   * Chart widget component.
+   * Use Chartjs.
    *
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
@@ -144,11 +191,7 @@ export class ChartComponent
               this.settings.resource,
               aggregation.id || '',
               get(this.settings, 'chart.mapping', null),
-              this.settings.contextFilters
-                ? this.contextService.injectDashboardFilterValues(
-                    JSON.parse(this.settings.contextFilters)
-                  )
-                : undefined,
+              joinFilters(this.settings.contextFilters, this.selectedFilter),
               this.settings.at
                 ? this.contextService.atArgumentValue(this.settings.at)
                 : undefined
@@ -172,14 +215,6 @@ export class ChartComponent
    * Exports the chart as a png ticket
    */
   public onExport(): void {
-    // {
-    //   width: 1200,
-    //   height: 800,
-    // }
-    // this.chartWrapper?.exportImage();
-    // .then((dataURI: string) => {
-    //   saveAs(dataURI, this.fileName);
-    // });
     const downloadLink = this.document.createElement('a');
     downloadLink.href = this.chartWrapper?.chart?.toBase64Image() as string;
     downloadLink.download = this.fileName;
@@ -304,5 +339,21 @@ export class ChartComponent
           this.loading = loading;
         }
       });
+  }
+
+  /**
+   * Applies selected filter to the query
+   *
+   * @param filter Filter to be applied
+   */
+  onFilterSelected(
+    filter: (typeof this.predefinedFilters)[number] | undefined
+  ) {
+    if (filter) {
+      this.selectedFilter = filter.filter;
+    } else {
+      this.selectedFilter = null;
+    }
+    this.loadChart();
   }
 }

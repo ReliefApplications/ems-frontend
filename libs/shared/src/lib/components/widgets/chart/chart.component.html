@@ -101,4 +101,26 @@
   <span class="widget-title" [title]="settings.title">{{
     settings.title
   }}</span>
+  <!-- Selection of predefined filter -->
+  <ng-container *ngIf="predefinedFilters.length > 0">
+    <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- Selection of predefined filter -->
+<ng-template #filterTemplate>
+  <div uiFormFieldDirective class="!m-0 w-44 self-center">
+    <ui-select-menu
+      [ngModel]="selectedFilter"
+      (selectedOption)="onFilterSelected($any($event))"
+      [placeholder]="'components.widget.chart.filters.select' | translate"
+    >
+      <ui-select-option
+        *ngFor="let filter of predefinedFilters"
+        [value]="filter"
+      >
+        {{ filter.label }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </ng-template>

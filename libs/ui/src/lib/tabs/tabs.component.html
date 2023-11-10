@@ -17,6 +17,7 @@
   </div>
   <!-- The directive will display the content here -->
   <div
+    [ngClass]="{ 'overflow-x-hidden': vertical }"
     class="flex-1"
     [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'"
   >

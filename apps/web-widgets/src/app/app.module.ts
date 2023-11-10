@@ -27,6 +27,7 @@ import {
   KendoTranslationService,
   AuthInterceptorService,
   FormService,
+  DatePipe,
 } from '@oort-front/shared';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
@@ -103,7 +104,6 @@ const initializeAuthAndTranslations =
             );
           },
           complete: () => {
-            // console.log(translate.instant('kendo.datetimepicker.now'));
             resolve(null);
           },
         });
@@ -199,6 +199,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     PopupService,
     ResizeBatchService,
+    DatePipe,
   ],
 })
 export class AppModule implements DoBootstrap {

@@ -18,7 +18,7 @@
       >
     </ui-select-menu>
   </div>
-  <ng-container *ngIf="field && editor">
+  <ng-container *ngIf="field && editor && !hideEditor">
     <ng-container
       [ngTemplateOutlet]="editor"
       [ngTemplateOutletContext]="{ valueControl: valueControl }"
@@ -54,7 +54,7 @@
   <ng-template #fieldSelect>
     <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
       <label>{{ 'common.field.one' | translate }}</label>
-      <ui-select-menu formControlName="field">
+      <ui-select-menu formControlName="field" [filterable]="true">
         <ng-container *ngFor="let field of fields">
           <ui-select-option *ngIf="!field.fields" [value]="field.name">
             {{ field.text || field.name }}

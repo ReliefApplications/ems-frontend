@@ -1,5 +1,19 @@
+<shared-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [editable]="true"
+  [isFullScreen]="isFullScreen"
+></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+<div
+  [ngClass]="{
+    'py-8 px-6 h-full bg-white overflow-y-auto overflow-x-hidden': isFullScreen
+  }"
+>
+  <shared-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [editable]="true"
+    [isFullScreen]="isFullScreen"
+  ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
@@ -35,7 +49,19 @@
             icon="settings"
             [uiTooltip]="'common.settings' | translate"
           ></ui-button>
+          <ui-button
+            *ngIf="canUpdate"
+            [icon]="editionActive ? 'edit' : 'preview'"
+            (click)="editionActive = !editionActive"
+            >{{
+              (editionActive
+                ? 'components.application.dashboard.enterPreviewMode'
+                : 'components.application.dashboard.enterEditMode'
+              ) | translate
+            }}</ui-button
+          >
         </div>
+        <!-- Other dashboard settings -->
         <div
           class="flex items-center gap-1"
           *ngIf="!formActive"
@@ -128,6 +154,8 @@
           <ui-graphql-select
             [query]="recordsQuery"
             [formControl]="contextId"
+            [filterable]="true"
+            (searchChange)="onSearchChange($event)"
             path="records"
             valueField="id"
             textField="data.{{ dashboard.page.context.displayField }}"
@@ -148,7 +176,7 @@
           <label>{{
             'models.dashboard.context.refData.element' | translate
           }}</label>
-          <ui-select-menu [formControl]="contextId">
+          <ui-select-menu [formControl]="contextId" [filterable]="true">
             <ui-select-option
               *ngFor="let element of refDataElements"
               [value]="element[refDataValueField]"
@@ -164,22 +192,11 @@
   <shared-widget-grid
     [loading]="loading"
     [widgets]="widgets"
-    [canUpdate]="dashboard?.canUpdate || false"
-    (move)="onMove($event)"
+    [canUpdate]="(canUpdate && editionActive) || false"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
   ></shared-widget-grid>
-  <shared-dashboard-filter
-    *ngIf="showFilter && isFullScreen"
-    [editable]="true"
-    [isFullScreen]="isFullScreen"
-  ></shared-dashboard-filter>
 </div>
-<shared-dashboard-filter
-  *ngIf="showFilter && !isFullScreen"
-  [editable]="true"
-  [isFullScreen]="isFullScreen"
-></shared-dashboard-filter>

@@ -20,6 +20,7 @@ import { ChartSettingsComponent } from './chart-settings.component';
 import { TabDisplayModule } from './tab-display/tab-display.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
+import { TabFiltersComponent } from './tab-filters/tab-filters.component';
 
 /** Module for the chart settings component */
 @NgModule({
@@ -44,6 +45,7 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     SelectMenuModule,
     DisplaySettingsComponent,
     ContextualFiltersSettingsComponent,
+    TabFiltersComponent,
   ],
   exports: [ChartSettingsComponent],
 })

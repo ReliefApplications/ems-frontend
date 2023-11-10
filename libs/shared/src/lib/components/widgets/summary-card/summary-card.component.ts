@@ -63,7 +63,6 @@ export class SummaryCardComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   @Input() widget: any;
-  @Input() header = true;
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
@@ -505,7 +504,7 @@ export class SummaryCardComponent
     const card = this.settings.card;
     if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
     const settings = {
-      template: get(this.settings, 'template', null), //TO MODIFY
+      template: card.template,
       resource: card.resource,
       summaryCard: true,
       actions: {
@@ -521,11 +520,7 @@ export class SummaryCardComponent
         navigateToPage: get(this.settings, 'actions.navigateToPage', false),
         navigateSettings: {
           pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
-          useRecordId: get(
-            this.settings,
-            'actions.navigateSettings.useRecordId',
-            false
-          ),
+          field: get(this.settings, 'actions.navigateSettings.field', ''),
           title: get(this.settings, 'actions.navigateSettings.title', ''),
         },
       },

@@ -20,30 +20,36 @@
         >
           <ui-radio [value]="true">
             <ng-container ngProjectAs="label">
-              {{ 'components.form.create.choice.resource' | translate }}
-              <ui-icon
-                [size]="18"
-                icon="info_outline"
-                variant="grey"
-                [uiTooltip]="
-                  'components.form.create.tooltip.resource' | translate
-                "
-              >
-              </ui-icon>
+              <span class="flex items-center gap-1">
+                {{ 'components.form.create.choice.resource' | translate }}
+                <ui-icon
+                  class="cursor-help"
+                  [size]="18"
+                  icon="info_outline"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.resource' | translate
+                  "
+                >
+                </ui-icon>
+              </span>
             </ng-container>
           </ui-radio>
           <ui-radio [value]="false">
             <ng-container ngProjectAs="label">
-              {{ 'components.form.create.choice.inherit' | translate }}
-              <ui-icon
-                [size]="18"
-                icon="info_outline"
-                variant="grey"
-                [uiTooltip]="
-                  'components.form.create.tooltip.inherit' | translate
-                "
-              >
-              </ui-icon>
+              <span class="flex items-center gap-1">
+                {{ 'components.form.create.choice.inherit' | translate }}
+                <ui-icon
+                  class="cursor-help"
+                  [size]="18"
+                  icon="info_outline"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.inherit' | translate
+                  "
+                >
+                </ui-icon>
+              </span>
             </ng-container>
           </ui-radio>
         </div>
@@ -70,6 +76,7 @@
               <ng-container ngProjectAs="label">
                 {{ 'components.form.create.choice.template' | translate }}
                 <ui-icon
+                  class="ml-1 cursor-help self-center"
                   icon="info_outline"
                   variant="grey"
                   [size]="18"

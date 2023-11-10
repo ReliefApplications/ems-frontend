@@ -205,6 +205,7 @@
 			"none": "Pas de groupes",
 			"one": "Groupe"
 		},
+		"hide": "Cacher",
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -310,6 +311,12 @@
 		"platform": {
 			"backOffice": "Back-Office"
 		},
+		"position": {
+			"bottomleft": "En bas à gauche",
+			"bottomright": "En bas à droite",
+			"topleft": "En haut à gauche",
+			"topright": "En haut à droite"
+		},
 		"positionAttribute": {
 			"few": "Attributs de position",
 			"none": "Aucun attribut de position",
@@ -386,6 +393,7 @@
 		},
 		"title": "Titre",
 		"tooltip": {
+			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
 				"insert": "Tapez '{' pour utiliser des expressions et des variables"
 			}
@@ -470,7 +478,7 @@
 				"week": "Semaine",
 				"year": "Année"
 			},
-			"sourceFields": "Sélectionner les champs",
+			"sourceFields": "Choisissez les champs à inclure dans l'agrégation",
 			"stages": {
 				"addFields": "Ajouter des champs",
 				"custom": "Personnaliser",
@@ -512,6 +520,8 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"enterEditMode": "Entrer en mode édition",
+				"enterPreviewMode": "Entrer en mode prévisualisation",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
 					"filterPosition": {
@@ -589,8 +599,13 @@
 				"title": "Déverrouiller l'édition"
 			},
 			"update": {
+				"hideMenu": "Cacher le menu vertical de navigation par défaut",
 				"placeholder": {
 					"description": "Veuillez entrer une description pour l'application."
+				},
+				"sideMenu": "Afficher le menu sur le côté",
+				"tooltip": {
+					"hideMenu": "Ne s'applique que lorsque le menu est sur le côté"
 				}
 			},
 			"users": {
@@ -727,6 +742,25 @@
 			},
 			"display": {
 				"submissionMessage": "Le formulaire a été sauvegardé."
+			},
+			"draftRecords": {
+				"buttonLoad": "Charger un brouillon",
+				"confirmModal": {
+					"confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
+					"confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",
+					"delete": "Supprimer ce brouillon",
+					"load": "Charger ce brouillon"
+				},
+				"creationDate": "Date de création",
+				"delete": "Supprimer ce brouillon",
+				"load": "Charger ce brouillon",
+				"noDrafts": "Aucun enregistrement brouillon disponible",
+				"preview": "Prévisualiser ce brouillon",
+				"previewTitle": "Enregistrement brouillon",
+				"save": "Enregistrer comme brouillon",
+				"select": "Sélectionner le brouillon",
+				"successEdit": "Brouillon modifié avec succès",
+				"successSave": "Enregistré dans les brouillons avec succès"
 			},
 			"layout": {
 				"delete": {
@@ -1244,6 +1278,9 @@
 						"invalid": "Agrégation invalide"
 					}
 				},
+				"filters": {
+					"select": "Sélectionnez un filtre..."
+				},
 				"other": "Autre"
 			},
 			"expand": "Étendre",
@@ -1331,6 +1368,12 @@
 					"axes": "Axes",
 					"categories": "Catégories",
 					"color": "Couleur",
+					"filters": {
+						"add": "Ajouter un filtre",
+						"delete": "Supprimer le filtre",
+						"empty": "Aucun filtre configuré",
+						"title": "Filtres prédéfinis"
+					},
 					"grid": {
 						"title": "Grille",
 						"x": {
@@ -1396,16 +1439,22 @@
 						"convert": "Convertir des enregistrements",
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
+						"goTo": {
+							"column": {
+								"label": "Nom de la colonne",
+								"placeholder": "Entrez un nom pour la colonne..."
+							},
+							"field": {
+								"label": "Passer le champ comme paramètre de requête",
+								"placeholder": "Sélectionnez un champ"
+							},
+							"label": "Accédez à la page",
+							"target": {
+								"label": "Naviguez vers la page",
+								"placeholder": "Sélectionnez une page"
+							}
+						},
 						"inline": "Modifier par ligne",
-						"navigateToPage": "Accédez à la page",
-						"pageUrl": {
-							"label": "Url de la source de la page",
-							"placeholder": "Entrez l'id de la page"
-						},
-						"pageUrlTitle": {
-							"label": "Nom de la colonne",
-							"placeholder": "Entrez un nom pour la colonne..."
-						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
@@ -1465,8 +1514,8 @@
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
-							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
@@ -1493,6 +1542,10 @@
 					"tooltip": {
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
 						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
+					},
+					"warnings": {
+						"add": "Veuillez sélectionner un modèle",
+						"general": "Attention: les actions contiennent des erreurs"
 					}
 				},
 				"iconPicker": {
@@ -1659,6 +1712,9 @@
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
+							"lastUpdate": "Dernière mise à jour le",
+							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
+							"lastUpdatePosition": "Choisissez une position pour afficher l'élément",
 							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",
@@ -2074,7 +2130,6 @@
 		"page": {
 			"add": "Ajouter une page",
 			"tooltip": {
-				"drag": "Glissez-déposez pour réorganiser",
 				"duplicate": "Sélectionner l'application où copier la page"
 			}
 		},
@@ -2142,6 +2197,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"header": "Afficher l'en-tête du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"

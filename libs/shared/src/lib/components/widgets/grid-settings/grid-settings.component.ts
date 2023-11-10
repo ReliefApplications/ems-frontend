@@ -28,7 +28,6 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
@@ -48,7 +47,7 @@ export class GridSettingsComponent
   public filtersFormArray: any = null;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() widget: any;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -63,7 +62,6 @@ export class GridSettingsComponent
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
-  private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
 
@@ -101,10 +99,9 @@ export class GridSettingsComponent
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    const tileSettings = this.tile.settings;
-    this.formGroup = extendWidgetForm(
-      createGridWidgetFormGroup(this.tile.id, tileSettings),
-      tileSettings?.widgetDisplay
+    this.formGroup = createGridWidgetFormGroup(
+      this.widget.id,
+      this.widget.settings
     );
 
     this.change.emit(this.formGroup);
@@ -190,7 +187,7 @@ export class GridSettingsComponent
    * Adds sortFields to the formGroup
    */
   initSortFields(): void {
-    this.tile.settings.sortFields?.forEach((item: any) => {
+    this.widget.settings.sortFields?.forEach((item: any) => {
       const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],

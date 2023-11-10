@@ -28,6 +28,7 @@ import {
   KendoTranslationService,
   AuthInterceptorService,
   FormService,
+  DatePipe,
 } from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -152,6 +153,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     PopupService,
     ResizeBatchService,
     IconsService,
+    DatePipe,
     { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
     // Sentry
     ...(environment.sentry

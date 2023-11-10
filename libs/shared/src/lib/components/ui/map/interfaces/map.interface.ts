@@ -1,3 +1,5 @@
+import * as L from 'leaflet';
+
 /**
  * Map settings for leaflet.
  */
@@ -50,6 +52,7 @@ export interface MapControls {
   measure: boolean;
   layer: boolean;
   search: boolean;
+  lastUpdate: L.ControlPosition | undefined | null;
 }
 
 /** Default values for the map controls */
@@ -60,4 +63,5 @@ export const DefaultMapControls: MapControls = {
   measure: false,
   layer: false,
   search: true,
+  lastUpdate: null,
 };

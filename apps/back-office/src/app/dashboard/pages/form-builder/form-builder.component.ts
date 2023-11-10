@@ -51,6 +51,8 @@ export class FormBuilderComponent implements OnInit {
   public formActive = false;
   public hasChanges = false;
   private isStep = false;
+  /** Prevent form builder to display multiple modals when exiting. */
+  private deactivating = false;
 
   /**
    * Form builder page
@@ -83,7 +85,8 @@ export class FormBuilderComponent implements OnInit {
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.hasChanges) {
+    if (this.hasChanges && !this.deactivating) {
+      this.deactivating = true;
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('components.form.update.exit'),
         content: this.translate.instant('components.form.update.exitMessage'),
@@ -92,6 +95,7 @@ export class FormBuilderComponent implements OnInit {
       });
       return dialogRef.closed.pipe(
         map((value) => {
+          this.deactivating = false;
           if (value) {
             this.authService.canLogout.next(true);
             window.localStorage.removeItem(`form:${this.id}`);
@@ -314,6 +318,8 @@ export class FormBuilderComponent implements OnInit {
 
   /**
    * Open a modal and returns it's reference
+   *
+   * @returns Status modal
    */
   private async getStatusModalRef() {
     const { StatusModalComponent } = await import('@oort-front/shared');

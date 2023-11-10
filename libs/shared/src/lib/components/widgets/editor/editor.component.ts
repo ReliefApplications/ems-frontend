@@ -31,7 +31,6 @@ import { GridService } from '../../../services/grid/grid.service';
 })
 export class EditorComponent implements OnInit {
   // === WIDGET CONFIGURATION ===
-  @Input() header = true;
   @Input() settings: any;
 
   private layout: any;

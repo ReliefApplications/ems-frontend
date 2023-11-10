@@ -2,7 +2,6 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 
 /**
  * Chart settings component
@@ -15,10 +14,10 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 /** Modal content for the settings of the chart widgets. */
 export class ChartSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup!: UntypedFormGroup;
+  public formGroup!: ReturnType<typeof createChartWidgetForm>;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() widget: any;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -42,10 +41,11 @@ export class ChartSettingsComponent implements OnInit {
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.formGroup = extendWidgetForm(
-      createChartWidgetForm(this.tile.id, this.tile.settings),
-      this.tile.settings?.widgetDisplay
+    this.formGroup = createChartWidgetForm(
+      this.widget.id,
+      this.widget.settings
     );
+
     this.type = this.types.find((x) => x.name === this.chartForm.value.type);
     this.change.emit(this.formGroup);
 
