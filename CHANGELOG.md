@@ -1,3 +1,10 @@
+## [2.1.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.7...v2.1.8) (2023-11-12)
+
+
+### Bug Fixes
+
+* remove initImplicitFlow ([4e9ddd0](https://github.com/ReliefApplications/oort-frontend/commit/4e9ddd046b16013f360d89fdcda7c9f9cf48c165))
+
 ## [2.1.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.6...v2.1.7) (2023-11-07)
 
 
