@@ -100,16 +100,16 @@ export class FormComponent
     private translate: TranslateService
   ) {
     super();
-    // translate the survey in the same language as the interface
+  }
+
+  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
+  ngOnInit(): void {
+    // Translate the survey in the same language as the interface
     surveyLocalization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       surveyLocalization.currentLocale = this.translate.currentLang;
       this.buildSurvey();
     });
-  }
-
-  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
-  ngOnInit(): void {
     this.buildSurvey();
   }
 
