@@ -115,44 +115,30 @@
           </ng-container>
           <!-- Tab content -->
           <div class="flex gap-4 flex-col" formGroupName="gridOptions">
-            <!-- {{ data | json }}
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            {{ settingsForm.value | json }}
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            {{ applications | json }} -->
-
             <!-- Number of columns -->
-            <label>{{ 'common.minCols' | translate }}</label>
-            <input
-              type="number"
-              formControlName="minCols"
-              class="w-1/2"
-              placeholder="{{ 'common.default' | translate }}"
-            />
+            <div uiFormFieldDirective>
+              <label>{{ 'common.minCols' | translate }}</label>
+              <input
+                type="number"
+                formControlName="minCols"
+              />
+            </div>
             <!-- Change default size of rows -->
-            <label>{{ 'common.fixedRowHeight' | translate }}</label>
-            <input
-              type="number"
-              formControlName="fixedRowHeight"
-              class="w-1/2"
-              placeholder="{{ 'common.default' | translate }}"
-            />
+            <div uiFormFieldDirective>
+              <label>{{ 'common.fixedRowHeight' | translate }}</label>
+              <input
+                type="number"
+                formControlName="fixedRowHeight"
+              />
+            </div>
             <!-- Specify inner gap in pixels -->
-            <label>{{ 'common.margin' | translate }}</label>
-            <input
-              type="number"
-              formControlName="margin"
-              class="w-1/2"
-              placeholder="{{ 'common.default' | translate }}"
-            />
+            <div uiFormFieldDirective>
+              <label>{{ 'common.margin' | translate }}</label>
+              <input
+                type="number"
+                formControlName="margin"
+              />
+            </div>
             <!-- Delete outer gap -->
             <ui-toggle formControlName="outerMargin">
               <ng-container ngProjectAs="label">
