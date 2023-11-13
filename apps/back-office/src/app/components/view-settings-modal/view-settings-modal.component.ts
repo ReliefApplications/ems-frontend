@@ -246,10 +246,12 @@ export class ViewSettingsModalComponent
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
       gridOptions: this.fb.group({
-        columns: this.fb.control(1),
-        rows: this.fb.control(1),
-        innerGap: this.fb.control(1),
-        deleteOuterGap: this.fb.control(false),
+        columns: this.fb.control(this.dashboard?.gridOptions?.columns ?? 8),
+        rows: this.fb.control(this.dashboard?.gridOptions?.rows ?? 8),
+        innerGap: this.fb.control(this.dashboard?.gridOptions?.innerGap ?? 10),
+        deleteOuterGap: this.fb.control(
+          this.dashboard?.gridOptions?.deleteOuterGap ?? false
+        ),
       }),
     });
   }
