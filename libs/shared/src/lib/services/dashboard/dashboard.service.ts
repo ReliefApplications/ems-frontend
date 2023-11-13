@@ -185,4 +185,27 @@ export class DashboardService {
         });
       });
   }
+
+  /**
+   * Updates the dashboard's grid options.
+   *
+   * @param dashboard dashboard to update
+   * @param gridOptions new grid options
+   */
+  updateDashboardGridOptions(dashboard: Dashboard, gridOptions: any): void {
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id: dashboard.id,
+          gridOptions,
+        },
+      })
+      .subscribe(() => {
+        this.dashboard.next({
+          ...dashboard,
+          gridOptions,
+        });
+      });
+  }
 }

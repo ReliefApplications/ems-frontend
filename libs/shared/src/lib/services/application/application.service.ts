@@ -721,44 +721,6 @@ export class ApplicationService {
   }
 
   /**
-   * Updates a specific page grid options in the opened application.
-   *
-   * @param page updated page
-   * @param gridOptions new grid options
-   */
-  updatePageGridOptions(page: Page, gridOptions: any): void {
-    const application = this.application.getValue();
-    if (application && this.isUnlocked) {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: page.id,
-            gridOptions,
-          },
-        })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = { ...x, gridOptions: data.editPage.gridOptions };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-          }
-        });
-    }
-  }
-
-  /**
    * Change page icon, by sending a mutation to the back-end.
    *
    * @param page Edited page

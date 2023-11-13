@@ -29,6 +29,7 @@ import {
   SearchMenuModule,
   AuthService,
   Application,
+  DashboardService,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { isNil } from 'lodash';
@@ -104,6 +105,7 @@ export class ViewSettingsModalComponent
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
    * @param authService Shared authentication service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     public dialogRef: DialogRef<ViewSettingsModalComponent>,
@@ -111,6 +113,7 @@ export class ViewSettingsModalComponent
     private fb: FormBuilder,
     private workflowService: WorkflowService,
     private applicationService: ApplicationService,
+    private dashboardService: DashboardService,
     private authService: AuthService
   ) {
     super();
@@ -118,6 +121,11 @@ export class ViewSettingsModalComponent
       this.page = this.data?.page;
       this.step = this.data?.step;
     }
+    this.dashboardService.dashboard$.subscribe((dashboard) => {
+      if (dashboard) {
+        this.dashboard = dashboard;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -312,19 +320,16 @@ export class ViewSettingsModalComponent
    * @param gridOptions grid options
    */
   public onUpdateGrid(gridOptions: any): void {
-    const callback = () => {
-      this.page = {
-        ...this.page,
-        gridOptions,
-      };
-      // Updates parent component
-      const updates = { gridOptions };
-      this.onUpdate.emit(updates);
+    this.dashboard = {
+      ...this.dashboard,
+      gridOptions,
     };
-    this.applicationService.updatePageGridOptions(
-      this.page as Page,
+    // Updates parent component
+    const updates = { gridOptions };
+    this.onUpdate.emit(updates);
+    this.dashboardService.updateDashboardGridOptions(
+      this.dashboard as Dashboard,
       gridOptions
-      // callback
     );
   }
 }
