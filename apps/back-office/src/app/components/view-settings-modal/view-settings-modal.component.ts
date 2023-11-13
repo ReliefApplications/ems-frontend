@@ -248,9 +248,9 @@ export class ViewSettingsModalComponent
       gridOptions: this.fb.group({
         columns: this.fb.control(this.dashboard?.gridOptions?.columns ?? 8),
         rows: this.fb.control(this.dashboard?.gridOptions?.rows ?? 8),
-        innerGap: this.fb.control(this.dashboard?.gridOptions?.innerGap ?? 10),
-        deleteOuterGap: this.fb.control(
-          this.dashboard?.gridOptions?.deleteOuterGap ?? false
+        margin: this.fb.control(this.dashboard?.gridOptions?.margin ?? 10),
+        outerMargin: this.fb.control(
+          this.dashboard?.gridOptions?.outerMargin ?? false
         ),
       }),
     });
@@ -326,9 +326,6 @@ export class ViewSettingsModalComponent
       ...this.dashboard,
       gridOptions,
     };
-    // Updates parent component
-    const updates = { gridOptions };
-    this.onUpdate.emit(updates);
     this.dashboardService.updateDashboardGridOptions(
       this.dashboard as Dashboard,
       gridOptions

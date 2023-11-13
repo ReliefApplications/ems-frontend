@@ -109,6 +109,15 @@ export class WidgetGridComponent
     private _host: ElementRef
   ) {
     super();
+    this.dashboardService.dashboard$.subscribe((dashboard) => {
+      if (dashboard) {
+        // add the dashboard.gridOptions to the gridOptions
+        this.gridOptions = {
+          ...this.gridOptions,
+          ...dashboard.gridOptions,
+        };
+      }
+    });
   }
 
   /** OnInit lifecycle hook. */
@@ -190,8 +199,8 @@ export class WidgetGridComponent
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
-      margin: 10,
-      outerMargin: false,
+      margin: this.gridOptions?.margin ?? 10,
+      outerMargin: this.gridOptions?.outerMargin ?? false,
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
       maxCols: this.colsNumber,

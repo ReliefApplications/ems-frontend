@@ -146,17 +146,17 @@
               placeholder="{{ 'common.default' | translate }}"
             />
             <!-- Specify inner gap in pixels -->
-            <label>{{ 'common.innerGap' | translate }}</label>
+            <label>{{ 'common.margin' | translate }}</label>
             <input
               type="number"
-              formControlName="innerGap"
+              formControlName="margin"
               class="w-1/2"
               placeholder="{{ 'common.default' | translate }}"
             />
             <!-- Delete outer gap -->
-            <ui-toggle formControlName="deleteOuterGap">
+            <ui-toggle formControlName="outerMargin">
               <ng-container ngProjectAs="label">
-                {{ 'common.deleteOuterGap' | translate }}
+                {{ 'common.outerMargin' | translate }}
               </ng-container>
             </ui-toggle>
           </div>
