@@ -1,5 +1,18 @@
 <ng-container *ngIf="widgetFormGroup">
   <ui-tabs class="grow" [vertical]="true">
+    <!-- Aggregations settings -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="auto_awesome_motion"
+          [size]="24"
+        ></ui-icon>
+        <span>{{ 'common.aggregation.few' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-aggregation-settings [formGroup]="widgetFormGroup"></shared-aggregation-settings>
+      </ng-template>
+    </ui-tab>
     <!-- Main Parameters -->
     <ui-tab>
       <ng-container ngProjectAs="label">

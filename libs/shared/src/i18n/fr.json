@@ -1739,6 +1739,9 @@
 				"summaryCard": {
 					"add": "Ajouter un carte",
 					"card": {
+						"aggregations": {
+							"alert": "Vous pouvez sélectionner une agrégation qui sera disponible dans l'éditeur de texte."
+						},
 						"dataSource": {
 							"layoutStyles": {
 								"title": "Styles de mise en page",

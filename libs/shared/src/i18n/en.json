@@ -1723,6 +1723,9 @@
 				"summaryCard": {
 					"add": "Add new card",
 					"card": {
+						"aggregations": {
+							"alert": "You can select an aggregation to be available in text editor."
+						},
 						"dataSource": {
 							"layoutStyles": {
 								"title": "Layout styles",

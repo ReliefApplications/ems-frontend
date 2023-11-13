@@ -45,6 +45,7 @@ import { ReferenceDataDropdownModule } from './survey/components/reference-data-
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
+import { AggregationSettingsComponent } from './components/widgets/common/aggregation-settings/aggregation-settings.component';
 
 /** Main module for the shared project */
 @NgModule({
@@ -105,6 +106,7 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     ListFilterComponent,
     StatusOptionsComponent,
     DashboardFilterIconComponent,
+    AggregationSettingsComponent,
   ],
 })
 export class Module {}

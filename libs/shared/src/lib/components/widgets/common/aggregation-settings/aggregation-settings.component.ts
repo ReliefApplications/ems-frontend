@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { DialogRef } from '@angular/cdk/dialog';
+import { Component, OnInit, Input } from '@angular/core';
 import { Aggregation } from '../../../../models/aggregation.model';
 import {
   Resource,
+  ResourceQueryResponse,
   ResourcesQueryResponse,
 } from '../../../../models/resource.model';
 import { CommonModule } from '@angular/common';
@@ -17,11 +16,11 @@ import {
   GraphQLSelectModule,
   DividerModule,
   TooltipModule,
+  AlertModule,
 } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_RESOURCES } from '../graphql/queries';
+import { GET_RESOURCES, GET_RESOURCE } from './graphql/queries';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
-import { FormBuilder } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -31,6 +30,9 @@ import { AggregationService } from '../../../../services/aggregation/aggregation
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Aggregation Settings component.
+ */
 @Component({
   standalone: true,
   imports: [
@@ -47,16 +49,17 @@ const ITEMS_PER_PAGE = 10;
     DividerModule,
     AggregationTableModule,
     TooltipModule,
+    AlertModule,
   ],
-  selector: 'shared-aggregation-selection-modal',
-  templateUrl: './aggregation-selection-modal.component.html',
-  styleUrls: ['./aggregation-selection-modal.component.scss'],
+  selector: 'shared-aggregation-settings',
+  templateUrl: './aggregation-settings.component.html',
+  styleUrls: ['./aggregation-settings.component.scss'],
 })
-export class AggregationSelectionModalComponent
+export class AggregationSettingsComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  public formGroup!: FormGroup;
+  @Input() formGroup!: any;
   public resource!: Resource;
 
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
@@ -66,27 +69,25 @@ export class AggregationSelectionModalComponent
   /**
    * Modal to edit aggregation.
    *
-   * @param dialogRef This is the reference of the dialog that will be opened.
    * @param dialog dialog
    * @param apollo Apollo
-   * @param fb fb
    * @param aggregationService Shared aggregation service
    */
   constructor(
-    public dialogRef: DialogRef<AggregationSelectionModalComponent>,
     private dialog: Dialog,
     private apollo: Apollo,
-    private fb: FormBuilder,
     private aggregationService: AggregationService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.formGroup = this.fb.group({
-      resource: this.fb.control(''),
-      aggregation: this.fb.control(''),
-    });
+    console.log(this.formGroup);
+    const resourceID = this.formGroup?.get('aggregation.resource')?.value;
+    if (resourceID) {
+      this.getResource(resourceID);
+    }
+
     this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
@@ -95,16 +96,15 @@ export class AggregationSelectionModalComponent
       },
     });
 
-    this.formGroup.get('resource')?.valueChanges.subscribe((val: any) => {
-      this.selectedResource =
-        this.resourcesQuery
-          .getCurrentResult()
-          .data.resources.edges.find((r) => r.node.id === val)?.node || null;
-    });
-
-    this.formGroup.get('aggregation')?.valueChanges.subscribe((val: any) => {
-      console.log(val);
-    });
+    this.formGroup
+      .get('aggregation.resource')
+      ?.valueChanges.subscribe((val: any) => {
+        console.log(this.formGroup.get('aggregation.resource'));
+        this.selectedResource =
+          this.resourcesQuery
+            .getCurrentResult()
+            .data.resources.edges.find((r) => r.node.id === val)?.node || null;
+      });
   }
 
   /**
@@ -130,6 +130,40 @@ export class AggregationSelectionModalComponent
   }
 
   /**
+   * Get resource by id, doing graphQL query
+   *
+   * @param id resource id
+   */
+  private getResource(id: string): void {
+    const form = this.formGroup;
+    if (!form) return;
+    const aggregationID = form.get('aggregation.id')?.value;
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+          aggregation: aggregationID ? [aggregationID] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          form.get('aggregation.resource')?.patchValue(null);
+          form.get('aggregation.id')?.patchValue(null);
+          form.get('aggregation.name')?.patchValue(null);
+          this.selectedResource = null;
+          this.selectedAggregation = null;
+        } else {
+          this.selectedResource = res.data.resource;
+          if (aggregationID) {
+            this.selectedAggregation =
+              res.data?.resource.aggregations?.edges[0]?.node || null;
+          }
+        }
+      });
+  }
+
+  /**
    * Adds a new aggregation for the resource.
    */
   async addAggregation(): Promise<void> {
@@ -146,9 +180,10 @@ export class AggregationSelectionModalComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         if (typeof value === 'string') {
-          this.formGroup.get('aggregation')?.setValue(value);
+          this.formGroup.get('aggregation.id')?.setValue(value);
         } else {
-          this.formGroup.get('aggregation')?.setValue((value as any).id);
+          this.formGroup.get('aggregation.id')?.setValue((value as any).id);
+          this.formGroup.get('aggregation.name')?.setValue((value as any).name);
           this.selectedAggregation = value;
         }
       }
@@ -182,13 +217,5 @@ export class AggregationSelectionModalComponent
           });
       }
     });
-  }
-
-  /**
-   * Closes the modal sending form value.
-   */
-  onSubmit(): void {
-    this.formGroup.get('aggregation')?.setValue(this.selectedAggregation);
-    this.dialogRef.close(this.formGroup?.getRawValue());
   }
 }

@@ -450,18 +450,16 @@ export const getPageKeys = (
 /**
  * Return aggregation keys.
  *
- * @param aggregation aggregation
+ * @param aggregations aggregations
  * @returns aggregation keys
  */
 export const getAggregationKeys = (
-  aggregation: Aggregation
+  aggregations: Aggregation[]
 ): { value: string; text: string }[] => {
-  return [
-    {
-      value: `{{aggregation${aggregation.id}}}`,
-      text: aggregation.name || `{{aggregation(${aggregation.id})}}`,
-    },
-  ];
+  return aggregations.map((aggregation) => ({
+    value: `{{aggregation(${aggregation.id})}}`,
+    text: aggregation.name || `{{aggregation(${aggregation.id})}}`,
+  }));
 };
 
 /**

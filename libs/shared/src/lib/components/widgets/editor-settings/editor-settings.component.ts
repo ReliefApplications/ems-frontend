@@ -19,6 +19,7 @@ import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import { Aggregation } from '../../../models/aggregation.model';
 
 /**
  * Creates the form for the editor widget settings.
@@ -38,6 +39,7 @@ const createEditorForm = (value: any) => {
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),
+    aggregation: createAggregationForm(get(value, 'aggregation', null)),
     // Style
     useStyles: new FormControl<boolean>(get(value, 'settings.useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
@@ -46,6 +48,20 @@ const createEditorForm = (value: any) => {
   });
 
   return extendWidgetForm(form, value?.settings?.widgetDisplay);
+};
+
+/**
+ * Create a card form
+ *
+ * @param value aggregation value, optional
+ * @returns aggregation as form group
+ */
+const createAggregationForm = (value?: any) => {
+  return new FormGroup({
+    resource: new FormControl<string>(get(value, 'resource', null)),
+    id: new FormControl<string>(get(value, 'id', null)),
+    name: new FormControl<string>(get(value, 'name', null)),
+  });
 };
 
 export type EditorFormType = ReturnType<typeof createEditorForm>;
@@ -96,6 +112,7 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
+    console.log(this.widget);
     this.widgetFormGroup = createEditorForm(this.widget);
     this.change.emit(this.widgetFormGroup);
 
@@ -151,10 +168,20 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
         }
       });
     });
+    // verify if we have aggregation selected to inject in html
+    const aggregation = this.widgetFormGroup.get('aggregation')?.value;
+    const aggregationObj: Aggregation[] = [];
+    if (aggregation?.id) {
+      aggregationObj.push({
+        id: aggregation?.id,
+        name: aggregation.name ?? undefined,
+      });
+    }
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
       ...this.dataTemplateService.getAutoCompleterKeys(fields),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
+      ...this.dataTemplateService.getAutoCompleteAggregation(aggregationObj),
     ]);
   }
 }

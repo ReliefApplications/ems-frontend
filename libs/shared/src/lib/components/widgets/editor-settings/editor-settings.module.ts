@@ -25,7 +25,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { EditorModule } from '../editor/editor.module';
-import { AggregationSelectionModalComponent } from './aggregation-selection-modal/aggregation-selection-modal.component';
+import { AggregationSettingsComponent } from '../common/aggregation-settings/aggregation-settings.component';
 
 /**
  * Module for the EditorSetting component
@@ -53,7 +53,7 @@ import { AggregationSelectionModalComponent } from './aggregation-selection-moda
     RadioModule,
     DividerModule,
     ToggleModule,
-    AggregationSelectionModalComponent,
+    AggregationSettingsComponent,
   ],
   exports: [EditorSettingsComponent],
   providers: [

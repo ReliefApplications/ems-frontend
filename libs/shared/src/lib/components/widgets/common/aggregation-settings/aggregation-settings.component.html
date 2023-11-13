@@ -1,0 +1,74 @@
+<!-- Indicate that it will be inject in the text editor -->
+<ui-alert [showIcon]="true" class="mb-2">
+  {{
+    'components.widget.settings.summaryCard.card.aggregations.alert'
+      | translate
+  }}
+</ui-alert>
+<form [formGroup]="formGroup" class="flex flex-col gap-8">
+  <ng-container formGroupName="aggregation">
+    <!-- Resource selection -->
+    <div uiFormFieldDirective class="flex-1">
+        <label>{{ 'common.resource.one' | translate }}</label>
+        <ui-graphql-select
+          valueField="id"
+          textField="name"
+          [query]="resourcesQuery"
+          formControlName="resource"
+          [selectedElements]="[selectedResource]"
+          (searchChange)="onResourceSearchChange($event)"
+          [filterable]="true"
+        ></ui-graphql-select>
+    </div>
+    <div class="flex flex-col mt-8 gap-8" *ngIf="formGroup.get('aggregation.resource')?.value">
+        <ui-divider></ui-divider>
+        <!-- Aggregations -->
+        <div>
+            <h2>{{ 'common.aggregation.one' | translate }}</h2>
+        </div>
+        <ng-container *ngIf="!selectedAggregation">
+          <div class="flex justify-center mt-4">
+            <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="addAggregation()"
+            >{{ 'components.aggregation.add.title' | translate }}</ui-button
+            >
+        </div>
+        </ng-container>
+    </div>
+
+      <!-- FROM AGGREGATIONS -->
+    <ng-container
+      *ngIf="selectedAggregation && formGroup.get('aggregation.resource')?.value"
+    >
+      <div uiFormFieldDirective>
+        <label>{{ 'common.aggregation.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="selectedAggregation.id">
+          <ui-select-option [value]="selectedAggregation.id">{{
+            selectedAggregation.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editAggregation()"
+          [uiTooltip]="'common.edit' | translate"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="
+            formGroup.get('aggregation.id')?.setValue(null);
+            selectedAggregation = null;
+          "
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+    </ng-container>
+  </ng-container>
+</form>    

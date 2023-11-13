@@ -27,6 +27,19 @@
         ></shared-summary-card-general>
       </ng-template>
     </ui-tab>
+    <!-- Aggregations settings -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="auto_awesome_motion"
+          [size]="24"
+        ></ui-icon>
+        <span>{{ 'common.aggregation.few' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-aggregation-settings [formGroup]="widgetFormGroup"></shared-aggregation-settings>
+      </ng-template>
+    </ui-tab>
     <!-- Card text editor -->
     <ui-tab>
       <ng-container ngProjectAs="label">
@@ -38,7 +51,7 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-text-editor-tab
-          *ngIf="activeTabIndex === 1"
+          *ngIf="activeTabIndex === 2"
           [form]="widgetFormGroup"
           [fields]="fields"
         ></shared-text-editor-tab>

@@ -69,11 +69,11 @@ export class DataTemplateService {
   /**
    * Get auto completer aggregation keys
    *
-   * @param aggregation aggregation
+   * @param aggregations aggregations
    * @returns aggregation keys for auto completer
    */
-  public getAutoCompleteAggregation(aggregation: Aggregation) {
-    return getAggregationKeys(aggregation);
+  public getAutoCompleteAggregation(aggregations: Aggregation[]) {
+    return getAggregationKeys(aggregations);
   }
 
   /**

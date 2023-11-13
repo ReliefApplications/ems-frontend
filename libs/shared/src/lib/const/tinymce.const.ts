@@ -16,7 +16,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   imagetools_cors_hosts: ['picsum.photos'],
   menubar: 'edit view insert format tools table help',
   toolbar:
-    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar aggregation',
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar',
   toolbar_sticky: true,
   image_advtab: true,
   importcss_append: true,
@@ -103,96 +103,6 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
             );
             if (submitDisabled) api.disable('submit');
             else api.enable('submit');
-          },
-          onSubmit: (api) => {
-            const data = api.getData();
-            const html = `{{avatars.${data.avatarsSource} ${data.shape} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
-            editor.insertContent(html);
-            api.close();
-          },
-          buttons: [
-            {
-              text: 'Close',
-              type: 'cancel',
-            },
-            {
-              text: 'Insert',
-              type: 'submit',
-              name: 'submit',
-              primary: true,
-              disabled: true,
-            },
-          ],
-        });
-      },
-    });
-
-
-    editor.ui.registry.addIcon(
-      'aggregation-icon',
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>'
-    );
-    editor.ui.registry.addButton('aggregation', {
-      icon: 'aggregation-icon',
-      tooltip: 'Aggregation',
-      onAction: () => {
-        editor.windowManager.open({
-          title: 'Aggregation',
-          body: {
-            type: 'panel',
-            items: [
-              {
-                type: 'selectbox',
-                items: [
-                  { text: 'Circle', value: 'circle' },
-                  { text: 'Square', value: 'square' },
-                ],
-                name: 'resource',
-                label: 'Select a Resource',
-              },
-              {
-                type: 'selectbox',
-                items: [
-                  { text: 'Circle', value: 'circle' },
-                  { text: 'Square', value: 'square' },
-                ],
-                name: 'aggregation',
-                label: 'Select an Aggregation',
-              },
-              {
-                type: 'button',
-                name: 'createAggregation',
-                text: 'Create a new aggregation',
-              },
-            ],
-          },
-          initialData: {
-            avatarsSource: '',
-            avatarsMaxItems: '3',
-            shape: 'circle',
-            avatarsWidth: '48',
-            avatarsHeight: '48',
-          },
-          onChange: (api) => {
-            console.log(api);
-            // validate the data types
-            const data = api.getData();
-            const submitDisabled = !(
-              !isNaN(Number(data.avatarsHeight)) &&
-              Number(data.avatarsHeight) > 0 &&
-              !isNaN(Number(data.avatarsWidth)) &&
-              Number(data.avatarsWidth) > 0 &&
-              !isNaN(Number(data.avatarsMaxItems)) &&
-              Number(data.avatarsMaxItems) > 0 &&
-              data.avatarsSource.length > 0
-            );
-            if (submitDisabled) api.disable('submit');
-            else api.enable('submit');
-          },
-          onAction: (api, details) => {
-            if (details.name === 'createAggregation') {
-              
-            }
           },
           onSubmit: (api) => {
             const data = api.getData();

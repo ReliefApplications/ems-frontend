@@ -25,6 +25,9 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       id,
       title: get<string>(configuration, 'title', ''),
       card: createCardForm(get(configuration, 'card', null)),
+      aggregation: createAggregationForm(
+        get(configuration, 'aggregation', null)
+      ),
       sortFields: new FormArray([]),
       contextFilters: get<string>(
         configuration,
@@ -120,5 +123,19 @@ const createCardForm = (value?: any) => {
     showDataSourceLink: get<boolean>(value, 'showDataSourceLink', false),
     useStyles: get<boolean>(value, 'useStyles', true),
     wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
+  });
+};
+
+/**
+ * Create a card form
+ *
+ * @param value aggregation value, optional
+ * @returns aggregation as form group
+ */
+const createAggregationForm = (value?: any) => {
+  return fb.group({
+    resource: get<string | null>(value, 'resource', null),
+    id: get<string | null>(value, 'id', null),
+    name: get<string | null>(value, 'name', null),
   });
 };
