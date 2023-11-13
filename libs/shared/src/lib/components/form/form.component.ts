@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { SurveyModel } from 'survey-core';
+import { SurveyModel, surveyLocalization } from 'survey-core';
 import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
@@ -100,10 +100,20 @@ export class FormComponent
     private translate: TranslateService
   ) {
     super();
+    // translate the survey in the same language as the interface
+    surveyLocalization.currentLocale = this.translate.currentLang;
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      surveyLocalization.currentLocale = this.translate.currentLang;
+      this.buildSurvey();
+    });
   }
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
+    this.buildSurvey();
+  }
+
+  buildSurvey() {
     addCustomFunctions({
       record: this.record,
       authService: this.authService,
@@ -123,6 +133,8 @@ export class FormComponent
       this.form.metadata,
       this.record
     );
+
+    this.survey.locale = surveyLocalization.currentLocale;
 
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
