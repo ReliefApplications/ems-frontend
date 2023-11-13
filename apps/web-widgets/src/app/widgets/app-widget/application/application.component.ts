@@ -40,6 +40,7 @@ export class ApplicationComponent
   @Input() id = '';
   /** Send application id to open in the web widget */
   @Output() openApplication: EventEmitter<string> = new EventEmitter<string>();
+  @Output() pages: EventEmitter<any[]> = new EventEmitter<any[]>();
   /** Application title */
   public title = '';
   /** Stores current app page */
@@ -164,6 +165,7 @@ export class ApplicationComponent
         } else {
           this.title = '';
           this.navGroups = [];
+          this.pages.emit([]);
         }
       });
   }
@@ -191,21 +193,23 @@ export class ApplicationComponent
    * @param application Loading application
    */
   private setNavGroups(application: Application): void {
+    const pages = application.pages
+      ?.filter((x) => x.content)
+      .map((x) => ({
+        name: x.name,
+        path:
+          x.type === ContentType.form
+            ? `./${x.type}/${x.id}`
+            : `./${x.type}/${x.content}`,
+        icon: x.icon || this.getNavIcon(x.type || ''),
+        fontFamily: x.icon ? 'fa' : 'material',
+        visible: x.visible,
+      }));
+    this.pages.emit(pages);
     this.navGroups = [
       {
         name: 'Pages',
-        navItems: application.pages
-          ?.filter((x) => x.content)
-          .map((x) => ({
-            name: x.name,
-            path:
-              x.type === ContentType.form
-                ? `./${x.type}/${x.id}`
-                : `./${x.type}/${x.content}`,
-            icon: x.icon || this.getNavIcon(x.type || ''),
-            fontFamily: x.icon ? 'fa' : 'material',
-            visible: x.visible,
-          })),
+        navItems: pages,
       },
     ];
   }

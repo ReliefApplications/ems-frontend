@@ -12,6 +12,7 @@ import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extende
 import { ContextService } from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
+import { Router } from '@angular/router';
 
 /**
  * Application as Web Widget.
@@ -37,8 +38,15 @@ export class AppWidgetComponent
     this.onToggleFilter(opened);
   }
 
+  @Input()
+  set path(value: string) {
+    this.router.navigate([value]);
+  }
+
   @Output()
   filterActive$ = new EventEmitter<boolean>();
+  @Output()
+  pages = new EventEmitter<any[]>();
 
   /**
    * Application as Web Widget.
@@ -50,7 +58,8 @@ export class AppWidgetComponent
   constructor(
     el: ElementRef,
     injector: Injector,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private router: Router
   ) {
     super(el, injector);
     this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
@@ -72,6 +81,5 @@ export class AppWidgetComponent
    */
   override ngOnInit(): void {
     super.ngOnInit();
-    console.log(this.contextService);
   }
 }
