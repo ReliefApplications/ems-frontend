@@ -51,10 +51,10 @@
           (click)="survey.nextPage()"
           >{{ 'common.next' | translate }}</ui-button
         >
+        <ui-button variant="primary" category="secondary" (click)="submit()">{{
+          survey.saveButtonText || ('common.save' | translate)
+        }}</ui-button>
       </ng-container>
-      <ui-button variant="primary" category="secondary" (click)="submit()">{{
-        'common.save' | translate
-      }}</ui-button>
     </div>
   </ui-fixed-wrapper>
 </ng-container>
