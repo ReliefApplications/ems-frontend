@@ -67,12 +67,6 @@ export class ApplicationComponent
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.application) {
-        this.adminNavItems = [];
-        this.setAdminNavItems(this.application as Application);
-      }
-    });
   }
 
   /**
