@@ -160,9 +160,9 @@ export const init = (environment: any): void => {
       obj.allowAddPanel = !!res;
     },
   });
-  // Add a property to the single select matrix to copy the value of a question from another matrix
+  // Add a property to the single select matrix to copy the rows value from another matrix
   serializer.addProperty('matrix', {
-    name: 'copyOtherSingleSelectMatrixValue',
+    name: 'copyRowsFromAnotherSingleSelectMatrix',
     category: 'general',
     type: 'dropdown',
     choices: (question: Question, choicesCallback: any) => {
@@ -187,9 +187,9 @@ export const init = (environment: any): void => {
       actualMatrix.rows = matrixToBeCopied.rows;
     },
   });
-  // Add a property to the single select matrix to copy the value of a question from another matrix
+  // Add a property to the single select matrix to copy the rows and choices value from another matrixdropdown
   serializer.addProperty('matrixdropdown', {
-    name: 'copyOtherMultiSelectMatrixValue',
+    name: 'copyRowsFromAnotherMultiSelectMatrix',
     category: 'general',
     type: 'dropdown',
     choices: (question: Question, choicesCallback: any) => {
@@ -214,9 +214,9 @@ export const init = (environment: any): void => {
       actualMatrix.choices = matrixToBeCopied.choices;
     },
   });
-  // Add a property to the matrix dynamic to copy the value of a question from another matrix
+  // Add a property to the matrix dynamic to copy the choices value from another matrixdynamic
   serializer.addProperty('matrixdynamic', {
-    name: 'copyOtherDynamicMatrixValue',
+    name: 'copyChoicesFromAnotherDynamicMatrix',
     category: 'general',
     type: 'dropdown',
     choices: (question: Question, choicesCallback: any) => {
