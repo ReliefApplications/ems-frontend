@@ -111,7 +111,6 @@ export class WidgetGridComponent
     super();
     this.dashboardService.dashboard$.subscribe((dashboard) => {
       if (dashboard) {
-        // add the dashboard.gridOptions to the gridOptions
         this.gridOptions = {
           ...this.gridOptions,
           ...dashboard.gridOptions,
