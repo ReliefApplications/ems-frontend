@@ -534,7 +534,12 @@
 				},
 				"filterSettings": "******",
 				"settings": {
-					"defaultPosition": "******"
+					"defaultPosition": "******",
+					"fixedRowHeight": "******",
+					"gridOptions": "******",
+					"margin": "******",
+					"minCols": "******",
+					"outerMargin": "******"
 				}
 			},
 			"delete": {

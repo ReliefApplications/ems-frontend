@@ -534,7 +534,12 @@
 				},
 				"filterSettings": "Filter settings",
 				"settings": {
-					"defaultPosition": "Default position for the filter"
+					"defaultPosition": "Default position for the filter",
+					"fixedRowHeight": "Row height",
+					"gridOptions": "Grid options",
+					"margin": "Margin between widgets",
+					"minCols": "Number of columns",
+					"outerMargin": "Outer margin"
 				}
 			},
 			"delete": {

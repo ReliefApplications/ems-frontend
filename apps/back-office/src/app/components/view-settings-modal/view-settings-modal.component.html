@@ -109,15 +109,15 @@
             <ui-icon
               icon="style"
               [size]="18"
-              uiTooltip="{{ 'common.gridStyle' | translate }}"
+              uiTooltip="{{ 'components.application.dashboard.settings.gridOptions' | translate }}"
             ></ui-icon>
-            <span>{{ 'common.gridStyle' | translate }}</span>
+            <span>{{ 'components.application.dashboard.settings.gridOptions' | translate }}</span>
           </ng-container>
           <!-- Tab content -->
           <div class="flex gap-4 flex-col" formGroupName="gridOptions">
             <!-- Number of columns -->
             <div uiFormFieldDirective>
-              <label>{{ 'common.minCols' | translate }}</label>
+              <label>{{ 'components.application.dashboard.settings.minCols' | translate }}</label>
               <input
                 type="number"
                 formControlName="minCols"
@@ -125,7 +125,7 @@
             </div>
             <!-- Change default size of rows -->
             <div uiFormFieldDirective>
-              <label>{{ 'common.fixedRowHeight' | translate }}</label>
+              <label>{{ 'components.application.dashboard.settings.fixedRowHeight' | translate }}</label>
               <input
                 type="number"
                 formControlName="fixedRowHeight"
@@ -133,7 +133,7 @@
             </div>
             <!-- Specify inner gap in pixels -->
             <div uiFormFieldDirective>
-              <label>{{ 'common.margin' | translate }}</label>
+              <label>{{ 'components.application.dashboard.settings.margin' | translate }}</label>
               <input
                 type="number"
                 formControlName="margin"
@@ -142,7 +142,7 @@
             <!-- Delete outer gap -->
             <ui-toggle formControlName="outerMargin">
               <ng-container ngProjectAs="label">
-                {{ 'common.outerMargin' | translate }}
+                {{ 'components.application.dashboard.settings.outerMargin' | translate }}
               </ng-container>
             </ui-toggle>
           </div>
