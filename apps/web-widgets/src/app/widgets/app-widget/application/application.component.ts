@@ -37,9 +37,7 @@ export class ApplicationComponent
   implements OnInit, OnDestroy, OnChanges
 {
   /** Stores current app ID */
-  @Input() appID = '';
-  /** Display application sidenav component */
-  @Input() displaySideNav = true;
+  @Input() id = '';
   /** Send application id to open in the web widget */
   @Output() openApplication: EventEmitter<string> = new EventEmitter<string>();
   /** Application title */
@@ -56,6 +54,8 @@ export class ApplicationComponent
   public application: Application | null = null;
   /** Use side menu or not */
   public sideMenu = false;
+  /** Should hide menu by default ( only when vertical ) */
+  public hideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
   /** Is loading */
@@ -99,16 +99,16 @@ export class ApplicationComponent
    */
   ngOnInit(): void {
     this.setUpApplicationListeners();
-    if (this.appID) {
+    if (this.id) {
       this.loading = true;
-      this.applicationService.loadApplication(this.appID);
+      this.applicationService.loadApplication(this.id);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['appID'].currentValue) {
+    if (changes['id'].currentValue) {
       this.loading = true;
-      this.applicationService.loadApplication(changes['appID'].currentValue);
+      this.applicationService.loadApplication(changes['id'].currentValue);
     }
   }
 
@@ -155,7 +155,7 @@ export class ApplicationComponent
             }
           }
           this.application = application;
-          this.sideMenu = this.application?.sideMenu ?? this.displaySideNav;
+          this.hideMenu = this.application?.hideMenu ?? false;
         } else {
           this.title = '';
           this.navGroups = [];

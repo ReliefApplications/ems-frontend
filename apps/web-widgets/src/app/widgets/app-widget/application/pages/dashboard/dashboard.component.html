@@ -1,5 +1,21 @@
+<shared-dashboard-filter
+  *ngIf="!loading && showFilter && !isFullScreen"
+  [isFullScreen]="isFullScreen"
+  variant="modern"
+  [opened]="true"
+></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+<div
+  [ngClass]="{
+    'py-8 px-6 h-full bg-white overflow-y-auto overflow-x-hidden': isFullScreen
+  }"
+>
+  <shared-dashboard-filter
+    *ngIf="!loading && showFilter && isFullScreen"
+    [editable]="true"
+    [isFullScreen]="isFullScreen"
+    [opened]="true"
+  ></shared-dashboard-filter>
   <ng-container sharedFullScreen [(isFullScreenMode)]="isFullScreen">
     <ng-container
       *sharedSkeleton="
@@ -44,15 +60,5 @@
       [widgets]="widgets"
       (changeStep)="changeStep.emit($event)"
     ></shared-widget-grid>
-    <ng-container *ngIf="!loading && showFilter && isFullScreen">
-      <shared-dashboard-filter
-        [isFullScreen]="isFullScreen"
-      ></shared-dashboard-filter>
-    </ng-container>
   </ng-container>
 </div>
-<ng-container *ngIf="!loading && showFilter && !isFullScreen">
-  <shared-dashboard-filter
-    [isFullScreen]="isFullScreen"
-  ></shared-dashboard-filter>
-</ng-container>

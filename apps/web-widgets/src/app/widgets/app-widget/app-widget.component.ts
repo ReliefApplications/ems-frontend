@@ -22,9 +22,7 @@ export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
   implements OnInit
 {
-  // @Input() id = '';
   @Input() id = '63c9610ec7dee6439fe33604';
-  @Input() displaySideNav = true;
   title = 'front-office';
 
   /**

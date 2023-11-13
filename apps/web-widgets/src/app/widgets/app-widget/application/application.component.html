@@ -9,12 +9,10 @@
 <!-- Application wrapper -->
 <ng-template #applicationTmpl>
   <shared-layout
-    [applications]="applications"
-    [header]="header"
+    [showHeader]="false"
     [leftSidenav]="pages"
-    [sideMenu]="sideMenu"
-    [profileRoute]="'profile'"
-    (openApplication)="onOpenApplication($event)"
+    [sideMenu]="true"
+    [menuOpened]="!hideMenu"
   ></shared-layout>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
@@ -23,17 +21,15 @@
     [nav]="nav"
     [appLayout]="true"
     [navGroups]="navGroups"
-    [vertical]="!(!sideMenu && largeDevice)"
+    [vertical]="true"
   ></shared-navbar>
 </ng-template>
 
 <!-- Application header -->
-<ng-template #header>
-  <!-- Title -->
+<!-- <ng-template #header>
   <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
     {{ title }}
   </h2>
-  <!-- Settings -->
   <ng-container *ngIf="adminNavItems.length">
     <ui-button
       [isIcon]="true"
@@ -43,10 +39,10 @@
       [uiTooltip]="'common.settings' | translate"
     ></ui-button>
   </ng-container>
-</ng-template>
+</ng-template> -->
 
 <!-- Admin pages -->
-<ui-menu #settingsMenu>
+<!-- <ui-menu #settingsMenu>
   <a
     uiMenuItem
     *ngFor="let setting of adminNavItems"
@@ -57,4 +53,4 @@
     <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
     {{ setting.name }}
   </a>
-</ui-menu>
+</ui-menu> -->
