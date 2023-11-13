@@ -246,8 +246,10 @@ export class ViewSettingsModalComponent
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
       gridOptions: this.fb.group({
-        columns: this.fb.control(this.dashboard?.gridOptions?.columns ?? 8),
-        rows: this.fb.control(this.dashboard?.gridOptions?.rows ?? 8),
+        minCols: this.fb.control(this.dashboard?.gridOptions?.minCols ?? 8),
+        fixedRowHeight: this.fb.control(
+          this.dashboard?.gridOptions?.fixedRowHeight ?? 200
+        ),
         margin: this.fb.control(this.dashboard?.gridOptions?.margin ?? 10),
         outerMargin: this.fb.control(
           this.dashboard?.gridOptions?.outerMargin ?? false

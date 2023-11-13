@@ -130,18 +130,18 @@
             {{ applications | json }} -->
 
             <!-- Number of columns -->
-            <label>{{ 'common.columns' | translate }}</label>
+            <label>{{ 'common.minCols' | translate }}</label>
             <input
               type="number"
-              formControlName="columns"
+              formControlName="minCols"
               class="w-1/2"
               placeholder="{{ 'common.default' | translate }}"
             />
             <!-- Change default size of rows -->
-            <label>{{ 'common.rows' | translate }}</label>
+            <label>{{ 'common.fixedRowHeight' | translate }}</label>
             <input
               type="number"
-              formControlName="rows"
+              formControlName="fixedRowHeight"
               class="w-1/2"
               placeholder="{{ 'common.default' | translate }}"
             />

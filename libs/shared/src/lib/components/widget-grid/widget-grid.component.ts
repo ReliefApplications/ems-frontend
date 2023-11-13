@@ -204,8 +204,8 @@ export class WidgetGridComponent
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
       maxCols: this.colsNumber,
-      minCols: this.colsNumber,
-      fixedRowHeight: 200,
+      minCols: this.gridOptions?.minCols ?? this.colsNumber,
+      fixedRowHeight: this.gridOptions?.fixedRowHeight ?? 200,
       draggable: {
         enabled: this.canUpdate,
         ignoreContentClass: 'gridster-item-content',
