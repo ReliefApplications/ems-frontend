@@ -394,6 +394,7 @@
 		},
 		"title": "Titre",
 		"tooltip": {
+			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
 				"insert": "Tapez '{' pour utiliser des expressions et des variables"
 			}
@@ -742,6 +743,25 @@
 			},
 			"display": {
 				"submissionMessage": "Le formulaire a été sauvegardé."
+			},
+			"draftRecords": {
+				"buttonLoad": "Charger un brouillon",
+				"confirmModal": {
+					"confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
+					"confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",
+					"delete": "Supprimer ce brouillon",
+					"load": "Charger ce brouillon"
+				},
+				"creationDate": "Date de création",
+				"delete": "Supprimer ce brouillon",
+				"load": "Charger ce brouillon",
+				"noDrafts": "Aucun enregistrement brouillon disponible",
+				"preview": "Prévisualiser ce brouillon",
+				"previewTitle": "Enregistrement brouillon",
+				"save": "Enregistrer comme brouillon",
+				"select": "Sélectionner le brouillon",
+				"successEdit": "Brouillon modifié avec succès",
+				"successSave": "Enregistré dans les brouillons avec succès"
 			},
 			"layout": {
 				"delete": {
@@ -1259,6 +1279,9 @@
 						"invalid": "Agrégation invalide"
 					}
 				},
+				"filters": {
+					"select": "Sélectionnez un filtre..."
+				},
 				"other": "Autre"
 			},
 			"expand": "Étendre",
@@ -1345,6 +1368,12 @@
 					"axes": "Axes",
 					"categories": "Catégories",
 					"color": "Couleur",
+					"filters": {
+						"add": "Ajouter un filtre",
+						"delete": "Supprimer le filtre",
+						"empty": "Aucun filtre configuré",
+						"title": "Filtres prédéfinis"
+					},
 					"grid": {
 						"title": "Grille",
 						"x": {
@@ -1410,16 +1439,22 @@
 						"convert": "Convertir des enregistrements",
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
+						"goTo": {
+							"column": {
+								"label": "Nom de la colonne",
+								"placeholder": "Entrez un nom pour la colonne..."
+							},
+							"field": {
+								"label": "Passer le champ comme paramètre de requête",
+								"placeholder": "Sélectionnez un champ"
+							},
+							"label": "Accédez à la page",
+							"target": {
+								"label": "Naviguez vers la page",
+								"placeholder": "Sélectionnez une page"
+							}
+						},
 						"inline": "Modifier par ligne",
-						"navigateToPage": "Accédez à la page",
-						"pageUrl": {
-							"label": "Url de la source de la page",
-							"placeholder": "Entrez l'id de la page"
-						},
-						"pageUrlTitle": {
-							"label": "Nom de la colonne",
-							"placeholder": "Entrez un nom pour la colonne..."
-						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
@@ -1479,8 +1514,8 @@
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
-							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
@@ -2095,7 +2130,6 @@
 		"page": {
 			"add": "Ajouter une page",
 			"tooltip": {
-				"drag": "Glissez-déposez pour réorganiser",
 				"duplicate": "Sélectionner l'application où copier la page"
 			}
 		},

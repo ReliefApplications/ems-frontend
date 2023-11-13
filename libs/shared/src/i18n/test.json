@@ -394,6 +394,7 @@
 		},
 		"title": "******",
 		"tooltip": {
+			"dragDrop": "******",
 			"editor": {
 				"insert": "******"
 			}
@@ -728,6 +729,25 @@
 			},
 			"display": {
 				"submissionMessage": "******"
+			},
+			"draftRecords": {
+				"buttonLoad": "******",
+				"confirmModal": {
+					"confirmDelete": "******",
+					"confirmLoad": "******",
+					"delete": "******",
+					"load": "******"
+				},
+				"creationDate": "******",
+				"delete": "******",
+				"load": "******",
+				"noDrafts": "******",
+				"preview": "******",
+				"previewTitle": "******",
+				"save": "******",
+				"select": "******",
+				"successEdit": "******",
+				"successSave": "******"
 			},
 			"layout": {
 				"delete": {
@@ -1244,6 +1264,9 @@
 						"invalid": "******"
 					}
 				},
+				"filters": {
+					"select": "******"
+				},
 				"other": "******"
 			},
 			"expand": "******",
@@ -1329,6 +1352,12 @@
 					"axes": "******",
 					"categories": "******",
 					"color": "******",
+					"filters": {
+						"add": "******",
+						"delete": "******",
+						"empty": "******",
+						"title": "******"
+					},
 					"grid": {
 						"title": "******",
 						"x": {
@@ -1394,16 +1423,22 @@
 						"convert": "******",
 						"delete": "******",
 						"export": "******",
+						"goTo": {
+							"column": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"field": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"label": "******",
+							"target": {
+								"label": "******",
+								"placeholder": "******"
+							}
+						},
 						"inline": "******",
-						"navigateToPage": "******",
-						"pageUrl": {
-							"label": "******",
-							"placeholder": "******"
-						},
-						"pageUrlTitle": {
-							"label": "******",
-							"placeholder": "******"
-						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
@@ -1463,8 +1498,8 @@
 							"convert": "******",
 							"delete": "******",
 							"export": "******",
+							"goTo": "******",
 							"inline": "******",
-							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
 							"update": "******"
@@ -2078,7 +2113,6 @@
 		"page": {
 			"add": "******",
 			"tooltip": {
-				"drag": "******",
 				"duplicate": "******"
 			}
 		},
