@@ -79,6 +79,7 @@ export const EDIT_PAGE = gql`
     $id: ID!
     $name: String
     $icon: String
+    $gridOptions: JSON
     $permissions: JSON
     $visible: Boolean
   ) {
@@ -86,12 +87,14 @@ export const EDIT_PAGE = gql`
       id: $id
       name: $name
       icon: $icon
+      gridOptions: $gridOptions
       permissions: $permissions
       visible: $visible
     ) {
       id
       name
       icon
+      gridOptions
       visible
       permissions {
         canSee {
