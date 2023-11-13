@@ -219,13 +219,13 @@ export class AppModule implements DoBootstrap {
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
-    customElements.define('oort-form-widget', form);
+    customElements.define('apb-form', form);
 
     // Form
     const application = createCustomElement(AppWidgetComponent, {
       injector: this.injector,
     });
-    customElements.define('oort-application-widget', application);
+    customElements.define('apb-application', application);
 
     const fonts = [
       'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',

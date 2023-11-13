@@ -15,10 +15,10 @@ platformBrowserDynamic()
     const body = document.getElementById('bodyPlaceholder');
     if (body) {
       // Form web widget
-      // const formWidget = document.createElement('oort-form-widget');
+      // const formWidget = document.createElement('apb-form');
       // body.appendChild(formWidget);
       // Application web widget
-      const appWidget = document.createElement('oort-application-widget');
+      const appWidget = document.createElement('apb-application');
       body.appendChild(appWidget);
     }
   })

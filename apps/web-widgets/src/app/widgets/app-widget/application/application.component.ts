@@ -112,6 +112,11 @@ export class ApplicationComponent
     }
   }
 
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.applicationService.leaveApplication();
+  }
+
   /**
    * Initialize all the needed listeners to load the application content
    */
@@ -272,11 +277,6 @@ export class ApplicationComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.applicationService.leaveApplication();
-  }
-
   /**
    * Opens an application, contacting the application service.
    *
@@ -286,27 +286,4 @@ export class ApplicationComponent
     this.router.navigate([`/`]);
     this.openApplication.emit(application.id);
   }
-
-  // /**
-  //  * Checks if route page is valid.
-  //  *
-  //  * @param app application to check pages of
-  //  * @returns Is page valid or not
-  //  */
-  // private validPage(app: any): boolean {
-  //   if (
-  //     this.appPage &&
-  //     (this.appPage === 'profile' ||
-  //       this.appPage === 'settings/users' ||
-  //       this.appPage === 'settings/roles' ||
-  //       app.pages?.find(
-  //         (val: any) =>
-  //           val.type + '/' + val.content === this.appPage ||
-  //           val.type + '/' + val.id === this.appPage
-  //       ))
-  //   ) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 }

@@ -145,8 +145,4 @@ export class TabFiltersComponent implements OnInit {
     );
     this.updateView();
   }
-
-  toggleRow(rowIndex: number): void {
-    this.expandedRows[rowIndex] = !this.expandedRows[rowIndex];
-  }
 }

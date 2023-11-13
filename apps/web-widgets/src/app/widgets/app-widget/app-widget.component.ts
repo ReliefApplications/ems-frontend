@@ -1,16 +1,20 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   Injector,
   Input,
   OnInit,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
-import { AuthService } from '@oort-front/shared';
 import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extended-host.component';
+import { ContextService } from '@oort-front/shared';
+import { debounceTime } from 'rxjs';
+import { isEmpty } from 'lodash';
 
 /**
- * Main component of Front-office.
+ * Application as Web Widget.
  */
 @Component({
   selector: 'oort-application-widget',
@@ -22,22 +26,45 @@ export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
   implements OnInit
 {
+  /** Application Id */
   @Input() id = '63c9610ec7dee6439fe33604';
-  title = 'front-office';
 
   /**
-   * Main component of Front-office.
+   * Set dashboard filter visibility status
+   */
+  @Input()
+  set toggleFilter(opened: boolean) {
+    this.onToggleFilter(opened);
+  }
+
+  @Output()
+  filterActive$ = new EventEmitter<boolean>();
+
+  /**
+   * Application as Web Widget.
    *
-   * @param authService Shared authentication service
    * @param el class related element reference
    * @param injector angular application injector
+   * @param contextService Shared context service
    */
   constructor(
-    private authService: AuthService,
     el: ElementRef,
-    injector: Injector
+    injector: Injector,
+    private contextService: ContextService
   ) {
     super(el, injector);
+    this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
+      this.filterActive$.emit(!isEmpty(value));
+    });
+  }
+
+  /**
+   * Toggle filter visibility.
+   *
+   * @param opened visibility status.
+   */
+  private onToggleFilter(opened: boolean) {
+    this.contextService.filterOpened.next(opened);
   }
 
   /**
@@ -45,6 +72,6 @@ export class AppWidgetComponent
    */
   override ngOnInit(): void {
     super.ngOnInit();
-    // this.authService.initLoginSequence();
+    console.log(this.contextService);
   }
 }
