@@ -173,6 +173,7 @@
     #nav="uiSidenavDirective"
     [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice && sideMenu && menuOpened"
+    [visible]="!!leftSidenav"
   >
     <ng-container *ngIf="leftSidenav">
       <ng-container
