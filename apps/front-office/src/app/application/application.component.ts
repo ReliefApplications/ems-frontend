@@ -67,12 +67,6 @@ export class ApplicationComponent
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.application) {
-        this.adminNavItems = [];
-        this.setAdminNavItems(this.application as Application);
-      }
-    });
   }
 
   /**
@@ -110,6 +104,12 @@ export class ApplicationComponent
           this.title = application.name || '';
           this.adminNavItems = [];
           this.setAdminNavItems(application);
+          this.translate.onLangChange
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+              this.adminNavItems = [];
+              this.setAdminNavItems(application as Application);
+            });
           this.setNavGroups(application);
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];

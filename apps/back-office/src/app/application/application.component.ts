@@ -57,9 +57,6 @@ export class ApplicationComponent
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.configNavItems();
-    });
   }
 
   ngOnInit(): void {
@@ -100,6 +97,9 @@ export class ApplicationComponent
               })) || [];
           if (application.canUpdate) {
             this.configNavItems();
+            this.translate.onLangChange
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(() => this.configNavItems());
           }
           this.navGroups = [
             {
