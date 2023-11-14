@@ -9,10 +9,16 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extended-host.component';
-import { ContextService } from '@oort-front/shared';
+import {
+  Application,
+  ApplicationService,
+  ContentType,
+  ContextService,
+} from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { Router } from '@angular/router';
+import { Location, LocationStrategy } from '@angular/common';
 
 /**
  * Application as Web Widget.
@@ -28,7 +34,18 @@ export class AppWidgetComponent
   implements OnInit
 {
   /** Application Id */
-  @Input() id = '63c9610ec7dee6439fe33604';
+  @Input()
+  set id(value: string) {
+    // Get the current path
+    const currentPath = this.location.path();
+    if (currentPath.includes(value)) {
+      // Path includes the id
+      this.router.navigateByUrl(`${currentPath}`);
+    } else {
+      // Else, navigate to homepage of the app
+      this.router.navigate([`./${value}`]);
+    }
+  }
 
   /**
    * Set dashboard filter visibility status
@@ -59,12 +76,43 @@ export class AppWidgetComponent
     el: ElementRef,
     injector: Injector,
     private contextService: ContextService,
-    private router: Router
+    private router: Router,
+    private applicationService: ApplicationService,
+    private location: Location,
+    private locationStrategy: LocationStrategy
   ) {
     super(el, injector);
     this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
       this.filterActive$.emit(!isEmpty(value));
     });
+    this.applicationService.application$.subscribe(
+      (application: Application | null) => {
+        if (application) {
+          const pages = application.pages
+            ?.filter((x) => x.content)
+            .map((x) => ({
+              name: x.name,
+              path:
+                x.type === ContentType.form
+                  ? `./${application.id}/${x.type}/${x.id}`
+                  : `./${application.id}/${x.type}/${x.content}`,
+              icon: x.icon || this.getNavIcon(x.type || ''),
+              fontFamily: x.icon ? 'fa' : 'material',
+              visible: x.visible,
+            }));
+          this.pages.emit(pages);
+        } else {
+          this.pages.emit([]);
+        }
+      }
+    );
+  }
+
+  /**
+   * Configuration of the Authentication behavior
+   */
+  override ngOnInit(): void {
+    super.ngOnInit();
   }
 
   /**
@@ -77,9 +125,19 @@ export class AppWidgetComponent
   }
 
   /**
-   * Configuration of the Authentication behavior
+   * Gets nav icon from page content type.
+   *
+   * @param type content type of the page
+   * @returns icon
    */
-  override ngOnInit(): void {
-    super.ngOnInit();
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
+    }
   }
 }

@@ -13,6 +13,7 @@ import { ApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { RawEditorSettings } from 'tinymce';
+import { LocationStrategy } from '@angular/common';
 
 /**
  * Data template service
@@ -37,7 +38,8 @@ export class DataTemplateService {
     private sanitizer: DomSanitizer,
     private downloadService: DownloadService,
     private applicationService: ApplicationService,
-    @Inject('environment') environment: any
+    @Inject('environment') environment: any,
+    private locationStrategy: LocationStrategy
   ) {
     this.environment = environment;
   }
@@ -150,14 +152,15 @@ export class DataTemplateService {
    * @returns url of the page
    */
   private getPageUrl(application: Application, page: Page): string {
+    const baseHref = this.locationStrategy.getBaseHref();
     if (this.environment.module === 'backoffice') {
       return page.type === ContentType.form
         ? `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.id}`
         : `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.content}`;
     } else {
       return page.type === ContentType.form
-        ? `${this.environment.frontOfficeUri}/${application.id}/${page.type}/${page.id}`
-        : `${this.environment.frontOfficeUri}/${application.id}/${page.type}/${page.content}`;
+        ? `.${baseHref}${application.id}/${page.type}/${page.id}`
+        : `.${baseHref}${application.id}/${page.type}/${page.content}`;
     }
   }
 
