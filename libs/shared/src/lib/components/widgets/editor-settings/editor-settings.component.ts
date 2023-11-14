@@ -39,7 +39,9 @@ const createEditorForm = (value: any) => {
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),
-    aggregation: createAggregationForm(get(value, 'aggregation', null)),
+    aggregation: createAggregationForm(
+      get(value, 'settings.aggregation', null)
+    ),
     // Style
     useStyles: new FormControl<boolean>(get(value, 'settings.useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
@@ -112,7 +114,6 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    console.log(this.widget);
     this.widgetFormGroup = createEditorForm(this.widget);
     this.change.emit(this.widgetFormGroup);
 
@@ -139,6 +140,13 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
           }
         });
     }
+
+    // update fields when change aggregation
+    this.widgetFormGroup
+      .get('aggregation')
+      ?.valueChanges.subscribe((val: any) => {
+        this.updateFields(val);
+      });
   }
 
   /**
@@ -156,8 +164,12 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
     this.updateFields();
   }
 
-  /** Extracts the fields from the resource/layout */
-  public updateFields() {
+  /**
+   * Extracts the fields from the resource/layout
+   *
+   * @param aggregationValue aggregation
+   */
+  public updateFields(aggregationValue?: any) {
     // extract data keys from metadata
     const fields: any = [];
     get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
@@ -169,13 +181,17 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
       });
     });
     // verify if we have aggregation selected to inject in html
-    const aggregation = this.widgetFormGroup.get('aggregation')?.value;
     const aggregationObj: Aggregation[] = [];
-    if (aggregation?.id) {
-      aggregationObj.push({
-        id: aggregation?.id,
-        name: aggregation.name ?? undefined,
-      });
+    if (!aggregationValue) {
+      const aggregation = this.widgetFormGroup.get('aggregation')?.value;
+      if (aggregation?.id) {
+        aggregationObj.push({
+          id: aggregation?.id,
+          name: aggregation.name ?? undefined,
+        });
+      }
+    } else {
+      aggregationObj.push(aggregationValue);
     }
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [

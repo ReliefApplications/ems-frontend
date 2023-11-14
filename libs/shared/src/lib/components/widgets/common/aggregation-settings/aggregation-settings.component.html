@@ -64,6 +64,7 @@
           icon="close"
           (click)="
             formGroup.get('aggregation.id')?.setValue(null);
+            formGroup.get('aggregation.name')?.setValue(null);
             selectedAggregation = null;
           "
           [uiTooltip]="'common.remove' | translate"

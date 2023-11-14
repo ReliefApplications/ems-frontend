@@ -82,7 +82,6 @@ export class AggregationSettingsComponent
   }
 
   ngOnInit(): void {
-    console.log(this.formGroup);
     const resourceID = this.formGroup?.get('aggregation.resource')?.value;
     if (resourceID) {
       this.getResource(resourceID);
@@ -99,7 +98,6 @@ export class AggregationSettingsComponent
     this.formGroup
       .get('aggregation.resource')
       ?.valueChanges.subscribe((val: any) => {
-        console.log(this.formGroup.get('aggregation.resource'));
         this.selectedResource =
           this.resourcesQuery
             .getCurrentResult()
