@@ -124,7 +124,41 @@ export const init = (environment: any): void => {
     default: false,
     visibleIndex: 2,
   });
-
+  // Adds a property to the survey settings to show or hide the close button on record modal
+  serializer.addProperty('survey', {
+    name: 'showCloseButtonOnModal',
+    category: 'general',
+    type: 'dropdown',
+    choices: [
+      {
+        value: true,
+        text: 'Yes',
+      },
+      {
+        value: false,
+        text: 'No',
+      },
+    ],
+    default: true,
+  });
+  // Adds a property to the survey settings to ask for confirmation on closing the record modal
+  serializer.addProperty('survey', {
+    name: 'confirmOnModalClose',
+    category: 'general',
+    type: 'dropdown',
+    choices: [
+      {
+        value: true,
+        text: 'Yes',
+      },
+      {
+        value: false,
+        text: 'No',
+      },
+    ],
+    default: false,
+    visibleIf: (survey: SurveyModel) => survey.showCloseButtonOnModal,
+  });
   // Property to allow customization of the save button label
   serializer.addProperty('survey', {
     name: 'saveButtonText',

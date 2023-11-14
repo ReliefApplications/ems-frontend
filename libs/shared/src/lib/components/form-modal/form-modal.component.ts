@@ -285,6 +285,29 @@ export class FormModalComponent
   }
 
   /**
+   * Closes the dialog asking for confirmation if needed.
+   */
+  public close(): void {
+    if (this.survey.confirmOnModalClose) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.close'),
+        content: this.translate.instant('common.confirmClose'),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmVariant: 'primary',
+      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.dialogRef.close();
+          }
+        });
+    } else {
+      this.dialogRef.close();
+    }
+  }
+
+  /**
    * Creates the record, or update it if provided.
    *
    * @param survey Survey instance.

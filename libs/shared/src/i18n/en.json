@@ -77,6 +77,7 @@
 			"one": "Column"
 		},
 		"comma": "comma",
+		"confirmClose": "Do you really wanna close the editor?",
 		"copy": "Copy",
 		"create": "Create",
 		"createdOn": "Created on",
