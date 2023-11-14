@@ -2179,6 +2179,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"expand": "Show option to expand widget",
 				"header": "Show widget header",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",

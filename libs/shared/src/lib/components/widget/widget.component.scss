@@ -3,3 +3,11 @@
   width: 100%;
   height: 100%;
 }
+
+.meu-botao {
+  position: absolute;
+  right: 0;
+  top: 30%;
+  z-index: 1;
+  padding-right: 15px;
+}

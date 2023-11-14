@@ -2196,6 +2196,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"expand": "Afficher l'option pour développer le widget",
 				"header": "Afficher l'en-tête du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",

@@ -51,6 +51,12 @@
   </ng-container>
 
   <ng-container [ngSwitch]="widget.component">
+    <!-- BUTTON test-->
+    <button 
+      type="button"
+      (click)=null
+      class='meu-botao bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
+    > >  </button>
     <!-- CHART -->
     <shared-chart
       *ngSwitchCase="'chart'"
