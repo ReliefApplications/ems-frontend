@@ -41,7 +41,7 @@ import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
-import { LOCATION_INITIALIZED } from '@angular/common';
+import { APP_BASE_HREF, LOCATION_INITIALIZED } from '@angular/common';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 
 import { registerLocaleData } from '@angular/common';
@@ -200,6 +200,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     PopupService,
     ResizeBatchService,
     DatePipe,
+    { provide: APP_BASE_HREF, useValue: environment.baseHref },
   ],
 })
 export class AppModule implements DoBootstrap {

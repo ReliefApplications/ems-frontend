@@ -30,4 +30,5 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
+  baseHref: '/widgets/',
 };

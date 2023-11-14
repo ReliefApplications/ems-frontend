@@ -71,6 +71,12 @@
       },
       "configurations": {
         "azure-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.azure.dev.ts"
+            }
+          ],
           "budgets": [
             {
               "type": "initial",
@@ -83,19 +89,13 @@
               "maximumError": "2mb"
             }
           ],
+          "outputHashing": "none",
           "stylePreprocessorOptions": {
             "includePaths": [
               "libs/styles/src/lib/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
-          },
-          "fileReplacements": [
-            {
-              "replace": "apps/web-widgets/src/environments/environment.ts",
-              "with": "apps/web-widgets/src/environments/environment.azure.dev.ts"
-            }
-          ],
-          "outputHashing": "none"
+          }
         },
         "azure-uat": {
           "budgets": [
