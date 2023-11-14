@@ -20,6 +20,7 @@ import { GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Aggregation } from '../../../models/aggregation.model';
+import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 
 /**
  * Creates the form for the editor widget settings.
@@ -53,7 +54,7 @@ const createEditorForm = (value: any) => {
 };
 
 /**
- * Create a card form
+ * Create an aggregation form
  *
  * @param value aggregation value, optional
  * @returns aggregation as form group
@@ -63,6 +64,7 @@ const createAggregationForm = (value?: any) => {
     resource: new FormControl<string>(get(value, 'resource', null)),
     id: new FormControl<string>(get(value, 'id', null)),
     name: new FormControl<string>(get(value, 'name', null)),
+    mapping: createMappingForm(null, ''),
   });
 };
 

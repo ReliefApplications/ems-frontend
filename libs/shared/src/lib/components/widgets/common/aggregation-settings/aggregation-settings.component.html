@@ -70,6 +70,12 @@
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
+      <!-- Series Mapping -->
+      <h3 class="mb-1">{{ 'components.mapping.title' | translate }}</h3>
+      <shared-series-mapping
+        [availableFields]="availableSeriesFields"
+        [formGroup]="$any(formGroup.get('chart.mapping'))"
+      ></shared-series-mapping>
     </ng-container>
   </ng-container>
 </form>    
