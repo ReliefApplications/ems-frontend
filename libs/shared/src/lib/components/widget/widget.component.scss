@@ -4,10 +4,11 @@
   height: 100%;
 }
 
-.meu-botao {
+.button {
   position: absolute;
   right: 0;
   top: 30%;
-  z-index: 1;
-  padding-right: 15px;
+  z-index: 1 !important;
+  margin-right: 1%;
+  border-radius: inherit;
 }

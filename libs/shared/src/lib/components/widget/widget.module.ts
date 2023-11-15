@@ -8,6 +8,7 @@ import { SummaryCardModule } from '../widgets/summary-card/summary-card.module';
 import { MapWidgetModule } from '../widgets/map/map.module';
 import { TabsModule } from '../widgets/tabs/tabs.module';
 import 'hammerjs';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Main Widget Module.
@@ -16,6 +17,7 @@ import 'hammerjs';
  */
 @NgModule({
   declarations: [WidgetComponent],
+  exports: [WidgetComponent],
   imports: [
     CommonModule,
     ChartModule,
@@ -24,7 +26,7 @@ import 'hammerjs';
     MapWidgetModule,
     SummaryCardModule,
     TabsModule,
+    UiModule,
   ],
-  exports: [WidgetComponent],
 })
 export class WidgetModule {}

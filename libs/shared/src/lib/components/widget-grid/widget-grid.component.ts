@@ -24,6 +24,7 @@ import {
   GridType,
   GridsterConfig,
   GridsterItem,
+  GridsterItemComponent,
 } from 'angular-gridster2';
 import { cloneDeep } from 'lodash';
 import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
@@ -69,6 +70,9 @@ export class WidgetGridComponent
   /** Widget components view children */
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
+  /** Gridster items view children */
+  @ViewChildren(GridsterItemComponent)
+  gridsterItems!: QueryList<GridsterItemComponent>;
   /** Expanded widget dialog ref, to be closed when navigating */
   public expandWidgetDialogRef!: DialogRef<
     unknown,
@@ -238,6 +242,35 @@ export class WidgetGridComponent
    */
   onDeleteWidget(e: any): void {
     this.delete.emit(e);
+  }
+
+  /**
+   * Maximize size of widget on right
+   *
+   * @param index index of the widget
+   */
+  changeSizeRight(index: number) {
+    const gridsterItem = this.gridsterItems.toArray()[index];
+    console.log(gridsterItem, this.colsNumber);
+    gridsterItem.item.cols = this.colsNumber;
+
+    gridsterItem.setSize();
+    if (
+      this.gridOptions &&
+      this.gridOptions.api &&
+      typeof this.gridOptions.api.optionsChanged === 'function'
+    ) {
+      this.gridOptions.api.optionsChanged();
+    }
+    /*
+    if (
+      this.gridOptions &&
+      this.gridOptions.api &&
+      typeof this.gridOptions.api.optionsChanged === 'function'
+    ) {
+      this.gridOptions.api.optionsChanged();
+    }
+    */
   }
 
   /**

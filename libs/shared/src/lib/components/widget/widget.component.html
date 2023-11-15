@@ -52,11 +52,13 @@
 
   <ng-container [ngSwitch]="widget.component">
     <!-- BUTTON test-->
-    <button 
+    <ui-button 
       type="button"
-      (click)=null
-      class='meu-botao bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
-    > >  </button>
+      size="medium"
+      variant="light"
+      (click)="changeSizeRightWidget()"
+      class='button bg-white '
+    >></ui-button>
     <!-- CHART -->
     <shared-chart
       *ngSwitchCase="'chart'"

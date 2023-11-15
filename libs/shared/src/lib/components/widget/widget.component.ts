@@ -43,6 +43,8 @@ export class WidgetComponent implements OnInit, OnDestroy {
   @Input() fullscreen = false;
   /** Edit widget event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Change size right widget event emitter */
+  @Output() changeSizeRight: EventEmitter<any> = new EventEmitter();
   /** Change step workflow event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
   /** Id of the ticket. Visible in the dom */
@@ -118,5 +120,12 @@ export class WidgetComponent implements OnInit, OnDestroy {
         .getElementsByTagName('head')[0]
         .removeChild(this.customStyle);
     }
+  }
+
+  /**
+   * Edit size of widget
+   */
+  changeSizeRightWidget() {
+    this.changeSizeRight.emit();
   }
 }
