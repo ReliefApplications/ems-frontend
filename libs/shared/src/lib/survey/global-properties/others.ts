@@ -61,7 +61,7 @@ export const init = (environment: any): void => {
     isLocalizable: true,
     onExecuteExpression: (obj: Question, res: boolean) => {
       if (res) {
-        obj.value = null;
+        obj.clearValue();
       }
     },
   });
@@ -160,52 +160,32 @@ export const init = (environment: any): void => {
       obj.allowAddPanel = !!res;
     },
   });
-  // Add a property to the single select matrix to copy the rows value from another matrix
-  serializer.addProperty('matrix', {
-    name: 'copyRowsFromAnotherSingleSelectMatrix',
-    category: 'general',
+
+  const copyOtherMatrixProp = {
+    name: 'copyRowsFromAnotherMatrix',
+    category: 'rows',
     type: 'dropdown',
     choices: (question: Question, choicesCallback: any) => {
-      const actualQuestion = question.toJSON().name;
-      const choices: string[] = [''];
+      const choices: { value: string | null; text: string }[] = [
+        {
+          value: null,
+          text: 'None',
+        },
+      ];
       const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
-      for (const question of questions) {
-        if (
-          question.getType() === 'matrix' &&
-          question.toJSON().name !== actualQuestion
-        ) {
-          choices.push(question.toJSON().name);
+      for (const surveyQuestion of questions) {
+        if (['matrix', 'matrixdropdown'].includes(surveyQuestion.getType())) {
+          choices.push({
+            value: surveyQuestion.name,
+            text: surveyQuestion.title || surveyQuestion.name,
+          });
         }
       }
-      choicesCallback(choices);
+      choicesCallback(
+        choices.filter((choice) => choice.value !== question.name)
+      );
     },
-    onSetValue: (actualMatrix: Question, nameMatrix: any) => {
-      const matrixToBeCopied = (
-        actualMatrix.survey as SurveyModel
-      )?.getQuestionByName(nameMatrix);
-      actualMatrix.choices = matrixToBeCopied.choices;
-      actualMatrix.rows = matrixToBeCopied.rows;
-    },
-  });
-  // Add a property to the single select matrix to copy the rows and choices value from another matrixdropdown
-  serializer.addProperty('matrixdropdown', {
-    name: 'copyRowsFromAnotherMultiSelectMatrix',
-    category: 'general',
-    type: 'dropdown',
-    choices: (question: Question, choicesCallback: any) => {
-      const actualQuestion = question.toJSON().name;
-      const choices: string[] = [''];
-      const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
-      for (const question of questions) {
-        if (
-          question.getType() === 'matrixdropdown' &&
-          question.toJSON().name !== actualQuestion
-        ) {
-          choices.push(question.toJSON().name);
-        }
-      }
-      choicesCallback(choices);
-    },
+
     onSetValue: (actualMatrix: Question, nameMatrix: any) => {
       const matrixToBeCopied = (
         actualMatrix.survey as SurveyModel
@@ -213,33 +193,44 @@ export const init = (environment: any): void => {
       actualMatrix.rows = matrixToBeCopied.rows;
       actualMatrix.choices = matrixToBeCopied.choices;
     },
-  });
-  // Add a property to the matrix dynamic to copy the choices value from another matrixdynamic
+  };
+
+  // Add a property that allows copying rows from another matrix or matrixdropdown
+  serializer.addProperty('matrix', copyOtherMatrixProp);
+  serializer.addProperty('matrixdropdown', copyOtherMatrixProp);
+
+  // Add a property that allows copying rows from another matrixdynamic
   serializer.addProperty('matrixdynamic', {
     name: 'copyChoicesFromAnotherDynamicMatrix',
     category: 'general',
     type: 'dropdown',
     choices: (question: Question, choicesCallback: any) => {
-      const actualQuestion = question.toJSON().name;
-      const choices: string[] = [''];
+      const choices: { value: string | null; text: string }[] = [
+        {
+          value: null,
+          text: 'None',
+        },
+      ];
       const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
-      for (const question of questions) {
-        if (
-          question.getType() === 'matrixdynamic' &&
-          question.toJSON().name !== actualQuestion
-        ) {
-          choices.push(question.toJSON().name);
+      for (const surveyQuestion of questions) {
+        if (surveyQuestion.getType() === 'matrixdynamic') {
+          choices.push({
+            value: surveyQuestion.name,
+            text: surveyQuestion.title || surveyQuestion.name,
+          });
         }
       }
-      choicesCallback(choices);
+      choicesCallback(
+        choices.filter((choice) => choice.value !== question.name)
+      );
     },
-    onSetValue: (actualMatrix: Question, nameMatrix: any) => {
+    onSetValue: (currMatrix: Question, nameMatrix: any) => {
       const matrixToBeCopied = (
-        actualMatrix.survey as SurveyModel
+        currMatrix.survey as SurveyModel
       )?.getQuestionByName(nameMatrix);
-      actualMatrix.choices = matrixToBeCopied.choices;
-      for (let q = actualMatrix.rowCount; q < matrixToBeCopied.rowCount; q++) {
-        actualMatrix.addRow();
+      currMatrix.choices = matrixToBeCopied.choices;
+      for (let q = currMatrix.rowCount; q < matrixToBeCopied.rowCount; q++) {
+        currMatrix.addRow();
       }
     },
   });
