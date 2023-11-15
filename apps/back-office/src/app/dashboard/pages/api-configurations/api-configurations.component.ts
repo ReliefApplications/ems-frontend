@@ -8,6 +8,8 @@ import {
   DeleteApiConfigurationMutationResponse,
   SafeConfirmService,
   SafeUnsubscribeComponent,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/safe';
 import { GET_API_CONFIGURATIONS } from './graphql/queries';
 import {
@@ -17,10 +19,6 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   TableSort,

@@ -113,3 +113,4 @@ export * from './lib/pipes/cron-parser/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';
+export * from './lib/utils/update-queries';

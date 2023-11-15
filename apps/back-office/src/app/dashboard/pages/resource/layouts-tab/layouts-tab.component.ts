@@ -7,13 +7,11 @@ import {
   Resource,
   SafeUnsubscribeComponent,
   ResourceQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';

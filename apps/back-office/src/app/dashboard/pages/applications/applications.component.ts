@@ -10,6 +10,8 @@ import {
   EditApplicationMutationResponse,
   SafeConfirmService,
   SafeUnsubscribeComponent,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/safe';
 import { GET_APPLICATIONS } from './graphql/queries';
 import {
@@ -21,10 +23,6 @@ import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import {
   TableSort,
   UIPageChangeEvent,

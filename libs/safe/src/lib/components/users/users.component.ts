@@ -20,11 +20,12 @@ import { takeUntil, debounceTime } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { GET_USERS, GET_ROLES } from './graphql/queries';
 import { GetUsersQueryResponse } from './graphql/queries';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import {
   getCachedValues,
   updateQueryUniqueValues,
-} from '../utils/update-queries';
+} from '../../utils/update-queries';
+import { intersection } from 'lodash';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -132,30 +133,12 @@ export class SafeUsersComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedUsers.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchUsers();
+    const cachedData = handleTablePageEvent(e, this.pageInfo, this.cachedUsers);
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.users = cachedData;
     } else {
-      this.users = this.cachedUsers.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchUsers();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -276,66 +259,45 @@ export class SafeUsersComponent
           })
           .subscribe({
             next: ({ errors, data }) => {
+              let messagePath = '';
+              let errorMessage = false;
               if (!errors) {
                 let alreadyInvited = false;
                 // verify if users have already been invited
-                this.users.forEach((usr: any) => {
-                  data?.addUsers.forEach((usrData: any) => {
-                    if (usrData.username === usr.username) {
-                      alreadyInvited = true;
-                    }
-                  });
-                });
+                const usernames = intersection(
+                  this.users.map((usr: any) => usr.username),
+                  data?.addUsers.map((usrData: any) => usrData.username)
+                );
+                if (usernames.length > 0) {
+                  alreadyInvited = true;
+                }
                 // if users have already been invited
                 if (alreadyInvited) {
+                  errorMessage = true;
                   if (data?.addUsers.length && data?.addUsers.length > 1) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onAlreadyInvited.plural'
-                      ),
-                      { error: true }
-                    );
+                    messagePath = 'components.users.onAlreadyInvited.plural';
                   } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onAlreadyInvited.singular'
-                      ),
-                      { error: true }
-                    );
+                    messagePath = 'components.users.onAlreadyInvited.singular';
                   }
                 } else {
                   this.changePageLength('add', data?.addUsers);
                   if (data?.addUsers.length && data?.addUsers.length > 1) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant('components.users.onInvite.plural')
-                    );
+                    messagePath = 'components.users.onInvite.plural';
                   } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onInvite.singular'
-                      )
-                    );
+                    messagePath = 'components.users.onInvite.singular';
                   }
                 }
               } else {
+                errorMessage = true;
                 if (value.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.plural',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
+                  messagePath = 'components.users.onNotInvite.plural';
                 } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.singular',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
+                  messagePath = 'components.users.onNotInvite.singular';
                 }
               }
+              this.snackBar.openSnackBar(this.translate.instant(messagePath), {
+                error: errorMessage,
+              });
             },
           });
       }

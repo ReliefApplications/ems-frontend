@@ -19,6 +19,8 @@ import {
   ApiConfigurationsQueryResponse,
   FormQueryResponse,
   FormsQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -29,10 +31,6 @@ import {
 } from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../../utils/update-queries';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
