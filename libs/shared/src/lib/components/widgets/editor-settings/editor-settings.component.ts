@@ -64,7 +64,7 @@ const createAggregationForm = (value?: any) => {
     resource: new FormControl<string>(get(value, 'resource', null)),
     id: new FormControl<string>(get(value, 'id', null)),
     name: new FormControl<string>(get(value, 'name', null)),
-    mapping: createMappingForm(null, ''),
+    mapping: createMappingForm(get(value, 'mapping', null), ''),
   });
 };
 

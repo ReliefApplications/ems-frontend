@@ -26,7 +26,6 @@ import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
-import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { SeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
 
@@ -68,7 +67,7 @@ export class AggregationSettingsComponent
 
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public selectedResource: Resource | null = null;
-  public selectedAggregation: Aggregation | null = null;
+  public selectedAggregation?: Aggregation | null = null;
   public availableSeriesFields: any[] = [];
 
   /**
@@ -77,14 +76,12 @@ export class AggregationSettingsComponent
    * @param dialog dialog
    * @param apollo Apollo
    * @param aggregationService Shared aggregation service
-   * @param queryBuilder Shared query builder service
    * @param aggregationBuilder Shared aggregation builder service
    */
   constructor(
     private dialog: Dialog,
     private apollo: Apollo,
     private aggregationService: AggregationService,
-    private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService
   ) {
     super();
@@ -165,6 +162,11 @@ export class AggregationSettingsComponent
           if (aggregationID) {
             this.selectedAggregation =
               res.data?.resource.aggregations?.edges[0]?.node || null;
+            this.availableSeriesFields =
+              this.aggregationBuilder.getAvailableSeriesFields(
+                this.selectedAggregation ?? undefined,
+                this.selectedResource ?? undefined
+              );
           }
         }
       });
@@ -192,8 +194,12 @@ export class AggregationSettingsComponent
           this.formGroup.get('aggregation.id')?.setValue((value as any).id);
           this.formGroup.get('aggregation.name')?.setValue((value as any).name);
           this.selectedAggregation = value;
-          this.setAvailableSeriesFields();
         }
+        this.availableSeriesFields =
+          this.aggregationBuilder.getAvailableSeriesFields(
+            this.selectedAggregation ?? undefined,
+            this.selectedResource ?? undefined
+          );
       }
     });
   }
@@ -225,44 +231,5 @@ export class AggregationSettingsComponent
           });
       }
     });
-  }
-
-  /**
-   * Set available series fields, from resource fields and aggregation definition.
-   */
-  private setAvailableSeriesFields(): void {
-    if (this.selectedAggregation) {
-      const fields = this.queryBuilder
-        .getFields(this.resource?.queryName as string)
-        .filter(
-          (field: any) =>
-            !(
-              field.name.includes('_id') &&
-              (field.type.name === 'ID' ||
-                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
-            )
-        );
-      const selectedFields = this.selectedAggregation.sourceFields
-        .map((x: string) => {
-          const field = fields.find((y) => x === y.name);
-          if (!field) return null;
-          if (field.type.kind !== 'SCALAR') {
-            Object.assign(field, {
-              fields: this.queryBuilder.deconfineFields(
-                field.type,
-                new Set().add(this.resource?.name).add(field.type.ofType?.name)
-              ),
-            });
-          }
-          return field;
-        })
-        .filter((x: any) => x !== null);
-      this.availableSeriesFields = this.aggregationBuilder.fieldsAfter(
-        selectedFields,
-        this.selectedAggregation?.pipeline
-      );
-    } else {
-      this.availableSeriesFields = [];
-    }
   }
 }

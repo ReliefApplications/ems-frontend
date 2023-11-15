@@ -8,6 +8,7 @@ import {
 import get from 'lodash/get';
 import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -137,5 +138,6 @@ const createAggregationForm = (value?: any) => {
     resource: get<string | null>(value, 'resource', null),
     id: get<string | null>(value, 'id', null),
     name: get<string | null>(value, 'name', null),
+    mapping: createMappingForm(get(value, 'mapping', null), ''),
   });
 };

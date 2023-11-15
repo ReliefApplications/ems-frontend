@@ -119,48 +119,13 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         this.resource = data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
           this.aggregation = this.resource.aggregations.edges[0].node;
-          this.setAvailableSeriesFields();
+          this.availableSeriesFields =
+            this.aggregationBuilder.getAvailableSeriesFields(
+              this.aggregation,
+              this.resource
+            );
         }
       });
-  }
-
-  /**
-   * Set available series fields, from resource fields and aggregation definition.
-   */
-  private setAvailableSeriesFields(): void {
-    if (this.aggregation) {
-      const fields = this.queryBuilder
-        .getFields(this.resource?.queryName as string)
-        .filter(
-          (field: any) =>
-            !(
-              field.name.includes('_id') &&
-              (field.type.name === 'ID' ||
-                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
-            )
-        );
-      const selectedFields = this.aggregation.sourceFields
-        .map((x: string) => {
-          const field = fields.find((y) => x === y.name);
-          if (!field) return null;
-          if (field.type.kind !== 'SCALAR') {
-            Object.assign(field, {
-              fields: this.queryBuilder.deconfineFields(
-                field.type,
-                new Set().add(this.resource?.name).add(field.type.ofType?.name)
-              ),
-            });
-          }
-          return field;
-        })
-        .filter((x: any) => x !== null);
-      this.availableSeriesFields = this.aggregationBuilder.fieldsAfter(
-        selectedFields,
-        this.aggregation?.pipeline
-      );
-    } else {
-      this.availableSeriesFields = [];
-    }
   }
 
   /**
@@ -180,7 +145,11 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       if (value) {
         this.formGroup.get('chart.aggregationId')?.setValue(value.id);
         this.aggregation = value;
-        this.setAvailableSeriesFields();
+        this.availableSeriesFields =
+          this.aggregationBuilder.getAvailableSeriesFields(
+            this.aggregation,
+            this.resource
+          );
         // this.getResource(this.resource?.id as string);
       }
     });
