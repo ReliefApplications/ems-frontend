@@ -200,19 +200,23 @@ export class SafeCoreGridComponent
       gridFilters.push(this.settings?.query?.filter);
     }
     if (this.search) {
-      const textFields = this.fields.filter(
-        (x) => x.meta && x.meta.type === 'text'
-      );
-      const searchFilters = textFields.map((x) => ({
-        field: x.name,
-        operator: 'contains',
-        value: this.search,
-      }));
+      // const textFields = this.fields.filter(
+      //   (x) => x.meta && x.meta.type === 'text'
+      // );
+      // const searchFilters = textFields.map((x) => ({
+      //   field: x.name,
+      //   operator: 'contains',
+      //   value: this.search,
+      // }));
       return {
         logic: 'and',
         filters: [
           { logic: 'and', filters: gridFilters },
-          { logic: 'or', filters: searchFilters },
+          {
+            field: '_globalSearch',
+            operator: 'contains',
+            value: this.search,
+          },
         ],
       };
     } else {
