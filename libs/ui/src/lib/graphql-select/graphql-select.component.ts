@@ -23,7 +23,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
-import { updateQueryUniqueValues } from '@oort-front/safe';
+import { updateQueryUniqueValues } from './utils/update-queries';
 import { DOCUMENT } from '@angular/common';
 
 /** A constant that is used to determine how many items should be added on scroll. */
