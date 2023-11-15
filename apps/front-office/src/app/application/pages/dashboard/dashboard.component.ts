@@ -28,6 +28,7 @@ import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard page.
@@ -207,9 +208,9 @@ export class DashboardComponent
         if (data.dashboard) {
           this.dashboard = data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = data.dashboard.structure
-            ? data.dashboard.structure
-            : [];
+          this.widgets = cloneDeep(
+            data.dashboard.structure ? data.dashboard.structure : []
+          );
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.showFilter ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
