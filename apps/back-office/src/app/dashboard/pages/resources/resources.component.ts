@@ -310,7 +310,10 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       })
       .subscribe(({ data, errors }) => {
         if (!errors) {
-          this.resources = [...this.resources, data?.duplicateResource as Resource];
+          this.resources = [
+            ...this.resources,
+            data?.duplicateResource as Resource,
+          ];
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectDuplicated', {
               value: resource.name,
