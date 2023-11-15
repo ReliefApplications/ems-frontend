@@ -33,6 +33,7 @@ export class DataTemplateService {
    * @param downloadService Used to download file type fields
    * @param applicationService Shared application service
    * @param environment Current environment
+   * @param locationStrategy Angular location strategy
    */
   constructor(
     private sanitizer: DomSanitizer,
