@@ -129,6 +129,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"loading": "******",
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
@@ -246,6 +247,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"remove": "******",
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -1266,6 +1268,9 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
+						"placeholder": {
+							"modifyValue": "******"
+						},
 						"title": "******",
 						"tooltip": {
 							"attach": "******",

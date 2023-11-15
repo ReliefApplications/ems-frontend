@@ -20,6 +20,7 @@ import {
   GET_RECORD_HISTORY_BY_ID,
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
+import { startCase } from 'lodash';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -57,6 +58,8 @@ export class SafeRecordHistoryComponent
   @Input() id!: string;
   @Input() revert!: (version: Version) => void;
   @Input() template?: string;
+  /** Show history header ( need to disable it when in modal mode ) */
+  @Input() showHeader = true;
   @Output() cancel = new EventEmitter();
 
   public record!: Record;
@@ -382,18 +385,23 @@ export class SafeRecordHistoryComponent
   private getFields(): any[] {
     const fields: any[] = [];
     // No form, break the display
-    if (this.record.form) {
+    if (this.record.resource) {
       // Take the fields from the form
-      this.record.form.fields?.map((field: any) => {
+      this.record.resource.fields?.map((field: any) => {
         fields.push(Object.assign({}, field));
       });
-      if (this.record.form.structure) {
+      if (this.record.form && this.record.form.structure) {
         const structure = JSON.parse(this.record.form.structure);
         if (!structure.pages || !structure.pages.length) {
           return [];
         }
         for (const page of structure.pages) {
           this.extractFields(page, fields);
+        }
+      }
+      for (const field of fields) {
+        if (!field.title) {
+          field.title = startCase(field.name);
         }
       }
     }

@@ -884,7 +884,10 @@ export const init = (
         },
       },
     };
-    if (!question.readOnlyGrid) {
+    if (
+      !question.readOnlyGrid &&
+      (question.survey as SurveyModel).mode !== 'display'
+    ) {
       Object.assign(settings, {
         actions: {
           delete: question.canDelete,
