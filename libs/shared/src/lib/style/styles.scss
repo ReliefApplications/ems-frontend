@@ -45,7 +45,7 @@ ui-checkbox {
   box-sizing: border-box;
   height: 40px;
   position: relative;
-  z-index: 1001;
+  z-index: 2;
   text-align: left;
   line-height: 40px;
   padding: 0 !important;
@@ -72,7 +72,7 @@ ui-checkbox {
 .floating-widget-header {
   height: 40px;
   position: absolute !important;
-  z-index: 1001 !important;
+  z-index: 2 !important;
   line-height: 40px;
   display: flex;
   flex-direction: row;

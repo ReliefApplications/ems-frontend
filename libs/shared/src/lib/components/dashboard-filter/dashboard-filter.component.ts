@@ -58,6 +58,8 @@ export class DashboardFilterComponent
   @Input() isFullScreen = false;
   /** Filter variant ( defines style ) */
   @Input() variant: 'modern' | 'default' = 'default';
+  /** Is drawer opened */
+  @Input() opened = false;
   /** Current position of filter */
   public position!: FilterPosition;
   /** Available filter positions */
@@ -78,8 +80,6 @@ export class DashboardFilterComponent
     [FilterPosition.RIGHT]:
       'components.application.dashboard.filter.filterPosition.right',
   };
-  /** Is drawer opened */
-  public opened = false;
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
