@@ -6,6 +6,9 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 import { DialogModule } from '@oort-front/ui';
 import { SurveyCreatorModule } from 'survey-creator-angular';
 import 'survey-core/survey.i18n.min.js';
+import { customJSONEditorComponent } from './custom-json-editor/custom-json-editor.component';
+import { FormsModule } from '@angular/forms';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 // import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -13,13 +16,15 @@ import 'survey-core/survey.i18n.min.js';
  * related to the form builder.
  */
 @NgModule({
-  declarations: [FormBuilderComponent],
+  declarations: [FormBuilderComponent, customJSONEditorComponent],
   imports: [
     CommonModule,
     DialogModule,
     TranslateModule,
     DateInputModule,
     SurveyCreatorModule,
+    FormsModule,
+    MonacoEditorModule,
   ],
   exports: [FormBuilderComponent],
 })

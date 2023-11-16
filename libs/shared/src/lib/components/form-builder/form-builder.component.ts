@@ -27,6 +27,7 @@ import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 
 /**
  * Array containing the different types of questions.
@@ -220,6 +221,7 @@ export class FormBuilderComponent
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
+    new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
     this.surveyCreator.toolbox.forceCompact = false;
     this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
@@ -300,6 +302,7 @@ export class FormBuilderComponent
           renderGlobalProperties(this.referenceDataService)
         )
     );
+
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
