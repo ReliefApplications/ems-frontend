@@ -7,6 +7,7 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { Resource } from '../../../models/resource.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Metadata } from '../../../models/metadata.model';
 
 /**
  * Main component of Aggregation builder.
@@ -32,6 +33,10 @@ export class AggregationBuilderComponent
   // === FIELDS ===
   private fields = new BehaviorSubject<any[]>([]);
   public fields$ = this.fields.asObservable();
+  private filterFields = new BehaviorSubject<any[]>([]);
+  public filterFields$!: Observable<any[]>;
+  private selectedFilterFields = new BehaviorSubject<any[]>([]);
+  public selectedFilterFields$!: Observable<any[]>;
   private selectedFields = new BehaviorSubject<any[]>([]);
   public selectedFields$!: Observable<any[]>;
   private metaFields = new BehaviorSubject<any[]>([]);
@@ -87,6 +92,10 @@ export class AggregationBuilderComponent
     // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();
     this.metaFields$ = this.metaFields.asObservable();
+
+    this.filterFields$ = this.filterFields.asObservable();
+    this.selectedFilterFields$ = this.selectedFilterFields.asObservable();
+
     this.aggregationForm
       .get('sourceFields')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
@@ -113,9 +122,31 @@ export class AggregationBuilderComponent
   }
 
   /**
+   * Get the filter fields needed for the current resource
+   */
+  setFilterFieldsForCurrentResource(): void {
+    this.queryBuilder
+      .getFilterFields({
+        name: this.resource.queryName as string,
+      })
+      .then((filterFields: Metadata[]) => {
+        this.filterFields.next(filterFields);
+        // On first load we update the selected filter fields from this function
+        // As the getFilterFields request takes time to complete
+        if (!this.selectedFilterFields.value.length) {
+          const currentFilterFields = filterFields.filter((mfi) =>
+            this.selectedFields.value.find((si) => si.name === mfi.name)
+          );
+          this.selectedFilterFields.next(currentFilterFields);
+        }
+      });
+  }
+
+  /**
    * Initializes all data necessary for the reactive form to work.
    */
   private initFields(): void {
+    this.setFilterFieldsForCurrentResource();
     this.updateFields();
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
   }
@@ -158,6 +189,11 @@ export class AggregationBuilderComponent
         return field;
       });
 
+      const currentFilterFields = this.filterFields.value.filter((mfi) =>
+        selectedFields.find((si) => si.name === mfi.name)
+      );
+      this.selectedFilterFields.next(currentFilterFields);
+
       console.log(selectedFields);
       console.log(this.metaFields);
       console.log(this.aggregationForm);
@@ -173,6 +209,7 @@ export class AggregationBuilderComponent
       );
     } else {
       this.selectedFields.next([]);
+      this.selectedFilterFields.next([]);
       this.metaFields.next([]);
       this.mappingFields.next([]);
     }
