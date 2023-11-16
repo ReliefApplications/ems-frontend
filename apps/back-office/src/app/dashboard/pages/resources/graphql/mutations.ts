@@ -32,6 +32,10 @@ export const DUPLICATE_RESOURCE = gql`
   mutation duplicateResource($id: ID!) {
     duplicateResource(id: $id) {
       id
+      name
+      createdAt
+      recordsCount
+      canDelete
     }
   }
 `;
