@@ -15,13 +15,6 @@
         "polyfills": ["apps/web-widgets/src/polyfills.ts"],
         "tsConfig": "apps/web-widgets/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "node_modules/leaflet/dist/images/",
-            "output": "/"
-          }
-        ],
         "styles": ["apps/web-widgets/src/styles.scss"],
         "scripts": [
           "node_modules/tinymce/tinymce.min.js",
