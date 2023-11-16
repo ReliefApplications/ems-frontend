@@ -45,3 +45,6 @@ Thumbs.db
 # Doc generated while running storybook
 libs/shared/documentation.json
 libs/ui/documentation.json
+
+# Widgets build
+widgets/

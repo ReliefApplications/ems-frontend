@@ -33,7 +33,9 @@ ui-checkbox {
 
 // === Form builder ===
 .core-question {
-  @apply text-red-400;
+  .sd-question__title {
+    @apply text-red-400 #{!important};
+  }
 }
 
 // .multiline-tooltip {
