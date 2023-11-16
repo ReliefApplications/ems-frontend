@@ -16,12 +16,6 @@
         "tsConfig": "apps/web-widgets/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
-          "apps/web-widgets/src/favicon.ico",
-          {
-            "glob": "**/*",
-            "input": "libs/shared/src/i18n/",
-            "output": "/assets/i18n/"
-          },
           {
             "glob": "**/*",
             "input": "assets/",

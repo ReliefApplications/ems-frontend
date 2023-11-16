@@ -117,7 +117,11 @@ const initializeAuthAndTranslations =
  * @returns Translator.
  */
 export const httpTranslateLoader = (http: HttpClient) =>
-  new TranslateHttpLoader(http);
+  new TranslateHttpLoader(
+    http,
+    'https://ems-safe-dev.who.int/assets/i18n/',
+    '.json'
+  );
 
 /**
  * Provides custom overlay to inject modals / snackbars in shadow root.
