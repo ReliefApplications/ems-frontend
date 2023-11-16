@@ -258,7 +258,7 @@ export class WidgetGridComponent
     if (
       this.gridOptions &&
       this.gridOptions.api &&
-      typeof this.gridOptions.api.optionsChanged === 'function'
+      this.gridOptions.api.optionsChanged
     ) {
       this.gridOptions.api.optionsChanged();
     }
