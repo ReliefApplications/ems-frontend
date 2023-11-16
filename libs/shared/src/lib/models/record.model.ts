@@ -1,3 +1,4 @@
+import { DraftRecord } from './draft-record.model';
 import { Form } from './form.model';
 import { User } from './user.model';
 
@@ -36,9 +37,19 @@ export interface AddRecordMutationResponse {
   addRecord: Record;
 }
 
+/** Model for add draft record graphql mutation response */
+export interface AddDraftRecordMutationResponse {
+  addDraftRecord: Record;
+}
+
 /** Model for edit record graphql mutation response */
 export interface EditRecordMutationResponse {
   editRecord: Record;
+}
+
+/** Model for edit draft record graphql mutation response */
+export interface EditDraftRecordMutationResponse {
+  editDraftRecord: DraftRecord;
 }
 
 /** Model for delete record graphql mutation response */

@@ -34,7 +34,6 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private outsideClickListener!: any;
   private dateInputListeners: any[] = [];
-  private document!: Document;
   overlayRef!: OverlayRef;
   calendarClosingActionsSubscription!: Subscription;
   isCalendarOpen = false;
@@ -55,7 +54,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private overlay: Overlay,
     private viewContainerRef: ViewContainerRef,
-    @Inject(DOCUMENT) document: Document
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.document = document;
   }
@@ -81,7 +80,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
       this.outsideClickListener();
     }
     this.outsideClickListener = this.renderer.listen(
-      'window',
+      this.document,
       'click',
       (event) => {
         if (

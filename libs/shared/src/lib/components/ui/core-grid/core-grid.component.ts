@@ -273,7 +273,7 @@ export class CoreGridComponent
     showDetails: true,
     navigateToPage: false,
     navigateSettings: {
-      useRecordId: false,
+      field: '',
       pageUrl: '',
       title: '',
     },
@@ -369,11 +369,7 @@ export class CoreGridComponent
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
-        useRecordId: get(
-          this.settings,
-          'actions.navigateSettings.useRecordId',
-          false
-        ),
+        field: get(this.settings, 'actions.navigateSettings.field', false),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
         title: get(this.settings, 'actions.navigateSettings.title', ''),
       },
@@ -851,7 +847,6 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
-   * @param event.useRecordId boolean to use record id
    */
   public onAction(event: {
     action: string;
@@ -860,7 +855,6 @@ export class CoreGridComponent
     value?: any;
     field?: any;
     pageUrl?: string;
-    useRecordId?: boolean;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -898,9 +892,10 @@ export class CoreGridComponent
       case 'goTo': {
         if (event.item) {
           let fullUrl = this.getPageUrl(event.pageUrl as string);
-          if (event.useRecordId) {
-            const recordId = event.item.id;
-            fullUrl = `${fullUrl}?id=${recordId}`;
+          if (event.field) {
+            const field = get(event, 'field', '');
+            const value = get(event, `item.${field}`);
+            fullUrl = `${fullUrl}?id=${value}`;
           }
           this.router.navigateByUrl(fullUrl);
         }

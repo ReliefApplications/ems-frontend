@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.2.0-beta.6",
+  "version": "2.2.0-beta.8",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -8,7 +8,7 @@
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui",
     "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci",
-    "bundle:widgets": "npx nx build web-widgets --configuration=azure-uat  && node .scripts/build-widgets.js"
+    "bundle:widgets": "npx nx build web-widgets --configuration=azure-dev  && node .scripts/build-widgets.js"
   },
   "private": true,
   "dependencies": {
