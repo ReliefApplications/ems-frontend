@@ -18,29 +18,14 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "assets/",
-            "output": "/assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "node_modules/tinymce",
-            "output": "/tinymce/"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/shared/src/i18n/tinymce/",
-            "output": "/tinymce/langs"
-          },
-          {
-            "glob": "**/*",
             "input": "node_modules/leaflet/dist/images/",
             "output": "/"
           }
         ],
         "styles": ["apps/web-widgets/src/styles.scss"],
         "scripts": [
-          "node_modules/tinymce/tinymce.js",
-          "node_modules/tinymce/themes/silver/theme.js"
+          "node_modules/tinymce/tinymce.min.js",
+          "node_modules/tinymce/themes/silver/theme.min.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
