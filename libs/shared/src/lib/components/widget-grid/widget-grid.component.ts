@@ -109,14 +109,6 @@ export class WidgetGridComponent
     private _host: ElementRef
   ) {
     super();
-    this.dashboardService.dashboard$.subscribe((dashboard) => {
-      if (dashboard) {
-        this.gridOptions = {
-          ...this.gridOptions,
-          ...dashboard.gridOptions,
-        };
-      }
-    });
   }
 
   ngOnInit(): void {
@@ -141,6 +133,9 @@ export class WidgetGridComponent
     }
     if (changes['widgets']) {
       this.setLayout();
+    }
+    if (changes['options']) {
+      this.setGridOptions();
     }
     if (
       changes['canUpdate'] &&
@@ -186,6 +181,7 @@ export class WidgetGridComponent
    *  @param isDashboardSet Property to add item change callback handler once the dashboard is ready and editable
    */
   setGridOptions(isDashboardSet = false) {
+    console.log(this.options);
     this.gridOptions = {
       ...this.gridOptions,
       ...(isDashboardSet && {
@@ -199,13 +195,13 @@ export class WidgetGridComponent
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
-      margin: this.gridOptions?.margin ?? 10,
-      outerMargin: this.gridOptions?.outerMargin ?? false,
+      margin: 10,
+      outerMargin: false,
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
       maxCols: this.colsNumber,
-      minCols: this.gridOptions?.minCols ?? this.colsNumber,
-      fixedRowHeight: this.gridOptions?.fixedRowHeight ?? 200,
+      minCols: this.colsNumber,
+      fixedRowHeight: 200,
       draggable: {
         enabled: this.canUpdate,
         ignoreContentClass: 'gridster-item-content',

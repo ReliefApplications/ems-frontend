@@ -799,17 +799,20 @@ export class DashboardComponent
           : this.dashboard?.step
           ? this.dashboard?.step.canUpdate
           : false,
+        dashboard: this.dashboard,
       },
     });
     // Subscribes to settings updates
     const subscription = dialogRef.componentInstance?.onUpdate
       .pipe(takeUntil(this.destroy$))
       .subscribe((updates: any) => {
+        console.log(updates);
         if (updates) {
           if (this.isStep) {
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
               step: {
                 ...this.dashboard?.step,
                 ...(!updates.permissions && updates),
@@ -819,6 +822,7 @@ export class DashboardComponent
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
               page: {
                 ...this.dashboard?.page,
                 ...(!updates.permissions && updates),

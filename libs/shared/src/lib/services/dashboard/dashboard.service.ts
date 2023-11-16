@@ -187,12 +187,14 @@ export class DashboardService {
   }
 
   /**
-   * Updates the dashboard's grid options.
+   * Edit the dashboard's grid options.
    *
-   * @param dashboard dashboard to update
    * @param gridOptions new grid options
+   * @param callback callback method
    */
-  updateDashboardGridOptions(dashboard: Dashboard, gridOptions: any): void {
+  editGridOptions(gridOptions: any, callback?: any): void {
+    const dashboard = this.dashboard.getValue();
+    if (!dashboard?.id) return;
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
@@ -202,10 +204,7 @@ export class DashboardService {
         },
       })
       .subscribe(() => {
-        this.dashboard.next({
-          ...dashboard,
-          gridOptions,
-        });
+        if (callback) callback();
       });
   }
 }

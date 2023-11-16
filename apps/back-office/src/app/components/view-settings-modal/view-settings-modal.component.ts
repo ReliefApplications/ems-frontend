@@ -31,7 +31,7 @@ import {
   Application,
   DashboardService,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
 
@@ -45,6 +45,7 @@ interface DialogData {
   visible?: boolean;
   accessData: AccessData;
   canUpdate: boolean;
+  dashboard?: Dashboard;
 }
 
 /**
@@ -101,7 +102,7 @@ export class ViewSettingsModalComponent
    *
    * @param dialogRef Dialog ref
    * @param data Data that will be passed to the dialog
-   * @param fb This is the service that will be used to build forms.
+   * @param fb Angular form builder
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
    * @param authService Shared authentication service
@@ -113,19 +114,15 @@ export class ViewSettingsModalComponent
     private fb: FormBuilder,
     private workflowService: WorkflowService,
     private applicationService: ApplicationService,
-    private dashboardService: DashboardService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dashboardService: DashboardService
   ) {
     super();
     if (this.data) {
-      this.page = this.data?.page;
-      this.step = this.data?.step;
+      this.page = this.data.page;
+      this.step = this.data.step;
+      this.dashboard = this.data.dashboard;
     }
-    this.dashboardService.dashboard$.subscribe((dashboard) => {
-      if (dashboard) {
-        this.dashboard = dashboard;
-      }
-    });
   }
 
   ngOnInit(): void {
@@ -154,12 +151,14 @@ export class ViewSettingsModalComponent
         });
     }
 
-    // Listen to grid settings updates
-    this.settingsForm?.controls.gridOptions.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        this.onUpdateGrid(value);
-      });
+    if (this.dashboard) {
+      // Listen to grid settings updates
+      this.settingsForm?.controls.gridOptions?.valueChanges
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          this.onUpdateGridOptions(value);
+        });
+    }
   }
 
   /**
@@ -245,15 +244,17 @@ export class ViewSettingsModalComponent
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
-      gridOptions: this.fb.group({
-        minCols: this.fb.control(this.dashboard?.gridOptions?.minCols ?? 8),
-        fixedRowHeight: this.fb.control(
-          this.dashboard?.gridOptions?.fixedRowHeight ?? 200
-        ),
-        margin: this.fb.control(this.dashboard?.gridOptions?.margin ?? 10),
-        outerMargin: this.fb.control(
-          this.dashboard?.gridOptions?.outerMargin ?? false
-        ),
+      ...(this.dashboard && {
+        gridOptions: this.fb.group({
+          minCols: this.fb.control(this.dashboard.gridOptions?.minCols ?? 8),
+          fixedRowHeight: this.fb.control(
+            this.dashboard.gridOptions?.fixedRowHeight ?? 200
+          ),
+          margin: this.fb.control(this.dashboard.gridOptions?.margin ?? 10),
+          outerMargin: this.fb.control(
+            this.dashboard.gridOptions?.outerMargin ?? false
+          ),
+        }),
       }),
     });
   }
@@ -323,14 +324,16 @@ export class ViewSettingsModalComponent
    *
    * @param gridOptions grid options
    */
-  public onUpdateGrid(gridOptions: any): void {
-    this.dashboard = {
-      ...this.dashboard,
-      gridOptions,
+  public onUpdateGridOptions(gridOptions: any): void {
+    const callback = () => {
+      this.dashboard = {
+        ...this.dashboard,
+        gridOptions,
+      };
+      // Updates parent component
+      const updates = { gridOptions };
+      this.onUpdate.emit(updates);
     };
-    this.dashboardService.updateDashboardGridOptions(
-      this.dashboard as Dashboard,
-      gridOptions
-    );
+    this.dashboardService.editGridOptions(gridOptions, callback);
   }
 }
