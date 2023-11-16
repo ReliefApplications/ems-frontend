@@ -697,6 +697,15 @@
 			"subject": "******",
 			"withoutRecords": "******"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "******"
+			},
+			"from": "******",
+			"subject": "******",
+			"title": "******",
+			"to": "******"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
