@@ -33,7 +33,7 @@ ui-checkbox {
 
 // === Form builder ===
 .core-question {
-  h5 {
+  .sd-question__title {
     @apply text-red-400 #{!important};
   }
 }
