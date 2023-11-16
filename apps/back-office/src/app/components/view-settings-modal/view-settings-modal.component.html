@@ -102,6 +102,20 @@
             ></shared-edit-access>
           </div>
         </ui-tab>
+        <ui-tab *ngIf="true"> <!-- creat logic to show just to dashboard pages-->
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="filter_list"
+              [size]="18"
+              uiTooltip="{{ 'common.filter.one' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.filter.one' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex flex-col">
+            
+          </div>
+        </ui-tab>
       </ui-tabs>
     </form>
   </ng-container>
