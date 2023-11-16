@@ -158,6 +158,11 @@ export class AggregationBuilderComponent
         return field;
       });
 
+      console.log(selectedFields);
+      console.log(this.metaFields);
+      console.log(this.aggregationForm);
+      console.log(this.pipelineForm);
+
       this.selectedFields.next(selectedFields);
 
       this.mappingFields.next(

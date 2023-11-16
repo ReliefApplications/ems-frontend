@@ -67,6 +67,7 @@ export class FilterRowComponent
   }
 
   ngOnInit(): void {
+    console.log("fields = ", this.fields);
     this.form
       .get('field')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -116,6 +117,7 @@ export class FilterRowComponent
       field = fields.find((x) => x.name === fragment);
       fields = clone(field.fields);
     }
+    console.log("field = ", field);
     if (field) {
       this.field = field;
       const type = {
@@ -129,6 +131,7 @@ export class FilterRowComponent
       this.operators = FILTER_OPERATORS.filter((x) =>
         type?.operators?.includes(x.value)
       );
+      console.log(this.operators);
       if (init) {
         /** If type undefined, use as default 'eq' operator and not undefined. */
         this.form

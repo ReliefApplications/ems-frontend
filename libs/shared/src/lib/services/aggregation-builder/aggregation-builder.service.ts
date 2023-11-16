@@ -57,6 +57,7 @@ export class AggregationBuilderService {
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
     let fields = cloneDeep([...initialFields]);
+    console.log(fields);
     for (const stage of pipeline) {
       switch (stage.type) {
         case PipelineStage.GROUP: {
@@ -128,6 +129,10 @@ export class AggregationBuilderService {
           }
           break;
         }
+        // case PipelineStage.FILTER: {
+        // use getFilterFields to get fields with correctly type
+        //   break;
+        // }
         default: {
           break;
         }
