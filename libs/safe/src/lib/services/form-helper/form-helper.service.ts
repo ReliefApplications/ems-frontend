@@ -304,6 +304,9 @@ export class SafeFormHelpersService {
     survey.setVariable('user.firstName', user?.firstName ?? '');
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');
+    survey.setVariable('user.region', user?.attributes?.region ?? '');
+    survey.setVariable('user.location', user?.attributes?.location ?? '');
+    survey.setVariable('user.country', user?.attributes?.country ?? '');
 
     // Allow us to do some cool stuff like
     // {user.roles} contains '62e3e676c9bcb900656c95c9'
