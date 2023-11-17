@@ -1,6 +1,13 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 /**
+ * Interface for User environment configuration.
+ */
+interface UserConfiguration {
+  attributes?: string[];
+}
+
+/**
  * Interface of Angular environment configuration.
  */
 export interface Environment {
@@ -16,4 +23,5 @@ export interface Environment {
   esriApiKey: string;
   theme: any;
   sentry?: any;
+  user?: UserConfiguration;
 }

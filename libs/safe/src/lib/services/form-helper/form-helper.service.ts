@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import set from 'lodash/set';
 import { SafeAuthService } from '../auth/auth.service';
 import { BlobType, SafeDownloadService } from '../download/download.service';
 import { AddRecordMutationResponse } from '../../models/record.model';
+import get from 'lodash/get';
 
 /**
  * Shared survey helper service.
@@ -23,6 +24,7 @@ export class SafeFormHelpersService {
   /**
    * Shared survey helper service.
    *
+   * @param environment Environment configuration
    * @param apollo Apollo client
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param confirmService This is the service that will be used to display confirm window.
@@ -31,6 +33,7 @@ export class SafeFormHelpersService {
    * @param downloadService Shared download service
    */
   constructor(
+    @Inject('environment') private environment: any,
     public apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
@@ -304,6 +307,12 @@ export class SafeFormHelpersService {
     survey.setVariable('user.firstName', user?.firstName ?? '');
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');
+    for (const attribute of this.environment.user?.attributes || []) {
+      survey.setVariable(
+        `user.${attribute}`,
+        get(user?.attributes, attribute) || ''
+      );
+    }
 
     // Allow us to do some cool stuff like
     // {user.roles} contains '62e3e676c9bcb900656c95c9'
