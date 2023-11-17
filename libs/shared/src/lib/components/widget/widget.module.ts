@@ -8,6 +8,7 @@ import { SummaryCardModule } from '../widgets/summary-card/summary-card.module';
 import { MapWidgetModule } from '../widgets/map/map.module';
 import { TabsModule } from '../widgets/tabs/tabs.module';
 import 'hammerjs';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Main Widget Module.
@@ -18,6 +19,9 @@ import 'hammerjs';
   declarations: [WidgetComponent],
   imports: [
     CommonModule,
+    // UI elements
+    IconModule,
+    // Widgets
     ChartModule,
     EditorModule,
     GridWidgetModule,
