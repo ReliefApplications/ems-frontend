@@ -194,11 +194,6 @@ export class AggregationBuilderComponent
       );
       this.selectedFilterFields.next(currentFilterFields);
 
-      console.log(selectedFields);
-      console.log(this.metaFields);
-      console.log(this.aggregationForm);
-      console.log(this.pipelineForm);
-
       this.selectedFields.next(selectedFields);
 
       this.mappingFields.next(

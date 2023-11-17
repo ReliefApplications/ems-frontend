@@ -4,10 +4,11 @@ import { AggregationBuilderService } from '../../../../services/aggregation-buil
 import { Observable } from 'rxjs';
 import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
-import { debounceTime, combineLatest } from 'rxjs/operators';
+import { combineLatestWith } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { isEqual } from 'lodash';
 
 /**
  * Aggregation pipeline component.
@@ -26,7 +27,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   @Input() public fields$!: Observable<any[]>;
   /** Input decorator for metaFields$. */
   @Input() public metaFields$!: Observable<any[]>;
-
+  /** Input decorator for filterFields$. */
   @Input() public filterFields$!: Observable<any[]>;
   public filterFields: any[] = [];
 
@@ -51,23 +52,26 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("teste");
-    // combineLatest([this.fields$, this.metaFields$, this.filterFields$])
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe({
-    //     next: ([fields, metaFields, filterFields]) => {
-    //       this.initialFields = [...fields];
-    //       this.metaFields = metaFields;
-    //       this.filterFields = filterFields;
-    //       this.fieldsPerStage = [];
-    //       this.updateFieldsPerStage(this.pipelineForm.value);
-    //     },
-    //   });
-    // this.pipelineForm.valueChanges
-    //   .pipe(distinctUntilChanged(isEqual), takeUntil(this.destroy$))
-    //   .subscribe((pipeline: any[]) => {
-    //     this.updateFieldsPerStage(pipeline);
-    //   });
+    this.fields$
+      .pipe(
+        combineLatestWith(this.metaFields$, this.filterFields$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([fields, metaFields, filterFields]) => {
+          this.initialFields = [...fields];
+          this.metaFields = metaFields;
+          this.filterFields = filterFields;
+          this.fieldsPerStage = [];
+          this.updateFieldsPerStage(this.pipelineForm.value);
+        },
+      });
+
+    this.pipelineForm.valueChanges
+      .pipe(distinctUntilChanged(isEqual), takeUntil(this.destroy$))
+      .subscribe((pipeline: any[]) => {
+        this.updateFieldsPerStage(pipeline);
+      });
   }
 
   /**

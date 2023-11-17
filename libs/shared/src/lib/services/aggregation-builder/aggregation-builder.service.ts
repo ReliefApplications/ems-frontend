@@ -57,7 +57,6 @@ export class AggregationBuilderService {
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
     let fields = cloneDeep([...initialFields]);
-    console.log(fields);
     for (const stage of pipeline) {
       switch (stage.type) {
         case PipelineStage.GROUP: {

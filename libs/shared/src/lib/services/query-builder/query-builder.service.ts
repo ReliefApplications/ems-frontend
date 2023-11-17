@@ -187,10 +187,7 @@ export class QueryBuilderService {
     const type = this.availableTypes
       .getValue()
       .find((x) => x.name === typeName);
-    console.log("type = ", type);
-    const a = type ? this.extractFieldsFromType(type) : [];
-    console.log(a);
-    return a;
+    return type ? this.extractFieldsFromType(type) : [];
   }
 
   /**
@@ -529,36 +526,25 @@ export class QueryBuilderService {
    */
   public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {
-      console.log(query);
       const querySource$ = this.getQuerySource(query);
-      console.log("1111111111111");
       const sourceQuery = querySource$ && firstValueFrom(querySource$);
       if (sourceQuery) {
-        console.log("sourceQuery = ", sourceQuery);
         const res = await sourceQuery;
-        console.log("33333333333");
         for (const field in res.data) {
-          console.log("33333333333");
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            console.log("444444444");
             const source = get(res.data[field], '_source', null);
-            console.log("source = ", source);
             if (source) {
               const metaQuery = firstValueFrom(this.getQueryMetaData(source));
               const res2 = await metaQuery;
-              console.log("res2 = ", res2);
               const dataset = res2.data.form
                 ? res2.data.form
                 : res2.data.resource
                 ? res2.data.resource
                 : null;
               if (!dataset) return [];
-              console.log("dataset = ", dataset);
-              const a = get(dataset, 'metadata', [])
+              return get(dataset, 'metadata', [])
                 .filter((x: any) => x.filterable !== false)
                 .map((x: any) => ({ ...x }));
-              console.log(a);
-              return a;
             }
           }
         }

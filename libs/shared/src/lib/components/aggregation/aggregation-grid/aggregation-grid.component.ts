@@ -197,7 +197,7 @@ export class AggregationGridComponent
                       (y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR'
                     );
                 }
-                return field;
+                return mappedField;
               }) || [],
             this.aggregation.pipeline
           );

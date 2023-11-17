@@ -37,10 +37,8 @@ export class TabFilterComponent implements OnInit {
   constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
-    console.log("query = ", this.query);
     this.queryBuilder.getFilterFields(this.query).then((fields) => {
       const cloneFields = cloneDeep(fields);
-      console.log("layouts fields = ", fields);
       this.setCustomEditors(cloneFields);
       this.filterFields = cloneFields;
     });

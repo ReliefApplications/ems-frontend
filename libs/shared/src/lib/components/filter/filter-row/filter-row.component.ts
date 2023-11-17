@@ -111,7 +111,6 @@ export class FilterRowComponent
         : name.split('.');
     let fields = clone(this.fields);
     let field = null;
-    // Loop over name fragments to find correct field
     // Check name fragments to find correct field
     field = fields.find((x) => nameFragments.includes(x.name));
     if (field) {
