@@ -124,9 +124,10 @@ export class FormBuilderService {
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
+
     //Add tooltips to questions if exist
     survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
+      this.formHelpersService.addQuestionTooltips.bind(this.formHelpersService)
     );
 
     // For each question, if validateOnValueChange is true, we will add a listener to the value change event
