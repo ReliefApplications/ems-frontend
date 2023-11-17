@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
-import { Injector, NgZone } from '@angular/core';
+import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import localForage from 'localforage';
@@ -16,7 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
  * @param dialog The Dialog service
  * @param temporaryRecords The form used to save and keep the temporary records updated
  * @param document Document
- * @param injector Angular Service to execute code inside Angular environment
+ * @param translate Translate service
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -26,9 +26,8 @@ export const buildSearchButton = (
   dialog: Dialog,
   temporaryRecords: UntypedFormControl,
   document: Document,
-  injector: Injector
+  translate: TranslateService
 ): any => {
-  const translate = injector.get(TranslateService);
   const searchButton = document.createElement('button');
 
   const updateButtonText = () => {
@@ -94,6 +93,7 @@ export const buildSearchButton = (
  * @param dialog The Dialog service
  * @param ngZone Angular Service to execute code inside Angular environment
  * @param document Document
+ * @param translate Translate service
  * @returns The button DOM element
  */
 export const buildAddButton = (
@@ -101,13 +101,24 @@ export const buildAddButton = (
   multiselect: boolean,
   dialog: Dialog,
   ngZone: NgZone,
-  document: Document
+  document: Document,
+  translate: TranslateService
 ): any => {
   const addButton = document.createElement('button');
-  addButton.innerText = surveyLocalization.getString(
-    'oort:addNewRecord',
-    (question.survey as SurveyModel).locale
-  );
+
+  const updateButtonText = () => {
+    addButton.innerText =
+      question.addRecordText ??
+      surveyLocalization.getString(
+        'oort:addNewRecord',
+        (question.survey as SurveyModel).locale
+      );
+  };
+  updateButtonText();
+
+  // Listen to language change and update button text
+  translate.onLangChange.subscribe(updateButtonText);
+
   addButton.className = 'sd-btn !px-3 !py-1';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
