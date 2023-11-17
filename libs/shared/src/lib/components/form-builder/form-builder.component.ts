@@ -74,7 +74,6 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'relatedName',
   'addRecord',
   'addTemplate',
-  'Search resource table',
   'visible',
   'readOnly',
   'isRequired',
@@ -507,7 +506,7 @@ export class FormBuilderComponent
           return false;
         }
       } else {
-        // As we already have the reference data value to get the choices, we dont want to save them again with the form structure
+        // As we already have the reference data value to get the choices, we don't want to save them again with the form structure
         question.choices = [];
       }
     }

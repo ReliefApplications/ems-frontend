@@ -18,7 +18,6 @@ import { QuestionResource } from '../types';
 import { Injector, NgZone } from '@angular/core';
 import {
   ComponentCollection,
-  JsonObject,
   Serializer,
   SurveyModel,
   SvgRegistry,
@@ -26,6 +25,7 @@ import {
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { ResourceQueryResponse } from '../../models/resource.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -187,17 +187,6 @@ export const init = (
         visibleIndex: 4,
       });
 
-      // Build set available grid fields button
-      JsonObject.metaData.addProperty('resources', {
-        name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
-        isRequired: true,
-        category: 'Custom Questions',
-        dependsOn: 'resource',
-        visibleIf: visibleIfResource,
-        visibleIndex: 5,
-      });
-
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.resourcesAvailableFields
       );
@@ -294,6 +283,15 @@ export const init = (
         visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
+
+      Serializer.addProperty('resources', {
+        name: 'searchButtonText',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'canSearch'],
+        visibleIndex: 3,
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.canSearch,
+      });
+
       Serializer.addProperty('resources', {
         name: 'canDeselectRecords:boolean',
         category: 'Custom Questions',
@@ -667,13 +665,15 @@ export const init = (
             actionsButtons.style.display = 'flex';
             actionsButtons.style.marginBottom = '0.5em';
 
+            const translate = injector.get(TranslateService);
             const searchBtn = buildSearchButton(
               question,
               question.gridFieldsSettings,
               true,
               dialog,
               temporaryRecordsForm,
-              document
+              document,
+              translate
             );
             actionsButtons.appendChild(searchBtn);
 
@@ -682,7 +682,8 @@ export const init = (
               true,
               dialog,
               ngZone,
-              document
+              document,
+              translate
             );
             actionsButtons.appendChild(addBtn);
 

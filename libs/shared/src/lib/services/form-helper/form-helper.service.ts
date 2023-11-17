@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { PageModel, QuestionPanelDynamicModel, SurveyModel } from 'survey-core';
+import {
+  IPanel,
+  PageModel,
+  QuestionPanelDynamicModel,
+  SurveyModel,
+} from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../confirm/confirm.service';
@@ -62,10 +67,31 @@ export const transformSurveyData = (survey: SurveyModel) => {
     }
   });
 
-  // Removes data that isn't in the structure, that might've come from prefilling data
   Object.keys(data).forEach((filed) => {
-    if (!survey.getQuestionByName(filed)) {
+    const question = survey.getQuestionByName(filed);
+    // Removes data that isn't in the structure, that might've come from prefilling data
+    if (!question) {
       delete data[filed];
+    } else {
+      const isQuestionVisible = (question: Question | IPanel): boolean => {
+        // If question is not visible, return false
+        if (!question.isVisible || !question) {
+          return false;
+        }
+
+        // If it is, check if its parent is visible
+        if (question.parent) {
+          return isQuestionVisible(question.parent);
+        }
+
+        // If we're in the root and it's visible, return true
+        return true;
+      };
+
+      // Removes null values for invisible questions (or pages)
+      if (!isQuestionVisible(question) && data[filed] === null) {
+        delete data[filed];
+      }
     }
   });
 
