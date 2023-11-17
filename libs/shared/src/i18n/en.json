@@ -1027,6 +1027,7 @@
 				}
 			},
 			"modal": {
+				"closeConfirmation": "Close without saving changes?",
 				"update": "Save and close"
 			},
 			"recovery": {

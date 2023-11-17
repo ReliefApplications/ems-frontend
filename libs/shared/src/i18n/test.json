@@ -1027,6 +1027,7 @@
 				}
 			},
 			"modal": {
+				"closeConfirmation": "******",
 				"update": "******"
 			},
 			"recovery": {
