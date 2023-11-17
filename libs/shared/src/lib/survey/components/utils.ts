@@ -1,10 +1,11 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
-import { NgZone } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import localForage from 'localforage';
 import { Question } from '../types';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Build the search button for resource and resources components
@@ -15,6 +16,7 @@ import { Question } from '../types';
  * @param dialog The Dialog service
  * @param temporaryRecords The form used to save and keep the temporary records updated
  * @param document Document
+ * @param injector Angular Service to execute code inside Angular environment
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -23,15 +25,25 @@ export const buildSearchButton = (
   multiselect: boolean,
   dialog: Dialog,
   temporaryRecords: UntypedFormControl,
-  document: Document
+  document: Document,
+  injector: Injector
 ): any => {
+  const translate = injector.get(TranslateService);
   const searchButton = document.createElement('button');
-  searchButton.innerText =
-    question.addRecordText ??
-    surveyLocalization.getString(
-      'oort:search',
-      (question.survey as SurveyModel).locale
-    );
+
+  const updateButtonText = () => {
+    searchButton.innerText =
+      question.searchButtonText ??
+      surveyLocalization.getString(
+        'oort:search',
+        (question.survey as SurveyModel).locale
+      );
+  };
+  updateButtonText();
+
+  // Listen to language change and update button text
+  translate.onLangChange.subscribe(updateButtonText);
+
   searchButton.className = 'sd-btn !px-3 !py-1';
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {

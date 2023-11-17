@@ -673,7 +673,8 @@ export const init = (
               true,
               dialog,
               temporaryRecordsForm,
-              document
+              document,
+              injector
             );
             actionsButtons.appendChild(searchBtn);
 

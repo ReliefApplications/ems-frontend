@@ -639,7 +639,8 @@ export const init = (
           false,
           dialog,
           temporaryRecordsForm,
-          document
+          document,
+          injector
         );
         actionsButtons.appendChild(searchBtn);
 

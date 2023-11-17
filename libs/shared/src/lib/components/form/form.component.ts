@@ -104,16 +104,6 @@ export class FormComponent
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    // Translate the survey in the same language as the interface
-    surveyLocalization.currentLocale = this.translate.currentLang;
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      surveyLocalization.currentLocale = this.translate.currentLang;
-      this.buildSurvey();
-    });
-    this.buildSurvey();
-  }
-
-  buildSurvey() {
     addCustomFunctions({
       record: this.record,
       authService: this.authService,
@@ -134,7 +124,20 @@ export class FormComponent
       this.record
     );
 
-    this.survey.locale = surveyLocalization.currentLocale;
+    const updateSurveyLocale = () => {
+      // Only change if the language is in the survey locales
+      if (
+        surveyLocalization.getLocales().includes(this.translate.currentLang)
+      ) {
+        surveyLocalization.currentLocale = this.translate.currentLang;
+        this.survey.locale = this.translate.currentLang;
+      }
+    };
+
+    updateSurveyLocale();
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(updateSurveyLocale);
 
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
