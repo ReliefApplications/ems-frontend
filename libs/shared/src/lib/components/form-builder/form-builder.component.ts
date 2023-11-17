@@ -189,7 +189,7 @@ export class FormBuilderComponent
   private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: true,
+      showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,

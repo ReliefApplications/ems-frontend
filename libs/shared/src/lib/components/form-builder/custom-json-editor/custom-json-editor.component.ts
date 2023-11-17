@@ -81,6 +81,8 @@ export class customJSONEditorComponent
       this.JSONtext = this.formControl.value;
     }
     if (this.model.text !== this.JSONtext) {
+      //Set the survey as modified, in order to be able to save
+      this.model.setModified({});
       if (this.isJsonString(this.JSONtext)) {
         this.model.text = this.JSONtext;
       } else {
