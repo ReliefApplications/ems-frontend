@@ -30,12 +30,6 @@ export interface Group {
   description?: string;
   usersCount?: number;
 }
-/** Model for attributes object. */
-export interface Attributes {
-  region?: string;
-  location?: string;
-  country?: string;
-}
 
 /** Model for User object. */
 export interface User {
@@ -52,7 +46,7 @@ export interface User {
   applications?: Application[];
   positionAttributes?: PositionAttribute[];
   favoriteApp?: string;
-  attributes?: Attributes;
+  attributes?: any;
 }
 
 /** Model for user graphql query response */
