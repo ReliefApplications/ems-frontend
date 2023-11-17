@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { SurveyModel, surveyLocalization } from 'survey-core';
+import { SurveyModel } from 'survey-core';
 import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
@@ -123,21 +123,6 @@ export class FormComponent
       this.form.metadata,
       this.record
     );
-
-    const updateSurveyLocale = () => {
-      // Only change if the language is in the survey locales
-      if (
-        surveyLocalization.getLocales().includes(this.translate.currentLang)
-      ) {
-        surveyLocalization.currentLocale = this.translate.currentLang;
-        this.survey.locale = this.translate.currentLang;
-      }
-    };
-
-    updateSurveyLocale();
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(updateSurveyLocale);
 
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(

@@ -25,7 +25,6 @@ import {
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { ResourceQueryResponse } from '../../models/resource.model';
-import { TranslateService } from '@ngx-translate/core';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -665,15 +664,13 @@ export const init = (
             actionsButtons.style.display = 'flex';
             actionsButtons.style.marginBottom = '0.5em';
 
-            const translate = injector.get(TranslateService);
             const searchBtn = buildSearchButton(
               question,
               question.gridFieldsSettings,
               true,
               dialog,
               temporaryRecordsForm,
-              document,
-              translate
+              document
             );
             actionsButtons.appendChild(searchBtn);
 
@@ -682,8 +679,7 @@ export const init = (
               true,
               dialog,
               ngZone,
-              document,
-              translate
+              document
             );
             actionsButtons.appendChild(addBtn);
 

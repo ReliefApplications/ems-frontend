@@ -5,7 +5,6 @@ import { NgZone } from '@angular/core';
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import localForage from 'localforage';
 import { Question } from '../types';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Build the search button for resource and resources components
@@ -16,7 +15,6 @@ import { TranslateService } from '@ngx-translate/core';
  * @param dialog The Dialog service
  * @param temporaryRecords The form used to save and keep the temporary records updated
  * @param document Document
- * @param translate Translate service
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -25,23 +23,29 @@ export const buildSearchButton = (
   multiselect: boolean,
   dialog: Dialog,
   temporaryRecords: UntypedFormControl,
-  document: Document,
-  translate: TranslateService
+  document: Document
 ): any => {
+  const survey = question.survey as SurveyModel;
   const searchButton = document.createElement('button');
 
   const updateButtonText = () => {
+    if (!survey) {
+      console.log('no survey');
+      return;
+    }
+    console.log('locale', survey.locale);
+    console.log('default', survey.defaultLanguage);
     searchButton.innerText =
       question.searchButtonText ??
       surveyLocalization.getString(
         'oort:search',
-        (question.survey as SurveyModel)?.locale || 'en'
+        survey.locale || survey.defaultLanguage
       );
   };
   updateButtonText();
 
   // Listen to language change and update button text
-  translate.onLangChange.subscribe(updateButtonText);
+  survey.onLocaleChangedEvent.add(updateButtonText);
 
   searchButton.className = 'sd-btn !px-3 !py-1';
   searchButton.style.marginRight = '8px';
@@ -93,7 +97,6 @@ export const buildSearchButton = (
  * @param dialog The Dialog service
  * @param ngZone Angular Service to execute code inside Angular environment
  * @param document Document
- * @param translate Translate service
  * @returns The button DOM element
  */
 export const buildAddButton = (
@@ -101,9 +104,9 @@ export const buildAddButton = (
   multiselect: boolean,
   dialog: Dialog,
   ngZone: NgZone,
-  document: Document,
-  translate: TranslateService
+  document: Document
 ): any => {
+  const survey = question.survey as SurveyModel;
   const addButton = document.createElement('button');
 
   const updateButtonText = () => {
@@ -111,13 +114,13 @@ export const buildAddButton = (
       question.addRecordText ??
       surveyLocalization.getString(
         'oort:addNewRecord',
-        (question.survey as SurveyModel)?.locale || 'en'
+        survey.locale || survey.defaultLanguage
       );
   };
   updateButtonText();
 
   // Listen to language change and update button text
-  translate.onLangChange.subscribe(updateButtonText);
+  survey.onLocaleChangedEvent.add(updateButtonText);
 
   addButton.className = 'sd-btn !px-3 !py-1';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
