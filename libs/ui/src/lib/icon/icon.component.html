@@ -1,5 +1,7 @@
 <ng-container *ngIf="fontFamily !== 'fa'">
   <i
+    [uiTooltip]="tooltip ?? ''"
+    uiTooltipPosition="right"
     [ngClass]="iconVariantAndCategory"
     [ngStyle]="{
       height: fontSize,

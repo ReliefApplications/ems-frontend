@@ -11,7 +11,7 @@ import { ConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
 import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
+import { IconComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
@@ -20,6 +20,7 @@ import { AddRecordMutationResponse } from '../../models/record.model';
 import { Question, QuestionText } from '../../survey/types';
 import { WorkflowService } from '../workflow/workflow.service';
 import { ApplicationService } from '../application/application.service';
+import { DomService } from '../dom/dom.service';
 
 /**
  * Applies custom logic to survey data values.
@@ -116,6 +117,7 @@ export class FormHelpersService {
    * @param downloadService Shared download service
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
+   * @param domService Shared dom service
    */
   constructor(
     public apollo: Apollo,
@@ -125,7 +127,8 @@ export class FormHelpersService {
     private authService: AuthService,
     private downloadService: DownloadService,
     private workflowService: WorkflowService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private domService: DomService
   ) {}
 
   /**
@@ -553,11 +556,17 @@ export class FormHelpersService {
     );
     if (titleElement) {
       titleElement.querySelectorAll('.sv-string-viewer').forEach((el: any) => {
-        const tooltip = document.createElement('span');
-        tooltip.title = options.question.tooltip;
-        tooltip.innerHTML = '?';
-        tooltip.classList.add('survey-title__tooltip');
-        el.appendChild(tooltip);
+        // Create ui-icon
+        const component = this.domService.appendComponentToBody(
+          IconComponent,
+          el
+        );
+        component.instance.icon = 'help';
+        component.instance.variant = 'primary';
+        component.location.nativeElement.classList.add('ml-2'); // Add margin to the icon
+
+        // Sets the tooltip text
+        component.instance.tooltip = options.question.tooltip;
       });
     }
   }

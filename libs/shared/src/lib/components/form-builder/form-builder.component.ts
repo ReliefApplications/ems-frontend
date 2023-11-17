@@ -203,7 +203,9 @@ export class FormBuilderComponent
           isPanelless: true,
         });
         survey.onAfterRenderQuestion.add(
-          this.formHelpersService.addQuestionTooltips
+          this.formHelpersService.addQuestionTooltips.bind(
+            this.formHelpersService
+          )
         );
         this.formHelpersService.addUserVariables(survey);
       }
