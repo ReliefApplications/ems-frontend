@@ -128,10 +128,6 @@ export class AggregationBuilderService {
           }
           break;
         }
-        // case PipelineStage.FILTER: {
-        // use getFilterFields to get fields with correctly type
-        //   break;
-        // }
         default: {
           break;
         }
