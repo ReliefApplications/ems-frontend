@@ -156,8 +156,7 @@ export const init = (environment: any): void => {
         text: 'No',
       },
     ],
-    default: false,
-    visibleIf: (survey: SurveyModel) => survey.showCloseButtonOnModal,
+    default: true,
   });
   // Property to allow customization of the save button label
   serializer.addProperty('survey', {

@@ -77,7 +77,6 @@
 			"one": "Column"
 		},
 		"comma": "comma",
-		"confirmClose": "Do you really wanna close the editor?",
 		"copy": "Copy",
 		"create": "Create",
 		"createdOn": "Created on",
@@ -1028,6 +1027,7 @@
 				}
 			},
 			"modal": {
+				"closeConfirmation": "Close without saving changes?",
 				"update": "Save and close"
 			},
 			"recovery": {

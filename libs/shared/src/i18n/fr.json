@@ -77,7 +77,6 @@
 			"one": "Colonne"
 		},
 		"comma": "virgule",
-		"confirmClose": "Voulez-vous vraiment fermer l'éditeur ?",
 		"copy": "Copier",
 		"create": "Créer",
 		"createdOn": "Date de création",
@@ -1033,6 +1032,7 @@
 				}
 			},
 			"modal": {
+				"closeConfirmation": "Fermer sans enregistrer les modifications ?",
 				"update": "Sauvegarder et fermer"
 			},
 			"recovery": {

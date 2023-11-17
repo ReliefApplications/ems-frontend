@@ -77,7 +77,6 @@
 			"one": "******"
 		},
 		"comma": "******",
-		"confirmClose": "******",
 		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
@@ -1028,6 +1027,7 @@
 				}
 			},
 			"modal": {
+				"closeConfirmation": "******",
 				"update": "******"
 			},
 			"recovery": {

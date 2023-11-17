@@ -1,4 +1,4 @@
-<ui-dialog size="big">
+<ui-dialog size="big" [onClose]="close.bind(this)">
   <ng-container ngProjectAs="header">
     <ng-container *ngIf="!loading">
       <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
