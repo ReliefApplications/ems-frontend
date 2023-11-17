@@ -101,16 +101,6 @@ export const getDateDisplay = (value: any, inputType: string): Date => {
   if (inputType === 'time') {
     return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
   } else {
-    if (inputType === 'date') {
-      // make sure it's always in the current user's timezone
-      const dateParts = value?.split('T')[0]?.split('-');
-      if (dateParts?.length === 3) {
-        date.setFullYear(+dateParts[0]);
-        date.setMonth(+dateParts[1] - 1);
-        date.setDate(+dateParts[2]);
-      }
-    }
-
     return date;
   }
 };

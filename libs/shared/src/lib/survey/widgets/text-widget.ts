@@ -149,8 +149,21 @@ export const init = (
               }
             });
             if (question.value) {
+              // Init the question with the date in the correct format
+              let value = question.value;
+              if (question.inputType === 'date') {
+                const date = new Date(value);
+                // make sure it's always in the current user's timezone
+                const dateParts = value?.split('T')[0]?.split('-');
+                if (dateParts?.length === 3) {
+                  date.setFullYear(+dateParts[0]);
+                  date.setMonth(+dateParts[1] - 1);
+                  date.setDate(+dateParts[2]);
+                  value = date.toISOString();
+                }
+              }
               pickerInstance.writeValue(
-                getDateDisplay(question.value, question.inputType)
+                getDateDisplay(value, question.inputType)
               );
               //The register on change event only triggers from the calendar UI selection, therefor we have to manually show the clear button in first load
               // https://www.telerik.com/kendo-angular-ui/components/dateinputs/api/DatePickerComponent/#toc-valuechange
