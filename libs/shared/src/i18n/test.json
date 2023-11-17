@@ -2180,6 +2180,7 @@
 			},
 			"display": {
 				"border": "******",
+				"expand": "******",
 				"header": "******",
 				"searchable": "******",
 				"sortable": "******",
@@ -2203,6 +2204,10 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"expandButton": {
+					"collapse": "******",
+					"expand": "******"
+				},
 				"selector": {
 					"collapse": "******",
 					"expand": "******"

@@ -2197,6 +2197,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"expand": "Afficher le bouton pour développer le widget",
 				"header": "Afficher l'en-tête du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
@@ -2220,6 +2221,10 @@
 				"title": "Tri"
 			},
 			"tooltip": {
+				"expandButton": {
+					"collapse": "Collapse widget width",
+					"expand": "Expand widget width"
+				},
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"

@@ -2180,6 +2180,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"expand": "Show button to expand widget",
 				"header": "Show widget header",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
@@ -2203,6 +2204,10 @@
 				"title": "Sorting"
 			},
 			"tooltip": {
+				"expandButton": {
+					"collapse": "Collapse widget width",
+					"expand": "Expand widget width"
+				},
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
