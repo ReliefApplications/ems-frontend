@@ -77,6 +77,9 @@ export class customJSONEditorComponent
    * @returns Modal to update ? ( to check ) || Null if nothing to update
    */
   protected getModel(): any {
+    if (this.formControl.value) {
+      this.JSONtext = this.formControl.value;
+    }
     if (this.model.text !== this.JSONtext) {
       if (this.isJsonString(this.JSONtext)) {
         this.model.text = this.JSONtext;
