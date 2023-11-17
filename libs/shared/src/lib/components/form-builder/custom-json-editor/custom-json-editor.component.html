@@ -1,1 +1,6 @@
-<textarea [(ngModel)]="JSONtext"></textarea>
+<ui-spinner class="my-2" *ngIf="loading"></ui-spinner>
+<ngx-monaco-editor
+    class="!h-full"
+  [options]="editorOptions"
+  [formControl]="formControl"
+></ngx-monaco-editor>

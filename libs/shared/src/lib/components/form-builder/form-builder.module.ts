@@ -7,8 +7,9 @@ import { DialogModule } from '@oort-front/ui';
 import { SurveyCreatorModule } from 'survey-creator-angular';
 import 'survey-core/survey.i18n.min.js';
 import { customJSONEditorComponent } from './custom-json-editor/custom-json-editor.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { SpinnerModule } from '@oort-front/ui';
 // import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -25,6 +26,8 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     SurveyCreatorModule,
     FormsModule,
     MonacoEditorModule,
+    ReactiveFormsModule,
+    SpinnerModule,
   ],
   exports: [FormBuilderComponent],
 })

@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
 import { ICreatorPlugin, SurveyCreatorModel } from 'survey-creator-core';
 import { AngularComponentFactory, BaseAngular } from 'survey-angular-ui';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 // Documentation:
 // https://surveyjs.io/survey-creator/examples/modify-tab-bar/angular#
@@ -54,7 +55,9 @@ export class customJSONEditorComponent
 {
   @Input() model!: SurveyCreatorModel;
 
+  public loading = true;
   public JSONtext = '';
+  public formControl = new FormControl(this.JSONtext);
 
   // === MONACO EDITOR ===
   public editorOptions = {
@@ -64,6 +67,8 @@ export class customJSONEditorComponent
 
   override ngOnInit() {
     this.JSONtext = this.model.text;
+    this.formControl.setValue(this.JSONtext, { emitEvent: false });
+    this.loading = false;
   }
 
   /**
