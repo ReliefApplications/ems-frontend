@@ -30,11 +30,8 @@ export const buildSearchButton = (
 
   const updateButtonText = () => {
     if (!survey) {
-      console.log('no survey');
       return;
     }
-    console.log('locale', survey.locale);
-    console.log('default', survey.defaultLanguage);
     searchButton.innerText =
       question.searchButtonText ??
       surveyLocalization.getString(
