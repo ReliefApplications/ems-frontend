@@ -799,6 +799,7 @@ export class DashboardComponent
           : this.dashboard?.step
           ? this.dashboard?.step.canUpdate
           : false,
+        dashboard: this.dashboard,
       },
     });
     // Subscribes to settings updates

@@ -17,6 +17,7 @@ import {
 import { OverlayModule } from '@angular/cdk/overlay';
 import { TranslateModule } from '@ngx-translate/core';
 import { ViewIconSelectorComponent } from '../view-icon-selector/view-icon-selector.component';
+import { SettingsFilterComponent } from '../settings-filter/settings-filter.component';
 import {
   AccessModule,
   ApplicationService,
@@ -28,6 +29,7 @@ import {
   SearchMenuModule,
   AuthService,
   Application,
+  Dashboard,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { isNil } from 'lodash';
@@ -43,6 +45,7 @@ interface DialogData {
   visible?: boolean;
   accessData: AccessData;
   canUpdate: boolean;
+  dashboard?: Dashboard;
 }
 
 /**
@@ -71,6 +74,7 @@ interface DialogData {
     SearchMenuModule,
     AlertModule,
     AbilityModule,
+    SettingsFilterComponent,
   ],
   templateUrl: './view-settings-modal.component.html',
   styleUrls: ['./view-settings-modal.component.scss'],
@@ -91,6 +95,10 @@ export class ViewSettingsModalComponent
   private step?: Step;
   /** Page object */
   private page?: Page;
+  /** Show dashboard filter */
+  public showFilter!: boolean;
+  /** Current dashboard */
+  public dashboard?: Dashboard;
 
   /**
    * Common settings of pages / steps.
@@ -114,6 +122,7 @@ export class ViewSettingsModalComponent
     if (this.data) {
       this.page = this.data?.page;
       this.step = this.data?.step;
+      this.dashboard = this.data?.dashboard;
     }
   }
 

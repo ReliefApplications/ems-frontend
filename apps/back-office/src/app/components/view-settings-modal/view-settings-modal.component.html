@@ -102,7 +102,7 @@
             ></shared-edit-access>
           </div>
         </ui-tab>
-        <ui-tab *ngIf="true"> <!-- creat logic to show just to dashboard pages-->
+        <ui-tab *ngIf="this.dashboard"> <!-- creat logic to show just to dashboard pages-->
           <ng-container ngProjectAs="label">
             <ui-icon
               icon="filter_list"
@@ -113,7 +113,9 @@
           </ng-container>
           <!-- Tab content -->
           <div class="flex flex-col">
-            
+            <app-settings-filter 
+            [dashboard]="this.dashboard">
+            </app-settings-filter>
           </div>
         </ui-tab>
       </ui-tabs>

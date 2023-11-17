@@ -1,0 +1,7 @@
+<form [formGroup]="settingsForm">
+<ui-toggle formControlName="showFilter">
+    <ng-container ngProjectAs="label">{{
+      'models.dashboard.activateFiltering' | translate
+    }}</ng-container>
+</ui-toggle>
+</form>
