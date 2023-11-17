@@ -35,7 +35,7 @@ export const buildSearchButton = (
       question.searchButtonText ??
       surveyLocalization.getString(
         'oort:search',
-        (question.survey as SurveyModel).locale
+        (question.survey as SurveyModel)?.locale || 'en'
       );
   };
   updateButtonText();
@@ -111,7 +111,7 @@ export const buildAddButton = (
       question.addRecordText ??
       surveyLocalization.getString(
         'oort:addNewRecord',
-        (question.survey as SurveyModel).locale
+        (question.survey as SurveyModel)?.locale || 'en'
       );
   };
   updateButtonText();
