@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  Model,
-  QuestionPanelDynamicModel,
-  SurveyModel,
-  settings,
-  surveyLocalization,
-} from 'survey-core';
+import { Model, SurveyModel, settings, surveyLocalization } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';

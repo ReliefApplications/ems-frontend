@@ -7,8 +7,8 @@ import { get } from 'lodash';
  * @param form widget form
  * @param settings settings to apply
  * @param settings.showBorder show border setting
- * @param setting.showTooltip show tooltip setting
- * @param setting.tooltip custom tooltip to show in widget
+ * @param settings.showTooltip show tooltip setting
+ * @param settings.tooltip custom tooltip to show in widget
  * @param settings.style custom style of the widget
  * @param specificControls specific controls to add to the form, on a widget basis
  * @returns form with the common fields
