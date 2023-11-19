@@ -96,62 +96,10 @@ export class ApplicationComponent
                 },
               })) || [];
           if (application.canUpdate) {
-            this.adminNavItems = [
-              {
-                name: this.translate.instant('common.settings'),
-                path: './settings/edit',
-                icon: 'settings',
-              },
-              {
-                name: this.translate.instant('common.template.few'),
-                path: './settings/templates',
-                icon: 'description',
-              },
-              {
-                name: this.translate.instant('common.distributionList.few'),
-                path: './settings/distribution-lists',
-                icon: 'mail',
-              },
-              {
-                name: this.translate.instant('common.customNotification.few'),
-                path: './settings/notifications',
-                icon: 'schedule_send',
-              },
-              {
-                name: this.translate.instant('common.user.few'),
-                path: './settings/users',
-                icon: 'supervisor_account',
-              },
-              {
-                name: this.translate.instant('common.role.few'),
-                path: './settings/roles',
-                icon: 'verified_user',
-              },
-              {
-                name: this.translate.instant(
-                  'pages.application.positionAttributes.title'
-                ),
-                path: './settings/position',
-                icon: 'edit_attributes',
-              },
-              {
-                name: this.translate.instant('common.channel.few'),
-                path: './settings/channels',
-                icon: 'dns',
-              },
-              {
-                name: this.translate.instant('common.subscription.few'),
-                path: './settings/subscriptions',
-                icon: 'add_to_queue',
-              },
-            ];
-          }
-          if (application.canUpdate) {
-            this.adminNavItems.push({
-              name: this.translate.instant('common.archive.few'),
-              path: './settings/archive',
-              icon: 'delete',
-            });
+            this.configNavItems();
+            this.translate.onLangChange
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(() => this.configNavItems());
           }
           this.navGroups = [
             {
@@ -185,6 +133,66 @@ export class ApplicationComponent
           this.navGroups = [];
         }
       });
+  }
+
+  /**
+   * Config admin navigation items
+   */
+  private configNavItems(): void {
+    this.adminNavItems = [
+      {
+        name: this.translate.instant('common.settings'),
+        path: './settings/edit',
+        icon: 'settings',
+      },
+      {
+        name: this.translate.instant('common.template.few'),
+        path: './settings/templates',
+        icon: 'description',
+      },
+      {
+        name: this.translate.instant('common.distributionList.few'),
+        path: './settings/distribution-lists',
+        icon: 'mail',
+      },
+      {
+        name: this.translate.instant('common.customNotification.few'),
+        path: './settings/notifications',
+        icon: 'schedule_send',
+      },
+      {
+        name: this.translate.instant('common.user.few'),
+        path: './settings/users',
+        icon: 'supervisor_account',
+      },
+      {
+        name: this.translate.instant('common.role.few'),
+        path: './settings/roles',
+        icon: 'verified_user',
+      },
+      {
+        name: this.translate.instant(
+          'pages.application.positionAttributes.title'
+        ),
+        path: './settings/position',
+        icon: 'edit_attributes',
+      },
+      {
+        name: this.translate.instant('common.channel.few'),
+        path: './settings/channels',
+        icon: 'dns',
+      },
+      {
+        name: this.translate.instant('common.subscription.few'),
+        path: './settings/subscriptions',
+        icon: 'add_to_queue',
+      },
+      {
+        name: this.translate.instant('common.archive.few'),
+        path: './settings/archive',
+        icon: 'delete',
+      },
+    ];
   }
 
   /**

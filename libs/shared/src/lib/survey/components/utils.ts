@@ -25,13 +25,25 @@ export const buildSearchButton = (
   temporaryRecords: UntypedFormControl,
   document: Document
 ): any => {
+  const survey = question.survey as SurveyModel;
   const searchButton = document.createElement('button');
-  searchButton.innerText =
-    question.addRecordText ??
-    surveyLocalization.getString(
-      'oort:search',
-      (question.survey as SurveyModel).locale
-    );
+
+  const updateButtonText = () => {
+    if (!survey) {
+      return;
+    }
+    searchButton.innerText =
+      question.searchButtonText ??
+      surveyLocalization.getString(
+        'oort:search',
+        survey.locale || survey.defaultLanguage
+      );
+  };
+  updateButtonText();
+
+  // Listen to language change and update button text
+  survey.onLocaleChangedEvent.add(updateButtonText);
+
   searchButton.className = 'sd-btn !px-3 !py-1';
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
@@ -91,11 +103,22 @@ export const buildAddButton = (
   ngZone: NgZone,
   document: Document
 ): any => {
+  const survey = question.survey as SurveyModel;
   const addButton = document.createElement('button');
-  addButton.innerText = surveyLocalization.getString(
-    'oort:addNewRecord',
-    (question.survey as SurveyModel).locale
-  );
+
+  const updateButtonText = () => {
+    addButton.innerText =
+      question.addRecordText ??
+      surveyLocalization.getString(
+        'oort:addNewRecord',
+        survey.locale || survey.defaultLanguage
+      );
+  };
+  updateButtonText();
+
+  // Listen to language change and update button text
+  survey.onLocaleChangedEvent.add(updateButtonText);
+
   addButton.className = 'sd-btn !px-3 !py-1';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {

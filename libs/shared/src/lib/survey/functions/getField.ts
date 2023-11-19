@@ -1,4 +1,5 @@
 import { GlobalOptions } from '../types';
+import { get } from 'lodash';
 
 /**
  * Get field from object
@@ -14,7 +15,7 @@ const getField = (params: any[]) => {
     return null;
   if (!field) return null;
 
-  return object[field] ?? null;
+  return get(object, field) ?? null;
 };
 
 /**

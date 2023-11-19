@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings } from 'survey-core';
+import { Model, SurveyModel, settings, surveyLocalization } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -124,9 +124,10 @@ export class FormBuilderService {
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
+
     //Add tooltips to questions if exist
     survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
+      this.formHelpersService.addQuestionTooltips.bind(this.formHelpersService)
     );
 
     // For each question, if validateOnValueChange is true, we will add a listener to the value change event
@@ -196,18 +197,35 @@ export class FormBuilderService {
         }
       }
     }
-    // set the lang of the survey
-    const surveyLang = localStorage.getItem('surveyLang');
-    if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
-      survey.locale = surveyLang;
-    } else {
-      const lang = this.translate.currentLang || this.translate.defaultLang;
-      if (survey.getUsedLocales().includes(lang)) {
-        survey.locale = lang;
-      } else {
-        survey.locale = survey.defaultLanguage || 'en';
+
+    survey.getAllQuestions().forEach((question) => {
+      if (question.getType() == 'paneldynamic') {
+        // Set all the indexes of configured dynamic panel questions in the survey to the last panel.
+        if (question.getPropertyValue('startOnLastElement')) {
+          question.currentIndex = question.visiblePanelCount - 1;
+        }
+
+        // This fixes one weird bug from SurveyJS's new version
+        // Without it, the panel property isn't updated on survey initialization
+        if (question.AllowNewPanelsExpression) {
+          question.allowAddPanel = true;
+        }
       }
-    }
+    });
+
+    // set the lang of the survey
+    const updateSurveyLocale = () => {
+      if (survey.getUsedLocales().includes(this.translate.currentLang)) {
+        surveyLocalization.currentLocale = this.translate.currentLang;
+        survey.locale = this.translate.currentLang;
+      } else {
+        survey.locale = survey.locale || survey.defaultLanguage || 'en';
+        surveyLocalization.currentLocale = survey.locale;
+      }
+    };
+    updateSurveyLocale();
+    this.translate.onLangChange.subscribe(updateSurveyLocale);
+
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;

@@ -38,7 +38,10 @@ import { FormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SpinnerModule } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import {
+  FormHelpersService,
+  transformSurveyData,
+} from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
 
 /**
@@ -281,6 +284,39 @@ export class FormModalComponent
         { error: true }
       );
       this.saving = false;
+    }
+  }
+
+  /**
+   * Closes the dialog asking for confirmation if needed.
+   */
+  public close(): void {
+    const surveyData = transformSurveyData(this.survey);
+    const recordData = this.record?.data || {};
+
+    // To check if the user modified the data, we check if there's any key on the surveyData
+    // that is different from or doesn't exist in the recordData
+    const isModified = Object.keys(surveyData).some(
+      (key) => surveyData[key] !== recordData[key]
+    );
+    if (this.survey.confirmOnModalClose && isModified) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.close'),
+        content: this.translate.instant(
+          'components.record.modal.closeConfirmation'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmVariant: 'primary',
+      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.dialogRef.close();
+          }
+        });
+    } else {
+      this.dialogRef.close();
     }
   }
 

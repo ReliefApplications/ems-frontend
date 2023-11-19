@@ -18,7 +18,6 @@ import { QuestionResource } from '../types';
 import { Injector, NgZone } from '@angular/core';
 import {
   ComponentCollection,
-  JsonObject,
   Serializer,
   SurveyModel,
   SvgRegistry,
@@ -187,17 +186,6 @@ export const init = (
         visibleIndex: 4,
       });
 
-      // Build set available grid fields button
-      JsonObject.metaData.addProperty('resources', {
-        name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
-        isRequired: true,
-        category: 'Custom Questions',
-        dependsOn: 'resource',
-        visibleIf: visibleIfResource,
-        visibleIndex: 5,
-      });
-
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.resourcesAvailableFields
       );
@@ -294,6 +282,15 @@ export const init = (
         visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
+
+      Serializer.addProperty('resources', {
+        name: 'searchButtonText',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'canSearch'],
+        visibleIndex: 3,
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.canSearch,
+      });
+
       Serializer.addProperty('resources', {
         name: 'canDeselectRecords:boolean',
         category: 'Custom Questions',

@@ -96,21 +96,23 @@
 </ng-container>
 
 <ng-template #defaultTemplate>
-  <!-- Widget tooltip -->
-  <ui-button
-    *ngIf="widget.settings?.widgetDisplay?.showTooltip && collapsed"
-    [isIcon]="true"
-    icon="info"
-    variant="grey"
-    [uiTooltip]="widget.settings.widgetDisplay.tooltip"
-  ></ui-button>
-  <!-- Expand widget -->
-  <ui-button
-    *ngIf="!(widget.component === 'map')"
-    [isIcon]="true"
-    icon="open_in_full"
-    [uiTooltip]="'components.widget.expand' | translate"
-    (click)="onClick('expand')"
-    variant="grey"
-  ></ui-button>
+  <div class="flex gap-1">
+    <!-- Widget tooltip -->
+    <ui-button
+      *ngIf="widget.settings?.widgetDisplay?.showTooltip"
+      [isIcon]="true"
+      icon="info"
+      variant="grey"
+      [uiTooltip]="widget.settings.widgetDisplay.tooltip"
+    ></ui-button>
+    <!-- Expand widget -->
+    <ui-button
+      *ngIf="!(widget.component === 'map')"
+      [isIcon]="true"
+      icon="open_in_full"
+      [uiTooltip]="'components.widget.expand' | translate"
+      (click)="onClick('expand')"
+      variant="grey"
+    ></ui-button>
+  </div>
 </ng-template>

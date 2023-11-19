@@ -210,17 +210,6 @@ export const init = (
         visibleIndex: 4,
       });
 
-      // Build set available grid fields button
-      serializer.addProperty('resource', {
-        name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
-        isRequired: true,
-        category: 'Custom Questions',
-        dependsOn: ['resource'],
-        visibleIf: visibleIfResource,
-        visibleIndex: 5,
-      });
-
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.resourcesAvailableFields
       );
@@ -253,6 +242,7 @@ export const init = (
         visibleIndex: 3,
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
       });
+
       serializer.addProperty('resource', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
@@ -266,6 +256,14 @@ export const init = (
             question.setPropertyValue('canSearch', true);
           }
         },
+      });
+
+      serializer.addProperty('resource', {
+        name: 'searchButtonText',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'canSearch'],
+        visibleIndex: 3,
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.canSearch,
       });
 
       // If checked, user can only create new records
@@ -289,16 +287,6 @@ export const init = (
         dependsOn: ['resource', 'addRecord'],
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
         visibleIndex: 3,
-      });
-      // Build set available grid fields button
-      serializer.addProperty('resource', {
-        name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
-        isRequired: true,
-        category: 'Custom Questions',
-        dependsOn: ['resource'],
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
-        visibleIndex: 5,
       });
 
       serializer.addProperty('resource', {
@@ -413,6 +401,7 @@ export const init = (
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
       });
+
       serializer.addProperty('resource', {
         name: 'gridFieldsSettings',
         dependsOn: ['resource'],
