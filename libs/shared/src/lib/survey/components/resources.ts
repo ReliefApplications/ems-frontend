@@ -648,8 +648,10 @@ export const init = (
       if (question.resource) {
         const parentElement = el.querySelector('.sd-question__content');
         if (parentElement) {
-          const instance: CoreGridComponent =
-            buildRecordsGrid(question, parentElement.firstChild) || undefined;
+          const instance: CoreGridComponent | null = buildRecordsGrid(
+            question,
+            parentElement.firstChild
+          );
           if (instance) {
             instance.removeRowIds.subscribe((ids) => {
               question.value = question.value.filter(
@@ -775,7 +777,7 @@ export const init = (
    * @returns The CoreGridComponent, or null if the displayAsGrid property
    * of the question object is false
    */
-  const buildRecordsGrid = (question: any, el: any): any => {
+  const buildRecordsGrid = (question: any, el: any) => {
     let instance: CoreGridComponent;
     if (question.displayAsGrid) {
       const grid = domService.appendComponentToBody(
@@ -797,6 +799,7 @@ export const init = (
           }
         }
       );
+      return instance;
     }
     return null;
   };
