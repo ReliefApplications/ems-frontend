@@ -198,9 +198,20 @@ export const init = (environment: any): void => {
     default: '',
     isLocalizable: true,
     onExecuteExpression: (obj: QuestionPanelDynamicModel, res: any) => {
-      obj.allowAddPanel = !!res;
+      // Weird bug with surveyJS, if we don't wait a bit, it doesn't work
+      setTimeout(() => {
+        obj.allowAddPanel = !!res;
+      }, 50);
     },
   });
+
+  // Add property to the dynamic panel to start on the last element
+  serializer.addProperty('paneldynamic', {
+    name: 'startOnLastElement:boolean',
+    category: 'general',
+    default: false,
+  });
+
   // Add option to omit question from fields
   serializer.addProperty('question', {
     name: 'omitField:boolean',

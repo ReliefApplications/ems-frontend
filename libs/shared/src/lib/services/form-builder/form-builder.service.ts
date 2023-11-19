@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings, surveyLocalization } from 'survey-core';
+import {
+  Model,
+  QuestionPanelDynamicModel,
+  SurveyModel,
+  settings,
+  surveyLocalization,
+} from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -198,11 +204,23 @@ export class FormBuilderService {
       }
     }
 
+    survey.getAllQuestions().forEach((question) => {
+      if (question.getType() == 'paneldynamic') {
+        // Set all the indexes of configured dynamic panel questions in the survey to the last panel.
+        if (question.getPropertyValue('startOnLastElement')) {
+          question.currentIndex = question.visiblePanelCount - 1;
+        }
+
+        // This fixes one weird bug from SurveyJS's new version
+        // Without it, the panel property isn't updated on survey initialization
+        if (question.AllowNewPanelsExpression) {
+          question.allowAddPanel = true;
+        }
+      }
+    });
+
     // set the lang of the survey
     const updateSurveyLocale = () => {
-      // console.log('used locales', survey.getUsedLocales());
-      // console.log('current lang', this.translate.currentLang);
-      // console.log('default lang', survey.defaultLanguage);
       if (survey.getUsedLocales().includes(this.translate.currentLang)) {
         surveyLocalization.currentLocale = this.translate.currentLang;
         survey.locale = this.translate.currentLang;
