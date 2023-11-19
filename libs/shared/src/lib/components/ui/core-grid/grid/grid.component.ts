@@ -850,7 +850,7 @@ export class GridComponent
     });
   }
 
-  /*
+  /**
    * Evaluate the label of the field
    *
    * @param field Fields of data item

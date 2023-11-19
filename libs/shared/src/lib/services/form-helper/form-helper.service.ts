@@ -35,6 +35,17 @@ export const transformSurveyData = (survey: SurveyModel) => {
       return value;
     }
 
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!value.includes('T') && dateRegex.test(value)) {
+      const [year, month, day] = value.split('-').map((v) => parseInt(v, 10));
+      // If in the format YYYY-MM-DD, transform to UTC and ISO string
+      return new Date(Date.UTC(year, month - 1, day)).toISOString();
+    } else if (value.endsWith('T00:00:00.000Z')) {
+      // If already in UTC, return as is
+      return value;
+    }
+
+    // If in ISO format, but not UTC time, transform to UTC and ISO string
     const date = new Date(value);
     const year = date.getFullYear();
     const month = date.getMonth();
