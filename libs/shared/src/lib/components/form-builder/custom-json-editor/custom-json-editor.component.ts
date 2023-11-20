@@ -21,7 +21,7 @@ export class SurveyCustomJSONEditorPlugin implements ICreatorPlugin {
    */
   constructor(private creator: SurveyCreatorModel) {
     this.model = creator;
-    creator.addPluginTab('customJSONEditor', this, 'JSON Editor', undefined, 0);
+    creator.addPluginTab('customJSONEditor', this, 'JSON Editor', undefined, 2);
   }
 
   /**
