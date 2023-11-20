@@ -2182,6 +2182,7 @@
 			},
 			"display": {
 				"border": "******",
+				"expand": "******",
 				"header": "******",
 				"padding": "******",
 				"searchable": "******",
@@ -2206,6 +2207,11 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "******",
+					"help": "******",
+					"restore": "******"
+				},
 				"selector": {
 					"collapse": "******",
 					"expand": "******"

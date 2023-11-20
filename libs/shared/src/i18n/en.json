@@ -2182,6 +2182,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"expand": "Show button to expand widget",
 				"header": "Show widget header",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
@@ -2206,6 +2207,11 @@
 				"title": "Sorting"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Expand widget",
+					"help": "Only appears in front-office or in preview mode",
+					"restore": "Restore default"
+				},
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"

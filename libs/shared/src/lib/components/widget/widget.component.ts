@@ -10,6 +10,9 @@ import {
   Inject,
   TemplateRef,
   ElementRef,
+  Optional,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -21,6 +24,7 @@ import get from 'lodash/get';
 import { RestService } from '../../services/rest/rest.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 
 /** Component for the widgets */
 @Component({
@@ -28,10 +32,9 @@ import { ShadowDomService } from '@oort-front/ui';
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
 })
-export class WidgetComponent implements OnInit, OnDestroy {
+export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /** Current widget definition */
   @Input() widget: any;
-  // todo: rename or delete
   /** Is widget in fullscreen mode */
   @Input() header = true;
   /** Can user update widget */
@@ -59,6 +62,10 @@ export class WidgetComponent implements OnInit, OnDestroy {
     | SummaryCardComponent;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
+  /** Previous position of the widget ( cols / x )  */
+  private previousPosition?: { cols: number; x: number };
+  /** Expanded state of the widget */
+  public expanded = false;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -79,6 +86,22 @@ export class WidgetComponent implements OnInit, OnDestroy {
     return get(this.widget, 'settings.widgetDisplay.showBorder') ?? true;
   }
 
+  /** @returns is widget expandable */
+  get expandable() {
+    return get(this.widget, 'settings.widgetDisplay.expandable') ?? false;
+  }
+
+  /** @returns should show expand button, based on widget state & grid state */
+  get showExpand() {
+    return (
+      this.expandable &&
+      !this.canUpdate &&
+      !this.fullscreen &&
+      !this.grid.mobile &&
+      (this.widget.cols < this.grid.columns || this.expanded)
+    );
+  }
+
   /** @returns should widget use padding, based on widget settings */
   get usePadding() {
     return get(this.widget, 'settings.widgetDisplay.usePadding') ?? true;
@@ -91,12 +114,16 @@ export class WidgetComponent implements OnInit, OnDestroy {
    * @param document document
    * @param elementRef reference to element
    * @param shadowDomService shadow dom service to handle the current host of the component
+   * @param grid Reference to parent gridster
+   * @param gridItem Reference to parent gridster item
    */
   constructor(
     private restService: RestService,
     @Inject(DOCUMENT) private document: Document,
     public elementRef: ElementRef,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    @Optional() private grid: GridsterComponent,
+    @Optional() private gridItem: GridsterItemComponent
   ) {}
 
   ngOnInit(): void {
@@ -124,6 +151,16 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if (changes['canUpdate']) {
+      // Reset size of the widget to default one, if admin enters edit mode
+      if (changes['canUpdate'].previousValue === false && this.expanded) {
+        this.onResize();
+      }
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.customStyle) {
       if (this.shadowDomService.isShadowRoot) {
@@ -134,6 +171,34 @@ export class WidgetComponent implements OnInit, OnDestroy {
         this.document
           .getElementsByTagName('head')[0]
           .removeChild(this.customStyle);
+      }
+    }
+  }
+
+  /** Resize widget, by button click. */
+  onResize() {
+    if (this.grid.options.api?.resize && this.grid.options.api.optionsChanged) {
+      if (this.expanded) {
+        // Revert widget size
+        this.widget.layerIndex = 0;
+        this.widget.cols = this.previousPosition?.cols;
+        this.widget.x = this.previousPosition?.x;
+        this.gridItem.updateOptions();
+        this.grid.options.api.resize();
+        this.expanded = false;
+      } else {
+        // Expand the widget
+        this.previousPosition = {
+          cols: this.widget.cols,
+          x: this.widget.x,
+        };
+        this.widget.layerIndex = 1;
+        this.widget.cols = this.grid.options.maxCols;
+        this.widget.x = 0;
+        this.gridItem.bringToFront(100);
+        this.gridItem.updateOptions();
+        this.grid.options.api.resize();
+        this.expanded = true;
       }
     }
   }

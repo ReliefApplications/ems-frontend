@@ -2199,6 +2199,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"expand": "Afficher le bouton pour développer le widget",
 				"header": "Afficher l'en-tête du widget",
 				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
@@ -2223,6 +2224,11 @@
 				"title": "Tri"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Étendre le widget",
+					"help": "Apparaît uniquement dans le front-office ou en mode prévisualisation.",
+					"restore": "Restaurer la taille"
+				},
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"
