@@ -4,6 +4,7 @@ import {
   Input,
   TemplateRef,
   ViewChild,
+  HostListener,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -20,6 +21,11 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GridService } from '../../../services/grid/grid.service';
+import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
+import { EDIT_RECORD } from './graphql/mutation';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
+import { EditRecordMutationResponse } from '../../../models/record.model';
 
 /**
  * Text widget component using KendoUI
@@ -29,7 +35,7 @@ import { GridService } from '../../../services/grid/grid.service';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Widget settings */
   @Input() settings: any;
   /** Should show padding */
@@ -45,6 +51,7 @@ export class EditorComponent implements OnInit {
   public formattedStyle?: string;
 
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  @ViewChild('htmlContent') childComponent!: HtmlWidgetContentComponent;
 
   /**
    * Constructor for shared-editor component
@@ -65,12 +72,29 @@ export class EditorComponent implements OnInit {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private gridService: GridService
-  ) {}
+  ) {
+    super();
+  }
 
   /** Sanitizes the text. */
   ngOnInit(): void {
     this.checkEditRecordButtonContent();
     this.setContentFromLayout();
+  }
+
+  /**
+   * Listen to click events from host element, if record editor is clicked, open record editor modal
+   *
+   * @param event Click event from host element
+   */
+  @HostListener('click', ['$event'])
+  onContentClick(event: any) {
+    const htmlWidgetContent = this.childComponent.el.nativeElement;
+    const recordEditorButton =
+      htmlWidgetContent.querySelector('#record-editor');
+    if (recordEditorButton.contains(event.target)) {
+      this.openEditRecordModal();
+    }
   }
 
   /**
@@ -252,6 +276,51 @@ export class EditorComponent implements OnInit {
         ),
         { error: true }
       );
+    }
+  }
+
+  /**
+   * Opens the form corresponding to selected summary card in order to update it
+   */
+  private async openEditRecordModal() {
+    if (
+      this.settings.record &&
+      this.settings.record.canUpdate &&
+      this.settings.layout
+    ) {
+      const { FormModalComponent } = await import(
+        '../../../components/form-modal/form-modal.component'
+      );
+      const dialogRef = this.dialog.open(FormModalComponent, {
+        disableClose: true,
+        data: {
+          recordId: this.settings.record.id,
+          // template: this.settings.template || null,
+          template: null,
+        },
+        autoFocus: false,
+      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            /** Save edited record */
+            this.apollo
+              .mutate<EditRecordMutationResponse>({
+                mutation: EDIT_RECORD,
+                variables: {
+                  id: this.settings.record.id,
+                  data: value,
+                  template: this.settings.record?.form?.id ?? null,
+                },
+              })
+              .subscribe({
+                error: (err) => {
+                  this.snackBar.openSnackBar(err[0].message, { error: true });
+                },
+              });
+          }
+        });
     }
   }
 }

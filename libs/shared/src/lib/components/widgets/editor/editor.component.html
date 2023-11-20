@@ -8,7 +8,7 @@
   >
     <div class="w-full h-fit" (click)="onClick($event)">
       <shared-html-widget-content
-        [dataSource]="{ record: settings.record, layout: settings.layout }"
+        #htmlContent
         [html]="formattedHtml"
         [style]="formattedStyle"
       ></shared-html-widget-content>

@@ -4,6 +4,7 @@ import {
   OnChanges,
   OnInit,
   ViewEncapsulation,
+  ElementRef,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
@@ -24,7 +25,6 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() fieldsValue: any;
   @Input() styles: any[] = [];
   @Input() wholeCardStyles = false;
-  @Input() dataSource!: { record: any; layout: any };
 
   public formattedHtml: SafeHtml = '';
   public formattedStyle?: string;
@@ -33,8 +33,12 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * Content component of Single Item of Summary Card.
    *
    * @param dataTemplateService Shared data template service, used to render content from template
+   * @param el ElementRef
    */
-  constructor(private dataTemplateService: DataTemplateService) {}
+  constructor(
+    private dataTemplateService: DataTemplateService,
+    public el: ElementRef
+  ) {}
 
   ngOnInit(): void {
     this.formattedStyle = this.dataTemplateService.renderStyle(

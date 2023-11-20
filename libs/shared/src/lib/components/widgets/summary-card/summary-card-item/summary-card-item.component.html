@@ -14,7 +14,7 @@
   "
 >
   <shared-summary-card-item-content
-    [dataSource]="{ record: card.record, layout: card.layout }"
+    #cardContent
     [html]="card.html"
     [fields]="fields"
     [fieldsValue]="fieldsValue"

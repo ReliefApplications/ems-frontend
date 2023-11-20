@@ -1,6 +1,21 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  HostListener,
+  ViewChild,
+} from '@angular/core';
 import { get } from 'lodash';
 import { CardT } from '../summary-card.component';
+import { SummaryCardItemContentComponent } from '../summary-card-item-content/summary-card-item-content.component';
+import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
+import { EditRecordMutationResponse } from '../../../../models/record.model';
+import { EDIT_RECORD } from '../graphql/mutation';
 
 /**
  * Single Item component of Summary card widget.
@@ -10,7 +25,10 @@ import { CardT } from '../summary-card.component';
   templateUrl: './summary-card-item.component.html',
   styleUrls: ['./summary-card-item.component.scss'],
 })
-export class SummaryCardItemComponent implements OnInit, OnChanges {
+export class SummaryCardItemComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
   /** Card configuration */
   @Input() card!: CardT;
   /** Available fields */
@@ -20,9 +38,26 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Loaded styles */
   public styles: any[] = [];
 
+  @ViewChild('cardContent') childComponent!: SummaryCardItemContentComponent;
+
   /** @returns should widget use padding, based on widget settings */
   get usePadding() {
     return get(this.card, 'usePadding') ?? true;
+  }
+
+  /**
+   * Constructor for shared-editor component
+   *
+   * @param apollo Apollo instance
+   * @param dialog Dialog service
+   * @param snackBar Shared snackbar service
+   */
+  constructor(
+    private apollo: Apollo,
+    private dialog: Dialog,
+    private snackBar: SnackbarService
+  ) {
+    super();
   }
 
   ngOnInit(): void {
@@ -32,6 +67,20 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.setContent();
+  }
+
+  /**
+   * Listen to click events from host element, if record editor is clicked, open record editor modal
+   *
+   * @param event Click event from host element
+   */
+  @HostListener('click', ['$event'])
+  onContentClick(event: any) {
+    const cardContent = this.childComponent.el.nativeElement;
+    const recordEditorButton = cardContent.querySelector('#record-editor');
+    if (recordEditorButton.contains(event.target)) {
+      this.openEditRecordModal();
+    }
   }
 
   /**
@@ -151,5 +200,46 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       name: key,
       editor: 'text',
     }));
+  }
+
+  /**
+   * Opens the form corresponding to selected summary card in order to update it
+   */
+  private async openEditRecordModal() {
+    if (this.card.record && this.card.record.canUpdate && this.card.layout) {
+      const { FormModalComponent } = await import(
+        '../../../../components/form-modal/form-modal.component'
+      );
+      const dialogRef = this.dialog.open(FormModalComponent, {
+        disableClose: true,
+        data: {
+          recordId: this.card.record.id,
+          // template: this.settings.template || null,
+          template: null,
+        },
+        autoFocus: false,
+      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            /** Save edited record */
+            this.apollo
+              .mutate<EditRecordMutationResponse>({
+                mutation: EDIT_RECORD,
+                variables: {
+                  id: this.card.record?.id,
+                  data: value,
+                  template: this.card.record?.form?.id ?? null,
+                },
+              })
+              .subscribe({
+                error: (err) => {
+                  this.snackBar.openSnackBar(err[0].message, { error: true });
+                },
+              });
+          }
+        });
+    }
   }
 }
