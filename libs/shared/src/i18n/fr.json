@@ -794,6 +794,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
+				"incorrectJSON": "Le JSON est invalide dans le JSON Editor, les changements n'ont pas été sauvegardés",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
@@ -1296,7 +1297,7 @@
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur",
-						"webwidgets": "Configuration de grille non valide, veuillez contacter votre administrateur"
+						"widgets": "Configuration de grille non valide, veuillez contacter votre administrateur"
 					},
 					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
 					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",
@@ -1771,7 +1772,8 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage",
+							"padding": "Utiliser la marge intérieure",
+							"title": "Affichage de la carte",
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
@@ -2206,7 +2208,9 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"expand": "Afficher le bouton pour développer le widget",
 				"header": "Afficher l'en-tête du widget",
+				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
@@ -2229,6 +2233,11 @@
 				"title": "Tri"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Étendre le widget",
+					"help": "Apparaît uniquement dans le front-office ou en mode prévisualisation.",
+					"restore": "Restaurer la taille"
+				},
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"

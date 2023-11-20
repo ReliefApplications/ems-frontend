@@ -11,10 +11,19 @@ import { CardT } from '../summary-card.component';
   styleUrls: ['./summary-card-item.component.scss'],
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
+  /** Card configuration */
   @Input() card!: CardT;
+  /** Available fields */
   public fields: any[] = [];
+  /** Mapping fields / values */
   public fieldsValue: any = null;
+  /** Loaded styles */
   public styles: any[] = [];
+
+  /** @returns should widget use padding, based on widget settings */
+  get usePadding() {
+    return get(this.card, 'usePadding') ?? true;
+  }
 
   ngOnInit(): void {
     this.setContent();
