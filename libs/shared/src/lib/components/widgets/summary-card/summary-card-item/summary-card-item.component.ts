@@ -30,6 +30,10 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     this.setContent();
   }
 
+  ngOnChanges() {
+    this.setContent();
+  }
+
   /**
    * Check if there is an edit record button set in the widget content and updates it's access accordingly
    */
@@ -56,10 +60,6 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
         }
       }
     }
-  }
-
-  ngOnChanges() {
-    this.setContent();
   }
 
   /** Sets the content of the card */
