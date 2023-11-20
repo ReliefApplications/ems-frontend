@@ -25,7 +25,7 @@ export class SurveyCustomJSONEditorPlugin implements ICreatorPlugin {
   }
 
   /**
-   * Runs on tab activation ? (to check)
+   * Runs on tab activation, mandatory for plugins
    */
   public activate(): void {
     return;
@@ -34,7 +34,7 @@ export class SurveyCustomJSONEditorPlugin implements ICreatorPlugin {
 
 /**
  * Custom JSON editor component, we use it to replace the default JSON editor in the survey builder
- * so we can manage all its behaviours.
+ * so we can manage its different behaviors.
  */
 @Component({
   // tslint:disable-next-line:component-selector
