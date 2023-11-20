@@ -11,6 +11,8 @@ import {
   TemplateRef,
   ElementRef,
   Optional,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -24,13 +26,16 @@ import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 
+/** Maximum width of the widget in column units */
+const MAX_COL_SPAN = 8;
+
 /** Component for the widgets */
 @Component({
   selector: 'shared-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
 })
-export class WidgetComponent implements OnInit, OnDestroy {
+export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /** Current widget definition */
   @Input() widget: any;
   /** Is widget in fullscreen mode */
@@ -43,6 +48,8 @@ export class WidgetComponent implements OnInit, OnDestroy {
   @Input() headerRightTemplate?: TemplateRef<any>;
   /** Is fullscreen mode activated */
   @Input() fullscreen = false;
+  /** Preview mode */
+  // @Input() previewMode = false;
   /** Edit widget event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Change step workflow event emitter */
@@ -64,6 +71,8 @@ export class WidgetComponent implements OnInit, OnDestroy {
   private previousPosition?: { cols: number; x: number };
   /** Expanded state of the widget */
   public expanded = false;
+  /** stores the previous preview mode */
+  public previousPreviewMode = true;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -86,7 +95,13 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
   /** @returns should show expand button, based on widget state & grid state */
   get showExpand() {
-    return !this.canUpdate && !this.fullscreen && !this.grid.mobile;
+    return (
+      !this.canUpdate &&
+      !this.fullscreen &&
+      !this.grid.mobile &&
+      (this.widget.cols < MAX_COL_SPAN || this.expanded) &&
+      this.widget.settings.widgetDisplay?.showExpandButton
+    );
   }
 
   /**
@@ -133,6 +148,17 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['canUpdate']) {
+      // if previousPreviewMode is false is because it was in preview
+      // so now it is in edit mode and should close all the expanded widgets
+      if (this.previousPreviewMode === false && this.expanded) {
+        this.onResize();
+      }
+      this.previousPreviewMode = this.canUpdate;
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.customStyle) {
       if (this.shadowDomService.isShadowRoot) {
@@ -147,9 +173,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Resize widget, by button click.
-   */
+  /** Resize widget, by button click. */
   onResize() {
     if (this.grid.options.api?.resize && this.grid.options.api.optionsChanged) {
       if (this.expanded) {

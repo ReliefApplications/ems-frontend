@@ -52,7 +52,7 @@
 
   <!-- Button to expand widget -->
   <button
-    *ngIf="showExpand && widget.settings.widgetDisplay?.showExpandButton"
+    *ngIf="showExpand"
     (click)="onResize()"
     [uiTooltip]="
       expanded ? 
