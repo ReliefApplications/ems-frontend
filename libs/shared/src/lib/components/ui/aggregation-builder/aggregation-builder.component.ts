@@ -7,6 +7,7 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { Resource } from '../../../models/resource.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Metadata } from '../../../models/metadata.model';
 
 /**
  * Main component of Aggregation builder.
@@ -21,22 +22,35 @@ export class AggregationBuilderComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  // === REACTIVE FORM ===
+  /** Aggregation reactive form group */
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
+  /** Current resource */
   @Input() resource!: Resource;
-  @Input() reload$!: Observable<boolean>;
-
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
-
-  // === FIELDS ===
+  /** Available fields */
   private fields = new BehaviorSubject<any[]>([]);
+  /** Available fields as observable */
   public fields$ = this.fields.asObservable();
+  /** Available filter fields */
+  private filterFields = new BehaviorSubject<any[]>([]);
+  /** Available filter fields as observable */
+  public filterFields$!: Observable<any[]>;
+  /** Selected filter fields */
+  private selectedFilterFields = new BehaviorSubject<any[]>([]);
+  /** Selected filter fields as observable */
+  public selectedFilterFields$!: Observable<any[]>;
+  /** Selected fields */
   private selectedFields = new BehaviorSubject<any[]>([]);
+  /** Selected fields as observable */
   public selectedFields$!: Observable<any[]>;
+  /** Meta fields */
   private metaFields = new BehaviorSubject<any[]>([]);
+  /** Meta fields as observable */
   public metaFields$!: Observable<any[]>;
+  /** Fields available for mapping */
   private mappingFields = new BehaviorSubject<any[]>([]);
+  /** Fields available for mapping as observable */
   public mappingFields$!: Observable<any[]>;
 
   /**
@@ -49,10 +63,11 @@ export class AggregationBuilderComponent
   }
 
   /**
-   * Constructor for the aggregation builder
+   * Main component of Aggregation builder.
+   * Aggregation are used to generate charts.
    *
-   * @param queryBuilder This is a service that is used to build queries.
-   * @param aggregationBuilder This is the service that will be used to build the aggregation query.
+   * @param queryBuilder Shared query builder service
+   * @param aggregationBuilder Shared aggregation builder service
    */
   constructor(
     private queryBuilder: QueryBuilderService,
@@ -87,6 +102,10 @@ export class AggregationBuilderComponent
     // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();
     this.metaFields$ = this.metaFields.asObservable();
+
+    this.filterFields$ = this.filterFields.asObservable();
+    this.selectedFilterFields$ = this.selectedFilterFields.asObservable();
+
     this.aggregationForm
       .get('sourceFields')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
@@ -113,9 +132,31 @@ export class AggregationBuilderComponent
   }
 
   /**
+   * Get the filter fields needed for the current resource
+   */
+  private setFilterFields(): void {
+    this.queryBuilder
+      .getFilterFields({
+        name: this.resource.queryName as string,
+      })
+      .then((filterFields: Metadata[]) => {
+        this.filterFields.next(filterFields);
+        // On first load we update the selected filter fields from this function
+        // As the getFilterFields request takes time to complete
+        if (!this.selectedFilterFields.value.length) {
+          const currentFilterFields = filterFields.filter((mfi) =>
+            this.selectedFields.value.find((si) => si.name === mfi.name)
+          );
+          this.selectedFilterFields.next(currentFilterFields);
+        }
+      });
+  }
+
+  /**
    * Initializes all data necessary for the reactive form to work.
    */
   private initFields(): void {
+    this.setFilterFields();
     this.updateFields();
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
   }
@@ -138,9 +179,9 @@ export class AggregationBuilderComponent
   }
 
   /**
-   * Updates selected, meta and mapping fields depending on tagbox value.
+   * Updates selected, meta and mapping fields depending on selected fields value.
    *
-   * @param fieldsNames Tagbox value.
+   * @param fieldsNames selected fields' names
    */
   private updateSelectedAndMetaFields(fieldsNames: string[]): void {
     if (fieldsNames && fieldsNames.length) {
@@ -158,6 +199,11 @@ export class AggregationBuilderComponent
         return field;
       });
 
+      const currentFilterFields = this.filterFields.value.filter((x) =>
+        selectedFields.find((y) => y.name === x.name)
+      );
+      this.selectedFilterFields.next(currentFilterFields);
+
       this.selectedFields.next(selectedFields);
 
       this.mappingFields.next(
@@ -168,6 +214,7 @@ export class AggregationBuilderComponent
       );
     } else {
       this.selectedFields.next([]);
+      this.selectedFilterFields.next([]);
       this.metaFields.next([]);
       this.mappingFields.next([]);
     }

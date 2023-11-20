@@ -47,6 +47,8 @@ export class LayoutComponent
   @Input() route?: ActivatedRoute;
 
   @Input() header?: TemplateRef<any>;
+  /** Should show header */
+  @Input() showHeader = true;
 
   @Input() leftSidenav?: TemplateRef<any>;
 
@@ -63,6 +65,8 @@ export class LayoutComponent
   @Input() profileRoute = '/profile';
 
   @Input() sideMenu = true;
+
+  @Input() menuOpened = true;
 
   languages: string[] = [];
 

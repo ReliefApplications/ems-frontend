@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { RestService } from '../../services/rest/rest.service';
 import { DOCUMENT } from '@angular/common';
+import { ShadowDomService } from '@oort-front/ui';
 
 /** Component for the widgets */
 @Component({
@@ -68,14 +69,19 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** @returns should show widget header, based on widget settings */
+  /** @returns should widget show header, based on widget settings */
   get showHeader() {
     return get(this.widget, 'settings.widgetDisplay.showHeader') ?? true;
   }
 
-  /** @returns should show widget border, based on widget settings */
+  /** @returns should widget show border, based on widget settings */
   get showBorder() {
     return get(this.widget, 'settings.widgetDisplay.showBorder') ?? true;
+  }
+
+  /** @returns should widget use padding, based on widget settings */
+  get usePadding() {
+    return get(this.widget, 'settings.widgetDisplay.usePadding') ?? true;
   }
 
   /**
@@ -84,11 +90,13 @@ export class WidgetComponent implements OnInit, OnDestroy {
    * @param restService Shared rest service
    * @param document document
    * @param elementRef reference to element
+   * @param shadowDomService shadow dom service to handle the current host of the component
    */
   constructor(
     private restService: RestService,
     @Inject(DOCUMENT) private document: Document,
-    public elementRef: ElementRef
+    public elementRef: ElementRef,
+    private shadowDomService: ShadowDomService
   ) {}
 
   ngOnInit(): void {
@@ -102,21 +110,31 @@ export class WidgetComponent implements OnInit, OnDestroy {
       this.restService
         .post('style/scss-to-css', { scss }, { responseType: 'text' })
         .subscribe((css) => {
-          // Add to head of document
-          const head = this.document.getElementsByTagName('head')[0];
           this.customStyle = this.document.createElement('style');
           this.customStyle.appendChild(this.document.createTextNode(css));
-          head.appendChild(this.customStyle);
+          if (this.shadowDomService.isShadowRoot) {
+            // Add it to shadow root
+            this.shadowDomService.currentHost.appendChild(this.customStyle);
+          } else {
+            // Add to head of document
+            const head = this.document.getElementsByTagName('head')[0];
+            head.appendChild(this.customStyle);
+          }
         });
     }
   }
 
   ngOnDestroy(): void {
-    // Remove style from head if exists, to avoid too many styles to be active at same time
     if (this.customStyle) {
-      this.document
-        .getElementsByTagName('head')[0]
-        .removeChild(this.customStyle);
+      if (this.shadowDomService.isShadowRoot) {
+        // If shadow root, remove style from it
+        this.shadowDomService.currentHost.removeChild(this.customStyle);
+      } else {
+        // Remove style from head if exists, to avoid too many styles to be active at same time
+        this.document
+          .getElementsByTagName('head')[0]
+          .removeChild(this.customStyle);
+      }
     }
   }
 }

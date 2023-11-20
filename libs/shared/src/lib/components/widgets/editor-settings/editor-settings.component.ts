@@ -49,7 +49,11 @@ const createEditorForm = (value: any) => {
     ),
   });
 
-  return extendWidgetForm(form, value?.settings?.widgetDisplay);
+  return extendWidgetForm(form, value?.settings?.widgetDisplay, {
+    usePadding: new FormControl(
+      get<boolean>(value, 'settings.widgetDisplay.usePadding', true)
+    ),
+  });
 };
 
 export type EditorFormType = ReturnType<typeof createEditorForm>;

@@ -393,6 +393,7 @@
 		},
 		"title": "******",
 		"tooltip": {
+			"dragDrop": "******",
 			"editor": {
 				"insert": "******"
 			}
@@ -598,8 +599,13 @@
 				"title": "******"
 			},
 			"update": {
+				"hideMenu": "******",
 				"placeholder": {
 					"description": "******"
+				},
+				"sideMenu": "******",
+				"tooltip": {
+					"hideMenu": "******"
 				}
 			},
 			"users": {
@@ -722,6 +728,25 @@
 			},
 			"display": {
 				"submissionMessage": "******"
+			},
+			"draftRecords": {
+				"buttonLoad": "******",
+				"confirmModal": {
+					"confirmDelete": "******",
+					"confirmLoad": "******",
+					"delete": "******",
+					"load": "******"
+				},
+				"creationDate": "******",
+				"delete": "******",
+				"load": "******",
+				"noDrafts": "******",
+				"preview": "******",
+				"previewTitle": "******",
+				"save": "******",
+				"select": "******",
+				"successEdit": "******",
+				"successSave": "******"
 			},
 			"layout": {
 				"delete": {
@@ -1238,6 +1263,9 @@
 						"invalid": "******"
 					}
 				},
+				"filters": {
+					"select": "******"
+				},
 				"other": "******"
 			},
 			"expand": "******",
@@ -1251,7 +1279,8 @@
 					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
-						"frontoffice": "******"
+						"frontoffice": "******",
+						"webwidgets": "******"
 					},
 					"metaQueryBuildFailed": "******",
 					"metaQueryFetchFailed": "****** {{error}}",
@@ -1323,6 +1352,12 @@
 					"axes": "******",
 					"categories": "******",
 					"color": "******",
+					"filters": {
+						"add": "******",
+						"delete": "******",
+						"empty": "******",
+						"title": "******"
+					},
 					"grid": {
 						"title": "******",
 						"x": {
@@ -1388,16 +1423,22 @@
 						"convert": "******",
 						"delete": "******",
 						"export": "******",
+						"goTo": {
+							"column": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"field": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"label": "******",
+							"target": {
+								"label": "******",
+								"placeholder": "******"
+							}
+						},
 						"inline": "******",
-						"navigateToPage": "******",
-						"pageUrl": {
-							"label": "******",
-							"placeholder": "******"
-						},
-						"pageUrlTitle": {
-							"label": "******",
-							"placeholder": "******"
-						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
@@ -1457,8 +1498,8 @@
 							"convert": "******",
 							"delete": "******",
 							"export": "******",
+							"goTo": "******",
 							"inline": "******",
-							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
 							"update": "******"
@@ -1714,6 +1755,7 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
+							"padding": "******",
 							"title": "******",
 							"tooltip": {
 								"datasource": "******"
@@ -1972,7 +2014,6 @@
 		"application": {
 			"description": "******",
 			"id": "******",
-			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -2073,7 +2114,6 @@
 		"page": {
 			"add": "******",
 			"tooltip": {
-				"drag": "******",
 				"duplicate": "******"
 			}
 		},
@@ -2142,6 +2182,7 @@
 			"display": {
 				"border": "******",
 				"header": "******",
+				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"

@@ -11,6 +11,8 @@ import {
   FormWrapperModule,
   ToggleModule,
   FixedWrapperModule,
+  IconModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
 import { AbilityModule } from '@casl/angular';
@@ -35,6 +37,8 @@ import { AbilityModule } from '@casl/angular';
     AccessModule,
     StatusOptionsComponent,
     AbilityModule,
+    IconModule,
+    TooltipModule,
   ],
 })
 export class SettingsModule {}

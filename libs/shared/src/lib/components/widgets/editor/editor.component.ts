@@ -30,8 +30,10 @@ import { GridService } from '../../../services/grid/grid.service';
   styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements OnInit {
-  // === WIDGET CONFIGURATION ===
+  /** Widget settings */
   @Input() settings: any;
+  /** Should show padding */
+  @Input() usePadding = true;
 
   private layout: any;
   private fields: any[] = [];

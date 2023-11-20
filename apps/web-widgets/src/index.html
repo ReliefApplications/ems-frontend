@@ -7,12 +7,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
-  <body>
-    <style>
-      body {
-        margin: 0;
-      }
-    </style>
-    <div id="bodyPlaceholder" class="flex flex-col overflow-auto h-full"></div>
+  <body id="bodyPlaceholder">
+    <!-- <button
+      id="hiddenButton"
+      style="
+        width: 60px;
+        height: 35px;
+        position: absolute;
+        inset: 0;
+        margin-left: auto;
+        margin-right: auto;
+        top: 0;
+        background-color: red;
+        color: white;
+      "
+    >
+      Hide sidenav
+    </button> -->
   </body>
+  <!-- <script>
+    var displaySideNavVariable = true;
+    document
+      .getElementById('hiddenButton')
+      .addEventListener('click', function (event) {
+        displaySideNavVariable = !displaySideNavVariable;
+        if (displaySideNavVariable) {
+          event.target.textContent = 'Hide sidenav';
+        } else {
+          event.target.textContent = 'Show sidenav';
+        }
+        const application = document.querySelector('oort-application-widget');
+        if (application) {
+          application['display-sidenav'] = displaySideNavVariable;
+        }
+      });
+  </script> -->
 </html>

@@ -4,7 +4,6 @@ import {
   ElementRef,
   EventEmitter,
   HostBinding,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -25,7 +24,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { updateQueryUniqueValues } from './utils/update-queries';
-import { DOCUMENT } from '@angular/common';
+import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -175,14 +174,14 @@ export class GraphQLSelectComponent
    * @param elementRef shared element ref service
    * @param renderer - Angular - Renderer2
    * @param changeDetectorRef - Angular - ChangeDetectorRef
-   * @param document document
+   * @param shadowDomService shadow dom service to handle the current host of the component
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     public elementRef: ElementRef<HTMLElement>,
     private renderer: Renderer2,
     private changeDetectorRef: ChangeDetectorRef,
-    @Inject(DOCUMENT) private document: Document
+    private shadowDomService: ShadowDomService
   ) {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
@@ -378,7 +377,8 @@ export class GraphQLSelectComponent
   onOpenSelect(): void {
     // focus on search input, if filterable
     if (this.filterable) this.searchInput?.nativeElement.focus();
-    const panel = this.document.getElementById('optionList');
+    const panel =
+      this.shadowDomService.currentHost.getElementById('optionList');
     if (this.scrollListener) {
       this.scrollListener();
     }

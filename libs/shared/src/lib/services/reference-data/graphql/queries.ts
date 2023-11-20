@@ -12,6 +12,7 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
       apiConfiguration {
         name
         graphQLEndpoint
+        authType
       }
       query
       fields
