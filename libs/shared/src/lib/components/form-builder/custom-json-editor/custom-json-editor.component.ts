@@ -29,15 +29,6 @@ export class SurveyCustomJSONEditorPlugin implements ICreatorPlugin {
   public activate(): void {
     return;
   }
-
-  /**
-   * Runs on tab deactivation ? (to check)
-   *
-   * @returns boolean
-   */
-  public deactivate(): boolean {
-    return true;
-  }
 }
 
 /**
@@ -86,7 +77,6 @@ export class customJSONEditorComponent
   /**
    * Gets the updated survey creator model, used to update the survey creator instance.
    *
-   * @returns Modal to update ? ( to check ) || Null if nothing to update
    */
   protected getModel(): any {
     if (this.formControl.value) {
@@ -99,12 +89,11 @@ export class customJSONEditorComponent
         this.model.text = this.JSONtext;
       } else {
         this.snackBar.openSnackBar(
-          "JSON is invalid, changes haven't been saved",
+          "JSON is invalid in JSON Editor, changes haven't been saved",
           { error: true }
         );
       }
     }
-    return null;
   }
 
   /**
