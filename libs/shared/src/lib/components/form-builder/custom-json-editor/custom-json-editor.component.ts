@@ -1,6 +1,7 @@
 import { ICreatorPlugin, SurveyCreatorModel } from 'survey-creator-core';
 import { AngularComponentFactory, BaseAngular } from 'survey-angular-ui';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
 
 // Documentation:
@@ -64,6 +65,19 @@ export class customJSONEditorComponent
     formatOnPaste: true,
   };
 
+  /**
+   * Custom JSON editor component
+   *
+   * @param ref Change detector reference
+   * @param snackBar Shared snackbar service
+   */
+  constructor(
+    private ref: ChangeDetectorRef,
+    private snackBar: SnackbarService
+  ) {
+    super(ref);
+  }
+
   override ngOnInit() {
     this.JSONtext = this.model.text;
     this.formControl.setValue(this.JSONtext, { emitEvent: false });
@@ -84,7 +98,10 @@ export class customJSONEditorComponent
       if (this.isJsonString(this.JSONtext)) {
         this.model.text = this.JSONtext;
       } else {
-        alert("JSON is invalid, changes haven't been saved");
+        this.snackBar.openSnackBar(
+          "JSON is invalid, changes haven't been saved",
+          { error: true }
+        );
       }
     }
     return null;
