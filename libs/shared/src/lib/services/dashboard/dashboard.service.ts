@@ -1,4 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 import {
   CreateDashboardWithContextMutationResponse,
   Dashboard,
@@ -17,6 +19,7 @@ import {
   CREATE_DASHBOARD_WITH_CONTEXT,
 } from './graphql/mutations';
 import get from 'lodash/get';
+import { GraphQLError } from 'graphql';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -41,10 +44,45 @@ export class DashboardService {
    * @param environment environment in which we run the application
    * @param apollo Apollo client
    */
-  constructor(@Inject('environment') environment: any, private apollo: Apollo) {
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
+  ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
+  }
+
+  /**
+   * Handle mutations messages response from the application, pages and steps
+   *
+   * @param errors errors from the access mutation response if any
+   * @param type content type
+   * @param value value of the content edited
+   */
+  handleEditionMutationResponse(
+    errors: readonly GraphQLError[] | undefined,
+    type: string,
+    value?: string
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type,
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type,
+          value: value ?? '',
+        })
+      );
+    }
   }
 
   /**
@@ -203,8 +241,18 @@ export class DashboardService {
           gridOptions,
         },
       })
-      .subscribe(() => {
-        if (callback) callback();
+      .subscribe(({ errors, data }) => {
+        this.handleEditionMutationResponse(
+          errors,
+          this.translate.instant('common.page.one')
+        );
+        if (!errors && data) {
+          this.dashboard.next({
+            ...dashboard,
+            gridOptions,
+          });
+          if (callback) callback();
+        }
       });
   }
 }
