@@ -539,8 +539,7 @@
 					"fixedRowHeight": "Row height",
 					"gridOptions": "Grid options",
 					"margin": "Margin between widgets",
-					"minCols": "Number of columns",
-					"outerMargin": "Outer margin"
+					"minCols": "Number of columns"
 				}
 			},
 			"delete": {

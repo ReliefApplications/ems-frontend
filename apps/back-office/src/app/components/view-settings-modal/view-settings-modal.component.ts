@@ -251,9 +251,6 @@ export class ViewSettingsModalComponent
             this.dashboard.gridOptions?.fixedRowHeight ?? 200
           ),
           margin: this.fb.control(this.dashboard.gridOptions?.margin ?? 10),
-          outerMargin: this.fb.control(
-            this.dashboard.gridOptions?.outerMargin ?? false
-          ),
         }),
       }),
     });
