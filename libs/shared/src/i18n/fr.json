@@ -1297,7 +1297,7 @@
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur",
-						"webwidgets": "Configuration de grille non valide, veuillez contacter votre administrateur"
+						"widgets": "Configuration de grille non valide, veuillez contacter votre administrateur"
 					},
 					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
 					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",

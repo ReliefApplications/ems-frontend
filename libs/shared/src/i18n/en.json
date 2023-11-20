@@ -1281,7 +1281,7 @@
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin",
-						"webwidgets": "Invalid grid configuration, please contact your admin"
+						"widgets": "Invalid grid configuration, please contact your admin"
 					},
 					"metaQueryBuildFailed": "Error building metadata",
 					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",
