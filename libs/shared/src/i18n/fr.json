@@ -1772,7 +1772,7 @@
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
 							"padding": "Utiliser la marge intérieure",
-							"title": "Affichage",
+							"title": "Affichage de la carte",
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
