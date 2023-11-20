@@ -55,7 +55,6 @@ export class customJSONEditorComponent
 {
   @Input() model!: SurveyCreatorModel;
 
-  public loading = true;
   public JSONtext = '';
   public formControl = new FormControl(this.JSONtext);
 
@@ -68,7 +67,6 @@ export class customJSONEditorComponent
   override ngOnInit() {
     this.JSONtext = this.model.text;
     this.formControl.setValue(this.JSONtext, { emitEvent: false });
-    this.loading = false;
   }
 
   /**
