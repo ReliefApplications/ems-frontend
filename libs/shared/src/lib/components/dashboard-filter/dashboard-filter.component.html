@@ -1,163 +1,57 @@
-<div
-  drawerPositioner
-  [position]="position"
-  [minSizeOnClosed]="40"
-  [elementWidth]="containerWidth"
-  [elementHeight]="containerHeight"
-  [elementLeftOffset]="containerLeftOffset"
-  [elementTopOffset]="containerTopOffset"
-  [opened]="isDrawerOpen"
-  [dashboardSurveyCreatorContainer]="dashboardSurveyCreatorContainer"
-  class="pointer-events-none"
->
+<ng-container *ngIf="variant === 'default'; else modernTmpl">
   <div
-    [ngClass]="{
-      'h-full':
-        position === filterPosition.LEFT || position === filterPosition.RIGHT,
-      'flex-col':
-        position === filterPosition.TOP || position === filterPosition.BOTTOM
-    }"
-    class="flex"
+    drawerPositioner
+    [position]="position"
+    [minSizeOnClosed]="40"
+    [elementWidth]="containerWidth"
+    [elementHeight]="containerHeight"
+    [elementLeftOffset]="containerLeftOffset"
+    [elementTopOffset]="containerTopOffset"
+    [opened]="opened"
+    [dashboardSurveyCreatorContainer]="dashboardSurveyCreatorContainer"
+    class="pointer-events-none"
   >
-    <header
-      [ngClass]="{
-        'order-1':
-          position === filterPosition.BOTTOM ||
-          position === filterPosition.RIGHT,
-        'order-2':
-          position === filterPosition.TOP || position === filterPosition.LEFT,
-        'h-full':
-          position === filterPosition.LEFT || position === filterPosition.RIGHT,
-        'w-full':
-          position === filterPosition.TOP || position === filterPosition.BOTTOM
-      }"
-      class="relative flex justify-between text-white"
-    >
-      <!-- Toggle opened status -->
-      <div
-        [ngClass]="{
-          bottom: position === filterPosition.BOTTOM,
-          top: position === filterPosition.TOP,
-          right: position === filterPosition.RIGHT,
-          left: position === filterPosition.LEFT
-        }"
-        class="dashboard-filter-tab h-10 py-2 px-3 flex bg-primary-500"
-        (click)="isDrawerOpen = !isDrawerOpen"
-      >
-        <div class="pointer-events-auto">
-          <ui-icon icon="view_stream" class="cursor-pointer"></ui-icon>
-        </div>
-      </div>
-    </header>
     <div
       [ngClass]="{
-        'order-1':
-          position === filterPosition.TOP || position === filterPosition.LEFT,
-        'order-2':
-          position === filterPosition.BOTTOM ||
-          position === filterPosition.RIGHT,
-        'w-full flex-col':
-          position === filterPosition.TOP || position === filterPosition.BOTTOM,
         'h-full':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
-        'animate-fadeOut pointer-events-none': !isDrawerOpen,
-        'animate-fadeIn pointer-events-auto': isDrawerOpen
+        'flex-col':
+          position === filterPosition.TOP || position === filterPosition.BOTTOM
       }"
-      class="dashboard-filter-content bg-white flex"
+      class="flex"
     >
-      <div
+      <header
         [ngClass]="{
           'order-1':
             position === filterPosition.BOTTOM ||
             position === filterPosition.RIGHT,
           'order-2':
             position === filterPosition.TOP || position === filterPosition.LEFT,
-          'w-12 h-full px-1 py-4 flex-col':
+          'h-full':
             position === filterPosition.LEFT ||
             position === filterPosition.RIGHT,
-          'w-full py-1 px-4 flex-row':
+          'w-full':
             position === filterPosition.TOP ||
             position === filterPosition.BOTTOM
         }"
-        class="relative flex justify-between bg-primary-500 text-white"
+        class="relative flex justify-between text-white"
       >
-        <!-- Edition -->
-        <div
-          *ngIf="editable"
-          [ngClass]="{
-            'flex-col':
-              position === filterPosition.LEFT ||
-              position === filterPosition.RIGHT
-          }"
-          class="flex flex-auto"
-        >
-          <!-- Configuration -->
-          <ui-button
-            variant="light"
-            [isIcon]="true"
-            icon="edit"
-            (click)="onEditFilter()"
-            [uiTooltip]="
-              'components.application.dashboard.editFilter' | translate
-            "
-          >
-          </ui-button>
-          <!-- Settings (default position) -->
-          <ui-button
-            variant="light"
-            [isIcon]="true"
-            icon="settings"
-            (click)="openSettings()"
-            [uiTooltip]="
-              'components.application.dashboard.filterSettings' | translate
-            "
-          >
-          </ui-button>
-        </div>
-        <!-- Quick filter -->
-        <div
-          class="flex flex-row overflow-auto justify-center gap-4 items-center"
-          [ngClass]="{
-            'text-side':
-              position === filterPosition.LEFT ||
-              position === filterPosition.RIGHT,
-            'rotate-180': position === filterPosition.RIGHT
-          }"
-        >
-          <ng-container
-            *ngFor="let quickFilter of quickFilters"
-            class="flex flex-auto overflow-auto justify-center gap-4"
-          >
-            <!--            matTooltipClass="multiline-tooltip"-->
-            <div
-              class="z-20 whitespace-nowrap"
-              [uiTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
-            >
-              {{ quickFilter.label }}
-            </div>
-          </ng-container>
-        </div>
-        <!-- Position -->
+        <!-- Toggle opened status -->
         <div
           [ngClass]="{
-            'flex-col':
-              position === filterPosition.LEFT ||
-              position === filterPosition.RIGHT
+            bottom: position === filterPosition.BOTTOM,
+            top: position === filterPosition.TOP,
+            right: position === filterPosition.RIGHT,
+            left: position === filterPosition.LEFT
           }"
-          class="flex flex-auto justify-end"
+          class="dashboard-filter-tab h-10 py-2 px-3 flex bg-primary-500"
+          (click)="onToggleVisibility()"
         >
-          <ng-container *ngFor="let position of positionList">
-            <ui-button
-              variant="light"
-              [isIcon]="true"
-              icon="{{ position + '_panel_open' }}"
-              [isOutlined]="true"
-              (click)="changeFilterPosition(position)"
-              [uiTooltip]="FilterPositionTooltips[position] | translate"
-            ></ui-button>
-          </ng-container>
+          <div class="pointer-events-auto">
+            <ui-icon icon="view_stream" class="cursor-pointer"></ui-icon>
+          </div>
         </div>
-      </div>
+      </header>
       <div
         [ngClass]="{
           'order-1':
@@ -165,37 +59,177 @@
           'order-2':
             position === filterPosition.BOTTOM ||
             position === filterPosition.RIGHT,
-          'flex-col max-w-xs':
-            position === filterPosition.LEFT ||
-            position === filterPosition.RIGHT
-        }"
-        class="p-3"
-      >
-        <shared-empty
-          class="m-auto py-6 px-0 bg-white"
-          *ngIf="empty"
-          [title]="'components.application.dashboard.filter.empty' | translate"
-        ></shared-empty>
-        <div
-          #dashboardSurveyCreatorContainer
-          class="overflow-scroll"
-          [ngClass]="{ hidden: empty }"
-        >
-          <survey [model]="survey"></survey>
-        </div>
-        <!-- <form
-        [ngClass]="{
-          'flex-col':
+          'w-full flex-col':
+            position === filterPosition.TOP ||
+            position === filterPosition.BOTTOM,
+          'h-full':
             position === filterPosition.LEFT ||
             position === filterPosition.RIGHT,
-          'hidden': !isDrawerOpen,
-          'flex': isDrawerOpen
+          'animate-fadeOut pointer-events-none': !opened,
+          'animate-fadeIn pointer-events-auto': opened
         }"
-        class="flex w-full flex-wrap no"
+        class="dashboard-filter-content bg-white flex"
       >
-        
-      </form> -->
+        <div
+          [ngClass]="{
+            'order-1':
+              position === filterPosition.BOTTOM ||
+              position === filterPosition.RIGHT,
+            'order-2':
+              position === filterPosition.TOP ||
+              position === filterPosition.LEFT,
+            'w-12 h-full px-1 py-4 flex-col':
+              position === filterPosition.LEFT ||
+              position === filterPosition.RIGHT,
+            'w-full py-1 px-4 flex-row':
+              position === filterPosition.TOP ||
+              position === filterPosition.BOTTOM
+          }"
+          class="relative flex justify-between bg-primary-500 text-white"
+        >
+          <!-- Edition -->
+          <div
+            *ngIf="editable"
+            [ngClass]="{
+              'flex-col':
+                position === filterPosition.LEFT ||
+                position === filterPosition.RIGHT
+            }"
+            class="flex flex-auto"
+          >
+            <!-- Configuration -->
+            <ng-container
+              [ngTemplateOutlet]="editTmpl"
+              [ngTemplateOutletContext]="{ variant: 'light' }"
+            ></ng-container>
+            <!-- Settings (default position) -->
+            <ui-button
+              variant="light"
+              [isIcon]="true"
+              icon="settings"
+              (click)="openSettings()"
+              [uiTooltip]="
+                'components.application.dashboard.filterSettings' | translate
+              "
+            >
+            </ui-button>
+          </div>
+          <!-- Quick filter -->
+          <div
+            class="flex flex-row overflow-auto justify-center gap-4 items-center"
+            [ngClass]="{
+              'text-side':
+                position === filterPosition.LEFT ||
+                position === filterPosition.RIGHT,
+              'rotate-180': position === filterPosition.RIGHT
+            }"
+          >
+            <ng-container
+              *ngFor="let quickFilter of quickFilters"
+              class="flex flex-auto overflow-auto justify-center gap-4"
+            >
+              <!--            matTooltipClass="multiline-tooltip"-->
+              <div
+                class="z-20 whitespace-nowrap"
+                [uiTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
+              >
+                {{ quickFilter.label }}
+              </div>
+            </ng-container>
+          </div>
+          <!-- Position -->
+          <div
+            [ngClass]="{
+              'flex-col':
+                position === filterPosition.LEFT ||
+                position === filterPosition.RIGHT
+            }"
+            class="flex flex-auto justify-end"
+          >
+            <ng-container *ngFor="let position of positionList">
+              <ui-button
+                variant="light"
+                [isIcon]="true"
+                icon="{{ position + '_panel_open' }}"
+                [isOutlined]="true"
+                (click)="changeFilterPosition(position)"
+                [uiTooltip]="FilterPositionTooltips[position] | translate"
+              ></ui-button>
+            </ng-container>
+          </div>
+        </div>
+        <div
+          [ngClass]="{
+            'order-1':
+              position === filterPosition.TOP ||
+              position === filterPosition.LEFT,
+            'order-2':
+              position === filterPosition.BOTTOM ||
+              position === filterPosition.RIGHT,
+            'flex-col max-w-xs':
+              position === filterPosition.LEFT ||
+              position === filterPosition.RIGHT
+          }"
+          class="p-3"
+        >
+          <shared-empty
+            class="m-auto py-6 px-0 bg-white"
+            *ngIf="empty"
+            [title]="
+              'components.application.dashboard.filter.empty' | translate
+            "
+          ></shared-empty>
+          <div
+            #dashboardSurveyCreatorContainer
+            class="overflow-scroll"
+            [ngClass]="{ hidden: empty }"
+          >
+            <survey [model]="survey"></survey>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</ng-container>
+
+<!-- Modern template -->
+<ng-template #modernTmpl>
+  <div
+    modernDrawerPositioner
+    [elementWidth]="containerWidth"
+    [visible]="opened"
+  >
+    <div
+      id="filter-modern"
+      class="flex bg-white w-full border-gray-300 border-b px-6 py-2 z-10"
+    >
+      <survey class="flex-1 self-center" [model]="survey"></survey>
+      <div class="flex">
+        <ng-container
+          *ngIf="editable"
+          [ngTemplateOutlet]="editTmpl"
+          [ngTemplateOutletContext]="{ variant: 'grey' }"
+        ></ng-container>
+        <ui-button
+          [isIcon]="true"
+          icon="close"
+          variant="grey"
+          [uiTooltip]="'common.close' | translate"
+          (click)="onToggleVisibility()"
+        ></ui-button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Edit button template -->
+<ng-template #editTmpl let-variant="variant">
+  <ui-button
+    [variant]="variant"
+    [isIcon]="true"
+    icon="edit"
+    (click)="onEditFilter()"
+    [uiTooltip]="'components.application.dashboard.editFilter' | translate"
+  >
+  </ui-button>
+</ng-template>

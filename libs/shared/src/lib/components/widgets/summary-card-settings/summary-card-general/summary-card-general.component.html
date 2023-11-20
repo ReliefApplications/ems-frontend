@@ -162,8 +162,8 @@
     >
       <div uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
-        <ui-select-menu [disabled]="true" [value]="selectedAggregation.id">
-          <ui-select-option [value]="selectedAggregation.id">{{
+        <ui-select-menu [disabled]="true" [value]="selectedAggregation.name">
+          <ui-select-option [value]="selectedAggregation.name">{{
             selectedAggregation.name
           }}</ui-select-option>
         </ui-select-menu>

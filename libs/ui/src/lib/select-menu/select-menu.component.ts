@@ -11,7 +11,6 @@ import {
   ElementRef,
   ViewChild,
   ViewContainerRef,
-  Inject,
   AfterContentInit,
   Optional,
   Self,
@@ -31,8 +30,8 @@ import {
 } from 'rxjs';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DOCUMENT } from '@angular/common';
 import { isNil } from 'lodash';
+import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 
 /**
  * UI Select Menu component
@@ -116,7 +115,7 @@ export class SelectMenuComponent
    * @param renderer Renderer2
    * @param viewContainerRef ViewContainerRef
    * @param overlay Overlay
-   * @param document document
+   * @param shadowDomService shadow dom service to handle the current host of the component
    */
   constructor(
     @Optional() @Self() private control: NgControl,
@@ -124,7 +123,7 @@ export class SelectMenuComponent
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
     private overlay: Overlay,
-    @Inject(DOCUMENT) private document: Document
+    private shadowDomService: ShadowDomService
   ) {
     if (this.control) {
       this.control.valueAccessor = this;
@@ -151,13 +150,13 @@ export class SelectMenuComponent
 
   ngAfterContentInit(): void {
     this.clickOutsideListener = this.renderer.listen(
-      window,
+      this.shadowDomService.currentHost,
       'click',
       (event) => {
         if (
           !(
             this.el.nativeElement.contains(event.target) ||
-            this.document
+            this.shadowDomService.currentHost
               .getElementById('optionsContainer')
               ?.contains(event.target)
           )
@@ -415,6 +414,14 @@ export class SelectMenuComponent
                 overlayY: 'top',
                 offsetX: 0,
                 offsetY: 5,
+              },
+              {
+                originX: 'start',
+                originY: 'top',
+                overlayX: 'start',
+                overlayY: 'bottom',
+                offsetX: 0,
+                offsetY: -5,
               },
             ]),
           minWidth:

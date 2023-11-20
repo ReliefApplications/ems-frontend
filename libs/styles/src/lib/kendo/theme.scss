@@ -146,8 +146,6 @@ If you need to add a new component, you should uncomment there the related impor
 // Import of Kendo themes
 // @import '@progress/kendo-theme-default/dist/all.scss';
 
-// === WIDGETS ===
-.k-resize-handle,
-.k-resize-hint {
-  z-index: 1100;
+.k-badge-edge {
+  z-index: 1;
 }

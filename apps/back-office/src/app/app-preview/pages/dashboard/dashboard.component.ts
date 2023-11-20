@@ -17,6 +17,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard component page, for application preview.
@@ -81,9 +82,9 @@ export class DashboardComponent
             if (data.dashboard) {
               this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.widgets = data.dashboard.structure
-                ? data.dashboard.structure
-                : [];
+              this.widgets = cloneDeep(
+                data.dashboard.structure ? data.dashboard.structure : []
+              );
               this.loading = loading;
             } else {
               this.snackBar.openSnackBar(

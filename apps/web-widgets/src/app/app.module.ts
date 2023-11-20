@@ -41,13 +41,20 @@ import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
-import { LOCATION_INITIALIZED } from '@angular/common';
+import { APP_BASE_HREF, LOCATION_INITIALIZED } from '@angular/common';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { AppWidgetComponent } from './widgets/app-widget/app-widget.component';
+import { ApplicationWidgetRoutingModule } from './widgets/app-widget/app-widget-routing.module';
+import { AppWidgetModule } from './widgets/app-widget/app-widget.module';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import get from 'lodash/get';
 
 // Register local translations for dates
 registerLocaleData(localeFr);
@@ -76,6 +83,7 @@ const initializeAuthAndTranslations =
     oauth.configure(environment.authConfig);
     formService.initialize();
     // Add fa icon font to check in the application
+    library.add(fas, fab);
     // Make sure that all translations are available before the app initializes
     return new Promise<any>((resolve: any) => {
       const locationInitialized = injector.get(
@@ -110,7 +118,11 @@ const initializeAuthAndTranslations =
  * @returns Translator.
  */
 export const httpTranslateLoader = (http: HttpClient) =>
-  new TranslateHttpLoader(http);
+  new TranslateHttpLoader(
+    http,
+    'https://ems-safe-dev.who.int/assets/i18n/',
+    '.json'
+  );
 
 /**
  * Provides custom overlay to inject modals / snackbars in shadow root.
@@ -120,6 +132,18 @@ export const httpTranslateLoader = (http: HttpClient) =>
  */
 const provideOverlay = (_platform: Platform): AppOverlayContainer =>
   new AppOverlayContainer(_platform, document);
+
+/**
+ * Get base href from window configuration.
+ *
+ * @returns dynamic base href
+ */
+export const getBaseHref = () => {
+  // Your logic to determine the base href dynamically
+  // For example, you might get it from a global variable set by the embedding platform
+  const dynamicBaseHref: string = get(window, 'baseHref') || '/';
+  return dynamicBaseHref;
+}
 
 /**
  * Web Widget project root module.
@@ -140,6 +164,8 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     }),
     OverlayModule,
     FormWidgetModule,
+    AppWidgetModule,
+    ApplicationWidgetRoutingModule,
     GraphQLModule,
     DateInputsModule,
   ],
@@ -191,6 +217,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     PopupService,
     ResizeBatchService,
     DatePipe,
+    { provide: APP_BASE_HREF, useFactory: getBaseHref },
   ],
 })
 export class AppModule implements DoBootstrap {
@@ -210,12 +237,19 @@ export class AppModule implements DoBootstrap {
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
-    customElements.define('form-widget', form);
+    customElements.define('apb-form', form);
+
+    // Form
+    const application = createCustomElement(AppWidgetComponent, {
+      injector: this.injector,
+    });
+    customElements.define('apb-application', application);
 
     const fonts = [
       'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
       'https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined',
       'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0',
+      'https://unpkg.com/@progress/kendo-font-icons/dist/index.css',
     ];
     // Make sure that the needed fonts are always available wherever the web component is placed
     fonts.forEach((font) => {

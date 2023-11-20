@@ -9,6 +9,8 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
+import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
+
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
 /**
@@ -44,6 +46,7 @@ export class TooltipDirective implements OnDestroy {
     'break-words',
   ] as const;
 
+  private currentHost!: any;
   /** Position of the tooltip */
   private position!: TooltipPosition;
 
@@ -53,12 +56,17 @@ export class TooltipDirective implements OnDestroy {
    * @param document current DOCUMENT
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
+   * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host in order to correctly insert tooltips
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private elementRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    shadowDomService: ShadowDomService
   ) {
+    this.currentHost = shadowDomService.isShadowRoot
+      ? shadowDomService.currentHost
+      : shadowDomService.currentHost.body;
     // Creation of the tooltip element
     this.createTooltipElement();
   }
@@ -85,8 +93,8 @@ export class TooltipDirective implements OnDestroy {
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    if (this.document.body.contains(this.elToolTip)) {
-      this.renderer.removeChild(this.document.body, this.elToolTip);
+    if (this.currentHost.contains(this.elToolTip)) {
+      this.renderer.removeChild(this.currentHost, this.elToolTip);
     }
   }
 
@@ -96,7 +104,7 @@ export class TooltipDirective implements OnDestroy {
   private showHint() {
     // Fullscreen only renders the current full-screened element,
     // Therefor we check if exists to take it as a reference, else we use the document body by default
-    const elementRef = this.document.fullscreenElement ?? this.document.body;
+    const elementRef = this.document.fullscreenElement ?? this.currentHost;
     this.elToolTip.textContent = this.uiTooltip;
     this.renderer.addClass(this.elToolTip, 'opacity-0');
     this.renderer.appendChild(elementRef, this.elToolTip);

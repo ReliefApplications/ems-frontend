@@ -46,8 +46,8 @@
     <ng-container *ngIf="formGroup.value.chart.aggregationId">
       <div *ngIf="aggregation" uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
-        <ui-select-menu [disabled]="true" [value]="aggregation.id">
-          <ui-select-option [value]="aggregation.id">{{
+        <ui-select-menu [disabled]="true" [value]="aggregation.name">
+          <ui-select-option [value]="aggregation.name">{{
             aggregation.name
           }}</ui-select-option>
         </ui-select-menu>

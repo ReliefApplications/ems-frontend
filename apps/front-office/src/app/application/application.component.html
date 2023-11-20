@@ -10,6 +10,7 @@
   [header]="header"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
+  [menuOpened]="!hideMenu"
   [profileRoute]="'/' + appID + '/profile'"
   (openApplication)="onOpenApplication($event)"
 ></shared-layout>
@@ -38,6 +39,7 @@
     [uiMenuTriggerFor]="settingsMenu"
     [uiTooltip]="'common.settings' | translate"
   ></ui-button>
+  <shared-dashboard-filter-icon></shared-dashboard-filter-icon>
 </ng-template>
 
 <!-- Admin pages -->

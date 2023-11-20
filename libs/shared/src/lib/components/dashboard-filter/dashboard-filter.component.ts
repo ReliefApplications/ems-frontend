@@ -52,8 +52,16 @@ export class DashboardFilterComponent
   extends UnsubscribeComponent
   implements OnDestroy, OnChanges, AfterViewInit
 {
+  /** Is editable */
+  @Input() editable = false;
+  /** Is fullscreen */
+  @Input() isFullScreen = false;
+  /** Filter variant ( defines style ) */
+  @Input() variant: 'modern' | 'default' = 'default';
+  /** Is drawer opened */
+  @Input() opened = false;
   /** Current position of filter */
-  position!: FilterPosition;
+  public position!: FilterPosition;
   /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
@@ -61,7 +69,6 @@ export class DashboardFilterComponent
     FilterPosition.BOTTOM,
     FilterPosition.RIGHT,
   ] as const;
-
   /** Has the translation for the tooltips of each button */
   public FilterPositionTooltips: Record<FilterPosition, string> = {
     [FilterPosition.LEFT]:
@@ -73,9 +80,6 @@ export class DashboardFilterComponent
     [FilterPosition.RIGHT]:
       'components.application.dashboard.filter.filterPosition.right',
   };
-
-  /** Current drawer state */
-  public isDrawerOpen = false;
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
@@ -86,27 +90,23 @@ export class DashboardFilterComponent
   public containerTopOffset!: string;
   /** computed top offset of the parent container (or 0 if fullscreen) */
   public containerLeftOffset!: string;
+  // Filter template
+  public survey: Model = new Model();
+  /** Filter template structure */
+  public surveyStructure: any = {};
+  /** Quick filter display */
+  public quickFilters: QuickFilter[] = [];
+  /** Current application id */
+  public applicationId?: string;
+  /** Indicate empty status of filter */
+  public empty = true;
   /** Represents the survey's value */
   private value: Record<string, any> | undefined;
-
   /** Resize observer for the sidenav container */
   private resizeObserver!: ResizeObserver;
 
-  // Survey
-  public survey: Model = new Model();
-  public surveyStructure: any = {};
-  public quickFilters: QuickFilter[] = [];
-
-  public applicationId?: string;
-
-  /** Indicate empty status of filter */
-  public empty = true;
-
-  @Input() editable = false;
-  @Input() isFullScreen = false;
-
   /**
-   * Class constructor
+   * Dashboard contextual filter component.
    *
    * @param formBuilderService Form builder service
    * @param dialog The Dialog service
@@ -146,6 +146,11 @@ export class DashboardFilterComponent
       this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
 
+    this.contextService.filterOpened$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.opened = value;
+      });
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -204,7 +209,14 @@ export class DashboardFilterComponent
    */
   @HostListener('document:keydown.escape', ['$event'])
   onEsc() {
-    this.isDrawerOpen = false;
+    if (this.variant === 'default') {
+      this.opened = false;
+    }
+  }
+
+  /** Toggle visibility on click */
+  public onToggleVisibility() {
+    this.contextService.filterOpened.next(!this.opened);
   }
 
   /**

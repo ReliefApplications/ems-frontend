@@ -1,7 +1,5 @@
 import { gql } from 'apollo-angular';
 
-// === ADD RECORD ===
-
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
   mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
@@ -26,8 +24,6 @@ export const ADD_RECORD = gql`
     }
   }
 `;
-
-// === EDIT RECORD ===
 
 /** Graphql request for editing a record by its id */
 export const EDIT_RECORD = gql`

@@ -12,7 +12,9 @@ const authConfig: AuthConfig = {
   redirectUri: 'https://ems-safe-test.who.int/backoffice/',
   postLogoutRedirectUri: 'https://ems-safe-test.who.int/backoffice/auth',
   clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
-  scope: 'openid profile email offline_access',
+  scope:
+    'openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user',
+  // Last scope is used to authenticate against Common Services
   responseType: 'code',
   showDebugInformation: true,
   strictDiscoveryDocumentValidation: false,

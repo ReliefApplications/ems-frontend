@@ -185,18 +185,19 @@ export class AggregationGridComponent
             allGqlFields
               ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
               .map((field: any) => {
-                if (field.type?.kind !== 'SCALAR') {
-                  field.fields = this.queryBuilder
+                const mappedField = { ...field };
+                if (mappedField.type.kind !== 'SCALAR') {
+                  mappedField.fields = this.queryBuilder
                     .getFieldsFromType(
-                      field.type?.kind === 'OBJECT'
-                        ? field.type.name
-                        : field.type.ofType.name
+                      mappedField.type.kind === 'OBJECT'
+                        ? mappedField.type.name
+                        : mappedField.type.ofType.name
                     )
                     .filter(
                       (y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR'
                     );
                 }
-                return field;
+                return mappedField;
               }) || [],
             this.aggregation.pipeline
           );

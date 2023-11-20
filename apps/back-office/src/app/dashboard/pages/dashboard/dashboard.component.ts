@@ -310,9 +310,11 @@ export class DashboardComponent
               : this.dashboard?.step?.canUpdate) || false;
 
           this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = this.dashboard.structure
-            ? [...this.dashboard.structure.filter((x: any) => x !== null)]
-            : [];
+          this.widgets = cloneDeep(
+            this.dashboard.structure
+              ? [...this.dashboard.structure.filter((x: any) => x !== null)]
+              : []
+          );
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step

@@ -393,6 +393,7 @@
 		},
 		"title": "Title",
 		"tooltip": {
+			"dragDrop": "Drag and drop to reorder",
 			"editor": {
 				"insert": "Type '{' to inject expressions and variables"
 			}
@@ -598,8 +599,13 @@
 				"title": "Unlock edition"
 			},
 			"update": {
+				"hideMenu": "Hide menu by default",
 				"placeholder": {
 					"description": "Please enter a description for the application"
+				},
+				"sideMenu": "Show menu on the side",
+				"tooltip": {
+					"hideMenu": "Only applies when menu is located on the side"
 				}
 			},
 			"users": {
@@ -722,6 +728,25 @@
 			},
 			"display": {
 				"submissionMessage": "The form has successfully been submitted."
+			},
+			"draftRecords": {
+				"buttonLoad": "Load draft record",
+				"confirmModal": {
+					"confirmDelete": "Do you really want to delete this draft record?",
+					"confirmLoad": "Do you really want to load this draft record?",
+					"delete": "Delete this draft",
+					"load": "Load this draft"
+				},
+				"creationDate": "Creation date",
+				"delete": "Delete this draft",
+				"load": "Load this draft",
+				"noDrafts": "No draft available.",
+				"preview": "Preview this draft",
+				"previewTitle": "Draft record",
+				"save": "Save as draft",
+				"select": "Select draft record",
+				"successEdit": "Successfully edited draft",
+				"successSave": "Successfully saved as draft"
 			},
 			"layout": {
 				"delete": {
@@ -1238,6 +1263,9 @@
 						"invalid": "Invalid aggregation"
 					}
 				},
+				"filters": {
+					"select": "Select a filter..."
+				},
 				"other": "Other"
 			},
 			"expand": "Expand",
@@ -1251,7 +1279,8 @@
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
-						"frontoffice": "Invalid grid configuration, please contact your admin"
+						"frontoffice": "Invalid grid configuration, please contact your admin",
+						"webwidgets": "Invalid grid configuration, please contact your admin"
 					},
 					"metaQueryBuildFailed": "Error building metadata",
 					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",
@@ -1323,6 +1352,12 @@
 					"axes": "Axes",
 					"categories": "Categories",
 					"color": "Color",
+					"filters": {
+						"add": "Add filter",
+						"delete": "Delete filter",
+						"empty": "No filters configured",
+						"title": "Predefined filters"
+					},
 					"grid": {
 						"title": "Gridlines",
 						"x": {
@@ -1388,16 +1423,22 @@
 						"convert": "Convert records",
 						"delete": "Delete records",
 						"export": "Export records",
+						"goTo": {
+							"column": {
+								"label": "Column name",
+								"placeholder": "Type a title for the column..."
+							},
+							"field": {
+								"label": "Pass field as query parameter",
+								"placeholder": "Select a field"
+							},
+							"label": "Navigate to page",
+							"target": {
+								"label": "Target page",
+								"placeholder": "Select a page"
+							}
+						},
 						"inline": "Inline edition",
-						"navigateToPage": "Navigate to page",
-						"pageUrl": {
-							"label": "Target page",
-							"placeholder": "Select a page"
-						},
-						"pageUrlTitle": {
-							"label": "Column name",
-							"placeholder": "Type a title for the column..."
-						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
@@ -1457,8 +1498,8 @@
 							"convert": "If authorized, user can convert record using another template of selected resource",
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
+							"goTo": "User can go to specified page on click",
 							"inline": "If authorized, user can edit records in the grid",
-							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
@@ -1657,6 +1698,7 @@
 							"download": "Download",
 							"lastUpdate": "Last updated on",
 							"lastUpdateError": "Last modified time could not be loaded",
+							"lastUpdatePosition": "Select a position to display the control",
 							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",
@@ -1971,7 +2013,6 @@
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
-			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",
@@ -2072,7 +2113,6 @@
 		"page": {
 			"add": "Add a Page",
 			"tooltip": {
-				"drag": "Drag and drop to reorder",
 				"duplicate": "Select the application you want to put the copy in"
 			}
 		},

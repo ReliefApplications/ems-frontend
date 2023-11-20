@@ -57,7 +57,7 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   ngOnInit(): void {
     // Subscribe to click events
     this.clickOutsideListener = this.renderer.listen(
-      window,
+      this.document,
       'click',
       (event) => {
         if (
