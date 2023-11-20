@@ -129,9 +129,10 @@
     "@nrwl/storybook": "^15.7.2",
     "@nrwl/workspace": "15.7.2",
     "@schematics/angular": "~15.1.1",
-    "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/release-notes-generator": "^10.0.3",
+    "@semantic-release/npm": "^11.0.1",
+    "@semantic-release/release-notes-generator": "^12.1.0",
     "@storybook/addon-docs": "^7.5.1",
     "@storybook/addon-essentials": "^7.3.2",
     "@storybook/addon-interactions": "^7.4.6",
@@ -178,7 +179,7 @@
     "prettier": "^2.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "semantic-release": "^21.0.7",
+    "semantic-release": "^22.0.8",
     "tailwindcss": "^3.3.3",
     "ts-jest": "28.0.5",
     "ts-node": "10.9.1",
@@ -188,6 +189,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ReliefApplications/oort-frontend.git"
+    "url": "https://github.com/ReliefApplications/ems-frontend.git"
   }
 }
