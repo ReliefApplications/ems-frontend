@@ -21,6 +21,8 @@ import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /**
  * Creates the form for the editor widget settings.
@@ -82,7 +84,10 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
   templateUrl: './editor-settings.component.html',
   styleUrls: ['./editor-settings.component.scss'],
 })
-export class EditorSettingsComponent implements OnInit, AfterViewInit {
+export class EditorSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   /** Widget configuration */
   @Input() widget: any;
   /** Widget form group */
@@ -109,6 +114,7 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private dataTemplateService: DataTemplateService
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -150,7 +156,8 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
     // update fields when change aggregation
     this.widgetFormGroup
       .get('aggregation')
-      ?.valueChanges.subscribe((val: any) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((val: any) => {
         this.updateFields(val);
       });
   }

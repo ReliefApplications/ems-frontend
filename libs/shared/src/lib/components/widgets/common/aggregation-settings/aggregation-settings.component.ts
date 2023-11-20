@@ -103,7 +103,8 @@ export class AggregationSettingsComponent
 
     this.formGroup
       .get('aggregation.resource')
-      ?.valueChanges.subscribe((val: any) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((val: any) => {
         this.selectedResource =
           this.resourcesQuery
             .getCurrentResult()
