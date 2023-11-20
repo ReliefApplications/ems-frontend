@@ -1,7 +1,34 @@
 <form [formGroup]="settingsForm">
-<ui-toggle formControlName="showFilter">
+   <!-- Activate filtering -->
+  <ui-toggle formControlName="showFilter" class="mb-4">
+      <ng-container ngProjectAs="label">{{
+        'models.dashboard.activateFiltering' | translate
+      }}</ng-container>
+  </ui-toggle>
+   <!-- Filter Variant -->
+  <div class="mb-4 mt-4">
+    <h4 ngProjectAs="label">{{
+      'models.dashboard.filterVariant.title' | translate 
+    }}</h4>
+    <ui-select-menu
+          formControlName="variant"
+          [placeholder]="'models.dashboard.filterVariant.variantsOptions.selectOrigin'| translate"
+        >
+          <ui-select-option value="modern">
+            {{ 'models.dashboard.filterVariant.variantsOptions.variant_modern'
+            | translate}}
+          </ui-select-option>
+          <ui-select-option value="default">
+            {{  'models.dashboard.filterVariant.variantsOptions.variant_default'
+            | translate }}
+          </ui-select-option>
+    </ui-select-menu>
+  </div>
+  <!-- Closable status -->
+  <ui-toggle formControlName="closable" style="margin-top: 2%;">
     <ng-container ngProjectAs="label">{{
-      'models.dashboard.activateFiltering' | translate
+      'models.dashboard.closable' | translate
     }}</ng-container>
 </ui-toggle>
 </form>
+

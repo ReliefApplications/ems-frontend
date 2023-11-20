@@ -111,15 +111,6 @@
           >
           </ui-button>
           <ui-menu #menu>
-            <button uiMenuItem (click)="toggleFiltering()">
-              <ui-icon icon="tune" variant="grey"></ui-icon>
-              {{
-                (showFilter
-                  ? 'models.dashboard.deactivateFiltering'
-                  : 'models.dashboard.activateFiltering'
-                ) | translate
-              }}
-            </button>
             <button uiMenuItem (click)="onAddButtonAction()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.add' | translate }}

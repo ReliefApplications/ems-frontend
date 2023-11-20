@@ -2064,6 +2064,7 @@
 				"text": "Texte du bouton",
 				"variant": "Variante de bouton"
 			},
+			"closable": "Fermable",
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -2092,6 +2093,14 @@
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
 			"deactivateFiltering": "Désactiver le filtre",
+			"filterVariant": {
+				"title": "Variante de filtre",
+				"variantsOptions": {
+					"selectOrigin": "Sélectionner une variante de filtre",
+					"variant_default": "Défaut",
+					"variant_modern": "Moderne"
+				}
+			},
 			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {

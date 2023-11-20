@@ -2047,6 +2047,7 @@
 				"text": "Button text",
 				"variant": "Button variant"
 			},
+			"closable": "Closable",
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -2075,6 +2076,14 @@
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
+			"filterVariant": {
+				"title": "Filter variant",
+				"variantsOptions": {
+					"selectOrigin": "Select filter variant",
+					"variant_default": "Default",
+					"variant_modern": "Modern"
+				}
+			},
 			"historicalDate": "Get dataset at",
 			"share": "Share Dashboard",
 			"tooltip": {

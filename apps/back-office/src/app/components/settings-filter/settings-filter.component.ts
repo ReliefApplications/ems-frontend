@@ -13,16 +13,30 @@ import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { FormBuilder } from '@angular/forms';
 import { takeUntil } from 'rxjs';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { UiModule } from '@oort-front/ui';
 /**
- *
+ * Filter choices
+ */
+export enum variantFilterChoices {
+  modern = 'modern',
+  default = 'default',
+}
+/**
+ * Dashboard settings filter component.
  */
 @Component({
   selector: 'app-settings-filter',
   standalone: true,
-  imports: [ToggleModule, DialogModule, FormWrapperModule, ReactiveFormsModule],
   templateUrl: './settings-filter.component.html',
   styleUrls: ['./settings-filter.component.scss'],
+  imports: [
+    ToggleModule,
+    DialogModule,
+    FormWrapperModule,
+    ReactiveFormsModule,
+    UiModule,
+  ],
 })
 export class SettingsFilterComponent
   extends UnsubscribeComponent
@@ -31,7 +45,7 @@ export class SettingsFilterComponent
   /** Current dashboard */
   @Input() dashboard?: Dashboard;
   /** Reactive Form */
-  public settingsForm!: FormGroup;
+  public settingsForm!: ReturnType<typeof this.createSettingsForm>;
   /** Show dashboard filter */
   public showFilter!: boolean;
 
@@ -65,6 +79,18 @@ export class SettingsFilterComponent
       .subscribe((value: boolean | null) => {
         if (typeof value === 'boolean') this.toggleFiltering(value);
       });
+
+    this.settingsForm?.controls.variant.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string | null) => {
+        if (typeof value === 'string') this.selectFilterVariant(value);
+      });
+
+    this.settingsForm?.controls.closable.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean | null) => {
+        if (typeof value === 'boolean') this.toggleClosable(value);
+      });
   }
 
   /**
@@ -73,8 +99,10 @@ export class SettingsFilterComponent
    * @returns Form group
    */
   private createSettingsForm() {
-    return new FormGroup({
-      showFilter: new FormControl(this.dashboard?.showFilter ?? true),
+    return this.fb.group({
+      showFilter: this.dashboard?.showFilter ?? true,
+      variant: this.dashboard?.filterVariant ?? '',
+      closable: this.dashboard?.closable ?? false, // verify what is default on the system
     });
   }
 
@@ -95,6 +123,81 @@ export class SettingsFilterComponent
           variables: {
             id: this.dashboard.id,
             showFilter: value,
+          },
+        })
+        .subscribe({
+          next: ({ data, errors }) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.dashboard.one')
+            );
+            if (!errors) {
+              this.dashboardService.openDashboard({
+                ...this.dashboard,
+                ...(data && { showFilter: data?.editDashboard.showFilter }),
+              });
+            }
+          },
+          complete: () => {
+            this.contextService.isFilterEnabled.next(value);
+          },
+        });
+    }
+  }
+
+  /**
+   * Toggles the filter for the current .
+   *
+   * @param value Value to activate or deactivate the filter
+   */
+  selectFilterVariant(value: string): void {
+    if (!this.dashboard) {
+      return;
+    }
+    this.dashboard.filterVariant = value;
+    if (this.dashboard) {
+      this.apollo
+        .mutate<EditDashboardMutationResponse>({
+          mutation: EDIT_DASHBOARD,
+          variables: {
+            id: this.dashboard.id,
+            filterVariant: value,
+          },
+        })
+        .subscribe({
+          next: ({ data, errors }) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.dashboard.one')
+            );
+            if (!errors) {
+              this.dashboardService.openDashboard({
+                ...this.dashboard,
+                ...(data && { showFilter: data?.editDashboard.showFilter }),
+              });
+            }
+          },
+        });
+    }
+  }
+
+  /**
+   * Toggles the filter for the current .
+   *
+   * @param value Value to activate or deactivate the filter
+   */
+  toggleClosable(value: boolean): void {
+    if (!this.dashboard) {
+      return;
+    }
+    this.dashboard.closable = value;
+    if (this.dashboard) {
+      this.apollo
+        .mutate<EditDashboardMutationResponse>({
+          mutation: EDIT_DASHBOARD,
+          variables: {
+            id: this.dashboard.id,
+            closable: value,
           },
         })
         .subscribe({

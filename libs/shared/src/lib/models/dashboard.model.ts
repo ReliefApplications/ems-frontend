@@ -227,6 +227,8 @@ export interface Dashboard {
   page?: Page;
   step?: Step;
   showFilter?: boolean;
+  filterVariant?: string;
+  closable?: boolean;
   buttons?: {
     text: string;
     href: string;

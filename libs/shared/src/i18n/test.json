@@ -2047,6 +2047,7 @@
 				"text": "******",
 				"variant": "******"
 			},
+			"closable": "******",
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -2075,6 +2076,14 @@
 			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"filterVariant": {
+				"title": "******",
+				"variantsOptions": {
+					"selectOrigin": "******",
+					"variant_default": "******",
+					"variant_modern": "******"
+				}
+			},
 			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {

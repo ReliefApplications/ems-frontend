@@ -553,41 +553,6 @@ export class DashboardComponent
     }
   }
 
-  /**
-   * Toggles the filter for the current dashboard.
-   */
-  toggleFiltering(): void {
-    if (this.dashboard) {
-      this.showFilter = !this.showFilter;
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.id,
-            showFilter: this.showFilter,
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
-              });
-            }
-          },
-          complete: () => {
-            this.contextService.isFilterEnabled.next(this.showFilter);
-            this.loading = false;
-          },
-        });
-    }
-  }
-
   /** Display the ShareUrl modal with the route to access the dashboard. */
   public async onShare(): Promise<void> {
     const url = `${window.origin}/share/${this.dashboard?.id}`;

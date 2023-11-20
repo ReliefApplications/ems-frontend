@@ -43,6 +43,8 @@ export const EDIT_DASHBOARD = gql`
           id
         }
       }
+      filterVariant
+      closable
     }
   }
 `;
