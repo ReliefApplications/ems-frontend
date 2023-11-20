@@ -117,7 +117,7 @@ export class GridComponent
     showDetails: false,
     navigateToPage: false,
     navigateSettings: {
-      useRecordId: false,
+      field: '',
       pageUrl: '',
       title: '',
     },
@@ -995,7 +995,7 @@ export class GridComponent
     });
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
-      (column) => !column.hidden && !!column.title && column.title !== 'Details'
+      (column) => !column.hidden && !!column.title && !column.sticky
     );
     // Get average column width given the active columns and the grid's actual width
     const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
@@ -1150,7 +1150,7 @@ export class GridComponent
     }
 
     // Finally, resize the columns
-    this.columns.forEach((column) => {
+    availableColumns.forEach((column) => {
       const columnFieldType = typesFields.find(
         (type: any) => column.title === type.title && activeColumns[type.field]
       );

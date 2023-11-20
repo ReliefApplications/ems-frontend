@@ -1,3 +1,36 @@
+# [2.2.0-beta.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.8...v2.2.0-beta.9) (2023-11-20)
+
+
+### Bug Fixes
+
+* bring back filtering in aggregation builder ([#2077](https://github.com/ReliefApplications/ems-frontend/issues/2077)) ([b179147](https://github.com/ReliefApplications/ems-frontend/commit/b179147a6fdddccbc709c86ce7978f16c379a741))
+* Some select in widgets would display ID instead of name ([#2058](https://github.com/ReliefApplications/ems-frontend/issues/2058)) ([1ab1d30](https://github.com/ReliefApplications/ems-frontend/commit/1ab1d30e2a92086614755ae61400048bf2d56c8b))
+* sticky columns in grids could be wrongly resized ([#2069](https://github.com/ReliefApplications/ems-frontend/issues/2069)) ([7e7ee5b](https://github.com/ReliefApplications/ems-frontend/commit/7e7ee5b39126b6ff1285a170a3d6c8501e5939ba))
+
+
+### Features
+
+* ability to set predefined filter on charts ([#2060](https://github.com/ReliefApplications/ems-frontend/issues/2060)) ([4f79eb1](https://github.com/ReliefApplications/ems-frontend/commit/4f79eb1cb02492c4df507ab5098a2e56d9968b17))
+* can now enable / disable inner padding of some widgets ([#2081](https://github.com/ReliefApplications/ems-frontend/issues/2081)) ([3962249](https://github.com/ReliefApplications/ems-frontend/commit/3962249a1c3ab57a595e41a59f2213e9944f8bd0))
+* can now use App Builder applications as web element ([#1977](https://github.com/ReliefApplications/ems-frontend/issues/1977)) ([b7b98b0](https://github.com/ReliefApplications/ems-frontend/commit/b7b98b06dccb28384f76d9b4f7837b86dfe584de))
+
+# [2.2.0-beta.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.7...v2.2.0-beta.8) (2023-11-09)
+
+
+### Bug Fixes
+
+* auto sizing grid columns would create tiny columns when too many columns ([#2057](https://github.com/ReliefApplications/oort-frontend/issues/2057)) ([6afea60](https://github.com/ReliefApplications/oort-frontend/commit/6afea60bf26a5fb0d3951677605f94167078cfb9))
+* navigate to page action in grid / summary card would limit to only id field ([#2029](https://github.com/ReliefApplications/oort-frontend/issues/2029)) ([12eb046](https://github.com/ReliefApplications/oort-frontend/commit/12eb0466655bb4cecd27c00957e2cdd4ddd3fac9))
+* readonly would not be correctly considered in resources question ([#2054](https://github.com/ReliefApplications/oort-frontend/issues/2054)) ([498bb96](https://github.com/ReliefApplications/oort-frontend/commit/498bb969acf03b961d7ba7dbc9e4eff08dec9f10))
+* some widgets in tab widget could not be resized ([1413948](https://github.com/ReliefApplications/oort-frontend/commit/1413948528a752a0ce1584d8ba15fcbf2106ec19))
+
+
+### Features
+
+* Ability to save draft record ([#2030](https://github.com/ReliefApplications/oort-frontend/issues/2030)) ([2aeeca1](https://github.com/ReliefApplications/oort-frontend/commit/2aeeca1f0a056525f88fc39dde268d41441201f7))
+* implement filter icon ([356c39a](https://github.com/ReliefApplications/oort-frontend/commit/356c39a0f3a7d7e459376651eda82c11b1d441da))
+* implement filter icon & dashboard filter modern variant ([ed63923](https://github.com/ReliefApplications/oort-frontend/commit/ed63923e45e814e73ec8c668233486c354b7701d))
+
 # [2.2.0-beta.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.6...v2.2.0-beta.7) (2023-11-07)
 
 

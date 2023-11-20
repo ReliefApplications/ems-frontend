@@ -1,2 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'ui.scss';
+/* Style use when serving web component in local */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+
+  // Firefox scrollbars
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  scrollbar-color: #d4d4d9 white;
+}
+// === SCROLL BARS ===
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* === Track === */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* === Handle === */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #d4d4d9;
+  border: solid 2px white;
+}

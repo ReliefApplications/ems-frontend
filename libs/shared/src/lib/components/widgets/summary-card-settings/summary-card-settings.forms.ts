@@ -56,6 +56,9 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       usePagination: new FormControl(
         get<boolean>(configuration, 'widgetDisplay.usePagination', false)
       ),
+      usePadding: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.usePadding', true)
+      ),
     }
   );
 
@@ -124,6 +127,7 @@ const createCardForm = (value?: any) => {
     showDataSourceLink: get<boolean>(value, 'showDataSourceLink', false),
     useStyles: get<boolean>(value, 'useStyles', true),
     wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
+    usePadding: get<boolean>(value, 'usePadding', true),
   });
 };
 

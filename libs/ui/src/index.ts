@@ -43,6 +43,7 @@ export * from './lib/cron-editor/cron-editor.module';
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';
 export * from './lib/sidenav/layout/layout.service';
+export * from './lib/shadow-dom/shadow-dom.service';
 
 // === TYPES === //
 export * from './lib/types/variant';

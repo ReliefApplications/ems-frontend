@@ -1168,9 +1168,10 @@
     <kendo-grid-column
       *ngIf="hasDetails && actions.showDetails"
       [columnMenu]="false"
-      [width]="54"
+      [width]="68"
       [resizable]="false"
       title="Details"
+      [sticky]="true"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <button
@@ -1190,6 +1191,7 @@
       [width]="54"
       [resizable]="true"
       [title]="actions.navigateSettings.title"
+      [sticky]="true"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <button
@@ -1202,7 +1204,7 @@
               action: 'goTo',
               item: dataItem,
               pageUrl: actions.navigateSettings.pageUrl,
-              useRecordId: actions.navigateSettings.useRecordId
+              field: actions.navigateSettings.field
             })
           "
           [uiTooltip]="'components.widget.grid.actions.goTo' | translate"
@@ -1213,7 +1215,7 @@
     <kendo-grid-column
       *ngIf="hasEnabledActions"
       [columnMenu]="false"
-      [width]="86"
+      [width]="54"
       [resizable]="false"
       [sticky]="true"
     >

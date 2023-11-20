@@ -393,6 +393,7 @@
 		},
 		"title": "Title",
 		"tooltip": {
+			"dragDrop": "Drag and drop to reorder",
 			"editor": {
 				"insert": "Type '{' to inject expressions and variables"
 			}
@@ -779,6 +780,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
+				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -1262,6 +1264,9 @@
 						"invalid": "Invalid aggregation"
 					}
 				},
+				"filters": {
+					"select": "Select a filter..."
+				},
 				"other": "Other"
 			},
 			"expand": "Expand",
@@ -1275,7 +1280,8 @@
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
-						"frontoffice": "Invalid grid configuration, please contact your admin"
+						"frontoffice": "Invalid grid configuration, please contact your admin",
+						"widgets": "Invalid grid configuration, please contact your admin"
 					},
 					"metaQueryBuildFailed": "Error building metadata",
 					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",
@@ -1347,6 +1353,12 @@
 					"axes": "Axes",
 					"categories": "Categories",
 					"color": "Color",
+					"filters": {
+						"add": "Add filter",
+						"delete": "Delete filter",
+						"empty": "No filters configured",
+						"title": "Predefined filters"
+					},
 					"grid": {
 						"title": "Gridlines",
 						"x": {
@@ -1412,16 +1424,22 @@
 						"convert": "Convert records",
 						"delete": "Delete records",
 						"export": "Export records",
+						"goTo": {
+							"column": {
+								"label": "Column name",
+								"placeholder": "Type a title for the column..."
+							},
+							"field": {
+								"label": "Pass field as query parameter",
+								"placeholder": "Select a field"
+							},
+							"label": "Navigate to page",
+							"target": {
+								"label": "Target page",
+								"placeholder": "Select a page"
+							}
+						},
 						"inline": "Inline edition",
-						"navigateToPage": "Navigate to page",
-						"pageUrl": {
-							"label": "Target page",
-							"placeholder": "Select a page"
-						},
-						"pageUrlTitle": {
-							"label": "Column name",
-							"placeholder": "Type a title for the column..."
-						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
@@ -1481,8 +1499,8 @@
 							"convert": "If authorized, user can convert record using another template of selected resource",
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
+							"goTo": "User can go to specified page on click",
 							"inline": "If authorized, user can edit records in the grid",
-							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
@@ -1741,7 +1759,8 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
-							"title": "Display",
+							"padding": "Use card inner padding",
+							"title": "Card display",
 							"tooltip": {
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
@@ -2099,7 +2118,6 @@
 		"page": {
 			"add": "Add a Page",
 			"tooltip": {
-				"drag": "Drag and drop to reorder",
 				"duplicate": "Select the application you want to put the copy in"
 			}
 		},
@@ -2167,7 +2185,9 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"expand": "Show button to expand widget",
 				"header": "Show widget header",
+				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
 				"title": "Widget display"
@@ -2190,6 +2210,11 @@
 				"title": "Sorting"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Expand widget",
+					"help": "Only appears in front-office or in preview mode",
+					"restore": "Restore default"
+				},
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"

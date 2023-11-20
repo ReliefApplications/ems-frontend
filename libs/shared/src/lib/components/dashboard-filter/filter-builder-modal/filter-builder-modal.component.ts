@@ -20,6 +20,10 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
 import 'survey-core/survey.i18n.min.js';
+import {
+  CustomJSONEditorComponent,
+  SurveyCustomJSONEditorPlugin,
+} from '../../form-builder/custom-json-editor/custom-json-editor.component';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -154,6 +158,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     AlertModule,
     SurveyCreatorModule,
     ButtonModule,
+    CustomJSONEditorComponent,
   ],
 })
 export class FilterBuilderModalComponent
@@ -195,12 +200,14 @@ export class FilterBuilderModalComponent
   private setFormBuilder() {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: true,
+      showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
     };
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
+    new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
     // this.surveyCreator.text = '';
     this.surveyCreator.showToolbox = true;

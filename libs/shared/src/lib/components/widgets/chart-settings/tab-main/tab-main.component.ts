@@ -7,7 +7,6 @@ import {
   ResourcesQueryResponse,
 } from '../../../../models/resource.model';
 import { GET_RESOURCE, GET_RESOURCES } from '../graphql/queries';
-import { Subject } from 'rxjs';
 import { CHART_TYPES } from '../constants';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
@@ -30,16 +29,20 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./tab-main.component.scss'],
 })
 export class TabMainComponent extends UnsubscribeComponent implements OnInit {
+  /** Reactive form group */
   @Input() formGroup!: UntypedFormGroup;
+  /** Selected chart type */
   @Input() type: any;
+  /** Available chart types */
   public types = CHART_TYPES;
+  /** Apollo resources query */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  /** Current resource */
   public resource?: Resource;
+  /** Current aggregation */
   public aggregation?: Aggregation;
+  /** Available fields */
   public availableSeriesFields: any[] = [];
-
-  private reload = new Subject<boolean>();
-  public reload$ = this.reload.asObservable();
 
   /**
    * Get the selected chart type object
@@ -74,12 +77,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.formGroup
-      .get('chart.type')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.reload.next(true);
-      });
     this.formGroup
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))

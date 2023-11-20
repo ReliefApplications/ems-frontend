@@ -209,8 +209,8 @@ export class WidgetGridComponent
       },
       pushItems: true,
       swap: true,
-      swapWhileDragging: false,
-      disablePushOnDrag: true,
+      swapWhileDragging: true,
+      disablePushOnDrag: false,
       disablePushOnResize: false,
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
@@ -412,7 +412,6 @@ export class WidgetGridComponent
       delete widget.defaultRows;
       delete widget.minItemRows;
     });
-    console.log(this.widgets);
     // Prevent changes to be saved too often
     this.changesSubscription = this.structureChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))

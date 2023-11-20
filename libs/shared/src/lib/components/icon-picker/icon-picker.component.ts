@@ -294,6 +294,7 @@ export class IconPickerComponent
   public setIcon(icon?: string) {
     this.showList = false;
     if (icon) {
+      this.appendIconSvgToDOM(icon);
       this.value = icon;
       // In order to render the value container after it contains value we set the timeout
       if (this.setIconTimeoutListener) {

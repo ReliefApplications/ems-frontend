@@ -1,23 +1,26 @@
-/* All the styling that would be applied for the web component within the shadow root */
-
 /* All the styling used for the leaflet maps and controls */
-@use 'node_modules/survey-angular/survey.min.css';
-@use 'node_modules/survey-creator/survey-creator.min.css';
 @use 'node_modules/leaflet/dist/leaflet.css' as leaflet;
 @use 'node_modules/leaflet.markercluster/dist/MarkerCluster.css' as marker;
 @use 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css' as
   markerDefault;
 
+/* All the styling that would be applied for the web component within the shadow root */
+@use 'node_modules/survey-core/defaultV2.min.css';
+@use 'node_modules/survey-core/survey.min.css';
+
 /* All the needed fonts for the web component */
-@import 'libs/styles/src/lib/tailwind/tailwind.scss';
-@import 'libs/styles/src/lib/kendo/theme.scss';
-@import 'libs/shared/src/lib/style/widgets.scss';
-@import 'libs/shared/src/lib/style/styles.scss';
-@import 'libs/shared/src/lib/style/survey.scss';
-@import 'libs/styles/src/lib/shared/shared.scss';
+@use 'libs/styles/src/lib/tailwind/tailwind.scss';
+@use 'libs/styles/src/lib/kendo/theme.scss';
+@use 'libs/shared/src/lib/style/styles.scss';
+@use 'libs/shared/src/lib/style/survey.scss' as surveyOORT;
+@use 'libs/styles/src/lib/shared/shared.scss';
 
 /* Definition of the scss properties in the shadow root host element, won't affect any other element outside shadow-root */
-@import 'variables.scss';
+@use 'variables.scss' as *;
+
+/* Kendo icons css has to be added in the shadow dom and in the document header in order to load the fonts */
+@import '@progress/kendo-font-icons/dist/index.css';
+
 @layer base {
   :host {
     --primary-50: #{$primary_50};
@@ -37,9 +40,37 @@
   }
 }
 
+/* Classes that are set in the body or document in general should be placed inside the host in order to apply them inside the shadow dom */
 :host {
   height: 100%;
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: system-ui;
   overflow: hidden;
+}
+
+// Even if the fonts are loaded in the document, the class should be explicitly placed inside the shadow dom in order to make the icons work
+// https://github.com/google/material-design-icons/issues/1165#issuecomment-1030705931
+i {
+  &.material-icons {
+    font-family: 'Material Icons';
+  }
+  &.material-icons-outlined {
+    font-family: 'Material Icons Outlined';
+  }
+  &.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+  }
+  &.material-icons, &.material-icons-outlined, &.material-symbols-outlined {
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+  }
 }

@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createTabsWidgetFormGroup } from './tabs-settings.form';
 import get from 'lodash/get';
@@ -39,7 +39,12 @@ export class TabsSettingsComponent
     // Create form group, and extend it to get display settings ( such as borderless )
     this.widgetForm = extendWidgetForm(
       createTabsWidgetFormGroup(this.widget.id, this.widget.settings),
-      get(this.widget, 'settings.widgetDisplay')
+      get(this.widget, 'settings.widgetDisplay'),
+      {
+        usePadding: new FormControl(
+          get<boolean>(this.widget.settings, 'widgetDisplay.usePadding', true)
+        ),
+      }
     );
     this.change.emit(this.widgetForm);
   }
