@@ -3,7 +3,9 @@ import { ICreatorPlugin, SurveyCreatorModel } from 'survey-creator-core';
 import { AngularComponentFactory, BaseAngular } from 'survey-angular-ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 // Documentation:
 // https://surveyjs.io/survey-creator/examples/modify-tab-bar/angular#
@@ -41,17 +43,20 @@ export class SurveyCustomJSONEditorPlugin implements ICreatorPlugin {
   selector: 'svc-tab-customJSONEditor',
   templateUrl: './custom-json-editor.component.html',
   styleUrls: ['./custom-json-editor.component.scss'],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MonacoEditorModule],
+  standalone: true,
 })
-export class customJSONEditorComponent
+export class CustomJSONEditorComponent
   extends BaseAngular<SurveyCreatorModel>
   implements OnInit
 {
+  /** SurveyJS model */
   @Input() model!: SurveyCreatorModel;
-
+  /** Structure as text */
   public JSONtext = '';
+  /** Form control used by monaco editor */
   public formControl = new FormControl(this.JSONtext);
-
-  // === MONACO EDITOR ===
+  /** Monaco editor options */
   public editorOptions = {
     language: 'json',
     formatOnPaste: true,
@@ -116,5 +121,5 @@ export class customJSONEditorComponent
 }
 AngularComponentFactory.Instance.registerComponent(
   'svc-tab-customJSONEditor',
-  customJSONEditorComponent
+  CustomJSONEditorComponent
 );
