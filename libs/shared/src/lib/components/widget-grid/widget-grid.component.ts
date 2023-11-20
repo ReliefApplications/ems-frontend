@@ -181,7 +181,6 @@ export class WidgetGridComponent
    *  @param isDashboardSet Property to add item change callback handler once the dashboard is ready and editable
    */
   setGridOptions(isDashboardSet = false) {
-    console.log(this.options);
     this.gridOptions = {
       ...this.gridOptions,
       ...(isDashboardSet && {

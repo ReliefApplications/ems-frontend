@@ -539,7 +539,13 @@
 					"fixedRowHeight": "Row height",
 					"gridOptions": "Grid options",
 					"margin": "Margin between widgets",
-					"minCols": "Number of columns"
+					"minCols": "Number of columns",
+					"tooltips": {
+						"clear": "Set default values",
+						"fixedRowHeight": "Minimum: 50, Default: 200, No max",
+						"margin": "Minimum: 0, Default: 10, No max",
+						"minCols": "Minimum: 4, Default: 8, Maximum: 24"
+					}
 				}
 			},
 			"delete": {

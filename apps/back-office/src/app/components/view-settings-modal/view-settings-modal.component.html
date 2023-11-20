@@ -108,35 +108,111 @@
             <ui-icon
               icon="style"
               [size]="18"
-              uiTooltip="{{ 'components.application.dashboard.settings.gridOptions' | translate }}"
+              uiTooltip="{{
+                'components.application.dashboard.settings.gridOptions'
+                  | translate
+              }}"
             ></ui-icon>
-            <span>{{ 'components.application.dashboard.settings.gridOptions' | translate }}</span>
+            <span>{{
+              'components.application.dashboard.settings.gridOptions'
+                | translate
+            }}</span>
           </ng-container>
           <!-- Tab content -->
           <div class="flex gap-4 flex-col" formGroupName="gridOptions">
             <!-- Number of columns -->
             <div uiFormFieldDirective>
-              <label>{{ 'components.application.dashboard.settings.minCols' | translate }}</label>
-              <input
-                type="number"
-                formControlName="minCols"
-              />
+              <label class="flex items-center gap-1">
+                {{
+                  'components.application.dashboard.settings.minCols'
+                    | translate
+                }}
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltips.minCols'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="minCols" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="close"
+                variant="grey"
+                (click)="settingsForm.controls.gridOptions?.controls!.minCols.setValue(8)"
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltips.clear'
+                    | translate
+                "
+              ></ui-icon>
             </div>
             <!-- Change default size of rows -->
-            <div uiFormFieldDirective>
-              <label>{{ 'components.application.dashboard.settings.fixedRowHeight' | translate }}</label>
-              <input
-                type="number"
-                formControlName="fixedRowHeight"
-              />
+            <div uiFormFieldDirective [outline]="false">
+              <label class="flex items-center gap-1">
+                {{
+                  'components.application.dashboard.settings.fixedRowHeight'
+                    | translate
+                }}
+                <!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltips.fixedRowHeight'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="fixedRowHeight" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="close"
+                variant="grey"
+                (click)="settingsForm.controls.gridOptions?.controls!.fixedRowHeight.setValue(200)"
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltips.clear'
+                    | translate
+                "
+              ></ui-icon>
             </div>
-            <!-- Specify inner gap in pixels -->
+            <!-- Specify inner gap -->
             <div uiFormFieldDirective>
-              <label>{{ 'components.application.dashboard.settings.margin' | translate }}</label>
-              <input
-                type="number"
-                formControlName="margin"
-              />
+              <label class="flex items-center gap-1"
+                >{{
+                  'components.application.dashboard.settings.margin'
+                    | translate
+                }}<!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltips.margin'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="margin"/>
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="close"
+                variant="grey"
+                (click)="settingsForm.controls.gridOptions?.controls!.margin.setValue(10)"
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltips.clear'
+                    | translate
+                "
+              ></ui-icon>
             </div>
           </div>
         </ui-tab>

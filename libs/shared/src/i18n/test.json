@@ -539,7 +539,13 @@
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
 					"margin": "******",
-					"minCols": "******"
+					"minCols": "******",
+					"tooltips": {
+						"clear": "******",
+						"fixedRowHeight": "******",
+						"margin": "******",
+						"minCols": "******"
+					}
 				}
 			},
 			"delete": {

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -156,7 +156,10 @@ export class ViewSettingsModalComponent
       this.settingsForm?.controls.gridOptions?.valueChanges
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe((value: any) => {
-          this.onUpdateGridOptions(value);
+          // update only if the form is valid
+          if (this.settingsForm?.controls.gridOptions?.valid) {
+            this.onUpdateGridOptions(value);
+          }
         });
     }
   }
@@ -246,11 +249,19 @@ export class ViewSettingsModalComponent
       visible: this.fb.control(this.data.visible ?? true),
       ...(this.dashboard && {
         gridOptions: this.fb.group({
-          minCols: this.fb.control(this.dashboard.gridOptions?.minCols ?? 8),
-          fixedRowHeight: this.fb.control(
-            this.dashboard.gridOptions?.fixedRowHeight ?? 200
+          minCols: this.fb.control(
+            this.dashboard.gridOptions?.minCols,
+            // minCols must be between 4 and 24
+            Validators.compose([Validators.min(4), Validators.max(24)])
           ),
-          margin: this.fb.control(this.dashboard.gridOptions?.margin ?? 10),
+          fixedRowHeight: this.fb.control(
+            this.dashboard.gridOptions?.fixedRowHeight,
+            Validators.min(50)
+          ),
+          margin: this.fb.control(
+            this.dashboard.gridOptions?.margin,
+            Validators.min(0)
+          ),
         }),
       }),
     });
@@ -322,6 +333,12 @@ export class ViewSettingsModalComponent
    * @param gridOptions grid options
    */
   public onUpdateGridOptions(gridOptions: any): void {
+    gridOptions = {
+      ...gridOptions,
+      // block adding more columns by dragging or resizing
+      maxCols: gridOptions.minCols,
+    };
+
     const callback = () => {
       this.dashboard = {
         ...this.dashboard,

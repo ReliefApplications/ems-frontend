@@ -536,10 +536,16 @@
 				"filterSettings": "Paramètres du filtre",
 				"settings": {
 					"defaultPosition": "Position par défaut du filtre",
-					"fixedRowHeight": "Hauteur de ligne",
-					"gridOptions": "Options de la grille",
+					"fixedRowHeight": "Hauteur de ligne fixe",
+					"gridOptions": "Options de grille",
 					"margin": "Marge entre les widgets",
-					"minCols": "Nombre de colonnes"
+					"minCols": "Nombre de colonnes",
+					"tooltips": {
+						"clear": "Définir les valeurs par défaut",
+						"fixedRowHeight": "Minimum: 50, Par défaut: 200, Pas de max",
+						"margin": "Minimum: 0, Par défaut: 10, Pas de max",
+						"minCols": "Minimum: 4, Par défaut: 8, Maximum: 24"
+					}
 				}
 			},
 			"delete": {
