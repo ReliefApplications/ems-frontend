@@ -9,8 +9,8 @@ import { get } from 'lodash';
  * @param settings.showBorder show border setting
  * @param settings.showHeader show border header
  * @param settings.style custom style of the widget
+ * @param settings.expandable show expand button
  * @param specificControls specific controls to add to the form, on a widget basis
- * @param settings.showExpandButton show expand button
  * @returns form with the common fields
  */
 export const extendWidgetForm = <
@@ -21,7 +21,7 @@ export const extendWidgetForm = <
   settings?: {
     showBorder?: boolean;
     showHeader?: boolean;
-    showExpandButton: boolean;
+    expandable: boolean;
     style?: string;
   },
   specificControls?: T2
@@ -29,7 +29,7 @@ export const extendWidgetForm = <
   const controls = {
     showBorder: new FormControl(get(settings, 'showBorder', true)),
     showHeader: new FormControl(get(settings, 'showHeader', true)),
-    showExpandButton: new FormControl(get(settings, 'showExpandButton', true)),
+    expandable: new FormControl(get(settings, 'expandable', false)),
     style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
@@ -41,7 +41,7 @@ export const extendWidgetForm = <
         {
           showBorder: FormControl<boolean>;
           showHeader: FormControl<boolean>;
-          showExpandButton: FormControl<boolean>;
+          expandable: FormControl<boolean>;
           style: FormControl<string>;
         } & T2
       >;

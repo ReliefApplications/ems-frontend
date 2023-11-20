@@ -45,8 +45,6 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   @Input() headerRightTemplate?: TemplateRef<any>;
   /** Is fullscreen mode activated */
   @Input() fullscreen = false;
-  /** Preview mode */
-  // @Input() previewMode = false;
   /** Edit widget event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Change step workflow event emitter */
@@ -68,8 +66,6 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   private previousPosition?: { cols: number; x: number };
   /** Expanded state of the widget */
   public expanded = false;
-  /** stores the previous preview mode */
-  public previousPreviewMode = true;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -90,14 +86,19 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     return get(this.widget, 'settings.widgetDisplay.showBorder') ?? true;
   }
 
+  /** @returns is widget expandable */
+  get expandable() {
+    return get(this.widget, 'settings.widgetDisplay.expandable') ?? false;
+  }
+
   /** @returns should show expand button, based on widget state & grid state */
   get showExpand() {
     return (
+      this.expandable &&
       !this.canUpdate &&
       !this.fullscreen &&
       !this.grid.mobile &&
-      (this.widget.cols < this.grid.columns || this.expanded) &&
-      this.widget.settings.widgetDisplay?.showExpandButton
+      (this.widget.cols < this.grid.columns || this.expanded)
     );
   }
 
@@ -151,13 +152,12 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     if (changes['canUpdate']) {
-      // if previousPreviewMode is false is because it was in preview
-      // so now it is in edit mode and should close all the expanded widgets
-      if (this.previousPreviewMode === false && this.expanded) {
+      // Reset size of the widget to default one, if admin enters edit mode
+      if (changes['canUpdate'].previousValue === false && this.expanded) {
         this.onResize();
       }
-      this.previousPreviewMode = this.canUpdate;
     }
   }
 
@@ -185,7 +185,6 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         this.widget.x = this.previousPosition?.x;
         this.gridItem.updateOptions();
         this.grid.options.api.resize();
-        // this.grid.options.api.optionsChanged();
         this.expanded = false;
       } else {
         // Expand the widget
@@ -196,11 +195,9 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         this.widget.layerIndex = 1;
         this.widget.cols = this.grid.options.maxCols;
         this.widget.x = 0;
-        // this.widget.cols = 0;
         this.gridItem.bringToFront(100);
         this.gridItem.updateOptions();
         this.grid.options.api.resize();
-        // this.grid.options.api.optionsChanged();
         this.expanded = true;
       }
     }

@@ -2208,8 +2208,9 @@
 			},
 			"tooltip": {
 				"expandButton": {
-					"collapse": "******",
-					"expand": "******"
+					"expand": "******",
+					"help": "******",
+					"restore": "******"
 				},
 				"selector": {
 					"collapse": "******",

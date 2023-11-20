@@ -2208,8 +2208,9 @@
 			},
 			"tooltip": {
 				"expandButton": {
-					"collapse": "Collapse widget width",
-					"expand": "Expand widget width"
+					"expand": "Expand widget",
+					"help": "Only appears in front-office or in preview mode",
+					"restore": "Restore default"
 				},
 				"selector": {
 					"collapse": "Hide widget selector",
