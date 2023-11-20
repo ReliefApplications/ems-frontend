@@ -1,4 +1,9 @@
 <form [formGroup]="form">
+  <h2>
+    {{
+      'components.widget.settings.summaryCard.card.display.title' | translate
+    }}
+  </h2>
   <ng-container formGroupName="card">
     <div class="form-group">
       <div uiFormFieldDirective>
