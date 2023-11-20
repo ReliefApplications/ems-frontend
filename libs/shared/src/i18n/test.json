@@ -780,6 +780,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
+				"incorrectJSON": "******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"

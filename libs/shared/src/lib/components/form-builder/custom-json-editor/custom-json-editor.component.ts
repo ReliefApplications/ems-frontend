@@ -1,6 +1,7 @@
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { ICreatorPlugin, SurveyCreatorModel } from 'survey-creator-core';
 import { AngularComponentFactory, BaseAngular } from 'survey-angular-ui';
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
 
@@ -61,10 +62,12 @@ export class customJSONEditorComponent
    *
    * @param ref Change detector reference
    * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    */
   constructor(
     private ref: ChangeDetectorRef,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private translate: TranslateService
   ) {
     super(ref);
   }
@@ -89,7 +92,7 @@ export class customJSONEditorComponent
         this.model.text = this.JSONtext;
       } else {
         this.snackBar.openSnackBar(
-          "JSON is invalid in JSON Editor, changes haven't been saved",
+          this.translate.instant('components.formBuilder.errors.incorrectJSON'),
           { error: true }
         );
       }
