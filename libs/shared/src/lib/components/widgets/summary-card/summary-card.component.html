@@ -6,6 +6,7 @@
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
           class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
+          [ngClass]="{ 'p-4': usePadding }"
           style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
         >
           <ng-container

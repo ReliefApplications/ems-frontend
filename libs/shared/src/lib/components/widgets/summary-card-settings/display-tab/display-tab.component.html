@@ -9,24 +9,32 @@
         <input formControlName="title" type="string" />
       </div>
       <ui-divider class="my-1"></ui-divider>
-      <ui-toggle formControlName="showDataSourceLink">
-        <ng-container ngProjectAs="label">
-          {{
-            'components.widget.settings.summaryCard.card.display.dataSource'
-              | translate
-          }}
-          <ui-icon
-            class="ml-1 cursor-help self-center"
-            icon="info_outline"
-            variant="grey"
-            [size]="18"
-            [uiTooltip]="
-              'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+      <div class="flex flex-col gap-2">
+        <ui-toggle formControlName="showDataSourceLink">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.summaryCard.card.display.dataSource'
                 | translate
-            "
-          ></ui-icon>
-        </ng-container>
-      </ui-toggle>
+            }}
+            <ui-icon
+              class="ml-1 cursor-help self-center"
+              icon="info_outline"
+              variant="grey"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+                  | translate
+              "
+            ></ui-icon>
+          </ng-container>
+        </ui-toggle>
+        <ui-toggle formControlName="usePadding">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.summaryCard.card.display.padding'
+              | translate
+          }}</ng-container>
+        </ui-toggle>
+      </div>
     </div>
   </ng-container>
 </form>

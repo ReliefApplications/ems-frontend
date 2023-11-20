@@ -1771,6 +1771,7 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
+							"padding": "Utiliser la marge intérieure",
 							"title": "Affichage",
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
