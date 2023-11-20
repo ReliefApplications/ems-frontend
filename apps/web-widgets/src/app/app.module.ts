@@ -54,6 +54,7 @@ import { AppWidgetModule } from './widgets/app-widget/app-widget.module';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import get from 'lodash/get';
 
 // Register local translations for dates
 registerLocaleData(localeFr);
@@ -133,6 +134,18 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
   new AppOverlayContainer(_platform, document);
 
 /**
+ * Get base href from window configuration.
+ *
+ * @returns dynamic base href
+ */
+export const getBaseHref = () => {
+  // Your logic to determine the base href dynamically
+  // For example, you might get it from a global variable set by the embedding platform
+  const dynamicBaseHref: string = get(window, 'baseHref') || '/';
+  return dynamicBaseHref;
+}
+
+/**
  * Web Widget project root module.
  */
 @NgModule({
@@ -204,7 +217,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     PopupService,
     ResizeBatchService,
     DatePipe,
-    { provide: APP_BASE_HREF, useValue: environment.baseHref },
+    { provide: APP_BASE_HREF, useFactory: getBaseHref },
   ],
 })
 export class AppModule implements DoBootstrap {

@@ -26,9 +26,6 @@ import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 
-/** Maximum width of the widget in column units */
-const MAX_COL_SPAN = 8;
-
 /** Component for the widgets */
 @Component({
   selector: 'shared-widget',
@@ -83,12 +80,12 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  /** @returns should show widget header, based on widget settings */
+  /** @returns should widget show header, based on widget settings */
   get showHeader() {
     return get(this.widget, 'settings.widgetDisplay.showHeader') ?? true;
   }
 
-  /** @returns should show widget border, based on widget settings */
+  /** @returns should widget show border, based on widget settings */
   get showBorder() {
     return get(this.widget, 'settings.widgetDisplay.showBorder') ?? true;
   }
@@ -99,9 +96,14 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
       !this.canUpdate &&
       !this.fullscreen &&
       !this.grid.mobile &&
-      (this.widget.cols < MAX_COL_SPAN || this.expanded) &&
+      (this.widget.cols < this.grid.columns || this.expanded) &&
       this.widget.settings.widgetDisplay?.showExpandButton
     );
+  }
+
+  /** @returns should widget use padding, based on widget settings */
+  get usePadding() {
+    return get(this.widget, 'settings.widgetDisplay.usePadding') ?? true;
   }
 
   /**

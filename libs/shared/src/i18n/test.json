@@ -780,6 +780,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
+				"incorrectJSON": "******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
@@ -1755,6 +1756,7 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
+							"padding": "******",
 							"title": "******",
 							"tooltip": {
 								"datasource": "******"
@@ -2182,6 +2184,7 @@
 				"border": "******",
 				"expand": "******",
 				"header": "******",
+				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"

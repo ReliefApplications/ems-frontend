@@ -1,5 +1,11 @@
 <div class="h-full flex flex-col">
-  <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
+  <div
+    class="flex-1 overflow-auto"
+    [ngClass]="{
+      'p-[14px]': usePadding
+    }"
+    (click)="onClick($event)"
+  >
     <div class="w-full h-fit" (click)="onClick($event)">
       <shared-html-widget-content
         [html]="formattedHtml"

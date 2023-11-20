@@ -94,6 +94,7 @@
       *ngSwitchCase="'editor'"
       #widgetContent
       [settings]="widget.settings"
+      [usePadding]="usePadding"
       class="flex-1 overflow-hidden gridster-item-content"
     >
     </shared-editor>
@@ -104,6 +105,7 @@
       [settings]="widget.settings"
       (edit)="edit.emit($event)"
       [widget]="widget"
+      [usePadding]="usePadding"
       class="flex-1 overflow-hidden gridster-item-content"
     >
     </shared-summary-card>
@@ -115,6 +117,7 @@
       (edit)="edit.emit($event)"
       [canUpdate]="canUpdate"
       [widget]="widget"
+      [usePadding]="usePadding"
       class="flex-1 overflow-hidden gridster-item-content"
     >
     </shared-tabs>
