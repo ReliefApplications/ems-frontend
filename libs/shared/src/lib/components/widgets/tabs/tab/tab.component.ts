@@ -24,10 +24,13 @@ export class TabComponent implements AfterViewInit {
   /** Reference to content view container */
   @ViewChild('content', { read: ViewContainerRef })
   content!: ViewContainerRef;
-  /** Additional grid configuration */
-  public gridOptions: GridsterConfig = {
-    outerMargin: this.usePadding,
-  };
+
+  /** @returns Additional grid configuration */
+  get gridOptions(): GridsterConfig {
+    return {
+      outerMargin: this.usePadding,
+    };
+  }
 
   ngAfterViewInit(): void {
     const componentRef = this.content.createComponent(WidgetGridComponent);
