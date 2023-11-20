@@ -31,4 +31,5 @@ export const environment = {
   authConfig,
   theme,
   tinymceBaseUrl: 'https://ems-safe-dev.who.int/tinymce',
+  i18nUrl: 'https://ems-safe-dev.who.int/assets/i18n/',
 };
