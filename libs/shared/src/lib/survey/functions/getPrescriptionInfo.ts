@@ -31,7 +31,7 @@ function getPrescriptionInfo(this: { survey: SurveyModel }, params: any[]) {
     header_text: 'Remplir la prescription',
   };
 
-  if (typeof prescription !== 'object') {
+  if (typeof prescription !== 'object' || !prescription) {
     return DEFAULT_INFO;
   }
 
