@@ -806,7 +806,6 @@ export class DashboardComponent
     const subscription = dialogRef.componentInstance?.onUpdate
       .pipe(takeUntil(this.destroy$))
       .subscribe((updates: any) => {
-        console.log(updates);
         if (updates) {
           if (this.isStep) {
             this.dashboard = {
