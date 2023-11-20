@@ -1771,6 +1771,7 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
+							"padding": "Utiliser la marge intérieure",
 							"title": "Affichage",
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
@@ -2198,6 +2199,7 @@
 			"display": {
 				"border": "Afficher la bordure du widget",
 				"header": "Afficher l'en-tête du widget",
+				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"

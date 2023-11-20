@@ -1755,6 +1755,7 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
+							"padding": "Use card inner padding",
 							"title": "Display",
 							"tooltip": {
 								"datasource": "Add a button in widget's header to view card's data source"
@@ -2181,6 +2182,7 @@
 			"display": {
 				"border": "Show widget border",
 				"header": "Show widget header",
+				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
 				"title": "Widget display"

@@ -65,6 +65,8 @@ export class SummaryCardComponent
   @Input() widget: any;
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];
+  /** Should show padding */
+  @Input() usePadding = true;
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   public gridSettings: any = null;
