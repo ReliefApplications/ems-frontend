@@ -25,19 +25,11 @@ export class EditorService {
    * @returns the base url
    */
   get url(): string {
-    let url: string;
-    if (this.environment.module === 'backoffice') {
-      url = new URL(this.environment.backOfficeUri).pathname;
+    if (this.environment.tinymceBaseUrl) {
+      return this.environment.tinymceBaseUrl;
     } else {
-      url = new URL(this.environment.frontOfficeUri).pathname;
+      return '/tinymce';
     }
-    let base_url: string;
-    if (url !== '/') {
-      base_url = url.slice(0, -1) + '/tinymce';
-    } else {
-      base_url = '/tinymce';
-    }
-    return base_url;
   }
 
   /**

@@ -1756,6 +1756,7 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
+							"padding": "******",
 							"title": "******",
 							"tooltip": {
 								"datasource": "******"
@@ -2182,6 +2183,7 @@
 			"display": {
 				"border": "******",
 				"header": "******",
+				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"

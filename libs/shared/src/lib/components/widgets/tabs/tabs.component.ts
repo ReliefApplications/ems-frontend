@@ -34,6 +34,8 @@ export class TabsComponent
   @Input() widget: any;
   /** Editable widget */
   @Input() canUpdate = false;
+  /** Should show padding */
+  @Input() usePadding = true;
   /** Widget edit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Header template reference */
