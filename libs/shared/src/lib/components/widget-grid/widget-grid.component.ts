@@ -98,6 +98,12 @@ export class WidgetGridComponent
     return !this.widgetComponents.some((x) => !x.canDeactivate);
   }
 
+  /** @returns maximum number of columns of widgets in the grid */
+  get maxCols(): number {
+    const cols = this.widgets.map((x) => x.cols);
+    return Math.max(...cols);
+  }
+
   /**
    * Constructor of the grid widget component
    *
@@ -135,6 +141,9 @@ export class WidgetGridComponent
     }
     if (changes['widgets']) {
       this.setLayout();
+    }
+    if (changes['options']) {
+      this.setGridOptions();
     }
     if (
       changes['canUpdate'] &&
@@ -201,7 +210,6 @@ export class WidgetGridComponent
       outerMargin: false,
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
-      maxCols: this.colsNumber,
       minCols: this.colsNumber,
       fixedRowHeight: 200,
       draggable: {
@@ -226,6 +234,11 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
+    // Set maxCols at the end, based on widgets & existing max
+    this.gridOptions.maxCols = Math.max(
+      this.maxCols,
+      (this.gridOptions.maxCols || this.gridOptions.minCols) as number
+    );
   }
 
   /**
