@@ -86,7 +86,7 @@ export class WidgetGridComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
-  /**Register if ngOnChanges has fired to not set setGridOptions twice on init */
+  /** Register if ngOnChanges has fired to not set setGridOptions twice on init */
   private changed = false;
 
   /**
