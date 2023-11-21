@@ -4,10 +4,11 @@ import { AggregationBuilderService } from '../../../../services/aggregation-buil
 import { Observable } from 'rxjs';
 import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
-import { debounceTime } from 'rxjs/operators';
+import { combineLatestWith } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { isEqual } from 'lodash';
 
 /**
  * Aggregation pipeline component.
@@ -26,6 +27,10 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   @Input() public fields$!: Observable<any[]>;
   /** Input decorator for metaFields$. */
   @Input() public metaFields$!: Observable<any[]>;
+  /** Input decorator for filterFields$. */
+  @Input() public filterFields$!: Observable<any[]>;
+  public filterFields: any[] = [];
+
   /** Array to hold the meta fields. */
   public metaFields: any[] = [];
   /** Array to hold the initial fields. */
@@ -46,20 +51,27 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
     super();
   }
 
-  /** OnInit lifecycle hook. */
   ngOnInit(): void {
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields: any[]) => {
-      this.initialFields = [...fields];
-      this.fieldsPerStage = [];
-      this.updateFieldsPerStage(this.pipelineForm.value);
-    });
-    this.metaFields$.pipe(takeUntil(this.destroy$)).subscribe((meta: any) => {
-      this.metaFields = Object.assign({}, meta);
-      console.log('meta', this.metaFields);
-    });
+    this.fields$
+      .pipe(
+        combineLatestWith(this.metaFields$, this.filterFields$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([fields, metaFields, filterFields]) => {
+          this.initialFields = [...fields];
+          this.metaFields = metaFields;
+          this.filterFields = filterFields;
+          this.fieldsPerStage = [];
+          this.updateFieldsPerStage(this.pipelineForm.value);
+        },
+      });
+
     this.pipelineForm.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
+      .pipe(distinctUntilChanged(isEqual), takeUntil(this.destroy$))
+      .subscribe((pipeline: any[]) => {
+        this.updateFieldsPerStage(pipeline);
+      });
   }
 
   /**
@@ -69,21 +81,19 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
    */
   private updateFieldsPerStage(pipeline: any[]): void {
     for (let index = 0; index < pipeline.length; index++) {
-      this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
-        this.initialFields,
-        pipeline.slice(0, index)
-      );
-      if (
-        pipeline[index]?.type === PipelineStage.FILTER ||
-        pipeline[index]?.type === PipelineStage.SORT
-      ) {
-        this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
-          (field: any) => field.type.kind === 'SCALAR'
+      if (pipeline[index].type === PipelineStage.FILTER) {
+        this.fieldsPerStage[index] = this.filterFields;
+      } else {
+        this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
+          this.initialFields,
+          pipeline.slice(0, index)
         );
+        if (pipeline[index]?.type === PipelineStage.SORT) {
+          this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
+            (field: any) => field.type.kind === 'SCALAR'
+          );
+        }
       }
-      this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
-        (field: any) => field.name
-      );
     }
   }
 

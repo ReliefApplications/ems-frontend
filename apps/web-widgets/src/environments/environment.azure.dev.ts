@@ -30,6 +30,6 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
-  baseHref: '/widgets/',
   tinymceBaseUrl: 'https://ems-safe-dev.who.int/tinymce',
+  i18nUrl: 'https://ems-safe-dev.who.int/assets/i18n/',
 };

@@ -100,7 +100,10 @@
     <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon icon="display_settings" [size]="24"></ui-icon>
-        <span>{{ 'common.display' | translate }}</span>
+        <span>{{
+          'components.widget.settings.summaryCard.card.display.title'
+            | translate
+        }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <shared-display-tab [form]="widgetFormGroup"></shared-display-tab>

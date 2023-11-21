@@ -29,5 +29,6 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
-  baseHref: '/',
+  tinymceBaseUrl: '',
+  i18nUrl: '',
 };
