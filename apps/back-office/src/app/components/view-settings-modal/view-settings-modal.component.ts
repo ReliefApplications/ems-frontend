@@ -32,7 +32,7 @@ import {
   DashboardService,
 } from '@oort-front/shared';
 import { debounceTime, takeUntil } from 'rxjs';
-import { isNil } from 'lodash';
+import { get, isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
 
 /** Settings Dialog Data */
@@ -90,12 +90,18 @@ export class ViewSettingsModalComponent
   public showDuplicateMenu = false;
   /** List of available applications */
   public applications: Application[] = [];
+  /** Dashboard object */
+  public dashboard?: Dashboard;
+  /** Default grid options */
+  public defaultGridOptions = {
+    minCols: 8,
+    fixedRowHeight: 200,
+    margin: 10,
+  };
   /** Step object */
   private step?: Step;
   /** Page object */
   private page?: Page;
-  /** Dashboard object */
-  private dashboard?: Dashboard;
 
   /**
    * Common settings of pages / steps.
@@ -250,16 +256,27 @@ export class ViewSettingsModalComponent
       ...(this.dashboard && {
         gridOptions: this.fb.group({
           minCols: this.fb.control(
-            this.dashboard.gridOptions?.minCols,
-            // minCols must be between 4 and 24
+            get<number>(
+              this.dashboard.gridOptions,
+              'minCols',
+              this.defaultGridOptions.minCols
+            ),
             Validators.compose([Validators.min(4), Validators.max(24)])
           ),
           fixedRowHeight: this.fb.control(
-            this.dashboard.gridOptions?.fixedRowHeight,
+            get<number>(
+              this.dashboard.gridOptions,
+              'fixedRowHeight',
+              this.defaultGridOptions.fixedRowHeight
+            ),
             Validators.min(50)
           ),
           margin: this.fb.control(
-            this.dashboard.gridOptions?.margin,
+            get<number>(
+              this.dashboard.gridOptions,
+              'margin',
+              this.defaultGridOptions.margin
+            ),
             Validators.min(0)
           ),
         }),

@@ -103,7 +103,7 @@
           </div>
         </ui-tab>
         <!-- Grid layout style settings -->
-        <ui-tab *ngIf="data.page?.type !== 'form'">
+        <ui-tab *ngIf="dashboard">
           <ng-container ngProjectAs="label">
             <ui-icon
               icon="style"
@@ -121,35 +121,50 @@
           <!-- Tab content -->
           <div class="flex gap-4 flex-col" formGroupName="gridOptions">
             <!-- Number of columns -->
-            <div uiFormFieldDirective>
-              <label class="flex items-center gap-1">
-                {{
-                  'components.application.dashboard.settings.minCols'
-                    | translate
-                }}
+            <div class="flex flex-col">
+              <div uiFormFieldDirective>
+                <label class="flex items-center gap-1">
+                  {{
+                    'components.application.dashboard.settings.minCols'
+                      | translate
+                  }}
+                  <ui-icon
+                    class="cursor-help self-center"
+                    icon="info_outline"
+                    variant="grey"
+                    [size]="18"
+                    [uiTooltip]="
+                      'components.application.dashboard.settings.tooltip.minCols'
+                        | translate
+                    "
+                  ></ui-icon>
+                </label>
+                <input
+                  type="number"
+                  formControlName="minCols"
+                  min="4"
+                  max="24"
+                />
                 <ui-icon
-                  class="cursor-help self-center"
-                  icon="info_outline"
+                  uiSuffix
+                  class="cursor-pointer"
+                  icon="restart_alt"
                   variant="grey"
-                  [size]="18"
+                  (click)="
+                    settingsForm
+                      .get('gridOptions.minCols')
+                      ?.setValue(defaultGridOptions.minCols)
+                  "
                   [uiTooltip]="
-                    'components.application.dashboard.settings.tooltips.minCols'
+                    'components.application.dashboard.settings.tooltip.reset'
                       | translate
                   "
                 ></ui-icon>
-              </label>
-              <input type="number" formControlName="minCols" />
-              <ui-icon
-                uiSuffix
-                class="cursor-pointer"
-                icon="close"
-                variant="grey"
-                (click)="settingsForm.controls.gridOptions?.controls!.minCols.setValue(8)"
-                [uiTooltip]="
-                  'components.application.dashboard.settings.tooltips.clear'
-                    | translate
-                "
-              ></ui-icon>
+              </div>
+              <ui-alert>{{
+                'components.application.dashboard.settings.help.minCols'
+                  | translate
+              }}</ui-alert>
             </div>
             <!-- Change default size of rows -->
             <div uiFormFieldDirective [outline]="false">
@@ -165,20 +180,24 @@
                   variant="grey"
                   [size]="18"
                   [uiTooltip]="
-                    'components.application.dashboard.settings.tooltips.fixedRowHeight'
+                    'components.application.dashboard.settings.tooltip.fixedRowHeight'
                       | translate
                   "
                 ></ui-icon>
               </label>
-              <input type="number" formControlName="fixedRowHeight" />
+              <input type="number" formControlName="fixedRowHeight" min="50" />
               <ui-icon
                 uiSuffix
                 class="cursor-pointer"
-                icon="close"
+                icon="restart_alt"
                 variant="grey"
-                (click)="settingsForm.controls.gridOptions?.controls!.fixedRowHeight.setValue(200)"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.fixedRowHeight')
+                    ?.setValue(defaultGridOptions.fixedRowHeight)
+                "
                 [uiTooltip]="
-                  'components.application.dashboard.settings.tooltips.clear'
+                  'components.application.dashboard.settings.tooltip.reset'
                     | translate
                 "
               ></ui-icon>
@@ -196,20 +215,24 @@
                   variant="grey"
                   [size]="18"
                   [uiTooltip]="
-                    'components.application.dashboard.settings.tooltips.margin'
+                    'components.application.dashboard.settings.tooltip.margin'
                       | translate
                   "
                 ></ui-icon>
               </label>
-              <input type="number" formControlName="margin"/>
+              <input type="number" formControlName="margin" min="0" />
               <ui-icon
                 uiSuffix
                 class="cursor-pointer"
-                icon="close"
+                icon="restart_alt"
                 variant="grey"
-                (click)="settingsForm.controls.gridOptions?.controls!.margin.setValue(10)"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.margin')
+                    ?.setValue(defaultGridOptions.margin)
+                "
                 [uiTooltip]="
-                  'components.application.dashboard.settings.tooltips.clear'
+                  'components.application.dashboard.settings.tooltip.reset'
                     | translate
                 "
               ></ui-icon>

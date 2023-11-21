@@ -538,13 +538,16 @@
 					"defaultPosition": "******",
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
+					"help": {
+						"minCols": "******"
+					},
 					"margin": "******",
 					"minCols": "******",
-					"tooltips": {
-						"clear": "******",
+					"tooltip": {
 						"fixedRowHeight": "******",
 						"margin": "******",
-						"minCols": "******"
+						"minCols": "******",
+						"reset": "******"
 					}
 				}
 			},

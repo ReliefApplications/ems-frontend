@@ -538,8 +538,17 @@
 					"defaultPosition": "Position par défaut du filtre",
 					"fixedRowHeight": "Hauteur de ligne fixe",
 					"gridOptions": "Options de grille",
+					"help": {
+						"minCols": "Réduire le nombre de colonnes peut ne pas avoir un impact direct si les widgets dépassent la limite spécifiée en largeur."
+					},
 					"margin": "Marge entre les widgets",
 					"minCols": "Nombre de colonnes",
+					"tooltip": {
+						"fixedRowHeight": "Taille des lignes en pixels.\nDoit être supérieur ou égal à 50.",
+						"margin": "Marge entre les widgets.\nDoit être un entier positif.",
+						"minCols": "Nombre de colonnes.\nDoit être compris entre 4 et 24.",
+						"reset": "Réinitialiser la valeur"
+					},
 					"tooltips": {
 						"clear": "Définir les valeurs par défaut",
 						"fixedRowHeight": "Minimum: 50, Par défaut: 200, Pas de max",

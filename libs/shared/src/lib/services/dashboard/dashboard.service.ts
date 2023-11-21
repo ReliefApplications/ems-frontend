@@ -43,6 +43,8 @@ export class DashboardService {
    *
    * @param environment environment in which we run the application
    * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    */
   constructor(
     @Inject('environment') environment: any,
