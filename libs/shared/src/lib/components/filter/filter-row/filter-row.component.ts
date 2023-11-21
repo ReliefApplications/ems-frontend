@@ -14,6 +14,9 @@ import { clone, get } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
+import { Apollo } from 'apollo-angular';
+import { firstValueFrom } from 'rxjs';
+import { GET_FIELD_DETAILS } from '../graphql/queries';
 
 /**
  * Composite filter row.
@@ -31,6 +34,8 @@ export class FilterRowComponent
   @Input() form!: UntypedFormGroup;
   /** Available fields */
   @Input() fields: any[] = [];
+  /** records form id*/
+  @Input() formId = '';
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -53,6 +58,8 @@ export class FilterRowComponent
   public hideEditor = false;
   /** Available operators */
   public operators: any[] = [];
+  /** Tooltips values for filters */
+  public tooltips: { [key: string]: number | string } = {};
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -61,8 +68,10 @@ export class FilterRowComponent
 
   /**
    * Composite filter row.
+   *
+   * @param apollo apollo service
    */
-  constructor() {
+  constructor(private apollo: Apollo) {
     super();
   }
 
@@ -118,6 +127,7 @@ export class FilterRowComponent
     }
     if (field) {
       this.field = field;
+      console.log('setting field', this.field.editor);
       const type = {
         ...FIELD_TYPES.find(
           (x) =>
@@ -169,12 +179,14 @@ export class FilterRowComponent
    * @param field filter field
    */
   private setEditor(field: any) {
+    console.log(this.fields, field.editor, 'fields');
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
     } else {
       switch (field.editor) {
         case 'text': {
           this.editor = this.textEditor;
+          this.setTooltip(field);
           break;
         }
         case 'boolean': {
@@ -188,17 +200,41 @@ export class FilterRowComponent
         }
         case 'numeric': {
           this.editor = this.numericEditor;
+          this.setTooltip(field);
           break;
         }
         case 'datetime':
         case 'date': {
           this.editor = this.dateEditor;
+          this.setTooltip(field);
           break;
         }
         default: {
           this.editor = this.textEditor;
         }
       }
+    }
+  }
+
+  /**
+   * Get the used values for a field from the database
+   *
+   * @param field field to get the tooltip from
+   */
+  setTooltip(field: any) {
+    if (!this.tooltips[field.name]) {
+      firstValueFrom(
+        this.apollo.query<any>({
+          query: GET_FIELD_DETAILS,
+          variables: {
+            form: '65575f4ef833e8c3d527822b',
+            field: field,
+          },
+        })
+      ).then((data) => {
+        console.log(data, this.tooltips);
+        this.tooltips[field.name] = data.data.fieldDetails;
+      });
     }
   }
 }

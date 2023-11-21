@@ -118,6 +118,7 @@ export class AggregationBuilderComponent
   private initFields(): void {
     this.updateFields();
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
+    console.log(this.fields, 'aggreg builder', this.metaFields);
   }
 
   /**

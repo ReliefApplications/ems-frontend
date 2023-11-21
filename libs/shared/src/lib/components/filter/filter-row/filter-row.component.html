@@ -80,9 +80,10 @@
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <div uiFormFieldDirective [defaultMargin]="false">
+    <div uiFormFieldDirective [defaultMargin]="false" class="group">
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="string" />
+      <div class="hidden group-focus:flex"> You can put values such as {{tooltips[field.name]}}</div>
     </div>
   </ng-template>
 
@@ -106,9 +107,10 @@
 
   <!-- NUMERIC EDITOR -->
   <ng-template #numericEditor>
-    <div uiFormFieldDirective [defaultMargin]="false">
+    <div uiFormFieldDirective [defaultMargin]="false" class="group">
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="number" />
+      <div class="hidden group-focus:flex"> You can put values such as {{tooltips[field.name]}}</div>
     </div>
   </ng-template>
 
@@ -147,7 +149,7 @@
 
   <!-- DATE EDITOR -->
   <ng-template #dateEditor>
-    <div uiFormFieldDirective [defaultMargin]="false">
+    <div uiFormFieldDirective [defaultMargin]="false" class="group">
       <label>{{ 'common.value.one' | translate }}</label>
       <div [uiDateWrapper]="calendar">
         <input
@@ -157,6 +159,7 @@
         />
         <ui-date-picker #calendar> </ui-date-picker>
       </div>
+      <div class="hidden group-focus:flex"> You can put values such as {{tooltips[field.name]}}</div>
     </div>
   </ng-template>
 

@@ -42,6 +42,7 @@
           class="filter-group-item"
           [form]="$any(filter)"
           [fields]="fields"
+          [formId]="formId"
           [parent]="this"
           (delete)="deleteFilter(i)"
         ></shared-filter-group>
@@ -52,6 +53,7 @@
           class="filter-group-item"
           [form]="$any(filter)"
           [fields]="fields"
+          [formId]="formId"
           (delete)="deleteFilter(i)"
         ></shared-filter-row>
       </ng-container>

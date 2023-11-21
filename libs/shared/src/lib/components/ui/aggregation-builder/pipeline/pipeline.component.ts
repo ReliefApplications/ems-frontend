@@ -55,6 +55,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
     });
     this.metaFields$.pipe(takeUntil(this.destroy$)).subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
+      console.log('meta', this.metaFields);
     });
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
