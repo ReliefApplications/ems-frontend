@@ -15,6 +15,7 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
+import { SurveyGraphQLQueryManager } from '../../survey/global-properties/choicesByGraphql';
 
 /**
  * Shared form builder service.
@@ -137,6 +138,28 @@ export class FormBuilderService {
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
+
+    // @TODO: Add proper way of defining queries (probably a modal)
+    survey.graphQLQueries = [
+      {
+        url: 'https://countries.trevorblades.com/',
+        query: `query TestQuery($continentCode: ID!, $lang: String) {
+          continent(code: $continentCode) {
+            name
+            code
+            countries {
+              name(lang: $lang)
+              code
+              capital
+  
+            }
+          }
+        }
+      `,
+        variables: { lang: 'lang_question', continentCode: 'code_question' },
+      },
+    ];
+    new SurveyGraphQLQueryManager(survey);
     return survey;
   }
 
