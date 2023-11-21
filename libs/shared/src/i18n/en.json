@@ -946,12 +946,15 @@
 			},
 			"filter": {
 				"and": "And",
+				"examplesFromDatasource": "Examples from datasource",
 				"logic": "Filter logic",
 				"new": "Add new filter",
 				"newGroup": "Add new filter group",
+				"noValueInDatasource": "No value in datasource yet",
 				"operator": "Operator",
 				"or": "Or",
-				"title": "Filter"
+				"title": "Filter",
+				"valuesInDatasourceBetween": "Values in datasource are between"
 			},
 			"hint": {
 				"fields": "Select data points below and drag them to 'selected fields' on the right",

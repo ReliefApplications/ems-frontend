@@ -960,12 +960,15 @@
 			},
 			"filter": {
 				"and": "Et",
+				"examplesFromDatasource": "Exemples de la source de données",
 				"logic": "Logique de filtre",
 				"new": "Ajouter un nouveau filtre",
 				"newGroup": "Ajouter un nouveau groupe de filtres",
+				"noValueInDatasource": "Données manquantes pour ce champ",
 				"operator": "Opérateur",
 				"or": "Ou",
-				"title": "Filtre"
+				"title": "Filtre",
+				"valuesInDatasourceBetween": "Les valeurs de la source de données sont entre"
 			},
 			"hint": {
 				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",

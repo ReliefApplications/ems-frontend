@@ -85,8 +85,9 @@
       [defaultMargin]="false"
       uiTooltip="{{
         tooltips[field.name]
-          ? 'Examples from datasource: ' + tooltips[field.name]
-          : 'No value in datasource yet'
+          ? ('components.queryBuilder.filter.examplesFromDatasource'
+              | translate) + tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
       }}"
     >
       <label>{{ 'common.value.one' | translate }}</label>
@@ -119,8 +120,9 @@
       [defaultMargin]="false"
       uiTooltip="{{
         tooltips[field.name]
-          ? 'Values in datasource are between ' + tooltips[field.name]
-          : 'No value in datasource yet'
+          ? ('components.queryBuilder.filter.valuesInDatasourceBetween'
+              | translate) + tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
       }}"
     >
       <label>{{ 'common.value.one' | translate }}</label>
@@ -168,8 +170,9 @@
       [defaultMargin]="false"
       uiTooltip="{{
         tooltips[field.name]
-          ? 'Values in datasource are between ' + tooltips[field.name]
-          : 'No value in datasource yet'
+          ? ('components.queryBuilder.filter.noValueInDatasource' | translate) +
+            tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
       }}"
     >
       <label>{{ 'common.value.one' | translate }}</label>
