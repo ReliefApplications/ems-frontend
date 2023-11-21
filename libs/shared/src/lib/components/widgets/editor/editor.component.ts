@@ -90,9 +90,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
     const htmlWidgetContent = this.childComponent.el.nativeElement;
-    const recordEditorButton =
-      htmlWidgetContent.querySelector('#record-editor');
-    if (recordEditorButton.contains(event.target)) {
+    const recordEditor = htmlWidgetContent.querySelector('#record-editor');
+    if (recordEditor.contains(event.target)) {
       this.openEditRecordModal();
     }
   }

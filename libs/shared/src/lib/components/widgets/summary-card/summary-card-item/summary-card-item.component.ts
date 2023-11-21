@@ -77,8 +77,8 @@ export class SummaryCardItemComponent
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
     const cardContent = this.childComponent.el.nativeElement;
-    const recordEditorButton = cardContent.querySelector('#record-editor');
-    if (recordEditorButton.contains(event.target)) {
+    const recordEditor = cardContent.querySelector('#record-editor');
+    if (recordEditor.contains(event.target)) {
       this.openEditRecordModal();
     }
   }
