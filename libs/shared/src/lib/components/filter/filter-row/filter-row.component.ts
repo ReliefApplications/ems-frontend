@@ -222,7 +222,6 @@ export class FilterRowComponent
    * @param field field to get the tooltip from
    */
   setTooltip(field: any) {
-    console.log(this.resourceId);
     if (!this.tooltips[field.name]) {
       firstValueFrom(
         this.apollo.query<any>({

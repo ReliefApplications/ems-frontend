@@ -133,7 +133,6 @@ export class LayoutTableComponent
     const { EditLayoutModalComponent } = await import(
       '../edit-layout-modal/edit-layout-modal.component'
     );
-    console.log(this.resource?.id, 'resource id');
     const dialogRef = this.dialog.open(EditLayoutModalComponent, {
       disableClose: true,
       data: {
