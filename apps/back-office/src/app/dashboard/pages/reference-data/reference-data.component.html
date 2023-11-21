@@ -53,7 +53,7 @@
           </ui-graphql-select>
         </div>
         <!-- GraphQL Query -->
-        <div *ngIf="type === 'graphql' && queryControl; else other_content">
+        <div *ngIf="type === 'graphql' && queryControl; else restQueryTmpl">
           <label class="block text-sm font-medium leading-6 text-gray-900">{{ 'pages.referenceData.queryName' | translate }} *</label>
           <ngx-monaco-editor
             (onInit)="initEditor($event)"
@@ -63,7 +63,7 @@
           ></ngx-monaco-editor>
         </div>
         <!-- QueryName -->
-        <ng-template #other_content>
+        <ng-template #restQueryTmpl>
           <div uiFormFieldDirective class="flex-1">
             <label>{{ 'pages.referenceData.queryName' | translate }}</label>
             <input
