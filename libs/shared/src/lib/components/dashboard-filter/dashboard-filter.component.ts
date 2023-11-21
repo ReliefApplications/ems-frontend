@@ -16,10 +16,7 @@ import { Model, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { ApplicationService } from '../../services/application/application.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import {
-  Application,
-  EditApplicationMutationResponse,
-} from '../../models/application.model';
+import { Application } from '../../models/application.model';
 import { takeUntil } from 'rxjs/operators';
 import {
   EDIT_DASHBOARD_FILTER,
