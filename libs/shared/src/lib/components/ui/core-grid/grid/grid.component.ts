@@ -1169,7 +1169,6 @@ export class GridComponent
       if (column.width <= 0) {
         column.width = MIN_COLUMN_WIDTH;
       }
-      console.log('COLUMN WIDTH', column.width);
     });
   }
 }
