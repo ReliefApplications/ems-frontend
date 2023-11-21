@@ -790,6 +790,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
+				"incorrectJSON": "******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
@@ -1290,7 +1291,7 @@
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******",
-						"webwidgets": "******"
+						"widgets": "******"
 					},
 					"metaQueryBuildFailed": "******",
 					"metaQueryFetchFailed": "****** {{error}}",
@@ -1765,6 +1766,7 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
+							"padding": "******",
 							"title": "******",
 							"tooltip": {
 								"datasource": "******"
@@ -2190,7 +2192,9 @@
 			},
 			"display": {
 				"border": "******",
+				"expand": "******",
 				"header": "******",
+				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"
@@ -2213,6 +2217,11 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "******",
+					"help": "******",
+					"restore": "******"
+				},
 				"selector": {
 					"collapse": "******",
 					"expand": "******"
