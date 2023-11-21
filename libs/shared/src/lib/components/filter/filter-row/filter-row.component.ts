@@ -61,6 +61,8 @@ export class FilterRowComponent
   public operators: any[] = [];
   /** Tooltips values for filters */
   public tooltips: { [key: string]: number | string | null } = {};
+  /** Scalar fields types with available tooltips hints */
+  public availableFilterHints = ['date', 'time', 'text', 'numeric'];
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -204,6 +206,11 @@ export class FilterRowComponent
           break;
         }
         case 'datetime':
+        case 'time': {
+          this.editor = this.textEditor;
+          this.setTooltip(field);
+          break;
+        }
         case 'date': {
           this.editor = this.dateEditor;
           this.setTooltip(field);
@@ -237,10 +244,9 @@ export class FilterRowComponent
             this.tooltips[field.name] = data.data.fieldDetails;
             break;
           case 'time':
-            this.tooltips[field.name] = this.datePipe.transform(
-              data.data.fieldDetails.join(' & '),
-              'shortTime'
-            );
+            this.tooltips[field.name] = data.data.fieldDetails
+              .map((time: string) => this.datePipe.transform(time, 'shortTime'))
+              .join(' & ');
             break;
           case 'date':
             this.tooltips[field.name] = data.data.fieldDetails

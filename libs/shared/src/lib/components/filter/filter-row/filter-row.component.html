@@ -83,6 +83,7 @@
     <div
       uiFormFieldDirective
       [defaultMargin]="false"
+      [tooltipDisabled]="!availableFilterHints.includes(field.type)"
       uiTooltip="{{
         tooltips[field.name]
           ? ('components.queryBuilder.filter.examplesFromDatasource'
@@ -170,7 +171,7 @@
       [defaultMargin]="false"
       uiTooltip="{{
         tooltips[field.name]
-          ? ('components.queryBuilder.filter.noValueInDatasource' | translate) +
+          ? ('components.queryBuilder.filter.valuesInDatasourceBetween' | translate) +
             tooltips[field.name]
           : ('components.queryBuilder.filter.noValueInDatasource' | translate)
       }}"
