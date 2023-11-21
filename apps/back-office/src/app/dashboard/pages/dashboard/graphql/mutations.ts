@@ -8,12 +8,16 @@ export const EDIT_DASHBOARD = gql`
     $structure: JSON
     $name: String
     $showFilter: Boolean
+    $filterVariant: String
+    $closable: Boolean
   ) {
     editDashboard(
       id: $id
       structure: $structure
       name: $name
       showFilter: $showFilter
+      filterVariant: $filterVariant
+      closable: $closable
     ) {
       id
       name

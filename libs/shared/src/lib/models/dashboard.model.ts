@@ -236,6 +236,8 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
+  contextualFilter?: any;
+  contextualFilterPosition?: any;
 }
 
 /** Model for dashboard graphql query response */

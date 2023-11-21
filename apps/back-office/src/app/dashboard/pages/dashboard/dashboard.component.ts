@@ -112,6 +112,10 @@ export class DashboardComponent
   private timeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   public editionActive = true;
+  /** Dashboard style filter variant */
+  public variant: string | undefined;
+  /** hide / show the close icon on the right */
+  public closable = true;
 
   /** @returns type of context element */
   get contextType() {
@@ -323,6 +327,8 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.showFilter ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.variant = this.dashboard.filterVariant;
+          this.closable = this.dashboard.closable ?? true;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(

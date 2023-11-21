@@ -9,6 +9,8 @@ import {
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
 import { isNil, isEmpty, get, isEqual } from 'lodash';
+import { DashboardService } from '../dashboard/dashboard.service';
+import { Dashboard } from '../../models/dashboard.model';
 
 /**
  * Application context service
@@ -86,25 +88,36 @@ export class ContextService {
    * Application context service
    *
    * @param applicationService Shared application service
+   * @param dashboardService Shared dashboard service
    */
-  constructor(private applicationService: ApplicationService) {
+  constructor(
+    private applicationService: ApplicationService,
+    private dashboardService: DashboardService
+  ) {
     this.applicationService.application$.subscribe(
       (application: Application | null) => {
         if (application) {
           if (this.currentApplicationId !== application.id) {
             this.currentApplicationId = application.id;
             this.filter.next({});
-            this.filterStructure.next(application.contextualFilter);
-            localForage.getItem(this.positionKey).then((position) => {
-              if (position) {
-                this.filterPosition.next(position);
-              } else {
-                this.filterPosition.next(application.contextualFilterPosition);
-              }
-            });
           }
         } else {
           this.currentApplicationId = null;
+        }
+      }
+    );
+    this.dashboardService.dashboard$.subscribe(
+      (dashboard: Dashboard | null) => {
+        if (dashboard) {
+          this.filterStructure.next(dashboard.contextualFilter);
+          localForage.getItem(this.positionKey).then((position) => {
+            if (position) {
+              this.filterPosition.next(position);
+            } else {
+              this.filterPosition.next(dashboard.contextualFilterPosition);
+            }
+          });
+        } else {
           this.filter.next({});
           this.filterStructure.next(null);
           this.filterPosition.next(null);

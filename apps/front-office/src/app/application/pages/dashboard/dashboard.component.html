@@ -48,9 +48,13 @@
   <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [isFullScreen]="isFullScreen"
+    [variant]="variant"
+    [closable]="closable"
   ></shared-dashboard-filter>
 </div>
 <shared-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [isFullScreen]="isFullScreen"
+  [variant]="variant"
+  [closable]="closable"
 ></shared-dashboard-filter>

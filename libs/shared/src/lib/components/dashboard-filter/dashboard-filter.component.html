@@ -211,6 +211,7 @@
           [ngTemplateOutletContext]="{ variant: 'grey' }"
         ></ng-container>
         <ui-button
+          *ngIf="closable"
           [isIcon]="true"
           icon="close"
           variant="grey"

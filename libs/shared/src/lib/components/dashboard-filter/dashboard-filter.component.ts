@@ -22,8 +22,8 @@ import {
 } from '../../models/application.model';
 import { takeUntil } from 'rxjs/operators';
 import {
-  EDIT_APPLICATION_FILTER,
-  EDIT_APPLICATION_FILTER_POSITION,
+  EDIT_DASHBOARD_FILTER,
+  EDIT_DASHBOARD_FILTER_POSITION,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
@@ -33,6 +33,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
+import { EditDashboardMutationResponse } from '../../models/dashboard.model';
 
 /**
  * Interface for quick filters
@@ -57,9 +58,11 @@ export class DashboardFilterComponent
   /** Is fullscreen */
   @Input() isFullScreen = false;
   /** Filter variant ( defines style ) */
-  @Input() variant: 'modern' | 'default' = 'default';
+  @Input() variant: string | undefined;
   /** Is drawer opened */
   @Input() opened = false;
+  /** Is closable */
+  @Input() closable = true;
   /** Current position of filter */
   public position!: FilterPosition;
   /** Available filter positions */
@@ -179,6 +182,9 @@ export class DashboardFilterComponent
         }
         this.setFilterContainerDimensions();
       });
+    if (!this.variant) {
+      this.variant = 'default';
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -255,8 +261,8 @@ export class DashboardFilterComponent
   /** Saves the application contextual filter using the editApplication mutation */
   private saveFilter(): void {
     this.apollo
-      .mutate<EditApplicationMutationResponse>({
-        mutation: EDIT_APPLICATION_FILTER,
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD_FILTER,
         variables: {
           id: this.applicationId,
           contextualFilter: this.surveyStructure,
@@ -426,8 +432,8 @@ export class DashboardFilterComponent
    */
   private saveSettings(defaultPosition: FilterPosition): void {
     this.apollo
-      .mutate<EditApplicationMutationResponse>({
-        mutation: EDIT_APPLICATION_FILTER_POSITION,
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD_FILTER_POSITION,
         variables: {
           id: this.applicationId,
           contextualFilterPosition: defaultPosition,

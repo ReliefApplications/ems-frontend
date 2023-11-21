@@ -16,14 +16,7 @@ import { takeUntil } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UiModule } from '@oort-front/ui';
 /**
- * Filter choices
- */
-export enum variantFilterChoices {
-  modern = 'modern',
-  default = 'default',
-}
-/**
- * Dashboard settings filter component.
+ *
  */
 @Component({
   selector: 'app-settings-filter',
@@ -101,7 +94,7 @@ export class SettingsFilterComponent
   private createSettingsForm() {
     return this.fb.group({
       showFilter: this.dashboard?.showFilter ?? true,
-      variant: this.dashboard?.filterVariant ?? '',
+      variant: [this.dashboard?.filterVariant || ''],
       closable: this.dashboard?.closable ?? false, // verify what is default on the system
     });
   }
@@ -173,7 +166,9 @@ export class SettingsFilterComponent
             if (!errors) {
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
+                ...(data && {
+                  filterVariant: data?.editDashboard.filterVariant,
+                }),
               });
             }
           },
@@ -209,12 +204,9 @@ export class SettingsFilterComponent
             if (!errors) {
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
+                ...(data && { closable: data?.editDashboard.closable }),
               });
             }
-          },
-          complete: () => {
-            this.contextService.isFilterEnabled.next(value);
           },
         });
     }
