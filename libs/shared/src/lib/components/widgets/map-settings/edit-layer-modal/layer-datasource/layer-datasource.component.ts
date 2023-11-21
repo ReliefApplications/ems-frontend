@@ -340,6 +340,7 @@ export class LayerDatasourceComponent
       disableClose: true,
       data: {
         layout: this.layout,
+        resourceId: this.resource?.id,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {

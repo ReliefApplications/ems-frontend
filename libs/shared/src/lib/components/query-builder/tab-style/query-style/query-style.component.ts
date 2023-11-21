@@ -25,6 +25,9 @@ export class QueryStyleComponent implements OnInit {
   /** The form group used to manage the form controls. */
   @Input() form!: UntypedFormGroup;
 
+  /** Resource id, to get suggestions for filters */
+  @Input() resourceId = '';
+
   /** The form control used to manage the whole row toggle. */
   public wholeRow!: UntypedFormControl;
 

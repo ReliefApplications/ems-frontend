@@ -129,6 +129,7 @@ export class AddLayoutModalComponent
       disableClose: true,
       data: {
         queryName: this.resource?.queryName || this.form?.queryName,
+        resourceId: this.resource?.id,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((layout: any) => {

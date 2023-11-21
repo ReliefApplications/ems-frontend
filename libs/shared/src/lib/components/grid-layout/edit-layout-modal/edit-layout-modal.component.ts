@@ -20,6 +20,7 @@ import { ButtonModule } from '@oort-front/ui';
 interface DialogData {
   layout?: Layout;
   queryName?: string;
+  resourceId?: string;
 }
 
 /**

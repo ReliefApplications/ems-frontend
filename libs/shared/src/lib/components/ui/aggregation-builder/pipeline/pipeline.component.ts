@@ -23,6 +23,8 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public stageType = PipelineStage;
   /** Array to hold the list of stages. */
   public stageList: string[] = Object.values(PipelineStage);
+  /** Resource id */
+  @Input() resourceId = '';
   /** Input decorator for fields$. */
   @Input() public fields$!: Observable<any[]>;
   /** Input decorator for metaFields$. */

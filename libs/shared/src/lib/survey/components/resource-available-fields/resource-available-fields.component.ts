@@ -92,6 +92,7 @@ export class ResourceAvailableFieldsComponent
                       this.model.obj.gridFieldsSettings
                     ),
                 resourceName: nameTrimmed,
+                resourceId: this.model.obj.resource,
               },
             }
           );

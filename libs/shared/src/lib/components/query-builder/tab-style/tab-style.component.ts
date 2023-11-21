@@ -23,6 +23,7 @@ export class TabStyleComponent implements OnInit {
   @Input() metaFields: any = {};
   @Input() canDelete = false;
   @Input() query: any;
+  @Input() resourceId = '';
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 

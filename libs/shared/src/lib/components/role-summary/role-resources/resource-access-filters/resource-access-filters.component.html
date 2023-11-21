@@ -69,6 +69,7 @@
               *ngIf="i === openedFilterIndex"
               [form]="openedFilterFormGroup!"
               [fields]="filterFields"
+              [resourceId]="resource.id ? resource.id : ''"
             >
             </shared-filter>
             <ui-button

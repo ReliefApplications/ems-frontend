@@ -17,6 +17,7 @@ import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { Apollo } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 import { GET_FIELD_DETAILS } from '../graphql/queries';
+import { DatePipe } from '../../../pipes/date/date.pipe';
 
 /**
  * Composite filter row.
@@ -35,7 +36,7 @@ export class FilterRowComponent
   /** Available fields */
   @Input() fields: any[] = [];
   /** records form id*/
-  @Input() formId = '';
+  @Input() resourceId = '';
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -59,7 +60,7 @@ export class FilterRowComponent
   /** Available operators */
   public operators: any[] = [];
   /** Tooltips values for filters */
-  public tooltips: { [key: string]: number | string } = {};
+  public tooltips: { [key: string]: number | string | null } = {};
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -70,8 +71,9 @@ export class FilterRowComponent
    * Composite filter row.
    *
    * @param apollo apollo service
+   * @param datePipe shared Date pipe
    */
-  constructor(private apollo: Apollo) {
+  constructor(private apollo: Apollo, private datePipe: DatePipe) {
     super();
   }
 
@@ -127,7 +129,6 @@ export class FilterRowComponent
     }
     if (field) {
       this.field = field;
-      console.log('setting field', this.field.editor);
       const type = {
         ...FIELD_TYPES.find(
           (x) =>
@@ -179,7 +180,6 @@ export class FilterRowComponent
    * @param field filter field
    */
   private setEditor(field: any) {
-    console.log(this.fields, field.editor, 'fields');
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
     } else {
@@ -222,18 +222,38 @@ export class FilterRowComponent
    * @param field field to get the tooltip from
    */
   setTooltip(field: any) {
+    console.log(this.resourceId);
     if (!this.tooltips[field.name]) {
       firstValueFrom(
         this.apollo.query<any>({
           query: GET_FIELD_DETAILS,
           variables: {
-            form: '65575f4ef833e8c3d527822b',
+            resource: this.resourceId,
             field: field,
           },
         })
       ).then((data) => {
-        console.log(data, this.tooltips);
-        this.tooltips[field.name] = data.data.fieldDetails;
+        switch (field.type) {
+          case 'text':
+            this.tooltips[field.name] = data.data.fieldDetails;
+            break;
+          case 'time':
+            this.tooltips[field.name] = this.datePipe.transform(
+              data.data.fieldDetails.join(' & '),
+              'shortTime'
+            );
+            break;
+          case 'date':
+            this.tooltips[field.name] = data.data.fieldDetails
+              .map((date: string) => this.datePipe.transform(date, 'shortDate'))
+              .join(' & ');
+            break;
+          case 'numeric':
+            this.tooltips[field.name] = data.data.fieldDetails.join(' & ');
+            break;
+          default:
+            this.tooltips[field.name] = data.data.fieldDetails;
+        }
       });
     }
   }
