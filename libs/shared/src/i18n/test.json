@@ -535,7 +535,20 @@
 				},
 				"filterSettings": "******",
 				"settings": {
-					"defaultPosition": "******"
+					"defaultPosition": "******",
+					"fixedRowHeight": "******",
+					"gridOptions": "******",
+					"help": {
+						"minCols": "******"
+					},
+					"margin": "******",
+					"minCols": "******",
+					"tooltip": {
+						"fixedRowHeight": "******",
+						"margin": "******",
+						"minCols": "******",
+						"reset": "******"
+					}
 				}
 			},
 			"delete": {

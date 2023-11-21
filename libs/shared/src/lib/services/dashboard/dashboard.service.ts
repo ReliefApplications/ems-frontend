@@ -1,4 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 import {
   CreateDashboardWithContextMutationResponse,
   Dashboard,
@@ -17,6 +19,7 @@ import {
   CREATE_DASHBOARD_WITH_CONTEXT,
 } from './graphql/mutations';
 import get from 'lodash/get';
+import { GraphQLError } from 'graphql';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -40,11 +43,48 @@ export class DashboardService {
    *
    * @param environment environment in which we run the application
    * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    */
-  constructor(@Inject('environment') environment: any, private apollo: Apollo) {
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
+  ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
+  }
+
+  /**
+   * Handle mutations messages response from the application, pages and steps
+   *
+   * @param errors errors from the access mutation response if any
+   * @param type content type
+   * @param value value of the content edited
+   */
+  handleEditionMutationResponse(
+    errors: readonly GraphQLError[] | undefined,
+    type: string,
+    value?: string
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type,
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type,
+          value: value ?? '',
+        })
+      );
+    }
   }
 
   /**
@@ -183,6 +223,38 @@ export class DashboardService {
           ...dashboard,
           buttons,
         });
+      });
+  }
+
+  /**
+   * Edit the dashboard's grid options.
+   *
+   * @param gridOptions new grid options
+   * @param callback callback method
+   */
+  editGridOptions(gridOptions: any, callback?: any): void {
+    const dashboard = this.dashboard.getValue();
+    if (!dashboard?.id) return;
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id: dashboard.id,
+          gridOptions,
+        },
+      })
+      .subscribe(({ errors, data }) => {
+        this.handleEditionMutationResponse(
+          errors,
+          this.translate.instant('common.page.one')
+        );
+        if (!errors && data) {
+          this.dashboard.next({
+            ...dashboard,
+            gridOptions,
+          });
+          if (callback) callback();
+        }
       });
   }
 }

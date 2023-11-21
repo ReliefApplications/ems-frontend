@@ -152,7 +152,6 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     if (changes['canUpdate']) {
       // Reset size of the widget to default one, if admin enters edit mode
       if (changes['canUpdate'].previousValue === false && this.expanded) {
