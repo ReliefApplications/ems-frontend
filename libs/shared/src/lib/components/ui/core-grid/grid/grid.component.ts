@@ -979,9 +979,6 @@ export class GridComponent
    */
   private setColumnsWidth() {
     const gridElement = this.gridRef.nativeElement;
-    //Subtract the width of non-fields columns (details, actions etc.)
-    const gridTotalWidth = gridElement.offsetWidth - 164;
-
     // Stores the columns width percentage
     const activeColumns: { [key: string]: number } = {};
 
@@ -994,6 +991,20 @@ export class GridComponent
         title: field.title,
       });
     });
+    // get the width of visible sticky columns
+    const stickyFields = this.columns.filter(
+      (column) => !column.hidden && !!column.sticky
+    );
+    let totalWidthSticky = 0;
+    stickyFields.forEach((val: any) => {
+      if (val.width) {
+        totalWidthSticky += val.width;
+      }
+    });
+    // fixed amount required
+    totalWidthSticky += 55;
+    //Subtract the width of non-fields columns (details, actions etc.)
+    const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
       (column) => !column.hidden && !!column.title && !column.sticky
