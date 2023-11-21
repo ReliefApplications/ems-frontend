@@ -979,7 +979,8 @@ export class GridComponent
    */
   private setColumnsWidth() {
     const gridElement = this.gridRef.nativeElement;
-    const gridTotalWidth = gridElement.offsetWidth;
+    //Subtract the width of non-fields columns (details, actions etc.)
+    const gridTotalWidth = gridElement.offsetWidth - 164;
 
     // Stores the columns width percentage
     const activeColumns: { [key: string]: number } = {};
@@ -1168,6 +1169,7 @@ export class GridComponent
       if (column.width <= 0) {
         column.width = MIN_COLUMN_WIDTH;
       }
+      console.log('COLUMN WIDTH', column.width);
     });
   }
 }
