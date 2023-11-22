@@ -1,8 +1,9 @@
 <shared-filter [form]="form" [fields]="filterFields" [resourceId]="resourceId"></shared-filter>
 
 <!-- CUSTOM EDITOR FOR DATES -->
-<ng-template #dateEditor let-valueControl="valueControl">
+<ng-template #dateEditor let-valueControl="valueControl" let-tooltip="tooltip">
   <shared-date-filter-editor
     [control]="valueControl"
+    [tooltip]="tooltip"
   ></shared-date-filter-editor>
 </ng-template>

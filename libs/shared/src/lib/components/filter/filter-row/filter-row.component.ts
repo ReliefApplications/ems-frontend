@@ -183,6 +183,8 @@ export class FilterRowComponent
    */
   private setEditor(field: any) {
     if (get(field, 'filter.template', null)) {
+      this.setTooltip(field);
+      console.log(field, this.tooltips, !this.tooltips[field.name]);
       this.editor = field.filter.template;
     } else {
       switch (field.editor) {
@@ -229,6 +231,7 @@ export class FilterRowComponent
    * @param field field to get the tooltip from
    */
   setTooltip(field: any) {
+    console.log('should send');
     if (!this.tooltips[field.name]) {
       firstValueFrom(
         this.apollo.query<any>({

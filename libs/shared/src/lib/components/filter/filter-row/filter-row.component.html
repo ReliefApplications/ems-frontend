@@ -21,7 +21,13 @@
   <ng-container *ngIf="field && editor && !hideEditor">
     <ng-container
       [ngTemplateOutlet]="editor"
-      [ngTemplateOutletContext]="{ valueControl: valueControl }"
+      [ngTemplateOutletContext]="{
+        valueControl: valueControl,
+        tooltip: tooltips[field.name]
+          ? ('components.queryBuilder.filter.valuesInDatasourceBetween'
+              | translate) + tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
+      }"
     ></ng-container>
   </ng-container>
 
@@ -171,8 +177,8 @@
       [defaultMargin]="false"
       uiTooltip="{{
         tooltips[field.name]
-          ? ('components.queryBuilder.filter.valuesInDatasourceBetween' | translate) +
-            tooltips[field.name]
+          ? ('components.queryBuilder.filter.valuesInDatasourceBetween'
+              | translate) + tooltips[field.name]
           : ('components.queryBuilder.filter.noValueInDatasource' | translate)
       }}"
     >
