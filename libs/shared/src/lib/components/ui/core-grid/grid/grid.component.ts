@@ -994,10 +994,10 @@ export class GridComponent
     });
     // fixed amount required for select column
     if (this.selectable) {
-      totalWidthSticky += 55;
+      totalWidthSticky += 35;
     }
-    //Subtract the width of non-fields columns (details, actions etc.)
-    const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky;
+    //Subtract the width of non-fields columns (details, actions etc.) and small calculation errors
+    const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky - 30;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
       (column) => !column.hidden && !!column.title && !column.sticky
@@ -1026,7 +1026,6 @@ export class GridComponent
     // Most of font sizes follow a 3:5 aspect ratio
     const pixelWidthPerCharacter =
       parseInt(window.getComputedStyle(document.body).fontSize) * 0.6;
-
     // Get each column content with the max length
     // or the column title if no content is added in the current data
     typesFields.forEach((type: any) => {
@@ -1072,11 +1071,13 @@ export class GridComponent
               break;
             }
             default: {
-              contentSize = (data[type.field] || '').length;
+              contentSize = (data[type.field] ?? '').length;
             }
           }
 
-          activeColumns[type.field] = Math.max(titleSize, contentSize);
+          activeColumns[type.field] = contentSize
+            ? Math.max(titleSize, contentSize)
+            : Math.max(titleSize, 0);
         }
       });
     });
