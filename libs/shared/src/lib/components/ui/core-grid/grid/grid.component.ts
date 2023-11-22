@@ -982,15 +982,6 @@ export class GridComponent
     // Stores the columns width percentage
     const activeColumns: { [key: string]: number } = {};
 
-    // Verify what kind of field is and deal with this logic
-    const typesFields: { field: string; type: string; title: string }[] = [];
-    this.fields.forEach((field: any) => {
-      typesFields.push({
-        field: field.name,
-        type: field.meta.type,
-        title: field.title,
-      });
-    });
     // get the width of visible sticky columns
     const stickyFields = this.columns.filter(
       (column) => !column.hidden && !!column.sticky
@@ -1001,14 +992,31 @@ export class GridComponent
         totalWidthSticky += val.width;
       }
     });
-    // fixed amount required
-    totalWidthSticky += 55;
+    // fixed amount required for select column
+    if (this.selectable) {
+      totalWidthSticky += 55;
+    }
     //Subtract the width of non-fields columns (details, actions etc.)
     const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
       (column) => !column.hidden && !!column.title && !column.sticky
     );
+    // Verify what kind of field is and deal with this logic
+    const typesFields: { field: string; type: string; title: string }[] = [];
+    this.fields.forEach((field: any) => {
+      const availableFields = availableColumns.filter(
+        (column: any) => column.field === field.name
+      );
+      // should only add items to typesFields if they are available in availableColumns
+      if (availableFields.length > 0) {
+        typesFields.push({
+          field: field.name,
+          type: field.meta.type,
+          title: field.title,
+        });
+      }
+    });
     // Get average column width given the active columns and the grid's actual width
     const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
     // Max size of the column is the average * 2
@@ -1041,11 +1049,7 @@ export class GridComponent
               break;
             }
             case 'file': {
-              if (data[type.field]) {
-                contentSize = data[type.field][0]?.name?.length || 0;
-              } else {
-                contentSize = 0;
-              }
+              contentSize = data[type.field][0]?.name?.length || 0;
               break;
             }
             case 'numeric': {
@@ -1102,7 +1106,6 @@ export class GridComponent
     const maxCharacterToDisplay = Math.floor(
       maxPixelsPerColumn / pixelWidthPerCharacter
     );
-
     // Calculates the smallest column in character number
     const minCharacterToDisplay = Math.floor(
       minPixelsPerColumn / pixelWidthPerCharacter
