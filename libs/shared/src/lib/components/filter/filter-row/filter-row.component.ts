@@ -172,6 +172,13 @@ export class FilterRowComponent
     }
   }
 
+  /**
+   * Get editor from type.
+   *
+   * @param type field type
+   *
+   * @returns editor
+   */
   private getEditorFromType(type: string): string {
     switch (type) {
       case 'String':
