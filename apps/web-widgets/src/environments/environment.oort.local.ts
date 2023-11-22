@@ -29,4 +29,6 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
+  tinymceBaseUrl: 'https://oort-dev.oortcloud.tech/tinymce',
+  i18nUrl: 'https://oort-dev.oortcloud.tech/assets/i18n/',
 };

@@ -21,6 +21,18 @@
         'models.widget.display.padding' | translate
       }}</ng-container>
     </ui-toggle>
+    <ui-toggle formControlName="expandable">
+      <ng-container ngProjectAs="label"
+        >{{ 'models.widget.display.expand' | translate }}
+        <ui-icon
+          class="ml-1 cursor-help self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="'models.widget.tooltip.expandButton.help' | translate"
+        ></ui-icon
+      ></ng-container>
+    </ui-toggle>
   </ng-container>
   <!-- Other specific options for each widget type -->
   <ng-content></ng-content>

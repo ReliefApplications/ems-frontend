@@ -86,6 +86,8 @@ export class WidgetGridComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
+  /** Register if ngOnChanges has fired to not set setGridOptions twice on init */
+  private changed = false;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -94,6 +96,12 @@ export class WidgetGridComponent
    */
   get canDeactivate() {
     return !this.widgetComponents.some((x) => !x.canDeactivate);
+  }
+
+  /** @returns maximum number of columns of widgets in the grid */
+  get maxCols(): number {
+    const cols = this.widgets.map((x) => x.cols);
+    return Math.max(...cols);
   }
 
   /**
@@ -134,15 +142,22 @@ export class WidgetGridComponent
     if (changes['widgets']) {
       this.setLayout();
     }
+    if (changes['options']) {
+      this.setGridOptions();
+    }
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue)
     ) {
       this.setLayout();
-      this.gridOptionsTimeoutListener = setTimeout(() => {
-        this.setGridOptions(true);
-      }, 0);
+      // Only triggers the setGridOptions with isDashboardSet true if is not the first registered change
+      if (this.changed) {
+        this.gridOptionsTimeoutListener = setTimeout(() => {
+          this.setGridOptions(true);
+        }, 0);
+      }
+      this.changed = true;
     }
   }
 
@@ -195,7 +210,6 @@ export class WidgetGridComponent
       outerMargin: false,
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
-      maxCols: this.colsNumber,
       minCols: this.colsNumber,
       fixedRowHeight: 200,
       draggable: {
@@ -220,6 +234,11 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
+    // Set maxCols at the end, based on widgets & existing max
+    this.gridOptions.maxCols = Math.max(
+      this.maxCols,
+      (this.gridOptions.maxCols || this.gridOptions.minCols) as number
+    );
   }
 
   /**

@@ -1,5 +1,5 @@
 <div
-  class="flex flex-col h-full w-full !rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 overflow-hidden"
+  class="flex flex-col h-full w-full !rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 overflow-hidden group"
   [ngClass]="{
     '!shadow-sm !border-gray-300': showBorder,
     '!border-transparent': !showBorder || fullscreen,
@@ -49,6 +49,19 @@
       </div>
     </ng-template>
   </ng-container>
+
+  <!-- Button to expand widget -->
+  <button
+    *ngIf="showExpand"
+    (click)="onResize()"
+    [uiTooltip]="
+      expanded ? 
+      ('models.widget.tooltip.expandButton.restore'  | translate) 
+      : ('models.widget.tooltip.expandButton.expand'  | translate)"
+    class="bg-white absolute right-0 top-[50%] border-gray-300 hidden group-hover:block z-10 py-1 rounded-l-lg border-y border-l"
+  >
+    <ui-icon [icon]="expanded ? 'chevron_left' : 'chevron_right'"></ui-icon>
+  </button>
 
   <ng-container [ngSwitch]="widget.component">
     <!-- CHART -->

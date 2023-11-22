@@ -535,7 +535,20 @@
 				},
 				"filterSettings": "Filter settings",
 				"settings": {
-					"defaultPosition": "Default position for the filter"
+					"defaultPosition": "Default position for the filter",
+					"fixedRowHeight": "Row height",
+					"gridOptions": "Grid options",
+					"help": {
+						"minCols": "Reducing the number of columns may not have a direct impact if the dashboard contains widgets wider than the specified limit."
+					},
+					"margin": "Margin between widgets",
+					"minCols": "Number of columns",
+					"tooltip": {
+						"fixedRowHeight": "Size of rows in pixels.\nMust be greater or equal to 50.",
+						"margin": "Gap in pixels between widgets.\nMust be a positive integer.",
+						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
+						"reset": "Reset to default"
+					}
 				}
 			},
 			"delete": {
@@ -780,6 +793,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
+				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -1280,7 +1294,7 @@
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin",
-						"webwidgets": "Invalid grid configuration, please contact your admin"
+						"widgets": "Invalid grid configuration, please contact your admin"
 					},
 					"metaQueryBuildFailed": "Error building metadata",
 					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",
@@ -1756,7 +1770,7 @@
 							"dataSource": "Show link to data source",
 							"header": "Header",
 							"padding": "Use card inner padding",
-							"title": "Display",
+							"title": "Card display",
 							"tooltip": {
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
@@ -2181,6 +2195,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"expand": "Show button to expand widget",
 				"header": "Show widget header",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
@@ -2205,6 +2220,11 @@
 				"title": "Sorting"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Expand widget",
+					"help": "Only appears in front-office or in preview mode",
+					"restore": "Restore default"
+				},
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
