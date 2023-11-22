@@ -5,15 +5,14 @@
       <label>
         {{ 'components.widget.settings.chart.series.title' | translate }}
       </label>
-      <ui-select-menu [formControl]="selectedSerie">
+      <ui-select-menu [formControl]="selectedSerie" [placeholder]="'components.widget.settings.chart.other'| translate">
         <ui-select-option
           *ngFor="let serie of formArray.value"
           [value]="serie.serie"
         >
-          {{
-            serie.serie || 'components.widget.settings.chart.other' | translate
-          }}
+          {{ serie.serie || 'components.widget.settings.chart.other' | translate }} 
         </ui-select-option>
+        
       </ui-select-menu>
     </div>
     <!-- Serie Visibility -->
@@ -42,8 +41,8 @@
         <label>
           {{ 'components.widget.settings.chart.series.fill' | translate }}
         </label>
-        <ui-select-menu formControlName="fill">
-          <ui-select-option>
+        <ui-select-menu formControlName="fill" [placeholder]="'components.widget.settings.chart.auto' | translate">
+          <ui-select-option value="auto">
             {{ 'components.widget.settings.chart.auto' | translate }}
           </ui-select-option>
           <ui-select-option *ngFor="let type of fillTypes" [value]="type">
