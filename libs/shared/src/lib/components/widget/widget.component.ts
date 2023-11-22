@@ -67,6 +67,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /** Expanded state of the widget */
   public expanded = false;
 
+  private shadowRoot: ShadowRoot | null = null;
+
   /** @returns would component block navigation */
   get canDeactivate() {
     if (this.widgetContentComponent instanceof GridWidgetComponent) {
@@ -139,9 +141,10 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         .subscribe((css) => {
           this.customStyle = this.document.createElement('style');
           this.customStyle.appendChild(this.document.createTextNode(css));
-          if (this.shadowDomService.isShadowRoot) {
+          this.shadowRoot = this.shadowDomService.getShadowRoot(this.elementRef)
+          if (this.shadowRoot) {
             // Add it to shadow root
-            this.shadowDomService.currentHost.appendChild(this.customStyle);
+            this.shadowRoot.appendChild(this.customStyle);
           } else {
             // Add to head of document
             const head = this.document.getElementsByTagName('head')[0];
@@ -162,9 +165,9 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     if (this.customStyle) {
-      if (this.shadowDomService.isShadowRoot) {
+      if (this.shadowRoot) {
         // If shadow root, remove style from it
-        this.shadowDomService.currentHost.removeChild(this.customStyle);
+        this.shadowRoot.removeChild(this.customStyle);
       } else {
         // Remove style from head if exists, to avoid too many styles to be active at same time
         this.document

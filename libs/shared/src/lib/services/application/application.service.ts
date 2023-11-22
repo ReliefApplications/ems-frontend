@@ -1972,6 +1972,7 @@ export class ApplicationService {
               if (this.customStyle) {
                 this.customStyle.innerText = css;
                 // Add stylesheet to shadow root instead of document head
+                console.log(this.shadowDomService.isShadowRoot);
                 if (this.shadowDomService.isShadowRoot) {
                   this.shadowDomService.currentHost.appendChild(
                     this.customStyle

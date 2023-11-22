@@ -9,6 +9,7 @@ import {
   EventEmitter,
   OnDestroy,
   Injector,
+  ElementRef,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -193,7 +194,8 @@ export class MapComponent
     private contextService: ContextService,
     private platform: Platform,
     public injector: Injector,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    public elementRef: ElementRef,
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -389,11 +391,10 @@ export class MapComponent
       // If the map is initiated in a web element, we will used directly the html element
       // As leaflet cannot fetch the element in shadow doms with just the id
 
+      const shadowRoot = this.shadowDomService.getShadowRoot(this.elementRef);
       // Create leaflet map
       this.map = L.map(
-        this.shadowDomService.isShadowRoot
-          ? this.shadowDomService.currentHost.getElementById(this.mapId)
-          : this.mapId,
+        shadowRoot?.getElementById(this.mapId) || this.mapId,
         {
           zoomControl,
           maxBounds: maxBounds

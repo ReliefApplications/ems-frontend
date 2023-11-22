@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { ElementRef, Inject, Injectable } from '@angular/core';
 
 /**
  * Shadow dom service that would host the current document host value when injected
@@ -29,5 +29,26 @@ export class ShadowDomService {
       isShadowRoot instanceof Array && isShadowRoot.length
         ? isShadowRoot[0].shadowRoot
         : document;
+  }
+
+  /**
+   * Returns the first shadowDOM found containing the element passed, if not it returns null
+   * 
+   * @param {ElementRef} element Angular ElementRef
+   * @returns ShadowRoot of the found shadowDOM or null if nothing is found
+   */
+  public getShadowRoot(element: ElementRef): ShadowRoot | null {
+    const shadowDOMArray = Array.from(document.getElementsByTagName('*')).filter(
+      (element) => element.shadowRoot
+    );
+    //If shadow root exits, that would be the current document host, else the document body from the Angular injection token
+    if (shadowDOMArray instanceof Array && shadowDOMArray.length) {
+      for (let dom of shadowDOMArray) {
+        if (dom.contains(element.nativeElement)) {
+          return dom.shadowRoot;
+        }
+      }
+    }
+    return null;
   }
 }
