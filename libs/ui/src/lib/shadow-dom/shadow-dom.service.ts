@@ -8,26 +8,22 @@ import { Inject, Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ShadowDomService {
-  currentHost!: any;
-  isShadowRoot = false;
+  /** @returns is using a shadow root or not */
+  get isShadowRoot() {
+    return !!this.shadowRoot;
+  }
+
+  /** @returns current host, either the shadow root, or the document */
+  get currentHost() {
+    return this.shadowRoot || this.document;
+  }
+
+  public shadowRoot?: ShadowRoot;
 
   /**
    * Shadow dom service constructor that receives current document token
    *
    * @param {Document} document Document injection token
    */
-  constructor(@Inject(DOCUMENT) document: Document) {
-    const isShadowRoot = Array.from(document.getElementsByTagName('*')).filter(
-      (element) => element.shadowRoot
-    );
-    //If shadow root exits, that would be the current document host, else the document body from the Angular injection token
-    if (isShadowRoot instanceof Array && isShadowRoot.length) {
-      this.isShadowRoot = true;
-    }
-    document.body.id;
-    this.currentHost =
-      isShadowRoot instanceof Array && isShadowRoot.length
-        ? isShadowRoot[0].shadowRoot
-        : document;
-  }
+  constructor(@Inject(DOCUMENT) private document: Document) {}
 }
