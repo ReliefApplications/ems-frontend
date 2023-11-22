@@ -14,6 +14,8 @@ import { cloneDeep } from 'lodash';
 import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component';
 import { DOCUMENT } from '@angular/common';
 import { GridsterConfig } from 'angular-gridster2';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '@oort-front/shared';
 
 /**
  * Edition of a single tab, in tabs widget
@@ -23,7 +25,10 @@ import { GridsterConfig } from 'angular-gridster2';
   templateUrl: './tab-settings.component.html',
   styleUrls: ['./tab-settings.component.scss'],
 })
-export class TabSettingsComponent implements OnDestroy {
+export class TabSettingsComponent
+  extends UnsubscribeComponent
+  implements OnDestroy
+{
   /** Tab form group */
   @Input() tabGroup!: FormGroup;
   /** Delete tab event emitter */
@@ -49,7 +54,9 @@ export class TabSettingsComponent implements OnDestroy {
   constructor(
     private dialog: Dialog,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+    super();
+  }
 
   /** @returns structure of the widget ( nested widgets ) */
   get structure() {
@@ -157,12 +164,44 @@ export class TabSettingsComponent implements OnDestroy {
     }, 1000);
   }
 
-  ngOnDestroy() {
+  override ngOnDestroy() {
+    super.ngOnDestroy();
     if (this.styleDialog) {
       this.styleDialog.close();
     }
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
+  }
+
+  public async gridOptionsModal(): Promise<void> {
+    // this.widgetGridComponent.gridOptions = {
+    //   ...this.widgetGridComponent.gridOptions,
+    //   fixedRowHeight: 50,
+    // };
+
+    const { GridSettingsModalComponent } = await import(
+      '../grid-settings-modal/grid-settings-modal.component'
+    );
+    const dialogRef = this.dialog.open(GridSettingsModalComponent, {
+      data: {
+        gridOptions: this.widgetGridComponent.gridOptions,
+      },
+    });
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updates: any) => {
+        if (updates) {
+          this.widgetGridComponent.gridOptions = {
+            ...this.widgetGridComponent.gridOptions,
+            ...updates,
+          };
+        }
+      });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
+    });
   }
 }
