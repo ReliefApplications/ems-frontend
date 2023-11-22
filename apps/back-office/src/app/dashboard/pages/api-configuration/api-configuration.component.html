@@ -120,7 +120,7 @@
     </div>
 
     <!-- Authentication settings -->
-    <ng-container *ngIf="apiForm.value.authType !== authType.public">
+    <ng-container *ngIf="apiForm.value.authType === authType.serviceToService || apiForm.value.authType === authType.userToService">
       <h2 class="mt-8">
         {{ 'pages.apiConfiguration.authentication' | translate }}
       </h2>

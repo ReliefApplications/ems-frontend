@@ -1041,7 +1041,11 @@ export class GridComponent
               break;
             }
             case 'file': {
-              contentSize = data[type.field][0]?.name?.length || 0;
+              if (data[type.field]) {
+                contentSize = data[type.field][0]?.name?.length || 0;
+              } else {
+                contentSize = 0;
+              }
               break;
             }
             case 'numeric': {

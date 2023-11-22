@@ -234,6 +234,7 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
+  gridOptions?: any;
 }
 
 /** Model for dashboard graphql query response */

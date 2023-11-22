@@ -118,11 +118,7 @@ const initializeAuthAndTranslations =
  * @returns Translator.
  */
 export const httpTranslateLoader = (http: HttpClient) =>
-  new TranslateHttpLoader(
-    http,
-    'https://ems-safe-dev.who.int/assets/i18n/',
-    '.json'
-  );
+  new TranslateHttpLoader(http, environment.i18nUrl, '.json');
 
 /**
  * Provides custom overlay to inject modals / snackbars in shadow root.
@@ -143,7 +139,7 @@ export const getBaseHref = () => {
   // For example, you might get it from a global variable set by the embedding platform
   const dynamicBaseHref: string = get(window, 'baseHref') || '/';
   return dynamicBaseHref;
-}
+};
 
 /**
  * Web Widget project root module.
