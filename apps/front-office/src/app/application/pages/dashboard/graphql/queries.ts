@@ -30,6 +30,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       showFilter
       filterVariant
       closable
+      gridOptions
       page {
         id
         visible

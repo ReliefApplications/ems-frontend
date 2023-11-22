@@ -782,6 +782,7 @@ export class DashboardComponent
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
               step: {
                 ...this.dashboard?.step,
                 ...(!updates.permissions && updates),
@@ -791,6 +792,7 @@ export class DashboardComponent
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
               page: {
                 ...this.dashboard?.page,
                 ...(!updates.permissions && updates),

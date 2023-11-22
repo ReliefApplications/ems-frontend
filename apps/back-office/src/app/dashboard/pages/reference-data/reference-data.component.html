@@ -52,23 +52,27 @@
           >
           </ui-graphql-select>
         </div>
-        <!-- QueryName -->
-        <div uiFormFieldDirective class="flex-1">
-          <label>{{ 'pages.referenceData.queryName' | translate }}</label>
-          <input
-            formControlName="query"
-            type="text"
-            [placeholder]="'common.placeholder.name' | translate"
-          />
-        </div>
         <!-- GraphQL Query -->
-        <ngx-monaco-editor
-          *ngIf="type === 'graphql' && queryControl"
-          (onInit)="initEditor($event)"
-          [options]="editorOptions"
-          [formControl]="queryControl"
-          class="mb-2"
-        ></ngx-monaco-editor>
+        <div *ngIf="type === 'graphql' && queryControl; else restQueryTmpl">
+          <label class="block text-sm font-medium leading-6 text-gray-900">{{ 'pages.referenceData.queryName' | translate }} *</label>
+          <ngx-monaco-editor
+            (onInit)="initEditor($event)"
+            [options]="editorOptions"
+            [formControl]="queryControl"
+            class="mb-2"
+          ></ngx-monaco-editor>
+        </div>
+        <!-- QueryName -->
+        <ng-template #restQueryTmpl>
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{ 'pages.referenceData.queryName' | translate }}</label>
+            <input
+              formControlName="query"
+              type="text"
+              [placeholder]="'common.placeholder.name' | translate"
+            />
+          </div>
+        </ng-template>
       </div>
       <!-- Fields -->
       <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">

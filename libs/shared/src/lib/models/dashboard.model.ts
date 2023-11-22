@@ -238,6 +238,7 @@ export interface Dashboard {
   }[];
   contextualFilter?: any;
   contextualFilterPosition?: any;
+  gridOptions?: any;
 }
 
 /** Model for dashboard graphql query response */
