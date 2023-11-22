@@ -70,6 +70,7 @@ export class SafeGridService {
       filter: true,
     }
   ): any[] {
+  console.log("EEEEEEEee");
     return flatDeep(
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
