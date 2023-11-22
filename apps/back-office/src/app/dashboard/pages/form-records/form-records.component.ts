@@ -407,6 +407,7 @@ export class FormRecordsComponent
         }
       },
       error: (error: any) => {
+        console.log(error);
         this.snackBar.openSnackBar(error.error, { error: true });
         this.showUpload = false;
       },
