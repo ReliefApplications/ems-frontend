@@ -2125,6 +2125,7 @@
 			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
+				"closable": "Lorsque la variante est moderne ou que l'application est utilisée comme élément web, elle indiquera si le filtre peut être fermé ou non",
 				"dashboardFilter": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
 				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}.",
 				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",

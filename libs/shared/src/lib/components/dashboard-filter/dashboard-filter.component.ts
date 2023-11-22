@@ -262,7 +262,7 @@ export class DashboardFilterComponent
         mutation: EDIT_DASHBOARD_FILTER,
         variables: {
           id: this.applicationId,
-          contextualFilter: this.surveyStructure,
+          filterStructure: this.surveyStructure,
         },
       })
       .subscribe(({ errors, data }) => {
@@ -433,7 +433,7 @@ export class DashboardFilterComponent
         mutation: EDIT_DASHBOARD_FILTER_POSITION,
         variables: {
           id: this.applicationId,
-          contextualFilterPosition: defaultPosition,
+          position: defaultPosition,
         },
       })
       .subscribe(({ errors, data }) => {

@@ -226,9 +226,6 @@ export interface Dashboard {
   canDelete?: boolean;
   page?: Page;
   step?: Step;
-  showFilter?: boolean;
-  filterVariant?: string;
-  closable?: boolean;
   buttons?: {
     text: string;
     href: string;
@@ -236,8 +233,13 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
-  contextualFilter?: any;
-  contextualFilterPosition?: any;
+  filter?: {
+    variant?: string;
+    show?: boolean;
+    closable?: boolean;
+  };
+  filterStructure?: any;
+  position?: any;
   gridOptions?: any;
 }
 

@@ -216,10 +216,10 @@ export class DashboardComponent
             data.dashboard.structure ? data.dashboard.structure : []
           );
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          this.variant = this.dashboard.filterVariant;
-          this.closable = this.dashboard.closable ?? false;
+          this.variant = this.dashboard.filter?.variant;
+          this.closable = this.dashboard.filter?.closable ?? false;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(

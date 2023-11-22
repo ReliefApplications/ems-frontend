@@ -2102,6 +2102,7 @@
 			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
+				"closable": "******",
 				"dashboardFilter": "******",
 				"historicalDate": "****** {{filter.<name>}} ******",
 				"useDashboardFilterEditor": "******",

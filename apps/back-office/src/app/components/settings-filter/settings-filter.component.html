@@ -1,15 +1,15 @@
-<form [formGroup]="settingsForm">
+<form [formGroup]="settingsForm" class="flex gap-4 flex-col">
    <!-- Activate filtering -->
-  <ui-toggle formControlName="showFilter" class="mb-4">
+  <ui-toggle formControlName="showFilter">
       <ng-container ngProjectAs="label">{{
         'models.dashboard.activateFiltering' | translate
       }}</ng-container>
   </ui-toggle>
    <!-- Filter Variant -->
-  <div class="mb-4 mt-4">
-    <h4 ngProjectAs="label">{{
+  <div uiFormFieldDirective [outline]="false">
+    <label>{{
       'models.dashboard.filterVariant.title' | translate 
-    }}</h4>
+    }}</label>
     <ui-select-menu
           formControlName="variant"
           [placeholder]="'models.dashboard.filterVariant.variantsOptions.selectOrigin'| translate"
@@ -25,7 +25,10 @@
     </ui-select-menu>
   </div>
   <!-- Closable status -->
-  <ui-toggle formControlName="closable" style="margin-top: 2%;">
+  <ui-toggle 
+    formControlName="closable"
+    [uiTooltip]="'models.dashboard.tooltip.closable' | translate"
+  >
     <ng-container ngProjectAs="label">{{
       'models.dashboard.closable' | translate
     }}</ng-container>

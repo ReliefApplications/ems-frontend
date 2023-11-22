@@ -325,10 +325,10 @@ export class DashboardComponent
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          this.variant = this.dashboard.filterVariant;
-          this.closable = this.dashboard.closable ?? true;
+          this.variant = this.dashboard.filter?.variant;
+          this.closable = this.dashboard.filter?.closable ?? true;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
@@ -357,8 +357,8 @@ export class DashboardComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
-    localForage.removeItem(this.applicationId + 'contextualFilter');
+    localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'filterStructure');
     this.dashboardService.closeDashboard();
   }
 

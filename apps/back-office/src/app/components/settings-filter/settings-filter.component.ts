@@ -1,13 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
-  ApplicationService,
   ContextService,
   Dashboard,
   DashboardService,
   EditDashboardMutationResponse,
   UnsubscribeComponent,
 } from '@oort-front/shared';
-import { FormWrapperModule, ToggleModule, DialogModule } from '@oort-front/ui';
+import {
+  FormWrapperModule,
+  ToggleModule,
+  DialogModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { EDIT_DASHBOARD } from '../../dashboard/pages/dashboard/graphql/mutations';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,8 +19,9 @@ import { FormBuilder } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UiModule } from '@oort-front/ui';
+
 /**
- *
+ * Settings filter of dashboards
  */
 @Component({
   selector: 'app-settings-filter',
@@ -29,6 +34,7 @@ import { UiModule } from '@oort-front/ui';
     FormWrapperModule,
     ReactiveFormsModule,
     UiModule,
+    TooltipModule,
   ],
 })
 export class SettingsFilterComponent
@@ -43,9 +49,8 @@ export class SettingsFilterComponent
   public showFilter!: boolean;
 
   /**
-   *  Settings filter
+   *  Settings filter of dashboards
    *
-   * @param applicationService Application service
    * @param apollo Apollo service
    * @param dashboardService Dashboard service
    * @param contextService Context service
@@ -53,7 +58,6 @@ export class SettingsFilterComponent
    * @param fb Form builder
    */
   constructor(
-    private applicationService: ApplicationService,
     private apollo: Apollo,
     private dashboardService: DashboardService,
     private contextService: ContextService,
@@ -93,9 +97,9 @@ export class SettingsFilterComponent
    */
   private createSettingsForm() {
     return this.fb.group({
-      showFilter: this.dashboard?.showFilter ?? true,
-      variant: [this.dashboard?.filterVariant || ''],
-      closable: this.dashboard?.closable ?? false, // verify what is default on the system
+      showFilter: this.dashboard?.filter?.show ?? true,
+      variant: [this.dashboard?.filter?.variant || ''],
+      closable: this.dashboard?.filter?.closable ?? false, // verify what is default on the system
     });
   }
 
@@ -108,26 +112,34 @@ export class SettingsFilterComponent
     if (!this.dashboard) {
       return;
     }
-    this.dashboard.showFilter = value;
+    if (!this.dashboard.filter) {
+      this.dashboard.filter = {};
+    }
+    this.dashboard.filter.show = value;
     if (this.dashboard) {
       this.apollo
         .mutate<EditDashboardMutationResponse>({
           mutation: EDIT_DASHBOARD,
           variables: {
             id: this.dashboard.id,
-            showFilter: value,
+            filter: { ...this.dashboard.filter, show: value },
           },
         })
         .subscribe({
           next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
+            this.dashboardService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.dashboard.one')
             );
             if (!errors) {
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
+                ...(data && {
+                  filter: {
+                    ...this.dashboard?.filter,
+                    show: data.editDashboard.filter?.show,
+                  },
+                }),
               });
             }
           },
@@ -147,19 +159,22 @@ export class SettingsFilterComponent
     if (!this.dashboard) {
       return;
     }
-    this.dashboard.filterVariant = value;
+    if (!this.dashboard.filter) {
+      this.dashboard.filter = {};
+    }
+    this.dashboard.filter.variant = value;
     if (this.dashboard) {
       this.apollo
         .mutate<EditDashboardMutationResponse>({
           mutation: EDIT_DASHBOARD,
           variables: {
             id: this.dashboard.id,
-            filterVariant: value,
+            filter: { ...this.dashboard.filter, variant: value },
           },
         })
         .subscribe({
           next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
+            this.dashboardService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.dashboard.one')
             );
@@ -167,7 +182,10 @@ export class SettingsFilterComponent
               this.dashboardService.openDashboard({
                 ...this.dashboard,
                 ...(data && {
-                  filterVariant: data?.editDashboard.filterVariant,
+                  filter: {
+                    ...this.dashboard?.filter,
+                    variant: data.editDashboard.filter?.variant,
+                  },
                 }),
               });
             }
@@ -185,26 +203,34 @@ export class SettingsFilterComponent
     if (!this.dashboard) {
       return;
     }
-    this.dashboard.closable = value;
+    if (!this.dashboard.filter) {
+      this.dashboard.filter = {};
+    }
+    this.dashboard.filter.closable = value;
     if (this.dashboard) {
       this.apollo
         .mutate<EditDashboardMutationResponse>({
           mutation: EDIT_DASHBOARD,
           variables: {
             id: this.dashboard.id,
-            closable: value,
+            filter: { ...this.dashboard.filter, closable: value },
           },
         })
         .subscribe({
           next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
+            this.dashboardService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.dashboard.one')
             );
             if (!errors) {
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                ...(data && { closable: data?.editDashboard.closable }),
+                ...(data && {
+                  filter: {
+                    ...this.dashboard?.filter,
+                    closable: data.editDashboard.filter?.closable,
+                  },
+                }),
               });
             }
           },

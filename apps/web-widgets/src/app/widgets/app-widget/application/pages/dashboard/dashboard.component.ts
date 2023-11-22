@@ -218,7 +218,7 @@ export class DashboardComponent
             data.dashboard.structure ? data.dashboard.structure : []
           );
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.contextService.isFilterEnabled.next(false);

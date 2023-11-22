@@ -2102,6 +2102,7 @@
 			"historicalDate": "Get dataset at",
 			"share": "Share Dashboard",
 			"tooltip": {
+				"closable": "When variant is modern, or application is used as web element, it will indicate if filter can be closed or not",
 				"dashboardFilter": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
 				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}.",
 				"useDashboardFilterEditor": "Use dashboard filter editor",

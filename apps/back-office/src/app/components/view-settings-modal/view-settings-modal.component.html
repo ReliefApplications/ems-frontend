@@ -239,7 +239,8 @@
             </div>
           </div>
         </ui-tab>
-        <ui-tab *ngIf="this.dashboard"> <!-- creat logic to show just to dashboard pages-->
+        <!-- Dashboard filter -->
+        <ui-tab *ngIf="dashboard">
           <ng-container ngProjectAs="label">
             <ui-icon
               icon="filter_list"
@@ -251,7 +252,7 @@
           <!-- Tab content -->
           <div class="flex flex-col">
             <app-settings-filter 
-            [dashboard]="this.dashboard">
+            [dashboard]="dashboard">
             </app-settings-filter>
           </div>
         </ui-tab>
