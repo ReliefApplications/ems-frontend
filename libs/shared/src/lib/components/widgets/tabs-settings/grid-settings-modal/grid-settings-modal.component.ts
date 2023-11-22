@@ -1,4 +1,19 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UnsubscribeComponent } from '@oort-front/shared';
+import {
+  TabsModule,
+  DialogModule,
+  ButtonModule,
+  TooltipModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  IconModule,
+  ToggleModule,
+  AlertModule,
+} from '@oort-front/ui';
+import { debounceTime, takeUntil } from 'rxjs';
 
 /**
  * Edition of a single tab, in tabs widget
@@ -7,7 +22,65 @@ import { Component, EventEmitter } from '@angular/core';
   selector: 'grid-settings-modal',
   templateUrl: './grid-settings-modal.component.html',
   styleUrls: ['./grid-settings-modal.component.scss'],
+  standalone: true,
+  imports: [
+    TabsModule,
+    DialogModule,
+    IconModule,
+    ButtonModule,
+    TooltipModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    ToggleModule,
+    AlertModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
-export class GridSettingsModalComponent {
+export class GridSettingsModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   public onUpdate = new EventEmitter();
+
+  public gridOptionsForm: FormGroup;
+
+  public defaultGridOptions = {
+    minCols: 8,
+    fixedRowHeight: 200,
+    margin: 10,
+  };
+
+  constructor(private fb: FormBuilder) {
+    super();
+    this.gridOptionsForm = this.fb.group({
+      gridOptions: this.fb.group({
+        minCols: [
+          this.defaultGridOptions.minCols,
+          Validators.compose([Validators.min(4), Validators.max(24)]),
+        ],
+        fixedRowHeight: [
+          this.defaultGridOptions.fixedRowHeight,
+          Validators.min(50),
+        ],
+        margin: [this.defaultGridOptions.margin, Validators.min(0)],
+      }),
+    });
+  }
+
+  ngOnInit(): void {
+    // Listen to grid settings updates
+    this.gridOptionsForm?.controls.gridOptions?.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        // update only if the form is valid
+        if (this.gridOptionsForm?.controls.gridOptions?.valid) {
+          this.onUpdateGridOptions(value);
+        }
+      });
+  }
+
+  public onUpdateGridOptions(gridOptions: any): void {
+    this.onUpdate.emit(gridOptions);
+  }
 }
