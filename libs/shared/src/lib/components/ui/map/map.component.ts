@@ -182,6 +182,7 @@ export class MapComponent
    * @param platform Platform
    * @param injector Injector containing all needed providers
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param elementRef Element reference of the map widget
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -195,7 +196,7 @@ export class MapComponent
     private platform: Platform,
     public injector: Injector,
     private shadowDomService: ShadowDomService,
-    public elementRef: ElementRef,
+    public elementRef: ElementRef
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -393,23 +394,20 @@ export class MapComponent
 
       const shadowRoot = this.shadowDomService.getShadowRoot(this.elementRef);
       // Create leaflet map
-      this.map = L.map(
-        shadowRoot?.getElementById(this.mapId) || this.mapId,
-        {
-          zoomControl,
-          maxBounds: maxBounds
-            ? L.latLngBounds(
-                L.latLng(maxBounds[0][0], maxBounds[0][1]),
-                L.latLng(maxBounds[1][0], maxBounds[1][1])
-              )
-            : undefined,
-          minZoom,
-          maxZoom,
-          worldCopyJump,
-          // timeDimension: true,
-          disableAutoPan: true,
-        } as any
-      ).setView(
+      this.map = L.map(shadowRoot?.getElementById(this.mapId) || this.mapId, {
+        zoomControl,
+        maxBounds: maxBounds
+          ? L.latLngBounds(
+              L.latLng(maxBounds[0][0], maxBounds[0][1]),
+              L.latLng(maxBounds[1][0], maxBounds[1][1])
+            )
+          : undefined,
+        minZoom,
+        maxZoom,
+        worldCopyJump,
+        // timeDimension: true,
+        disableAutoPan: true,
+      } as any).setView(
         L.latLng(
           initialState.viewpoint.center.latitude,
           initialState.viewpoint.center.longitude

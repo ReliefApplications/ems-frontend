@@ -141,7 +141,9 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         .subscribe((css) => {
           this.customStyle = this.document.createElement('style');
           this.customStyle.appendChild(this.document.createTextNode(css));
-          this.shadowRoot = this.shadowDomService.getShadowRoot(this.elementRef)
+          this.shadowRoot = this.shadowDomService.getShadowRoot(
+            this.elementRef
+          );
           if (this.shadowRoot) {
             // Add it to shadow root
             this.shadowRoot.appendChild(this.customStyle);
