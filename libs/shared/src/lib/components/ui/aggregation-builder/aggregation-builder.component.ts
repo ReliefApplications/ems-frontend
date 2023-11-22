@@ -8,6 +8,8 @@ import { Resource } from '../../../models/resource.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '../../../models/metadata.model';
+import { ReferenceData } from '../../../models/reference-data.model';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Main component of Aggregation builder.
@@ -24,8 +26,10 @@ export class AggregationBuilderComponent
 {
   /** Aggregation reactive form group */
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
-  /** Current resource */
-  @Input() resource!: Resource;
+  /** Current resource (optional) */
+  @Input() resource?: Resource;
+  /** Current reference data (optional) */
+  @Input() referenceData?: ReferenceData;
   /** Loading indicator */
   public loading = true;
   /** Available fields */
@@ -68,10 +72,12 @@ export class AggregationBuilderComponent
    *
    * @param queryBuilder Shared query builder service
    * @param aggregationBuilder Shared aggregation builder service
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private aggregationService: AggregationService
   ) {
     super();
   }

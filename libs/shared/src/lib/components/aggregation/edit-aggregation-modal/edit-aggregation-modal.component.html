@@ -5,28 +5,26 @@
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form [formGroup]="formGroup" class="flex flex-col gap-8">
-      <div class="flex flex-col">
-        <div uiFormFieldDirective>
-          <label>{{ 'common.name' | translate }}</label>
-          <input formControlName="name" type="string" />
-        </div>
-        <div uiFormFieldDirective>
-          <label>{{ 'common.resource.one' | translate }}</label>
-          <ui-select-menu [value]="resource.name" [disabled]="true">
-            <ui-select-option [value]="resource.name" [disabled]="true">
-              {{ resource.name }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
-      </div>
-      <div class="flex flex-col">
-        <shared-aggregation-builder
-          [resource]="resource"
-          [aggregationForm]="formGroup"
-        ></shared-aggregation-builder>
-      </div>
-    </form>
+    <ng-container
+      *ngIf="resource"
+      [ngTemplateOutlet]="contentTmpl"
+      [ngTemplateOutletContext]="{
+        label: 'common.resource.one',
+        type: 'resource',
+        source: resource
+      }"
+    >
+    </ng-container>
+    <ng-container
+      *ngIf="referenceData"
+      [ngTemplateOutlet]="contentTmpl"
+      [ngTemplateOutletContext]="{
+        label: 'common.referenceData.one',
+        type: 'referenceData',
+        source: referenceData
+      }"
+    >
+    </ng-container>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button uiDialogClose variant="default">
@@ -43,3 +41,29 @@
     </ui-button>
   </ng-container>
 </ui-dialog>
+
+<ng-template #contentTmpl let-type="type" let-source="source" let-label="label">
+  <form [formGroup]="formGroup" class="flex flex-col gap-8">
+    <div class="flex flex-col">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.name' | translate }}</label>
+        <input formControlName="name" type="string" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ label | translate }}</label>
+        <ui-select-menu [value]="source.name" [disabled]="true">
+          <ui-select-option [value]="source.name" [disabled]="true">
+            {{ source.name }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <shared-aggregation-builder
+        [resource]="type === 'resource' && source"
+        [referenceData]="type === 'referenceData' && source"
+        [aggregationForm]="formGroup"
+      ></shared-aggregation-builder>
+    </div>
+  </form>
+</ng-template>

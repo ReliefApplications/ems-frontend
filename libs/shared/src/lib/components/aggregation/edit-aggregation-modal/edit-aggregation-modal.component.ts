@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Aggregation } from '../../../models/aggregation.model';
 import { Resource } from '../../../models/resource.model';
@@ -13,6 +12,7 @@ import {
   SelectMenuModule,
   FormWrapperModule,
 } from '@oort-front/ui';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -20,6 +20,7 @@ import {
 interface DialogData {
   aggregation?: Aggregation;
   resource: Resource;
+  referenceData?: ReferenceData;
 }
 
 /**
@@ -43,11 +44,12 @@ interface DialogData {
   styleUrls: ['./edit-aggregation-modal.component.scss'],
 })
 export class EditAggregationModalComponent implements OnInit {
-  public formGroup!: UntypedFormGroup;
+  /** Current form group */
+  public formGroup!: ReturnType<typeof createAggregationForm>;
+  /** Current resource (optional) */
   public resource!: Resource;
-
-  // public templates: any[] = [];
-  // public layoutPreviewData!: { form: FormGroup; defaultLayout: any };
+  /** Current reference data (optional) */
+  public referenceData?: ReferenceData;
 
   /**
    * Modal to edit aggregation.
@@ -56,26 +58,14 @@ export class EditAggregationModalComponent implements OnInit {
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
-    public dialogRef: DialogRef<EditAggregationModalComponent>,
+    public dialogRef: DialogRef<any>,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {
     this.resource = this.data.resource;
+    this.referenceData = this.data.referenceData;
     this.formGroup = createAggregationForm(this.data.aggregation);
-    // TODO: edit with the parameters the aggregation has
-    // this.formGroup = this.formBuilder.group({
-    //   name: [this.data.aggregation?.name, Validators.required],
-    //   query: createQueryForm(this.data.aggregation?.query),
-    //   display: createDisplayForm(this.data.aggregation?.display),
-    // });
-    // this.layoutPreviewData = {
-    //   form: this.form,
-    //   defaultLayout: this.data.layout?.display,
-    // };
-    // this.form.get('display')?.valueChanges.subscribe((value: any) => {
-    //   this.layoutPreviewData.defaultLayout = value;
-    // });
   }
 
   /**

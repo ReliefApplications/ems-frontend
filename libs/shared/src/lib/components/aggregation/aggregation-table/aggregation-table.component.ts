@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Layout } from '../../../models/layout.model';
-import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -10,6 +9,7 @@ import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /**
  * Aggregation table component.
@@ -25,12 +25,17 @@ export class AggregationTableComponent
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
+  /** Current resource */
   @Input() resource: Resource | null = null;
-  @Input() form: Form | null = null;
+  /** Current reference data */
+  @Input() referenceData: ReferenceData | null = null;
+  /** Selected aggregations */
   @Input() selectedAggregations: UntypedFormControl | null = null;
-
+  /** Current aggregations */
   aggregations: Layout[] = [];
+  /** All aggregations */
   allAggregations: Layout[] = [];
+  /** List of columns */
   columns: string[] = ['name', 'createdAt', '_actions'];
 
   /**
@@ -58,13 +63,12 @@ export class AggregationTableComponent
   }
 
   /**
-   * Sets the list of all aggregations from resource / form.
+   * Sets the list of all aggregations from resource / reference data.
    */
   private setAllAggregations(): void {
-    if (this.form) {
-      this.allAggregations = this.form.aggregations
-        ? // eslint-disable-next-line no-unsafe-optional-chaining
-          [...this.form.aggregations.edges?.map((e) => e.node)]
+    if (this.referenceData) {
+      this.allAggregations = this.referenceData.aggregations
+        ? [...this.referenceData.aggregations.edges.map((e) => e.node)]
         : [];
     } else {
       if (this.resource) {
@@ -103,11 +107,11 @@ export class AggregationTableComponent
       data: {
         hasAggregations:
           get(
-            this.form ? this.form : this.resource,
+            this.referenceData ? this.referenceData : this.resource,
             'aggregations.totalCount',
             0
           ) > 0, // check if at least one existing aggregation
-        form: this.form,
+        referenceData: this.referenceData,
         resource: this.resource,
       },
     });
@@ -137,12 +141,16 @@ export class AggregationTableComponent
       data: {
         aggregation,
         resource: this.resource,
+        referenceData: this.referenceData,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .editAggregation(aggregation, value, this.resource?.id, this.form?.id)
+          .editAggregation(aggregation, value, {
+            resource: this.resource?.id,
+            referenceData: this.referenceData?.id,
+          })
           .subscribe(({ data }: any) => {
             if (data.editAggregation) {
               const layouts = [...this.allAggregations];

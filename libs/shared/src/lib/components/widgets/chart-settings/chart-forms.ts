@@ -1,4 +1,10 @@
-import { FormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
@@ -331,6 +337,24 @@ const createFilterForm = (value: any) => {
 };
 
 /**
+ * Custom validator to make sure either resource or reference data is set.
+ *
+ * @returns validation errors if any.
+ */
+const validateDataSource =
+  (): ValidatorFn =>
+  (control: AbstractControl): ValidationErrors | null => {
+    const resource = control.get('resource')?.value;
+    const referenceData = control.get('referenceData')?.value;
+    if (resource && referenceData) {
+      return {
+        missingDataSource: true,
+      };
+    }
+    return null;
+  };
+
+/**
  * Create chart widget form group
  *
  * @param id widget id
@@ -338,17 +362,23 @@ const createFilterForm = (value: any) => {
  * @returns chart widget form group
  */
 export const createChartWidgetForm = (id: any, value: any) => {
-  const form = fb.group({
-    id,
-    title: [get(value, 'title', ''), Validators.required],
-    chart: createChartForm(get(value, 'chart')),
-    resource: [get(value, 'resource', null), Validators.required],
-    contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
-    filters: fb.array(
-      get(value, 'filters', []).map((x: any) => createFilterForm(x))
-    ),
-    at: [get(value, 'at', '')],
-  });
+  const form = fb.group(
+    {
+      id,
+      title: [get(value, 'title', ''), Validators.required],
+      chart: createChartForm(get(value, 'chart')),
+      resource: [get(value, 'resource', null)],
+      referenceData: [get(value, 'referenceData', null)],
+      contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
+      filters: fb.array(
+        get(value, 'filters', []).map((x: any) => createFilterForm(x))
+      ),
+      at: [get(value, 'at', '')],
+    },
+    {
+      validators: validateDataSource,
+    }
+  );
 
   return extendWidgetForm(form, value?.widgetDisplay);
 };

@@ -152,6 +152,7 @@ export class ChartComponent
   ngOnChanges(changes: SimpleChanges): void {
     const previousDatasource = {
       resource: get(changes, 'settings.previousValue.resource'),
+      referenceData: get(changes, 'settings.previousValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -161,6 +162,7 @@ export class ChartComponent
     };
     const currentDatasource = {
       resource: get(changes, 'settings.currentValue.resource'),
+      referenceData: get(changes, 'settings.currentValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -178,9 +180,11 @@ export class ChartComponent
   /** Loads chart */
   private loadChart(): void {
     this.loading = true;
-    if (this.settings.resource) {
+    if (this.settings.resource || this.settings.referenceData) {
       this.aggregationService
-        .getAggregations(this.settings.resource, {
+        .getAggregations({
+          resource: this.settings.resource,
+          referenceData: this.settings.referenceData,
           ids: [get(this.settings, 'chart.aggregationId', null)],
           first: 1,
         })

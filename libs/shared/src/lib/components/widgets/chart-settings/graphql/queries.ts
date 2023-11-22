@@ -19,9 +19,8 @@ export const GET_RESOURCES = gql`
         node {
           id
           name
-          forms {
-            id
-            name
+          aggregations {
+            totalCount
           }
         }
         cursor
@@ -91,6 +90,58 @@ export const GET_RESOURCE_METADATA = gql`
           filterable
           options
         }
+      }
+    }
+  }
+`;
+
+/** Get list of ref data gql query definition */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          type
+          aggregations {
+            totalCount
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Get ref data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!, $aggregationIds: [ID]) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+      aggregations(ids: $aggregationIds) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
     }
   }

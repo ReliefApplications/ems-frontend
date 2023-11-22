@@ -49,21 +49,25 @@ export class AggregationService {
   /**
    * Gets list of aggregation from resourceId
    *
-   * @param resourceId resourceId id
    * @param options query options
+   * @param options.resource resource id
+   * @param options.referenceData reference data id
    * @param options.ids list of aggregation id
    * @param options.first number of items to get
    * @returns Aggregations as promise
    */
-  async getAggregations(
-    resourceId: string,
-    options: { ids?: string[]; first?: number }
-  ): Promise<Connection<Aggregation>> {
+  async getAggregations(options: {
+    resource?: string;
+    referenceData?: string;
+    ids?: string[];
+    first?: number;
+  }): Promise<Connection<Aggregation>> {
     return await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
-          resource: resourceId,
+          resource: options.resource,
+          referenceData: options.referenceData,
           ids: options.ids,
           first: options.first,
         },
@@ -143,22 +147,25 @@ export class AggregationService {
    *
    * @param aggregation aggregation to edit
    * @param value new value of the aggregation
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param form form the aggregation is attached to ( optional )
+   * @param options operation options
+   * @param options.resource resource id
+   * @param options.referenceData reference data id
    * @returns Mutation observable
    */
   public editAggregation(
     aggregation: Aggregation,
     value: Aggregation,
-    resource?: string,
-    form?: string
+    options: {
+      resource?: string;
+      referenceData?: string;
+    }
   ) {
     return this.apollo.mutate<EditAggregationMutationResponse>({
       mutation: EDIT_AGGREGATION,
       variables: {
         id: aggregation.id,
-        resource,
-        form,
+        resource: options.resource,
+        referenceData: options.referenceData,
         aggregation: value,
       },
     });
@@ -168,16 +175,23 @@ export class AggregationService {
    * Create a new aggregation
    *
    * @param value the value of the aggregation
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param form form the aggregation is attached to ( optional )
+   * @param options operation options
+   * @param options.resource resource id
+   * @param options.referenceData reference data id
    * @returns Mutation observable
    */
-  public addAggregation(value: Aggregation, resource?: string, form?: string) {
+  public addAggregation(
+    value: Aggregation,
+    options: {
+      resource?: string;
+      referenceData?: string;
+    }
+  ) {
     return this.apollo.mutate<AddAggregationMutationResponse>({
       mutation: ADD_AGGREGATION,
       variables: {
-        resource,
-        form,
+        resource: options.resource,
+        referenceData: options.referenceData,
         aggregation: value,
       },
     });
@@ -187,20 +201,23 @@ export class AggregationService {
    * Delete an aggregation
    *
    * @param aggregation aggregation to edit
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param form form the aggregation is attached to ( optional )
+   * @param options operation options
+   * @param options.resource resource id
+   * @param options.referenceData reference data id
    * @returns Mutation observable
    */
   public deleteAggregation(
     aggregation: Aggregation,
-    resource?: string,
-    form?: string
+    options: {
+      resource?: string;
+      referenceData?: string;
+    }
   ) {
     return this.apollo.mutate<DeleteAggregationMutationResponse>({
       mutation: DELETE_AGGREGATION,
       variables: {
-        resource,
-        form,
+        resource: options.resource,
+        referenceData: options.referenceData,
         id: aggregation.id,
       },
     });
