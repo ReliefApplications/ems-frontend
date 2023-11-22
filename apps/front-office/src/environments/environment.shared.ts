@@ -3,6 +3,7 @@
  */
 export const sharedEnvironment = {
   module: 'frontoffice',
+  maxFileSize: 7 * 1024 * 1024,
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   version: require('../../../../package.json').version,
   esriApiKey:

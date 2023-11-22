@@ -77,7 +77,7 @@ export class RecordsTabComponent
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param downloadService Service used to download.
-   */
+      */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
@@ -312,16 +312,6 @@ export class RecordsTabComponent
   }
 
   /**
-   * Detects changes on the file.
-   *
-   * @param event new file event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
    * Calls rest endpoint to upload new records for the resource.
    *
    * @param file File to upload.
@@ -335,8 +325,8 @@ export class RecordsTabComponent
           this.showUpload = false;
         }
       },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
+      error: () => {
+        // The error message has already been handled in DownloadService
         this.showUpload = false;
       },
     });
