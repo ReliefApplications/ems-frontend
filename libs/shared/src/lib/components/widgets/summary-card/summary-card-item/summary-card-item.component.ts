@@ -77,17 +77,19 @@ export class SummaryCardItemComponent
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
     const cardContent = this.childComponent.el.nativeElement;
-    const recordEditor = cardContent.querySelector('#record-editor');
-    if (recordEditor.contains(event.target)) {
-      this.openEditRecordModal();
-    }
+    const recordEditors = cardContent.querySelectorAll('.record-editor');
+    recordEditors.forEach((recordEditor: HTMLElement) => {
+      if (recordEditor.contains(event.target)) {
+        this.openEditRecordModal();
+      }
+    });
   }
 
   /**
    * Check if there is an edit record button set in the widget content and updates it's access accordingly
    */
   private checkEditRecordButtonContent() {
-    const editRecordTest = new RegExp(/<button id="record-editor"/gim);
+    const editRecordTest = new RegExp(/<button\s+class="record-editor"/gim);
     const editRecordIsHidden = new RegExp(
       /style="border: 0px; padding: 0px; visibility: hidden"/gim
     );
@@ -234,6 +236,13 @@ export class SummaryCardItemComponent
                 },
               })
               .subscribe({
+                next: (data) => {
+                  this.card.record = {
+                    ...this.card.record,
+                    ...data.data?.editRecord.data,
+                  };
+                  this.setContent();
+                },
                 error: (err) => {
                   this.snackBar.openSnackBar(err[0].message, { error: true });
                 },

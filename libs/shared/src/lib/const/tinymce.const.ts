@@ -158,7 +158,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
         iconButton.innerHTML = iconEdit?.innerHTML;
         iconButton.style.border = '0';
         iconButton.style.padding = '0';
-        iconButton.id = 'record-editor';
+        iconButton.classList.add('record-editor');
         const set = `${iconButton?.outerHTML}&nbsp;`;
         editor.insertContent(set);
       },
