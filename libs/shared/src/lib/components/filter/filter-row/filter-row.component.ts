@@ -141,6 +141,11 @@ export class FilterRowComponent
       field = fields.find((x) => x.name === fragment);
       fields = clone(field.fields);
     }
+
+    if (!field.editor) {
+      field.editor = this.getEditorFromType(field.type.name);
+    }
+
     if (field) {
       this.field = field;
       const type = {
@@ -164,6 +169,35 @@ export class FilterRowComponent
       }
       // set operator template
       this.setEditor(this.field);
+    }
+  }
+
+  private getEditorFromType(type: string): string {
+    switch (type) {
+      case 'String':
+        return 'text';
+      case 'Text':
+        return 'text';
+      case 'Time':
+        return 'time';
+      case 'Date':
+        return 'date';
+      case 'DateTime':
+        return 'datetime';
+      case 'Boolean':
+        return 'boolean';
+      case 'Float':
+        return 'numeric';
+      case 'Number':
+        return 'numeric';
+      case 'Decimal':
+        return 'numeric';
+      case 'Integer':
+        return 'numeric';
+      case 'Enum':
+        return 'select';
+      default:
+        return 'text';
     }
   }
 
