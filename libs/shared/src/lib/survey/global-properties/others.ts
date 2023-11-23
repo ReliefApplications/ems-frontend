@@ -161,7 +161,7 @@ export const init = (environment: any): void => {
     },
   });
 
-  const copyOtherMatrixProp = {
+  const copyRowsOtherMatrixProp = {
     name: 'copyRowsFromAnotherMatrix',
     category: 'rows',
     type: 'dropdown',
@@ -196,9 +196,8 @@ export const init = (environment: any): void => {
   };
 
   // Add a property that allows copying rows from another matrix or matrixdropdown
-  serializer.addProperty('matrix', copyOtherMatrixProp);
-  serializer.addProperty('matrixdropdown', copyOtherMatrixProp);
-
+  serializer.addProperty('matrix', copyRowsOtherMatrixProp);
+  serializer.addProperty('matrixdropdown', copyRowsOtherMatrixProp);
   // Add a property that allows copying rows from another matrixdynamic
   serializer.addProperty('matrixdynamic', {
     name: 'copyChoicesFromAnotherDynamicMatrix',
@@ -234,6 +233,73 @@ export const init = (environment: any): void => {
       }
     },
   });
+
+  const copyColumnsOtherMatrixProp = {
+    name: 'copyColumnsFromAnotherMatrix',
+    category: 'columns',
+    type: 'dropdown',
+    choices: (question: Question, choicesCallback: any) => {
+      const choices: { value: string | null; text: string }[] = [
+        {
+          value: null,
+          text: 'None',
+        },
+      ];
+      const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
+      for (const surveyQuestion of questions) {
+        if (
+          ['matrix', 'matrixdropdown', 'matrixdynamic'].includes(
+            surveyQuestion.getType()
+          )
+        ) {
+          choices.push({
+            value: surveyQuestion.name,
+            text: surveyQuestion.title || surveyQuestion.name,
+          });
+        }
+      }
+      choicesCallback(
+        choices.filter((choice) => choice.value !== question.name)
+      );
+    },
+    onSetValue: (actualMatrix: Question, nameMatrix: any) => {
+      const matrixToBeCopied = (
+        actualMatrix.survey as SurveyModel
+      )?.getQuestionByName(nameMatrix);
+
+      if (matrixToBeCopied.getType() === 'matrix') {
+        if (actualMatrix.getType() !== 'matrix') {
+          // Copy matrix columns to matrixdropdown or matrixdynamic
+          actualMatrix.columns = [];
+          matrixToBeCopied.columns.forEach((column: any) => {
+            actualMatrix.addColumn(column?.value, column?.text);
+          });
+        } else {
+          // Copy matrix columns to matrix
+          actualMatrix.columns = matrixToBeCopied.columns;
+        }
+      } else {
+        if (actualMatrix.getType() === 'matrix') {
+          // Copy matrixdropdown or matrixdynamic columns to matrix
+          actualMatrix.columns = [];
+          matrixToBeCopied.columns.forEach((column: any) => {
+            actualMatrix.addColumn(
+              column?.name as 'value',
+              column?.title as 'text'
+            );
+          });
+        } else {
+          // Copy matrixdropdown or matrixdynamic columns to matrixdropdown or matrixdynamic
+          actualMatrix.columns = matrixToBeCopied.columns;
+        }
+      }
+    },
+  };
+
+  // Add a property that allows copying columns from another matrix or matrixdropdown
+  serializer.addProperty('matrix', copyColumnsOtherMatrixProp);
+  serializer.addProperty('matrixdropdown', copyColumnsOtherMatrixProp);
+  serializer.addProperty('matrixdynamic', copyColumnsOtherMatrixProp);
 };
 
 /**
