@@ -68,7 +68,6 @@ export class TabSettingsComponent
     this.tabGroup.controls.gridOptions.valueChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
-        console.log('set options?');
         this.gridOptions = {
           ...this.gridOptions,
           ...value,
