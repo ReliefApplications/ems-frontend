@@ -252,8 +252,9 @@
           <!-- Tab content -->
           <div class="flex flex-col">
             <app-settings-filter 
-            [dashboard]="dashboard">
-            </app-settings-filter>
+              [dashboard]="dashboard"
+              (update)="onUpdateDashboardFilter($event)"
+            ></app-settings-filter>
           </div>
         </ui-tab>
       </ui-tabs>

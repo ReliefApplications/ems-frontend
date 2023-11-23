@@ -107,7 +107,7 @@
               variant="light"
               [isIcon]="true"
               icon="settings"
-              (click)="openSettings()"
+              (click)="contextService.openSettings()"
               [uiTooltip]="
                 'components.application.dashboard.filterSettings' | translate
               "
@@ -146,14 +146,14 @@
             }"
             class="flex flex-auto justify-end"
           >
-            <ng-container *ngFor="let position of positionList">
+            <ng-container *ngFor="let position of contextService.positionList">
               <ui-button
                 variant="light"
                 [isIcon]="true"
                 icon="{{ position + '_panel_open' }}"
                 [isOutlined]="true"
                 (click)="changeFilterPosition(position)"
-                [uiTooltip]="FilterPositionTooltips[position] | translate"
+                [uiTooltip]="contextService.FilterPositionTooltips[position] | translate"
               ></ui-button>
             </ng-container>
           </div>
@@ -229,7 +229,7 @@
     [variant]="variant"
     [isIcon]="true"
     icon="edit"
-    (click)="onEditFilter()"
+    (click)="contextService.onEditFilter()"
     [uiTooltip]="'components.application.dashboard.editFilter' | translate"
   >
   </ui-button>

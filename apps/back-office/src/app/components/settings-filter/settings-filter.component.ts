@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   ContextService,
   Dashboard,
@@ -11,14 +11,16 @@ import {
   ToggleModule,
   DialogModule,
   TooltipModule,
+  ButtonModule,
 } from '@oort-front/ui';
 import { EDIT_DASHBOARD } from '../../dashboard/pages/dashboard/graphql/mutations';
 import { Apollo } from 'apollo-angular';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormBuilder } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UiModule } from '@oort-front/ui';
+import { valueFromASTUntyped } from 'graphql';
 
 /**
  * Settings filter of dashboards
@@ -35,6 +37,8 @@ import { UiModule } from '@oort-front/ui';
     ReactiveFormsModule,
     UiModule,
     TooltipModule,
+    TranslateModule,
+    ButtonModule,
   ],
 })
 export class SettingsFilterComponent
@@ -45,8 +49,10 @@ export class SettingsFilterComponent
   @Input() dashboard?: Dashboard;
   /** Reactive Form */
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
-  /** Show dashboard filter */
-  public showFilter!: boolean;
+  /** On open edit filter modal, listen to structure changes */
+  public openEditStructure = false;
+  /** Event to parent update dashboard after changes */
+  @Output() update = new EventEmitter();
 
   /**
    *  Settings filter of dashboards
@@ -60,7 +66,7 @@ export class SettingsFilterComponent
   constructor(
     private apollo: Apollo,
     private dashboardService: DashboardService,
-    private contextService: ContextService,
+    public contextService: ContextService,
     private translate: TranslateService,
     private fb: FormBuilder
   ) {
@@ -88,6 +94,24 @@ export class SettingsFilterComponent
       .subscribe((value: boolean | null) => {
         if (typeof value === 'boolean') this.toggleClosable(value);
       });
+
+    if (this.openEditStructure) {
+      this.contextService.filterStructure$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            const filter = {
+              ...this.dashboard?.filter,
+              structure: valueFromASTUntyped,
+            };
+            this.dashboardService.openDashboard({
+              ...this.dashboard,
+              filter,
+            });
+            this.update.emit(filter);
+          }
+        });
+    }
   }
 
   /**
@@ -97,7 +121,7 @@ export class SettingsFilterComponent
    */
   private createSettingsForm() {
     return this.fb.group({
-      showFilter: this.dashboard?.filter?.show ?? true,
+      showFilter: this.dashboard?.filter?.show ?? false,
       variant: [this.dashboard?.filter?.variant || ''],
       closable: this.dashboard?.filter?.closable ?? false, // verify what is default on the system
     });
@@ -132,15 +156,15 @@ export class SettingsFilterComponent
               this.translate.instant('common.dashboard.one')
             );
             if (!errors) {
+              const filter = {
+                ...this.dashboard?.filter,
+                show: data?.editDashboard.filter?.show,
+              };
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                ...(data && {
-                  filter: {
-                    ...this.dashboard?.filter,
-                    show: data.editDashboard.filter?.show,
-                  },
-                }),
+                ...(data && { filter }),
               });
+              this.update.emit(filter);
             }
           },
           complete: () => {
@@ -179,15 +203,15 @@ export class SettingsFilterComponent
               this.translate.instant('common.dashboard.one')
             );
             if (!errors) {
+              const filter = {
+                ...this.dashboard?.filter,
+                variant: data?.editDashboard.filter?.variant,
+              };
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                ...(data && {
-                  filter: {
-                    ...this.dashboard?.filter,
-                    variant: data.editDashboard.filter?.variant,
-                  },
-                }),
+                ...(data && { filter }),
               });
+              this.update.emit(filter);
             }
           },
         });
@@ -223,15 +247,15 @@ export class SettingsFilterComponent
               this.translate.instant('common.dashboard.one')
             );
             if (!errors) {
+              const filter = {
+                ...this.dashboard?.filter,
+                closable: data?.editDashboard.filter?.closable,
+              };
               this.dashboardService.openDashboard({
                 ...this.dashboard,
-                ...(data && {
-                  filter: {
-                    ...this.dashboard?.filter,
-                    closable: data.editDashboard.filter?.closable,
-                  },
-                }),
+                ...(data && { filter }),
               });
+              this.update.emit(filter);
             }
           },
         });

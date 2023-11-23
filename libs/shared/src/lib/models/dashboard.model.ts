@@ -16,6 +16,15 @@ export interface IWidgetType {
   color: string;
 }
 
+/** Model for the dashboard filter */
+export interface DashboardFilterType {
+  variant?: string;
+  show?: boolean;
+  closable?: boolean;
+  structure?: any;
+  position?: string;
+}
+
 /** List of Widget types with their properties */
 export const WIDGET_TYPES = [
   {
@@ -233,13 +242,7 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
-  filter?: {
-    variant?: string;
-    show?: boolean;
-    closable?: boolean;
-    structure?: any;
-    position?: string;
-  };
+  filter?: DashboardFilterType;
   gridOptions?: any;
 }
 

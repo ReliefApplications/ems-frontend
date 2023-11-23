@@ -112,10 +112,6 @@ export class DashboardComponent
   private timeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   public editionActive = true;
-  /** Dashboard style filter variant */
-  public variant: string | undefined;
-  /** hide / show the close icon on the right */
-  public closable = true;
 
   /** @returns type of context element */
   get contextType() {
@@ -327,8 +323,6 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          this.variant = this.dashboard.filter?.variant;
-          this.closable = this.dashboard.filter?.closable ?? true;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
@@ -783,9 +777,10 @@ export class DashboardComponent
               ...this.dashboard,
               ...(updates.permissions && updates),
               ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               step: {
                 ...this.dashboard?.step,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
           } else {
@@ -793,11 +788,17 @@ export class DashboardComponent
               ...this.dashboard,
               ...(updates.permissions && updates),
               ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               page: {
                 ...this.dashboard?.page,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
+          }
+
+          if (updates.filter) {
+            this.showFilter = updates.filter.show;
+            this.contextService.isFilterEnabled.next(this.showFilter);
           }
         }
       });

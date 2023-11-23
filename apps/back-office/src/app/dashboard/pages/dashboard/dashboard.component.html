@@ -2,8 +2,8 @@
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
   [isFullScreen]="isFullScreen"
-  [variant]="variant"
-  [closable]="closable"
+  [variant]="dashboard?.filter?.variant ?? 'default'"
+  [closable]="dashboard?.filter?.closable ?? false"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div
@@ -15,8 +15,8 @@
     *ngIf="showFilter && isFullScreen"
     [editable]="true"
     [isFullScreen]="isFullScreen"
-    [variant]="variant"
-    [closable]="closable"
+    [variant]="dashboard?.filter?.variant ?? 'default'"
+    [closable]="dashboard?.filter?.closable ?? false"
   ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen

@@ -1,10 +1,4 @@
 <form [formGroup]="settingsForm" class="flex gap-4 flex-col">
-   <!-- Activate filtering -->
-  <ui-toggle formControlName="showFilter">
-      <ng-container ngProjectAs="label">{{
-        'models.dashboard.activateFiltering' | translate
-      }}</ng-container>
-  </ui-toggle>
    <!-- Filter Variant -->
   <div uiFormFieldDirective [outline]="false">
     <label>{{
@@ -24,6 +18,20 @@
           </ui-select-option>
     </ui-select-menu>
   </div>
+  <!-- Filter structure (survey) -->
+  <ui-button
+    class="!contents"
+    variant="default"
+    (click)="contextService.onEditFilter(); openEditStructure = true"
+  >
+    {{'components.application.dashboard.editFilter' | translate}}
+  </ui-button>
+  <!-- Activate filtering -->
+  <ui-toggle formControlName="showFilter">
+    <ng-container ngProjectAs="label">{{
+      'models.dashboard.activateFiltering' | translate
+    }}</ng-container>
+  </ui-toggle>
   <!-- Closable status -->
   <ui-toggle 
     formControlName="closable"
@@ -32,6 +40,6 @@
     <ng-container ngProjectAs="label">{{
       'models.dashboard.closable' | translate
     }}</ng-container>
-</ui-toggle>
+  </ui-toggle>
 </form>
 

@@ -31,6 +31,7 @@ import {
   AuthService,
   Application,
   DashboardService,
+  DashboardFilterType,
 } from '@oort-front/shared';
 import { debounceTime, takeUntil } from 'rxjs';
 import { get, isNil } from 'lodash';
@@ -245,6 +246,21 @@ export class ViewSettingsModalComponent
       }
     );
     authSubscription.unsubscribe();
+  }
+
+  /**
+   * Updates dashboard when dashboard filter is changed.
+   *
+   * @param filter new filter settings
+   */
+  public onUpdateDashboardFilter(filter: DashboardFilterType): void {
+    this.dashboard = {
+      ...this.dashboard,
+      filter,
+    };
+    // Updates parent component
+    const updates = { filter };
+    this.onUpdate.emit(updates);
   }
 
   /**

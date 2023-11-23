@@ -11,25 +11,17 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
-import { Dialog } from '@angular/cdk/dialog';
 import { Model, SurveyModel } from 'survey-core';
-import { Apollo } from 'apollo-angular';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
-import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
-import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
-import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
-import { renderGlobalProperties } from '../../survey/render-global-properties';
-import { FormBuilderService } from '../../services/form-builder/form-builder.service';
+import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import {
-  Dashboard,
-  EditDashboardMutationResponse,
-} from '../../models/dashboard.model';
+import { Dashboard } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 
 /**
  * Interface for quick filters
@@ -54,7 +46,8 @@ export class DashboardFilterComponent
   /** Is fullscreen */
   @Input() isFullScreen = false;
   /** Filter variant ( defines style ) */
-  @Input() variant: string | undefined;
+  // @Input() variant: string | undefined;
+  @Input() variant = 'default';
   /** Is drawer opened */
   @Input() opened = false;
   /** Is closable */
@@ -63,24 +56,6 @@ export class DashboardFilterComponent
   public position!: FilterPosition;
   /** Dashboard the filter belongs to */
   public dashboard?: Dashboard;
-  /** Available filter positions */
-  public positionList = [
-    FilterPosition.LEFT,
-    FilterPosition.TOP,
-    FilterPosition.BOTTOM,
-    FilterPosition.RIGHT,
-  ] as const;
-  /** Has the translation for the tooltips of each button */
-  public FilterPositionTooltips: Record<FilterPosition, string> = {
-    [FilterPosition.LEFT]:
-      'components.application.dashboard.filter.filterPosition.left',
-    [FilterPosition.TOP]:
-      'components.application.dashboard.filter.filterPosition.top',
-    [FilterPosition.BOTTOM]:
-      'components.application.dashboard.filter.filterPosition.bottom',
-    [FilterPosition.RIGHT]:
-      'components.application.dashboard.filter.filterPosition.right',
-  };
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
@@ -99,20 +74,13 @@ export class DashboardFilterComponent
   public quickFilters: QuickFilter[] = [];
   /** Indicate empty status of filter */
   public empty = true;
-  /** Represents the survey's value */
-  private value: Record<string, any> | undefined;
   /** Resize observer for the sidenav container */
   private resizeObserver!: ResizeObserver;
 
   /**
    * Dashboard contextual filter component.
    *
-   * @param formBuilderService Form builder service
-   * @param dialog The Dialog service
-   * @param apollo Apollo client
    * @param dashboardService Shared dashboard service
-   * @param snackBar Shared snackbar service
-   * @param translate Angular translate service
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
@@ -121,13 +89,8 @@ export class DashboardFilterComponent
    * @param _host sidenav container host
    */
   constructor(
-    private formBuilderService: FormBuilderService,
-    private dialog: Dialog,
-    private apollo: Apollo,
     private dashboardService: DashboardService,
-    private snackBar: SnackbarService,
-    private translate: TranslateService,
-    private contextService: ContextService,
+    public contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -149,11 +112,6 @@ export class DashboardFilterComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.opened = value;
-      });
-    this.contextService.filter$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.value = value;
       });
     this.dashboardService.dashboard$
       .pipe(takeUntil(this.destroy$))
@@ -231,93 +189,9 @@ export class DashboardFilterComponent
     this.contextService.filterPosition.next(position);
   }
 
-  /**
-   * Opens the modal to edit filters
-   */
-  public onEditFilter() {
-    import('./filter-builder-modal/filter-builder-modal.component').then(
-      ({ FilterBuilderModalComponent }) => {
-        const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
-          data: { surveyStructure: this.surveyStructure },
-          autoFocus: false,
-        });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((newStructure) => {
-            if (newStructure) {
-              this.surveyStructure = newStructure;
-              this.initSurvey();
-              this.saveFilter();
-            }
-          });
-      }
-    );
-  }
-
-  /** Saves the application contextual filter using the editApplication mutation */
-  private saveFilter(): void {
-    this.apollo
-      .mutate<EditDashboardMutationResponse>({
-        mutation: EDIT_DASHBOARD_FILTER,
-        variables: {
-          id: this.dashboard?.id,
-          filter: {
-            ...this.dashboard?.filter,
-            structure: this.surveyStructure,
-          },
-        },
-      })
-      .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors });
-      });
-  }
-
-  /**
-   * Handle filter update mutation response depending of mutation type, for filter structure or position
-   *
-   * @param response Graphql mutation response
-   * @param response.data response data
-   * @param response.errors response errors
-   * @param defaultPosition filter position
-   */
-  private handleFilterMutationResponse(
-    response: { data: any; errors: any },
-    defaultPosition?: FilterPosition
-  ) {
-    const { data, errors } = response;
-    if (errors) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectNotUpdated', {
-          type: this.translate.instant('common.filter.one'),
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
-      );
-    } else {
-      if (defaultPosition) {
-        this.position = defaultPosition;
-        this.contextService.filterPosition.next(defaultPosition);
-      } else {
-        this.contextService.filterStructure.next(this.surveyStructure);
-      }
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.filter.one').toLowerCase(),
-          value: data?.editApplication.name ?? '',
-        })
-      );
-    }
-  }
-
   /** Render the survey using the saved structure */
   private initSurvey(): void {
-    const surveyStructure = this.surveyStructure;
-
-    this.survey = this.formBuilderService.createSurvey(surveyStructure);
-
-    if (this.value) {
-      this.survey.data = this.value;
-    }
+    this.survey = this.contextService.initSurvey();
 
     this.setAvailableFiltersForContext();
 
@@ -326,7 +200,6 @@ export class DashboardFilterComponent
 
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
-
     // we should render the custom questions somewhere, let's do it here
     this.survey.onAfterRenderQuestion.add((_, options: any) => {
       const parent = options.htmlElement.parentElement;
@@ -357,29 +230,6 @@ export class DashboardFilterComponent
    */
   public onAfterRenderSurvey(survey: SurveyModel) {
     this.empty = survey.getAllQuestions().length === 0;
-  }
-
-  /**
-   * Opens the settings modal
-   */
-  public openSettings() {
-    import('./filter-settings-modal/filter-settings-modal.component').then(
-      ({ FilterSettingsModalComponent }) => {
-        const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
-          data: {
-            positionList: this.positionList,
-            positionTooltips: this.FilterPositionTooltips,
-          },
-        });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((defaultPosition) => {
-            if (defaultPosition) {
-              this.saveSettings(defaultPosition as FilterPosition);
-            }
-          });
-      }
-    );
   }
 
   /**
@@ -422,28 +272,6 @@ export class DashboardFilterComponent
     } else {
       return { isDate: false };
     }
-  }
-
-  /**
-   *  Saves the filter settings
-   *
-   * @param defaultPosition default position for the filter to be registered
-   */
-  private saveSettings(defaultPosition: FilterPosition): void {
-    this.apollo
-      .mutate<EditDashboardMutationResponse>({
-        mutation: EDIT_DASHBOARD_FILTER,
-        variables: {
-          id: this.dashboard?.id,
-          filter: {
-            ...this.dashboard?.filter,
-            position: defaultPosition,
-          },
-        },
-      })
-      .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors }, defaultPosition);
-      });
   }
 
   /**
