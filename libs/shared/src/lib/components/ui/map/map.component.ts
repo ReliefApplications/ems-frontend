@@ -392,7 +392,9 @@ export class MapComponent
       // Create leaflet map
       this.map = L.map(
         this.shadowDomService.isShadowRoot
-          ? this.shadowDomService.currentHost.getElementById(this.mapId)
+          ? (this.shadowDomService.currentHost.getElementById(
+              this.mapId
+            ) as HTMLElement)
           : this.mapId,
         {
           zoomControl,

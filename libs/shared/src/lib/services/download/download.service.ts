@@ -250,7 +250,8 @@ export class DownloadService {
 
           setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
         },
-        error: () => {
+        error: (err) => {
+          console.log(err);
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.upload.error'
           );

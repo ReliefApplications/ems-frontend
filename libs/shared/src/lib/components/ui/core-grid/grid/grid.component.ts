@@ -979,24 +979,44 @@ export class GridComponent
    */
   private setColumnsWidth() {
     const gridElement = this.gridRef.nativeElement;
-    const gridTotalWidth = gridElement.offsetWidth;
-
     // Stores the columns width percentage
     const activeColumns: { [key: string]: number } = {};
 
-    // Verify what kind of field is and deal with this logic
-    const typesFields: { field: string; type: string; title: string }[] = [];
-    this.fields.forEach((field: any) => {
-      typesFields.push({
-        field: field.name,
-        type: field.meta.type,
-        title: field.title,
-      });
+    // get the width of visible sticky columns
+    const stickyColumns = this.columns.filter(
+      (column) => !column.hidden && !!column.sticky
+    );
+    let totalWidthSticky = 0;
+    stickyColumns.forEach((column: any) => {
+      if (column.width) {
+        totalWidthSticky += column.width;
+      }
     });
+    // fixed amount required for select column
+    if (this.selectable) {
+      totalWidthSticky += 41;
+    }
+    // Subtract the width of non-fields columns (details, actions etc.) and small calculation errors ( border + scrollbar )
+    const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky - 12;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
       (column) => !column.hidden && !!column.title && !column.sticky
     );
+    // Verify what kind of field is and deal with this logic
+    const typesFields: { field: string; type: string; title: string }[] = [];
+    this.fields.forEach((field: any) => {
+      const availableFields = availableColumns.filter(
+        (column: any) => column.field === field.name
+      );
+      // should only add items to typesFields if they are available in availableColumns
+      if (availableFields.length > 0) {
+        typesFields.push({
+          field: field.name,
+          type: field.meta.type,
+          title: field.title,
+        });
+      }
+    });
     // Get average column width given the active columns and the grid's actual width
     const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
     // Max size of the column is the average * 2
@@ -1006,7 +1026,6 @@ export class GridComponent
     // Most of font sizes follow a 3:5 aspect ratio
     const pixelWidthPerCharacter =
       parseInt(window.getComputedStyle(document.body).fontSize) * 0.6;
-
     // Get each column content with the max length
     // or the column title if no content is added in the current data
     typesFields.forEach((type: any) => {
@@ -1029,11 +1048,7 @@ export class GridComponent
               break;
             }
             case 'file': {
-              if (data[type.field]) {
-                contentSize = data[type.field][0]?.name?.length || 0;
-              } else {
-                contentSize = 0;
-              }
+              contentSize = data[type.field][0]?.name?.length || 0;
               break;
             }
             case 'numeric': {
@@ -1056,11 +1071,13 @@ export class GridComponent
               break;
             }
             default: {
-              contentSize = (data[type.field] || '').length;
+              contentSize = (data[type.field] ?? '').length;
             }
           }
 
-          activeColumns[type.field] = Math.max(titleSize, contentSize);
+          activeColumns[type.field] = contentSize
+            ? Math.max(titleSize, contentSize)
+            : Math.max(titleSize, 0);
         }
       });
     });
@@ -1071,17 +1088,19 @@ export class GridComponent
     // Instead, clamp the columns to the min and max width
     if (avgPixelPerCol < MIN_COLUMN_WIDTH * 1.1) {
       this.columns.forEach((column) => {
-        const colWidth = activeColumns[column.field];
-        if (colWidth) {
-          column.width = Math.min(
-            Math.max(colWidth * pixelWidthPerCharacter, MIN_COLUMN_WIDTH),
-            MAX_COLUMN_WIDTH
-          );
-        }
+        if (!column.hidden) {
+          const colWidth = activeColumns[column.field];
+          if (colWidth) {
+            column.width = Math.min(
+              Math.max(colWidth * pixelWidthPerCharacter, MIN_COLUMN_WIDTH),
+              MAX_COLUMN_WIDTH
+            );
+          }
 
-        // Make sure that every column has a width set
-        if (column.width <= 0) {
-          column.width = MIN_COLUMN_WIDTH;
+          // Make sure that every column has a width set
+          if (column.width <= 0) {
+            column.width = MIN_COLUMN_WIDTH;
+          }
         }
       });
       return;
@@ -1090,7 +1109,6 @@ export class GridComponent
     const maxCharacterToDisplay = Math.floor(
       maxPixelsPerColumn / pixelWidthPerCharacter
     );
-
     // Calculates the smallest column in character number
     const minCharacterToDisplay = Math.floor(
       minPixelsPerColumn / pixelWidthPerCharacter
