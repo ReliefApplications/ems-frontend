@@ -162,15 +162,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     if (this.customStyle) {
-      if (this.shadowDomService.isShadowRoot) {
-        // If shadow root, remove style from it
-        this.shadowDomService.currentHost.removeChild(this.customStyle);
-      } else {
-        // Remove style from head if exists, to avoid too many styles to be active at same time
-        this.document
-          .getElementsByTagName('head')[0]
-          .removeChild(this.customStyle);
-      }
+      const parentNode = this.customStyle.parentNode;
+      parentNode?.removeChild(this.customStyle);
     }
   }
 
