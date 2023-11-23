@@ -17,4 +17,5 @@ export interface Environment {
   theme: any;
   availableWidgets: string[];
   sentry?: any;
+  maxFileSize?: number;
 }

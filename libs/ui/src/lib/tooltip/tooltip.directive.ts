@@ -66,7 +66,7 @@ export class TooltipDirective implements OnDestroy {
   ) {
     this.currentHost = shadowDomService.isShadowRoot
       ? shadowDomService.currentHost
-      : shadowDomService.currentHost.body;
+      : (shadowDomService.currentHost as Document).body;
     // Creation of the tooltip element
     this.createTooltipElement();
   }

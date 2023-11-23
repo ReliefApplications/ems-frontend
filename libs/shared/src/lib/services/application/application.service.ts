@@ -308,14 +308,8 @@ export class ApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      // If shadow root, remove style from it instead of document head
-      if (this.shadowDomService.isShadowRoot) {
-        this.shadowDomService.currentHost.removeChild(this.customStyle);
-      } else {
-        this.document
-          .getElementsByTagName('head')[0]
-          .removeChild(this.customStyle);
-      }
+      const parentNode = this.customStyle.parentNode;
+      parentNode?.removeChild(this.customStyle);
       this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;
@@ -1973,6 +1967,7 @@ export class ApplicationService {
                 this.customStyle.innerText = css;
                 // Add stylesheet to shadow root instead of document head
                 if (this.shadowDomService.isShadowRoot) {
+                  console.log('is a shadow root');
                   this.shadowDomService.currentHost.appendChild(
                     this.customStyle
                   );
