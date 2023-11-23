@@ -174,6 +174,11 @@ export class TabSettingsComponent
     }
   }
 
+  /**
+   * Opens a modal dialog for grid settings and updates the widget grid options based on the user's selections.
+   *
+   * @returns A promise that resolves when the modal dialog is closed.
+   */
   public async gridOptionsModal(): Promise<void> {
     // this.widgetGridComponent.gridOptions = {
     //   ...this.widgetGridComponent.gridOptions,
