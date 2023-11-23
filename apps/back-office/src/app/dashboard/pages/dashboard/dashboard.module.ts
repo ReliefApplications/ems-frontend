@@ -12,7 +12,6 @@ import {
   ButtonActionModule,
 } from '@oort-front/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -24,6 +23,7 @@ import {
   AlertModule,
   DialogModule,
   GraphQLSelectModule,
+  IconModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 

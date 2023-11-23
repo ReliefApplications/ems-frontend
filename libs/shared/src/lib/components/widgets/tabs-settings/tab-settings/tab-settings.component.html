@@ -1,5 +1,9 @@
-<!-- Remove tab -->
-<div class="flex justify-end">
+<div class="flex flex-wrap items-center mb-6 gap-4 justify-end">
+  <!-- Edit the grid options -->
+  <ui-button icon="style" variant="primary" (click)="onEditGridOptions()">
+    {{ 'components.application.dashboard.settings.gridOptions' | translate }}
+  </ui-button>
+  <!-- Remove tab -->
   <ui-button (click)="delete.emit()" variant="danger" category="tertiary">{{
     'components.widget.settings.tabs.deleteTab' | translate
   }}</ui-button>
