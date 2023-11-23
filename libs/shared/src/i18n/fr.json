@@ -804,7 +804,21 @@
 					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"
 				}
 			},
-			"saveSurvey": "Sauvegarde du questionnaire"
+			"saveSurvey": "Sauvegarde du questionnaire",
+			"surveyQueries": {
+				"edit": "Modifier la requête",
+				"invalidQuery": "Requête invalide, veuillez vérifier la syntaxe",
+				"name": "Nom de la requête",
+				"new": "Nouvelle requête",
+				"url": "URL GraphQL",
+				"variableMapping": {
+					"empty": "Aucune variable définie dans la requête",
+					"question": "Champ de formulaire",
+					"title": "Mappage de variables",
+					"tooltip": "Mappez les variables utilisées dans la requête sur les champs du formulaire",
+					"variable": "Variable GraphQL"
+				}
+			}
 		},
 		"formMapProperties": {
 			"geofields": {

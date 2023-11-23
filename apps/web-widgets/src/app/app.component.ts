@@ -7,6 +7,7 @@ import {
   ResourceCustomFiltersComponent,
   ResourceDropdownComponent,
   ResourceSelectTextComponent,
+  SurveyQueriesComponent,
   TestServiceDropdownComponent,
 } from '@oort-front/shared';
 
@@ -28,6 +29,7 @@ export class AppComponent {
     ResourceDropdownComponent,
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
+    SurveyQueriesComponent,
   ];
 
   title = 'web-widgets';

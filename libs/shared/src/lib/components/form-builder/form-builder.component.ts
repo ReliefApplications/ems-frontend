@@ -27,6 +27,7 @@ import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SurveyGraphQLQueryManager } from '../../survey/global-properties/choicesByGraphql';
 
 /**
  * Array containing the different types of questions.
@@ -207,6 +208,7 @@ export class FormBuilderComponent
           this.formHelpersService.addQuestionTooltips
         );
         this.formHelpersService.addUserVariables(survey);
+        new SurveyGraphQLQueryManager(survey);
       }
     );
     this.surveyCreator.haveCommercialLicense = true;

@@ -1,0 +1,32 @@
+<div class="w-full flex flex-col gap-2 cursor-default">
+  <span *ngFor="let query of queries; let i = index" class="flex items-center">
+    <p class="grow">{{ query.name }}</p>
+    <div class="flex gap-0.5">
+      <ui-button
+        category="secondary"
+        [isIcon]="true"
+        icon="edit"
+        (click)="onEdit(i)"
+        [uiTooltip]="'common.edit' | translate"
+      >
+      </ui-button>
+      <ui-button
+        category="secondary"
+        [isIcon]="true"
+        variant="danger"
+        icon="delete"
+        (click)="onDelete(i)"
+        [uiTooltip]="'common.delete' | translate"
+      >
+      </ui-button>
+    </div>
+  </span>
+
+  <ui-button
+    class="mx-auto mt-5"
+    category="secondary"
+    icon="add"
+    (click)="onAdd()"
+    >{{ 'components.formBuilder.surveyQueries.new' | translate }}</ui-button
+  >
+</div>

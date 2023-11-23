@@ -1,0 +1,139 @@
+<ui-dialog size="big">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        data.query
+          ? ('components.formBuilder.surveyQueries.edit' | translate)
+          : ('components.formBuilder.surveyQueries.new' | translate)
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="queryForm" class="h-full">
+      <!-- Query editor -->
+      <div class="flex h-full gap-6">
+        <ngx-monaco-editor
+          class="!h-full w-3/5"
+          formControlName="query"
+          [options]="editorOptions"
+        ></ngx-monaco-editor>
+
+        <div class="flex flex-col w-2/5">
+          <ui-alert
+            *ngIf="!queryIsValid && queryForm.get('query')?.value"
+            variant="danger"
+            class="mb-4"
+            >{{
+              'components.formBuilder.surveyQueries.invalidQuery' | translate
+            }}</ui-alert
+          >
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.formBuilder.surveyQueries.name' | translate
+            }}</label>
+            <input type="text" formControlName="name" />
+          </div>
+
+          <!-- Query name -->
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.formBuilder.surveyQueries.url' | translate
+            }}</label>
+            <input
+              type="text"
+              placeholder="https://graphql.api.apollographql.com/api/graphql"
+              formControlName="url"
+            />
+          </div>
+
+          <!-- Mapping of query variables -->
+          <span class="flex items-center gap-2 mt-6 mb-4">
+            <h2 class="m-0">
+              {{
+                'components.formBuilder.surveyQueries.variableMapping.title'
+                  | translate
+              }}
+            </h2>
+            <ui-icon
+              icon="info"
+              [uiTooltip]="
+                'components.formBuilder.surveyQueries.variableMapping.tooltip'
+                  | translate
+              "
+              variant="grey"
+            >
+            </ui-icon>
+          </span>
+
+          <shared-empty
+            *ngIf="queryForm.get('variables')!.value.length === 0"
+            [title]="
+              'components.formBuilder.surveyQueries.variableMapping.empty'
+                | translate
+            "
+          ></shared-empty>
+
+          <table
+            *ngIf="queryForm.get('variables')!.value.length > 0"
+            uiTableWrapper
+            [dataSource]="variableMappingData"
+            cdk-table
+          >
+            <ng-container cdkColumnDef="variable">
+              <th uiCellHeader *cdkHeaderCellDef>
+                {{
+                  'components.formBuilder.surveyQueries.variableMapping.variable'
+                    | translate
+                }}
+              </th>
+              <td uiCell *cdkCellDef="let element">
+                {{ element.variable }} {{ element.required ? '*' : '' }}
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="question">
+              <th uiCellHeader *cdkHeaderCellDef>
+                {{
+                  'components.formBuilder.surveyQueries.variableMapping.question'
+                    | translate
+                }}
+              </th>
+              <td uiCell *cdkCellDef="let element; let rowIndex = index">
+                <div uiFormFieldDirective class="!m-0">
+                  <ui-select-menu
+                    [formControl]="
+                      $any(variablesFormArray?.at(rowIndex)?.get('question'))
+                    "
+                  >
+                    <ui-select-option
+                      *ngFor="let question of availableQuestions"
+                      [value]="question"
+                    >
+                      {{ question }}
+                    </ui-select-option>
+                  </ui-select-menu>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
+            <tr cdk-row *cdkRowDef="let row; columns: columns"></tr>
+          </table>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!queryForm.valid || !queryIsValid"
+    >
+      {{ (data.query ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

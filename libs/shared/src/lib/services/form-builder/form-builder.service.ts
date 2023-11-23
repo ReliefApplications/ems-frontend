@@ -139,26 +139,7 @@ export class FormBuilderService {
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
 
-    // @TODO: Add proper way of defining queries (probably a modal)
-    survey.graphQLQueries = [
-      {
-        url: 'https://countries.trevorblades.com/',
-        query: `query TestQuery($continentCode: ID!, $lang: String) {
-          continent(code: $continentCode) {
-            name
-            code
-            countries {
-              name(lang: $lang)
-              code
-              capital
-  
-            }
-          }
-        }
-      `,
-        variables: { lang: 'lang_question', continentCode: 'code_question' },
-      },
-    ];
+    // Initialize the survey graphql query manager
     new SurveyGraphQLQueryManager(survey);
     return survey;
   }

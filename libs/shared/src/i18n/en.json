@@ -790,7 +790,21 @@
 					"resourceSelectText": "First you have to select a resource before setting any filters"
 				}
 			},
-			"saveSurvey": "Saving the form"
+			"saveSurvey": "Saving the form",
+			"surveyQueries": {
+				"edit": "Edit query",
+				"invalidQuery": "Invalid query, please check the syntax",
+				"name": "Query name",
+				"new": "New query",
+				"url": "GraphQL URL",
+				"variableMapping": {
+					"empty": "No variables defined in the query",
+					"question": "Form field",
+					"title": "Variable mapping",
+					"tooltip": "Map the variables used in the query to the form fields",
+					"variable": "GraphQL variable"
+				}
+			}
 		},
 		"formMapProperties": {
 			"geofields": {

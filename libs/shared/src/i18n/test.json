@@ -790,7 +790,21 @@
 					"resourceSelectText": "******"
 				}
 			},
-			"saveSurvey": "******"
+			"saveSurvey": "******",
+			"surveyQueries": {
+				"edit": "******",
+				"invalidQuery": "******",
+				"name": "******",
+				"new": "******",
+				"url": "******",
+				"variableMapping": {
+					"empty": "******",
+					"question": "******",
+					"title": "******",
+					"tooltip": "******",
+					"variable": "******"
+				}
+			}
 		},
 		"formMapProperties": {
 			"geofields": {
