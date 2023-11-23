@@ -1,14 +1,12 @@
 <div
   class="flex flex-col items-center shadow-lg bg-white rounded p-2 ring-1 ring-gray-900/5 mb-2"
 >
-  <div
-    class="flex justify-between gap-2 flex-wrap items-center mb-2"
-  >
+  <div class="flex justify-between gap-2 flex-wrap items-center mb-2">
     <kendo-upload
       class="flex-1"
       #fileReader
       name="Upload XLSX"
-      [restrictions]="{ maxFileSize }"
+      [restrictions]="{ maxFileSize: maxFileSize * 1024 * 1024 }"
       (upload)="onUpload($event)"
       accept=".xlsx"
       [multiple]="false"
@@ -22,7 +20,10 @@
       {{ 'common.downloadTemplate' | translate }}
     </ui-button>
   </div>
-  <div>
-    {{ 'common.notifications.file.upload.maxFileSize' | translate : { size: maxFileSize } }}
-  </div>
+  <span class="text-gray-700 text-xs">
+    {{
+      'common.notifications.file.upload.maxFileSize'
+        | translate : { size: maxFileSize }
+    }}
+  </span>
 </div>

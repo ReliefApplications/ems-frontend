@@ -251,7 +251,7 @@
 				},
 				"upload": {
 					"error": "Something went wrong during the upload",
-					"maxFileSize": "Maximum file size is {{size}} bytes.",
+					"maxFileSize": "Maximum file size is {{size}} MB.",
 					"processing": "Uploading file...",
 					"ready": "File uploaded"
 				}

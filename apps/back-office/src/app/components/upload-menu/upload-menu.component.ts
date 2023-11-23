@@ -24,7 +24,7 @@ export class UploadMenuComponent {
   /** Close event emitter */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<null> = new EventEmitter();
-  /** File size limit, in bytes */
+  /** File size limit, in MB */
   public maxFileSize: number;
   /** Show upload menu */
   private show = true;

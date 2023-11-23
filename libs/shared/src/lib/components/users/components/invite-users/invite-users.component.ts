@@ -29,7 +29,7 @@ interface DialogData {
 export class InviteUsersComponent extends UnsubscribeComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
   public formGroup!: ReturnType<typeof this.createFormGroup>;
-  /** File size limit, in bytes */
+  /** File size limit, in MB */
   public maxFileSize: number;
   private editedRowIndex = 0;
   private editionActive = false;

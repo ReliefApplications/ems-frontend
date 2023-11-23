@@ -251,7 +251,7 @@
 				},
 				"upload": {
 					"error": "Un problème est survenu lors de l'import",
-					"maxFileSize": "La taille maximale du fichier est de {{size}} octets.",
+					"maxFileSize": "La taille maximale du fichier est de {{size}} Mo.",
 					"processing": "Fichier en cours d'importation...",
 					"ready": "Fichier importé"
 				}
