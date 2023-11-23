@@ -19,7 +19,7 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="gridOptionsForm">
-      <div class="flex gap-4 flex-col" formGroupName="gridOptions">
+      <div class="flex gap-4 flex-col">
         <!-- Number of columns -->
         <div class="flex flex-col">
           <div uiFormFieldDirective>
@@ -135,7 +135,7 @@
   <!-- Action buttons -->
   <ng-container ngProjectAs="actions">
     <ui-button uiDialogClose variant="default">
-      {{ 'common.cancel' | translate }}
+      {{ 'common.close' | translate }}
     </ui-button>
   </ng-container>
 </ui-dialog>

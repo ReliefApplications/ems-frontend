@@ -66,10 +66,8 @@ export class GridSettingsModalComponent
   ngOnInit(): void {
     // Init form and create control with name 'gridOptions'
     this.gridOptionsForm = this.fb.group({
-      gridOptions: this.fb.group({
-        ...this.defaultGridOptions,
-        ...this.data.gridOptions,
-      }),
+      ...this.defaultGridOptions,
+      ...this.data.gridOptions,
     });
 
     // Listen to grid settings updates
@@ -78,7 +76,7 @@ export class GridSettingsModalComponent
       .subscribe((gridOptions) => {
         // update only if the form is valid
         if (this.gridOptionsForm.valid) {
-          this.onUpdateGridOptions(gridOptions.gridOptions);
+          this.onUpdateGridOptions(gridOptions);
         }
       });
   }
