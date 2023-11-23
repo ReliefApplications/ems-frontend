@@ -129,7 +129,7 @@ export class WidgetGridComponent
         );
         this.setGridOptions();
       });
-    this.setGridOptions();
+    this.setGridOptions(true);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
