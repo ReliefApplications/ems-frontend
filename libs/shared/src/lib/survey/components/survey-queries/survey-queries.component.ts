@@ -137,11 +137,14 @@ export class SurveyQueriesComponent
     this.onEdit(this.queries.length);
   }
 
-  /** Triggers change detection on survey creator */
+  /** Triggers change detection on survey creator and angular component */
   private triggerChangeDetection() {
-    // There must be a better way to do this, but I couldn't find it
+    // There must be a better way to do this, but I couldn't figure it out
     this.model.obj.addNewPage('__TEMP__');
     this.model.obj.removePage(this.model.obj.getPageByName('__TEMP__'));
+
+    // Manually trigger angular change detection
+    this.changeDetectorRef.detectChanges();
   }
 
   override ngOnDestroy(): void {
