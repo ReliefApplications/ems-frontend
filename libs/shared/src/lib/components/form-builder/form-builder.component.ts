@@ -208,7 +208,7 @@ export class FormBuilderComponent
           this.formHelpersService.addQuestionTooltips
         );
         this.formHelpersService.addUserVariables(survey);
-        new SurveyGraphQLQueryManager(survey);
+        SurveyGraphQLQueryManager.init(survey);
       }
     );
     this.surveyCreator.haveCommercialLicense = true;

@@ -140,7 +140,7 @@ export class FormBuilderService {
     survey.applyTheme({ isPanelless: true });
 
     // Initialize the survey graphql query manager
-    new SurveyGraphQLQueryManager(survey);
+    SurveyGraphQLQueryManager.init(survey);
     return survey;
   }
 

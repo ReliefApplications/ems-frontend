@@ -90,6 +90,17 @@ export class SurveyGraphQLQueryManager {
   }
 
   /**
+   * Initializes the SurveyGraphQLQueryManager instance on a given survey
+   *
+   * @param survey The survey to manage
+   * @returns The SurveyGraphQLQueryManager instance
+   */
+  static init(survey: SurveyModel) {
+    const queryManager = new SurveyGraphQLQueryManager(survey);
+    return queryManager;
+  }
+
+  /**
    * Manages the graphQL queries of a survey
    *
    * @param survey Survey to manage
