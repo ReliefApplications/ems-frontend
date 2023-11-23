@@ -109,12 +109,12 @@ export class ContextService {
     this.dashboardService.dashboard$.subscribe(
       (dashboard: Dashboard | null) => {
         if (dashboard) {
-          this.filterStructure.next(dashboard.filterStructure);
+          this.filterStructure.next(dashboard.filter?.structure);
           localForage.getItem(this.positionKey).then((position) => {
             if (position) {
               this.filterPosition.next(position);
             } else {
-              this.filterPosition.next(dashboard.position);
+              this.filterPosition.next(dashboard.filter?.position);
             }
           });
         } else {

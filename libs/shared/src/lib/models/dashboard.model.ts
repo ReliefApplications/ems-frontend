@@ -237,9 +237,9 @@ export interface Dashboard {
     variant?: string;
     show?: boolean;
     closable?: boolean;
+    structure?: any;
+    position?: string;
   };
-  filterStructure?: any;
-  position?: any;
   gridOptions?: any;
 }
 

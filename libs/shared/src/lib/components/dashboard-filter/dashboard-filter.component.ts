@@ -14,14 +14,9 @@ import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
 import { Model, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
-import { ApplicationService } from '../../services/application/application.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { Application } from '../../models/application.model';
 import { takeUntil } from 'rxjs/operators';
-import {
-  EDIT_DASHBOARD_FILTER,
-  EDIT_DASHBOARD_FILTER_POSITION,
-} from './graphql/mutations';
+import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
@@ -30,7 +25,11 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { EditDashboardMutationResponse } from '../../models/dashboard.model';
+import {
+  Dashboard,
+  EditDashboardMutationResponse,
+} from '../../models/dashboard.model';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
 
 /**
  * Interface for quick filters
@@ -62,6 +61,8 @@ export class DashboardFilterComponent
   @Input() closable = true;
   /** Current position of filter */
   public position!: FilterPosition;
+  /** Dashboard the filter belongs to */
+  public dashboard?: Dashboard;
   /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
@@ -96,8 +97,6 @@ export class DashboardFilterComponent
   public surveyStructure: any = {};
   /** Quick filter display */
   public quickFilters: QuickFilter[] = [];
-  /** Current application id */
-  public applicationId?: string;
   /** Indicate empty status of filter */
   public empty = true;
   /** Represents the survey's value */
@@ -111,7 +110,7 @@ export class DashboardFilterComponent
    * @param formBuilderService Form builder service
    * @param dialog The Dialog service
    * @param apollo Apollo client
-   * @param applicationService Shared application service
+   * @param dashboardService Shared dashboard service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param contextService Context service
@@ -125,7 +124,7 @@ export class DashboardFilterComponent
     private formBuilderService: FormBuilderService,
     private dialog: Dialog,
     private apollo: Apollo,
-    private applicationService: ApplicationService,
+    private dashboardService: DashboardService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private contextService: ContextService,
@@ -156,11 +155,11 @@ export class DashboardFilterComponent
       .subscribe((value) => {
         this.value = value;
       });
-    this.applicationService.application$
+    this.dashboardService.dashboard$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((application: Application | null) => {
-        if (application) {
-          this.applicationId = application.id;
+      .subscribe((dashboard: Dashboard | null) => {
+        if (dashboard) {
+          this.dashboard = dashboard;
         }
       });
     this.contextService.filterStructure$
@@ -261,8 +260,11 @@ export class DashboardFilterComponent
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD_FILTER,
         variables: {
-          id: this.applicationId,
-          filterStructure: this.surveyStructure,
+          id: this.dashboard?.id,
+          filter: {
+            ...this.dashboard?.filter,
+            structure: this.surveyStructure,
+          },
         },
       })
       .subscribe(({ errors, data }) => {
@@ -430,10 +432,13 @@ export class DashboardFilterComponent
   private saveSettings(defaultPosition: FilterPosition): void {
     this.apollo
       .mutate<EditDashboardMutationResponse>({
-        mutation: EDIT_DASHBOARD_FILTER_POSITION,
+        mutation: EDIT_DASHBOARD_FILTER,
         variables: {
-          id: this.applicationId,
-          position: defaultPosition,
+          id: this.dashboard?.id,
+          filter: {
+            ...this.dashboard?.filter,
+            position: defaultPosition,
+          },
         },
       })
       .subscribe(({ errors, data }) => {
