@@ -39,7 +39,11 @@ import {
 } from '@progress/kendo-data-query';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { PopupService } from '@progress/kendo-angular-popup';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -155,6 +159,15 @@ export class GridComponent
   @Input() skip = 0;
   /** Admin mode status */
   @Input() admin = false;
+  /** Cached choices from graphQL queries */
+  @Input() choicesByRecordState: {
+    // Only fields used as variables in the query are stored here
+    state: any;
+    // Respective column name (field choices apply to)
+    field: string;
+    // List of choices for the given state and field
+    choices: any[];
+  }[] = [];
   /** Output decorator for action */
   @Output() action = new EventEmitter();
   /** Output decorator for export */
@@ -398,7 +411,18 @@ export class GridComponent
   public getPropertyValue(item: any, field: any, subField?: any): any {
     let value = get(item, field.name);
     const meta = subField ? subField.meta : field.meta;
-    if (meta.choices) {
+    if (meta.choicesByGraphql) {
+      const currState = this.choicesByRecordState.find((el) =>
+        Object.keys(el.state).every((key) => el.state[key] === item[key])
+      );
+
+      // Checks if there are choices for the current state of the record
+      if (currState) {
+        return (
+          currState.choices.find((el) => el.value === value)?.text || value
+        );
+      }
+    } else if (meta.choices) {
       if (Array.isArray(value)) {
         if (subField) {
           if (meta.graphQLFieldName) {
@@ -1169,5 +1193,41 @@ export class GridComponent
         column.width = MIN_COLUMN_WIDTH;
       }
     });
+  }
+
+  /**
+   * Returns the choices for a given field if they come from a graphQL query
+   *
+   * @param field field to get choices for
+   * @param fg form group of the row being edited
+   * @returns choices for field
+   */
+  public getChoicesFromGraphQL(
+    field: any,
+    fg: FormGroup<Record<string, any>>
+  ): any[] {
+    const item = fg.value;
+    const meta = field.meta;
+    if (meta.choicesByGraphql) {
+      const currState = this.choicesByRecordState.find((el) =>
+        Object.keys(el.state).every((key) => el.state[key] === item[key])
+      );
+
+      // Checks if there are choices for the current state of the record
+      if (currState?.choices) {
+        // Check that the current value is in the choices
+        if (
+          !currState.choices.find(
+            (el) => el.value === fg.get(field.name)?.value
+          )
+        ) {
+          // If not, set the value to null
+          fg.get(field.name)?.setValue(null);
+        }
+        return currState.choices;
+      }
+    }
+
+    return meta?.choices ?? [];
   }
 }

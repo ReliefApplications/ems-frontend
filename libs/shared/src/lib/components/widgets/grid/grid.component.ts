@@ -112,7 +112,7 @@ export class GridWidgetComponent
    */
   get canDeactivate() {
     return this.coreGridComponent
-      ? this.coreGridComponent.updatedItems.length === 0
+      ? this.coreGridComponent.updatedItems.getValue().length === 0
       : true;
   }
 

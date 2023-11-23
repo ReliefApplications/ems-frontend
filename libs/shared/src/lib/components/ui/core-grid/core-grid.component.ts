@@ -35,12 +35,12 @@ import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
 import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
-  Record,
+  Record as RecordModel,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
-import { get, isEqual } from 'lodash';
-import { GridService } from '../../../services/grid/grid.service';
+import { get, isEqual, isNil } from 'lodash';
+import { GridService, QueryConfig } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
 import { GridComponent } from './grid/grid.component';
@@ -48,13 +48,14 @@ import { DateTranslateService } from '../../../services/date-translate/date-tran
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, Subject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subject } from 'rxjs';
 import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { SurveyQuery } from '../../../survey/components/survey-queries/survey-queries.model';
 
 /**
  * Default file name when exporting grid data.
@@ -151,7 +152,17 @@ export class CoreGridComponent
 
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
-  public updatedItems: any[] = [];
+  /** Array of records changed through inline edition */
+  public updatedItems = new BehaviorSubject<any[]>([]);
+  /** Mapping of choices given the current records state */
+  public choicesByRecordState: {
+    // Only fields used as variables in the query are stored here
+    state: any;
+    // Respective column name (field choices apply to)
+    field: string;
+    // List of choices for the given state and field
+    choices: any[];
+  }[] = [];
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public loading = false;
   @Input() status: {
@@ -259,7 +270,7 @@ export class CoreGridComponent
 
   /** @returns true if any updated item in the list */
   get hasChanges(): boolean {
-    return this.updatedItems.length > 0;
+    return this.updatedItems.getValue().length > 0;
   }
 
   // === ACTIONS ===
@@ -331,6 +342,14 @@ export class CoreGridComponent
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.dataQuery) this.reloadData();
+      });
+
+    // Subscribe to inline edition to fetch new choices form graphql
+    this.updatedItems
+      .asObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setChoicesByGraphql();
       });
   }
 
@@ -429,7 +448,10 @@ export class CoreGridComponent
             };
             for (const field in data) {
               if (Object.prototype.hasOwnProperty.call(data, field)) {
-                this.metaFields = Object.assign({}, data[field]);
+                this.metaFields = Object.assign(
+                  { graphQlChoices: this.choicesByRecordState },
+                  data[field]
+                );
                 try {
                   await this.gridService.populateMetaFields(this.metaFields);
                 } catch (err) {
@@ -511,14 +533,17 @@ export class CoreGridComponent
    * @param value Updated value of the item.
    */
   private update(item: any, value: any): void {
-    let updatedItem = this.updatedItems.find((x) => x.id === item.id);
+    const updatedItems = this.updatedItems.getValue();
+    let updatedItem = updatedItems.find((x) => x.id === item.id);
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value };
-      const index = this.updatedItems.findIndex((x) => x.id === item.id);
-      this.updatedItems.splice(index, 1, updatedItem);
+      const index = updatedItems.findIndex((x) => x.id === item.id);
+      updatedItems.splice(index, 1, updatedItem);
     } else {
-      this.updatedItems.push({ id: item.id, ...value });
+      updatedItems.push({ id: item.id, ...value });
     }
+
+    this.updatedItems.next(updatedItems);
 
     // Use the draft option to apply triggers, and then update the data
     this.apollo
@@ -573,13 +598,15 @@ export class CoreGridComponent
                       // Update data item raw value ( used by inline edition )
                       dataItem._meta.raw = editedData;
                       item.saved = false;
-                      const index = this.updatedItems.findIndex(
+                      const updatedItems = this.updatedItems.getValue();
+                      const index = updatedItems.findIndex(
                         (x) => x.id === item.id
                       );
-                      this.updatedItems.splice(index, 1, {
+                      updatedItems.splice(index, 1, {
                         id: item.id,
                         ...editedData,
                       });
+                      this.updatedItems.next(updatedItems);
                       this.loadItems();
                     });
                 }
@@ -602,24 +629,24 @@ export class CoreGridComponent
         delete item.validationErrors;
       }
       return Promise.all(this.promisedChanges()).then((allRes) => {
+        const updatedItems = this.updatedItems.getValue();
         for (const res of allRes) {
-          const resRecord: Record = res.data.editRecord;
-          const updatedIndex = this.updatedItems.findIndex(
+          const resRecord: RecordModel = res.data.editRecord;
+          const updatedIndex = updatedItems.findIndex(
             (x) => x.id === resRecord.id
           );
           const item = this.items.find((x) => x.id === resRecord.id);
           if (resRecord?.validationErrors?.length) {
             // if the item has an error, save the error with the item object
-            this.updatedItems[updatedIndex].incrementalId =
-              resRecord.incrementalId;
-            this.updatedItems[updatedIndex].validationErrors =
+            updatedItems[updatedIndex].incrementalId = resRecord.incrementalId;
+            updatedItems[updatedIndex].validationErrors =
               resRecord.validationErrors;
             item.incrementalId = resRecord.incrementalId;
             item.validationErrors = resRecord.validationErrors;
           } else {
             // if no errors, the item has been saved in the database
             // remove the item from updatedItems list
-            this.updatedItems.splice(updatedIndex, 1);
+            updatedItems.splice(updatedIndex, 1);
             // save the new value of the item in the originalItems list
             const originalIndex = this.originalItems.findIndex(
               (x) => x.id === resRecord.id
@@ -629,14 +656,16 @@ export class CoreGridComponent
             item.saved = true;
           }
         }
+        this.updatedItems.next(updatedItems);
+
         // the items still in the updatedItems list are the ones with errors
-        if (this.updatedItems.length) {
+        if (updatedItems.length) {
           // show an error message
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.widget.grid.errors.validationFailed',
               {
-                errors: this.updatedItems
+                errors: updatedItems
                   .map((item) => `- ${item.incrementalId}`)
                   .join('\n'),
               }
@@ -660,7 +689,7 @@ export class CoreGridComponent
    * Cancels inline edition without saving.
    */
   public onCancelChanges(): void {
-    this.updatedItems = [];
+    this.updatedItems.next([]);
     this.items = this.originalItems;
     this.originalItems = cloneData(this.originalItems);
     this.loadItems();
@@ -673,7 +702,7 @@ export class CoreGridComponent
    */
   public promisedChanges(): Promise<any>[] {
     const promises: Promise<any>[] = [];
-    for (const item of this.updatedItems) {
+    for (const item of this.updatedItems.getValue()) {
       const data = Object.assign({}, item);
       delete data.id;
       for (const field of this.fields) {
@@ -709,7 +738,7 @@ export class CoreGridComponent
    */
   private getRecords(): void {
     this.loading = true;
-    this.updatedItems = [];
+    this.updatedItems.next([]);
     if (this.dataQuery) {
       this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
         next: ({ data }) => {
@@ -730,10 +759,11 @@ export class CoreGridComponent
                   })) || [];
                 this.totalCount = data[field] ? data[field].totalCount : 0;
                 this.items = cloneData(nodes);
+                this.setChoicesByGraphql();
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
                 this.loadItems();
-                for (const updatedItem of this.updatedItems) {
+                for (const updatedItem of this.updatedItems.getValue()) {
                   const item: any = this.items.find(
                     (x) => x.id === updatedItem.id
                   );
@@ -1106,7 +1136,8 @@ export class CoreGridComponent
    * @param ids list of item ids
    */
   private validateRecords(ids: string[]): void {
-    this.updatedItems = this.updatedItems.filter((x) => !ids.includes(x.id));
+    const updatedItems = this.updatedItems.getValue();
+    this.updatedItems.next(updatedItems.filter((x) => !ids.includes(x.id)));
   }
 
   /**
@@ -1493,5 +1524,64 @@ export class CoreGridComponent
     return this.environment.module === 'backoffice'
       ? `applications/${pageUrlParams}`
       : `${pageUrlParams}`;
+  }
+
+  /** Set choices of the fields of the grid that have values coming from graphql API */
+  private setChoicesByGraphql(): void {
+    const getQuestionStateFromVariables = (
+      variables: Record<string, any>,
+      query: SurveyQuery
+    ) => {
+      const state: Record<string, any> = {};
+      Object.keys(variables).forEach((v) => {
+        const question = query.variables[v].question;
+        state[question] = variables[v];
+      });
+      return state;
+    };
+    Object.entries(this.metaFields).forEach(([question, meta]) => {
+      if (!(meta as any)?.choicesByGraphql) {
+        return;
+      }
+
+      const config: (typeof queriesToMake)[number]['config'] = (meta as any)
+        .choicesByGraphql;
+
+      const queriesToMake: QueryConfig[] = [];
+      this.items.concat(this.updatedItems.getValue()).forEach((i) => {
+        const vars: Record<string, any> = {};
+        for (const [key, value] of Object.entries(config.query.variables)) {
+          // If there is a required variable not present in the item, we skip it
+          if (value.required && isNil(i[value.question])) {
+            return;
+          }
+
+          vars[key] = i[value.question];
+        }
+
+        // Check if we already loaded the choices for this record state
+        const state = getQuestionStateFromVariables(vars, config.query);
+        const alreadyFetched = this.choicesByRecordState.find(
+          (x) => isEqual(x.state, state) && x.field === question
+        );
+
+        if (!alreadyFetched) {
+          queriesToMake.push({
+            config,
+            variables: vars,
+          });
+        }
+      });
+
+      queriesToMake.forEach((q) => {
+        this.gridService.getChoicesFromGraphQL(q).then((choices) => {
+          this.choicesByRecordState.push({
+            state: getQuestionStateFromVariables(q.variables, q.config.query),
+            field: question,
+            choices,
+          });
+        });
+      });
+    });
   }
 }

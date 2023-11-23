@@ -17,6 +17,22 @@ import { Apollo } from 'apollo-angular';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RESOURCE_FIELDS } from './graphql/queries';
 import { map } from 'rxjs';
+import { SurveyQuery } from '../../survey/components/survey-queries/survey-queries.model';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+
+/** Cache for queries */
+const cache = new InMemoryCache();
+
+/** Type for the configuration of a query for the choices of a selectBase question */
+export type QueryConfig = {
+  config: {
+    query: SurveyQuery;
+    path: string;
+    dataKey: string;
+    displayKey: string;
+  };
+  variables: Record<string, any>;
+};
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -483,5 +499,45 @@ export class GridService {
           }
         })
       );
+  }
+
+  /**
+   * Queries the GraphQL API to get choices for a field
+   *
+   * @param queryConfig Configuration for the GraphQL query
+   * @returns Promise for the field choices
+   */
+  public async getChoicesFromGraphQL(queryConfig: QueryConfig) {
+    const { config, variables } = queryConfig;
+    const { query, path, dataKey, displayKey } = config;
+
+    try {
+      const gqlQuery = gql(query.query);
+
+      const client = new ApolloClient({
+        uri: query.url,
+        cache,
+      });
+
+      const res = await client.query({
+        query: gqlQuery,
+        variables,
+      });
+
+      // Get the data using the path
+      const data = get(res, path || '');
+      if (!data || !Array.isArray(data)) {
+        return [];
+      }
+
+      // Update the question choices
+      return data.map((item: any) => ({
+        value: item[dataKey],
+        text: item[displayKey],
+      }));
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
   }
 }
