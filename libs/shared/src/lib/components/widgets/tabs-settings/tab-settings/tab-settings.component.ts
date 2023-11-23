@@ -77,6 +77,13 @@ export class TabSettingsComponent
       ...this.gridOptions,
       ...this.tabGroup.controls.gridOptions.value,
     } as GridsterConfig;
+    // To avoid scroll to be called when opening the settings
+    setTimeout(() => {
+      this.gridOptions = {
+        ...this.gridOptions,
+        scrollToNewItems: true,
+      };
+    }, 1000);
   }
 
   override ngOnDestroy() {

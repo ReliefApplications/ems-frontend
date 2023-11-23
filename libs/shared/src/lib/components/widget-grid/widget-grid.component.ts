@@ -141,7 +141,6 @@ export class WidgetGridComponent
       this.setLayout();
     }
     if (changes['options']) {
-      console.log('update options');
       this.setGridOptions();
     }
     if (
@@ -192,12 +191,8 @@ export class WidgetGridComponent
       ...this.gridOptions,
       ...(isDashboardSet && {
         itemChangeCallback: () => this.structureChanges.next(true),
-        scrollToNewItems: true,
       }),
-      ...(!isDashboardSet && {
-        // Prevent dashboard to scroll to bottom widget by default
-        scrollToNewItems: false,
-      }),
+      scrollToNewItems: false,
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
