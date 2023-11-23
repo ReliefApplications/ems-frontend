@@ -16,4 +16,5 @@ export interface Environment {
   esriApiKey: string;
   theme: any;
   sentry?: any;
+  maxFileSize?: number;
 }
