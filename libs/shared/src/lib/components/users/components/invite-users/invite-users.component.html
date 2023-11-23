@@ -17,11 +17,18 @@
         (upload)="onUpload($event)"
         accept=".xlsx"
         [multiple]="false"
+        [restrictions]="{ maxFileSize: maxFileSize * 1024 * 1024 }"
       >
       </kendo-upload>
       <ui-button (click)="onDownload()" variant="primary" icon="file_download">
         {{ 'common.downloadTemplate' | translate }}
       </ui-button>
+      <span class="text-gray-700 text-xs">
+        {{
+          'common.notifications.file.upload.maxFileSize'
+            | translate : { size: maxFileSize }
+        }}
+      </span>
     </div>
     <kendo-grid
       [data]="gridData"
