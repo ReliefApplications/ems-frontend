@@ -983,21 +983,21 @@ export class GridComponent
     const activeColumns: { [key: string]: number } = {};
 
     // get the width of visible sticky columns
-    const stickyFields = this.columns.filter(
+    const stickyColumns = this.columns.filter(
       (column) => !column.hidden && !!column.sticky
     );
     let totalWidthSticky = 0;
-    stickyFields.forEach((val: any) => {
-      if (val.width) {
-        totalWidthSticky += val.width;
+    stickyColumns.forEach((column: any) => {
+      if (column.width) {
+        totalWidthSticky += column.width;
       }
     });
     // fixed amount required for select column
     if (this.selectable) {
-      totalWidthSticky += 35;
+      totalWidthSticky += 41;
     }
-    //Subtract the width of non-fields columns (details, actions etc.) and small calculation errors
-    const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky - 30;
+    // Subtract the width of non-fields columns (details, actions etc.) and small calculation errors ( border + scrollbar )
+    const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky - 12;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
       (column) => !column.hidden && !!column.title && !column.sticky
@@ -1088,17 +1088,19 @@ export class GridComponent
     // Instead, clamp the columns to the min and max width
     if (avgPixelPerCol < MIN_COLUMN_WIDTH * 1.1) {
       this.columns.forEach((column) => {
-        const colWidth = activeColumns[column.field];
-        if (colWidth) {
-          column.width = Math.min(
-            Math.max(colWidth * pixelWidthPerCharacter, MIN_COLUMN_WIDTH),
-            MAX_COLUMN_WIDTH
-          );
-        }
+        if (!column.hidden) {
+          const colWidth = activeColumns[column.field];
+          if (colWidth) {
+            column.width = Math.min(
+              Math.max(colWidth * pixelWidthPerCharacter, MIN_COLUMN_WIDTH),
+              MAX_COLUMN_WIDTH
+            );
+          }
 
-        // Make sure that every column has a width set
-        if (column.width <= 0) {
-          column.width = MIN_COLUMN_WIDTH;
+          // Make sure that every column has a width set
+          if (column.width <= 0) {
+            column.width = MIN_COLUMN_WIDTH;
+          }
         }
       });
       return;
