@@ -129,7 +129,7 @@ export class WidgetGridComponent
         this.colsNumber = this.setColsNumber(
           this._host.nativeElement.innerWidth
         );
-        this.setGridOptions(true);
+        this.setGridOptions();
       });
     this.setGridOptions();
   }
