@@ -141,6 +141,7 @@ export class WidgetGridComponent
       this.setLayout();
     }
     if (changes['options']) {
+      console.log('update options');
       this.setGridOptions();
     }
     if (

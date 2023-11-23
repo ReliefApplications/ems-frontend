@@ -5,17 +5,18 @@ import {
   Inject,
   Input,
   OnDestroy,
+  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { CustomWidgetStyleModalComponent } from '../custom-widget-style-modal/custom-widget-style-modal.component';
 import { cloneDeep } from 'lodash';
 import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component';
 import { DOCUMENT } from '@angular/common';
 import { GridsterConfig } from 'angular-gridster2';
-import { takeUntil } from 'rxjs';
+import { createTabFormGroup } from '../tabs-settings.form';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { debounceTime, takeUntil } from 'rxjs';
 
 /**
  * Edition of a single tab, in tabs widget
@@ -27,10 +28,10 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 })
 export class TabSettingsComponent
   extends UnsubscribeComponent
-  implements OnDestroy
+  implements OnInit, OnDestroy
 {
   /** Tab form group */
-  @Input() tabGroup!: FormGroup;
+  @Input() tabGroup!: ReturnType<typeof createTabFormGroup>;
   /** Delete tab event emitter */
   @Output() delete = new EventEmitter();
   /** Widget grid reference */
@@ -61,6 +62,32 @@ export class TabSettingsComponent
   /** @returns structure of the widget ( nested widgets ) */
   get structure() {
     return this.tabGroup.get('structure');
+  }
+
+  ngOnInit() {
+    this.tabGroup.controls.gridOptions.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        console.log('set options?');
+        this.gridOptions = {
+          ...this.gridOptions,
+          ...value,
+        } as GridsterConfig;
+      });
+    this.gridOptions = {
+      ...this.gridOptions,
+      ...this.tabGroup.controls.gridOptions.value,
+    } as GridsterConfig;
+  }
+
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.styleDialog) {
+      this.styleDialog.close();
+    }
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
   }
 
   /**
@@ -164,49 +191,19 @@ export class TabSettingsComponent
     }, 1000);
   }
 
-  override ngOnDestroy() {
-    super.ngOnDestroy();
-    if (this.styleDialog) {
-      this.styleDialog.close();
-    }
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
-    }
-  }
-
   /**
    * Opens a modal dialog for grid settings and updates the widget grid options based on the user's selections.
    *
    * @returns A promise that resolves when the modal dialog is closed.
    */
-  public async gridOptionsModal(): Promise<void> {
-    // this.widgetGridComponent.gridOptions = {
-    //   ...this.widgetGridComponent.gridOptions,
-    //   fixedRowHeight: 50,
-    // };
-
-    const { GridSettingsModalComponent } = await import(
-      '../grid-settings-modal/grid-settings-modal.component'
+  public async onEditGridOptions(): Promise<void> {
+    const { TabGridSettingsModalComponent } = await import(
+      '../tab-grid-settings-modal/tab-grid-settings-modal.component'
     );
-    const dialogRef = this.dialog.open(GridSettingsModalComponent, {
+    this.dialog.open(TabGridSettingsModalComponent, {
       data: {
-        gridOptions: this.widgetGridComponent.gridOptions,
+        formGroup: this.tabGroup.get('gridOptions'),
       },
-    });
-    // Subscribes to settings updates
-    const subscription = dialogRef.componentInstance?.onUpdate
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((updates: any) => {
-        if (updates) {
-          this.widgetGridComponent.gridOptions = {
-            ...this.widgetGridComponent.gridOptions,
-            ...updates,
-          };
-        }
-      });
-    // Unsubscribe to dialog onUpdate event
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      subscription?.unsubscribe();
     });
   }
 }

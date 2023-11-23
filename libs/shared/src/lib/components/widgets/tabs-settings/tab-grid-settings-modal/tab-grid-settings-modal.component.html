@@ -6,19 +6,10 @@
           'components.application.dashboard.settings.gridOptions' | translate
         }}
       </h3>
-      <ui-icon
-        class="cursor-help"
-        icon="info_outline"
-        [size]="18"
-        variant="grey"
-        [uiTooltip]="
-          'components.application.pages.settings.tooltip.autoSave' | translate
-        "
-      ></ui-icon>
     </div>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form [formGroup]="gridOptionsForm">
+    <form [formGroup]="formGroup">
       <div class="flex gap-4 flex-col">
         <!-- Number of columns -->
         <div class="flex flex-col">
@@ -45,9 +36,7 @@
               icon="restart_alt"
               variant="grey"
               (click)="
-                gridOptionsForm
-                  .get('gridOptions.minCols')
-                  ?.setValue(defaultGridOptions.minCols)
+                formGroup.get('minCols')?.setValue(defaultGridOptions.minCols)
               "
               [uiTooltip]="
                 'components.application.dashboard.settings.tooltip.reset'
@@ -85,8 +74,8 @@
             icon="restart_alt"
             variant="grey"
             (click)="
-              gridOptionsForm
-                .get('gridOptions.fixedRowHeight')
+              formGroup
+                .get('fixedRowHeight')
                 ?.setValue(defaultGridOptions.fixedRowHeight)
             "
             [uiTooltip]="
@@ -118,9 +107,7 @@
             icon="restart_alt"
             variant="grey"
             (click)="
-              gridOptionsForm
-                .get('gridOptions.margin')
-                ?.setValue(defaultGridOptions.margin)
+              formGroup.get('margin')?.setValue(defaultGridOptions.margin)
             "
             [uiTooltip]="
               'components.application.dashboard.settings.tooltip.reset'
