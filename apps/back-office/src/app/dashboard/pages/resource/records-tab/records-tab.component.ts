@@ -77,7 +77,7 @@ export class RecordsTabComponent
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param downloadService Service used to download.
-      */
+   */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
