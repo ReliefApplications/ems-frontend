@@ -74,6 +74,6 @@ export class TabMainComponent {
         selectedIndex = previousTabIndex - 1;
       }
     }
-    this.tabGroup.tabs.get(selectedIndex)?.openTab.emit();
+    this.tabGroup.selectedIndex = selectedIndex;
   }
 }
