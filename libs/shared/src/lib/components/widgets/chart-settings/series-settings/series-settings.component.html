@@ -5,7 +5,10 @@
       <label>
         {{ 'components.widget.settings.chart.series.title' | translate }}
       </label>
-      <ui-select-menu [formControl]="selectedSerie">
+      <ui-select-menu
+        [formControl]="selectedSerie"
+        [placeholder]="'components.widget.settings.chart.other' | translate"
+      >
         <ui-select-option
           *ngFor="let serie of formArray.value"
           [value]="serie.serie"
@@ -42,8 +45,11 @@
         <label>
           {{ 'components.widget.settings.chart.series.fill' | translate }}
         </label>
-        <ui-select-menu formControlName="fill">
-          <ui-select-option>
+        <ui-select-menu
+          formControlName="fill"
+          [placeholder]="'components.widget.settings.chart.auto' | translate"
+        >
+          <ui-select-option value="auto">
             {{ 'components.widget.settings.chart.auto' | translate }}
           </ui-select-option>
           <ui-select-option *ngFor="let type of fillTypes" [value]="type">
@@ -61,7 +67,10 @@
               | translate
           }}
         </label>
-        <ui-select-menu formControlName="interpolation">
+        <ui-select-menu
+          formControlName="interpolation"
+          [placeholder]="'components.widget.settings.chart.auto' | translate"
+        >
           <ui-select-option>
             {{ 'components.widget.settings.chart.auto' | translate }}
           </ui-select-option>
@@ -85,7 +94,10 @@
               | translate
           }}
         </label>
-        <ui-select-menu formControlName="stepped">
+        <ui-select-menu
+          formControlName="stepped"
+          [placeholder]="'components.widget.settings.chart.auto' | translate"
+        >
           <ui-select-option>
             {{ 'components.widget.settings.chart.auto' | translate }}
           </ui-select-option>
