@@ -1,7 +1,7 @@
 import { ApolloClient, DocumentNode, InMemoryCache, gql } from '@apollo/client';
 import { Question, Serializer, SurveyModel } from 'survey-core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { SurveyQuery } from '../components/survey-queries/survey-queries.model';
@@ -268,6 +268,8 @@ export class SurveyGraphQLQueryManager {
         const data = get(result, path || '');
 
         if (!data || !Array.isArray(data)) {
+          question.choices = [];
+          question.value = null;
           return;
         }
 
@@ -276,6 +278,18 @@ export class SurveyGraphQLQueryManager {
           value: item[dataKey],
           text: item[displayKey],
         }));
+
+        // If there's a current value, check if it's still valid
+        if (question.value) {
+          const valueExists = question.choices.find((choice: any) =>
+            isEqual(choice.value, question.value)
+          );
+
+          // If the value is not valid anymore, reset it
+          if (!valueExists) {
+            question.value = null;
+          }
+        }
       });
     });
   }
