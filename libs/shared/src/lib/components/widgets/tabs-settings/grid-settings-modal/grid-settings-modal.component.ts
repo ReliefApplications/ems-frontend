@@ -1,8 +1,8 @@
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UnsubscribeComponent } from '@oort-front/shared';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import {
   TabsModule,
   DialogModule,
@@ -16,6 +16,9 @@ import {
 } from '@oort-front/ui';
 import { debounceTime, takeUntil } from 'rxjs';
 
+/**
+ * Represents the data passed to the dialog component.
+ */
 interface DialogData {
   gridOptions: any;
 }
@@ -56,6 +59,12 @@ export class GridSettingsModalComponent
     margin: 10,
   };
 
+  /**
+   * Constructs a new instance of the GridSettingsModalComponent.
+   *
+   * @param fb - The FormBuilder instance used for creating the form.
+   * @param data - The data passed to the dialog.
+   */
   constructor(
     private fb: FormBuilder,
     @Inject(DIALOG_DATA) public data: DialogData
@@ -81,6 +90,11 @@ export class GridSettingsModalComponent
       });
   }
 
+  /**
+   * Updates the grid options and emits the updated grid options.
+   *
+   * @param gridOptions - The new grid options to be applied.
+   */
   public onUpdateGridOptions(gridOptions: any): void {
     gridOptions = {
       ...gridOptions,

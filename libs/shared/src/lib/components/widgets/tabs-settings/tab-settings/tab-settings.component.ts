@@ -15,7 +15,7 @@ import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component'
 import { DOCUMENT } from '@angular/common';
 import { GridsterConfig } from 'angular-gridster2';
 import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '@oort-front/shared';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Edition of a single tab, in tabs widget
