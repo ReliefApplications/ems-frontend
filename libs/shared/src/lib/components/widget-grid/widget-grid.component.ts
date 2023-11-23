@@ -150,7 +150,7 @@ export class WidgetGridComponent
     ) {
       this.setLayout();
       this.gridOptionsTimeoutListener = setTimeout(() => {
-        this.setGridOptions(true);
+        this.setGridOptions();
       }, 0);
     }
   }
