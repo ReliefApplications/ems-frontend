@@ -206,12 +206,12 @@ export class FilterRowComponent
           this.setTooltip(field);
           break;
         }
-        case 'datetime':
         case 'time': {
           this.editor = this.textEditor;
           this.setTooltip(field);
           break;
         }
+        case 'datetime':
         case 'date': {
           this.editor = this.dateEditor;
           this.setTooltip(field);
@@ -239,26 +239,32 @@ export class FilterRowComponent
             field: field,
           },
         })
-      ).then((data) => {
-        switch (field.type) {
-          case 'text':
-            this.tooltips[field.name] = data.data.fieldDetails;
-            break;
-          case 'time':
-            this.tooltips[field.name] = data.data.fieldDetails
-              .map((time: string) => this.datePipe.transform(time, 'shortTime'))
-              .join(' & ');
-            break;
-          case 'date':
-            this.tooltips[field.name] = data.data.fieldDetails
-              .map((date: string) => this.datePipe.transform(date, 'shortDate'))
-              .join(' & ');
-            break;
-          case 'numeric':
-            this.tooltips[field.name] = data.data.fieldDetails.join(' & ');
-            break;
-          default:
-            this.tooltips[field.name] = data.data.fieldDetails;
+      ).then((data: any) => {
+        if (data?.data.fieldDetails.length) {
+          switch (field.type) {
+            case 'text':
+              this.tooltips[field.name] = data.data.fieldDetails;
+              break;
+            case 'time':
+              this.tooltips[field.name] = data.data.fieldDetails
+                .map((time: string) =>
+                  this.datePipe.transform(time, 'shortTime')
+                )
+                .join(' & ');
+              break;
+            case 'date':
+              this.tooltips[field.name] = data.data.fieldDetails
+                .map((date: string) =>
+                  this.datePipe.transform(date, 'shortDate')
+                )
+                .join(' & ');
+              break;
+            case 'numeric':
+              this.tooltips[field.name] = data.data.fieldDetails.join(' & ');
+              break;
+            default:
+              this.tooltips[field.name] = data.data.fieldDetails;
+          }
         }
       });
     }
