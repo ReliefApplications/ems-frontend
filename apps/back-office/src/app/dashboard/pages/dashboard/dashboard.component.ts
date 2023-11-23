@@ -52,6 +52,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { GridsterConfig } from 'angular-gridster2';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -112,6 +113,8 @@ export class DashboardComponent
   private timeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   public editionActive = true;
+  /** Additional grid configuration */
+  public gridOptions: GridsterConfig = {};
 
   /** @returns type of context element */
   get contextType() {
@@ -302,6 +305,11 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+            scrollToNewItems: false,
+          };
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
@@ -323,6 +331,12 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          setTimeout(() => {
+            this.gridOptions = {
+              ...this.gridOptions,
+              scrollToNewItems: true,
+            };
+          }, 1000);
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
@@ -795,6 +809,10 @@ export class DashboardComponent
               },
             };
           }
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+          };
 
           if (updates.filter) {
             this.showFilter = updates.filter.show;

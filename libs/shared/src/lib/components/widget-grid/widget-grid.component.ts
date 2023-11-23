@@ -86,8 +86,6 @@ export class WidgetGridComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
-  /** Register if ngOnChanges has fired to not set setGridOptions twice on init */
-  private changed = false;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -151,13 +149,9 @@ export class WidgetGridComponent
         Boolean(changes['canUpdate'].currentValue)
     ) {
       this.setLayout();
-      // Only triggers the setGridOptions with isDashboardSet true if is not the first registered change
-      if (this.changed) {
-        this.gridOptionsTimeoutListener = setTimeout(() => {
-          this.setGridOptions(true);
-        }, 0);
-      }
-      this.changed = true;
+      this.gridOptionsTimeoutListener = setTimeout(() => {
+        this.setGridOptions(true);
+      }, 0);
     }
   }
 
@@ -197,12 +191,8 @@ export class WidgetGridComponent
       ...this.gridOptions,
       ...(isDashboardSet && {
         itemChangeCallback: () => this.structureChanges.next(true),
-        scrollToNewItems: true,
       }),
-      ...(!isDashboardSet && {
-        // Prevent dashboard to scroll to bottom widget by default
-        scrollToNewItems: false,
-      }),
+      scrollToNewItems: false,
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
