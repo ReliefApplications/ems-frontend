@@ -745,7 +745,6 @@ export const init = (
     instance.multiSelect = true;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
-    // todo(beta): check
     if (
       !question.readOnly &&
       (question.survey as SurveyModel).mode !== 'display'

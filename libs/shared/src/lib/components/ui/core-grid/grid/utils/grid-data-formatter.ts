@@ -278,6 +278,14 @@ function getPropertyValue(item: any, field: any, subField?: any): any {
       return meta.choices.find((x: any) => x.value === value)?.text || value;
     }
   } else {
+    if (meta.type === 'geospatial') {
+      return [
+        get(value, 'properties.address'),
+        get(value, 'properties.countryName'),
+      ]
+        .filter((x) => x)
+        .join(', ');
+    }
     return value;
   }
 }

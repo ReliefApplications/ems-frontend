@@ -300,7 +300,6 @@ export class DownloadService {
         .subscribe((res: { path: string }) => {
           const { path } = res ?? {};
           if (path) {
-            // todo(beta): check
             snackBarRef.instance.message = this.translate.instant(
               'common.notifications.file.upload.ready'
             );

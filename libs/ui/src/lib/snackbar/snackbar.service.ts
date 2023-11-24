@@ -48,7 +48,7 @@ export class SnackbarService {
    * @param snackBar SnackbarComponent component reference
    */
   private updateView(snackBar: ComponentRef<SnackbarComponent>) {
-    // todo(beta): check
+    // not sure everything is needed there
     const appendBody = this.shadowDom ?? this.document.body;
     this.app.attachView(snackBar.hostView);
     this.app.tick();
