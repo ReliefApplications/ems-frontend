@@ -181,7 +181,7 @@
                 [isNotArray]="true"
                 [filter]="filter"
                 [filterService]="filterService"
-                [data]="field.meta.choices"
+                [data]="getChoicesFromGraphQL(field)"
                 [field]="field.name"
                 textField="text"
                 valueField="value"
@@ -196,7 +196,7 @@
               <shared-grid-filter
                 [isNotArray]="true"
                 [filter]="filter"
-                [data]="field.meta.choices"
+                [data]="getChoicesFromGraphQL(field)"
                 [field]="field.name"
                 textField="text"
                 valueField="value"
@@ -1051,7 +1051,7 @@
                         "
                       >
                         <kendo-dropdownlist
-                          [data]="field.meta.choices"
+                          [data]="getChoicesFromGraphQL(field, formGroup)"
                           textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
@@ -1074,7 +1074,7 @@
                         *ngIf="multiSelectTypes.includes(column.type)"
                       >
                         <kendo-multiselect
-                          [data]="field.meta.choices"
+                          [data]="getChoicesFromGraphQL(field, formGroup)"
                           textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
@@ -1115,7 +1115,7 @@
                         "
                       >
                         <kendo-dropdownlist
-                          [data]="field.meta.choices"
+                          [data]="getChoicesFromGraphQL(field)"
                           textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
@@ -1134,7 +1134,7 @@
                         *ngIf="multiSelectTypes.includes(column.type)"
                       >
                         <kendo-multiselect
-                          [data]="field.meta.choices"
+                          [data]="getChoicesFromGraphQL(field)"
                           textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"

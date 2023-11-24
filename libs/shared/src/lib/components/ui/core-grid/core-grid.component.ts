@@ -140,7 +140,7 @@ export class CoreGridComponent
   private totalCount = 0;
   private items: any[] = [];
   public fields: any[] = [];
-  private metaFields: any;
+  private metaFields: any = {};
   public detailsField?: any;
   private dataQuery!: QueryRef<QueryResponse>;
   private metaQuery: any;
@@ -546,6 +546,7 @@ export class CoreGridComponent
     this.updatedItems.next(updatedItems);
 
     // Use the draft option to apply triggers, and then update the data
+    console.log('tudo');
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,

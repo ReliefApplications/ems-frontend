@@ -1199,32 +1199,40 @@ export class GridComponent
    * Returns the choices for a given field if they come from a graphQL query
    *
    * @param field field to get choices for
-   * @param fg form group of the row being edited
+   * @param fg form group of the row being edited, if missing, returns all choices for the field
    * @returns choices for field
    */
   public getChoicesFromGraphQL(
     field: any,
-    fg: FormGroup<Record<string, any>>
+    fg?: FormGroup<Record<string, any>>
   ): any[] {
-    const item = fg.value;
     const meta = field.meta;
     if (meta.choicesByGraphql) {
-      const currState = this.choicesByRecordState.find((el) =>
-        Object.keys(el.state).every((key) => el.state[key] === item[key])
-      );
+      // If a form group is not provided, return all choices for the field
+      if (!fg) {
+        return this.choicesByRecordState
+          .filter((el) => el.field === field.name)
+          .map((el) => el.choices)
+          .flat();
+      } else {
+        const item = fg?.value;
+        const currState = this.choicesByRecordState.find((el) =>
+          Object.keys(el.state).every((key) => el.state[key] === item[key])
+        );
 
-      // Checks if there are choices for the current state of the record
-      if (currState?.choices) {
-        // Check that the current value is in the choices
-        if (
-          !currState.choices.find(
-            (el) => el.value === fg.get(field.name)?.value
-          )
-        ) {
-          // If not, set the value to null
-          fg.get(field.name)?.setValue(null);
+        // Checks if there are choices for the current state of the record
+        if (currState?.choices) {
+          // Check that the current value is in the choices
+          if (
+            !currState.choices.find(
+              (el) => el.value === fg.get(field.name)?.value
+            )
+          ) {
+            // If not, set the value to null
+            fg.get(field.name)?.setValue(null);
+          }
+          return currState.choices;
         }
-        return currState.choices;
       }
     }
 
