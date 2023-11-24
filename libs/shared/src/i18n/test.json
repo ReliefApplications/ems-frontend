@@ -251,6 +251,7 @@
 				},
 				"upload": {
 					"error": "******",
+					"maxFileSize": "****** {{size}} ******",
 					"processing": "******",
 					"ready": "******"
 				}
@@ -535,7 +536,20 @@
 				},
 				"filterSettings": "******",
 				"settings": {
-					"defaultPosition": "******"
+					"defaultPosition": "******",
+					"fixedRowHeight": "******",
+					"gridOptions": "******",
+					"help": {
+						"minCols": "******"
+					},
+					"margin": "******",
+					"minCols": "******",
+					"tooltip": {
+						"fixedRowHeight": "******",
+						"margin": "******",
+						"minCols": "******",
+						"reset": "******"
+					}
 				}
 			},
 			"delete": {
@@ -780,6 +794,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
+				"incorrectJSON": "******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
@@ -1294,7 +1309,7 @@
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******",
-						"webwidgets": "******"
+						"widgets": "******"
 					},
 					"metaQueryBuildFailed": "******",
 					"metaQueryFetchFailed": "****** {{error}}",
@@ -2016,6 +2031,7 @@
 		},
 		"upload": {
 			"dropFilesHere": "******",
+			"invalidMaxFileSize": "******",
 			"select": "******"
 		}
 	},
@@ -2195,6 +2211,7 @@
 			},
 			"display": {
 				"border": "******",
+				"expand": "******",
 				"header": "******",
 				"padding": "******",
 				"searchable": "******",
@@ -2219,6 +2236,11 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "******",
+					"help": "******",
+					"restore": "******"
+				},
 				"selector": {
 					"collapse": "******",
 					"expand": "******"

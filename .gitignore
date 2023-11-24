@@ -47,4 +47,4 @@ libs/shared/documentation.json
 libs/ui/documentation.json
 
 # Widgets build
-widgets/
+/widgets/
