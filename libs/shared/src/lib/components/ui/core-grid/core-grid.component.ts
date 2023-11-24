@@ -535,6 +535,31 @@ export class CoreGridComponent
   private update(item: any, value: any): void {
     const updatedItems = this.updatedItems.getValue();
     let updatedItem = updatedItems.find((x) => x.id === item.id);
+
+    // get keys that changed between item and value
+    const diff = Object.keys(value).reduce((result: any, key: string) => {
+      if (!isEqual(value[key], item[key])) {
+        result.push(key);
+      }
+      return result;
+    }, []);
+
+    Object.entries(this.metaFields as Record<string, any>).forEach(([k, v]) => {
+      if (!v?.choicesByGraphql) {
+        return;
+      }
+
+      const queryVarQuestions = Object.values(
+        (v.choicesByGraphql.query as SurveyQuery).variables
+      ).map((v) => v.question);
+
+      // If a question has its choices coming from a graphql query
+      // and any of its dependent questions changed, then reset the question value
+      if (queryVarQuestions.some((variable) => diff.includes(variable))) {
+        value[k] = null;
+      }
+    });
+
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value };
       const index = updatedItems.findIndex((x) => x.id === item.id);
@@ -546,7 +571,6 @@ export class CoreGridComponent
     this.updatedItems.next(updatedItems);
 
     // Use the draft option to apply triggers, and then update the data
-    console.log('tudo');
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,

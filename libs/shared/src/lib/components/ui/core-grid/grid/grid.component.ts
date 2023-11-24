@@ -1220,19 +1220,7 @@ export class GridComponent
           Object.keys(el.state).every((key) => el.state[key] === item[key])
         );
 
-        // Checks if there are choices for the current state of the record
-        if (currState?.choices) {
-          // Check that the current value is in the choices
-          if (
-            !currState.choices.find(
-              (el) => el.value === fg.get(field.name)?.value
-            )
-          ) {
-            // If not, set the value to null
-            fg.get(field.name)?.setValue(null);
-          }
-          return currState.choices;
-        }
+        return currState?.choices ?? [];
       }
     }
 
