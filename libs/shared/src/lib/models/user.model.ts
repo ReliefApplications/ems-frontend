@@ -46,6 +46,7 @@ export interface User {
   applications?: Application[];
   positionAttributes?: PositionAttribute[];
   favoriteApp?: string;
+  attributes?: any;
 }
 
 /** Model for user graphql query response */

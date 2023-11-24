@@ -211,6 +211,8 @@ export class FormComponent
     this.survey.fromJSON(this.survey.toJSON());
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
+    // todo(beta): check
+    // this.survey.render();
     setTimeout(() => (this.surveyActive = true), 100);
   }
 

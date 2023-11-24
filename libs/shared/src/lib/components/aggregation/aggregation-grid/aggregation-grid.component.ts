@@ -21,6 +21,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { SortDescriptor } from '@progress/kendo-data-query';
+import { cloneDeep } from 'lodash';
 
 /**
  * Shared aggregation grid component.
@@ -327,7 +328,7 @@ export class AggregationGridComponent
    */
   private updateValues(data: AggregationDataQueryResponse, loading: boolean) {
     this.gridData = {
-      data: data.recordsAggregation.items,
+      data: cloneDeep(data.recordsAggregation.items),
       total: data.recordsAggregation.totalCount,
     };
     this.loading = loading;

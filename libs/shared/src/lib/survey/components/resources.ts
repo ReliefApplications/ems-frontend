@@ -745,7 +745,11 @@ export const init = (
     instance.multiSelect = true;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
-    if (!question.readOnly) {
+    // todo(beta): check
+    if (
+      !question.readOnly &&
+      (question.survey as SurveyModel).mode !== 'display'
+    ) {
       Object.assign(settings, {
         actions: {
           delete: question.canDelete,

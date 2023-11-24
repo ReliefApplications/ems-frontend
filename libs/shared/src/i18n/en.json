@@ -220,6 +220,7 @@
 			"none": "No layout",
 			"one": "Layout"
 		},
+		"loading": "Loading",
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
@@ -494,7 +495,7 @@
 				"filter": "Returns an array with only those elements that match the condition.",
 				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
 				"selectedFields": "Only unused fields can removed.",
-				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
+				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
 			}
 		},
@@ -1412,6 +1413,7 @@
 						"title": "Series"
 					},
 					"size": "Size",
+					"stepSize": "Step size",
 					"style": "Style",
 					"text": "Text",
 					"title": {
@@ -1419,7 +1421,8 @@
 						"format": "Title format"
 					},
 					"tooltip": {
-						"palette": "Palette provides default colors to chart elements if not manually set."
+						"palette": "Palette provides default colors to chart elements if not manually set.",
+						"stepSize": "Interval between each tick mark on the chart's axis, when possible"
 					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
@@ -1496,6 +1499,9 @@
 						"create": "Add a button",
 						"defaultName": "Action button",
 						"enable": "Enable",
+						"placeholder": {
+							"modifyValue": "Set as null"
+						},
 						"title": "Quick action buttons",
 						"tooltip": {
 							"attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",

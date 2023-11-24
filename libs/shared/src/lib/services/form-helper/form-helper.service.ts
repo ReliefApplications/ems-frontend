@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { PageModel, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -32,6 +32,7 @@ export class FormHelpersService {
   /**
    * Shared survey helper service.
    *
+   * @param environment Environment configuration
    * @param apollo Apollo client
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param confirmService This is the service that will be used to display confirm window.
@@ -40,6 +41,7 @@ export class FormHelpersService {
    * @param downloadService Shared download service
    */
   constructor(
+    @Inject('environment') private environment: any,
     public apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
@@ -330,6 +332,14 @@ export class FormHelpersService {
     survey.setVariable('user.firstName', user?.firstName ?? '');
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');
+
+    // Set user attributes
+    for (const attribute of this.environment.user?.attributes || []) {
+      survey.setVariable(
+        `user.${attribute}`,
+        get(user?.attributes, attribute) || ''
+      );
+    }
 
     // Allow us to do some cool stuff like
     // {user.roles} contains '62e3e676c9bcb900656c95c9'

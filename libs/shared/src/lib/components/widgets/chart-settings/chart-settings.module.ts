@@ -10,7 +10,6 @@ import {
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { GridModule } from '../../../components/ui/core-grid/grid/grid.module';
 import { PaletteControlModule } from '../../palette-control/palette-control.module';
 import { QueryBuilderModule } from '../../query-builder/query-builder.module';
 import { AggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
@@ -37,7 +36,6 @@ import { TabFiltersComponent } from './tab-filters/tab-filters.component';
     ExpansionPanelModule,
     TranslateModule,
     AggregationBuilderModule,
-    GridModule,
     PaletteControlModule,
     TabMainModule,
     TabDisplayModule,
