@@ -33,6 +33,7 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
@@ -204,11 +205,21 @@ export class CoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
+      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
           { logic: 'and', filters: gridFilters },
-          { field: '_globalSearch', operator: 'contains', value: this.search },
+          {
+            logic: 'or',
+            field: '_globalSearch',
+            operator: 'contains',
+            value: searchFilters(
+              this.search,
+              this.fields.map((field) => field.meta),
+              skippedFields
+            ),
+          },
         ],
       };
     } else {

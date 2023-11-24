@@ -44,7 +44,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-
+import searchFilters from '../../../utils/filter/search-filters';
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
@@ -134,6 +134,7 @@ export class SummaryCardComponent
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
+    const skippedFields = ['id', 'incrementalId'];
     if (this.searchControl.value) {
       filter = {
         logic: 'and',
@@ -142,7 +143,11 @@ export class SummaryCardComponent
             logic: 'or',
             field: '_globalSearch',
             operator: 'contains',
-            value: this.searchControl.value,
+            value: searchFilters(
+              this.searchControl.value,
+              this.fields,
+              skippedFields
+            ),
           },
         ],
       };
