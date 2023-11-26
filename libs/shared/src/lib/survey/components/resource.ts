@@ -210,6 +210,17 @@ export const init = (
         visibleIndex: 4,
       });
 
+      // Build set available grid fields button
+      serializer.addProperty('resource', {
+        name: 'Search resource table',
+        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        visibleIf: visibleIfResource,
+        default: {},
+        visibleIndex: 5,
+      });
+
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.resourcesAvailableFields
       );

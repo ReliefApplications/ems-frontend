@@ -74,6 +74,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'relatedName',
   'addRecord',
   'addTemplate',
+  'Search resource table',
   'visible',
   'readOnly',
   'isRequired',
