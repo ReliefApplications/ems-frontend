@@ -51,13 +51,17 @@ export class FieldsElementComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  @Input() fields$!: Observable<Fields[]>;
+  /** Current form group */
   @Input() formGroup!: FormGroup;
-
+  /** Available fields */
+  @Input() fields$!: Observable<Fields[]>;
+  /** Tinymce editor configuration */
   public editorConfig = INLINE_EDITOR_CONFIG;
-
+  /** Available fields as array */
   public availableFields: string[] = [];
+  /** Selected fields */
   public selectedFields: string[] = [];
+  /** Listbox toolbar settings */
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: [

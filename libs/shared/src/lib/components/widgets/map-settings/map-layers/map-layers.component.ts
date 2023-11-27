@@ -1,22 +1,16 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { Dialog } from '@angular/cdk/dialog';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { UntypedFormControl } from '@angular/forms';
 import { MapComponent } from '../../../ui/map/map.component';
 import { CdkTable } from '@angular/cdk/table';
+import { DomPortal } from '@angular/cdk/portal';
 
 /**
  * Layers configuration component of Map Widget.
@@ -26,24 +20,20 @@ import { CdkTable } from '@angular/cdk/table';
   templateUrl: './map-layers.component.html',
   styleUrls: ['./map-layers.component.scss'],
 })
-export class MapLayersComponent
-  extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
-{
+export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
+  /** Map component */
   @Input() mapComponent?: MapComponent;
+  /** Layers */
   @Input() control!: UntypedFormControl;
-
-  // Display of map
-  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
-  @ViewChild('mapContainer', { read: ViewContainerRef })
-  mapContainerRef!: ViewContainerRef;
+  /** Map dom portal */
+  @Input() mapPortal?: DomPortal;
+  /** Reference to cdk table */
   @ViewChild(CdkTable, { static: false }) cdkTable!: CdkTable<LayerModel>;
-  @Input() destroyTab$!: Subject<boolean>;
-  public editingLayer: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-  // Table
+  /** Current layers */
   public mapLayers: Array<LayerModel> = new Array<LayerModel>();
+  /** Table's columns */
   public displayedColumns = ['name', 'actions'];
+  /** Loading status */
   public loading = true;
 
   /**
@@ -61,37 +51,6 @@ export class MapLayersComponent
 
   ngOnInit(): void {
     this.updateLayerList();
-  }
-
-  ngAfterViewInit(): void {
-    this.currentMapContainerRef
-      .pipe(takeUntil(this.destroyTab$))
-      .subscribe((viewContainerRef) => {
-        if (viewContainerRef && !this.editingLayer.getValue()) {
-          if (viewContainerRef !== this.mapContainerRef) {
-            const view = viewContainerRef.detach();
-            if (view) {
-              this.mapContainerRef.insert(view);
-              this.currentMapContainerRef.next(this.mapContainerRef);
-            }
-          }
-        }
-      });
-    this.editingLayer.pipe(takeUntil(this.destroyTab$)).subscribe((editing) => {
-      if (!editing) {
-        const currentMapContainerRef = this.currentMapContainerRef.getValue();
-        if (
-          currentMapContainerRef &&
-          currentMapContainerRef !== this.mapContainerRef
-        ) {
-          const view = currentMapContainerRef.detach();
-          if (view) {
-            this.mapContainerRef.insert(view);
-            this.currentMapContainerRef.next(this.mapContainerRef);
-          }
-        }
-      }
-    });
   }
 
   /**
@@ -135,9 +94,8 @@ export class MapLayersComponent
       autoFocus: false,
       data: {
         layer: { type } as LayerModel,
-        currentMapContainerRef: this.currentMapContainerRef,
-        editingLayer: this.editingLayer,
         mapComponent: this.mapComponent,
+        mapPortal: this.mapPortal,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
@@ -194,9 +152,8 @@ export class MapLayersComponent
           autoFocus: false,
           data: {
             layer,
-            currentMapContainerRef: this.currentMapContainerRef,
-            editingLayer: this.editingLayer,
             mapComponent: this.mapComponent,
+            mapPortal: this.mapPortal,
           },
         });
         dialogRef.closed
@@ -242,7 +199,6 @@ export class MapLayersComponent
   public onListDrop(e: CdkDragDrop<LayerModel[]>) {
     moveItemInArray(this.mapLayers, e.previousIndex, e.currentIndex);
     this.mapLayers = [...this.mapLayers];
-    // const value = this.formControl.value;
     this.control.setValue(
       this.mapLayers.map((x) => x.id),
       { emitEvent: false }

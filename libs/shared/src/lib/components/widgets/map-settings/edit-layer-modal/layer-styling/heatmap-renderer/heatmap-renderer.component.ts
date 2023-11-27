@@ -24,5 +24,6 @@ import { FormWrapperModule, SliderModule } from '@oort-front/ui';
   styleUrls: ['./heatmap-renderer.component.scss'],
 })
 export class HeatmapRendererComponent {
+  /** Current form group */
   @Input() formGroup!: FormGroup;
 }

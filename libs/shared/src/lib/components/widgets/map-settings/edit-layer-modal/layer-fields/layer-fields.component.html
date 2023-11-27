@@ -17,6 +17,6 @@
   </div>
   <!-- Map -->
   <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
-    <ng-template #mapContainer></ng-template>
+    <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
   </div>
 </div>
