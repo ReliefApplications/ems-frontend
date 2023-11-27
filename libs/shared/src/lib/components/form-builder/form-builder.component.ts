@@ -27,6 +27,7 @@ import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SurveyGraphQLQueryManager } from '../../survey/global-properties/choicesByGraphql';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 
 /**
@@ -208,6 +209,7 @@ export class FormBuilderComponent
           this.formHelpersService.addQuestionTooltips
         );
         this.formHelpersService.addUserVariables(survey);
+        SurveyGraphQLQueryManager.init(survey);
       }
     );
     this.surveyCreator.haveCommercialLicense = true;

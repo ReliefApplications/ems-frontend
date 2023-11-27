@@ -8,6 +8,7 @@ import {
   ResourceDropdownComponent,
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
+  SurveyQueriesComponent,
   AuthService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
     ResourceDropdownComponent,
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
+    SurveyQueriesComponent,
   ];
   title = 'front-office';
 

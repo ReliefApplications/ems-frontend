@@ -35,6 +35,8 @@ import {
   QuestionDateTypeDisplayerModel,
   DateTypeDisplayerComponent,
 } from '../date-type-displayer/public-api';
+import { SurveyQueriesComponent } from '../survey-queries/survey-queries.component';
+import { QuestionSurveyQueriesModel } from '../survey-queries/survey-queries.model';
 
 /**
  * Custom component types for the survey creator property grid editor
@@ -49,6 +51,7 @@ export enum CustomPropertyGridComponentTypes {
   resourcesDropdown = 'resourcesDropdown',
   resourceSelectText = 'selectResourceText',
   resourceTestService = 'resourceTestService',
+  surveyQueries = 'surveyQueries',
 }
 
 /**
@@ -93,5 +96,9 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.resourceTestService]: {
     component: TestServiceDropdownComponent,
     model: QuestionTestServiceDropdownModel,
+  },
+  [CustomPropertyGridComponentTypes.surveyQueries]: {
+    component: SurveyQueriesComponent,
+    model: QuestionSurveyQueriesModel,
   },
 };

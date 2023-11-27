@@ -50,6 +50,18 @@ export interface Permissions {
 }
 
 /**
+ * Choices from graphQL queries for dropdowns
+ */
+export interface GraphQlChoices {
+  // Only fields used as variables in the query are stored here
+  state: any;
+  // Respective column name (field choices apply to)
+  field: string;
+  // List of choices for the given state and field
+  choices: any[];
+}
+
+/**
  * Format given row data to be suitable suitable for the grid
  *
  * @param rowData Data from grid row
@@ -252,12 +264,27 @@ function getFileIcon(name: string): string {
  * @param item Item to get property of.
  * @param field parent field
  * @param subField subfield ( optional, used by reference data)
+ * @param choicesByRecordState choices from graphQL queries
  * @returns Value of the property.
  */
-function getPropertyValue(item: any, field: any, subField?: any): any {
+function getPropertyValue(
+  item: any,
+  field: any,
+  subField?: any,
+  choicesByRecordState?: GraphQlChoices[]
+): any {
   let value = get(item, field.name);
   const meta = subField ? subField.meta : field.meta;
-  if (meta.choices) {
+  if (meta.choicesByGraphql && choicesByRecordState) {
+    const currState = choicesByRecordState.find((el) =>
+      Object.keys(el.state).every((key) => el.state[key] === item[key])
+    );
+
+    // Checks if there are choices for the current state of the record
+    if (currState) {
+      return currState.choices.find((el) => el.value === value)?.text || value;
+    }
+  } else if (meta.choices) {
     if (Array.isArray(value)) {
       if (subField) {
         if (meta.graphQLFieldName) {

@@ -15,6 +15,7 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
+import { SurveyGraphQLQueryManager } from '../../survey/global-properties/choicesByGraphql';
 
 /**
  * Shared form builder service.
@@ -137,6 +138,9 @@ export class FormBuilderService {
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
+
+    // Initialize the survey graphql query manager
+    SurveyGraphQLQueryManager.init(survey);
     return survey;
   }
 

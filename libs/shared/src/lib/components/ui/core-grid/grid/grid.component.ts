@@ -38,7 +38,11 @@ import {
 } from '@progress/kendo-data-query';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { PopupService } from '@progress/kendo-angular-popup';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -52,7 +56,7 @@ import { DOCUMENT } from '@angular/common';
 import { WidgetComponent } from '../../../widget/widget.component';
 import { DatePipe } from '../../../../pipes/date/date.pipe';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
-import { formatGridRowData } from './utils/grid-data-formatter';
+import { GraphQlChoices, formatGridRowData } from './utils/grid-data-formatter';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -154,6 +158,8 @@ export class GridComponent
   @Input() skip = 0;
   /** Admin mode status */
   @Input() admin = false;
+  /** Cached choices from graphQL queries */
+  @Input() choicesByRecordState: GraphQlChoices[] = [];
   /** Output decorator for action */
   @Output() action = new EventEmitter();
   /** Output decorator for export */
@@ -1092,5 +1098,37 @@ export class GridComponent
         column.width = MIN_COLUMN_WIDTH;
       }
     });
+  }
+
+  /**
+   * Returns the choices for a given field if they come from a graphQL query
+   *
+   * @param field field to get choices for
+   * @param fg form group of the row being edited, if missing, returns all choices for the field
+   * @returns choices for field
+   */
+  public getChoicesFromGraphQL(
+    field: any,
+    fg?: FormGroup<Record<string, any>>
+  ): any[] {
+    const meta = field.meta;
+    if (meta.choicesByGraphql) {
+      // If a form group is not provided, return all choices for the field
+      if (!fg) {
+        return this.choicesByRecordState
+          .filter((el) => el.field === field.name)
+          .map((el) => el.choices)
+          .flat();
+      } else {
+        const item = fg?.value;
+        const currState = this.choicesByRecordState.find((el) =>
+          Object.keys(el.state).every((key) => el.state[key] === item[key])
+        );
+
+        return currState?.choices ?? [];
+      }
+    }
+
+    return meta?.choices ?? [];
   }
 }
