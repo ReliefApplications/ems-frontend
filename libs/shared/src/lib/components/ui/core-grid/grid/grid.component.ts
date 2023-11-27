@@ -887,6 +887,16 @@ export class GridComponent
     const stickyColumns = this.columns.filter(
       (column) => !column.hidden && !!column.sticky
     );
+    const fixedWidthColumns = this.columns.filter(
+      (column) =>
+        this.fields.find((field) => field.name === column.field)?.fixedWidth
+    );
+    fixedWidthColumns.forEach(
+      (column) =>
+        (column.width = this.fields.find(
+          (field) => field.name === column.field
+        ).fixedWidth)
+    );
     let totalWidthSticky = 0;
     stickyColumns.forEach((column: any) => {
       if (column.width) {
@@ -898,13 +908,25 @@ export class GridComponent
       totalWidthSticky += 41;
     }
     // Subtract the width of non-fields columns (details, actions etc.) and small calculation errors ( border + scrollbar )
-    const gridTotalWidth = gridElement.offsetWidth - totalWidthSticky - 12;
+    const gridTotalWidth =
+      gridElement.offsetWidth -
+      totalWidthSticky -
+      fixedWidthColumns.reduce((sum, column) => sum + column.width, 0) -
+      12;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
-      (column) => !column.hidden && !!column.title && !column.sticky
+      (column) =>
+        !column.hidden &&
+        !!column.title &&
+        !column.sticky &&
+        !fixedWidthColumns.includes(column)
     );
     // Verify what kind of field is and deal with this logic
-    const typesFields: { field: string; type: string; title: string }[] = [];
+    const typesFields: {
+      field: string;
+      type: string;
+      title: string;
+    }[] = [];
     this.fields.forEach((field: any) => {
       const availableFields = availableColumns.filter(
         (column: any) => column.field === field.name
