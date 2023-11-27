@@ -46,6 +46,7 @@
         <shared-filter
           [form]="$any(stageForm).controls.form"
           [fields]="fieldsPerStage[index]"
+          [resourceId]="resourceId"
         ></shared-filter>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.SORT">

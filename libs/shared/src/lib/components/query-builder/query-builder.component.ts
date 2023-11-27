@@ -47,6 +47,7 @@ export class QueryBuilderComponent
   }
 
   @Input() form?: FormGroup;
+  @Input() resourceId = '';
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];

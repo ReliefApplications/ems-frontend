@@ -203,6 +203,7 @@ export class SummaryCardGeneralComponent
       data: {
         layout: this.selectedLayout,
         queryName: this.selectedResource?.queryName,
+        resourceId: this.selectedResource?.id,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {

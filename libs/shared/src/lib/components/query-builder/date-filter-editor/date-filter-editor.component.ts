@@ -13,6 +13,8 @@ import { isDate } from 'lodash';
 export class DateFilterEditorComponent implements OnInit {
   @Input() control!: UntypedFormControl;
   public useExpression = false;
+  /** Tooltip to get max and min values from datasource */
+  @Input() tooltip = '';
 
   /** @returns Is the first input a date or not. */
   get isDate(): boolean {

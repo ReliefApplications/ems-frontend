@@ -21,7 +21,13 @@
   <ng-container *ngIf="field && editor && !hideEditor">
     <ng-container
       [ngTemplateOutlet]="editor"
-      [ngTemplateOutletContext]="{ valueControl: valueControl }"
+      [ngTemplateOutletContext]="{
+        valueControl: valueControl,
+        tooltip: tooltips[field.name]
+          ? ('components.queryBuilder.filter.valuesInDatasourceBetween'
+              | translate) + tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
+      }"
     ></ng-container>
   </ng-container>
 
@@ -80,7 +86,17 @@
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <div uiFormFieldDirective [defaultMargin]="false">
+    <div
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      [tooltipDisabled]="!availableFilterHints.includes(field.type)"
+      uiTooltip="{{
+        tooltips[field.name]
+          ? ('components.queryBuilder.filter.examplesFromDatasource'
+              | translate) + tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
+      }}"
+    >
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="string" />
     </div>
@@ -106,7 +122,16 @@
 
   <!-- NUMERIC EDITOR -->
   <ng-template #numericEditor>
-    <div uiFormFieldDirective [defaultMargin]="false">
+    <div
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      uiTooltip="{{
+        tooltips[field.name]
+          ? ('components.queryBuilder.filter.valuesInDatasourceBetween'
+              | translate) + tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
+      }}"
+    >
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="number" />
     </div>
@@ -147,7 +172,16 @@
 
   <!-- DATE EDITOR -->
   <ng-template #dateEditor>
-    <div uiFormFieldDirective [defaultMargin]="false">
+    <div
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      uiTooltip="{{
+        tooltips[field.name]
+          ? ('components.queryBuilder.filter.valuesInDatasourceBetween'
+              | translate) + tooltips[field.name]
+          : ('components.queryBuilder.filter.noValueInDatasource' | translate)
+      }}"
+    >
       <label>{{ 'common.value.one' | translate }}</label>
       <div [uiDateWrapper]="calendar">
         <input

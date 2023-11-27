@@ -23,6 +23,7 @@ import {
 export class TabFilterComponent implements OnInit {
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
   @Input() query: any;
+  @Input() resourceId = '';
 
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
 

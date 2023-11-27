@@ -138,6 +138,7 @@ export class LayoutTableComponent
       data: {
         layout,
         queryName: this.resource?.queryName,
+        resourceId: this.resource?.id,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

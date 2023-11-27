@@ -14,6 +14,8 @@ export class FilterGroupComponent {
   @Input() form!: FormGroup;
   /** Available fields */
   @Input() fields: any[] = [];
+  /** Records resource id */
+  @Input() resourceId = '';
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Reference to parent filter group, if any */

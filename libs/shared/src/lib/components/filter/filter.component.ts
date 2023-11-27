@@ -12,4 +12,6 @@ import { UntypedFormGroup } from '@angular/forms';
 export class FilterComponent {
   @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
+  /** Records resource id */
+  @Input() resourceId = '';
 }

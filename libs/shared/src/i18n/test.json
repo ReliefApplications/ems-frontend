@@ -961,12 +961,15 @@
 			},
 			"filter": {
 				"and": "******",
+				"examplesFromDatasource": "******",
 				"logic": "******",
 				"new": "******",
 				"newGroup": "******",
+				"noValueInDatasource": "******",
 				"operator": "******",
 				"or": "******",
-				"title": "******"
+				"title": "******",
+				"valuesInDatasourceBetween": "******"
 			},
 			"hint": {
 				"fields": "******",

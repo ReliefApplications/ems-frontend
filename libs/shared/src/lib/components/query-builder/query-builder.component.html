@@ -106,6 +106,7 @@
           <shared-tab-filter
             [form]="$any(form.controls.filter)"
             [query]="form.getRawValue()"
+            [resourceId]="resourceId"
           >
           </shared-tab-filter>
         </ng-template>
@@ -120,6 +121,7 @@
             [form]="$any(form.controls.style)"
             [scalarFields]="availableScalarFields"
             [query]="form.getRawValue()"
+            [resourceId]="resourceId"
           >
           </shared-tab-style>
         </ng-template>
