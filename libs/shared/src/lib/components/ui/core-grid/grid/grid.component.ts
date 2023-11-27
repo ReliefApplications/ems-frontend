@@ -763,7 +763,6 @@ export class GridComponent
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      console.log(value);
       // Only update if value is not null or undefined, and different from previous value
       if (!isNil(value) && value !== get(item, field)) {
         // Create update
