@@ -182,6 +182,7 @@ export class MapComponent
    * @param platform Platform
    * @param injector Injector containing all needed providers
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param el Element reference
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
