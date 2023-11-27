@@ -82,36 +82,42 @@ export class LayerDatasourceComponent
   extends UnsubscribeComponent
   implements OnInit, AfterViewInit
 {
+  /** Current form group */
   @Input() formGroup!: FormGroup;
+  /** Query to get resource */
   @Input() resourceQuery!: BehaviorSubject<ResourceQueryResponse | null>;
-  public origin!: FormControl<string | null>;
-
-  // Resource
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-  public resource: Resource | null = null;
+  /** Available fields */
+  @Input() fields$!: Observable<Fields[]>;
+  /** Emit new fields */
+  @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
+  /** Reference to resource graphql select */
   @ViewChild(GraphQLSelectComponent)
   resourceSelect?: GraphQLSelectComponent;
-
-  // Reference data
-  public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
-  public refData: ReferenceData | null = null;
+  /** Reference to reference data graphql select */
   @ViewChild(GraphQLSelectComponent)
   refDataSelect?: GraphQLSelectComponent;
-
-  // Aggregation and layout
+  /** Type of origin ( resource or reference data ) */
+  public origin!: FormControl<string | null>;
+  /** Query to get resources */
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  /** Selected resource */
+  public resource: Resource | null = null;
+  /** Query to get reference data */
+  public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
+  /** Selected reference data */
+  public refData: ReferenceData | null = null;
+  /** Selected aggregation */
   public aggregation: Aggregation | null = null;
+  /** Selected layout */
   public layout: Layout | null = null;
-
-  @Input() fields$!: Observable<Fields[]>;
-  @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
+  /** Admin fields */
+  public adminFields = ADMIN_FIELDS;
 
   // Display of map
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
   @Input() destroyTab$!: Subject<boolean>;
-
-  public adminFields = ADMIN_FIELDS;
 
   /**
    * Component for the layer datasource selection tab

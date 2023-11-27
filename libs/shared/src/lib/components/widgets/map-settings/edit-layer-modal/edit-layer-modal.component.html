@@ -51,16 +51,15 @@
             }}</span
           >
         </ng-container>
-        <ng-template uiTabContent>
-          <shared-layer-datasource
-            [formGroup]="$any(form.get('datasource'))"
-            [resourceQuery]="resource"
-            [fields$]="fields$"
-            (fields)="fields.next($event)"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
-          ></shared-layer-datasource>
-        </ng-template>
+        <!-- By not using the uiTabContent directive, we allow the component to init when loading parent, in order to get fields from datasource -->
+        <shared-layer-datasource
+          [formGroup]="$any(form.get('datasource'))"
+          [resourceQuery]="resource"
+          [fields$]="fields$"
+          (fields)="fields.next($event)"
+          [destroyTab$]="destroyTab$"
+          [currentMapContainerRef]="data.currentMapContainerRef"
+        ></shared-layer-datasource>
       </ui-tab>
       <!-- Sublayers -->
       <ui-tab *ngIf="form.get('sublayers')">

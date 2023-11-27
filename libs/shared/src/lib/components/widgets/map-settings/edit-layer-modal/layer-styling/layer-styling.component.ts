@@ -25,12 +25,16 @@ const POLYGON_RENDERER_TYPES = ['simple', 'uniqueValue'];
   styleUrls: ['./layer-styling.component.scss'],
 })
 export class LayerStylingComponent implements AfterViewInit, OnInit {
+  /** Type of layer geometry ( point / polygon ) */
   @Input() geometryType: GeometryType = 'Point';
+  /** Current form group */
   @Input() formGroup!: FormGroup;
-  public rendererTypes!: string[];
+  /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
+  /** Possible renderer types */
+  public rendererTypes!: string[];
 
-  // Display of map
+  // Display of map (todo: change)
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;

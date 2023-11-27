@@ -941,7 +941,6 @@ export class Layer implements LayerModel {
               'drawingInfo.renderer.uniqueValueInfos',
               []
             )) {
-              console.log(info);
               const symbol: LayerSymbol = info.symbol;
               html += this.getGeoJSONFeatureLegend(
                 geometryType,

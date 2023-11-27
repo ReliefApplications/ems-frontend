@@ -72,7 +72,9 @@ export class UniqueValueRendererComponent
   ngOnInit(): void {
     this.fields$.subscribe((value) => {
       this.scalarFields.next(
-        value.filter((field) => ['string'].includes(field.type.toLowerCase()))
+        value.filter((field) =>
+          ['string', 'datetime', 'number'].includes(field.type.toLowerCase())
+        )
       );
     });
     this.createIconsSvgs();

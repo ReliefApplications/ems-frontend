@@ -102,26 +102,34 @@ export class EditLayerModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  /** Current Layer */
   private _layer!: Layer;
+  /** Selected resource */
+  public resource: BehaviorSubject<ResourceQueryResponse | null> =
+    new BehaviorSubject<ResourceQueryResponse | null>(null);
+  /** Available fields */
+  public fields = new BehaviorSubject<Fields[]>([]);
+  /** Available fields as observable */
+  public fields$ = this.fields.asObservable();
+  /** Form group */
+  public form!: LayerFormT;
+  /** Current map zoom */
+  public currentZoom!: number;
+  /** Current leaflet layer */
+  private currentLayer!: L.Layer;
+  /** Is current datasource valie */
+  public isDatasourceValid = false;
+  /**
+   * This property would handle the form change side effects to be triggered once all
+   * layer related updates are done in order to avoid multiple mismatches and duplications between
+   * a property change, layer data retrieval and form update
+   */
+  private triggerFormChange = new BehaviorSubject(true);
 
+  /** Display of map */
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
   destroyTab$: Subject<boolean> = new Subject<boolean>();
-
-  public resource: BehaviorSubject<ResourceQueryResponse | null> =
-    new BehaviorSubject<ResourceQueryResponse | null>(null);
-  public fields = new BehaviorSubject<Fields[]>([]);
-  public fields$ = this.fields.asObservable();
-
-  public form!: LayerFormT;
-  public currentZoom!: number;
-  private currentLayer!: L.Layer;
-  public isDatasourceValid = false;
-
-  // This property would handle the form change side effects to be triggered once all
-  // layer related updates are done in order to avoid multiple mismatches and duplications between
-  // a property change, layer data retrieval and form update
-  private triggerFormChange = new BehaviorSubject(true);
 
   /**
    * Get the overlay tree object of the current map
