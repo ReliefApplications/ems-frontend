@@ -97,6 +97,7 @@ export class MapSettingsComponent
     this.mapPortal = new DomPortal(componentRef.instance.el);
     this.mapComponent = componentRef.instance;
 
+    // Prevent sidenav to appear after closing dialog, when user clicks on "layers" button
     this.layoutService.rightSidenav$
       .pipe(takeUntil(this.destroy$))
       .subscribe((view: any) => {
