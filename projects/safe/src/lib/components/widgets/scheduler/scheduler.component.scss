@@ -1,14 +1,23 @@
 .widget-container {
   position: relative;
 }
+.event {
+  width: 100%;
+  padding: 0.4rem;
+  height: 100%;
+}
+
+.past-event {
+  background-color: #858585;
+}
 
 :host ::ng-deep {
   multi-day-view {
     overflow: auto hidden;
-  
+
     .k-scheduler-weekview {
       min-width: 1000px;
-  
+
       .k-scheduler-times {
         position: sticky;
         left: 0;
@@ -17,10 +26,10 @@
       }
     }
   }
-  
+
   month-view {
     overflow: auto hidden;
-  
+
     .k-scheduler-monthview {
       min-width: 1000px;
     }
