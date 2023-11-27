@@ -56,6 +56,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { SurveyQuery } from '../../../survey/components/survey-queries/survey-queries.model';
+import { GraphQlChoices } from './grid/utils/grid-data-formatter';
 
 /**
  * Default file name when exporting grid data.
@@ -155,14 +156,7 @@ export class CoreGridComponent
   /** Array of records changed through inline edition */
   public updatedItems = new BehaviorSubject<any[]>([]);
   /** Mapping of choices given the current records state */
-  public choicesByRecordState: {
-    // Only fields used as variables in the query are stored here
-    state: any;
-    // Respective column name (field choices apply to)
-    field: string;
-    // List of choices for the given state and field
-    choices: any[];
-  }[] = [];
+  public choicesByRecordState: GraphQlChoices[] = [];
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public loading = false;
   @Input() status: {

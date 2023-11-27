@@ -31,7 +31,6 @@ import {
   MULTISELECT_TYPES,
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
-  ICON_EXTENSIONS,
 } from './grid.constants';
 import {
   CompositeFilterDescriptor,
@@ -48,16 +47,16 @@ import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection, isNil, has } from 'lodash';
-import { applyLayoutFormat } from '../../../../utils/parser/utils';
+import { get, intersection, isNil, has, isEqual } from 'lodash';
 import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, TooltipDirective } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
 import { WidgetComponent } from '../../../widget/widget.component';
 import { DatePipe } from '../../../../pipes/date/date.pipe';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
+import { GraphQlChoices, formatGridRowData } from './utils/grid-data-formatter';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -160,14 +159,7 @@ export class GridComponent
   /** Admin mode status */
   @Input() admin = false;
   /** Cached choices from graphQL queries */
-  @Input() choicesByRecordState: {
-    // Only fields used as variables in the query are stored here
-    state: any;
-    // Respective column name (field choices apply to)
-    field: string;
-    // List of choices for the given state and field
-    choices: any[];
-  }[] = [];
+  @Input() choicesByRecordState: GraphQlChoices[] = [];
   /** Output decorator for action */
   @Output() action = new EventEmitter();
   /** Output decorator for export */
@@ -195,6 +187,8 @@ export class GridComponent
   @ViewChild(KendoGridComponent, { read: ElementRef }) gridRef!: ElementRef;
   /** Reference to kendo columns */
   @ViewChildren(ColumnComponent) columns!: QueryList<ColumnComponent>;
+  /** Reference to tooltips */
+  @ViewChildren(TooltipDirective) tooltips!: QueryList<TooltipDirective>;
   /** Array of multi-select types. */
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
   /** Environment of the grid. */
@@ -227,22 +221,14 @@ export class GridComponent
   private readonly rowActions = ['update', 'delete', 'history', 'convert'];
   /** Snackbar reference */
   private snackBarRef!: any;
-  /** Timeout listeners */
+  /** Column change timeout */
   private columnChangeTimeoutListener!: NodeJS.Timeout;
+  /** Display fullscreen button timeout */
+  private displayFullScreenButtonTimeoutListener!: NodeJS.Timeout;
   /** Listen to click events to determine if editor should be closed */
   private closeEditorListener!: any;
-
-  /** @returns A boolean indicating if actions are enabled */
-  get hasEnabledActions(): boolean {
-    return (
-      intersection(
-        Object.keys(this.actions).filter((key: string) =>
-          get(this.actions, key, false)
-        ),
-        this.rowActions
-      ).length > 0
-    );
-  }
+  /** A boolean indicating if actions are enabled */
+  public hasEnabledActions = false;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -364,12 +350,42 @@ export class GridComponent
   ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
     if (
-      changes['loadingRecords']?.previousValue &&
-      !changes['loadingRecords']?.currentValue
+      !isEqual(
+        changes['actions']?.previousValue,
+        changes['actions']?.currentValue
+      )
     ) {
-      setTimeout(() => {
-        this.setColumnsWidth();
+      this.hasEnabledActions =
+        intersection(
+          Object.keys(this.actions).filter((key: string) =>
+            get(this.actions, key, false)
+          ),
+          this.rowActions
+        ).length > 0;
+    }
+    if (
+      (changes['data']?.currentValue?.data.length || this.data.data.length) &&
+      (changes['fields']?.currentValue?.length || this.fields.length)
+    ) {
+      this.data.data.forEach((gridRow) => {
+        formatGridRowData(gridRow, this.fields, this.datePipe);
+      });
+    }
+    // First load of records, or on page change
+    if (
+      changes['loadingRecords']?.previousValue &&
+      !changes['loadingRecords']?.currentValue &&
+      !this.loadingSettings
+    ) {
+      if (this.displayFullScreenButtonTimeoutListener) {
+        clearTimeout(this.displayFullScreenButtonTimeoutListener);
+      }
+      this.displayFullScreenButtonTimeoutListener = setTimeout(() => {
+        this.grid?.columns.forEach((column) => {
+          this.updateColumnShowFullScreenButton((column as any).field);
+        });
       }, 0);
+      this.setColumnsWidth();
     }
   }
 
@@ -395,123 +411,11 @@ export class GridComponent
     if (this.columnChangeTimeoutListener) {
       clearTimeout(this.columnChangeTimeoutListener);
     }
+    if (this.displayFullScreenButtonTimeoutListener) {
+      clearTimeout(this.displayFullScreenButtonTimeoutListener);
+    }
     if (this.closeEditorListener) {
       this.closeEditorListener();
-    }
-  }
-
-  /**
-   * Returns property value in object from path.
-   *
-   * @param item Item to get property of.
-   * @param field parent field
-   * @param subField subfield ( optional, used by reference data)
-   * @returns Value of the property.
-   */
-  public getPropertyValue(item: any, field: any, subField?: any): any {
-    let value = get(item, field.name);
-    const meta = subField ? subField.meta : field.meta;
-    if (meta.choicesByGraphql) {
-      const currState = this.choicesByRecordState.find((el) =>
-        Object.keys(el.state).every((key) => el.state[key] === item[key])
-      );
-
-      // Checks if there are choices for the current state of the record
-      if (currState) {
-        return (
-          currState.choices.find((el) => el.value === value)?.text || value
-        );
-      }
-    } else if (meta.choices) {
-      if (Array.isArray(value)) {
-        if (subField) {
-          if (meta.graphQLFieldName) {
-            value = value.map((x) => get(x, meta.graphQLFieldName));
-          }
-        }
-        const text = meta.choices.reduce(
-          (acc: string[], x: any) =>
-            value.includes(x.value) ? acc.concat([x.text]) : acc,
-          []
-        );
-        if (text.length < value.length) {
-          return value;
-        } else {
-          return text;
-        }
-      } else {
-        if (subField) {
-          if (meta.graphQLFieldName) {
-            value = get(value, meta.graphQLFieldName);
-            const text = meta.choices.find((x: any) => x.value === value)?.text;
-            return text || value;
-          }
-        } else {
-          return (
-            meta.choices.find((x: any) => x.value === value)?.text || value
-          );
-        }
-      }
-    } else {
-      if (meta.type === 'geospatial') {
-        return [
-          get(value, 'properties.address'),
-          get(value, 'properties.countryName'),
-        ]
-          .filter((x) => x)
-          .join(', ');
-      }
-      return value;
-    }
-  }
-
-  /**
-   * Returns property value in object from path. Specific for multiselect reference data.
-   *
-   * @param item Item to get property of.
-   * @param path Path of the property.
-   * @param attribute Path of the final attribute.
-   * @returns Value of the property.
-   */
-  public getReferenceDataPropertyValue(
-    item: any,
-    path: string,
-    attribute: string
-  ): any {
-    const values = get(item, path);
-    if (Array.isArray(values)) {
-      return values.map((x) => x[attribute]).join(', ');
-    }
-  }
-
-  /**
-   * Returns field style from path.
-   *
-   * @param item Item to get style of.
-   * @param path Path of the property.
-   * @returns Style fo the property.
-   */
-  public getStyle(item: any, path: string): any {
-    const fieldStyle = get(item, `_meta.style.${path}`);
-    const rowStyle = get(item, '_meta.style._row');
-    return fieldStyle ? fieldStyle : rowStyle;
-  }
-
-  /**
-   * Returns full URL value.
-   * TODO: avoid template call
-   *
-   * @param url Initial URL.
-   * @returns full valid URL.
-   */
-  public getUrl(url: string): URL | null {
-    if (url && !(url.startsWith('https://') || url.startsWith('http://'))) {
-      url = 'https://' + url;
-    }
-    try {
-      return new URL(url);
-    } catch {
-      return null;
     }
   }
 
@@ -643,8 +547,13 @@ export class GridComponent
 
   /**
    * Sets and emits new grid configuration after column resize event.
+   *
+   * @param event Resize event containing the resize origin column
    */
-  onColumnResize(): void {
+  onColumnResize(event: any): void {
+    const columnField = event[0].column.field;
+    // Update the button display for all the cells of this column on resize
+    this.updateColumnShowFullScreenButton(columnField);
     this.columnChange.emit();
   }
 
@@ -719,6 +628,27 @@ export class GridComponent
             });
         });
     }
+  }
+
+  /**
+   * Updates the show full screen button of the given columns cells if cell content is truncated
+   *
+   * @param columnField Related column field from where to check all cells
+   */
+  private updateColumnShowFullScreenButton(columnField: string) {
+    const updatableTooltips = this.tooltips.filter(
+      (tooltip) => tooltip.enableBy !== 'default'
+    );
+    this.data.data.forEach((element) => {
+      const relatedTooltipElement = updatableTooltips.find(
+        (tooltip) => tooltip.uiTooltip === element.text[columnField]
+      );
+      if (relatedTooltipElement) {
+        element.showFullScreenButton[columnField] =
+          relatedTooltipElement.elementRef.nativeElement.offsetWidth <
+          relatedTooltipElement.elementRef.nativeElement.scrollWidth;
+      }
+    });
   }
 
   /**
@@ -815,16 +745,6 @@ export class GridComponent
   }
 
   /**
-   * Checks if element overflows
-   *
-   * @param e Component resizing event.
-   * @returns True if overflows.
-   */
-  isEllipsisActive(e: any): boolean {
-    return e.offsetWidth < e.scrollWidth;
-  }
-
-  /**
    * Expands text in a full window modal.
    *
    * @param item Item to display data of.
@@ -907,43 +827,6 @@ export class GridComponent
         }
       });
     }
-  }
-
-  /**
-   * Gets the kendo class icon for the file extension
-   *
-   * @param name Name of the file with the extension
-   * @returns String with the name of the icon class
-   */
-  public getFileIcon(name: string): string {
-    const fileExt = name.split('.').pop();
-    return fileExt && ICON_EXTENSIONS[fileExt]
-      ? ICON_EXTENSIONS[fileExt]
-      : 'k-i-file';
-  }
-
-  /**
-   * Removes file extension from the file name
-   *
-   * @param name Name of the file with the extension
-   * @returns String with the name of the file without the extension
-   */
-  public removeFileExtension(name: string): string {
-    const fileExt = name.split('.').pop();
-    return fileExt && ICON_EXTENSIONS[fileExt]
-      ? name.slice(0, name.lastIndexOf(fileExt) - 1)
-      : name;
-  }
-
-  /**
-   * Calls layout format from utils.ts to get the formatted fields
-   *
-   * @param name Content of the field as a string
-   * @param field Field data
-   * @returns Formatted field content as a string
-   */
-  public applyFieldFormat(name: string | null, field: any): string | null {
-    return applyLayoutFormat(name, field);
   }
 
   /**

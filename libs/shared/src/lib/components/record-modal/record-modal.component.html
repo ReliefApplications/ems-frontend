@@ -67,7 +67,7 @@
       </ui-button>
     </ng-container>
     <ng-container *ngIf="!loading && !data.compareTo">
-      <ui-button uiDialogClose variant="danger">
+      <ui-button [uiDialogClose] variant="danger">
         {{ 'common.close' | translate }}
       </ui-button>
       <ng-container *ngIf="survey?.visiblePages ?? [] as pages">

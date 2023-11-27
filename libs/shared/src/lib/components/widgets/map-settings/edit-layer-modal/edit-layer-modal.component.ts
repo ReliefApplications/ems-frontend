@@ -1,10 +1,8 @@
 import {
   Component,
-  ViewChild,
   OnDestroy,
   Inject,
   OnInit,
-  ViewContainerRef,
   AfterViewInit,
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -14,7 +12,6 @@ import { createLayerForm, LayerFormT } from '../map-forms';
 import {
   takeUntil,
   BehaviorSubject,
-  Subject,
   pairwise,
   startWith,
   distinctUntilChanged,
@@ -58,14 +55,14 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
 import { FormArray, FormBuilder } from '@angular/forms';
 import { ResourceQueryResponse } from '../../../../models/resource.model';
+import { DomPortal, PortalModule } from '@angular/cdk/portal';
 
 /**
  * Interface of dialog input
  */
 interface DialogData {
   layer?: LayerModel;
-  currentMapContainerRef: BehaviorSubject<ViewContainerRef | null>;
-  editingLayer: BehaviorSubject<boolean>;
+  mapPortal?: DomPortal;
   mapComponent: MapComponent;
 }
 
@@ -94,6 +91,7 @@ interface DialogData {
     LayerStylingModule,
     MapLayersModule,
     ContextualFiltersSettingsComponent,
+    PortalModule,
   ],
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
@@ -102,25 +100,30 @@ export class EditLayerModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  /** Current Layer */
   private _layer!: Layer;
-
-  @ViewChild('mapContainer', { read: ViewContainerRef })
-  mapContainerRef!: ViewContainerRef;
-  destroyTab$: Subject<boolean> = new Subject<boolean>();
-
+  /** Selected resource */
   public resource: BehaviorSubject<ResourceQueryResponse | null> =
     new BehaviorSubject<ResourceQueryResponse | null>(null);
+  /** Available fields */
   public fields = new BehaviorSubject<Fields[]>([]);
+  /** Available fields as observable */
   public fields$ = this.fields.asObservable();
-
+  /** Form group */
   public form!: LayerFormT;
+  /** Current map zoom */
   public currentZoom!: number;
+  /** Current leaflet layer */
   private currentLayer!: L.Layer;
+  /** Is current datasource valie */
   public isDatasourceValid = false;
-
-  // This property would handle the form change side effects to be triggered once all
-  // layer related updates are done in order to avoid multiple mismatches and duplications between
-  // a property change, layer data retrieval and form update
+  /** Map dom portal */
+  public mapPortal?: DomPortal;
+  /**
+   * This property would handle the form change side effects to be triggered once all
+   * layer related updates are done in order to avoid multiple mismatches and duplications between
+   * a property change, layer data retrieval and form update
+   */
   private triggerFormChange = new BehaviorSubject(true);
 
   /**
@@ -191,40 +194,16 @@ export class EditLayerModalComponent
       this.currentZoom = this.data.mapComponent.map.getZoom();
       this.setUpLayer(true);
     }
+    this.mapPortal = this.data.mapPortal;
     this.setUpEditLayerListeners();
     this.getResource();
   }
 
   ngAfterViewInit(): void {
-    this.data.editingLayer.next(true);
-    const currentContainerRef = this.data.currentMapContainerRef.getValue();
-    if (currentContainerRef) {
-      const view = currentContainerRef.detach();
-      if (view) {
-        this.mapContainerRef.insert(view);
-        this.data.currentMapContainerRef.next(this.mapContainerRef);
-      }
-    }
     // If datasource changes, update fields form control
     this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
       fields.forEach((field: Fields) => this.updateFormField(field));
     });
-  }
-
-  /**
-   * Change on selected index.
-   */
-  selectedIndexChange(): void {
-    this.destroyTab$.next(true);
-    const currentContainerRef = this.data.currentMapContainerRef.getValue();
-    if (currentContainerRef) {
-      const view = currentContainerRef.detach();
-      if (view) {
-        this.mapContainerRef.insert(view);
-        this.data.currentMapContainerRef.next(this.mapContainerRef);
-        this.destroyTab$.next(false);
-      }
-    }
   }
 
   /**
@@ -409,8 +388,6 @@ export class EditLayerModalComponent
    */
   onSubmit() {
     // this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
-    this.destroyTab$.next(true);
-    this.data.editingLayer.next(false);
     this.dialogRef.close(this.form.getRawValue() as LayerFormData);
   }
 
@@ -420,9 +397,6 @@ export class EditLayerModalComponent
    */
   onCancel(): void {
     if (this.form?.pristine) {
-      // this.layerToSave.emit(undefined);
-      this.destroyTab$.next(true);
-      this.data.editingLayer.next(false);
       this.dialogRef.close();
     } else {
       const confirmDialogRef = this.confirmService.openConfirmModal({
@@ -437,8 +411,6 @@ export class EditLayerModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.destroyTab$.next(true);
-            this.data.editingLayer.next(false);
             this.dialogRef.close();
           }
         });

@@ -237,6 +237,9 @@ export class ChartComponent
           max: get(this.settings, 'chart.axes.x.enableMax')
             ? get(this.settings, 'chart.axes.x.max')
             : null,
+          stepSize: get(this.settings, 'chart.axes.x.stepSize')
+            ? get(this.settings, 'chart.axes.x.stepSize')
+            : null,
         },
         y: {
           min: get(this.settings, 'chart.axes.y.enableMin')
@@ -244,6 +247,9 @@ export class ChartComponent
             : null,
           max: get(this.settings, 'chart.axes.y.enableMax')
             ? get(this.settings, 'chart.axes.y.max')
+            : null,
+          stepSize: get(this.settings, 'chart.axes.y.stepSize')
+            ? get(this.settings, 'chart.axes.y.stepSize')
             : null,
         },
       },

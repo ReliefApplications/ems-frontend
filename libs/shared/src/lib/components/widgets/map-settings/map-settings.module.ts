@@ -15,6 +15,7 @@ import {
 } from '@oort-front/ui';
 import { TooltipModule } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { PortalModule } from '@angular/cdk/portal';
 
 /** Module for map settings component */
 @NgModule({
@@ -38,6 +39,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
     MapPropertiesModule,
     TooltipModule,
     DisplaySettingsComponent,
+    PortalModule,
   ],
   exports: [MapSettingsComponent],
 })

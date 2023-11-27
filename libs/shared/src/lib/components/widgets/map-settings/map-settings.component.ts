@@ -5,7 +5,6 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-  ChangeDetectorRef,
   ViewContainerRef,
   OnDestroy,
   AfterViewInit,
@@ -13,19 +12,21 @@ import {
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
 import {
-  DefaultMapControls,
   MapConstructorSettings,
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { BehaviorSubject, Subject, debounceTime, takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { LayerModel } from '../../../models/layer.model';
 import { MapComponent } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { UILayoutService } from '@oort-front/ui';
+import { DomPortal } from '@angular/cdk/portal';
 
-/** Component for the map widget settings */
+/**
+ * Map widget settings editor.
+ */
 @Component({
   selector: 'shared-map-settings',
   templateUrl: './map-settings.component.html',
@@ -35,41 +36,33 @@ export class MapSettingsComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
-  public currentTab: 'parameters' | 'layers' | 'layer' | 'display' | null =
-    'parameters';
-  public mapSettings!: MapConstructorSettings;
-  // === REACTIVE FORM ===
-  widgetFormGroup!: UntypedFormGroup;
-
-  // === WIDGET ===
+  /** Current widget */
   @Input() widget: any;
-  public openedLayers: (LayerModel | undefined)[] = [];
-
-  // === EMIT THE CHANGES APPLIED ===
+  /** Emit widget change */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-  public mapComponent?: MapComponent;
+  /** Reference to map default container */
   @ViewChild('mapContainer', { read: ViewContainerRef })
-  mapContainerRef!: ViewContainerRef;
-
-  public currentMapContainerRef = new BehaviorSubject<ViewContainerRef | null>(
-    null
-  );
-  destroyTab$: Subject<boolean> = new Subject<boolean>();
-
-  // Layers controls right side nav. Store if sidenav is used, to be able to destroy it when closing the view.
+  mapContainer!: ViewContainerRef;
+  /** Map settings */
+  public mapSettings!: MapConstructorSettings;
+  /** Current widget form group */
+  public widgetFormGroup!: UntypedFormGroup;
+  /** Loaded layers */
+  public openedLayers: (LayerModel | undefined)[] = [];
+  /** Map dom portal ( this component initializes it ) */
+  public mapPortal?: DomPortal;
+  /** For map display */
+  public mapComponent?: MapComponent;
+  /** Layers controls right side nav. Store if sidenav is used, to be able to destroy it when closing the view. */
   private openedLayersSideNav = false;
 
   /**
-   * Class constructor
+   * Map widget settings editor.
    *
-   * @param cdr ChangeDetectorRef
    * @param layoutService Shared layout service
    */
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private layoutService: UILayoutService
-  ) {
+  constructor(private layoutService: UILayoutService) {
     super();
   }
 
@@ -94,13 +87,15 @@ export class MapSettingsComponent
   }
 
   ngAfterViewInit(): void {
-    const componentRef = this.mapContainerRef.createComponent(MapComponent);
+    // Generate map & attach it to dom portal
+    const componentRef = this.mapContainer.createComponent(MapComponent);
     componentRef.instance.mapSettings = this.mapSettings;
     componentRef.instance.mapEvent
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => this.handleMapEvent(event));
+    componentRef.changeDetectorRef.detectChanges();
+    this.mapPortal = new DomPortal(componentRef.instance.el);
     this.mapComponent = componentRef.instance;
-    this.currentMapContainerRef.next(this.mapContainerRef);
 
     this.layoutService.rightSidenav$
       .pipe(takeUntil(this.destroy$))
@@ -109,22 +104,6 @@ export class MapSettingsComponent
           this.openedLayersSideNav = true;
         }
       });
-  }
-
-  /**
-   * Change on selected index.
-   */
-  selectedIndexChange(): void {
-    this.destroyTab$.next(true);
-    const currentContainerRef = this.currentMapContainerRef.getValue();
-    if (currentContainerRef) {
-      const view = currentContainerRef.detach();
-      if (view) {
-        this.mapContainerRef.insert(view);
-        this.currentMapContainerRef.next(this.mapContainerRef);
-        this.destroyTab$.next(false);
-      }
-    }
   }
 
   /**
@@ -179,34 +158,6 @@ export class MapSettingsComponent
   }
 
   /**
-   * Set tab an initialize map properties if needed
-   *
-   * @param tab Tab
-   */
-  private openTab(tab: 'parameters' | 'layers' | 'layer' | 'display' | null) {
-    // Reset settings when switching to/from 'layer' tab
-    if (
-      (this.currentTab === 'layer' && tab !== 'layer') ||
-      (this.currentTab !== 'layer' && tab === 'layer')
-    ) {
-      this.mapSettings = {
-        basemap: this.widgetFormGroup?.value.basemap,
-        initialState: this.widgetFormGroup?.get('initialState')?.value,
-        controls:
-          tab !== 'layer'
-            ? this.widgetFormGroup?.value.controls
-            : DefaultMapControls,
-        arcGisWebMap: this.widgetFormGroup?.value.arcGisWebMap,
-        ...(tab !== 'layer' && {
-          layers: this.widgetFormGroup?.value.layers,
-        }),
-      };
-    }
-    this.currentTab = tab;
-    this.cdr.detectChanges();
-  }
-
-  /**
    * Update map settings
    *
    * @param settings new settings
@@ -254,7 +205,6 @@ export class MapSettingsComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.mapContainerRef.detach();
     // Destroy layers control sidenav when closing the settings
     if (this.openedLayersSideNav) {
       this.layoutService.setRightSidenav(null);

@@ -139,7 +139,7 @@ export class AuthService {
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        this.oauthService.initCodeFlow();
+        this.oauthService.initLoginFlow();
       });
     // Redirect to previous path
     this.oauthService.events

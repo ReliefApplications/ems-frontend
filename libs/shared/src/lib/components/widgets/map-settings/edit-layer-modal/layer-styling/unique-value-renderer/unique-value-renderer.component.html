@@ -38,7 +38,7 @@
           <ng-container
             *ngTemplateOutlet="
               openedTemplate;
-              context: { form: uniqueValueInfos.at(index) }
+              context: { form: uniqueValueInfos.at(index), index: index }
             "
           ></ng-container>
         </ng-container>
@@ -119,10 +119,8 @@
         class="cursor-move"
       ></ui-icon>
       <div class="flex flex-1 gap-2 items-center" (click)="openedIndex = index">
-        <span
-          [innerHTML]="svgIcons[value.symbol.style] | sharedSanitizeHtml"
-        ></span>
-        <span>{{ value.label }}</span>
+        <span [innerHTML]="svgIcons[index] | sharedSanitizeHtml"></span>
+        <span>{{ index }} - {{ value.label }}</span>
       </div>
     </div>
     <ui-button

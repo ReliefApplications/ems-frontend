@@ -30,7 +30,6 @@ import { GridLayoutService } from '../../../services/grid-layout/grid-layout.ser
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
-import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { ApplicationService } from '../../../services/application/application.service';
@@ -532,16 +531,20 @@ export class GridWidgetComponent
     const update: any = {};
     for (const modification of modifications) {
       if (modification.field) {
-        set(update, modification.field, modification.value);
+        // If no value, set at null
+        if (modification.value === undefined || modification.value === '') {
+          set(update, modification.field, null);
+        } else {
+          set(update, modification.field, modification.value);
+        }
       }
     }
-    const data = cleanRecord(update);
     return firstValueFrom(
       this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: update,
           template: get(this.settings, 'template', null),
         },
       })

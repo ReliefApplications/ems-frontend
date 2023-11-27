@@ -220,6 +220,7 @@
 			"none": "Aucune mise en page",
 			"one": "Mise en page"
 		},
+		"loading": "Chargement",
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
@@ -494,7 +495,7 @@
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
-				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
 		},
@@ -1448,6 +1449,7 @@
 						"title": "Séries"
 					},
 					"size": "Taille",
+					"stepSize": "Intervalle entre les marques",
 					"style": "Style",
 					"text": "Texte",
 					"title": {
@@ -1455,7 +1457,8 @@
 						"format": "Format"
 					},
 					"tooltip": {
-						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie.",
+						"stepSize": "Intervalle entre chaque marque de graduation sur l'axe, lorsque possible"
 					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -1532,6 +1535,9 @@
 						"create": "Ajouter un bouton",
 						"defaultName": "Bouton d'action",
 						"enable": "Activer",
+						"placeholder": {
+							"modifyValue": "Supprimer la valeur"
+						},
 						"title": "Bouton d'action rapide",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
