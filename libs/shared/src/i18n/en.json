@@ -2070,6 +2070,7 @@
 				"text": "Button text",
 				"variant": "Button variant"
 			},
+			"closable": "Closable",
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -2098,13 +2099,23 @@
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
+			"filterVariant": {
+				"title": "Filter variant",
+				"variantsOptions": {
+					"selectOrigin": "Select filter variant",
+					"variant_default": "Default",
+					"variant_modern": "Modern"
+				}
+			},
 			"historicalDate": "Get dataset at",
 			"share": "Share Dashboard",
 			"tooltip": {
-				"dashboardFilter": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
-				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}.",
-				"useDashboardFilterEditor": "Use dashboard filter editor",
-				"useDefaultEditor": "Use default editor"
+				"filter": {
+					"closable": "When variant is modern, or application is used as web element, it will indicate if filter can be closed or not",
+					"fields": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
+					"position": "Only applicable when default variant is active"
+				},
+				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}."
 			}
 		},
 		"form": {
