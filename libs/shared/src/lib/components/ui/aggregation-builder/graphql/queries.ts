@@ -145,3 +145,29 @@ export const GET_QUERY_TYPES = gql`
     }
   }
 `;
+
+/** Graphql query to get metadata from fields */
+export const GET_FIELDS_METADATA = gql`
+  query GetFieldsMetadata($resource: ID!) {
+    resource(id: $resource) {
+      name
+      metadata {
+        name
+        type
+        editor
+        filter
+        multiSelect
+        options
+        fields {
+          name
+          type
+          editor
+          filter
+          multiSelect
+          options
+        }
+        usedIn
+      }
+    }
+  }
+`;
