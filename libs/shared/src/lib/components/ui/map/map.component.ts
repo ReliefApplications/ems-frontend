@@ -255,7 +255,6 @@ export class MapComponent
   ngAfterViewInit(): void {
     // Creates the map and adds all the controls we use.
     this.drawMap();
-
     this.setUpMapListeners();
 
     if (this.firstLoadEmitTimeoutListener) {
@@ -713,19 +712,18 @@ export class MapComponent
     };
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
-      this.mapLayersService
-        .createLayersFromIds(layerIds, this.injector)
-        .then((layers) => {
-          const layersTree: any[] = [];
-          // Add each layer to the tree
-          layers.forEach((layer) => {
-            layersTree.push(parseTreeNode(layer));
+      const layerPromises = layerIds.map((id) => {
+        return this.mapLayersService
+          .createLayerFromId(id, this.injector)
+          .then((layer) => {
+            return parseTreeNode(layer);
           });
-          Promise.all(layersTree).then((layersTree) => {
-            this.refreshLastUpdate();
-            resolve({ layers: layersTree });
-          });
-        });
+      });
+
+      Promise.all(layerPromises).then((layersTree) => {
+        this.refreshLastUpdate();
+        resolve({ layers: layersTree });
+      });
     });
   }
 
