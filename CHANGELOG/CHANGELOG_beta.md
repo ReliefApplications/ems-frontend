@@ -1,3 +1,13 @@
+# [2.2.0-beta.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.10...v2.2.0-beta.11) (2023-11-27)
+
+
+### Bug Fixes
+
+* incorrect reorder & delete events in tabs widget ([#2097](https://github.com/ReliefApplications/ems-frontend/issues/2097)) ([9e4246b](https://github.com/ReliefApplications/ems-frontend/commit/9e4246bc4091ac735146c471fb49b7eded345beb))
+* legend now correctly working for unique value layer points ([4fdb7f9](https://github.com/ReliefApplications/ems-frontend/commit/4fdb7f9d4b0b3c43e38101a5349ff16927d33c6b))
+* some fields would not appear in style fields selector ([a0094e1](https://github.com/ReliefApplications/ems-frontend/commit/a0094e1901cd03df69ada53bea13557d1125766b))
+* unique renderer would not render correctly ([ca83272](https://github.com/ReliefApplications/ems-frontend/commit/ca83272417b2b6d3be76c8e04a4f67017b038540))
+
 # [2.2.0-beta.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.9...v2.2.0-beta.10) (2023-11-24)
 
 

@@ -1,20 +1,16 @@
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnInit,
   Output,
   ViewChild,
-  ViewContainerRef,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   takeUntil,
   BehaviorSubject,
   Observable,
-  Subject,
   distinctUntilChanged,
 } from 'rxjs';
 import {
@@ -47,6 +43,7 @@ import { MapLayersService } from '../../../../../services/map/map-layers.service
 import { Fields } from '../../../../../models/layer.model';
 import { GraphQLSelectComponent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { DomPortal } from '@angular/cdk/portal';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -80,7 +77,7 @@ const ADMIN_FIELDS = [
 })
 export class LayerDatasourceComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   /** Current form group */
   @Input() formGroup!: FormGroup;
@@ -88,6 +85,8 @@ export class LayerDatasourceComponent
   @Input() resourceQuery!: BehaviorSubject<ResourceQueryResponse | null>;
   /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
+  /** Map dom portal */
+  @Input() mapPortal?: DomPortal;
   /** Emit new fields */
   @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
   /** Reference to resource graphql select */
@@ -113,12 +112,6 @@ export class LayerDatasourceComponent
   /** Admin fields */
   public adminFields = ADMIN_FIELDS;
 
-  // Display of map
-  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
-  @ViewChild('mapContainer', { read: ViewContainerRef })
-  mapContainerRef!: ViewContainerRef;
-  @Input() destroyTab$!: Subject<boolean>;
-
   /**
    * Component for the layer datasource selection tab
    *
@@ -127,15 +120,13 @@ export class LayerDatasourceComponent
    * @param gridLayoutService Shared layout service
    * @param aggregationService Shared aggregation service
    * @param mapLayersService Shared map layer Service.
-   * @param cdr Change detector
    */
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
     private gridLayoutService: GridLayoutService,
     private aggregationService: AggregationService,
-    private mapLayersService: MapLayersService,
-    private cdr: ChangeDetectorRef
+    private mapLayersService: MapLayersService
   ) {
     super();
   }
@@ -256,23 +247,6 @@ export class LayerDatasourceComponent
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );
-        }
-      });
-  }
-
-  ngAfterViewInit(): void {
-    this.currentMapContainerRef
-      .pipe(takeUntil(this.destroyTab$))
-      .subscribe((viewContainerRef) => {
-        if (viewContainerRef) {
-          if (viewContainerRef !== this.mapContainerRef) {
-            const view = viewContainerRef.detach();
-            if (view) {
-              this.mapContainerRef.insert(view);
-              this.cdr.detectChanges();
-              this.currentMapContainerRef.next(this.mapContainerRef);
-            }
-          }
         }
       });
   }

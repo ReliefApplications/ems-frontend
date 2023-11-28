@@ -14,6 +14,7 @@ import {
   DividerModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { PortalModule } from '@angular/cdk/portal';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -34,6 +35,7 @@ import {
     ButtonModule,
     AlertModule,
     TooltipModule,
+    PortalModule,
   ],
   exports: [LayerDatasourceComponent],
 })

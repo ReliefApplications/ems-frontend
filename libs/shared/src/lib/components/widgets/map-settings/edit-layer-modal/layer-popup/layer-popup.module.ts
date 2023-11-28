@@ -16,6 +16,7 @@ import {
   MenuModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { PortalModule } from '@angular/cdk/portal';
 
 /**
  * Map layer properties popup module.
@@ -38,6 +39,7 @@ import {
     TextElementComponent,
     EditorControlComponent,
     TooltipModule,
+    PortalModule,
   ],
   exports: [LayerPopupComponent],
 })
