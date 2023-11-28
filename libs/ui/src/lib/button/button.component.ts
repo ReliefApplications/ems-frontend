@@ -28,7 +28,7 @@ export class ButtonComponent {
   /** Button variant, define color */
   @Input() variant: Variant = 'primary';
   /** Button background, set to true to render a white background */
-  @Input() background: boolean = false;
+  @Input() background = false;
   /** Is button only icon */
   @Input() isIcon = false;
   /** Should button appear as block */
