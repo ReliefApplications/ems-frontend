@@ -27,6 +27,8 @@ export class ButtonComponent {
   @Input() size: Size = 'medium';
   /** Button variant, define color */
   @Input() variant: Variant = 'primary';
+  /** Button background, set to true to render a white background */
+  @Input() background: boolean = false;
   /** Is button only icon */
   @Input() isIcon = false;
   /** Should button appear as block */
@@ -73,6 +75,9 @@ export class ButtonComponent {
     }
     if (this.disabled) {
       classes.push('opacity-70');
+    }
+    if (this.background) {
+      classes.push('bg-white');
     }
     return classes;
   }
