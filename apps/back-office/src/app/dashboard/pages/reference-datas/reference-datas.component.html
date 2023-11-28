@@ -88,6 +88,7 @@
           <ui-button
             [isIcon]="true"
             icon="more_vert"
+            [background]="true"
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
