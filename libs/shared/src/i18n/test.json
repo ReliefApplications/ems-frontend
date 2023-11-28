@@ -2110,11 +2110,12 @@
 			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
-				"closable": "******",
-				"dashboardFilter": "******",
-				"historicalDate": "****** {{filter.<name>}} ******",
-				"useDashboardFilterEditor": "******",
-				"useDefaultEditor": "******"
+				"filter": {
+					"closable": "******",
+					"fields": "******",
+					"position": "******"
+				},
+				"historicalDate": "****** {{filter.<name>}} ******"
 			}
 		},
 		"form": {

@@ -138,6 +138,7 @@ export class ContextService {
           }
           this.filterStructure.next(dashboard.filter?.structure);
           localForage.getItem(this.positionKey).then((position) => {
+            console.log(position);
             if (position) {
               this.filterPosition.next(position);
             } else {
@@ -145,6 +146,7 @@ export class ContextService {
                 dashboard.filter?.position ?? FilterPosition.BOTTOM
               );
             }
+            console.log(this.filterPosition.getValue());
           });
         } else {
           this.filter.next({});
@@ -243,27 +245,6 @@ export class ContextService {
   }
 
   /**
-   * Opens the settings modal
-   */
-  public openSettings() {
-    import(
-      '../../components/dashboard-filter/filter-settings-modal/filter-settings-modal.component'
-    ).then(({ FilterSettingsModalComponent }) => {
-      const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
-        data: {
-          positionList: this.positionList,
-          positionTooltips: this.FilterPositionTooltips,
-        },
-      });
-      dialogRef.closed.subscribe((defaultPosition) => {
-        if (defaultPosition) {
-          this.saveSettings(defaultPosition as FilterPosition);
-        }
-      });
-    });
-  }
-
-  /**
    * Render the survey using the saved structure
    *
    * @returns survey model created from the structure
@@ -292,28 +273,6 @@ export class ContextService {
       })
       .subscribe(({ errors, data }) => {
         this.handleFilterMutationResponse({ data, errors });
-      });
-  }
-
-  /**
-   *  Saves the filter settings
-   *
-   * @param defaultPosition default position for the filter to be registered
-   */
-  private saveSettings(defaultPosition: FilterPosition): void {
-    this.apollo
-      .mutate<EditDashboardMutationResponse>({
-        mutation: EDIT_DASHBOARD_FILTER,
-        variables: {
-          id: this.dashboard?.id,
-          filter: {
-            ...this.dashboard?.filter,
-            position: defaultPosition,
-          },
-        },
-      })
-      .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors }, defaultPosition);
       });
   }
 

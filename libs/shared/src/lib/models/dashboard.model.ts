@@ -17,7 +17,7 @@ export interface IWidgetType {
 }
 
 /** Model for the dashboard filter */
-export interface DashboardFilterType {
+export interface DashboardFilter {
   variant?: string;
   show?: boolean;
   closable?: boolean;
@@ -242,7 +242,7 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
-  filter?: DashboardFilterType;
+  filter?: DashboardFilter;
   gridOptions?: any;
 }
 

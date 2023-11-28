@@ -46,7 +46,6 @@ export class DashboardFilterComponent
   /** Is fullscreen */
   @Input() isFullScreen = false;
   /** Filter variant ( defines style ) */
-  // @Input() variant: string | undefined;
   @Input() variant = 'default';
   /** Is drawer opened */
   @Input() opened = false;

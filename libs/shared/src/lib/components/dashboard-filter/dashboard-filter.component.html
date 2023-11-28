@@ -102,17 +102,6 @@
               [ngTemplateOutlet]="editTmpl"
               [ngTemplateOutletContext]="{ variant: 'light' }"
             ></ng-container>
-            <!-- Settings (default position) -->
-            <ui-button
-              variant="light"
-              [isIcon]="true"
-              icon="settings"
-              (click)="contextService.openSettings()"
-              [uiTooltip]="
-                'components.application.dashboard.filterSettings' | translate
-              "
-            >
-            </ui-button>
           </div>
           <!-- Quick filter -->
           <div
@@ -153,7 +142,9 @@
                 icon="{{ position + '_panel_open' }}"
                 [isOutlined]="true"
                 (click)="changeFilterPosition(position)"
-                [uiTooltip]="contextService.FilterPositionTooltips[position] | translate"
+                [uiTooltip]="
+                  contextService.FilterPositionTooltips[position] | translate
+                "
               ></ui-button>
             </ng-container>
           </div>
@@ -197,7 +188,7 @@
   <div
     modernDrawerPositioner
     [elementWidth]="containerWidth"
-    [visible]="opened"
+    [visible]="closable ? opened : true"
   >
     <div
       id="filter-modern"

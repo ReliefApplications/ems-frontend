@@ -17,7 +17,6 @@ import {
 import { OverlayModule } from '@angular/cdk/overlay';
 import { TranslateModule } from '@ngx-translate/core';
 import { ViewIconSelectorComponent } from '../view-icon-selector/view-icon-selector.component';
-import { SettingsFilterComponent } from '../settings-filter/settings-filter.component';
 import {
   AccessModule,
   ApplicationService,
@@ -31,11 +30,11 @@ import {
   AuthService,
   Application,
   DashboardService,
-  DashboardFilterType,
 } from '@oort-front/shared';
 import { debounceTime, takeUntil } from 'rxjs';
 import { get, isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
+import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -76,7 +75,7 @@ interface DialogData {
     SearchMenuModule,
     AlertModule,
     AbilityModule,
-    SettingsFilterComponent,
+    DashboardFilterSettingsComponent,
   ],
   templateUrl: './view-settings-modal.component.html',
   styleUrls: ['./view-settings-modal.component.scss'],
@@ -246,21 +245,6 @@ export class ViewSettingsModalComponent
       }
     );
     authSubscription.unsubscribe();
-  }
-
-  /**
-   * Updates dashboard when dashboard filter is changed.
-   *
-   * @param filter new filter settings
-   */
-  public onUpdateDashboardFilter(filter: DashboardFilterType): void {
-    this.dashboard = {
-      ...this.dashboard,
-      filter,
-    };
-    // Updates parent component
-    const updates = { filter };
-    this.onUpdate.emit(updates);
   }
 
   /**
