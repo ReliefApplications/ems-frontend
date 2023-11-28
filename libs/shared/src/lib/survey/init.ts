@@ -32,6 +32,10 @@ import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
 } from './components/utils/components.enum';
+import { cloneDeep } from 'lodash';
+
+/** Default component collection of a survey */
+const DEFAULT_COMPONENT_COLLECTION = cloneDeep(ComponentCollection.Instance);
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -57,7 +61,7 @@ export const initCustomSurvey = (
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
     CustomWidgetCollection.Instance.clear();
-    ComponentCollection.Instance.clear();
+    ComponentCollection.Instance = cloneDeep(DEFAULT_COMPONENT_COLLECTION);
   }
 
   TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
