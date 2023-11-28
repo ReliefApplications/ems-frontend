@@ -65,6 +65,7 @@ import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { HttpClient } from '@angular/common/http';
 
 /** Component for the map widget */
 @Component({
@@ -168,6 +169,8 @@ export class MapComponent
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
 
+  private adminLayer: any;
+
   /**
    * Map widget component
    *
@@ -183,6 +186,7 @@ export class MapComponent
    * @param injector Injector containing all needed providers
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference
+   * @param http Angular http client module
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -196,7 +200,8 @@ export class MapComponent
     private platform: Platform,
     public injector: Injector,
     private shadowDomService: ShadowDomService,
-    public el: ElementRef
+    public el: ElementRef,
+    private http: HttpClient
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -301,6 +306,21 @@ export class MapComponent
         type: MapEventType.ZOOM_END,
         content: { zoom: this.map.getZoom() },
       });
+    });
+
+    this.map.on('click', (event) => {
+      const latlng = event.latlng
+      console.log(latlng);
+      console.log(this.adminLayer.layer.getFeatureAt(latlng));
+      // const clickedFeature = this.adminLayer.layer.getFeatureAt(event.latlng);
+      // console.log(clickedFeature);
+      console.log("map bounds = ", this.map.getBounds());
+      console.log(this.map);
+      this.map.removeLayer(this.adminLayer);
+      console.log(this.adminLayer);
+      if (this.adminLayer !== 'admin1') {
+        this.initializeAdminLayer('admin1');
+      }
     });
 
     // The scroll jump issue only happens on chrome client browser
@@ -477,7 +497,7 @@ export class MapComponent
    * @param settings.basemap arcgis basemap
    * @param reset reset the layers
    */
-  setupMapLayers(
+  async setupMapLayers(
     settings: {
       layers: string[] | undefined;
       controls: MapControls;
@@ -486,6 +506,8 @@ export class MapComponent
     },
     reset = false
   ) {
+    // add admin0 layer
+    await this.initializeAdminLayer('admin0');
     // Get layers
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
@@ -568,6 +590,30 @@ export class MapComponent
         }
       }
     }
+  }
+
+  async initializeAdminLayer(layer: any) {
+    let adminLayer: any;
+    if (layer === 'admin0') {
+      adminLayer = await this.getAdmin0();
+      console.log(adminLayer);
+    } else if (layer === 'admin1') {
+      adminLayer = await this.getAdmin1();
+      console.log(adminLayer);
+    }
+    // const admin1: any = this.getAdmin1();
+    this.adminLayer = {
+      name: layer,
+      layer: L.geoJSON(adminLayer).addTo(this.map),
+    };
+  }
+
+  async getAdmin0(): Promise<any> {
+    return this.http.get('/assets/admin0.json').toPromise();
+  }
+
+  async getAdmin1(): Promise<any> {
+    return this.http.get('/assets/admin1.geojson').toPromise();
   }
 
   /**

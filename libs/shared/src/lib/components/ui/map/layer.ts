@@ -289,6 +289,9 @@ export class Layer implements LayerModel {
 
       this.sublayersLoaded.next(true);
     }
+
+    // const layer = L.geoJSON(data, geoJSONopts);
+    // this.onAddLayer(this.map, layer);
   }
 
   /** Populates the fields array from the input */
