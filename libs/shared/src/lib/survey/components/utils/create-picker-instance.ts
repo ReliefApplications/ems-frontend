@@ -117,7 +117,6 @@ export const setDateValue = (value: Date, inputType: string): Date | string => {
     // for time fields, translate the date to UTC
     return new Date(Date.UTC(1970, 0, 1, value.getHours(), value.getMinutes()));
   } else if (inputType === 'date') {
-    // return new Intl.formatDate('en-GB').format(value);
     return new Intl.DateTimeFormat('fr-CA', {
       year: 'numeric',
       month: '2-digit',
