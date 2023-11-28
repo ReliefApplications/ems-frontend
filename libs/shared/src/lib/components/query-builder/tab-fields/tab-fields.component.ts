@@ -207,6 +207,7 @@ export class TabFieldsComponent implements OnInit, OnChanges {
         componentRef.instance.setForm(this.fieldForm);
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
         componentRef.instance.showLimit = this.showLimit;
+        componentRef.instance.showColumnWidth = this.showColumnWidth;
         componentRef.instance.closeField.subscribe(() => {
           this.onCloseField();
           componentRef.destroy();

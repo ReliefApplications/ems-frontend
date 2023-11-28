@@ -887,17 +887,6 @@ export class GridComponent
     const stickyColumns = this.columns.filter(
       (column) => !column.hidden && !!column.sticky
     );
-    // get the width of fixed width columns
-    const fixedWidthColumns = this.columns.filter(
-      (column) =>
-        this.fields.find((field) => field.name === column.field)?.fixedWidth
-    );
-    fixedWidthColumns.forEach(
-      (column) =>
-        (column.width = this.fields.find(
-          (field) => field.name === column.field
-        ).fixedWidth)
-    );
     let totalWidthSticky = 0;
     stickyColumns.forEach((column: any) => {
       if (column.width) {
@@ -908,6 +897,19 @@ export class GridComponent
     if (this.selectable) {
       totalWidthSticky += 41;
     }
+
+    // Set the width of fixed width columns
+    const fixedWidthColumns = this.columns.filter(
+      (column) =>
+        this.fields.find((field) => field.name === column.field)?.fixedWidth
+    );
+    fixedWidthColumns.forEach(
+      (column) =>
+        (column.width = this.fields.find(
+          (field) => field.name === column.field
+        ).fixedWidth)
+    );
+
     /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
     const gridTotalWidth =
       gridElement.offsetWidth -
