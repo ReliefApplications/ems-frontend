@@ -9,6 +9,7 @@ import {
   EventEmitter,
   OnDestroy,
   Injector,
+  ElementRef,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -181,6 +182,7 @@ export class MapComponent
    * @param platform Platform
    * @param injector Injector containing all needed providers
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param el Element reference
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -193,62 +195,13 @@ export class MapComponent
     private contextService: ContextService,
     private platform: Platform,
     public injector: Injector,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    public el: ElementRef
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
     this.appliedDashboardFilters = this.contextService.filter.getValue();
-  }
-
-  /** Set map listeners */
-  private setUpMapListeners() {
-    this.resizeObserver = new ResizeObserver(() => {
-      this.map.invalidateSize();
-    });
-    this.resizeObserver.observe(this.map.getContainer());
-
-    // Set event listener to log map bounds when zooming, moving and resizing screen.
-    this.map.on('moveend', () => {
-      // If searched address marker exists, if we move, the item should disappear
-      if (this.mapControlsService.addressMarker) {
-        this.map.removeLayer(this.mapControlsService.addressMarker);
-        this.mapControlsService.addressMarker = null;
-      }
-      this.mapEvent.emit({
-        type: MapEventType.MOVE_END,
-        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
-      });
-    });
-
-    this.map.on('zoomend', () => {
-      this.currentZoom = this.map.getZoom();
-      this.mapEvent.emit({
-        type: MapEventType.ZOOM_END,
-        content: { zoom: this.map.getZoom() },
-      });
-    });
-
-    // The scroll jump issue only happens on chrome client browser
-    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
-    if (this.platform.WEBKIT || this.platform.BLINK) {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      this.map.getContainer().focus = () => {};
-    }
-
-    // Listen for language change
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        // Update controls that use translation
-        if (event.lang !== this.mapControlsService.lang) {
-          this.mapControlsService.getMeasureControl(
-            this.map,
-            this.extractSettings().controls.measure
-          );
-          this.mapControlsService.getFullScreenControl(this.map);
-        }
-      });
   }
 
   /** Once template is ready, build the map. */
@@ -320,6 +273,56 @@ export class MapComponent
       clearTimeout(this.firstLoadEmitTimeoutListener);
     }
     this.resizeObserver?.disconnect();
+  }
+
+  /** Set map listeners */
+  private setUpMapListeners() {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.map.invalidateSize();
+    });
+    this.resizeObserver.observe(this.map.getContainer());
+
+    // Set event listener to log map bounds when zooming, moving and resizing screen.
+    this.map.on('moveend', () => {
+      // If searched address marker exists, if we move, the item should disappear
+      if (this.mapControlsService.addressMarker) {
+        this.map.removeLayer(this.mapControlsService.addressMarker);
+        this.mapControlsService.addressMarker = null;
+      }
+      this.mapEvent.emit({
+        type: MapEventType.MOVE_END,
+        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
+      });
+    });
+
+    this.map.on('zoomend', () => {
+      this.currentZoom = this.map.getZoom();
+      this.mapEvent.emit({
+        type: MapEventType.ZOOM_END,
+        content: { zoom: this.map.getZoom() },
+      });
+    });
+
+    // The scroll jump issue only happens on chrome client browser
+    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
+    if (this.platform.WEBKIT || this.platform.BLINK) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.map.getContainer().focus = () => {};
+    }
+
+    // Listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        // Update controls that use translation
+        if (event.lang !== this.mapControlsService.lang) {
+          this.mapControlsService.getMeasureControl(
+            this.map,
+            this.extractSettings().controls.measure
+          );
+          this.mapControlsService.getFullScreenControl(this.map);
+        }
+      });
   }
 
   /**

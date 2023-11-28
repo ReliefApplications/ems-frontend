@@ -45,4 +45,7 @@ export const environment: Environment = {
     'summaryCard',
     'tabs',
   ],
+  user: {
+    attributes: ['country', 'region', 'location'],
+  },
 };

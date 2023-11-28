@@ -34,11 +34,17 @@ import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.ty
   styleUrls: ['./simple-renderer.component.scss'],
 })
 export class SimpleRendererComponent implements AfterViewInit {
+  /** Current form group */
   @Input() formGroup!: FormGroup;
+  /** Show icon size control */
   @Input() showSize = true;
+  /** Show style control */
   @Input() showStyle = true;
+  /** Type of geometry ( point or polygon ) */
   @Input() geometryType: GeometryType = 'Point';
+  /** Loading status */
   public loading = true;
+  /** Primary color of the platform (set by environment) */
   private primaryColor!: string;
 
   /**

@@ -1,6 +1,13 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 /**
+ * Interface for User environment configuration.
+ */
+interface UserConfiguration {
+  attributes?: string[];
+}
+
+/**
  * Interface of Angular environment configuration.
  */
 export interface Environment {
@@ -17,4 +24,5 @@ export interface Environment {
   theme: any;
   sentry?: any;
   maxFileSize?: number;
+  user?: UserConfiguration;
 }

@@ -1,3 +1,53 @@
+## [2.1.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.7...v2.1.8) (2023-11-12)
+
+
+### Bug Fixes
+
+* remove initImplicitFlow ([4e9ddd0](https://github.com/ReliefApplications/oort-frontend/commit/4e9ddd046b16013f360d89fdcda7c9f9cf48c165))
+
+## [2.1.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.6...v2.1.7) (2023-11-07)
+
+
+### Bug Fixes
+
+* add resource fields to history ([30c0846](https://github.com/ReliefApplications/oort-frontend/commit/30c0846a36a34db56f4024c4f482ad1bdce6ff71))
+
+## [2.1.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.5...v2.1.6) (2023-11-06)
+
+
+### Bug Fixes
+
+* could not set as null in auto modify fields grid action ([#2041](https://github.com/ReliefApplications/oort-frontend/issues/2041)) ([a92230c](https://github.com/ReliefApplications/oort-frontend/commit/a92230c4c2e445aa4978b970293570f43d1c682d))
+
+## [2.1.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.4...v2.1.5) (2023-11-03)
+
+
+### Bug Fixes
+
+* disable the button clear button if the question is read only ([#2038](https://github.com/ReliefApplications/oort-frontend/issues/2038)) ([4656d2e](https://github.com/ReliefApplications/oort-frontend/commit/4656d2eb5297f5dbba624122e9f9cad08d5e49b0))
+* fields not being correctly removed in history ([#2036](https://github.com/ReliefApplications/oort-frontend/issues/2036)) ([8aaf87a](https://github.com/ReliefApplications/oort-frontend/commit/8aaf87a17430e1d23056834961892335f08d9c80))
+* incorrect style of record history modal ([7011939](https://github.com/ReliefApplications/oort-frontend/commit/701193988a52b19a58c21f5ae863a57c93cab319))
+* resources question grid actions could appear in display mode ([#2037](https://github.com/ReliefApplications/oort-frontend/issues/2037)) ([dd56837](https://github.com/ReliefApplications/oort-frontend/commit/dd56837ff34b903a3a56fd45093e6bfde4d57363))
+* search was shared between instances of dropdown & tagbox questions ([ce748fa](https://github.com/ReliefApplications/oort-frontend/commit/ce748faa88eeb8dc65a0f2f0d76b52662b9800a2))
+
+## [2.1.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.3...v2.1.4) (2023-10-25)
+
+
+### Bug Fixes
+
+* createdBy & modifiedBy would not appear in grids ([8b18cc6](https://github.com/ReliefApplications/oort-frontend/commit/8b18cc65a8deb0f32a9c8adcaec701bc0b14b9a8))
+* dialog close directive could sometimes send empty string instead of undefined ([ef6a3af](https://github.com/ReliefApplications/oort-frontend/commit/ef6a3afc7e33f658e50aa0ce5fa1265674d1010e))
+
+## [2.1.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.2...v2.1.3) (2023-10-24)
+
+
+### Bug Fixes
+
+* could not load aggregation grid ([d660f07](https://github.com/ReliefApplications/oort-frontend/commit/d660f0727b8b8d74cd128fc626f262c4672a58e1))
+* improve front-office navigation that could sometimes lost track of redirection ([#1991](https://github.com/ReliefApplications/oort-frontend/issues/1991)) ([196d5ea](https://github.com/ReliefApplications/oort-frontend/commit/196d5ea040edc3280aaf15e7402777cb8437387c))
+* page is taking too much resource when showing a grid with many columns records ([#1982](https://github.com/ReliefApplications/oort-frontend/issues/1982)) ([8205b20](https://github.com/ReliefApplications/oort-frontend/commit/8205b20cc99ffbd152f266d55f20f9466a2ec88a))
+* prevent min & max of lines charts to not be integers, and add possibility to set them manually ([#1985](https://github.com/ReliefApplications/oort-frontend/issues/1985)) ([4194d5f](https://github.com/ReliefApplications/oort-frontend/commit/4194d5f5cdc89c881dc7b8021e7dd193dba0f782))
+
 ## [2.1.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.1...v2.1.2) (2023-10-09)
 
 

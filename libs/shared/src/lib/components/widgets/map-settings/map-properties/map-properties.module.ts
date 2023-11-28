@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MapControlsModule } from './map-controls/map-controls.module';
 import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
 import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
-// import { MapModule } from '../../map/map.module';
+import { PortalModule } from '@angular/cdk/portal';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -42,6 +42,7 @@ import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
     // MapModule,
     SelectMenuModule,
     ErrorMessageModule,
+    PortalModule,
   ],
   exports: [MapPropertiesComponent],
 })

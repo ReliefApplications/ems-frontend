@@ -135,6 +135,7 @@ export const createChartForm = (value: any) => {
             disabled: !get(axes, 'y.enableMax', false),
           },
         ],
+        stepSize: [get(axes, 'y.stepSize', false)],
       }),
       x: fb.group({
         enableMin: [get(axes, 'x.enableMin', false)],
@@ -155,6 +156,7 @@ export const createChartForm = (value: any) => {
             disabled: !get(axes, 'x.enableMax', false),
           },
         ],
+        stepSize: [get(axes, 'x.stepSize', false)],
       }),
     }),
     stack: fb.group({
