@@ -128,7 +128,7 @@ export class SettingsFilterComponent
   }
 
   /**
-   * Toggles the filter for the current .
+   * Toggles the filter for the current dashboard.
    *
    * @param value Value to activate or deactivate the filter
    */
@@ -136,129 +136,114 @@ export class SettingsFilterComponent
     if (!this.dashboard) {
       return;
     }
-    if (!this.dashboard.filter) {
-      this.dashboard.filter = {};
-    }
-    this.dashboard.filter.show = value;
-    if (this.dashboard) {
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.dashboard.id,
-            filter: { ...this.dashboard.filter, show: value },
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.dashboardService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              const filter = {
-                ...this.dashboard?.filter,
-                show: data?.editDashboard.filter?.show,
-              };
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { filter }),
-              });
-              this.update.emit(filter);
-            }
-          },
-          complete: () => {
-            this.contextService.isFilterEnabled.next(value);
-          },
-        });
-    }
+    this.dashboard.filter = { ...this.dashboard.filter, show: value };
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id: this.dashboard.id,
+          filter: { ...this.dashboard.filter, show: value },
+        },
+      })
+      .subscribe({
+        next: ({ data, errors }) => {
+          this.dashboardService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.dashboard.one')
+          );
+          if (!errors) {
+            const filter = {
+              ...this.dashboard?.filter,
+              show: data?.editDashboard.filter?.show,
+            };
+            this.dashboardService.openDashboard({
+              ...this.dashboard,
+              ...(data && { filter }),
+            });
+            this.update.emit(filter);
+          }
+        },
+        complete: () => {
+          this.contextService.isFilterEnabled.next(value);
+        },
+      });
   }
 
   /**
-   * Toggles the filter for the current .
+   * Selects the filter variant
    *
-   * @param value Value to activate or deactivate the filter
+   * @param value Filter variant, 'default' or 'modern'
    */
   selectFilterVariant(value: string): void {
     if (!this.dashboard) {
       return;
     }
-    if (!this.dashboard.filter) {
-      this.dashboard.filter = {};
-    }
-    this.dashboard.filter.variant = value;
-    if (this.dashboard) {
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.dashboard.id,
-            filter: { ...this.dashboard.filter, variant: value },
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.dashboardService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              const filter = {
-                ...this.dashboard?.filter,
-                variant: data?.editDashboard.filter?.variant,
-              };
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { filter }),
-              });
-              this.update.emit(filter);
-            }
-          },
-        });
-    }
+    this.dashboard.filter = { ...this.dashboard.filter, variant: value };
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id: this.dashboard.id,
+          filter: { ...this.dashboard.filter, variant: value },
+        },
+      })
+      .subscribe({
+        next: ({ data, errors }) => {
+          this.dashboardService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.dashboard.one')
+          );
+          if (!errors) {
+            const filter = {
+              ...this.dashboard?.filter,
+              variant: data?.editDashboard.filter?.variant,
+            };
+            this.dashboardService.openDashboard({
+              ...this.dashboard,
+              ...(data && { filter }),
+            });
+            this.update.emit(filter);
+          }
+        },
+      });
   }
 
   /**
-   * Toggles the filter for the current .
+   * Toggles closing the filter for the current dahboard.
    *
-   * @param value Value to activate or deactivate the filter
+   * @param value Boolean, toggles closability of the filter
    */
   toggleClosable(value: boolean): void {
     if (!this.dashboard) {
       return;
     }
-    if (!this.dashboard.filter) {
-      this.dashboard.filter = {};
-    }
-    this.dashboard.filter.closable = value;
-    if (this.dashboard) {
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.dashboard.id,
-            filter: { ...this.dashboard.filter, closable: value },
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.dashboardService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              const filter = {
-                ...this.dashboard?.filter,
-                closable: data?.editDashboard.filter?.closable,
-              };
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { filter }),
-              });
-              this.update.emit(filter);
-            }
-          },
-        });
-    }
+    this.dashboard.filter = { ...this.dashboard.filter, closable: value };
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id: this.dashboard.id,
+          filter: { ...this.dashboard.filter, closable: value },
+        },
+      })
+      .subscribe({
+        next: ({ data, errors }) => {
+          this.dashboardService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.dashboard.one')
+          );
+          if (!errors) {
+            const filter = {
+              ...this.dashboard?.filter,
+              closable: data?.editDashboard.filter?.closable,
+            };
+            this.dashboardService.openDashboard({
+              ...this.dashboard,
+              ...(data && { filter }),
+            });
+            this.update.emit(filter);
+          }
+        },
+      });
   }
 }
