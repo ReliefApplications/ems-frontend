@@ -29,7 +29,8 @@ import { DomService } from '../dom/dom.service';
  * @returns Transformed survey data
  */
 export const transformSurveyData = (survey: SurveyModel) => {
-  const data = survey.data ?? {};
+  // Cloning data to avoid mutating the original survey data
+  const data = cloneDeep(survey.data) ?? {};
   const formatDate = (value: string | null) => {
     if (!value) {
       return value;

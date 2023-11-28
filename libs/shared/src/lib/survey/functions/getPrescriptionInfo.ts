@@ -2,20 +2,6 @@ import { SurveyModel } from 'survey-core';
 import { GlobalOptions } from '../types';
 
 /**
- * Gets today in UTC
- *
- * @returns UTC Date
- */
-const todayDate = () => {
-  const date = new Date();
-
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  return new Date(Date.UTC(year, month, day));
-};
-
-/**
  * Returns an array with info pertaining to each prescription of a family.
  *
  * @param this Self
@@ -52,7 +38,7 @@ function getPrescriptionInfo(this: { survey: SurveyModel }, params: any[]) {
 
   // result is the number of months between the two dates times the frequency
   const maxAids = startDate > endDate ? 0 : (months || 1) * aidFrequency;
-  const endDatePassed = endDate < todayDate();
+  const endDatePassed = endDate < new Date();
   const isActive =
     startDate < endDate && !endDatePassed && !((aids || []).length >= maxAids);
 
