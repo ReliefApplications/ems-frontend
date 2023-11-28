@@ -64,6 +64,16 @@
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
+        <div
+          *ngIf="form.get('width') && showColumnWidth"
+          uiFormFieldDirective
+          [defaultMargin]="false"
+        >
+          <label>
+            {{ 'components.queryBuilder.fields.column' | translate }}
+          </label>
+          <input formControlName="width" type="number" min="0" />
+        </div>
       </div>
     </ng-container>
     <ui-tabs *ngIf="form.getRawValue().name">
