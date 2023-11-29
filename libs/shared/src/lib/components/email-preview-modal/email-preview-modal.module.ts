@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EmailPreviewComponent } from './email-preview.component';
+import { EmailPreviewModalComponent } from './email-preview-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
@@ -16,7 +16,7 @@ import {
  * Preview Email Component Module.
  */
 @NgModule({
-  declarations: [EmailPreviewComponent],
+  declarations: [EmailPreviewModalComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -29,9 +29,9 @@ import {
     ChipModule,
     ErrorMessageModule,
   ],
-  exports: [EmailPreviewComponent],
+  exports: [EmailPreviewModalComponent],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
 })
-export class EmailPreviewModule {}
+export class EmailPreviewModalModule {}

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { GridWidgetComponent } from './grid.component';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
-import { EmailPreviewModule } from '../../email-preview/email-preview.module';
+import { EmailPreviewModalModule } from '../../email-preview-modal/email-preview-modal.module';
 import { AggregationGridModule } from '../../aggregation/aggregation-grid/aggregation-grid.module';
 import {
   ButtonModule,
@@ -19,7 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     CoreGridModule,
     DropDownListModule,
-    EmailPreviewModule,
+    EmailPreviewModalModule,
     AggregationGridModule,
     ButtonModule,
     FormWrapperModule,

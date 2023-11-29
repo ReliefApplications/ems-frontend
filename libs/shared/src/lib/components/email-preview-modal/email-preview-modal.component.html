@@ -1,23 +1,23 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
-      {{ 'components.emailPreview.title' | translate }}
+      {{ 'components.emailPreviewModal.title' | translate }}
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form class="flex flex-col" [formGroup]="form" *ngIf="form">
       <div
         [uiErrorMessage]="
-          'components.emailPreview.errors.missingSubject' | translate
+          'components.emailPreviewModal.errors.missingSubject' | translate
         "
         [uiErrorMessageIf]="this.form.controls.subject.hasError('required')"
         uiFormFieldDirective
       >
-        <label>{{ 'components.emailPreview.subject' | translate }}</label>
+        <label>{{ 'components.emailPreviewModal.subject' | translate }}</label>
         <input formControlName="subject" type="text" />
       </div>
       <div uiFormFieldDirective>
-        <label>{{ 'components.emailPreview.from' | translate }}</label>
+        <label>{{ 'components.emailPreviewModal.from' | translate }}</label>
         <input formControlName="from" type="text" />
       </div>
       <div
@@ -27,7 +27,7 @@
         id="previewEmailTo"
       >
         <label class="block text-sm font-medium leading-6 text-gray-900">{{
-          'components.emailPreview.to' | translate
+          'components.emailPreviewModal.to' | translate
         }}</label>
         <div uiChipList formControlName="to" #chipList>
           <ui-chip

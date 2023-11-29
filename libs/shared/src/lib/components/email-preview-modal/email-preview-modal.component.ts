@@ -25,11 +25,11 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
  * Modal in read-only mode.
  */
 @Component({
-  selector: 'shared-email-preview',
-  templateUrl: './email-preview.component.html',
-  styleUrls: ['./email-preview.component.scss'],
+  selector: 'shared-email-preview-modal',
+  templateUrl: './email-preview-modal.component.html',
+  styleUrls: ['./email-preview-modal.component.scss'],
 })
-export class EmailPreviewComponent {
+export class EmailPreviewModalComponent {
   /** mail is put in a form to use read-only inputs */ // we want to change that
   public form = this.fb.group({
     from: [{ value: this.data.from, disabled: true }],
@@ -78,7 +78,7 @@ export class EmailPreviewComponent {
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
-    public dialogRef: DialogRef<EmailPreviewComponent>,
+    public dialogRef: DialogRef<EmailPreviewModalComponent>,
     private fb: FormBuilder,
     private editorService: EditorService
   ) {
