@@ -19,7 +19,7 @@ import { SliderModule } from '@oort-front/ui';
 import { TabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { FilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
-import { EditorControlComponent } from '../editor-control/editor-control.component';
+import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
 import {
   MenuModule,
   TooltipModule,
