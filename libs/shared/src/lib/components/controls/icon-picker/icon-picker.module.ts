@@ -6,7 +6,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconPickerPopupComponent } from './icon-picker-popup/icon-picker-popup.component';
 import { ButtonModule, SelectMenuModule, TooltipModule } from '@oort-front/ui';
-import { SanitizeHTMLModule } from '../../pipes/sanitize-html/sanitize-html.module';
+import { SanitizeHTMLModule } from '../../../pipes/sanitize-html/sanitize-html.module';
 
 /** Module for icon picker component */
 @NgModule({
