@@ -689,6 +689,14 @@ export class MapComponent
       }
 
       const children = await layer.getChildren();
+      const childrenPromisse = children.map((Childrenlayer) => {
+        return this.mapLayersService
+          .createLayersFromId(Childrenlayer, this.injector)
+          .then(async (sublayer) => {
+            const layer = await sublayer.getLayer();
+            return parseTreeNode(sublayer, layer);
+          });
+      });
 
       if (layer.type === 'GroupLayer') {
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
@@ -697,12 +705,7 @@ export class MapComponent
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? await Promise.all(
-                  children.map(async (sublayer) => {
-                    const layer = await sublayer.getLayer();
-                    return parseTreeNode(sublayer, layer);
-                  })
-                )
+              ? await Promise.all(await Promise.all(childrenPromisse))
               : undefined,
         };
       } else {
@@ -719,12 +722,12 @@ export class MapComponent
         return this.mapLayersService
           .createLayersFromId(id, this.injector)
           .then((layer) => {
+            this.refreshLastUpdate();
             return parseTreeNode(layer);
           });
       });
 
       Promise.all(layerPromises).then((layersTree) => {
-        this.refreshLastUpdate();
         resolve({ layers: layersTree });
       });
     });
