@@ -66,6 +66,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 import { HttpClient } from '@angular/common/http';
+import * as pointInPolygon from 'point-in-polygon';
 
 /** Component for the map widget */
 @Component({
@@ -168,8 +169,11 @@ export class MapComponent
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
-
-  private adminLayer: any;
+  /** Admin0 layer */
+  private admin0Layer: any;
+  /** Admin1 layer */
+  private admin1Layer: any;
+  private admin1Data: any;
 
   /**
    * Map widget component
@@ -309,17 +313,45 @@ export class MapComponent
     });
 
     this.map.on('click', (event) => {
-      const latlng = event.latlng
-      console.log(latlng);
-      console.log(this.adminLayer.layer.getFeatureAt(latlng));
-      // const clickedFeature = this.adminLayer.layer.getFeatureAt(event.latlng);
-      // console.log(clickedFeature);
-      console.log("map bounds = ", this.map.getBounds());
-      console.log(this.map);
-      this.map.removeLayer(this.adminLayer);
-      console.log(this.adminLayer);
-      if (this.adminLayer !== 'admin1') {
-        this.initializeAdminLayer('admin1');
+      const latlng = [event.latlng.lng, event.latlng.lat];
+      const admin0LayersList = Object.values(this.admin0Layer._layers);
+      // filter country by country clicked
+      const filteredCountry: any = admin0LayersList.filter((layer: any) => {
+        if (layer.feature) {
+          for (const coordinate of layer.feature.geometry.coordinates) {
+            // multi polygons
+            if (coordinate.length === 1) {
+              if (pointInPolygon(latlng, coordinate[0])) {
+                return true;
+              }
+            } else {
+              // multi polygons nested
+              if (typeof coordinate[0][0] != 'number') {
+                for (const c of coordinate) {
+                  if (pointInPolygon(latlng, c)) {
+                    return true;
+                  }
+                }
+                // polygon
+              } else {
+                if (pointInPolygon(latlng, coordinate)) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+        return false;
+      });
+      let country = '';
+      if (filteredCountry[0]) {
+        country = filteredCountry[0].feature.properties.name;
+      }
+      if (country) {
+        if (this.admin1Layer) {
+          this.map.removeLayer(this.admin1Layer);
+        }
+        this.initializeAdmin1Layer(country);
       }
     });
 
@@ -507,7 +539,7 @@ export class MapComponent
     reset = false
   ) {
     // add admin0 layer
-    await this.initializeAdminLayer('admin0');
+    this.initializeAdmin0Layer();
     // Get layers
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
@@ -592,28 +624,50 @@ export class MapComponent
     }
   }
 
-  async initializeAdminLayer(layer: any) {
-    let adminLayer: any;
-    if (layer === 'admin0') {
-      adminLayer = await this.getAdmin0();
-      console.log(adminLayer);
-    } else if (layer === 'admin1') {
-      adminLayer = await this.getAdmin1();
-      console.log(adminLayer);
-    }
-    // const admin1: any = this.getAdmin1();
-    this.adminLayer = {
-      name: layer,
-      layer: L.geoJSON(adminLayer).addTo(this.map),
-    };
+  /**
+   * Initialize admin0 layer
+   */
+  initializeAdmin0Layer() {
+    this.getAdmin0()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        this.admin0Layer = L.geoJSON(data).addTo(this.map);
+      });
   }
 
-  async getAdmin0(): Promise<any> {
-    return this.http.get('/assets/admin0.json').toPromise();
+  /**
+   * Initialize admin1 layer
+   *
+   * @param layer layer
+   * @param country country
+   */
+  async initializeAdmin1Layer(country: string) {
+    this.getAdmin1()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        const filteredData = data.features.filter((feature: any) => {
+          return feature.properties.country === country;
+        });
+        this.admin1Layer = L.geoJSON(filteredData).addTo(this.map);
+      });
   }
 
-  async getAdmin1(): Promise<any> {
-    return this.http.get('/assets/admin1.geojson').toPromise();
+  /**
+   * get admin0 data
+   *
+   * @returns admin0 data
+   */
+  private getAdmin0() {
+    return this.http.get('/assets/admin0.json');
+  }
+
+  /**
+   * get admin1 data
+   *
+   * @returns admin1 data
+   */
+  private getAdmin1() {
+    return this.http.get('/assets/admin1.geojson');
   }
 
   /**
