@@ -1051,10 +1051,11 @@ export class Layer implements LayerModel {
     label?: string
   ): string {
     if (symbol) {
+      let svg: string;
       switch (type) {
         case 'Polygon': {
           // We avoid stroke width to be too important
-          const svgTemplate = `<svg 
+          svg = `<svg 
                 
                   width="16" 
                   height="16"
@@ -1068,16 +1069,10 @@ export class Layer implements LayerModel {
                     height="16" />
                     </g>
                 </svg>`;
-          return `<span class="flex gap-2 items-center">${svgTemplate}${
-            label || ''
-          }</span>`;
+          break;
         }
         default:
         case 'Point': {
-          const wrapper = this.renderer.createElement('span');
-          ['flex', 'gap-2', 'items-center'].forEach((classProp) => {
-            this.renderer.addClass(wrapper, classProp);
-          });
           const iconDef = getIconDefinition(symbol.style as IconName);
           const i = iconCreator(iconDef, {
             styles: {
@@ -1086,13 +1081,13 @@ export class Layer implements LayerModel {
               color: symbol.color,
               'line-height': '1rem',
               'font-size': '1rem',
-              'padding-left': '.5rem',
             },
           });
-          this.renderer.appendChild(wrapper, i.node[0]);
-          return wrapper.outerHTML;
+          svg = i.node[0].outerHTML;
+          break;
         }
       }
+      return `<span class="flex gap-2 items-start">${svg}${label || ''}</span>`;
     } else {
       return '';
     }

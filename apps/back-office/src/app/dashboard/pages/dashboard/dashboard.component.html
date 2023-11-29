@@ -2,6 +2,8 @@
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
   [isFullScreen]="isFullScreen"
+  [variant]="dashboard?.filter?.variant ?? 'default'"
+  [closable]="dashboard?.filter?.closable ?? false"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div
@@ -13,6 +15,8 @@
     *ngIf="showFilter && isFullScreen"
     [editable]="true"
     [isFullScreen]="isFullScreen"
+    [variant]="dashboard?.filter?.variant ?? 'default'"
+    [closable]="dashboard?.filter?.closable ?? false"
   ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen
@@ -111,15 +115,6 @@
           >
           </ui-button>
           <ui-menu #menu>
-            <button uiMenuItem (click)="toggleFiltering()">
-              <ui-icon icon="tune" variant="grey"></ui-icon>
-              {{
-                (showFilter
-                  ? 'models.dashboard.deactivateFiltering'
-                  : 'models.dashboard.activateFiltering'
-                ) | translate
-              }}
-            </button>
             <button uiMenuItem (click)="onAddButtonAction()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.add' | translate }}

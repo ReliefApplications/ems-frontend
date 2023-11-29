@@ -329,7 +329,7 @@ export class DashboardComponent
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           setTimeout(() => {
             this.gridOptions = {
@@ -365,8 +365,8 @@ export class DashboardComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
-    localForage.removeItem(this.applicationId + 'contextualFilter');
+    localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'filterStructure');
     this.dashboardService.closeDashboard();
   }
 
@@ -564,41 +564,6 @@ export class DashboardComponent
           );
         }
       }
-    }
-  }
-
-  /**
-   * Toggles the filter for the current dashboard.
-   */
-  toggleFiltering(): void {
-    if (this.dashboard) {
-      this.showFilter = !this.showFilter;
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.id,
-            showFilter: this.showFilter,
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
-              });
-            }
-          },
-          complete: () => {
-            this.contextService.isFilterEnabled.next(this.showFilter);
-            this.loading = false;
-          },
-        });
     }
   }
 
@@ -826,9 +791,10 @@ export class DashboardComponent
               ...this.dashboard,
               ...(updates.permissions && updates),
               ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               step: {
                 ...this.dashboard?.step,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
           } else {
@@ -836,9 +802,10 @@ export class DashboardComponent
               ...this.dashboard,
               ...(updates.permissions && updates),
               ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               page: {
                 ...this.dashboard?.page,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
           }
@@ -846,6 +813,11 @@ export class DashboardComponent
             ...this.gridOptions,
             ...this.dashboard?.gridOptions,
           };
+
+          if (updates.filter) {
+            this.showFilter = updates.filter.show;
+            this.contextService.isFilterEnabled.next(this.showFilter);
+          }
         }
       });
     // Unsubscribe to dialog onUpdate event

@@ -11,6 +11,7 @@ import {
   SliderModule,
   ToggleModule,
 } from '@oort-front/ui';
+import { PortalModule } from '@angular/cdk/portal';
 
 /**
  * Map layer properties module.
@@ -28,6 +29,7 @@ import {
     FormWrapperModule,
     FilterModule,
     ButtonModule,
+    PortalModule,
   ],
   exports: [LayerPropertiesComponent],
 })

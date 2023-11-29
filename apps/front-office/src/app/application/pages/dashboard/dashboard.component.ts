@@ -63,6 +63,10 @@ export class DashboardComponent
   public showFilter!: boolean;
   /** Show name ( contextual pages ) */
   public showName = false;
+  /** Current style variant */
+  public variant!: string;
+  /** hide / show the close icon on the right */
+  public closable = true;
 
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
@@ -212,8 +216,10 @@ export class DashboardComponent
             data.dashboard.structure ? data.dashboard.structure : []
           );
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.variant = this.dashboard.filter?.variant || 'default';
+          this.closable = this.dashboard.filter?.closable ?? false;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
