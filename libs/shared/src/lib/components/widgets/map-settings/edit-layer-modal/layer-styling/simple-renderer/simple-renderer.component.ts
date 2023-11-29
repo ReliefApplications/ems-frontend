@@ -1,7 +1,7 @@
 import { Component, Input, Inject, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IconPickerModule } from '../../../../../icon-picker/icon-picker.module';
+import { IconPickerModule } from '../../../../../controls/icon-picker/icon-picker.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import {

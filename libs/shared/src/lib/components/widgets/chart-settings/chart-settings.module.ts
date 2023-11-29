@@ -10,7 +10,7 @@ import {
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { PaletteControlModule } from '../../palette-control/palette-control.module';
+import { PaletteControlModule } from '../../controls/palette-control/palette-control.module';
 import { QueryBuilderModule } from '../../query-builder/query-builder.module';
 import { AggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { ChartModule } from '../chart/chart.module';

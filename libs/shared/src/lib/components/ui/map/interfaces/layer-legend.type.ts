@@ -1,4 +1,4 @@
-import { IconName } from '../../../icon-picker/icon-picker.const';
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 /** Interface for a layer legends */
 export type LegendDefinition =
