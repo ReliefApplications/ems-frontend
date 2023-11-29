@@ -546,22 +546,26 @@ export class FormBuilderComponent
     }
     if (question.getType() === 'matrix') {
       question.columns.forEach((x: any) => {
+        const textCopy = x.text;
         x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
-        x.text = x.text || x.value;
+        x.text = textCopy || x.value;
       });
       question.rows.forEach((x: any) => {
+        const textCopy = x.text;
         x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
-        x.text = x.text || x.value;
+        x.text = textCopy || x.value;
       });
     }
     if (question.getType() === 'matrixdropdown') {
       question.columns.forEach((x: any) => {
+        const titleCopy = x.title;
         x.name = this.formHelpersService.toSnakeCase(x.name || x.title || x);
-        x.title = x.title || x.name || x;
+        x.title = titleCopy || x.name || x;
       });
       question.rows.forEach((x: any) => {
+        const textCopy = x.text;
         x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
-        x.text = x.text || x.value;
+        x.text = textCopy || x.value;
       });
     }
     if (['resource', 'resources'].includes(question.getType())) {

@@ -220,7 +220,7 @@ export const init = (environment: any): void => {
         if (['matrix', 'matrixdropdown'].includes(surveyQuestion.getType())) {
           choices.push({
             value: surveyQuestion.name,
-            text: surveyQuestion.title || surveyQuestion.name,
+            text: surveyQuestion.name,
           });
         }
       }
@@ -268,7 +268,7 @@ export const init = (environment: any): void => {
         ) {
           choices.push({
             value: surveyQuestion.name,
-            text: surveyQuestion.title || surveyQuestion.name,
+            text: surveyQuestion.name,
           });
         }
       }
