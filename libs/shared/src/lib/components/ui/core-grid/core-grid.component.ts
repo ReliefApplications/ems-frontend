@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Inject,
   Input,
@@ -320,7 +321,8 @@ export class CoreGridComponent
     private dateTranslate: DateTranslateService,
     private applicationService: ApplicationService,
     private contextService: ContextService,
-    private router: Router
+    private router: Router,
+    private el: ElementRef
   ) {
     super();
     this.environment = environment;
@@ -1203,19 +1205,38 @@ export class CoreGridComponent
    * @param item item to get history of
    */
   public onViewHistory(item: any): void {
-    import('../../record-history/record-history.component').then(
-      ({ RecordHistoryComponent }) => {
-        this.layoutService.setRightSidenav({
-          component: RecordHistoryComponent,
-          inputs: {
-            id: item.id,
-            revert: (version: any) => this.confirmRevertDialog(item, version),
-            template: this.settings.template || null,
-            refresh$: this.refresh$,
-          },
-        });
-      }
-    );
+    const cdkOverlay = document.querySelector('.cdk-overlay-container');
+    // use modal to show history
+    if (cdkOverlay && cdkOverlay.contains(this.el.nativeElement)) {
+      import('../../record-history-modal/record-history-modal.component').then(
+        ({ RecordHistoryModalComponent }) => {
+          this.dialog.open(RecordHistoryModalComponent, {
+            data: {
+              id: item.id,
+              revert: (version: any) => this.confirmRevertDialog(item, version),
+              template: this.settings.template || null,
+              refresh$: this.refresh$,
+            },
+            autoFocus: false,
+          });
+        }
+      );
+    } else {
+      // Use sidenav
+      import('../../record-history/record-history.component').then(
+        ({ RecordHistoryComponent }) => {
+          this.layoutService.setRightSidenav({
+            component: RecordHistoryComponent,
+            inputs: {
+              id: item.id,
+              revert: (version: any) => this.confirmRevertDialog(item, version),
+              template: this.settings.template || null,
+              refresh$: this.refresh$,
+            },
+          });
+        }
+      );
+    }
   }
 
   /**

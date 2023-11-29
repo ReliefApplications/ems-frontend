@@ -76,7 +76,7 @@ export class RecordHistoryComponent
   public filterFields: string[] = [];
 
   // Refresh content of the history
-  @Input() refresh$: Subject<boolean> = new Subject<boolean>();
+  @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -110,8 +110,7 @@ export class RecordHistoryComponent
   }
 
   ngOnInit(): void {
-    // Set subscription to load records
-    this.refresh$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    const setSubscription = () => {
       this.apollo
         .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID_FOR_HISTORY,
@@ -119,6 +118,7 @@ export class RecordHistoryComponent
             id: this.id,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.record = data.record;
           this.sortedFields = this.sortFields(this.getFields());
@@ -132,6 +132,7 @@ export class RecordHistoryComponent
             lang: this.translate.currentLang,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ errors, data }) => {
           if (errors) {
             this.snackBar.openSnackBar(
@@ -149,9 +150,17 @@ export class RecordHistoryComponent
             this.loading = false;
           }
         });
-    });
-    // Send first refresh event to load data
-    this.refresh$.next(true);
+    };
+    if (this.refresh$) {
+      // Set subscription to load records
+      this.refresh$?.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        setSubscription();
+      });
+      // Send first refresh event to load data
+      this.refresh$?.next(true);
+    } else {
+      setSubscription();
+    }
   }
 
   /**

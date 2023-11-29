@@ -138,7 +138,6 @@ export class ContextService {
           }
           this.filterStructure.next(dashboard.filter?.structure);
           localForage.getItem(this.positionKey).then((position) => {
-            console.log(position);
             if (position) {
               this.filterPosition.next(position);
             } else {
@@ -146,7 +145,6 @@ export class ContextService {
                 dashboard.filter?.position ?? FilterPosition.BOTTOM
               );
             }
-            console.log(this.filterPosition.getValue());
           });
         } else {
           this.filter.next({});

@@ -125,7 +125,6 @@ export class DashboardFilterSettingsComponent
    * @param value Value to activate or deactivate the filter
    */
   onEdit(value: any): void {
-    console.log(value.structure);
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
@@ -139,7 +138,6 @@ export class DashboardFilterSettingsComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          console.log(this.parentComponent);
           this.dashboardService.handleEditionMutationResponse(
             errors,
             this.translate.instant('common.dashboard.one')
