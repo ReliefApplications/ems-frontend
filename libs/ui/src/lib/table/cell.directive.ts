@@ -40,6 +40,17 @@ export class CellDirective extends CdkCell implements AfterContentInit {
   ];
 
   ngAfterContentInit(): void {
+    // Adds a background color to all cells matching the row color
+    this.elRef.nativeElement.style['background-color'] = 'inherit';
+
+    // Adds a background color to all cells with button matching the row color
+    if (this.elRef.nativeElement.firstChild.nodeName === 'UI-BUTTON') {
+      this.elRef.nativeElement.firstChild.style['background-color'] =
+        getComputedStyle(
+          this.elRef.nativeElement.parentElement
+        ).backgroundColor;
+    }
+
     const classList = [
       ...this.elRef.nativeElement.classList,
       ...this.classes,
