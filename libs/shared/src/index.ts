@@ -91,14 +91,13 @@ export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
-export * from './lib/components/cron-expression-control/public-api';
+// Export of controls
+export * from './lib/components/controls/public-api';
 export * from './lib/components/applications-archive/public-api';
-export * from './lib/components/editor-control/editor-control.component';
 export * from './lib/components/button-action/public-api';
 export * from './lib/components/custom-widget-style/custom-widget-style.component';
 export * from './lib/components/list-filter/list-filter.component';
 export * from './lib/components/status-options/status-options.component';
-export * from './lib/components/icon-picker/icon-picker.module';
 
 // === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
 export * from './lib/survey/components/application-dropdown/application-dropdown.component';

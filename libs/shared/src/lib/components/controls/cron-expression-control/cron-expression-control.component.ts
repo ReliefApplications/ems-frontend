@@ -2,7 +2,7 @@ import { Component, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Cron expression form control

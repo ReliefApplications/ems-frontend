@@ -9,7 +9,7 @@ import {
   CronEditorModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { ReadableCronModule } from '../../../pipes/readable-cron/readable-cron.module';
+import { ReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 
 /**
  * Dialog data interface

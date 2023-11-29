@@ -5,7 +5,7 @@ import {
   applicationConfig,
   moduleMetadata,
 } from '@storybook/angular';
-import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
+import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
 import { IconPickerComponent } from './icon-picker.component';
 import { IconPickerModule } from './icon-picker.module';
 import { FormWrapperModule } from '@oort-front/ui';
