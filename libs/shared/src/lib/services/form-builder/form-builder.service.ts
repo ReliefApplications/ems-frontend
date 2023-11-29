@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings, surveyLocalization } from 'survey-core';
+import { Model, SurveyModel, settings } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -214,17 +214,18 @@ export class FormBuilderService {
     });
 
     // set the lang of the survey
-    const updateSurveyLocale = () => {
-      if (survey.getUsedLocales().includes(this.translate.currentLang)) {
-        surveyLocalization.currentLocale = this.translate.currentLang;
-        survey.locale = this.translate.currentLang;
+    const surveyLang = localStorage.getItem('surveyLang');
+    const surveyLocales = survey.getUsedLocales();
+    if (surveyLang && surveyLocales.includes(surveyLang)) {
+      survey.locale = surveyLang;
+    } else {
+      const lang = this.translate.currentLang || this.translate.defaultLang;
+      if (surveyLocales.includes(lang)) {
+        survey.locale = lang;
       } else {
-        survey.locale = survey.locale || survey.defaultLanguage || 'en';
-        surveyLocalization.currentLocale = survey.locale;
+        survey.locale = surveyLocales[0] ?? survey.locale;
       }
-    };
-    updateSurveyLocale();
-    this.translate.onLangChange.subscribe(updateSurveyLocale);
+    }
 
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
