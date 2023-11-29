@@ -25,6 +25,11 @@
   (columnResize)="onColumnResize($event)"
   (columnVisibilityChange)="onColumnVisibilityChange()"
   (cellClick)="cellClickHandler($event)"
+  uiVirtualScroll
+  [checkItemList]="!(loadingRecords || loadingSettings)"
+  scrollContainerSelector="#recordsGrid > div > kendo-grid-list > div"
+  listItemsSelector="td"
+  scrollDirection="horizontal"
 >
   <!-- ACTIONS -->
   <ng-template
@@ -116,6 +121,7 @@
     >
     </safe-grid-toolbar>
   </ng-template>
+
   <ng-container *ngIf="fields.length > 0">
     <!-- ROW SELECTION -->
     <kendo-grid-checkbox-column
@@ -1006,6 +1012,7 @@
       </ng-template>
     </kendo-grid-column>
   </ng-container>
+
   <!-- EMPTY TABLE / INVALID QUERY -->
   <ng-template kendoGridNoRecordsTemplate>
     {{ statusMessage }}
