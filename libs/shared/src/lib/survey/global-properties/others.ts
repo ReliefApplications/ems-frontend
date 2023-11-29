@@ -100,16 +100,6 @@ export const init = (environment: any): void => {
       choicesCallback(pages);
     },
   });
-
-  // Adds a property to the survey settings to hide the page tabs
-  serializer.addProperty('survey', {
-    name: 'hidePagesTab',
-    category: 'pages',
-    type: 'boolean',
-    default: false,
-    visibleIndex: 2,
-  });
-
   // Adds a property to the survey settings to hide the page tabs
   serializer.addProperty('survey', {
     name: 'hidePagesTab',
