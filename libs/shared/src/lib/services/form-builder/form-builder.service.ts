@@ -196,16 +196,18 @@ export class FormBuilderService {
         }
       }
     }
+
     // set the lang of the survey
     const surveyLang = localStorage.getItem('surveyLang');
-    if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
+    const surveyLocales = survey.getUsedLocales();
+    if (surveyLang && surveyLocales.includes(surveyLang)) {
       survey.locale = surveyLang;
     } else {
       const lang = this.translate.currentLang || this.translate.defaultLang;
-      if (survey.getUsedLocales().includes(lang)) {
+      if (surveyLocales.includes(lang)) {
         survey.locale = lang;
       } else {
-        survey.locale = survey.defaultLanguage || 'en';
+        survey.locale = surveyLocales[0] ?? survey.locale;
       }
     }
     survey.showNavigationButtons = 'none';

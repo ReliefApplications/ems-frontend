@@ -31,12 +31,11 @@ export class FormActionsComponent implements OnInit {
 
   ngOnInit(): void {
     // set the available languages and default language of the survey
-    this.usedLocalesSurvey = this.survey
-      .toJSON()
-      .translationsAllowed.map((lang: string) => ({
-        code: lang,
-        nativeName: getLanguageNativeName(lang),
-      }));
+    this.usedLocalesSurvey = this.survey?.getUsedLocales().map((lang) => ({
+      code: lang,
+      nativeName: getLanguageNativeName(lang),
+    }));
+
     this.currentLocaleSurvey =
       this.usedLocalesSurvey.find((x) => x.code === this.survey?.locale) ||
       this.usedLocalesSurvey.find(
