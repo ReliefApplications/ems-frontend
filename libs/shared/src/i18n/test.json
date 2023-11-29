@@ -711,7 +711,7 @@
 			"subject": "******",
 			"withoutRecords": "******"
 		},
-		"emailPreviewModal": {
+		"emailPreview": {
 			"errors": {
 				"missingSubject": "******"
 			},

@@ -1,33 +1,33 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
-      {{ 'components.emailPreviewModal.title' | translate }}
+      {{ 'components.emailPreview.title' | translate }}
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form class="flex flex-col" [formGroup]="form" *ngIf="form">
+    <form class="flex flex-col" [formGroup]="emailForm">
       <div
         [uiErrorMessage]="
-          'components.emailPreviewModal.errors.missingSubject' | translate
+          'components.emailPreview.errors.missingSubject' | translate
         "
-        [uiErrorMessageIf]="this.form.controls.subject.hasError('required')"
+        [uiErrorMessageIf]="this.emailForm.controls.subject.hasError('required')"
         uiFormFieldDirective
       >
-        <label>{{ 'components.emailPreviewModal.subject' | translate }}</label>
+        <label>{{ 'components.emailPreview.subject' | translate }}</label>
         <input formControlName="subject" type="text" />
       </div>
       <div uiFormFieldDirective>
-        <label>{{ 'components.emailPreviewModal.from' | translate }}</label>
+        <label>{{ 'components.emailPreview.from' | translate }}</label>
         <input formControlName="from" type="text" />
       </div>
       <div
         [uiErrorMessage]="emailsError | translate"
-        [uiErrorMessageIf]="this.form.controls.to.invalid"
+        [uiErrorMessageIf]="this.emailForm.controls.to.invalid"
         uiFormFieldDirective
         id="previewEmailTo"
       >
         <label class="block text-sm font-medium leading-6 text-gray-900">{{
-          'components.emailPreviewModal.to' | translate
+          'components.emailPreview.to' | translate
         }}</label>
         <div uiChipList formControlName="to" #chipList>
           <ui-chip
@@ -62,9 +62,9 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [uiDialogClose]="form.value"
+      [uiDialogClose]="emailForm.value"
       cdkFocusInitial
-      [disabled]="!form.valid"
+      [disabled]="!emailForm.valid"
     >
       {{ 'common.send' | translate }}
     </ui-button>

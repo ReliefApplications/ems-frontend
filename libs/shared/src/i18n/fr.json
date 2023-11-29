@@ -717,7 +717,7 @@
 			"subject": "Objet",
 			"withoutRecords": "Sans enregistrements"
 		},
-		"emailPreviewModal": {
+		"emailPreview": {
 			"errors": {
 				"missingSubject": "L'objet du mail ne peut être vide."
 			},

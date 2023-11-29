@@ -711,7 +711,7 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
-		"emailPreviewModal": {
+		"emailPreview": {
 			"errors": {
 				"missingSubject": "The subject of the email cannot be empty."
 			},

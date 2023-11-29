@@ -1,9 +1,24 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { EditorService } from '../../services/editor/editor.service';
+import { CommonModule } from '@angular/common';
+import {
+  ButtonModule,
+  ChipModule,
+  DialogModule,
+  ErrorMessageModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
+import { UploadsModule } from '@progress/kendo-angular-upload';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -25,30 +40,45 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
  * Modal in read-only mode.
  */
 @Component({
+  standalone: true,
   selector: 'shared-email-preview-modal',
   templateUrl: './email-preview-modal.component.html',
   styleUrls: ['./email-preview-modal.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FormWrapperModule,
+    UploadsModule,
+    EditorModule,
+    DialogModule,
+    ButtonModule,
+    ChipModule,
+    ErrorMessageModule,
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class EmailPreviewModalComponent {
-  /** mail is put in a form to use read-only inputs */ // we want to change that
-  public form = this.fb.group({
+  /** Reference to emails input */
+  @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
+  /** Email form group */ // we want to change that
+  public emailForm = this.fb.group({
     from: [{ value: this.data.from, disabled: true }],
     to: [{ value: this.data.to, disabled: false }, Validators.required],
     subject: [this.data.subject, Validators.required],
     html: this.data.html,
     files: [[]],
   });
-
+  /** Separator keys codes for email input  */
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
-
-  /** tinymce editor */
+  /** Tinymce editor configuration */
   public editor: any = EMAIL_EDITOR_CONFIG;
-
-  @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
 
   /** @returns list of emails */
   get emails(): string[] {
-    return this.form.get('to')?.value || [];
+    return this.emailForm.get('to')?.value || [];
   }
 
   /**
@@ -57,7 +87,7 @@ export class EmailPreviewModalComponent {
    * @returns error message
    */
   get emailsError(): string {
-    const control = this.form.get('to');
+    const control = this.emailForm.get('to');
     if (control?.hasError('required')) {
       return 'components.distributionLists.errors.emails.required';
     }
@@ -69,7 +99,6 @@ export class EmailPreviewModalComponent {
 
   /**
    * Preview Email component.
-   * Modal in read-only mode.
    *
    * @param data injected dialog data
    * @param dialogRef Dialog reference
@@ -94,7 +123,7 @@ export class EmailPreviewModalComponent {
    * @param event The event triggered when we exit the input
    */
   addEmail(event: any): void {
-    const control = this.form.get('to');
+    const control = this.emailForm.get('to');
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
@@ -136,8 +165,8 @@ export class EmailPreviewModalComponent {
     const index = emails.indexOf(email);
     if (index >= 0) {
       emails.splice(index, 1);
-      this.form.get('to')?.setValue(emails);
-      this.form.get('to')?.updateValueAndValidity();
+      this.emailForm.get('to')?.setValue(emails);
+      this.emailForm.get('to')?.updateValueAndValidity();
     }
   }
 }
