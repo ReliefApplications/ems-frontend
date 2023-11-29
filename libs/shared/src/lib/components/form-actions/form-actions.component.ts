@@ -35,6 +35,7 @@ export class FormActionsComponent implements OnInit {
       code: lang,
       nativeName: getLanguageNativeName(lang),
     }));
+
     this.currentLocaleSurvey =
       this.usedLocalesSurvey.find((x) => x.code === this.survey?.locale) ||
       this.usedLocalesSurvey.find(

@@ -9,6 +9,7 @@ import {
 } from 'survey-core';
 import { Question } from '../types';
 import { SurveyModel, PageModel, surveyLocalization } from 'survey-core';
+import { MatrixManager } from '../controllers/matrixManager';
 
 /**
  * Add support for custom properties to the survey
@@ -61,7 +62,7 @@ export const init = (environment: any): void => {
     isLocalizable: true,
     onExecuteExpression: (obj: Question, res: boolean) => {
       if (res) {
-        obj.value = null;
+        obj.clearValue();
       }
     },
   });
@@ -98,23 +99,6 @@ export const init = (environment: any): void => {
       );
       choicesCallback(pages);
     },
-  });
-  // Adds a property to the survey settings to delete or not unticket translations in the translations tab from the JSON Object
-  serializer.addProperty('survey', {
-    name: 'deleteUnusedTranslations',
-    category: 'general',
-    type: 'dropdown',
-    choices: [
-      {
-        value: true,
-        text: 'Yes',
-      },
-      {
-        value: false,
-        text: 'No',
-      },
-    ],
-    default: false,
   });
   // Adds a property to the survey settings to hide the page tabs
   serializer.addProperty('survey', {
@@ -219,6 +203,97 @@ export const init = (environment: any): void => {
     visibleIndex: 6,
     default: false,
   });
+
+  const copyRowsOtherMatrixProp = {
+    name: 'copyRowsFromAnotherMatrix',
+    category: 'rows',
+    type: 'dropdown',
+    choices: (question: Question, choicesCallback: any) => {
+      const choices: { value: string | null; text: string }[] = [
+        {
+          value: null,
+          text: 'None',
+        },
+      ];
+      const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
+      for (const surveyQuestion of questions) {
+        if (['matrix', 'matrixdropdown'].includes(surveyQuestion.getType())) {
+          choices.push({
+            value: surveyQuestion.name,
+            text: surveyQuestion.title || surveyQuestion.name,
+          });
+        }
+      }
+      choicesCallback(
+        choices.filter((choice) => choice.value !== question.name)
+      );
+    },
+
+    onSetValue: (question: Question, copyFrom: string | null) => {
+      question.setPropertyValue('copyRowsFromAnotherMatrix', copyFrom);
+      const matrixManager: MatrixManager = (question.survey as SurveyModel)
+        .matrixManager;
+
+      if (!matrixManager) {
+        return;
+      }
+      matrixManager.addCopyConfig(question.name, {
+        rows: copyFrom || undefined,
+        columns: question.copyColumnsFromAnotherMatrix || undefined,
+      });
+    },
+  };
+
+  // Add a property that allows copying rows from another matrix
+  serializer.addProperty('matrix', copyRowsOtherMatrixProp);
+  serializer.addProperty('matrixdropdown', copyRowsOtherMatrixProp);
+
+  const copyColumnsOtherMatrixProp = {
+    name: 'copyColumnsFromAnotherMatrix',
+    category: 'columns',
+    type: 'dropdown',
+    choices: (question: Question, choicesCallback: any) => {
+      const choices: { value: string | null; text: string }[] = [
+        {
+          value: null,
+          text: 'None',
+        },
+      ];
+      const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
+      for (const surveyQuestion of questions) {
+        if (
+          ['matrix', 'matrixdropdown', 'matrixdynamic'].includes(
+            surveyQuestion.getType()
+          )
+        ) {
+          choices.push({
+            value: surveyQuestion.name,
+            text: surveyQuestion.title || surveyQuestion.name,
+          });
+        }
+      }
+      choicesCallback(
+        choices.filter((choice) => choice.value !== question.name)
+      );
+    },
+    onSetValue: (question: Question, copyFrom: string | null) => {
+      question.setPropertyValue('copyColumnsFromAnotherMatrix', copyFrom);
+      const matrixManager: MatrixManager = (question.survey as SurveyModel)
+        .matrixManager;
+
+      if (!matrixManager) {
+        return;
+      }
+      matrixManager.addCopyConfig(question.name, {
+        rows: question.copyRowsFromAnotherMatrix || undefined,
+        columns: copyFrom || undefined,
+      });
+    },
+  };
+
+  // Add a property that allows copying columns from another matrix
+  serializer.addProperty('matrixdropdown', copyColumnsOtherMatrixProp);
+  serializer.addProperty('matrixdynamic', copyColumnsOtherMatrixProp);
 };
 
 /**
