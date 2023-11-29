@@ -30,16 +30,10 @@
   </ng-container>
   <div uiFormFieldDirective>
     <label>{{ 'common.resource.one' | translate }}</label>
-    <ui-graphql-select
-      valueField="id"
-      textField="name"
-      [query]="resourcesQuery"
+    <shared-resource-select
       formControlName="resource"
       [selectedElements]="[resource]"
-      (searchChange)="onResourceSearchChange($event)"
-      [filterable]="true"
-    >
-    </ui-graphql-select>
+    ></shared-resource-select>
   </div>
   <ng-container *ngIf="resource">
     <!-- Aggregation -->
