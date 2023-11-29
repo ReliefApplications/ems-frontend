@@ -14,7 +14,7 @@ import {
 })
 export class CellDirective extends CdkCell implements AfterContentInit {
   /**
-   * Constructor for ui cell directive
+   * Ui Cell Directive
    *
    * @param columnDef column def associated with element
    * @param elRef Element linked to where the directive is used
