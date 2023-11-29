@@ -717,7 +717,7 @@ export class MapComponent
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
       const layerPromises = layerIds.map((id) => {
         return this.mapLayersService
-          .createLayerFromId(id, this.injector)
+          .createLayersFromId(id, this.injector)
           .then((layer) => {
             return parseTreeNode(layer);
           });
