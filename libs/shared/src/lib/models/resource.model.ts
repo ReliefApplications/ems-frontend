@@ -72,5 +72,5 @@ export interface ResourceRecordsConnectionsQueryResponse {
 
 /** Model for duplicate resource mutation response object */
 export interface DuplicateResourceMutationResponse {
-  duplicatedResource: Resource;
+  duplicateResource: Resource;
 }

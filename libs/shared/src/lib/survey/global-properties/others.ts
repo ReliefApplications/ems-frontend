@@ -110,6 +110,48 @@ export const init = (environment: any): void => {
     visibleIndex: 2,
   });
 
+  // Adds a property to the survey settings to hide the page tabs
+  serializer.addProperty('survey', {
+    name: 'hidePagesTab',
+    category: 'pages',
+    type: 'boolean',
+    default: false,
+    visibleIndex: 2,
+  });
+  // Adds a property to the survey settings to show or hide the close button on record modal
+  serializer.addProperty('survey', {
+    name: 'showCloseButtonOnModal',
+    category: 'general',
+    type: 'dropdown',
+    choices: [
+      {
+        value: true,
+        text: 'Yes',
+      },
+      {
+        value: false,
+        text: 'No',
+      },
+    ],
+    default: true,
+  });
+  // Adds a property to the survey settings to ask for confirmation on closing the record modal
+  serializer.addProperty('survey', {
+    name: 'confirmOnModalClose',
+    category: 'general',
+    type: 'dropdown',
+    choices: [
+      {
+        value: true,
+        text: 'Yes',
+      },
+      {
+        value: false,
+        text: 'No',
+      },
+    ],
+    default: true,
+  });
   // Property to allow customization of the save button label
   serializer.addProperty('survey', {
     name: 'saveButtonText',
@@ -150,8 +192,26 @@ export const init = (environment: any): void => {
     default: '',
     isLocalizable: true,
     onExecuteExpression: (obj: QuestionPanelDynamicModel, res: any) => {
-      obj.allowAddPanel = !!res;
+      // Weird bug with surveyJS, if we don't wait a bit, it doesn't work
+      setTimeout(() => {
+        obj.allowAddPanel = !!res;
+      }, 50);
     },
+  });
+
+  // Add property to the dynamic panel to start on the last element
+  serializer.addProperty('paneldynamic', {
+    name: 'startOnLastElement:boolean',
+    category: 'general',
+    default: false,
+  });
+
+  // Add option to omit question from fields
+  serializer.addProperty('question', {
+    name: 'omitField:boolean',
+    category: 'general',
+    visibleIndex: 6,
+    default: false,
   });
 
   const copyRowsOtherMatrixProp = {

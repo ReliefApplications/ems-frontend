@@ -80,6 +80,15 @@ export const searchFilters = (
         value: search,
       });
     }
+
+    // if no type is defined, try it as a string
+    if (!field.type) {
+      filters.push({
+        field: field.name.toString(),
+        operator: 'contains',
+        value: search,
+      });
+    }
   });
 
   return filters;

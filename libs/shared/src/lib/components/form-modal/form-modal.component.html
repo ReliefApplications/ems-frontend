@@ -1,4 +1,4 @@
-<ui-dialog size="big">
+<ui-dialog size="big" [onClose]="close.bind(this)">
   <ng-container ngProjectAs="header">
     <ng-container *ngIf="!loading">
       <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
@@ -42,7 +42,11 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button
+      (click)="close()"
+      cdkFocusInitial
+      *ngIf="survey?.showCloseButtonOnModal"
+    >
       {{ 'common.close' | translate }}
     </ui-button>
     <ng-container *ngIf="survey?.visiblePages ?? [] as pages">

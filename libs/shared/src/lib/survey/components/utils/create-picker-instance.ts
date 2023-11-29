@@ -101,16 +101,6 @@ export const getDateDisplay = (value: any, inputType: string): Date => {
   if (inputType === 'time') {
     return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
   } else {
-    if (inputType === 'date') {
-      // make sure it's always in the current user's timezone
-      const dateParts = value?.split('T')[0]?.split('-');
-      if (dateParts?.length === 3) {
-        date.setFullYear(+dateParts[0]);
-        date.setMonth(+dateParts[1] - 1);
-        date.setDate(+dateParts[2]);
-      }
-    }
-
     return date;
   }
 };
@@ -126,6 +116,12 @@ export const setDateValue = (value: Date, inputType: string): Date | string => {
   if (inputType === 'time') {
     // for time fields, translate the date to UTC
     return new Date(Date.UTC(1970, 0, 1, value.getHours(), value.getMinutes()));
+  } else if (inputType === 'date') {
+    return new Intl.DateTimeFormat('fr-CA', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(value);
   } else {
     return value.toISOString();
   }

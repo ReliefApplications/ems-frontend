@@ -4,9 +4,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { Resource } from '../../../models/resource.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../models/resource.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Apollo } from 'apollo-angular';
+import { GET_FIELDS_METADATA } from './graphql/queries';
 
 /**
  * Main component of Aggregation builder.
@@ -54,10 +59,12 @@ export class AggregationBuilderComponent
    *
    * @param queryBuilder This is a service that is used to build queries.
    * @param aggregationBuilder This is the service that will be used to build the aggregation query.
+   * @param apollo Shared apollo service
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private apollo: Apollo
   ) {
     super();
   }
@@ -120,7 +127,6 @@ export class AggregationBuilderComponent
    */
   private initFields(): void {
     this.updateFields();
-    this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
   }
 
   /**
@@ -138,6 +144,23 @@ export class AggregationBuilderComponent
           )
       );
     this.fields.next(fields);
+
+    // Get metadata of fields
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_FIELDS_METADATA,
+        variables: { resource: this.resource.id },
+      })
+      .subscribe(({ data }) => {
+        if (data.resource?.metadata) {
+          this.metaFields.next(data.resource.metadata);
+          this.updateSelectedAndMetaFields(
+            this.aggregationForm.value.sourceFields
+          );
+        } else {
+          this.metaFields.next([]);
+        }
+      });
   }
 
   /**
@@ -161,7 +184,15 @@ export class AggregationBuilderComponent
         return field;
       });
 
-      this.selectedFields.next(selectedFields);
+      this.selectedFields.next(
+        selectedFields.map((f) => {
+          const meta = this.metaFields.value.find((x) => x.name === f.name);
+          return {
+            ...(meta || {}),
+            ...f,
+          };
+        })
+      );
 
       this.mappingFields.next(
         this.aggregationBuilder.fieldsAfter(

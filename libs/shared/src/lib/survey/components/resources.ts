@@ -18,7 +18,6 @@ import { QuestionResource } from '../types';
 import { Injector, NgZone } from '@angular/core';
 import {
   ComponentCollection,
-  JsonObject,
   Serializer,
   SurveyModel,
   SvgRegistry,
@@ -188,13 +187,13 @@ export const init = (
       });
 
       // Build set available grid fields button
-      JsonObject.metaData.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'Search resource table',
         type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
-        isRequired: true,
         category: 'Custom Questions',
-        dependsOn: 'resource',
+        dependsOn: ['resource'],
         visibleIf: visibleIfResource,
+        default: {},
         visibleIndex: 5,
       });
 
@@ -294,6 +293,15 @@ export const init = (
         visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
+
+      Serializer.addProperty('resources', {
+        name: 'searchButtonText',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'canSearch'],
+        visibleIndex: 3,
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.canSearch,
+      });
+
       Serializer.addProperty('resources', {
         name: 'canDeselectRecords:boolean',
         category: 'Custom Questions',
@@ -651,8 +659,10 @@ export const init = (
       if (question.resource) {
         const parentElement = el.querySelector('.sd-question__content');
         if (parentElement) {
-          const instance: CoreGridComponent =
-            buildRecordsGrid(question, parentElement.firstChild) || undefined;
+          const instance: CoreGridComponent | null = buildRecordsGrid(
+            question,
+            parentElement.firstChild
+          );
           if (instance) {
             instance.removeRowIds.subscribe((ids) => {
               question.value = question.value.filter(
@@ -778,7 +788,7 @@ export const init = (
    * @returns The CoreGridComponent, or null if the displayAsGrid property
    * of the question object is false
    */
-  const buildRecordsGrid = (question: any, el: any): any => {
+  const buildRecordsGrid = (question: any, el: any) => {
     let instance: CoreGridComponent;
     if (question.displayAsGrid) {
       const grid = domService.appendComponentToBody(
@@ -800,6 +810,7 @@ export const init = (
           }
         }
       );
+      return instance;
     }
     return null;
   };

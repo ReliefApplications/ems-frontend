@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
-import { PageModel, QuestionPanelDynamicModel, SurveyModel } from 'survey-core';
+import {
+  IPanel,
+  PageModel,
+  QuestionPanelDynamicModel,
+  SurveyModel,
+} from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
 import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
+import { IconComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
@@ -15,6 +20,7 @@ import { AddRecordMutationResponse } from '../../models/record.model';
 import { Question, QuestionText } from '../../survey/types';
 import { WorkflowService } from '../workflow/workflow.service';
 import { ApplicationService } from '../application/application.service';
+import { DomService } from '../dom/dom.service';
 
 /**
  * Applies custom logic to survey data values.
@@ -23,12 +29,24 @@ import { ApplicationService } from '../application/application.service';
  * @returns Transformed survey data
  */
 export const transformSurveyData = (survey: SurveyModel) => {
-  const data = survey.data ?? {};
+  // Cloning data to avoid mutating the original survey data
+  const data = cloneDeep(survey.data) ?? {};
   const formatDate = (value: string | null) => {
     if (!value) {
       return value;
     }
 
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!value.includes('T') && dateRegex.test(value)) {
+      const [year, month, day] = value.split('-').map((v) => parseInt(v, 10));
+      // If in the format YYYY-MM-DD, transform to UTC and ISO string
+      return new Date(Date.UTC(year, month - 1, day)).toISOString();
+    } else if (value.endsWith('T00:00:00.000Z')) {
+      // If already in UTC, return as is
+      return value;
+    }
+
+    // If in ISO format, but not UTC time, transform to UTC and ISO string
     const date = new Date(value);
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -62,10 +80,31 @@ export const transformSurveyData = (survey: SurveyModel) => {
     }
   });
 
-  // Removes data that isn't in the structure, that might've come from prefilling data
   Object.keys(data).forEach((filed) => {
-    if (!survey.getQuestionByName(filed)) {
+    const question = survey.getQuestionByName(filed);
+    // Removes data that isn't in the structure, that might've come from prefilling data
+    if (!question) {
       delete data[filed];
+    } else {
+      const isQuestionVisible = (question: Question | IPanel): boolean => {
+        // If question is not visible, return false
+        if (!question.isVisible || !question) {
+          return false;
+        }
+
+        // If it is, check if its parent is visible
+        if (question.parent) {
+          return isQuestionVisible(question.parent);
+        }
+
+        // If we're in the root and it's visible, return true
+        return true;
+      };
+
+      // Removes null values for invisible questions (or pages)
+      if (!isQuestionVisible(question) && data[filed] === null) {
+        delete data[filed];
+      }
     }
   });
 
@@ -90,6 +129,7 @@ export class FormHelpersService {
    * @param downloadService Shared download service
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
+   * @param domService Shared dom service
    */
   constructor(
     public apollo: Apollo,
@@ -99,7 +139,8 @@ export class FormHelpersService {
     private authService: AuthService,
     private downloadService: DownloadService,
     private workflowService: WorkflowService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private domService: DomService
   ) {}
 
   /**
@@ -527,11 +568,17 @@ export class FormHelpersService {
     );
     if (titleElement) {
       titleElement.querySelectorAll('.sv-string-viewer').forEach((el: any) => {
-        const tooltip = document.createElement('span');
-        tooltip.title = options.question.tooltip;
-        tooltip.innerHTML = '?';
-        tooltip.classList.add('survey-title__tooltip');
-        el.appendChild(tooltip);
+        // Create ui-icon
+        const component = this.domService.appendComponentToBody(
+          IconComponent,
+          el
+        );
+        component.instance.icon = 'help';
+        component.instance.variant = 'primary';
+        component.location.nativeElement.classList.add('ml-2'); // Add margin to the icon
+
+        // Sets the tooltip text
+        component.instance.tooltip = options.question.tooltip;
       });
     }
   }

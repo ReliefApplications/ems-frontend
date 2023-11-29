@@ -1032,6 +1032,7 @@
 				}
 			},
 			"modal": {
+				"closeConfirmation": "Fermer sans enregistrer les modifications ?",
 				"update": "Sauvegarder et fermer"
 			},
 			"recovery": {

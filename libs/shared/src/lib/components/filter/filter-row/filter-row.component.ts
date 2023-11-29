@@ -6,13 +6,13 @@ import {
   OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   // SimpleChanges,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { clone, get } from 'lodash';
-// import { clone, get, isEqual } from 'lodash';
+import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
@@ -111,12 +111,12 @@ export class FilterRowComponent
     }
   }
 
-  ngOnChanges(/*changes: SimpleChanges*/): void {
+  ngOnChanges(changes: SimpleChanges): void {
     const initialField = this.form.get('field')?.value;
     if (
       initialField &&
-      this.fields.length > 0 /*&&
-      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)*/
+      this.fields.length > 0 &&
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
     ) {
       this.setField(initialField);
     }
@@ -141,6 +141,7 @@ export class FilterRowComponent
       field = fields.find((x) => x.name === fragment);
       fields = clone(field.fields);
     }
+
     if (field) {
       this.field = field;
       const type = {

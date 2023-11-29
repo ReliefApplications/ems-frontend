@@ -38,6 +38,8 @@ export class IconComponent implements OnChanges {
   @Input() isOutlined = false;
   /** Font library */
   @Input() fontFamily: 'material' | 'fa' = 'material';
+  /** Icon tooltip. You should probably use the uiTooltip directive instead */
+  @Input() tooltip?: string;
 
   /**
    * Icon component that renders the given icon for each type of font, fontawesome or material

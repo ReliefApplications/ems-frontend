@@ -124,9 +124,10 @@ export class FormBuilderService {
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
+
     //Add tooltips to questions if exist
     survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
+      this.formHelpersService.addQuestionTooltips.bind(this.formHelpersService)
     );
 
     // For each question, if validateOnValueChange is true, we will add a listener to the value change event
@@ -197,6 +198,21 @@ export class FormBuilderService {
       }
     }
 
+    survey.getAllQuestions().forEach((question) => {
+      if (question.getType() == 'paneldynamic') {
+        // Set all the indexes of configured dynamic panel questions in the survey to the last panel.
+        if (question.getPropertyValue('startOnLastElement')) {
+          question.currentIndex = question.visiblePanelCount - 1;
+        }
+
+        // This fixes one weird bug from SurveyJS's new version
+        // Without it, the panel property isn't updated on survey initialization
+        if (question.AllowNewPanelsExpression) {
+          question.allowAddPanel = true;
+        }
+      }
+    });
+
     // set the lang of the survey
     const surveyLang = localStorage.getItem('surveyLang');
     const surveyLocales = survey.getUsedLocales();
@@ -210,6 +226,7 @@ export class FormBuilderService {
         survey.locale = surveyLocales[0] ?? survey.locale;
       }
     }
+
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;

@@ -205,7 +205,9 @@ export class FormBuilderComponent
           isPanelless: true,
         });
         survey.onAfterRenderQuestion.add(
-          this.formHelpersService.addQuestionTooltips
+          this.formHelpersService.addQuestionTooltips.bind(
+            this.formHelpersService
+          )
         );
         this.formHelpersService.addUserVariables(survey);
       }
@@ -511,7 +513,7 @@ export class FormBuilderComponent
           return false;
         }
       } else {
-        // As we already have the reference data value to get the choices, we dont want to save them again with the form structure
+        // As we already have the reference data value to get the choices, we don't want to save them again with the form structure
         question.choices = [];
       }
     }
