@@ -148,8 +148,6 @@ export class DashboardFilterComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    // Trigger filtering with no values on deactivating context filter
-    this.contextService.filter.next({});
     this.resizeObserver.disconnect();
   }
 
