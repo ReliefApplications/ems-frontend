@@ -27,6 +27,7 @@ import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { MatrixManager } from '../../survey/controllers/matrixManager';
 
 /**
  * Array containing the different types of questions.
@@ -220,6 +221,9 @@ export class FormBuilderComponent
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
+
+    // Manage copying rows/columns between matrixes
+    new MatrixManager(this.surveyCreator.survey);
 
     this.surveyCreator.toolbox.forceCompact = false;
     this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
