@@ -1283,7 +1283,7 @@ export class CoreGridComponent
    * @param e export event
    */
   public onExport(e: any): void {
-    let ids: any[];
+    let ids: any[] = [];
     if (e.records === 'selected') {
       ids = this.selectedRows;
       if (ids.length === 0) {
@@ -1293,19 +1293,11 @@ export class CoreGridComponent
         );
         return;
       }
-    } else {
-      if (this.gridData.data.length > 0) {
-        ids = [this.gridData.data[0].id];
-      } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', {
-          error: true,
-        });
-        return;
-      }
     }
 
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
+    console.log(this.queryFilter, 'filter');
     const body = {
       ids,
       filter:
@@ -1322,6 +1314,7 @@ export class CoreGridComponent
       application: this.applicationService.name,
       fileName: this.fileName,
       email: e.email,
+      resource: this.settings.resource,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
