@@ -190,12 +190,11 @@ export class DashboardFilterComponent
 
   /** Render the survey using the saved structure */
   private initSurvey(): void {
-
     const keptValues = this.getKeptValues();
 
     this.survey = this.contextService.initSurvey();
 
-    this.survey.data = {...keptValues, ...this.survey.data};
+    this.survey.data = { ...keptValues, ...this.survey.data };
 
     this.setAvailableFiltersForContext();
 
@@ -404,19 +403,21 @@ export class DashboardFilterComponent
 
   /**
    * Compares previous filter values with the new filter structure to return the value for matching fields
-   * 
+   *
    * @returns Object with all matching fields
    */
   private getKeptValues(): any {
     const keptValues: any = {};
 
     // Gets all valueName's in the structure
-    const availableFields = [...this.surveyStructure.matchAll(/"valueName":\s?"(.*?)"/g)].map(match => match[1]);
-    availableFields.map(field => {
+    const availableFields = [
+      ...this.surveyStructure.matchAll(/"valueName":\s?"(.*?)"/g),
+    ].map((match) => match[1]);
+    availableFields.map((field) => {
       if (this.survey.data[field]) {
         keptValues[field] = this.survey.data[field];
       }
-    })
+    });
 
     return keptValues;
   }
