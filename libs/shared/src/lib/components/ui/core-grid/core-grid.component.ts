@@ -305,6 +305,7 @@ export class CoreGridComponent
    * @param applicationService Shared application service
    * @param contextService Shared context service
    * @param router Angular Router
+   * @param el Element reference
    */
   constructor(
     @Inject('environment') environment: any,
