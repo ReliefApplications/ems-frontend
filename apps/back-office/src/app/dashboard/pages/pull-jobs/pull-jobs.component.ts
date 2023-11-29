@@ -52,7 +52,7 @@ export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
     // 'apiConfiguration',
     // 'convertTo',
     'schedule',
-    'actions',
+    // 'actions',
   ];
 
   // === SUBSCRIPTIONS ===
