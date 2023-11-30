@@ -1,20 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { EditorFormType } from '../editor-settings.component';
-import {
-  Resource,
-  ResourcesQueryResponse,
-} from '../../../../models/resource.model';
+import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../../../../../libs/shared/src/lib/services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
-import { GET_RESOURCES } from '../graphql/queries';
-
-/** Default number of resources to be fetched per page */
-const ITEMS_PER_PAGE = 10;
 
 /** Component for the record selection in the editor widget settings */
 @Component({
@@ -26,16 +19,14 @@ export class RecordSelectionTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Widget form group */
   @Input() form!: EditorFormType;
-
+  /** Current resource */
   @Input() selectedResource: Resource | null = null;
+  /** Current layout */
   @Input() selectedLayout: Layout | null = null;
-  @Output() resourceChange = new EventEmitter<Resource | null>();
-  @Output() layoutChange = new EventEmitter<Layout | null>();
-
+  /** Current record id */
   public selectedRecordID: string | null = null;
-
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   /**
    * Component for the record selection in the editor widget settings
@@ -54,56 +45,6 @@ export class RecordSelectionTabComponent
 
   ngOnInit(): void {
     this.selectedRecordID = this.form.get('record')?.value || null;
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-
-    // Resource change
-    this.form
-      .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((resource) => {
-        if (!resource) this.resourceChange.emit(null);
-        else
-          this.resourceChange.emit(
-            this.resourcesQuery
-              .getCurrentResult()
-              .data.resources.edges.find((r) => r.node.id === resource)?.node ||
-              null
-          );
-
-        // clear layout and record
-        this.form.get('layout')?.setValue(null);
-        this.layoutChange.emit(null);
-
-        this.form.get('record')?.setValue(null);
-      });
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    const variables = this.resourcesQuery.variables;
-    this.resourcesQuery.refetch({
-      ...variables,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
   }
 
   /** Opens modal for layout selection/creation */
@@ -126,7 +67,6 @@ export class RecordSelectionTabComponent
           this.form.get('layout')?.setValue(value);
         } else {
           this.form.get('layout')?.setValue((value as any).id);
-          this.layoutChange.emit(value);
         }
       }
     });
@@ -150,8 +90,12 @@ export class RecordSelectionTabComponent
       if (value && this.selectedLayout) {
         this.gridLayoutService
           .editLayout(this.selectedLayout, value, this.selectedResource?.id)
-          .subscribe((res: any) => {
-            this.layoutChange.emit(res.data?.editLayout || null);
+          .subscribe(() => {
+            if (this.form.get('layout')) {
+              this.form
+                .get('layout')
+                ?.setValue(this.form.get('layout')?.value || null);
+            }
           });
       }
     });
@@ -159,7 +103,6 @@ export class RecordSelectionTabComponent
 
   /** Handles deselect current layout */
   public deselectLayout(): void {
-    this.layoutChange.emit(null);
     this.form.get('layout')?.setValue(null);
     this.form.get('record')?.setValue(null);
   }

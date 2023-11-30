@@ -60,8 +60,6 @@
           [form]="widgetFormGroup"
           [selectedResource]="selectedResource"
           [selectedLayout]="selectedLayout"
-          (resourceChange)="selectedResource = $event; updateFields()"
-          (layoutChange)="selectedLayout = $event; updateFields()"
         ></shared-record-selection-tab>
       </ng-template>
     </ui-tab>
