@@ -30,7 +30,7 @@ import * as L from 'leaflet';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE } from '../graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
 import { get, isEqual } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
@@ -61,6 +61,10 @@ import {
 import { Layout } from '../../../../models/layout.model';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { DomPortal, PortalModule } from '@angular/cdk/portal';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../../models/reference-data.model';
 
 /**
  * Interface of dialog input
@@ -107,6 +111,8 @@ export class EditLayerModalComponent
 {
   /** Current Layer */
   private _layer!: Layer;
+  /** Selected reference data */
+  public referenceData: ReferenceData | null = null;
   /** Selected resource */
   public resource: Resource | null = null;
   /** Selected layout */
@@ -204,7 +210,6 @@ export class EditLayerModalComponent
     }
     this.mapPortal = this.data.mapPortal;
     this.setUpEditLayerListeners();
-    this.getResource();
   }
 
   ngAfterViewInit(): void {
@@ -212,6 +217,21 @@ export class EditLayerModalComponent
     this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
       fields.forEach((field: Fields) => this.updateFormField(field));
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    const overlays: OverlayLayerTree = {
+      label: this.form.get('name')?.value || '',
+      layer: this.currentLayer,
+    };
+    //Once we exit the layer editor, destroy the layer and related controls
+    if (this.data.mapComponent) {
+      this.data.mapComponent.addOrDeleteLayer = {
+        layerData: overlays,
+        isDelete: true,
+      };
+    }
   }
 
   /**
@@ -354,11 +374,25 @@ export class EditLayerModalComponent
       });
 
     if (this.form.controls.datasource) {
+      // Reference data changes
+      this.getReferenceData();
+      this.form
+        .get('datasource.refData')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value) {
+            this.getReferenceData();
+          } else {
+            this.referenceData = null;
+          }
+        });
+
+      // Resource changes
+      this.getResource();
       this.form
         .get('datasource.resource')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
-          console.log('resource');
           const datasourceGroup = this.form.controls.datasource as FormGroup;
           datasourceGroup.get('layout')?.setValue(null, { emitEvent: false });
           datasourceGroup
@@ -460,7 +494,9 @@ export class EditLayerModalComponent
     }
   }
 
-  /** If the form has a resource, fetch it */
+  /**
+   * Get resource from graphql
+   */
   getResource(): void {
     this.fields.next([]);
     const formValue = this.form.getRawValue();
@@ -505,18 +541,27 @@ export class EditLayerModalComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    const overlays: OverlayLayerTree = {
-      label: this.form.get('name')?.value || '',
-      layer: this.currentLayer,
-    };
-    //Once we exit the layer editor, destroy the layer and related controls
-    if (this.data.mapComponent) {
-      this.data.mapComponent.addOrDeleteLayer = {
-        layerData: overlays,
-        isDelete: true,
-      };
+  /**
+   * Get reference data from graphql
+   */
+  getReferenceData(): void {
+    this.fields.next([]);
+    const formValue = this.form.getRawValue();
+    const referenceDataId = get(formValue, 'datasource.refData');
+    if (referenceDataId) {
+      this.apollo
+        .query<ReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA,
+          variables: {
+            id: referenceDataId,
+          },
+        })
+        .subscribe(({ data }) => {
+          this.referenceData = data.referenceData;
+          this.fields.next(
+            this.getFieldsFromRefData(this.referenceData?.fields || [])
+          );
+        });
     }
   }
 
@@ -563,5 +608,23 @@ export class EditLayerModalComponent
         field.label = control.get('label')?.value ?? '';
       }
     }
+  }
+
+  /**
+   * Extract layer fields from reference data
+   *
+   * @param fields available reference data fields
+   * @returns layer fields
+   */
+  private getFieldsFromRefData(fields: any[]): Fields[] {
+    return fields
+      .filter((field) => field && typeof field !== 'string')
+      .map((field) => {
+        return {
+          label: field.name,
+          name: field.name,
+          type: field.type,
+        } as Fields;
+      });
   }
 }

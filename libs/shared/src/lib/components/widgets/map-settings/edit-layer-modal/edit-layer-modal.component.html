@@ -49,6 +49,7 @@
         <!-- By not using the uiTabContent directive, we allow the component to init when loading parent, in order to get fields from datasource -->
         <shared-layer-datasource
           [formGroup]="$any(form.get('datasource'))"
+          [referenceData]="referenceData"
           [resource]="resource"
           [layout]="layout"
           [aggregation]="aggregation"

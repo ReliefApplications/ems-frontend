@@ -129,14 +129,10 @@
         *ngIf="origin.value === 'refData'"
       >
         <label>{{ 'common.referenceData.one' | translate }}</label>
-        <ui-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="refDatasQuery"
+        <shared-reference-data-select
           formControlName="refData"
-          [selectedElements]="[refData]"
-        >
-        </ui-graphql-select>
+          [selectedElements]="[referenceData]"
+        ></shared-reference-data-select>
         <!-- Remove value -->
         <ui-button
           uiSuffix
