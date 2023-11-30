@@ -111,7 +111,6 @@ export class LayerDatasourceComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      console.log(value);
       if (typeof value === 'string') {
         this.formGroup.get('layout')?.setValue(value);
       } else {
