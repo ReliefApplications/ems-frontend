@@ -25,7 +25,11 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
-import { ResourceSelectComponent } from '../../../controls/resource-select/resource-select.component';
+import {
+  ReferenceDataSelectComponent,
+  ResourceSelectComponent,
+} from '../../../controls/public-api';
+import { ReferenceData } from '../../../../models/reference-data.model';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -48,6 +52,8 @@ import { ResourceSelectComponent } from '../../../controls/resource-select/resou
     CheckboxModule,
     TooltipModule,
     ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    DividerModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
@@ -55,12 +61,14 @@ import { ResourceSelectComponent } from '../../../controls/resource-select/resou
 export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
+  /** Selected reference data */
+  @Input() referenceData: ReferenceData | null = null;
   /** Selected resource */
-  @Input() selectedResource: Resource | null = null;
+  @Input() resource: Resource | null = null;
   /** Selected layout */
-  @Input() selectedLayout: Layout | null = null;
+  @Input() layout: Layout | null = null;
   /** Selected aggregation */
-  @Input() selectedAggregation: Aggregation | null = null;
+  @Input() aggregation: Aggregation | null = null;
 
   /**
    * Component for the general summary cards tab
@@ -79,7 +87,7 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
 
   /** Opens modal for layout selection/creation */
   public async addLayout() {
-    if (!this.selectedResource) {
+    if (!this.resource) {
       return;
     }
     const { AddLayoutModalComponent } = await import(
@@ -87,8 +95,8 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
-        resource: this.selectedResource,
-        hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
+        resource: this.resource,
+        hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -112,14 +120,14 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     const dialogRef = this.dialog.open(EditLayoutModalComponent, {
       disableClose: true,
       data: {
-        layout: this.selectedLayout,
-        queryName: this.selectedResource?.queryName,
+        layout: this.layout,
+        queryName: this.resource?.queryName,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.selectedLayout) {
+      if (value && this.layout) {
         this.layoutService
-          .editLayout(this.selectedLayout, value, this.selectedResource?.id)
+          .editLayout(this.layout, value, this.resource?.id)
           .subscribe(() => {
             if (this.formGroup.get('card.layout')) {
               this.formGroup
@@ -140,9 +148,8 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations:
-          get(this.selectedResource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
-        resource: this.selectedResource,
+        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+        resource: this.resource,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -166,18 +173,14 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     const dialogRef = this.dialog.open(EditAggregationModalComponent, {
       disableClose: true,
       data: {
-        resource: this.selectedResource,
-        aggregation: this.selectedAggregation,
+        resource: this.resource,
+        aggregation: this.aggregation,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.selectedAggregation) {
+      if (value && this.aggregation) {
         this.aggregationService
-          .editAggregation(
-            this.selectedAggregation,
-            value,
-            this.selectedResource?.id
-          )
+          .editAggregation(this.aggregation, value, this.resource?.id)
           .subscribe(() => {
             if (this.formGroup.get('card.aggregation')) {
               this.formGroup

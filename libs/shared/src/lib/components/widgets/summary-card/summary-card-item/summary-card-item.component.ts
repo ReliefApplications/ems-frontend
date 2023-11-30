@@ -36,11 +36,21 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata || [];
-    if (!this.card.resource) return;
-    if (this.card.aggregation) {
-      this.fieldsValue = this.card.cardAggregationData;
+    // No datasource
+    if (!this.card.resource && !this.card.referenceData) return;
+    if (this.card.resource) {
+      // Using resource
+      if (this.card.layout) {
+        this.setContentFromLayout();
+      } else {
+        this.fieldsValue = this.card.rawValue;
+        this.setContentFromAggregation();
+      }
+    } else {
+      // Using reference data
+      this.fieldsValue = this.card.rawValue;
       this.setContentFromAggregation();
-    } else this.setContentFromLayout();
+    }
   }
 
   /**
@@ -54,62 +64,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   /** Sets layout style */
   private async getStyles(): Promise<void> {
-    // this.layout = this.card.layout;
     this.styles = get(this.card.layout, 'query.style', []);
-    // this.styles = get(this.card, 'meta.style', []);
   }
-
-  /**
-   * Queries the data for each of the static cards.
-   */
-  // private async getCardData() {
-  //   // gets metadata
-  //   const metaRes = await firstValueFrom(
-  //     this.apollo.query<GetResourceMetadataQueryResponse>({
-  //       query: GET_RESOURCE_METADATA,
-  //       variables: {
-  //         id: this.card.resource,
-  //       },
-  //     })
-  //   );
-  //   const queryName = get(metaRes, 'data.resource.queryName');
-
-  //   const builtQuery = this.queryBuilder.buildQuery({
-  //     query: this.layout.query,
-  //   });
-  //   const layoutFields = this.layout.query.fields;
-  //   this.fields = get(metaRes, 'data.resource.metadata', []).map((f: any) => {
-  //     const layoutField = layoutFields.find((lf: any) => lf.name === f.name);
-  //     if (layoutField) {
-  //       return { ...layoutField, ...f };
-  //     }
-  //     return f;
-  //   });
-  //   if (builtQuery) {
-  //     this.apollo
-  //       .query<any>({
-  //         query: builtQuery,
-  //         variables: {
-  //           first: 1,
-  //           filter: {
-  //             // get only the record we need
-  //             logic: 'and',
-  //             filters: [
-  //               {
-  //                 field: 'id',
-  //                 operator: 'eq',
-  //                 value: this.card.record,
-  //               },
-  //             ],
-  //           },
-  //         },
-  //       })
-  //       .subscribe((res) => {
-  //         const record: any = get(res.data, `${queryName}.edges[0].node`, null);
-  //         this.fieldsValue = { ...record };
-  //       });
-  //   }
-  // }
 
   /**
    * Set content of the card item from aggregation data.
