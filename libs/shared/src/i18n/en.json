@@ -485,7 +485,7 @@
 				"addFields": "Add fields",
 				"custom": "Custom",
 				"filter": "Filter",
-				"group": "Group",
+				"group": "Group & Accumulator",
 				"sort": "Sort",
 				"unwind": "Unwind"
 			},
@@ -493,7 +493,8 @@
 				"addFields": "Adds new fields to documents.",
 				"custom": "Defines a custom aggregation function or expression in JavaScript.",
 				"filter": "Returns an array with only those elements that match the condition.",
-				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document. It's also about accumulators.",
+				"groupingRules": "Grouping rules are optional.",
 				"selectedFields": "Only unused fields can removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
