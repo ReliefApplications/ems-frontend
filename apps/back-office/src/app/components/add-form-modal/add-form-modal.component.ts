@@ -21,6 +21,7 @@ import {
   ResourceQueryResponse,
   ResourceSelectComponent,
 } from '@oort-front/shared';
+import { TemplateOptionsComponent } from './template-options.component';
 
 /**
  * Add form component (modal)
@@ -43,6 +44,7 @@ import {
     FormWrapperModule,
     ChipModule,
     ResourceSelectComponent,
+    TemplateOptionsComponent,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -55,7 +57,7 @@ export class AddFormModalComponent implements OnInit {
     newResource: this.fb.nonNullable.control(true),
     resource: [null],
     inheritsTemplate: this.fb.nonNullable.control(false),
-    template: [null],
+    template: null,
   });
   /** Available templates */
   public templates: any[] = [];
@@ -134,5 +136,17 @@ export class AddFormModalComponent implements OnInit {
       .subscribe(({ data }) => {
         this.templates = data.resource.forms || [];
       });
+  }
+
+  /**
+   * When creating form, check if template value needs to be changed to your id
+   */
+  onCreate(): void {
+    if (this.form.value.inheritsTemplate && this.form.value.template) {
+      this.form
+        .get('template')
+        ?.setValue((this.form.controls.template.value as any)?.id);
+    }
+    this.dialogRef.close(this.form.value as any);
   }
 }

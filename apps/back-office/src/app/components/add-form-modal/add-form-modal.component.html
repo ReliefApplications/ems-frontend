@@ -85,19 +85,20 @@
                 <label>{{
                   'components.form.create.template.from' | translate
                 }}</label>
-                <ui-select-menu formControlName="template">
+                <ui-select-menu
+                  formControlName="template"
+                  [customTemplate]="{
+                    template: coreTemplate,
+                    context: { $implicit: form.get('template')!.value }
+                  }"
+                >
                   <ui-select-option
                     *ngFor="let template of templates"
-                    [value]="template.id"
+                    [value]="template"
                   >
-                    {{ template.name }}
-                    <ng-container ngProjectAs="icon">
-                      <div uiChipList *ngIf="template.core">
-                        <ui-chip class="!rounded-lg" variant="grey">{{
-                          'models.form.core' | translate
-                        }}</ui-chip>
-                      </div>
-                    </ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="coreTemplate; context: { $implicit: template }"
+                    ></ng-container>
                   </ui-select-option>
                 </ui-select-menu>
               </div>
@@ -114,7 +115,7 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [uiDialogClose]="form.value"
+      (click)="onCreate()"
       cdkFocusInitial
       [disabled]="!form.valid"
     >
@@ -122,3 +123,8 @@
     </ui-button>
   </ng-container>
 </ui-dialog>
+
+<!-- Template to display templates available -->
+<ng-template #coreTemplate let-template>
+  <app-template-options [template]="template"></app-template-options>
+</ng-template>
