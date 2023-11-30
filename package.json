@@ -154,7 +154,6 @@
     "@types/leaflet.heat": "^0.2.1",
     "@types/leaflet.markercluster": "^1.5.1",
     "@types/node": "18.7.1",
-    "@types/point-in-polygon": "^1.1.5",
     "@types/proj4": "^2.5.2",
     "@types/uuid": "^9.0.1",
     "@types/ws": "^7.4.1",
