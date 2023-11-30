@@ -40,7 +40,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
 
   public previewPipelineForm: UntypedFormArray = new UntypedFormArray([]);
 
-  public checked: boolean = true;
+  public checked = true;
 
   @Output() previewPipelineFormChange = new EventEmitter<any>();
 

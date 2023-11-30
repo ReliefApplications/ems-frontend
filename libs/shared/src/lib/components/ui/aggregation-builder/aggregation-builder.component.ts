@@ -47,7 +47,7 @@ export class AggregationBuilderComponent
 
   public pipelinePreview: any;
 
-  public aggregationPreview: string = 'aggregation preview';
+  public aggregationPreview = 'aggregation preview';
   /**
    * Getter for the pipeline of the aggregation form
    *
@@ -133,10 +133,10 @@ export class AggregationBuilderComponent
   }
 
   public togglePreview() {
-    var aggregationPreview = document.querySelector(
+    let aggregationPreview = document.querySelector(
       '.aggregation-preview'
     ) as HTMLElement;
-    var pipelineContainer = document.getElementById(
+    let pipelineContainer = document.getElementById(
       'shared-pipeline'
     ) as HTMLElement;
     if (
