@@ -1,7 +1,7 @@
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
-import { GET_RESOURCES, GET_RESOURCE_BY_ID } from './graphql/queries';
+import { GET_RESOURCE_BY_ID } from './graphql/queries';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,17 +14,13 @@ import {
   SelectMenuModule,
   ChipModule,
   FormWrapperModule,
-  GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
 import {
   ResourceQueryResponse,
-  ResourcesQueryResponse,
+  ResourceSelectComponent,
 } from '@oort-front/shared';
-
-/** Default items per query, for pagination */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Add form component (modal)
@@ -38,7 +34,6 @@ const ITEMS_PER_PAGE = 10;
     FormWrapperModule,
     ToggleModule,
     TranslateModule,
-    GraphQLSelectModule,
     DialogModule,
     TooltipModule,
     RadioModule,
@@ -47,13 +42,14 @@ const ITEMS_PER_PAGE = 10;
     SelectMenuModule,
     FormWrapperModule,
     ChipModule,
+    ResourceSelectComponent,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
   styleUrls: ['./add-form-modal.component.scss'],
 })
 export class AddFormModalComponent implements OnInit {
-  // === REACTIVE FORM ===
+  /** Form group */
   public form = this.fb.group({
     name: ['', Validators.required],
     newResource: this.fb.nonNullable.control(true),
@@ -61,10 +57,7 @@ export class AddFormModalComponent implements OnInit {
     inheritsTemplate: this.fb.nonNullable.control(false),
     template: [null],
   });
-
-  // === DATA ===
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-
+  /** Available templates */
   public templates: any[] = [];
 
   /**
@@ -122,36 +115,6 @@ export class AddFormModalComponent implements OnInit {
           template: null,
         });
       });
-
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    const variables = this.resourcesQuery.variables;
-    this.resourcesQuery.refetch({
-      ...variables,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
   }
 
   /**

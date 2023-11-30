@@ -21,7 +21,7 @@ import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
-import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
+import { CronExpressionControlModule } from '../../../controls/cron-expression-control/cron-expression-control.module';
 import {
   DividerModule,
   TooltipModule,

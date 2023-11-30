@@ -2093,6 +2093,7 @@
 				"text": "Texte du bouton",
 				"variant": "Variante de bouton"
 			},
+			"closable": "Peut être fermé",
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -2121,13 +2122,23 @@
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
 			"deactivateFiltering": "Désactiver le filtre",
+			"filterVariant": {
+				"title": "Variante de filtre",
+				"variantsOptions": {
+					"selectOrigin": "Sélectionner une variante de filtre",
+					"variant_default": "Défaut",
+					"variant_modern": "Moderne"
+				}
+			},
 			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
-				"dashboardFilter": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
-				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}.",
-				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
-				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+				"filter": {
+					"closable": "Lorsque la variante est moderne ou que l'application est utilisée comme élément web, un bouton s'affichera pour permettre à l'utilisateur de cacher le filtre",
+					"fields": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
+					"position": "Ne s'applique que lorsque la variant par défaut est active"
+				},
+				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}."
 			}
 		},
 		"form": {

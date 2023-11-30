@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import {
   Resource,
   ResourceQueryResponse,
-  ResourcesQueryResponse,
 } from '../../../../models/resource.model';
-import { GET_RESOURCE, GET_RESOURCES } from '../graphql/queries';
+import { GET_RESOURCE } from '../graphql/queries';
 import { CHART_TYPES } from '../constants';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
@@ -16,9 +15,6 @@ import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
-
-/** Default items per query, for pagination */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Main tab of chart settings modal.
@@ -35,8 +31,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   @Input() type: any;
   /** Available chart types */
   public types = CHART_TYPES;
-  /** Apollo resources query */
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   /** Current resource */
   public resource?: Resource;
   /** Current aggregation */
@@ -87,13 +81,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
     }
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
   }
 
   /**
@@ -208,28 +195,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
             }
           });
       }
-    });
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    const variables = this.resourcesQuery.variables;
-    this.resourcesQuery.refetch({
-      ...variables,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
     });
   }
 }

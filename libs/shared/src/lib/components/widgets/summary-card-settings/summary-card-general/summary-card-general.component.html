@@ -9,24 +9,19 @@
       <!-- RESOURCE SELECTION  -->
       <div uiFormFieldDirective class="flex-1">
         <label>{{ 'models.resource.select' | translate }}</label>
-        <ui-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
+        <shared-resource-select
           formControlName="resource"
           [selectedElements]="[selectedResource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        ></ui-graphql-select>
+        ></shared-resource-select>
       </div>
 
       <!-- TEMPLATE SELECTION -->
-      <div uiFormFieldDirective class="flex-1">
+      <div uiFormFieldDirective class="flex-1" *ngIf="selectedResource">
         <label>{{ 'models.form.template' | translate }}</label>
         <ui-select-menu formControlName="template">
           <ui-select-option>-</ui-select-option>
           <ui-select-option
-            *ngFor="let template of templates"
+            *ngFor="let template of selectedResource.forms || []"
             [value]="template.id"
           >
             {{ template.name }}
@@ -106,9 +101,7 @@
           variant="danger"
           [isIcon]="true"
           icon="close"
-          (click)="
-            formGroup.get('card.layout')?.setValue(null); layoutChange.emit(null)
-          "
+          (click)="formGroup.get('card.layout')?.setValue(null)"
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
@@ -180,10 +173,7 @@
           variant="danger"
           [isIcon]="true"
           icon="close"
-          (click)="
-            formGroup.get('card.aggregation')?.setValue(null);
-            aggregationChange.emit(null)
-          "
+          (click)="formGroup.get('card.aggregation')?.setValue(null)"
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>

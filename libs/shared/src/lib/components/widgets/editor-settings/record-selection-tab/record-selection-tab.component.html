@@ -3,15 +3,10 @@
     <!-- RESOURCE SELECTION  -->
     <div uiFormFieldDirective fxFlex>
       <label>{{ 'models.resource.select' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="resourcesQuery"
+      <shared-resource-select
         formControlName="resource"
         [selectedElements]="[selectedResource]"
-        (searchChange)="onResourceSearchChange($event)"
-        [filterable]="true"
-      ></ui-graphql-select>
+      ></shared-resource-select>
     </div>
 
     <div uiFormFieldDirective *ngIf="!selectedLayout">

@@ -22,7 +22,7 @@ import {
 } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { GET_GRID_RESOURCE_META, GET_RESOURCE } from './graphql/queries';
+import { GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 import { Form } from '../../../models/form.model';
 import { createSummaryCardForm } from './summary-card-settings.forms';
@@ -41,13 +41,13 @@ export class SummaryCardSettingsComponent
   extends UnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  /** Widget */
+  /** Widget configuration */
   @Input() widget: any;
   /** Emit changes applied to the settings */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
   /** Widget form group */
-  public widgetFormGroup: SummaryCardFormT | undefined;
+  public widgetFormGroup!: SummaryCardFormT;
   /** Current resource */
   public selectedResource: Resource | null = null;
   /** Current layout */
@@ -55,10 +55,20 @@ export class SummaryCardSettingsComponent
   /** Current aggregation */
   public selectedAggregation: Aggregation | null = null;
   public customAggregation: any;
-
+  /** Available fields */
   public fields: any[] = [];
-  public activeTabIndex: number | undefined;
+  /** Available resource templates */
   public templates: Form[] = [];
+
+  /** @returns a FormControl for the searchable field */
+  get searchableControl(): FormControl {
+    return this.widgetFormGroup?.get('widgetDisplay.searchable') as any;
+  }
+
+  /** @returns a FormControl for the usePagination field */
+  get usePaginationControl(): FormControl {
+    return this.widgetFormGroup?.get('widgetDisplay.usePagination') as any;
+  }
 
   /**
    * Summary Card Settings component.
@@ -89,14 +99,33 @@ export class SummaryCardSettingsComponent
     if (resourceID) {
       this.getResource(resourceID);
     }
+    this.widgetFormGroup.controls.card.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // clear sort fields array
+        const sortFields = this.widgetFormGroup?.get('sortFields') as FormArray;
+        sortFields.clear();
+        // clear layout, aggregation, template
+        this.widgetFormGroup?.get('card.template')?.setValue(null);
+        this.widgetFormGroup?.get('card.layout')?.setValue(null);
+        this.widgetFormGroup?.get('card.aggregation')?.setValue(null);
+        this.selectedLayout = null;
+        this.selectedAggregation = null;
+        this.customAggregation = null;
+        this.fields = [];
+        if (value) {
+          this.getResource(value);
+        } else {
+          this.selectedResource = null;
+        }
+      });
 
     // Subscribe to aggregation changes
-    this.widgetFormGroup
-      .get('card.aggregation')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((aggregationID) => {
+    this.widgetFormGroup.controls.card.controls.aggregation.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
         // disable searchable if aggregation is selected
-        if (aggregationID) {
+        if (value) {
           const searchableControl = this.widgetFormGroup?.get(
             'widgetDisplay.searchable'
           );
@@ -110,45 +139,47 @@ export class SummaryCardSettingsComponent
               actionsForm.get(controlName)?.disable();
             });
           }
+          if (this.widgetFormGroup?.controls.card.value.resource) {
+            this.getResource(
+              this.widgetFormGroup?.controls.card.value.resource
+            );
+          }
         } else {
+          this.selectedAggregation = null;
+          this.customAggregation = null;
+        }
+      });
+
+    // Subscribe to layout changes
+    this.widgetFormGroup.controls.card.controls.layout.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
           this.widgetFormGroup?.get('widgetDisplay.searchable')?.enable();
           // enable form actions if aggregation selected
           this.widgetFormGroup?.controls.actions.enable();
+          if (this.widgetFormGroup?.controls.card.value.resource) {
+            this.getResource(
+              this.widgetFormGroup?.controls.card.value.resource
+            );
+          }
+        } else {
+          this.selectedLayout = null;
         }
       });
 
     this.initSortFields();
-
-    // Subscribe to form resource changes to get the templates on change
-    this.widgetFormGroup
-      .get('card.resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.widgetFormGroup?.get('card.template')?.setValue(null);
-        this.getTemplates();
-      });
-
-    this.getTemplates();
   }
 
   /**
-   * Gets the templates for the selected resource
+   * Detect the form changes to emit the new configuration.
    */
-  private getTemplates(): void {
-    if (this.widgetFormGroup?.get('card.resource')?.value) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_GRID_RESOURCE_META,
-          variables: {
-            resource: this.widgetFormGroup?.get('card.resource')?.value,
-          },
-        })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.templates = data.resource.forms || [];
-          }
-        });
-    }
+  ngAfterViewInit(): void {
+    this.widgetFormGroup?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.change.emit(this.widgetFormGroup);
+      });
   }
 
   /**
@@ -165,46 +196,15 @@ export class SummaryCardSettingsComponent
     });
   }
 
-  /** @returns a FormControl for the searchable field */
-  get searchableControl(): FormControl {
-    return this.widgetFormGroup?.get('widgetDisplay.searchable') as any;
-  }
-
-  /** @returns a FormControl for the usePagination field */
-  get usePaginationControl(): FormControl {
-    return this.widgetFormGroup?.get('widgetDisplay.usePagination') as any;
-  }
-
-  /**
-   * Detect the form changes to emit the new configuration.
-   */
-  ngAfterViewInit(): void {
-    this.widgetFormGroup?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.change.emit(this.widgetFormGroup);
-      });
-  }
-
-  /**
-   * Sets an internal variable with the current tab.
-   *
-   * @param e Change tab event.
-   */
-  handleTabChange(e: number) {
-    this.activeTabIndex = e;
-  }
-
   /**
    * Get resource by id, doing graphQL query
    *
    * @param id resource id
    */
   private getResource(id: string): void {
-    const form = this.widgetFormGroup;
-    if (!form) return;
-    const layoutID = form.get('card.layout')?.value;
-    const aggregationID = form.get('card.aggregation')?.value;
+    const formValue = this.widgetFormGroup.getRawValue();
+    const layoutID = get(formValue, 'card.layout');
+    const aggregationID = get(formValue, 'card.aggregation');
     this.fields = [];
     this.apollo
       .query<ResourceQueryResponse>({
@@ -217,9 +217,9 @@ export class SummaryCardSettingsComponent
       })
       .subscribe((res) => {
         if (res.errors) {
-          form.get('card.resource')?.patchValue(null);
-          form.get('card.layout')?.patchValue(null);
-          form.get('card.aggregation')?.patchValue(null);
+          this.widgetFormGroup.get('card.resource')?.patchValue(null);
+          this.widgetFormGroup.get('card.layout')?.patchValue(null);
+          this.widgetFormGroup.get('card.aggregation')?.patchValue(null);
           this.selectedResource = null;
           this.selectedLayout = null;
           this.selectedAggregation = null;
@@ -228,15 +228,17 @@ export class SummaryCardSettingsComponent
           if (layoutID) {
             this.selectedLayout =
               res.data?.resource.layouts?.edges[0]?.node || null;
-            this.fields = [];
+            // extract data keys from metadata
+            const fields: any = [];
             get(res, 'data.resource.metadata', []).map((metaField: any) => {
               get(this.selectedLayout, 'query.fields', []).map((field: any) => {
                 if (field.name === metaField.name) {
                   const type = metaField.type;
-                  this.fields.push({ ...field, type });
+                  fields.push({ ...field, type });
                 }
               });
             });
+            this.fields = fields;
           }
           if (aggregationID) {
             this.selectedAggregation =
@@ -270,58 +272,5 @@ export class SummaryCardSettingsComponent
             : [];
         }
       });
-  }
-
-  /**
-   * Updates modified resource
-   *
-   * @param resource the modified resource
-   */
-  handleResourceChange(resource: Resource | null) {
-    // clear sort fields array
-    const sortFields = this.widgetFormGroup?.get('sortFields') as FormArray;
-    sortFields.clear();
-
-    this.selectedResource = resource;
-    this.fields = [];
-
-    // clear layout and record
-    this.widgetFormGroup?.get('card.layout')?.setValue(null);
-    this.widgetFormGroup?.get('card.aggregation')?.setValue(null);
-    this.selectedLayout = null;
-    this.selectedAggregation = null;
-    this.customAggregation = null;
-  }
-
-  /**
-   * Updates modified layout
-   *
-   * @param layout the modified layout
-   */
-  handleLayoutChange(layout: Layout | null) {
-    this.selectedLayout = layout;
-
-    // extract data keys from metadata
-    const fields: any = [];
-    get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
-      get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
-        if (field.name === metaField.name) {
-          const type = metaField.type;
-          fields.push({ ...field, type });
-        }
-      });
-    });
-
-    this.fields = fields;
-  }
-
-  /**
-   * Updates modified aggregation
-   *
-   * @param aggregation the modified aggregation
-   */
-  handleAggregationChange(aggregation: Aggregation | null) {
-    this.selectedAggregation = aggregation;
-    this.getCustomAggregation();
   }
 }

@@ -4,6 +4,7 @@ import { RecordHistoryModule } from '../record-history/record-history.module';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
 
 /**
  * This interface describes the structure of the data that will be displayed in the dialog modal
@@ -11,6 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
 interface DialogData {
   id: string;
   revert: any;
+  template?: string;
+  refresh$?: Subject<boolean>;
 }
 
 /**

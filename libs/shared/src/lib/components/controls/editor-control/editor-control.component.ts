@@ -21,7 +21,7 @@ import {
   EditorModule,
   TINYMCE_SCRIPT_SRC,
 } from '@tinymce/tinymce-angular';
-import { EditorService } from '../../services/editor/editor.service';
+import { EditorService } from '../../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
 import { FormControlComponent } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';

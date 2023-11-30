@@ -711,6 +711,15 @@
 			"subject": "******",
 			"withoutRecords": "******"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "******"
+			},
+			"from": "******",
+			"subject": "******",
+			"title": "******",
+			"to": "******"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -2070,6 +2079,7 @@
 				"text": "******",
 				"variant": "******"
 			},
+			"closable": "******",
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -2098,13 +2108,23 @@
 			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"filterVariant": {
+				"title": "******",
+				"variantsOptions": {
+					"selectOrigin": "******",
+					"variant_default": "******",
+					"variant_modern": "******"
+				}
+			},
 			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
-				"dashboardFilter": "******",
-				"historicalDate": "****** {{filter.<name>}} ******",
-				"useDashboardFilterEditor": "******",
-				"useDefaultEditor": "******"
+				"filter": {
+					"closable": "******",
+					"fields": "******",
+					"position": "******"
+				},
+				"historicalDate": "****** {{filter.<name>}} ******"
 			}
 		},
 		"form": {

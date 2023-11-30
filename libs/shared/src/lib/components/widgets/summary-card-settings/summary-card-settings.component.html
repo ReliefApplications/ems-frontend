@@ -1,9 +1,5 @@
 <ng-container *ngIf="widgetFormGroup">
-  <ui-tabs
-    [vertical]="true"
-    class="grow"
-    (selectedIndexChange)="handleTabChange($event)"
-  >
+  <ui-tabs [vertical]="true" class="grow">
     <!-- GENERAL SETTINGS -->
     <ui-tab>
       <ng-container ngProjectAs="label">
@@ -18,12 +14,8 @@
         <shared-summary-card-general
           [formGroup]="widgetFormGroup"
           [selectedResource]="selectedResource"
-          [templates]="templates"
           [selectedLayout]="selectedLayout"
           [selectedAggregation]="selectedAggregation"
-          (resourceChange)="handleResourceChange($event)"
-          (layoutChange)="handleLayoutChange($event)"
-          (aggregationChange)="handleAggregationChange($event)"
         ></shared-summary-card-general>
       </ng-template>
     </ui-tab>
@@ -38,7 +30,6 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-text-editor-tab
-          *ngIf="activeTabIndex === 1"
           [form]="widgetFormGroup"
           [fields]="fields"
         ></shared-text-editor-tab>

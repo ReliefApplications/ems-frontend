@@ -19,6 +19,8 @@ import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Creates the form for the editor widget settings.
@@ -62,7 +64,10 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
   templateUrl: './editor-settings.component.html',
   styleUrls: ['./editor-settings.component.scss'],
 })
-export class EditorSettingsComponent implements OnInit, AfterViewInit {
+export class EditorSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   /** Widget configuration */
   @Input() widget: any;
   /** Widget form group */
@@ -89,6 +94,7 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private dataTemplateService: DataTemplateService
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -107,25 +113,29 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
     const resourceID = this.widgetFormGroup?.get('resource')?.value;
     const layoutID = this.widgetFormGroup?.get('layout')?.value;
     if (resourceID) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: resourceID,
-            layout: layoutID ? [layoutID] : undefined,
-          },
-        })
-        .subscribe((res) => {
-          if (res.data) {
-            this.selectedResource = res.data.resource;
-            if (layoutID) {
-              this.selectedLayout =
-                res.data?.resource.layouts?.edges[0]?.node || null;
-              this.updateFields();
-            }
-          }
-        });
+      this.getResource(resourceID, layoutID);
     }
+    this.widgetFormGroup.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getResource(value);
+        } else {
+          this.selectedResource = null;
+          this.selectedLayout = null;
+          this.updateFields();
+        }
+      });
+    this.widgetFormGroup.controls.layout.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value && this.selectedResource) {
+          this.getResource(this.selectedResource.id as string, value);
+        } else {
+          this.selectedLayout = null;
+          this.updateFields();
+        }
+      });
   }
 
   /**
@@ -141,6 +151,35 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
       this.widget.settings.layout = this.widgetFormGroup.value.layout;
     });
     this.updateFields();
+  }
+
+  /**
+   * Get resource for widget configuration
+   *
+   * @param resource selected resource id
+   * @param layout selected layout id ( optional )
+   */
+  private getResource(resource: string, layout?: string | null) {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id: resource,
+          layout: layout ? [layout] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          this.selectedResource = res.data.resource;
+          if (layout) {
+            this.selectedLayout =
+              res.data?.resource.layouts?.edges[0]?.node || null;
+          } else {
+            this.selectedLayout = null;
+          }
+          this.updateFields();
+        }
+      });
   }
 
   /** Extracts the fields from the resource/layout */
