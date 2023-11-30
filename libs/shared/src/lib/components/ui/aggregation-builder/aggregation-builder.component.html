@@ -15,9 +15,9 @@
       [fields$]="selectedFields$"
       [metaFields$]="metaFields$"
       [pipelineForm]="pipelineForm"
-      (previewPipelineForm)="onPreviewPipelineFormChange($event)"
+      (previewPipelineFormChange)="onPreviewPipelineFormChange($event)"
     ></shared-pipeline>
-    <div class="aggregation-preview">{{ aggregationPreview | json }} oii</div>
+    <div class="aggregation-preview">{{ aggregationPreview | json }}</div>
   </div>
   <ui-button icon="remove_red_eye" category="primary" (click)="togglePreview()">
     {{ 'components.aggregationBuilder.togglePreview' | translate }}

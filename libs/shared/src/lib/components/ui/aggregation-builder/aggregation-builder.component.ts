@@ -133,6 +133,9 @@ export class AggregationBuilderComponent
     this.updateFields();
   }
 
+  /**
+   * Toggles the preview of the aggregation
+   */
   public togglePreview() {
     const aggregationPreview = document.querySelector(
       '.aggregation-preview'
@@ -152,7 +155,10 @@ export class AggregationBuilderComponent
     }
   }
 
-  onPreviewPipelineFormChange(pipeline: any) {
+  /**
+   * Updates the pipelinePreview
+   */
+  public onPreviewPipelineFormChange(pipeline: any) {
     this.pipelinePreview = pipeline;
     console.log('onPreviewPipelineFormChange', this.pipelinePreview);
   }

@@ -38,10 +38,13 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
 
+  /** Preview pipelineForm */
   public previewPipelineForm: UntypedFormArray = new UntypedFormArray([]);
 
+  /** Initial value for checkboxes */
   public checked = true;
 
+  /** Output decorator for previewPipelineFormChange. */
   @Output() previewPipelineFormChange = new EventEmitter<any>();
 
   /**
