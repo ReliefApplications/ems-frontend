@@ -632,6 +632,7 @@ export class ReferenceDataComponent
     }
   }
 
+  /** Open data modal */
   public async openDataModal() {
     const { DataModalComponent } = await import(
       './data-modal/data-modal.component'

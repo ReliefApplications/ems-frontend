@@ -15,7 +15,7 @@ import {
   TextareaModule,
   FormWrapperModule,
   FixedWrapperModule,
-  DialogModule
+  DialogModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { DataModalComponent } from './data-modal/data-modal.component';
