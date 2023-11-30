@@ -74,6 +74,43 @@
           </div>
         </ng-template>
       </div>
+      <div class="flex gap-x-2">
+        <!-- Path -->
+        <div
+          class="flex-auto"
+          uiFormFieldDirective
+          *ngIf="['rest', 'graphql'].includes(type)"
+        >
+          <label>{{ 'pages.referenceData.path' | translate }}</label>
+          <input
+            formControlName="path"
+            type="text"
+            [placeholder]="'common.placeholder.name' | translate"
+          />
+          <ui-icon
+            icon="info_outline"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
+          ></ui-icon>
+        </div>
+        <!-- Value field to be displayed -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!csvLoading && type && valueFields.length > 0"
+        >
+          <label>{{ 'pages.referenceData.valueField' | translate }}</label>
+          <ui-select-menu formControlName="valueField">
+            <ui-select-option
+              *ngFor="let value of valueFields"
+              [value]="value.name"
+              >{{ value.name }}</ui-select-option
+            >
+          </ui-select-menu>
+        </div>
+      </div>
       <!-- Fields -->
       <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">
         <kendo-grid-column
@@ -101,21 +138,28 @@
           </ng-template>
         </kendo-grid-column>
         <ng-template kendoGridNoRecordsTemplate>
-          <div *ngIf="triedToGetFields && !loadingFields">
-            {{ 'pages.referenceData.fields.noFields' | translate }}
-          </div>
-          <ui-button
-            *ngIf="!loadingFields"
-            category="secondary"
-            variant="primary"
-            (click)="$event.preventDefault(); getFields()"
-            class="mx-auto my-1"
-          >
-            {{ 'pages.referenceData.fields.fetch' | translate }}
-          </ui-button>
+          {{ 'pages.referenceData.fields.noFields' | translate }}
           <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
         </ng-template>
       </kendo-grid>
+      <ui-button
+        *ngIf="!loadingFields"
+        category="secondary"
+        variant="primary"
+        (click)="$event.preventDefault(); getFields()"
+        class="mx-auto my-1"
+      >
+        {{ 'pages.referenceData.fields.fetch' | translate }}
+      </ui-button>
+      <ui-button
+        *ngIf="triedToGetFields && !loadingFields"
+        category="secondary"
+        variant="primary"
+        (click)="$event.preventDefault(); openDataModal()"
+        class="mx-auto mb-1 mt-4"
+      >
+        Show JSON Data
+      </ui-button>
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex flex-col gap-2">
@@ -150,43 +194,6 @@
       </div>
     </div>
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
-    <div class="flex gap-x-2">
-      <!-- Path -->
-      <div
-        class="flex-auto"
-        uiFormFieldDirective
-        *ngIf="['rest', 'graphql'].includes(type)"
-      >
-        <label>{{ 'pages.referenceData.path' | translate }}</label>
-        <input
-          formControlName="path"
-          type="text"
-          [placeholder]="'common.placeholder.name' | translate"
-        />
-        <ui-icon
-          icon="info_outline"
-          class="cursor-pointer"
-          variant="grey"
-          uiSuffix
-          [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
-        ></ui-icon>
-      </div>
-      <!-- Value field to be displayed -->
-      <div
-        uiFormFieldDirective
-        class="flex-1"
-        *ngIf="!csvLoading && type && valueFields.length > 0"
-      >
-        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
-        <ui-select-menu formControlName="valueField">
-          <ui-select-option
-            *ngFor="let value of valueFields"
-            [value]="value.name"
-            >{{ value.name }}</ui-select-option
-          >
-        </ui-select-menu>
-      </div>
-    </div>
     <!-- For graphql -->
     <!-- <div uiFormFieldDirective *ngIf="type === 'graphql'">
       <label>{{ 'pages.referenceData.graphQLFilter' | translate }} </label>

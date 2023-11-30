@@ -1,0 +1,24 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      JSON Data
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <!-- Style editor -->
+      <div class="h-[400px]">
+          <ngx-monaco-editor
+            class="!h-full"
+            [options]="editorOptions"
+            [formControl]="formControl"
+            (onInit)="initEditor"
+          ></ngx-monaco-editor>
+      </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+  </ng-container>
+</ui-dialog>
+  

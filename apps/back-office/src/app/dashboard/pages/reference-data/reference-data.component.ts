@@ -34,6 +34,7 @@ import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
 import { SnackbarService, TextareaComponent } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -111,6 +112,7 @@ export class ReferenceDataComponent
    * @param translateService Angular translate service
    * @param breadcrumbService Setups the breadcrumb component variables
    * @param refDataService Reference data service
+   * @param dialog dialog
    */
   constructor(
     private apollo: Apollo,
@@ -119,7 +121,8 @@ export class ReferenceDataComponent
     private router: Router,
     private translateService: TranslateService,
     private breadcrumbService: BreadcrumbService,
-    private refDataService: ReferenceDataService
+    private refDataService: ReferenceDataService,
+    public dialog: Dialog
   ) {
     super();
   }
@@ -178,11 +181,6 @@ export class ReferenceDataComponent
 
       form
         .get('apiConfiguration')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(clearFields);
-
-      form
-        .get('path')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe(clearFields);
 
@@ -593,10 +591,11 @@ export class ReferenceDataComponent
         query,
         type
       );
-      this.valueFields = fields;
+      this.valueFields = fields.fields;
       this.referenceForm?.get('fields')?.setValue(this.valueFields);
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
+        console.log(e);
         this.snackBar.openSnackBar(e.message, { error: true });
       }
     }
@@ -631,5 +630,16 @@ export class ReferenceDataComponent
           });
       }, 100);
     }
+  }
+
+  public async openDataModal() {
+    const { DataModalComponent } = await import(
+      './data-modal/data-modal.component'
+    );
+    this.dialog.open(DataModalComponent, {
+      data: {
+        jsonData: ['123'],
+      },
+    });
   }
 }

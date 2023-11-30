@@ -387,10 +387,10 @@ export class ReferenceDataService {
       for (const key of Object.keys(object[0])) {
         fields.push({ name: key, type: typeof object[0][key] });
       }
-      return fields;
+      return { fields: fields, data: object };
     }
 
-    return [];
+    return { fields: [], data: [] };
   }
 
   /**
