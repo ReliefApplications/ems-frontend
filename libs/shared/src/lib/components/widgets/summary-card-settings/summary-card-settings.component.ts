@@ -295,16 +295,6 @@ export class SummaryCardSettingsComponent
           this.referenceData = null;
         } else {
           this.referenceData = data.referenceData;
-          // extract data keys from metadata
-          const fields: any = [];
-          get(data, 'resource.metadata', []).map((metaField: any) => {
-            get(this.layout, 'query.fields', []).map((field: any) => {
-              if (field.name === metaField.name) {
-                const type = metaField.type;
-                fields.push({ ...field, type });
-              }
-            });
-          });
           this.fields = (this.referenceData.fields || [])
             .filter((field) => field && typeof field !== 'string')
             .map((field) => {

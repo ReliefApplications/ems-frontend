@@ -24,7 +24,10 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { EditorModule } from '../editor/editor.module';
-import { ResourceSelectComponent } from '../../controls/public-api';
+import {
+  ReferenceDataSelectComponent,
+  ResourceSelectComponent,
+} from '../../controls/public-api';
 
 /**
  * Module for the EditorSetting component
@@ -52,6 +55,7 @@ import { ResourceSelectComponent } from '../../controls/public-api';
     DividerModule,
     ToggleModule,
     ResourceSelectComponent,
+    ReferenceDataSelectComponent,
   ],
   exports: [EditorSettingsComponent],
   providers: [

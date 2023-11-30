@@ -7,6 +7,7 @@ import { GridLayoutService } from '../../../../../../../../libs/shared/src/lib/s
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
+import { ReferenceData } from '../../../../models/reference-data.model';
 
 /** Component for the record selection in the editor widget settings */
 @Component({
@@ -21,9 +22,11 @@ export class RecordSelectionTabComponent
   /** Widget form group */
   @Input() form!: EditorFormType;
   /** Current resource */
-  @Input() selectedResource: Resource | null = null;
+  @Input() referenceData: ReferenceData | null = null;
+  /** Current resource */
+  @Input() resource: Resource | null = null;
   /** Current layout */
-  @Input() selectedLayout: Layout | null = null;
+  @Input() layout: Layout | null = null;
   /** Current record id */
   public selectedRecordID: string | null = null;
 
@@ -46,7 +49,7 @@ export class RecordSelectionTabComponent
 
   /** Opens modal for layout selection/creation */
   public async addLayout() {
-    if (!this.selectedResource) {
+    if (!this.resource) {
       return;
     }
     const { AddLayoutModalComponent } = await import(
@@ -54,8 +57,8 @@ export class RecordSelectionTabComponent
     );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
-        resource: this.selectedResource,
-        hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
+        resource: this.resource,
+        hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -79,14 +82,14 @@ export class RecordSelectionTabComponent
     const dialogRef = this.dialog.open(EditLayoutModalComponent, {
       disableClose: true,
       data: {
-        layout: this.selectedLayout,
-        queryName: this.selectedResource?.queryName,
+        layout: this.layout,
+        queryName: this.resource?.queryName,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.selectedLayout) {
+      if (value && this.layout) {
         this.gridLayoutService
-          .editLayout(this.selectedLayout, value, this.selectedResource?.id)
+          .editLayout(this.layout, value, this.resource?.id)
           .subscribe(() => {
             if (this.form.get('layout')) {
               this.form

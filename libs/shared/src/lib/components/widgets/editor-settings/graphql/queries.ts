@@ -1,50 +1,5 @@
 import { gql } from 'apollo-angular';
 
-/** Graphql query for getting multiple resources with a cursor */
-export const GET_RESOURCES = gql`
-  query GetResources(
-    $first: Int
-    $afterCursor: ID
-    $sortField: String
-    $filter: JSON
-  ) {
-    resources(
-      first: $first
-      afterCursor: $afterCursor
-      sortField: $sortField
-      filter: $filter
-    ) {
-      edges {
-        node {
-          id
-          name
-          queryName
-          forms {
-            id
-            name
-          }
-          layouts {
-            totalCount
-          }
-          aggregations {
-            totalCount
-          }
-          metadata {
-            name
-            type
-          }
-        }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
-
 /** Graphql request for getting resource  */
 export const GET_RESOURCE = gql`
   query GetResource($id: ID!, $layout: [ID]) {
@@ -72,7 +27,6 @@ export const GET_RESOURCE = gql`
   }
 `;
 
-// === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
   query GetRecordById($id: ID!) {
@@ -88,6 +42,18 @@ export const GET_RECORD_BY_ID = gql`
         name
       }
       data
+    }
+  }
+`;
+
+/** Get reference data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
     }
   }
 `;
