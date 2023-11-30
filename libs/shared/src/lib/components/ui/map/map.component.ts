@@ -674,7 +674,6 @@ export class MapComponent
   /**
    * Initialize admin1 layer
    *
-   * @param layer layer
    * @param country country
    */
   async initializeAdmin1Layer(country: string) {
@@ -684,14 +683,45 @@ export class MapComponent
         const filteredData = data.features.filter((feature: any) => {
           return feature.properties['ISO3166-1-Alpha-3'] === country;
         });
-        this.admin1Layer = L.geoJSON(filteredData).addTo(this.map);
+        this.admin1Layer = L.geoJSON(filteredData, {
+          onEachFeature: this.onEachFeatureAdmin1.bind(this),
+        }).addTo(this.map);
         // set style background transparent and border as a thinner grey line
         this.admin1Layer.setStyle({
           fillColor: 'transparent',
-          color: '#808080',
-          weight: 0.8,
+          color: '#DCDCDC',
+          weight: 2.0,
         });
       });
+  }
+
+  /**
+   * Add border color in hovered states
+   *
+   * @param feature feature
+   * @param layer layer
+   */
+  private onEachFeatureAdmin1(feature: any, layer: any): void {
+    if (feature) {
+      layer.on({
+        mouseover: this.highlightFeature.bind(this),
+        mouseout: this.resetHighlightAdmin1.bind(this),
+      });
+    }
+  }
+
+  /**
+   * Reset highlight in a feature not hovered
+   *
+   * @param e event
+   */
+  private resetHighlightAdmin1(e: any): void {
+    const layer = e.target;
+
+    layer.setStyle({
+      color: '#DCDCDC',
+      weight: 2.0,
+    });
   }
 
   /**
