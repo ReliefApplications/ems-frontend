@@ -21,7 +21,6 @@ import {
   ResourceQueryResponse,
   ResourceSelectComponent,
 } from '@oort-front/shared';
-import { TemplateOptionsComponent } from './template-options.component';
 
 /**
  * Add form component (modal)
@@ -44,7 +43,6 @@ import { TemplateOptionsComponent } from './template-options.component';
     FormWrapperModule,
     ChipModule,
     ResourceSelectComponent,
-    TemplateOptionsComponent,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',

@@ -126,5 +126,12 @@
 
 <!-- Template to display templates available -->
 <ng-template #coreTemplate let-template>
-  <app-template-options [template]="template"></app-template-options>
+  <div class="flex gap-2 items-center">
+    <div uiChipList *ngIf="template?.core">
+      <ui-chip class="!rounded-lg" variant="grey">
+        {{ 'models.form.core' | translate }}
+      </ui-chip>
+    </div>
+    {{ template?.name }}
+  </div>
 </ng-template>
