@@ -58,18 +58,12 @@
             <label>{{
               'components.form.create.template.title' | translate
             }}</label>
-            <ui-graphql-select
-              valueField="id"
-              textField="name"
-              [query]="resourcesQuery"
+            <shared-resource-select
               formControlName="resource"
-              (searchChange)="onResourceSearchChange($event)"
-              [filterable]="true"
               [placeholder]="
                 'components.form.create.template.selectResource' | translate
               "
-            >
-            </ui-graphql-select>
+            ></shared-resource-select>
           </div>
           <ng-container *ngIf="form.controls.resource.value !== null">
             <ui-toggle formControlName="inheritsTemplate" class="mb-5">
