@@ -1035,18 +1035,24 @@ export class MapComponent
         (x.layer as L.Layer).remove();
       });
 
+    console.log(shouldDisplayStatuses);
+
     // get new layers, with filters applied
     this.resetLayers();
     const l = await this.getLayers(layersToGet ?? []);
     this.overlaysTree = [l.layers];
 
     flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
+      console.log('ici');
       if (x.layer) {
         const id = (x.layer as any).id;
+        console.log(id);
         if (!isNil(shouldDisplayStatuses[id])) {
           (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
           if (!shouldDisplayStatuses[id]) {
             x.layer.remove();
+          } else {
+            this.map.addLayer(x.layer);
           }
         }
       }
