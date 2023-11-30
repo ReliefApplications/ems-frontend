@@ -128,4 +128,20 @@
     >
     </shared-core-grid>
   </div>
+
+  <div class="flex flex-col mt-2" *ngIf="referenceData">
+    <div uiFormFieldDirective>
+      <label>{{
+        'models.dashboard.context.refData.element' | translate
+      }}</label>
+      <ui-select-menu formControlName="element" [filterable]="true">
+        <ui-select-option
+          *ngFor="let element of refDataElements"
+          [value]="element[$any(referenceData.valueField)]"
+        >
+          {{ element[$any(referenceData.valueField)] }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </div>
 </div>

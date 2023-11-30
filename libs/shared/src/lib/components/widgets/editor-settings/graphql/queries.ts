@@ -54,6 +54,7 @@ export const GET_REFERENCE_DATA = gql`
       name
       type
       fields
+      valueField
     }
   }
 `;
