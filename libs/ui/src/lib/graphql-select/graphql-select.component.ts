@@ -33,6 +33,7 @@ const ITEMS_PER_RELOAD = 10;
  * Component for a dropdown with pagination.
  * Extended by:
  * - resource select
+ * - reference data select
  *
  * BE AWARE: changes made on this component may affect extended ones!!!
  */

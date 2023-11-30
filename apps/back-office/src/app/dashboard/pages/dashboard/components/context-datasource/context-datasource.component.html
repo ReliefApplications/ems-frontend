@@ -46,17 +46,11 @@
         *ngIf="form.get('origin')?.value === 'refData'"
       >
         <label>{{ 'common.referenceData.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="refDatasQuery"
-          valueField="id"
-          textField="name"
-          [query]="refDatasQuery"
+        <shared-reference-data-select
           formControlName="refData"
           [selectedElements]="[refData]"
-        >
-        </ui-graphql-select>
+        ></shared-reference-data-select>
       </div>
-
       <!-- Field selection -->
       <div uiFormFieldDirective [outline]="false">
         <label>{{ 'models.dashboard.context.displayField' | translate }}</label>

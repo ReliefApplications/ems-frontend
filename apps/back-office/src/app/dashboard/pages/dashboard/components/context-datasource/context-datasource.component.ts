@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -13,19 +13,15 @@ import {
   PageContextT,
   ReferenceData,
   ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
   Resource,
   UnsubscribeComponent,
   ResourceQueryResponse,
   ResourceSelectComponent,
+  ReferenceDataSelectComponent,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
-import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  GET_REFERENCE_DATA,
-  GET_REFERENCE_DATAS,
-  GET_RESOURCE,
-} from './graphql/queries';
+import { Apollo } from 'apollo-angular';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import {
   ButtonModule,
   SelectMenuModule,
@@ -33,13 +29,8 @@ import {
   AlertModule,
   DialogModule,
   TooltipModule,
-  GraphQLSelectComponent,
-  GraphQLSelectModule,
   IconModule,
 } from '@oort-front/ui';
-
-/** Default items per resources query, for pagination */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Create a form group for the page context datasource selection
@@ -80,8 +71,8 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     SelectMenuModule,
     FormWrapperModule,
     AlertModule,
-    GraphQLSelectModule,
     ResourceSelectComponent,
+    ReferenceDataSelectComponent,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -90,21 +81,15 @@ export class ContextDatasourceComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  // Form
+  /** Context form group */
   public form!: ReturnType<typeof createContextDatasourceForm>;
-
-  // Data
+  /** Selected resource */
   public resource: Resource | null = null;
+  /** Selected reference data */
   public refData: ReferenceData | null = null;
+  /** Current display field */
   public displayField: string | null = null;
-
-  // Queries
-  public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
-
-  @ViewChild(GraphQLSelectComponent)
-  refDataSelect?: GraphQLSelectComponent;
-
-  // Available fields
+  /** Available fields */
   public availableFields: string[] = [];
 
   /**
@@ -159,6 +144,20 @@ export class ContextDatasourceComponent
     if (refDataID) {
       this.getReferenceData(refDataID);
     }
+    // Set subscription of resource
+    this.form.controls.refData.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // Set displayField to null
+        const displayField = this.form.get('displayField');
+        displayField?.setValue(null);
+
+        if (value) displayField?.enable();
+        else displayField?.disable();
+        if (value) {
+          this.getReferenceData(value);
+        }
+      });
 
     // do the same for ref data
 
@@ -166,16 +165,6 @@ export class ContextDatasourceComponent
       !!this.form.get('resource')?.value || !!this.form.get('refData')?.value;
 
     if (!sourceSelected) this.form.get('displayField')?.disable();
-  }
-
-  /** Initializes queries and fetches initial data */
-  private initQueries(): void {
-    this.refDatasQuery = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
-      query: GET_REFERENCE_DATAS,
-      variables: {
-        first: ITEMS_PER_PAGE,
-      },
-    });
   }
 
   /**
