@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EditorFormType } from '../editor-settings.component';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../../../../../libs/shared/src/lib/services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -31,12 +30,10 @@ export class RecordSelectionTabComponent
   /**
    * Component for the record selection in the editor widget settings
    *
-   * @param apollo Apollo service
    * @param dialog Dialog service
    * @param gridLayoutService Shared layout service
    */
   constructor(
-    private apollo: Apollo,
     private dialog: Dialog,
     private gridLayoutService: GridLayoutService
   ) {

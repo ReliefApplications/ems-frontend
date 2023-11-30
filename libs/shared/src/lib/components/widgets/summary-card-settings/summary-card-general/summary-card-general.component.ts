@@ -1,22 +1,11 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardFormT } from '../summary-card-settings.component';
-import { Apollo, QueryRef } from 'apollo-angular';
 import { Aggregation } from '../../../../models/aggregation.model';
-import {
-  Resource,
-  ResourcesQueryResponse,
-} from '../../../../models/resource.model';
+import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
@@ -36,13 +25,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
-import { GET_RESOURCES } from '../graphql/queries';
-import { Form } from '../../../../models/form.model';
-
-/** Default number of resources to be fetched per page */
-const ITEMS_PER_PAGE = 10;
-/** Define max width of summary card */
-const MAX_COL_SPAN = 8;
+import { ResourceSelectComponent } from '../../../controls/resource-select/resource-select.component';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -64,105 +47,34 @@ const MAX_COL_SPAN = 8;
     RadioModule,
     CheckboxModule,
     TooltipModule,
+    ResourceSelectComponent,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
 })
-export class SummaryCardGeneralComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class SummaryCardGeneralComponent extends UnsubscribeComponent {
+  /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
-
+  /** Selected resource */
   @Input() selectedResource: Resource | null = null;
+  /** Selected layout */
   @Input() selectedLayout: Layout | null = null;
+  /** Selected aggregation */
   @Input() selectedAggregation: Aggregation | null = null;
-  @Input() templates: Form[] = [];
-
-  @Output() resourceChange = new EventEmitter<Resource | null>();
-  @Output() layoutChange = new EventEmitter<Layout | null>();
-  @Output() aggregationChange = new EventEmitter<Aggregation | null>();
-
-  // === GRID ===
-  colsNumber = MAX_COL_SPAN;
-
-  // === DATA ===
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-
-  /**
-   * Changes display when windows size changes.
-   *
-   * @param event window resize event
-   */
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-  }
 
   /**
    * Component for the general summary cards tab
    *
    * @param dialog Shared dialog service
-   * @param apollo Apollo service
    * @param layoutService Shared layout service
    * @param aggregationService Shared aggregation service
    */
   constructor(
     private dialog: Dialog,
-    private apollo: Apollo,
     private layoutService: GridLayoutService,
     private aggregationService: AggregationService
   ) {
     super();
-  }
-
-  ngOnInit(): void {
-    this.colsNumber = this.setColsNumber(window.innerWidth);
-
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-
-    // Resource change
-    this.formGroup
-      .get('card.resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((resource) => {
-        if (!resource) this.resourceChange.emit(null);
-        else
-          this.resourceChange.emit(
-            this.resourcesQuery
-              .getCurrentResult()
-              .data.resources.edges.find((r) => r.node.id === resource)?.node ||
-              null
-          );
-      });
-  }
-
-  /**
-   * Changes the number of displayed columns.
-   *
-   * @param width width of the screen.
-   * @returns new number of cols.
-   */
-  private setColsNumber(width: number): number {
-    if (width <= 480) {
-      return 1;
-    }
-    if (width <= 600) {
-      return 2;
-    }
-    if (width <= 800) {
-      return 4;
-    }
-    if (width <= 1024) {
-      return 6;
-    }
-    return MAX_COL_SPAN;
   }
 
   /** Opens modal for layout selection/creation */
@@ -185,7 +97,6 @@ export class SummaryCardGeneralComponent
           this.formGroup.get('card.layout')?.setValue(value);
         } else {
           this.formGroup.get('card.layout')?.setValue((value as any).id);
-          this.layoutChange.emit(value);
         }
       }
     });
@@ -209,8 +120,12 @@ export class SummaryCardGeneralComponent
       if (value && this.selectedLayout) {
         this.layoutService
           .editLayout(this.selectedLayout, value, this.selectedResource?.id)
-          .subscribe((res: any) => {
-            this.layoutChange.emit(res.data?.editLayout || null);
+          .subscribe(() => {
+            if (this.formGroup.get('card.layout')) {
+              this.formGroup
+                .get('card.layout')
+                ?.setValue(this.formGroup.get('card.layout')?.value || null);
+            }
           });
       }
     });
@@ -236,7 +151,6 @@ export class SummaryCardGeneralComponent
           this.formGroup.get('card.aggregation')?.setValue(value);
         } else {
           this.formGroup.get('card.aggregation')?.setValue((value as any).id);
-          this.aggregationChange.emit(value);
         }
       }
     });
@@ -264,32 +178,16 @@ export class SummaryCardGeneralComponent
             value,
             this.selectedResource?.id
           )
-          .subscribe((res) => {
-            this.aggregationChange.emit(res.data?.editAggregation || null);
+          .subscribe(() => {
+            if (this.formGroup.get('card.aggregation')) {
+              this.formGroup
+                .get('card.aggregation')
+                ?.setValue(
+                  this.formGroup.get('card.aggregation')?.value || null
+                );
+            }
           });
       }
-    });
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    const variables = this.resourcesQuery.variables;
-    this.resourcesQuery.refetch({
-      ...variables,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
     });
   }
 }
