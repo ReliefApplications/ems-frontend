@@ -1297,9 +1297,7 @@ export class CoreGridComponent
 
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
-    console.log(this.queryFilter, 'filter');
     const body = {
-      ids,
       filter:
         e.records === 'selected'
           ? {
