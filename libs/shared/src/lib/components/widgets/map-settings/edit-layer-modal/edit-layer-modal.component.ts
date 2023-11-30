@@ -53,8 +53,13 @@ import {
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
-import { FormArray, FormBuilder } from '@angular/forms';
-import { ResourceQueryResponse } from '../../../../models/resource.model';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../../models/resource.model';
+import { Layout } from '../../../../models/layout.model';
+import { Aggregation } from '../../../../models/aggregation.model';
 import { DomPortal, PortalModule } from '@angular/cdk/portal';
 
 /**
@@ -103,8 +108,11 @@ export class EditLayerModalComponent
   /** Current Layer */
   private _layer!: Layer;
   /** Selected resource */
-  public resource: BehaviorSubject<ResourceQueryResponse | null> =
-    new BehaviorSubject<ResourceQueryResponse | null>(null);
+  public resource: Resource | null = null;
+  /** Selected layout */
+  public layout: Layout | null = null;
+  /** Selected aggregation */
+  public aggregation: Aggregation | null = null;
   /** Available fields */
   public fields = new BehaviorSubject<Fields[]>([]);
   /** Available fields as observable */
@@ -345,21 +353,56 @@ export class EditLayerModalComponent
         },
       });
 
-    this.form
-      .get('datasource')
-      ?.valueChanges.pipe(
-        startWith(this.form.get('datasource')?.value),
-        pairwise(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ([prev, next]) => {
-          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
+    if (this.form.controls.datasource) {
+      this.form
+        .get('datasource.resource')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          console.log('resource');
+          const datasourceGroup = this.form.controls.datasource as FormGroup;
+          datasourceGroup.get('layout')?.setValue(null, { emitEvent: false });
+          datasourceGroup
+            .get('aggregation')
+            ?.setValue(null, { emitEvent: false });
+          datasourceGroup.get('geoField')?.setValue(null, { emitEvent: false });
+          datasourceGroup
+            .get('adminField')
+            ?.setValue(null, { emitEvent: false });
+          datasourceGroup
+            .get('latitudeField')
+            ?.setValue(null, { emitEvent: false });
+          datasourceGroup
+            .get('longitudeField')
+            ?.setValue(null, { emitEvent: false });
+          this.layout = null;
+          this.aggregation = null;
+          if (value) {
             this.getResource();
+          } else {
+            this.resource = null;
           }
-          // else on aggregation implementation add it here
-        },
-      });
+        });
+      this.form
+        .get('datasource.layout')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value) {
+            this.getResource();
+          } else {
+            this.layout = null;
+          }
+        });
+      this.form
+        .get('datasource.aggregation')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value) {
+            this.getResource();
+          } else {
+            this.aggregation = null;
+          }
+        });
+    }
 
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
       next: (event: MapEvent) => this.handleMapEvent(event),
@@ -419,10 +462,12 @@ export class EditLayerModalComponent
 
   /** If the form has a resource, fetch it */
   getResource(): void {
-    const resourceID = this.form.get('datasource')?.value?.resource;
+    this.fields.next([]);
+    const formValue = this.form.getRawValue();
+    const resourceID = get(formValue, 'datasource.resource');
     if (resourceID) {
-      const layoutID = this.form.get('datasource')?.value?.layout;
-      const aggregationID = this.form.get('datasource')?.value?.aggregation;
+      const layoutID = get(formValue, 'datasource.layout');
+      const aggregationID = get(formValue, 'datasource.aggregation');
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
@@ -434,23 +479,23 @@ export class EditLayerModalComponent
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
-          this.resource.next(data);
+          this.resource = data.resource;
           // Update fields
           if (layoutID) {
-            const layout = get(data, 'resource.layouts.edges[0].node', null);
-            this.fields.next(this.mapLayersService.getQueryFields(layout));
+            this.layout = get(data, 'resource.layouts.edges[0].node', null);
+            this.fields.next(this.mapLayersService.getQueryFields(this.layout));
           } else {
             if (aggregationID) {
-              const aggregation = get(
+              this.aggregation = get(
                 data,
                 'resource.aggregations.edges[0].node',
                 null
               );
               this.fields.next(
-                aggregation
+                this.aggregation
                   ? this.mapLayersService.getAggregationFields(
                       data.resource,
-                      aggregation
+                      this.aggregation
                     )
                   : []
               );

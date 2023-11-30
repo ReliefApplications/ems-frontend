@@ -15,6 +15,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
+import { ResourceSelectComponent } from '../../../../controls/resource-select/resource-select.component';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -36,6 +37,7 @@ import { PortalModule } from '@angular/cdk/portal';
     AlertModule,
     TooltipModule,
     PortalModule,
+    ResourceSelectComponent,
   ],
   exports: [LayerDatasourceComponent],
 })

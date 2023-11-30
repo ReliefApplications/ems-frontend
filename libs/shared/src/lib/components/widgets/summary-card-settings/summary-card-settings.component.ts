@@ -47,7 +47,7 @@ export class SummaryCardSettingsComponent
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
   /** Widget form group */
-  public widgetFormGroup: SummaryCardFormT | undefined;
+  public widgetFormGroup!: SummaryCardFormT;
   /** Current resource */
   public selectedResource: Resource | null = null;
   /** Current layout */
@@ -124,7 +124,6 @@ export class SummaryCardSettingsComponent
     this.widgetFormGroup.controls.card.controls.aggregation.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        console.log('update aggregation');
         // disable searchable if aggregation is selected
         if (value) {
           const searchableControl = this.widgetFormGroup?.get(
@@ -145,6 +144,9 @@ export class SummaryCardSettingsComponent
               this.widgetFormGroup?.controls.card.value.resource
             );
           }
+        } else {
+          this.selectedAggregation = null;
+          this.customAggregation = null;
         }
       });
 
@@ -161,6 +163,8 @@ export class SummaryCardSettingsComponent
               this.widgetFormGroup?.controls.card.value.resource
             );
           }
+        } else {
+          this.selectedLayout = null;
         }
       });
 
@@ -198,10 +202,9 @@ export class SummaryCardSettingsComponent
    * @param id resource id
    */
   private getResource(id: string): void {
-    const form = this.widgetFormGroup;
-    if (!form) return;
-    const layoutID = form.get('card.layout')?.value;
-    const aggregationID = form.get('card.aggregation')?.value;
+    const formValue = this.widgetFormGroup.getRawValue();
+    const layoutID = get(formValue, 'card.layout');
+    const aggregationID = get(formValue, 'card.aggregation');
     this.fields = [];
     this.apollo
       .query<ResourceQueryResponse>({
@@ -214,9 +217,9 @@ export class SummaryCardSettingsComponent
       })
       .subscribe((res) => {
         if (res.errors) {
-          form.get('card.resource')?.patchValue(null);
-          form.get('card.layout')?.patchValue(null);
-          form.get('card.aggregation')?.patchValue(null);
+          this.widgetFormGroup.get('card.resource')?.patchValue(null);
+          this.widgetFormGroup.get('card.layout')?.patchValue(null);
+          this.widgetFormGroup.get('card.aggregation')?.patchValue(null);
           this.selectedResource = null;
           this.selectedLayout = null;
           this.selectedAggregation = null;
