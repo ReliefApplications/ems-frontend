@@ -173,7 +173,6 @@ export class MapComponent
   private admin0Layer: any;
   /** Admin1 layer */
   private admin1Layer: any;
-  private admin1Data: any;
 
   /**
    * Map widget component
@@ -315,7 +314,7 @@ export class MapComponent
     this.map.on('click', (event) => {
       const admin0LayersList = Object.values(this.admin0Layer._layers);
       // filter country by country clicked
-      const filteredCountry: any = admin0LayersList.filter((layer: any) => {
+      const filteredCountry: any = admin0LayersList.find((layer: any) => {
         if (layer.feature) {
           if (
             booleanPointInPolygon(
@@ -329,8 +328,8 @@ export class MapComponent
         return false;
       });
       let country = '';
-      if (filteredCountry[0]) {
-        country = filteredCountry[0].feature.properties.name;
+      if (filteredCountry) {
+        country = filteredCountry.feature.properties.adm0_a3;
       }
       if (country) {
         if (this.admin1Layer) {
@@ -339,7 +338,6 @@ export class MapComponent
         this.initializeAdmin1Layer(country);
       }
     });
-
     // The scroll jump issue only happens on chrome client browser
     // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
     if (this.platform.WEBKIT || this.platform.BLINK) {
@@ -616,8 +614,61 @@ export class MapComponent
     this.getAdmin0()
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
-        this.admin0Layer = L.geoJSON(data).addTo(this.map);
+        this.admin0Layer = L.geoJSON(data, {
+          onEachFeature: this.onEachFeature.bind(this),
+        }).addTo(this.map);
+        // set style background and border transparent
+        this.admin0Layer.setStyle({
+          fillColor: 'transparent',
+          color: 'transparent',
+        });
       });
+  }
+
+  /**
+   * Add border color in hovered countries
+   *
+   * @param feature feature
+   * @param layer layer
+   */
+  private onEachFeature(feature: any, layer: any): void {
+    if (feature) {
+      layer.on({
+        mouseover: this.highlightFeature.bind(this),
+        mouseout: this.resetHighlight.bind(this),
+      });
+    }
+  }
+
+  /**
+   * Highlight a feature hovered
+   *
+   * @param e event
+   */
+  private highlightFeature(e: any): void {
+    const layer = e.target;
+
+    layer.setStyle({
+      weight: 0.6,
+      color: 'black',
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+      layer.bringToFront();
+    }
+  }
+
+  /**
+   * Reset highlight in a feature not hovered
+   *
+   * @param e event
+   */
+  private resetHighlight(e: any): void {
+    const layer = e.target;
+
+    layer.setStyle({
+      color: 'transparent',
+    });
   }
 
   /**
@@ -631,9 +682,15 @@ export class MapComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
         const filteredData = data.features.filter((feature: any) => {
-          return feature.properties.country === country;
+          return feature.properties['ISO3166-1-Alpha-3'] === country;
         });
         this.admin1Layer = L.geoJSON(filteredData).addTo(this.map);
+        // set style background transparent and border as a thinner grey line
+        this.admin1Layer.setStyle({
+          fillColor: 'transparent',
+          color: '#808080',
+          weight: 0.8,
+        });
       });
   }
 
