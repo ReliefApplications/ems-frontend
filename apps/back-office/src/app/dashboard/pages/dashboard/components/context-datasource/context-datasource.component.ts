@@ -17,7 +17,7 @@ import {
   Resource,
   UnsubscribeComponent,
   ResourceQueryResponse,
-  ResourcesQueryResponse,
+  ResourceSelectComponent,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -25,7 +25,6 @@ import {
   GET_REFERENCE_DATA,
   GET_REFERENCE_DATAS,
   GET_RESOURCE,
-  GET_RESOURCES,
 } from './graphql/queries';
 import {
   ButtonModule,
@@ -82,6 +81,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     FormWrapperModule,
     AlertModule,
     GraphQLSelectModule,
+    ResourceSelectComponent,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -99,11 +99,8 @@ export class ContextDatasourceComponent
   public displayField: string | null = null;
 
   // Queries
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
 
-  @ViewChild(GraphQLSelectComponent)
-  resourceSelect?: GraphQLSelectComponent;
   @ViewChild(GraphQLSelectComponent)
   refDataSelect?: GraphQLSelectComponent;
 
@@ -127,8 +124,6 @@ export class ContextDatasourceComponent
   }
 
   ngOnInit(): void {
-    this.initQueries();
-
     // When origin changes, reset the other fields
     this.form
       .get('origin')
@@ -139,30 +134,33 @@ export class ContextDatasourceComponent
         this.form.get('displayField')?.setValue(null);
       });
 
-    // When resource or refData changes, reset the displayField
-    // and update the respective variables values
-    (['resource', 'refData'] as const).forEach((field) => {
-      this.form
-        .get(field)
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          // Set displayField to null
-          const displayField = this.form.get('displayField');
-          displayField?.setValue(null);
+    // If the form has a resource, fetch it
+    const resourceID = this.form.get('resource')?.value;
+    if (resourceID) {
+      this.getResource(resourceID);
+    }
+    // Set subscription of resource
+    this.form.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // Set displayField to null
+        const displayField = this.form.get('displayField');
+        displayField?.setValue(null);
 
-          if (value) displayField?.enable();
-          else displayField?.disable();
+        if (value) displayField?.enable();
+        else displayField?.disable();
+        if (value) {
+          this.getResource(value);
+        }
+      });
 
-          // Update the respective variables values
-          this[field] =
-            this[`${field}Select`]?.elements
-              .getValue()
-              .find((x) => x.id === value) ?? null;
+    // If form has a refData, fetch it
+    const refDataID = this.form.get('refData')?.value;
+    if (refDataID) {
+      this.getReferenceData(refDataID);
+    }
 
-          // Update the displayField options
-          this.updateDisplayFieldOptions();
-        });
-    });
+    // do the same for ref data
 
     const sourceSelected =
       !!this.form.get('resource')?.value || !!this.form.get('refData')?.value;
@@ -172,52 +170,50 @@ export class ContextDatasourceComponent
 
   /** Initializes queries and fetches initial data */
   private initQueries(): void {
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-
     this.refDatasQuery = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
       query: GET_REFERENCE_DATAS,
       variables: {
         first: ITEMS_PER_PAGE,
       },
     });
+  }
 
-    // If the form has a resource, fetch it
-    const resourceID = this.form.get('resource')?.value;
-    if (resourceID) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: resourceID,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.resource = data.resource;
-          this.updateDisplayFieldOptions();
-        });
-    }
+  /**
+   * Get reference data by id
+   *
+   * @param id reference data id
+   */
+  private getReferenceData(id: string) {
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id,
+        },
+      })
+      .subscribe(({ data }) => {
+        this.refData = data.referenceData;
+        this.updateDisplayFieldOptions();
+      });
+  }
 
-    // If form has a refData, fetch it
-    const refDataID = this.form.get('refData')?.value;
-    if (refDataID) {
-      this.apollo
-        .query<ReferenceDataQueryResponse>({
-          query: GET_REFERENCE_DATA,
-          variables: {
-            id: refDataID,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.refData = data.referenceData;
-          this.updateDisplayFieldOptions();
-        });
-    }
+  /**
+   * Get resource by id
+   *
+   * @param id resource id
+   */
+  private getResource(id: string) {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+        },
+      })
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
+        this.updateDisplayFieldOptions();
+      });
   }
 
   /** Updates the options for the display field select */
@@ -239,28 +235,6 @@ export class ContextDatasourceComponent
       default:
         this.availableFields = [];
     }
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    this.resourcesQuery.refetch({
-      first: ITEMS_PER_PAGE,
-      sortField: 'name',
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
   }
 
   /** Emits the selected context */

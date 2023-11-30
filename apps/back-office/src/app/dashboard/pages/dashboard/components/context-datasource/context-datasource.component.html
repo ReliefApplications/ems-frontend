@@ -33,17 +33,10 @@
         *ngIf="form.get('origin')?.value === 'resource'"
       >
         <label>{{ 'common.resource.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="resourcesQuery"
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
+        <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        >
-        </ui-graphql-select>
+        ></shared-resource-select>
       </div>
 
       <!-- Reference data selection  -->

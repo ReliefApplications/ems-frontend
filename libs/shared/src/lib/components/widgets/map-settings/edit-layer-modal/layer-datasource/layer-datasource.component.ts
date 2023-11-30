@@ -80,9 +80,6 @@ export class LayerDatasourceComponent
   @Input() mapPortal?: DomPortal;
   /** Emit new fields */
   @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
-  /** Reference to resource graphql select */
-  @ViewChild(GraphQLSelectComponent)
-  resourceSelect?: GraphQLSelectComponent;
   /** Reference to reference data graphql select */
   @ViewChild(GraphQLSelectComponent)
   refDataSelect?: GraphQLSelectComponent;
