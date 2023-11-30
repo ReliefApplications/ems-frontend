@@ -66,7 +66,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 import { HttpClient } from '@angular/common/http';
-import * as pointInPolygon from 'point-in-polygon';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 
 /** Component for the map widget */
 @Component({
@@ -313,32 +313,17 @@ export class MapComponent
     });
 
     this.map.on('click', (event) => {
-      const latlng = [event.latlng.lng, event.latlng.lat];
       const admin0LayersList = Object.values(this.admin0Layer._layers);
       // filter country by country clicked
       const filteredCountry: any = admin0LayersList.filter((layer: any) => {
         if (layer.feature) {
-          for (const coordinate of layer.feature.geometry.coordinates) {
-            // multi polygons
-            if (coordinate.length === 1) {
-              if (pointInPolygon(latlng, coordinate[0])) {
-                return true;
-              }
-            } else {
-              // multi polygons nested
-              if (typeof coordinate[0][0] != 'number') {
-                for (const c of coordinate) {
-                  if (pointInPolygon(latlng, c)) {
-                    return true;
-                  }
-                }
-                // polygon
-              } else {
-                if (pointInPolygon(latlng, coordinate)) {
-                  return true;
-                }
-              }
-            }
+          if (
+            booleanPointInPolygon(
+              [event.latlng.lng, event.latlng.lat],
+              layer.feature
+            )
+          ) {
+            return true;
           }
         }
         return false;
