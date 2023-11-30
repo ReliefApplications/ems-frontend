@@ -10,9 +10,16 @@
     ></shared-tagbox>
   </div>
   <!-- Pipeline builder -->
-  <shared-pipeline
-    [fields$]="selectedFields$"
-    [metaFields$]="metaFields$"
-    [pipelineForm]="pipelineForm"
-  ></shared-pipeline>
+  <div class="flex pipeline-content">
+    <shared-pipeline
+      [fields$]="selectedFields$"
+      [metaFields$]="metaFields$"
+      [pipelineForm]="pipelineForm"
+      (previewPipelineForm)="onPreviewPipelineFormChange($event)"
+    ></shared-pipeline>
+    <div class="aggregation-preview">{{ aggregationPreview | json }} oii</div>
+  </div>
+  <ui-button icon="remove_red_eye" category="primary" (click)="togglePreview()">
+    {{ 'components.aggregationBuilder.togglePreview' | translate }}
+  </ui-button>
 </ng-container>

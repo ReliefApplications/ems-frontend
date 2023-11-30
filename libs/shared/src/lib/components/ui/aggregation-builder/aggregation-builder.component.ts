@@ -45,6 +45,9 @@ export class AggregationBuilderComponent
   private mappingFields = new BehaviorSubject<any[]>([]);
   public mappingFields$!: Observable<any[]>;
 
+  public pipelinePreview: any;
+
+  public aggregationPreview: string = 'aggregation preview';
   /**
    * Getter for the pipeline of the aggregation form
    *
@@ -127,6 +130,30 @@ export class AggregationBuilderComponent
    */
   private initFields(): void {
     this.updateFields();
+  }
+
+  public togglePreview() {
+    var aggregationPreview = document.querySelector(
+      '.aggregation-preview'
+    ) as HTMLElement;
+    var pipelineContainer = document.getElementById(
+      'shared-pipeline'
+    ) as HTMLElement;
+    if (
+      aggregationPreview.style.display === 'none' ||
+      aggregationPreview.style.display === ''
+    ) {
+      aggregationPreview.style.display = 'block';
+      pipelineContainer.style.flex = '1';
+    } else {
+      aggregationPreview.style.display = 'none';
+      pipelineContainer.style.flex = '1';
+    }
+  }
+
+  onPreviewPipelineFormChange(pipeline: any) {
+    this.pipelinePreview = pipeline;
+    console.log('onPreviewPipelineFormChange', this.pipelinePreview);
   }
 
   /**

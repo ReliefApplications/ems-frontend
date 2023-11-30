@@ -19,6 +19,16 @@
             | translate
         "
       ></ui-icon>
+      <ui-checkbox
+        (click)="$event.stopPropagation()"
+        [checked]="checked"
+        (change)="onCheckboxChange(index)"
+        class="includeStageCheckbox"
+      >
+        <ng-container ngProjectAs="label">
+          {{ 'components.aggregationBuilder.stages.enabled' | translate }}
+        </ng-container>
+      </ui-checkbox>
     </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">

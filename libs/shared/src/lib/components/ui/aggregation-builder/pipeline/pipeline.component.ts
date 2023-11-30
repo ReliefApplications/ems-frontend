@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { Observable } from 'rxjs';
@@ -8,6 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import * as _ from 'lodash';
 
 /**
  * Aggregation pipeline component.
@@ -37,6 +38,12 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
 
+  public previewPipelineForm: UntypedFormArray = new UntypedFormArray([]);
+
+  public checked: boolean = true;
+
+  @Output() previewPipelineFormChange = new EventEmitter<any>();
+
   /**
    * Aggregation pipeline component.
    *
@@ -48,6 +55,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
+    this.previewPipelineForm = _.cloneDeep(this.pipelineForm);
     this.fields$.subscribe((fields: any[]) => {
       this.initialFields = [...fields];
       this.fieldsPerStage = [];
@@ -59,7 +67,18 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500))
       .pipe(takeUntil(this.destroy$))
-      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
+      .subscribe((pipeline: any[]) => {
+        this.updateFieldsPerStage(pipeline);
+      });
+  }
+
+  onCheckboxChange(index: number) {
+    if (this.previewPipelineForm.at(index).enabled == false) {
+      this.previewPipelineForm.at(index).enable();
+    } else {
+      this.previewPipelineForm.at(index).disable();
+    }
+    this.previewPipelineFormChange.emit(this.previewPipelineForm.value);
   }
 
   /**
@@ -94,6 +113,8 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
    */
   public addStage(type: string) {
     this.pipelineForm.push(addStage({ type }));
+    this.previewPipelineForm.push(addStage({ type }));
+    this.previewPipelineFormChange.emit(this.previewPipelineForm.value);
   }
 
   /**
@@ -103,6 +124,8 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
    */
   public deleteStage(index: number) {
     this.pipelineForm.removeAt(index);
+    this.previewPipelineForm.removeAt(index);
+    this.previewPipelineFormChange.emit(this.previewPipelineForm.value);
   }
 
   /**
@@ -115,5 +138,11 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
 
     this.pipelineForm.removeAt(event.previousIndex);
     this.pipelineForm.insert(event.currentIndex, temp);
+
+    const tempPreview = this.previewPipelineForm.at(event.previousIndex);
+    this.previewPipelineForm.removeAt(event.previousIndex);
+    this.previewPipelineForm.insert(event.currentIndex, tempPreview);
+
+    this.previewPipelineFormChange.emit(this.previewPipelineForm.value);
   }
 }
