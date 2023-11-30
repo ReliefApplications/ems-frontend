@@ -62,7 +62,6 @@ export class GridSettingsComponent
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
-  public filteredQueries: any[] = [];
   public resource: Resource | null = null;
 
   /** Stores the selected tab */
