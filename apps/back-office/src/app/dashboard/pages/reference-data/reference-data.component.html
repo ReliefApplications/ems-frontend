@@ -152,13 +152,13 @@
         {{ 'pages.referenceData.fields.fetch' | translate }}
       </ui-button>
       <ui-button
-        *ngIf="triedToGetFields && !loadingFields"
+      *ngIf="triedToGetFields && !loadingFields"
         category="secondary"
         variant="primary"
         (click)="$event.preventDefault(); openDataModal()"
         class="mx-auto mb-1 mt-4"
       >
-        Show JSON Data
+      {{ 'pages.referenceData.showData' | translate }}
       </ui-button>
     </div>
     <!-- CSV Input for static type -->

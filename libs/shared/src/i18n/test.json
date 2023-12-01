@@ -2392,6 +2392,10 @@
 				"graphQLFilter": "******"
 			},
 			"queryName": "******",
+			"showData": "******",
+			"showDataModal": {
+				"title": "******"
+			},
 			"tooltip": {
 				"graphQLFilter": "****** {{lastUpdate}} ******",
 				"path": "******"

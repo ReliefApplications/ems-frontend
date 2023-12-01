@@ -1,24 +1,34 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
- * Data modal for referenceData
+ * Modal for referenceData data
  */
 @Component({
   selector: 'app-data-modal',
   standalone: true,
-  imports: [DialogModule, MonacoEditorModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    DialogModule,
+    MonacoEditorModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    ButtonModule,
+  ],
   templateUrl: './data-modal.component.html',
   styleUrls: ['./data-modal.component.scss'],
 })
-export class DataModalComponent {
+export class DataModalComponent implements OnInit {
+  /** Monaco editor configuration, for raw edition */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'json',
-    fixedOverflowWidgets: false,
+    fixedOverflowWidgets: true,
   };
   public formControl = new FormControl('');
 
@@ -35,14 +45,16 @@ export class DataModalComponent {
     public data: {
       jsonData: any;
     }
-  ) {
-    this.formControl.setValue(data.jsonData);
+  ) {}
+
+  ngOnInit(): void {
+    this.formControl.setValue(JSON.stringify(this.data.jsonData));
   }
 
   /**
    * On initialization of editor, format code
    *
-   * @param editor monaco editor used for scss edition
+   * @param editor monaco editor used for json edition
    */
   public initEditor(editor: any): void {
     if (editor) {

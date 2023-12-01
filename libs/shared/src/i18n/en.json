@@ -2392,6 +2392,10 @@
 				"graphQLFilter": "Enter a filter to be used once choices are already cached"
 			},
 			"queryName": "Query Name",
+			"showData": "Show JSON Data",
+			"showDataModal": {
+				"title": "JSON Data"
+			},
 			"tooltip": {
 				"graphQLFilter": "You can use {{lastUpdate}} to dynamically get the last fetch date in SQL format.",
 				"path": "Uses JSONPath syntax to extract items from the JSON response. Examples: $.data[*].name, $.data..countries, $.data.countries.*"

@@ -68,6 +68,7 @@ export class ReferenceDataComponent
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   public valueFields: NonNullable<ReferenceData['fields']> = [];
+  public fieldsData: any;
   public triedToGetFields = false;
   public loadingFields = false;
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
@@ -592,10 +593,10 @@ export class ReferenceDataComponent
         type
       );
       this.valueFields = fields.fields;
+      this.fieldsData = fields.data;
       this.referenceForm?.get('fields')?.setValue(this.valueFields);
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
-        console.log(e);
         this.snackBar.openSnackBar(e.message, { error: true });
       }
     }
@@ -639,7 +640,7 @@ export class ReferenceDataComponent
     );
     this.dialog.open(DataModalComponent, {
       data: {
-        jsonData: ['123'],
+        jsonData: this.fieldsData,
       },
     });
   }
