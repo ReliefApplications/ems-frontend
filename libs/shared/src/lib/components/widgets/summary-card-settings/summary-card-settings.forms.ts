@@ -115,6 +115,7 @@ export const templateRequiredWhenAddRecord = (
 const createCardForm = (value?: any) => {
   return fb.group({
     title: get<string>(value, 'title', 'New Card'),
+    referenceData: get<string | null>(value, 'referenceData', null),
     resource: get<string | null>(value, 'resource', null),
     template: get<string | null>(value, 'template', null),
     layout: get<string | null>(value, 'layout', null),

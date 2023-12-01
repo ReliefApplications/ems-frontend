@@ -58,18 +58,12 @@
             <label>{{
               'components.form.create.template.title' | translate
             }}</label>
-            <ui-graphql-select
-              valueField="id"
-              textField="name"
-              [query]="resourcesQuery"
+            <shared-resource-select
               formControlName="resource"
-              (searchChange)="onResourceSearchChange($event)"
-              [filterable]="true"
               [placeholder]="
                 'components.form.create.template.selectResource' | translate
               "
-            >
-            </ui-graphql-select>
+            ></shared-resource-select>
           </div>
           <ng-container *ngIf="form.controls.resource.value !== null">
             <ui-toggle formControlName="inheritsTemplate" class="mb-5">
@@ -91,19 +85,23 @@
                 <label>{{
                   'components.form.create.template.from' | translate
                 }}</label>
-                <ui-select-menu formControlName="template">
+                <ui-select-menu
+                  formControlName="template"
+                  [customTemplate]="{
+                    template: formOptionTmpl,
+                    context: { $implicit: selectedTemplate }
+                  }"
+                >
                   <ui-select-option
                     *ngFor="let template of templates"
                     [value]="template.id"
                   >
-                    {{ template.name }}
-                    <ng-container ngProjectAs="icon">
-                      <div uiChipList *ngIf="template.core">
-                        <ui-chip class="!rounded-lg" variant="grey">{{
-                          'models.form.core' | translate
-                        }}</ui-chip>
-                      </div>
-                    </ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="
+                        formOptionTmpl;
+                        context: { $implicit: template }
+                      "
+                    ></ng-container>
                   </ui-select-option>
                 </ui-select-menu>
               </div>
@@ -128,3 +126,15 @@
     </ui-button>
   </ng-container>
 </ui-dialog>
+
+<!-- Template to display templates available -->
+<ng-template #formOptionTmpl let-template>
+  <div class="flex gap-2 items-center">
+    <div uiChipList *ngIf="template?.core">
+      <ui-chip class="!rounded-lg" variant="grey">
+        {{ 'models.form.core' | translate }}
+      </ui-chip>
+    </div>
+    {{ template?.name }}
+  </div>
+</ng-template>

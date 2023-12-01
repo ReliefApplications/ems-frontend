@@ -20,6 +20,12 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GridService } from '../../../services/grid/grid.service';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../models/reference-data.model';
+import { GET_REFERENCE_DATA } from './graphql/queries';
 
 /**
  * Text widget component using KendoUI
@@ -36,6 +42,8 @@ export class EditorComponent implements OnInit {
   @Input() usePadding = true;
 
   private layout: any;
+  /** Configured reference data */
+  private referenceData?: ReferenceData;
   private fields: any[] = [];
   private fieldsValue: any;
   private styles: any[] = [];
@@ -56,6 +64,7 @@ export class EditorComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param gridService Shared grid service
+   * @param referenceDataService Shared reference data service
    */
   constructor(
     private apollo: Apollo,
@@ -64,21 +73,15 @@ export class EditorComponent implements OnInit {
     private dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private gridService: GridService
+    private gridService: GridService,
+    private referenceDataService: ReferenceDataService
   ) {}
 
   /** Sanitizes the text. */
-  ngOnInit(): void {
-    this.setContentFromLayout();
-  }
-
-  /**
-   * Sets content of the text widget, querying associated record if any.
-   */
-  private async setContentFromLayout(): Promise<void> {
-    if (this.settings.record) {
+  async ngOnInit(): Promise<void> {
+    if (this.settings.record && this.settings.resource) {
       await this.getLayout();
-      await this.getData();
+      await this.getRecord();
       this.formattedStyle = this.dataTemplateService.renderStyle(
         this.settings.wholeCardStyles || false,
         this.fieldsValue,
@@ -90,11 +93,58 @@ export class EditorComponent implements OnInit {
         this.fields,
         this.styles
       );
+    } else if (this.settings.element && this.settings.referenceData) {
+      await this.getReferenceData();
+      await this.referenceDataService
+        .cacheItems(this.settings.referenceData)
+        .then((value) => {
+          if (value) {
+            const field = this.referenceData?.valueField;
+            const selectedItemKey = String(this.settings.element);
+            if (field) {
+              this.fieldsValue = value.find(
+                (x: any) => String(get(x, field)) === selectedItemKey
+              );
+            }
+          }
+        });
+      this.formattedHtml = this.dataTemplateService.renderHtml(
+        this.settings.text,
+        this.fieldsValue,
+        this.fields
+      );
     } else {
       this.formattedHtml = this.dataTemplateService.renderHtml(
         this.settings.text
       );
     }
+  }
+
+  /**
+   * Get reference data.
+   */
+  private async getReferenceData() {
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: this.settings.referenceData,
+        },
+      })
+      .subscribe(({ data }) => {
+        if (data.referenceData) {
+          this.referenceData = data.referenceData;
+          this.fields = (data.referenceData.fields || [])
+            .filter((field) => field && typeof field !== 'string')
+            .map((field) => {
+              return {
+                label: field.name,
+                name: field.name,
+                type: field.type,
+              };
+            });
+        }
+      });
   }
 
   /** Sets layout */
@@ -120,7 +170,7 @@ export class EditorComponent implements OnInit {
   /**
    * Queries the data.
    */
-  private async getData() {
+  private async getRecord() {
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,

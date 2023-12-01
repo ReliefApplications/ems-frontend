@@ -58,10 +58,9 @@
         <shared-record-selection-tab
           *ngIf="widgetFormGroup"
           [form]="widgetFormGroup"
-          [selectedResource]="selectedResource"
-          [selectedLayout]="selectedLayout"
-          (resourceChange)="selectedResource = $event; updateFields()"
-          (layoutChange)="selectedLayout = $event; updateFields()"
+          [referenceData]="referenceData"
+          [resource]="resource"
+          [layout]="layout"
         ></shared-record-selection-tab>
       </ng-template>
     </ui-tab>

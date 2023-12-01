@@ -24,16 +24,10 @@
         *ngIf="origin.value === 'resource'"
       >
         <label>{{ 'common.resource.one' | translate }}</label>
-        <ui-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
+        <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        >
-        </ui-graphql-select>
+        ></shared-resource-select>
         <!-- Remove value -->
         <ui-button
           uiSuffix
@@ -97,11 +91,7 @@
           variant="danger"
           [isIcon]="true"
           icon="close"
-          (click)="
-            formGroup.get('datasource.layout')?.setValue(null);
-            layout = null;
-            this.fields.next([])
-          "
+          (click)="clearFormField('layout', $event)"
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
@@ -127,11 +117,7 @@
           variant="danger"
           [isIcon]="true"
           icon="close"
-          (click)="
-            formGroup.get('datasource.aggregation')?.setValue(null);
-            aggregation = null;
-            this.fields.next([])
-          "
+          (click)="clearFormField('aggregation', $event)"
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
@@ -143,14 +129,10 @@
         *ngIf="origin.value === 'refData'"
       >
         <label>{{ 'common.referenceData.one' | translate }}</label>
-        <ui-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="refDatasQuery"
+        <shared-reference-data-select
           formControlName="refData"
-          [selectedElements]="[refData]"
-        >
-        </ui-graphql-select>
+          [selectedElements]="[referenceData]"
+        ></shared-reference-data-select>
         <!-- Remove value -->
         <ui-button
           uiSuffix
@@ -299,7 +281,9 @@
     </ng-template>
   </form>
   <!-- Map -->
-  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0 rounded overflow-hidden">
+  <div
+    class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0 rounded overflow-hidden"
+  >
     <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
   </div>
 </div>

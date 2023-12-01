@@ -1049,6 +1049,8 @@ export class MapComponent
           (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
           if (!shouldDisplayStatuses[id]) {
             x.layer.remove();
+          } else {
+            this.map.addLayer(x.layer);
           }
         }
       }

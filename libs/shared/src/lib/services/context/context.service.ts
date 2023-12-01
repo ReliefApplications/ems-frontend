@@ -20,6 +20,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../form-builder/form-builder.service';
+import { ApplicationService } from '../application/application.service';
 
 /**
  * Dashboard context service
@@ -120,6 +121,7 @@ export class ContextService {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param formBuilderService Form builder service
+   * @param applicationService Shared application service
    */
   constructor(
     private dashboardService: DashboardService,
@@ -127,14 +129,14 @@ export class ContextService {
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private formBuilderService: FormBuilderService
+    private formBuilderService: FormBuilderService,
+    private applicationService: ApplicationService
   ) {
     this.dashboardService.dashboard$.subscribe(
       (dashboard: Dashboard | null) => {
         if (dashboard) {
           if (this.dashboard?.id !== dashboard.id) {
             this.dashboard = dashboard;
-            this.filter.next({});
           }
           this.filterStructure.next(dashboard.filter?.structure);
           localForage.getItem(this.positionKey).then((position) => {
@@ -147,7 +149,6 @@ export class ContextService {
             }
           });
         } else {
-          this.filter.next({});
           this.filterStructure.next(null);
           this.filterPosition.next(null);
           this.dashboard = undefined;
@@ -157,6 +158,12 @@ export class ContextService {
     this.filterPosition$.subscribe((position: any) => {
       if (position && this.dashboard?.id) {
         localForage.setItem(this.positionKey, position);
+      }
+    });
+    this.applicationService.application$.subscribe((value) => {
+      if (!value) {
+        // Reset filter when leaving application
+        this.filter.next({});
       }
     });
   }

@@ -478,8 +478,6 @@ export const createClusterForm = (value?: any): FormGroup =>
 
 export type LayerFormT = ReturnType<typeof createLayerForm>;
 
-// === MAP ===
-
 /**
  * Create map controls from value
  *
