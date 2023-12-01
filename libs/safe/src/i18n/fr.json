@@ -535,6 +535,17 @@
 				"schedule": "Indiquez une fréquence d'envoi"
 			}
 		},
+		"deployedVersion": {
+			"backend": "Back-end",
+			"commitId": "Commit ID",
+			"copied": "Copié dans le presse-papier!",
+			"frontend": "Front-end",
+			"title": "Version déployée",
+			"tooltip": {
+				"copyToClipboard": "Copier dans le presse-papier"
+			},
+			"version": "Version"
+		},
 		"distributionLists": {
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la liste de distribution: '{{name}}'?"
@@ -664,6 +675,9 @@
 			}
 		},
 		"header": {
+			"deployedVersion": {
+				"tooltip": "A propos"
+			},
 			"goToApp": "Ouvrir l'application",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",

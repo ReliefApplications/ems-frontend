@@ -122,13 +122,21 @@
       </a>
     </ng-container>
     <ui-divider class="py-1"></ui-divider>
-    <button uiMenuItem class="text-red-500" (click)="logout()">
-      {{ 'components.header.logout' | translate }}
-    </button>
-    <div
-      class="absolute bottom-0 right-1 text-gray-400 text-xs pointer-events-none"
-    >
-      {{ environment.version }}
+    <div class="flex justify-between items-center">
+      <button uiMenuItem class="text-red-500" (click)="logout()">
+        {{ 'components.header.logout' | translate }}
+      </button>
+      <ui-button
+        class="px-3"
+        [isIcon]="true"
+        icon="question_mark"
+        variant="grey"
+        size="small"
+        category="tertiary"
+        (click)="onOpenDeployedVersion()"
+        [uiTooltip]="'components.header.deployedVersion.tooltip' | translate"
+      >
+      </ui-button>
     </div>
   </ui-menu>
   <!-- Notification menu -->

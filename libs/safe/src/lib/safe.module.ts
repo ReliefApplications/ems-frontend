@@ -35,6 +35,7 @@ import { CronExpressionControlModule } from './components/cron-expression-contro
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
 import { GraphQLSelectModule } from '@oort-front/ui';
+import { DeployedVersionModalComponent } from './components/deployed-version-modal/deployed-version-modal.component';
 
 /** Main module for the safe project */
 @NgModule({
@@ -81,6 +82,6 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     SafeViewsModule,
   ],
   declarations: [],
-  imports: [],
+  imports: [DeployedVersionModalComponent],
 })
 export class SafeModule {}

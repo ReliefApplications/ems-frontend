@@ -535,6 +535,17 @@
 				"schedule": "******"
 			}
 		},
+		"deployedVersion": {
+			"backend": "******",
+			"commitId": "******",
+			"copied": "******",
+			"frontend": "******",
+			"title": "******",
+			"tooltip": {
+				"copyToClipboard": "******"
+			},
+			"version": "******"
+		},
 		"distributionLists": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -659,6 +670,9 @@
 			}
 		},
 		"header": {
+			"deployedVersion": {
+				"tooltip": "******"
+			},
 			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
