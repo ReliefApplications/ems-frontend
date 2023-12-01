@@ -38,6 +38,9 @@ export class EditWidgetModalComponent
   /** Widget reactive form */
   widgetForm?: UntypedFormGroup;
 
+  /** Tabs widget strucure, used to check for changes */
+  tabsStructure: any;
+
   /** Reference to widget settings container */
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
@@ -68,6 +71,12 @@ export class EditWidgetModalComponent
     componentRef.instance.widget = this.data.widget;
     componentRef.instance.change.subscribe((e: any) => {
       this.widgetForm = e;
+      if (this.widgetForm?.value.tabs && !this.tabsStructure) {
+        // We duplicate the object to save a clean copy of the tabs
+        this.tabsStructure = JSON.parse(
+          JSON.stringify(this.widgetForm.value.tabs)
+        );
+      }
     });
   }
 
@@ -83,7 +92,7 @@ export class EditWidgetModalComponent
    * Check if the form is updated or not, and display a confirmation modal if changes detected.
    */
   onClose(): void {
-    if (this.widgetForm?.pristine) {
+    if (this.widgetForm?.pristine && !this.tabsUpdated()) {
       this.dialogRef.close();
     } else {
       const confirmDialogRef = this.confirmService.openConfirmModal({
@@ -97,10 +106,28 @@ export class EditWidgetModalComponent
       confirmDialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
+          if (this.tabsStructure) {
+            this.tabsStructure = undefined;
+          }
           if (value) {
             this.dialogRef.close();
           }
         });
     }
+  }
+
+  /**
+   * Checks if the tab dashboards have been updated
+   *
+   * @returns booelan indicating if tab dashboards have been updated
+   */
+  private tabsUpdated(): boolean {
+    if (this.tabsStructure) {
+      return (
+        JSON.stringify(this.widgetForm?.value.tabs) !==
+        JSON.stringify(this.tabsStructure)
+      );
+    }
+    return false;
   }
 }
