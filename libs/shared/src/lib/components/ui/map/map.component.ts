@@ -208,7 +208,6 @@ export class MapComponent
   ngAfterViewInit(): void {
     // Creates the map and adds all the controls we use.
     this.drawMap();
-
     this.setUpMapListeners();
 
     if (this.firstLoadEmitTimeoutListener) {
@@ -674,39 +673,43 @@ export class MapComponent
       leafletLayer?: L.Layer
     ): Promise<OverlayLayerTree> => {
       // Add to the layers array if not already added
-      if (!this.layers.find((l) => l.id === layer.id)) {
-        this.layers.push(layer);
-      }
+      if (this.layers.find((l) => l.id === layer.id)) return {} as any;
 
-      // Gets the leaflet layer. Either the one passed as parameter
-      // (from parent) or the one created by the layer itself (if no parent)
-      const featureLayer = leafletLayer ?? (await layer.getLayer());
-
-      // Adds the layer to the map if not already added
-      // note: group layers are of type L.LayerGroup
-      // so we should check if the layer is not already added
-      if (!this.map.hasLayer(featureLayer)) {
-        this.map.addLayer(featureLayer);
-      }
-
-      const children = await layer.getChildren();
+      this.layers.push(layer);
 
       if (layer.type === 'GroupLayer') {
+        const children = layer.getChildren();
+        const childrenPromisse = children.map((Childrenlayer) => {
+          return this.mapLayersService
+            .createLayersFromId(Childrenlayer, this.injector)
+            .then(async (sublayer) => {
+              if (sublayer.type === 'GroupLayer') {
+                const layer = await sublayer.getLayer();
+                return parseTreeNode(sublayer, layer);
+              } else return parseTreeNode(sublayer);
+            });
+        });
+
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
         return {
           label: layer.name,
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? await Promise.all(
-                  children.map(async (sublayer) => {
-                    const layer = await sublayer.getLayer();
-                    return parseTreeNode(sublayer, layer);
-                  })
-                )
+              ? await Promise.all(childrenPromisse)
               : undefined,
         };
       } else {
+        // Gets the leaflet layer. Either the one passed as parameter
+        // (from parent) or the one created by the layer itself (if no parent)
+        const featureLayer = leafletLayer ?? (await layer.getLayer());
+
+        // Adds the layer to the map if not already added
+        // note: group layers are of type L.LayerGroup
+        // so we should check if the layer is not already added
+        if (!this.map.hasLayer(featureLayer)) {
+          this.map.addLayer(featureLayer);
+        }
         // It is a node, it does not have any children but it displays a layer
         return {
           label: layer.name,
@@ -716,19 +719,18 @@ export class MapComponent
     };
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
-      this.mapLayersService
-        .createLayersFromIds(layerIds, this.injector)
-        .then((layers) => {
-          const layersTree: any[] = [];
-          // Add each layer to the tree
-          layers.forEach((layer) => {
-            layersTree.push(parseTreeNode(layer));
+      const layerPromises = layerIds.map((id) => {
+        return this.mapLayersService
+          .createLayersFromId(id, this.injector)
+          .then((layer) => {
+            return parseTreeNode(layer);
           });
-          Promise.all(layersTree).then((layersTree) => {
-            this.refreshLastUpdate();
-            resolve({ layers: layersTree });
-          });
-        });
+      });
+
+      Promise.all(layerPromises).then((layersTree) => {
+        this.refreshLastUpdate();
+        resolve({ layers: layersTree });
+      });
     });
   }
 

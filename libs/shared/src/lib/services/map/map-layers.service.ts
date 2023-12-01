@@ -309,6 +309,47 @@ export class MapLayersService {
   }
 
   /**
+   * Format given settings for Layer class
+   *
+   * @param layerIds layer settings saved from the layer editor
+   * @param injector Injector containing all needed providers for layer class
+   * @returns Observable of LayerSettingsI
+   */
+  async createLayersFromId(
+    layerIds: string,
+    injector: Injector
+  ): Promise<Layer> {
+    const promise: Promise<Layer> = lastValueFrom(
+      this.getLayerById(layerIds).pipe(
+        mergeMap((layer: LayerModel) => {
+          if (this.isDatasourceValid(layer.datasource)) {
+            // Get the current layer + its geojson
+            return forkJoin({
+              layer: of(layer),
+              geojson: this.getLayerGeoJson(layer),
+            });
+          } else {
+            return of({
+              layer,
+              geojson: EMPTY_FEATURE_COLLECTION,
+            });
+          }
+        }),
+        map(
+          (layer: { layer: LayerModel; geojson: any }) =>
+            new Layer(
+              { ...layer.layer, geojson: layer.geojson },
+              injector,
+              this.document
+            )
+        )
+      )
+    );
+
+    return promise;
+  }
+
+  /**
    * Create layer from its definition
    *
    * @param layer Layer to get definition of.
