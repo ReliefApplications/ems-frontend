@@ -126,6 +126,8 @@ export class SummaryCardComponent
   private resizeObserver!: ResizeObserver;
   /** Used to reset sort options when changing display mode */
   public sortControl = new FormControl(null);
+  /** Show data source button */
+  public showDataSourceButton = true;
   /** Current sort */
   private sortOptions: {
     field: string | null;
@@ -257,6 +259,11 @@ export class SummaryCardComponent
           totalItems: 0,
         });
       });
+    this.showDataSourceButton =
+      ((this.settings.card?.showDataSourceLink &&
+        this.displayMode === 'cards') ||
+        false) &&
+      !this.useReferenceData;
   }
 
   ngAfterViewInit(): void {

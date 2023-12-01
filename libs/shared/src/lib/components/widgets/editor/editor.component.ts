@@ -48,6 +48,8 @@ export class EditorComponent implements OnInit {
   private fieldsValue: any;
   private styles: any[] = [];
   private wholeCardStyles = false;
+  /** Should show data source link */
+  public showDataSourceForm = true;
 
   public formattedHtml: SafeHtml = '';
   public formattedStyle?: string;
@@ -118,6 +120,8 @@ export class EditorComponent implements OnInit {
         this.settings.text
       );
     }
+    this.showDataSourceForm =
+      this.settings.showDataSourceForm && !this.settings.referenceData;
   }
 
   /**

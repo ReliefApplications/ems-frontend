@@ -80,7 +80,7 @@
             [formGroup]="widgetFormGroup"
           ></shared-display-settings>
           <ui-divider class="my-2"></ui-divider>
-          <div [formGroup]="widgetFormGroup">
+          <div *ngIf="showDataSourceForm" [formGroup]="widgetFormGroup">
             <ui-toggle formControlName="showDataSourceLink">
               <ng-container ngProjectAs="label">
                 {{

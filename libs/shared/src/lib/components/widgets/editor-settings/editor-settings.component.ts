@@ -91,6 +91,8 @@ export class EditorSettingsComponent
   public referenceData: ReferenceData | null = null;
   /** Current layout */
   public layout: Layout | null = null;
+  /** Show data source*/
+  public showDataSourceForm = true;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -166,6 +168,7 @@ export class EditorSettingsComponent
           this.referenceData = null;
         }
       });
+    this.showDataSourceForm = referenceDataID ? false : true;
   }
 
   /**
