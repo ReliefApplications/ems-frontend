@@ -2,7 +2,7 @@
   <ui-tabs
     [selectedIndex]="selectedIndex"
     (openedTab)="selectedIndex = $event.index"
-    class="h-full overflow-hidden"
+    class="h-full flex flex-col overflow-x-auto"
     *ngIf="settings.tabs && settings.tabs.length > 0; else empty"
   >
     <ui-tab *ngFor="let tab of settings.tabs">
