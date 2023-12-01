@@ -106,10 +106,10 @@ export class EditWidgetModalComponent
       confirmDialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
-          if (this.tabsStructure) {
-            this.tabsStructure = undefined;
-          }
           if (value) {
+            if (this.tabsStructure) {
+              this.tabsStructure = undefined;
+            }
             this.dialogRef.close();
           }
         });
