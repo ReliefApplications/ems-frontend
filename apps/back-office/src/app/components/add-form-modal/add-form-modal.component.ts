@@ -18,6 +18,7 @@ import {
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
 import {
+  Form,
   ResourceQueryResponse,
   ResourceSelectComponent,
 } from '@oort-front/shared';
@@ -58,7 +59,14 @@ export class AddFormModalComponent implements OnInit {
     template: null,
   });
   /** Available templates */
-  public templates: any[] = [];
+  public templates: Form[] = [];
+
+  /** Selected template */
+  get selectedTemplate() {
+    return this.templates.find(
+      (x) => x.id === this.form.get('template')?.value
+    );
+  }
 
   /**
    * Add form modal
@@ -134,17 +142,5 @@ export class AddFormModalComponent implements OnInit {
       .subscribe(({ data }) => {
         this.templates = data.resource.forms || [];
       });
-  }
-
-  /**
-   * When creating form, check if template value needs to be changed to your id
-   */
-  onCreate(): void {
-    if (this.form.value.inheritsTemplate && this.form.value.template) {
-      this.form
-        .get('template')
-        ?.setValue((this.form.controls.template.value as any)?.id);
-    }
-    this.dialogRef.close(this.form.value as any);
   }
 }

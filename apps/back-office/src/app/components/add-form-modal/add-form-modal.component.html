@@ -88,16 +88,19 @@
                 <ui-select-menu
                   formControlName="template"
                   [customTemplate]="{
-                    template: coreTemplate,
-                    context: { $implicit: form.get('template')!.value }
+                    template: formOptionTmpl,
+                    context: { $implicit: selectedTemplate }
                   }"
                 >
                   <ui-select-option
                     *ngFor="let template of templates"
-                    [value]="template"
+                    [value]="template.id"
                   >
                     <ng-container
-                      *ngTemplateOutlet="coreTemplate; context: { $implicit: template }"
+                      *ngTemplateOutlet="
+                        formOptionTmpl;
+                        context: { $implicit: template }
+                      "
                     ></ng-container>
                   </ui-select-option>
                 </ui-select-menu>
@@ -115,7 +118,7 @@
     <ui-button
       category="secondary"
       variant="primary"
-      (click)="onCreate()"
+      [uiDialogClose]="form.value"
       cdkFocusInitial
       [disabled]="!form.valid"
     >
@@ -125,7 +128,7 @@
 </ui-dialog>
 
 <!-- Template to display templates available -->
-<ng-template #coreTemplate let-template>
+<ng-template #formOptionTmpl let-template>
   <div class="flex gap-2 items-center">
     <div uiChipList *ngIf="template?.core">
       <ui-chip class="!rounded-lg" variant="grey">
