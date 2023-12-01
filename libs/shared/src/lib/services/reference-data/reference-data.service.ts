@@ -28,13 +28,15 @@ interface CachedItems {
   valueField: string;
 }
 
-/** Service for reference data */
+/**
+ * Reference data service
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class ReferenceDataService {
   /**
-   * Constructor of the service
+   * Reference data service
    *
    * @param apollo The apollo client
    * @param apiProxy The api proxy service
@@ -151,7 +153,7 @@ export class ReferenceDataService {
    * @param referenceDataID The reference data id
    * @returns The item list and the value field
    */
-  public async cacheItems(referenceDataID: string): Promise<void> {
+  public async cacheItems(referenceDataID: string): Promise<any> {
     // Initialization
     let items: any;
     const referenceData = await this.loadReferenceData(referenceDataID);
@@ -210,6 +212,7 @@ export class ReferenceDataService {
         }
       }
     }
+    return items;
   }
 
   /**

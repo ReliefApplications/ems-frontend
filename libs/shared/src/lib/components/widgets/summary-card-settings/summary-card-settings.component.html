@@ -13,9 +13,10 @@
       <ng-template uiTabContent>
         <shared-summary-card-general
           [formGroup]="widgetFormGroup"
-          [selectedResource]="selectedResource"
-          [selectedLayout]="selectedLayout"
-          [selectedAggregation]="selectedAggregation"
+          [referenceData]="referenceData"
+          [resource]="resource"
+          [layout]="layout"
+          [aggregation]="aggregation"
         ></shared-summary-card-general>
       </ng-template>
     </ui-tab>
@@ -53,7 +54,7 @@
       </ng-template>
     </ui-tab>
     <!-- Available actions -->
-    <ui-tab *ngIf="selectedLayout">
+    <ui-tab *ngIf="layout">
       <ng-container ngProjectAs="label">
         <ui-icon
           icon="toggle_on"
