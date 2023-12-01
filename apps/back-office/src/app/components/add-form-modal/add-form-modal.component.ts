@@ -18,6 +18,7 @@ import {
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
 import {
+  Form,
   ResourceQueryResponse,
   ResourceSelectComponent,
 } from '@oort-front/shared';
@@ -55,10 +56,17 @@ export class AddFormModalComponent implements OnInit {
     newResource: this.fb.nonNullable.control(true),
     resource: [null],
     inheritsTemplate: this.fb.nonNullable.control(false),
-    template: [null],
+    template: null,
   });
   /** Available templates */
-  public templates: any[] = [];
+  public templates: Form[] = [];
+
+  /** Selected template */
+  get selectedTemplate() {
+    return this.templates.find(
+      (x) => x.id === this.form.get('template')?.value
+    );
+  }
 
   /**
    * Add form modal
