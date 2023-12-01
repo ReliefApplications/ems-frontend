@@ -206,6 +206,7 @@ export class SummaryCardSettingsComponent
     this.widgetFormGroup?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.change.emit(this.widgetFormGroup);
       });
   }

@@ -13,8 +13,9 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
   styleUrls: ['./tab-main.component.scss'],
 })
 export class TabMainComponent {
+  /** Widget form group */
   @Input() formGroup!: FormGroup;
-
+  /** Reference to tab group component */
   @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
 
   /** @returns widget tabs as form array */
