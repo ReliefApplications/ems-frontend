@@ -16,11 +16,15 @@ import {
 } from '../../../models/resource.model';
 import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE } from './graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../models/reference-data.model';
 
 /**
  * Creates the form for the editor widget settings.
@@ -35,8 +39,12 @@ const createEditorForm = (value: any) => {
     text: new FormControl<string>(get(value, 'settings.text', '')),
     // for record selection
     resource: new FormControl<string>(get(value, 'settings.resource', null)),
+    referenceData: new FormControl<string>(
+      get(value, 'settings.referenceData', null)
+    ),
     layout: new FormControl<string>(get(value, 'settings.layout', null)),
     record: new FormControl<string>(get(value, 'settings.record', null)),
+    element: new FormControl<string>(get(value, 'settings.element', null)),
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),
@@ -78,9 +86,11 @@ export class EditorSettingsComponent
   /** tinymce editor configuration */
   public editor: any = WIDGET_EDITOR_CONFIG;
   /** Current resource */
-  public selectedResource: Resource | null = null;
+  public resource: Resource | null = null;
+  /** Current reference data */
+  public referenceData: ReferenceData | null = null;
   /** Current layout */
-  public selectedLayout: Layout | null = null;
+  public layout: Layout | null = null;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -112,28 +122,48 @@ export class EditorSettingsComponent
     // Initialize the selected resource, layout and record from the form
     const resourceID = this.widgetFormGroup?.get('resource')?.value;
     const layoutID = this.widgetFormGroup?.get('layout')?.value;
+    const referenceDataID = this.widgetFormGroup?.get('referenceData')?.value;
+
+    // If set, fetch resource & layout
     if (resourceID) {
       this.getResource(resourceID, layoutID);
     }
+    // Subscribe to resource changes
     this.widgetFormGroup.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
+          this.widgetFormGroup.controls.referenceData.setValue(null);
           this.getResource(value);
         } else {
-          this.selectedResource = null;
-          this.selectedLayout = null;
-          this.updateFields();
+          this.resource = null;
+          this.layout = null;
         }
       });
+    // Subscribe to layout changes
     this.widgetFormGroup.controls.layout.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value && this.selectedResource) {
-          this.getResource(this.selectedResource.id as string, value);
+        if (value && this.resource) {
+          this.getResource(this.resource.id as string, value);
         } else {
-          this.selectedLayout = null;
-          this.updateFields();
+          this.layout = null;
+        }
+      });
+
+    // If set, fetch reference data
+    if (referenceDataID) {
+      this.getReferenceData(referenceDataID);
+    }
+    // Subscribe to reference data changes
+    this.widgetFormGroup.controls.referenceData.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.widgetFormGroup.controls.resource.setValue(null);
+          this.getReferenceData(value);
+        } else {
+          this.referenceData = null;
         }
       });
   }
@@ -142,14 +172,17 @@ export class EditorSettingsComponent
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.widgetFormGroup?.valueChanges.subscribe(() => {
-      this.change.emit(this.widgetFormGroup);
-      this.widget.settings.text = this.widgetFormGroup.value.text;
-      this.widget.settings.record = this.widgetFormGroup.value.record;
-      this.widget.settings.title = this.widgetFormGroup.value.title;
-      this.widget.settings.resource = this.widgetFormGroup.value.resource;
-      this.widget.settings.layout = this.widgetFormGroup.value.layout;
-    });
+    this.widgetFormGroup?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.widgetFormGroup.markAsDirty({ onlySelf: true });
+        this.change.emit(this.widgetFormGroup);
+        this.widget.settings.text = this.widgetFormGroup.value.text;
+        this.widget.settings.record = this.widgetFormGroup.value.record;
+        this.widget.settings.title = this.widgetFormGroup.value.title;
+        this.widget.settings.resource = this.widgetFormGroup.value.resource;
+        this.widget.settings.layout = this.widgetFormGroup.value.layout;
+      });
     this.updateFields();
   }
 
@@ -170,13 +203,33 @@ export class EditorSettingsComponent
       })
       .subscribe((res) => {
         if (res.data) {
-          this.selectedResource = res.data.resource;
+          this.resource = res.data.resource;
           if (layout) {
-            this.selectedLayout =
-              res.data?.resource.layouts?.edges[0]?.node || null;
+            this.layout = res.data?.resource.layouts?.edges[0]?.node || null;
           } else {
-            this.selectedLayout = null;
+            this.layout = null;
           }
+          this.updateFields();
+        }
+      });
+  }
+
+  /**
+   * Get reference data by id
+   *
+   * @param referenceData reference data id
+   */
+  private getReferenceData(referenceData: string) {
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: referenceData,
+        },
+      })
+      .subscribe(({ data }) => {
+        if (data) {
+          this.referenceData = data.referenceData;
           this.updateFields();
         }
       });
@@ -185,15 +238,27 @@ export class EditorSettingsComponent
   /** Extracts the fields from the resource/layout */
   public updateFields() {
     // extract data keys from metadata
-    const fields: any = [];
-    get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
-      get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
-        if (field.name === metaField.name) {
-          const type = metaField.type;
-          fields.push({ ...field, type });
-        }
+    let fields: any = [];
+    if (this.resource) {
+      get(this.resource, 'metadata', []).forEach((metaField: any) => {
+        get(this.layout, 'query.fields', []).forEach((field: any) => {
+          if (field.name === metaField.name) {
+            const type = metaField.type;
+            fields.push({ ...field, type });
+          }
+        });
       });
-    });
+    } else if (this.referenceData) {
+      fields = (this.referenceData.fields || [])
+        .filter((field) => field && typeof field !== 'string')
+        .map((field) => {
+          return {
+            label: field.name,
+            name: field.name,
+            type: field.type,
+          };
+        });
+    }
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
       ...this.dataTemplateService.getAutoCompleterKeys(fields),

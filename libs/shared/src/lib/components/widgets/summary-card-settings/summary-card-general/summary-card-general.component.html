@@ -16,6 +16,7 @@
           <label>{{ 'common.referenceData.one' | translate }}</label>
           <shared-reference-data-select
             formControlName="referenceData"
+            [selectedElements]="[referenceData]"
           ></shared-reference-data-select>
         </div>
         <ui-divider
