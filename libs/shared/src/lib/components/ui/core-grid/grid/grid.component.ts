@@ -1118,4 +1118,11 @@ export class GridComponent
       }
     });
   }
+
+  /** Restore all columns visibility when reset the layout of the grid */
+  restoreColumns() {
+    this.columns.forEach((column: any) => {
+      column.hidden = false;
+    });
+  }
 }
