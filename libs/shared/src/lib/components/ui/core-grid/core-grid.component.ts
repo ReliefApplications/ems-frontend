@@ -1293,6 +1293,11 @@ export class CoreGridComponent
         );
         return;
       }
+    } else if (this.gridData.data.length === 0) {
+      this.snackBar.openSnackBar('Export failed: grid is empty.', {
+        error: true,
+      });
+      return;
     }
 
     // Builds the request body with all the useful data
