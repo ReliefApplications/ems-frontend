@@ -494,6 +494,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"groupingRules": "******",
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
