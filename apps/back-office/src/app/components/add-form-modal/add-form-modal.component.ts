@@ -61,7 +61,11 @@ export class AddFormModalComponent implements OnInit {
   /** Available templates */
   public templates: Form[] = [];
 
-  /** Selected template */
+  /**
+   * Selected template
+   *
+   * @returns {Form} selected template
+   */
   get selectedTemplate() {
     return this.templates.find(
       (x) => x.id === this.form.get('template')?.value
