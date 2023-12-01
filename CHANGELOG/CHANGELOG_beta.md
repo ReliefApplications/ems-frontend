@@ -1,3 +1,21 @@
+# [2.2.0-beta.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.11...v2.2.0-beta.12) (2023-11-30)
+
+
+### Bug Fixes
+
+* filter value incorrectly reset ([08785a8](https://github.com/ReliefApplications/ems-frontend/commit/08785a8dc8e38566cbe0843d02e4dd4c0aec24c7))
+* history now appearing in nested grids, in modals ([efe9421](https://github.com/ReliefApplications/ems-frontend/commit/efe94216d7658844348cf2a8ce45842da42e4c6e))
+* issue with build ([7db6463](https://github.com/ReliefApplications/ems-frontend/commit/7db646399d64ea0b720eac47367e1819f7139893))
+* manually enabled layers on map would not appear after filter refresh ([4e7653b](https://github.com/ReliefApplications/ems-frontend/commit/4e7653b223b59fa7d338ff58925c4a137fd3f655))
+* some options would not correctly appear in some instances of form builder ([#2105](https://github.com/ReliefApplications/ems-frontend/issues/2105)) ([2763ff2](https://github.com/ReliefApplications/ems-frontend/commit/2763ff22931dcaba59136c8044257f22e54559c7))
+
+
+### Features
+
+* can now use reference data in summary card ([ba3c61a](https://github.com/ReliefApplications/ems-frontend/commit/ba3c61aad1c3122511cd87b735945b43b8c69482))
+* now use filter at dashboard level ([#2078](https://github.com/ReliefApplications/ems-frontend/issues/2078)) ([38e0b13](https://github.com/ReliefApplications/ems-frontend/commit/38e0b136aaa47c21988aed7e90edcaefe40f84be))
+* reference data now usable in text widget ([b0cefc5](https://github.com/ReliefApplications/ems-frontend/commit/b0cefc5f1377912e9fca79c7a37eae0c15550977))
+
 # [2.2.0-beta.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.10...v2.2.0-beta.11) (2023-11-27)
 
 
