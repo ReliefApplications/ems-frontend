@@ -69,6 +69,11 @@ ui-checkbox {
   .hide-border & {
     border-bottom: none !important;
   }
+
+  #tab-list {
+    height: 100%;
+    overflow-y: hidden;
+  }
 }
 
 .floating-widget-header {

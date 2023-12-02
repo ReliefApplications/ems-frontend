@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostBinding,
   Inject,
   OnDestroy,
   OnInit,
@@ -112,6 +113,7 @@ export class DashboardComponent
   /** Timeout to scroll to newly added widget */
   private timeoutListener!: NodeJS.Timeout;
   /** Is edition active */
+  @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
@@ -288,7 +290,6 @@ export class DashboardComponent
       return;
     }
 
-    this.editionActive = true;
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
@@ -316,6 +317,7 @@ export class DashboardComponent
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
+          this.editionActive = this.canUpdate;
 
           this.dashboardService.openDashboard(this.dashboard);
           this.widgets = cloneDeep(
