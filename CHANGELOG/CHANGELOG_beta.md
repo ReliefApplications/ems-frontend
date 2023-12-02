@@ -1,3 +1,12 @@
+# [2.2.0-beta.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.12...v2.2.0-beta.13) (2023-12-02)
+
+
+### Bug Fixes
+
+* reset default button not restoring sticky columns if hidden ([#2119](https://github.com/ReliefApplications/ems-frontend/issues/2119)) ([d9c9dbd](https://github.com/ReliefApplications/ems-frontend/commit/d9c9dbd11d323df30bdc7697169fe45ee157d6d5))
+* tabs widget would not correctly indicate when updated, preventing modal to appear when closing ([8395a71](https://github.com/ReliefApplications/ems-frontend/commit/8395a71c2547d3985e462631b4b6d65a510ce534))
+* when selected reference data would not appear in summary card settings ([ba067b3](https://github.com/ReliefApplications/ems-frontend/commit/ba067b3a3938b49c0584935a26a87b1e912d1046))
+
 # [2.2.0-beta.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.11...v2.2.0-beta.12) (2023-11-30)
 
 
