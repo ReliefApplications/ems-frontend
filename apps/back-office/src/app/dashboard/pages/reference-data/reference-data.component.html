@@ -1,8 +1,8 @@
 <ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && referenceData">
   <!-- Header -->
-  <div class="page-header">
-    <h1 class="page-title">
+  <div class="flex justify-start items-center mb-5">
+    <h1 class="overflow-hidden whitespace-nowrap text-ellipsis mb-0">
       {{ referenceData.name }}
     </h1>
     <shared-access
