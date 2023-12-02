@@ -2387,6 +2387,10 @@
 			},
 			"graphQLFilter": "******",
 			"path": "******",
+			"payload": {
+				"label": "******",
+				"show": "******"
+			},
 			"placeholder": {
 				"csv": "******",
 				"graphQLFilter": "******"

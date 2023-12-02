@@ -34,6 +34,7 @@ import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
 import { SnackbarService, TextareaComponent } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -67,7 +68,7 @@ export class ReferenceDataComponent
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   public valueFields: NonNullable<ReferenceData['fields']> = [];
-  public triedToGetFields = false;
+  public payload: any;
   public loadingFields = false;
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
@@ -101,6 +102,14 @@ export class ReferenceDataComponent
     return this.referenceForm.get('type')?.value || '';
   }
 
+  /** @returns admin can fetch fields */
+  get canFetchFields(): boolean {
+    const formValue = this.referenceForm.value;
+    return (
+      !!formValue.apiConfiguration && !!formValue.query && !!formValue.type
+    );
+  }
+
   /**
    * Reference data page.
    *
@@ -111,6 +120,7 @@ export class ReferenceDataComponent
    * @param translateService Angular translate service
    * @param breadcrumbService Setups the breadcrumb component variables
    * @param refDataService Reference data service
+   * @param dialog dialog
    */
   constructor(
     private apollo: Apollo,
@@ -119,7 +129,8 @@ export class ReferenceDataComponent
     private router: Router,
     private translateService: TranslateService,
     private breadcrumbService: BreadcrumbService,
-    private refDataService: ReferenceDataService
+    private refDataService: ReferenceDataService,
+    public dialog: Dialog
   ) {
     super();
   }
@@ -148,7 +159,7 @@ export class ReferenceDataComponent
 
     // Clear valueFields when type, apiConfiguration, path or query changes
     const clearFields = () => {
-      this.triedToGetFields = false;
+      this.payload = null;
       this.valueFields = [];
       form.get('fields')?.setValue([]);
     };
@@ -178,11 +189,6 @@ export class ReferenceDataComponent
 
       form
         .get('apiConfiguration')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(clearFields);
-
-      form
-        .get('path')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe(clearFields);
 
@@ -585,15 +591,15 @@ export class ReferenceDataComponent
       return;
     }
     try {
-      this.triedToGetFields = true;
-      // get the fields
-      const fields = await this.refDataService.getFields(
+      // get the fields & payload
+      const result = await this.refDataService.getFields(
         apiConfData.apiConfiguration,
         path || '',
         query,
         type
       );
-      this.valueFields = fields;
+      this.valueFields = result.fields;
+      this.payload = result.payload;
       this.referenceForm?.get('fields')?.setValue(this.valueFields);
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
@@ -631,5 +637,17 @@ export class ReferenceDataComponent
           });
       }, 100);
     }
+  }
+
+  /** Open payload modal */
+  public async onOpenPayload() {
+    const { ReferenceDataPayloadModalComponent } = await import(
+      './reference-data-payload-modal/reference-data-payload-modal.component'
+    );
+    this.dialog.open(ReferenceDataPayloadModalComponent, {
+      data: {
+        payload: this.payload,
+      },
+    });
   }
 }

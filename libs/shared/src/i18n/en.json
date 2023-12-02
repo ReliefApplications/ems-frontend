@@ -2387,6 +2387,10 @@
 			},
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
+			"payload": {
+				"label": "Payload",
+				"show": "Show payload"
+			},
 			"placeholder": {
 				"csv": "Insert CSV here",
 				"graphQLFilter": "Enter a filter to be used once choices are already cached"
