@@ -28,7 +28,7 @@ export const environment: Environment = {
   frontOfficeUri: 'https://alimentaide-973-guyane.oortcloud.tech',
   backOfficeUri: 'https://alimentaide-973-guyane.oortcloud.tech/admin/',
   module: 'backoffice',
-  availableLanguages: ['fr', 'en'],
+  availableLanguages: ['fr'],
   authConfig,
   esriApiKey:
     'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
