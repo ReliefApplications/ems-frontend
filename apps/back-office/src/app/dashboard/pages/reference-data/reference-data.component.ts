@@ -68,8 +68,7 @@ export class ReferenceDataComponent
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   public valueFields: NonNullable<ReferenceData['fields']> = [];
-  public fieldsData: any;
-  public triedToGetFields = false;
+  public payload: any;
   public loadingFields = false;
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
@@ -101,6 +100,14 @@ export class ReferenceDataComponent
   /** @returns type of reference model */
   get type(): string {
     return this.referenceForm.get('type')?.value || '';
+  }
+
+  /** @returns admin can fetch fields */
+  get canFetchFields(): boolean {
+    const formValue = this.referenceForm.value;
+    return (
+      !!formValue.apiConfiguration && !!formValue.query && !!formValue.type
+    );
   }
 
   /**
@@ -152,7 +159,7 @@ export class ReferenceDataComponent
 
     // Clear valueFields when type, apiConfiguration, path or query changes
     const clearFields = () => {
-      this.triedToGetFields = false;
+      this.payload = null;
       this.valueFields = [];
       form.get('fields')?.setValue([]);
     };
@@ -584,16 +591,15 @@ export class ReferenceDataComponent
       return;
     }
     try {
-      this.triedToGetFields = true;
-      // get the fields
-      const fields = await this.refDataService.getFields(
+      // get the fields & payload
+      const result = await this.refDataService.getFields(
         apiConfData.apiConfiguration,
         path || '',
         query,
         type
       );
-      this.valueFields = fields.fields;
-      this.fieldsData = fields.data;
+      this.valueFields = result.fields;
+      this.payload = result.payload;
       this.referenceForm?.get('fields')?.setValue(this.valueFields);
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
@@ -633,14 +639,14 @@ export class ReferenceDataComponent
     }
   }
 
-  /** Open data modal */
-  public async openDataModal() {
-    const { DataModalComponent } = await import(
-      './data-modal/data-modal.component'
+  /** Open payload modal */
+  public async onOpenPayload() {
+    const { ReferenceDataPayloadModalComponent } = await import(
+      './reference-data-payload-modal/reference-data-payload-modal.component'
     );
-    this.dialog.open(DataModalComponent, {
+    this.dialog.open(ReferenceDataPayloadModalComponent, {
       data: {
-        jsonData: this.fieldsData,
+        payload: this.payload,
       },
     });
   }

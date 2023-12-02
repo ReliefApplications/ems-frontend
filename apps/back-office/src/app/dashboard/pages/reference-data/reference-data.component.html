@@ -54,7 +54,9 @@
         </div>
         <!-- GraphQL Query -->
         <div *ngIf="type === 'graphql' && queryControl; else restQueryTmpl">
-          <label class="block text-sm font-medium leading-6 text-gray-900">{{ 'pages.referenceData.queryName' | translate }} *</label>
+          <label class="block text-sm font-medium leading-6 text-gray-900"
+            >{{ 'pages.referenceData.queryName' | translate }} *</label
+          >
           <ngx-monaco-editor
             (onInit)="initEditor($event)"
             [options]="editorOptions"
@@ -142,24 +144,6 @@
           <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
         </ng-template>
       </kendo-grid>
-      <ui-button
-        *ngIf="!loadingFields"
-        category="secondary"
-        variant="primary"
-        (click)="$event.preventDefault(); getFields()"
-        class="mx-auto my-1"
-      >
-        {{ 'pages.referenceData.fields.fetch' | translate }}
-      </ui-button>
-      <ui-button
-      *ngIf="triedToGetFields && !loadingFields"
-        category="secondary"
-        variant="primary"
-        (click)="$event.preventDefault(); openDataModal()"
-        class="mx-auto mb-1 mt-4"
-      >
-      {{ 'pages.referenceData.showData' | translate }}
-      </ui-button>
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex flex-col gap-2">
@@ -225,6 +209,26 @@
   </form>
   <!-- Floating div for actions buttons -->
   <ui-fixed-wrapper>
+    <div *ngIf="canFetchFields" class="flex gap-1 mr-auto items-center">
+      <!-- Fetch fields -->
+      <ui-button
+        [disabled]="loadingFields"
+        category="secondary"
+        variant="primary"
+        (click)="getFields()"
+      >
+        {{ 'pages.referenceData.fields.fetch' | translate }}
+      </ui-button>
+      <!-- Show payload -->
+      <ui-button
+        *ngIf="payload && !loadingFields"
+        category="secondary"
+        variant="primary"
+        (click)="onOpenPayload()"
+      >
+        {{ 'pages.referenceData.payload.show' | translate }}
+      </ui-button>
+    </div>
     <!-- Submit button -->
     <ui-button
       category="secondary"

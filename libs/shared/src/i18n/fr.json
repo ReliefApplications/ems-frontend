@@ -2401,15 +2401,15 @@
 			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
+			"payload": {
+				"label": "Réponse de l'API",
+				"show": "Afficher la réponse de l'API"
+			},
 			"placeholder": {
 				"csv": "Insérer le CSV ici",
 				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"
 			},
 			"queryName": "Nom de la requête",
-			"showData": "Afficher les données JSON",
-			"showDataModal": {
-				"title": "Données JSON"
-			},
 			"tooltip": {
 				"graphQLFilter": "Vous pouvez utiliser {{lastUpdate}} pour obtenir dynamiquement la dernière date de récupération au format SQL.",
 				"path": "Utilise la syntaxe JSONPath pour extraire les éléments de la réponse JSON. Exemples: $.data[*].name, $.data..countries, $.data.countries.*"

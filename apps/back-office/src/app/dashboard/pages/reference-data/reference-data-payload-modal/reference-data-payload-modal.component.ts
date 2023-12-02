@@ -6,11 +6,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from '@oort-front/ui';
 
+/** Interface of data passed to dialog */
+interface DialogData {
+  payload: any;
+}
+
 /**
- * Modal for referenceData data
+ * Reference data payload modal.
  */
 @Component({
-  selector: 'app-data-modal',
+  selector: 'app-reference-data-payload-modal',
   standalone: true,
   imports: [
     DialogModule,
@@ -20,35 +25,35 @@ import { ButtonModule } from '@oort-front/ui';
     CommonModule,
     ButtonModule,
   ],
-  templateUrl: './data-modal.component.html',
-  styleUrls: ['./data-modal.component.scss'],
+  templateUrl: './reference-data-payload-modal.component.html',
+  styleUrls: ['./reference-data-payload-modal.component.scss'],
 })
-export class DataModalComponent implements OnInit {
-  /** Monaco editor configuration, for raw edition */
+export class ReferenceDataPayloadModalComponent implements OnInit {
+  /** Monaco editor configuration */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'json',
     fixedOverflowWidgets: true,
   };
+  /** Form control to see payload */
   public formControl = new FormControl('');
 
   /**
-   * Creates an instance of DataModalComponent.
+   * Reference data payload modal.
    *
-   * @param dialogRef dialog ref
-   * @param data injected modal data
-   * @param data.jsonData jsonData from referenceData
+   * @param dialogRef Dialog ref
+   * @param data Data passed to the modal
    */
   constructor(
-    public dialogRef: DialogRef<DataModalComponent>,
+    public dialogRef: DialogRef<ReferenceDataPayloadModalComponent>,
     @Inject(DIALOG_DATA)
-    public data: {
-      jsonData: any;
-    }
+    public data: DialogData
   ) {}
 
   ngOnInit(): void {
-    this.formControl.setValue(JSON.stringify(this.data.jsonData));
+    if (this.data.payload) {
+      this.formControl.setValue(JSON.stringify(this.data.payload));
+    }
   }
 
   /**

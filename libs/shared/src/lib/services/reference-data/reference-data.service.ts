@@ -365,7 +365,7 @@ export class ReferenceDataService {
    * @param path Path to the data
    * @param query Query name
    * @param type Type of reference data
-   * @returns List of fields names and types
+   * @returns fields & payload
    */
   public async getFields(
     apiConfiguration: ApiConfiguration,
@@ -390,10 +390,10 @@ export class ReferenceDataService {
       for (const key of Object.keys(object[0])) {
         fields.push({ name: key, type: typeof object[0][key] });
       }
-      return { fields: fields, data: object };
+      return { fields: fields, payload: object };
     }
 
-    return { fields: [], data: [] };
+    return { fields: [], payload: [] };
   }
 
   /**

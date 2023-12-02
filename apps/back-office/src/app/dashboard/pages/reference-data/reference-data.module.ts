@@ -18,7 +18,6 @@ import {
   DialogModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { DataModalComponent } from './data-modal/data-modal.component';
 
 /**
  * Reference Data page module.
@@ -45,7 +44,6 @@ import { DataModalComponent } from './data-modal/data-modal.component';
     FixedWrapperModule,
     FormsModule,
     DialogModule,
-    DataModalComponent,
   ],
 })
 export class ReferenceDataModule {}
