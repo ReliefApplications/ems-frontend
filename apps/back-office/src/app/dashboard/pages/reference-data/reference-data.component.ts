@@ -83,6 +83,7 @@ export class ReferenceDataComponent
 
   // === MONACO EDITOR ===
   public editorOptions = {
+    theme: 'vs-dark',
     language: 'graphql',
     formatOnPaste: true,
   };
@@ -601,6 +602,7 @@ export class ReferenceDataComponent
       this.valueFields = result.fields;
       this.payload = result.payload;
       this.referenceForm?.get('fields')?.setValue(this.valueFields);
+      this.referenceForm.get('fields')?.markAsDirty();
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
         this.snackBar.openSnackBar(e.message, { error: true });

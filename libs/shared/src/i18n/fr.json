@@ -2395,6 +2395,7 @@
 			"csv": "Fichier CSV d'entrée",
 			"fields": {
 				"fetch": "Récupérer les champs",
+				"help": "Les champs sont calculés en fonction des attributs du premier élément dans la réponse de l'API",
 				"missingConfig": "Impossible de récupérer les champs. Configuration manquante : {{config}}",
 				"noFields": "Aucun champ trouvé",
 				"title": "Champ"

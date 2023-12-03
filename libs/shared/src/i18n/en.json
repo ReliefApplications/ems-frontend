@@ -2381,6 +2381,7 @@
 			"csv": "CSV input",
 			"fields": {
 				"fetch": "Fetch fields",
+				"help": "The fields are calculated based on the attributes of the first item in the payload.",
 				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
 				"noFields": "No fields found",
 				"title": "Field"

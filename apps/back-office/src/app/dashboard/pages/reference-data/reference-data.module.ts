@@ -3,7 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
 import { AccessModule } from '@oort-front/shared';
-import { GraphQLSelectModule, IconModule, SpinnerModule } from '@oort-front/ui';
+import {
+  AlertModule,
+  GraphQLSelectModule,
+  IconModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { GridModule } from '@progress/kendo-angular-grid';
@@ -44,6 +49,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     FixedWrapperModule,
     FormsModule,
     DialogModule,
+    AlertModule,
   ],
 })
 export class ReferenceDataModule {}

@@ -113,8 +113,11 @@
           </ui-select-menu>
         </div>
       </div>
+      <ui-alert class="mb-4"
+        >{{ 'pages.referenceData.fields.help' | translate }}</ui-alert
+      >
       <!-- Fields -->
-      <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">
+      <kendo-grid *ngIf="!loading" [data]="valueFields" class="rounded-md">
         <kendo-grid-column
           field="name"
           title="{{ 'pages.referenceData.fields.title' | translate }}"
@@ -136,6 +139,7 @@
               icon="delete"
               [look]="'flat'"
               (click)="onRemoveField(dataItem)"
+              [uiTooltip]="'common.remove' | translate"
             ></button>
           </ng-template>
         </kendo-grid-column>

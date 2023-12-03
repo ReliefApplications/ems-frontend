@@ -13,6 +13,7 @@ import { GET_REFERENCE_DATA_BY_ID } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
+import toJsonSchema from 'to-json-schema';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -380,17 +381,53 @@ export class ReferenceDataService {
       type,
     };
 
-    const object = await this.fetchItems(referenceData);
+    const result = await this.fetchItems(referenceData);
 
-    if (object && object.length > 0) {
-      const fields: {
-        name: string;
-        type: string;
-      }[] = [];
-      for (const key of Object.keys(object[0])) {
-        fields.push({ name: key, type: typeof object[0][key] });
+    if (result) {
+      if (result.length > 0) {
+        console.log('par ici');
+        const fields: {
+          name: string;
+          type: string;
+        }[] = [];
+        // for (const key of Object.keys(result[0])) {
+        //   fields.push({ name: key, type: typeof result[0][key] });
+        // }
+        const schema = toJsonSchema(result, { arrays: { mode: 'first' } });
+        const properties = get(schema, 'items.properties') || {};
+        /**
+         * Find fields from object properties
+         *
+         * @param properties object properties
+         * @param prefix prefix, for nested fields
+         */
+        const findFields = (properties: any, prefix?: string) => {
+          for (const [key, value] of Object.entries(properties) as [
+            string,
+            any
+          ][]) {
+            const field = {
+              name: prefix ? prefix + key : key,
+              type: value.type,
+            };
+            fields.push(field);
+            if (field.type === 'object') {
+              findFields(
+                value.properties,
+                prefix ? prefix + field.name + '.' : field.name + '.'
+              );
+            }
+          }
+        };
+        try {
+          findFields(properties);
+        } catch (err) {
+          console.error(err);
+        }
+        return { fields: fields, payload: result };
+      } else {
+        return { fields: [], payload: result };
       }
-      return { fields: fields, payload: object };
     }
 
     return { fields: [], payload: [] };
