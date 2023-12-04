@@ -46,7 +46,7 @@ const createEditorForm = (value: any) => {
     record: new FormControl<string>(get(value, 'settings.record', null)),
     element: new FormControl<string>(get(value, 'settings.element', null)),
     showDataSourceLink: new FormControl<boolean>(
-      get(value, 'showDataSourceLink', false)
+      get(value, 'settings.showDataSourceLink', false)
     ),
     // Style
     useStyles: new FormControl<boolean>(get(value, 'settings.useStyles', true)),
@@ -185,6 +185,8 @@ export class EditorSettingsComponent
         this.widget.settings.title = this.widgetFormGroup.value.title;
         this.widget.settings.resource = this.widgetFormGroup.value.resource;
         this.widget.settings.layout = this.widgetFormGroup.value.layout;
+        this.widget.settings.showDataSourceLink =
+          this.widgetFormGroup.value.showDataSourceLink;
       });
     this.updateFields();
   }
