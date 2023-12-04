@@ -93,7 +93,7 @@ export const init = (
       let pickerDiv: HTMLDivElement | null = null;
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
-        el.parentElement?.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+        el.parentElement?.querySelector('.k-input')?.parentElement?.remove(); // .k-input class is shared by the 3 types of picker
         // Remove the picker div whenever we switch question type, so it is not duplicated
         if (pickerDiv) {
           pickerDiv.remove();
