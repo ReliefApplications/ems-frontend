@@ -60,7 +60,11 @@ export class ReferenceDatasComponent
 
   // === FILTERS ===
   public searchText = '';
-  public filter: any;
+  // === FILTERING ===
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
   public filterLoading = false;
 
   public pageInfo = {
@@ -102,7 +106,10 @@ export class ReferenceDatasComponent
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
+          sortField: 'name',
+          sortOrder: 'asc',
+          afterCursor: null,
+          filter: this.filter,
         },
       });
 
@@ -308,14 +315,19 @@ export class ReferenceDatasComponent
    * Update reference datas query.
    *
    * @param refetch erase previous query results
+   * @param filter filter
    */
-  private fetchReferenceDatas(refetch?: boolean): void {
+  private fetchReferenceDatas(refetch?: boolean, filter?: any): void {
     this.loading = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
-      sortField: this.sort?.sortDirection && this.sort.active,
-      sortOrder: this.sort?.sortDirection,
+      filter: filter ?? this.filter,
+      sortField:
+        this.sort?.sortDirection && this.sort.active
+          ? this.sort?.sortDirection && this.sort.active
+          : 'name',
+      sortOrder: this.sort?.sortDirection ? this.sort?.sortDirection : 'asc',
     };
     const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
       this.apollo.client,
