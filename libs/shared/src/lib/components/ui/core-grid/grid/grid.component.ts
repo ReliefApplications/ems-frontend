@@ -53,6 +53,7 @@ import { WidgetComponent } from '../../../widget/widget.component';
 import { DatePipe } from '../../../../pipes/date/date.pipe';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
 import { formatGridRowData } from './utils/grid-data-formatter';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -152,8 +153,6 @@ export class GridComponent
   @Input() pageSize = 10;
   /** Skip value */
   @Input() skip = 0;
-  /** Admin mode status */
-  @Input() admin = false;
   /** Output decorator for action */
   @Output() action = new EventEmitter();
   /** Output decorator for export */
@@ -223,6 +222,8 @@ export class GridComponent
   private closeEditorListener!: any;
   /** A boolean indicating if actions are enabled */
   public hasEnabledActions = false;
+  /** A boolean indicating if current user is admin */
+  public isAdmin: boolean;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -296,6 +297,7 @@ export class GridComponent
    * @param snackBar The snackbar service
    * @param el Ref to html element
    * @param document document
+   * @param authService Shared authentication service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -309,10 +311,12 @@ export class GridComponent
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private el: ElementRef,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private authService: AuthService
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
+    this.isAdmin = this.authService.userIsAdmin;
   }
 
   ngOnInit(): void {

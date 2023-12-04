@@ -21,7 +21,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AuthService } from '../../../services/auth/auth.service';
 import { DownloadService } from '../../../services/download/download.service';
 import {
   QueryBuilderService,
@@ -117,7 +116,6 @@ export class CoreGridComponent
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
   @Input() showExport = true;
-  @Input() admin = false;
   @Input() canCreateRecords = false;
 
   // === OUTPUTS ===
@@ -238,9 +236,6 @@ export class CoreGridComponent
   // === LAYOUT CHANGES ===
   public hasLayoutChanges = false;
 
-  // === AUTHORIZATION ===
-  public isAdmin: boolean;
-
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
   public editionActive = false;
@@ -297,7 +292,6 @@ export class CoreGridComponent
    * @param layoutService UI layout service
    * @param snackBar Shared snackbar service
    * @param downloadService Shared download service
-   * @param authService Shared authentication service
    * @param gridService Shared grid service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
@@ -315,7 +309,6 @@ export class CoreGridComponent
     private layoutService: UILayoutService,
     private snackBar: SnackbarService,
     private downloadService: DownloadService,
-    private authService: AuthService,
     private gridService: GridService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
@@ -327,8 +320,6 @@ export class CoreGridComponent
   ) {
     super();
     this.environment = environment;
-    this.isAdmin =
-      this.authService.userIsAdmin && environment.module === 'backoffice';
 
     contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))

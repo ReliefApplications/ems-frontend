@@ -35,7 +35,7 @@
       actions.export ||
       editable ||
       filterable ||
-      admin ||
+      isAdmin ||
       hasEnabledActions
     "
     kendoGridToolbarTemplate
@@ -98,7 +98,7 @@
       }}
     </button>
     <!-- ADMIN FEATURES -->
-    <ng-container *ngIf="admin">
+    <ng-container *ngIf="isAdmin">
       <span kendotooltip>
         <button
           kendoButton
