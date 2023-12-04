@@ -2,43 +2,40 @@
   <!-- Datasource form -->
   <form [formGroup]="formGroup" class="flex-1">
     <div class="flex flex-col gap-3 w-full">
-      <!-- Origin -->
-      <div uiFormFieldDirective>
-        <label>{{
-          'components.widget.settings.map.edit.datasource.origin' | translate
-        }}</label>
-        <ui-select-menu [formControl]="origin">
-          <ui-select-option value="resource">{{
-            'common.resource.one' | translate
-          }}</ui-select-option>
-          <ui-select-option value="refData">{{
-            'common.referenceData.one' | translate
-          }}</ui-select-option>
-        </ui-select-menu>
+      <div class="flex-1 flex-col">
+        <!-- Reference data selection  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!formGroup.value.resource"
+        >
+          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <shared-reference-data-select
+            formControlName="refData"
+            [selectedElements]="[referenceData]"
+          ></shared-reference-data-select>
+        </div>
+        <ui-divider
+          class="max-w-xs m-auto"
+          [text]="'common.or' | translate"
+          *ngIf="
+            !formGroup.value.resource &&
+            !formGroup.value.refData
+          "
+        ></ui-divider>
+        <!-- RESOURCE SELECTION  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!formGroup.value.refData"
+        >
+          <label>{{ 'models.resource.select' | translate }}</label>
+          <shared-resource-select
+            formControlName="resource"
+            [selectedElements]="[resource]"
+          ></shared-resource-select>
+        </div>
       </div>
-
-      <!-- Resource selection -->
-      <div
-        uiFormFieldDirective
-        class="flex-1"
-        *ngIf="origin.value === 'resource'"
-      >
-        <label>{{ 'common.resource.one' | translate }}</label>
-        <shared-resource-select
-          formControlName="resource"
-          [selectedElements]="[resource]"
-        ></shared-resource-select>
-        <!-- Remove value -->
-        <ui-button
-          uiSuffix
-          (click)="clearFormField('resource', $event)"
-          [isIcon]="true"
-          icon="close"
-          variant="danger"
-          [uiTooltip]="'common.remove' | translate"
-        ></ui-button>
-      </div>
-
       <!-- Aggregation or layout selection -->
       <div
         class="flex flex-col gap-8"
