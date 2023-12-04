@@ -703,12 +703,13 @@ export class ReferenceDataComponent
     // Close the edition (null as parameter)
     else {
       const isValid = this.inlineEditionForm.valid;
-      if (isValid) {
-        const { name, type, index } = this.inlineEditionForm.value;
+      if (isValid && this.currEditingField) {
+        const { name, type } = this.inlineEditionForm.value;
+        const index = this.valueFields.indexOf(this.currEditingField);
         const fieldsCopy = cloneDeep(this.valueFields);
 
         // Update the field in the list
-        if (typeof index === 'number' && index >= 0 && !!name && type) {
+        if (index >= 0 && !!name && type) {
           fieldsCopy[index].name = name;
           fieldsCopy[index].type = type;
         }
