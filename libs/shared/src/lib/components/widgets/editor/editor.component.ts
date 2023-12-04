@@ -12,7 +12,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get } from 'lodash';
+import { clone, get, isNil } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -48,13 +48,23 @@ export class EditorComponent implements OnInit {
   private fieldsValue: any;
   private styles: any[] = [];
   private wholeCardStyles = false;
-  /** Should show data source link */
-  public showDataSourceForm = true;
 
   public formattedHtml: SafeHtml = '';
   public formattedStyle?: string;
 
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+
+  /** @returns does the card use reference data */
+  get useReferenceData() {
+    return !isNil(this.settings.referenceData);
+  }
+
+  /** @returns should show data source button */
+  get showDataSourceButton() {
+    return (
+      (this.settings.showDataSourceLink || false) && !this.useReferenceData
+    );
+  }
 
   /**
    * Constructor for shared-editor component
@@ -120,8 +130,6 @@ export class EditorComponent implements OnInit {
         this.settings.text
       );
     }
-    this.showDataSourceForm =
-      this.settings.showDataSourceLink && !this.settings.referenceData;
   }
 
   /**

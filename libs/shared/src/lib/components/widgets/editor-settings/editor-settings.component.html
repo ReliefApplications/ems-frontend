@@ -79,27 +79,31 @@
           <shared-display-settings
             [formGroup]="widgetFormGroup"
           ></shared-display-settings>
-          <ui-divider class="my-2"></ui-divider>
-          <div *ngIf="showDataSourceForm" [formGroup]="widgetFormGroup">
-            <ui-toggle formControlName="showDataSourceLink">
-              <ng-container ngProjectAs="label">
-                {{
-                  'components.widget.settings.summaryCard.card.display.dataSource'
-                    | translate
-                }}
-                <ui-icon
-                  class="ml-1 cursor-help self-center"
-                  icon="info_outline"
-                  variant="grey"
-                  [size]="18"
-                  [uiTooltip]="
-                    'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+          <ng-container
+            *ngIf="widgetFormGroup.get('showDataSourceLink')?.enabled"
+          >
+            <ui-divider class="my-2"></ui-divider>
+            <div [formGroup]="widgetFormGroup">
+              <ui-toggle formControlName="showDataSourceLink">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'components.widget.settings.summaryCard.card.display.dataSource'
                       | translate
-                  "
-                ></ui-icon>
-              </ng-container>
-            </ui-toggle>
-          </div>
+                  }}
+                  <ui-icon
+                    class="ml-1 cursor-help self-center"
+                    icon="info_outline"
+                    variant="grey"
+                    [size]="18"
+                    [uiTooltip]="
+                      'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+                        | translate
+                    "
+                  ></ui-icon>
+                </ng-container>
+              </ui-toggle>
+            </div>
+          </ng-container>
         </div>
       </ng-template>
     </ui-tab>

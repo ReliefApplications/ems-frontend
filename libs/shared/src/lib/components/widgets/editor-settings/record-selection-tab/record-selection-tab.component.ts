@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { EditorFormType } from '../editor-settings.component';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
@@ -9,6 +8,7 @@ import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
+import { createEditorForm } from '../editor-settings.forms';
 
 /** Component for the record selection in the editor widget settings */
 @Component({
@@ -21,7 +21,7 @@ export class RecordSelectionTabComponent
   implements OnInit
 {
   /** Widget form group */
-  @Input() form!: EditorFormType;
+  @Input() form!: ReturnType<typeof createEditorForm>;
   /** Current resource */
   @Input() referenceData: ReferenceData | null = null;
   /** Current resource */

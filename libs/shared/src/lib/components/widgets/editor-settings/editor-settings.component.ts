@@ -6,10 +6,8 @@ import {
   Input,
   AfterViewInit,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { EditorService } from '../../../services/editor/editor.service';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import {
   Resource,
   ResourceQueryResponse,
@@ -25,44 +23,9 @@ import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
+import { createEditorForm } from './editor-settings.forms';
 
-/**
- * Creates the form for the editor widget settings.
- *
- * @param value editor widget
- * @returns the editor widget form group
- */
-const createEditorForm = (value: any) => {
-  const form = new FormGroup({
-    id: new FormControl<string>(value.id),
-    title: new FormControl<string>(get(value, 'settings.title', '')),
-    text: new FormControl<string>(get(value, 'settings.text', '')),
-    // for record selection
-    resource: new FormControl<string>(get(value, 'settings.resource', null)),
-    referenceData: new FormControl<string>(
-      get(value, 'settings.referenceData', null)
-    ),
-    layout: new FormControl<string>(get(value, 'settings.layout', null)),
-    record: new FormControl<string>(get(value, 'settings.record', null)),
-    element: new FormControl<string>(get(value, 'settings.element', null)),
-    showDataSourceLink: new FormControl<boolean>(
-      get(value, 'settings.showDataSourceLink', false)
-    ),
-    // Style
-    useStyles: new FormControl<boolean>(get(value, 'settings.useStyles', true)),
-    wholeCardStyles: new FormControl<boolean>(
-      get(value, 'settings.wholeCardStyles', false)
-    ),
-  });
-
-  return extendWidgetForm(form, value?.settings?.widgetDisplay, {
-    usePadding: new FormControl(
-      get<boolean>(value, 'settings.widgetDisplay.usePadding', true)
-    ),
-  });
-};
-
-export type EditorFormType = ReturnType<typeof createEditorForm>;
+// export type EditorFormType = ReturnType<typeof createEditorForm>;
 
 /**
  * Modal content for the settings of the editor widgets.
@@ -79,7 +42,7 @@ export class EditorSettingsComponent
   /** Widget configuration */
   @Input() widget: any;
   /** Widget form group */
-  widgetFormGroup!: EditorFormType;
+  widgetFormGroup!: ReturnType<typeof createEditorForm>;
   /** Change event emitter */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
@@ -91,8 +54,6 @@ export class EditorSettingsComponent
   public referenceData: ReferenceData | null = null;
   /** Current layout */
   public layout: Layout | null = null;
-  /** Show data source*/
-  public showDataSourceForm = true;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -118,7 +79,10 @@ export class EditorSettingsComponent
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.widgetFormGroup = createEditorForm(this.widget);
+    this.widgetFormGroup = createEditorForm(
+      this.widget.id,
+      this.widget.settings
+    );
     this.change.emit(this.widgetFormGroup);
 
     // Initialize the selected resource, layout and record from the form
@@ -136,6 +100,7 @@ export class EditorSettingsComponent
       .subscribe((value) => {
         if (value) {
           this.widgetFormGroup.controls.referenceData.setValue(null);
+          this.widgetFormGroup.controls.showDataSourceLink.enable();
           this.getResource(value);
         } else {
           this.resource = null;
@@ -163,12 +128,12 @@ export class EditorSettingsComponent
       .subscribe((value) => {
         if (value) {
           this.widgetFormGroup.controls.resource.setValue(null);
+          this.widgetFormGroup.controls.showDataSourceLink.disable();
           this.getReferenceData(value);
         } else {
           this.referenceData = null;
         }
       });
-    this.showDataSourceForm = referenceDataID ? false : true;
   }
 
   /**
@@ -180,6 +145,7 @@ export class EditorSettingsComponent
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.change.emit(this.widgetFormGroup);
+        // todo: check if relevant
         this.widget.settings.text = this.widgetFormGroup.value.text;
         this.widget.settings.record = this.widgetFormGroup.value.record;
         this.widget.settings.title = this.widgetFormGroup.value.title;
