@@ -121,7 +121,7 @@ export class EditorComponent implements OnInit {
       );
     }
     this.showDataSourceForm =
-      this.settings.showDataSourceForm && !this.settings.referenceData;
+      this.settings.showDataSourceLink && !this.settings.referenceData;
   }
 
   /**
