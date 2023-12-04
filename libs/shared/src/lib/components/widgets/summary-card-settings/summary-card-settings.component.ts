@@ -124,6 +124,7 @@ export class SummaryCardSettingsComponent
         this.fields = [];
         if (value) {
           this.referenceData = null;
+          this.widgetFormGroup.controls.card.controls.showDataSourceLink.enable();
           this.getResource(value);
         } else {
           this.resource = null;
@@ -142,6 +143,7 @@ export class SummaryCardSettingsComponent
       .subscribe((value) => {
         if (value) {
           this.resource = null;
+          this.widgetFormGroup.controls.card.controls.showDataSourceLink.disable();
           this.getReferenceData(value);
         } else {
           this.referenceData = null;
