@@ -14,16 +14,23 @@
             formControlName="refData"
             [selectedElements]="[referenceData]"
           ></shared-reference-data-select>
+          <!-- Remove value -->
+          <ui-button
+            *ngIf="formGroup.value.refData"
+            uiSuffix
+            (click)="clearFormField('refData', $event)"
+            [isIcon]="true"
+            icon="close"
+            variant="danger"
+            [uiTooltip]="'common.remove' | translate"
+          ></ui-button>
         </div>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"
-          *ngIf="
-            !formGroup.value.resource &&
-            !formGroup.value.refData
-          "
+          *ngIf="!formGroup.value.resource && !formGroup.value.refData"
         ></ui-divider>
-        <!-- RESOURCE SELECTION  -->
+        <!-- Resource selection  -->
         <div
           uiFormFieldDirective
           class="flex-1"
@@ -34,6 +41,16 @@
             formControlName="resource"
             [selectedElements]="[resource]"
           ></shared-resource-select>
+          <!-- Remove value -->
+          <ui-button
+            *ngIf="formGroup.value.resource"
+            uiSuffix
+            (click)="clearFormField('resource', $event)"
+            [isIcon]="true"
+            icon="close"
+            variant="danger"
+            [uiTooltip]="'common.remove' | translate"
+          ></ui-button>
         </div>
       </div>
       <!-- Aggregation or layout selection -->
@@ -115,28 +132,6 @@
           [isIcon]="true"
           icon="close"
           (click)="clearFormField('aggregation', $event)"
-          [uiTooltip]="'common.remove' | translate"
-        ></ui-button>
-      </div>
-
-      <!-- Reference data selection  -->
-      <div
-        uiFormFieldDirective
-        class="flex-1"
-        *ngIf="origin.value === 'refData'"
-      >
-        <label>{{ 'common.referenceData.one' | translate }}</label>
-        <shared-reference-data-select
-          formControlName="refData"
-          [selectedElements]="[referenceData]"
-        ></shared-reference-data-select>
-        <!-- Remove value -->
-        <ui-button
-          uiSuffix
-          (click)="clearFormField('refData', $event)"
-          [isIcon]="true"
-          icon="close"
-          variant="danger"
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
