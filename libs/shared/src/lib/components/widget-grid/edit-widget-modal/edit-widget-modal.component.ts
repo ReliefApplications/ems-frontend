@@ -36,11 +36,10 @@ export class EditWidgetModalComponent
   implements AfterViewInit
 {
   /** Widget reactive form */
-  widgetForm?: UntypedFormGroup;
-
+  public widgetForm?: UntypedFormGroup;
   /** Reference to widget settings container */
   @ViewChild('settingsContainer', { read: ViewContainerRef })
-  settingsContainer: any;
+  public settingsContainer: any;
 
   /**
    * Edition of widget configuration in modal.

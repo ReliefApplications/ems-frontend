@@ -103,7 +103,7 @@
         <button
           kendoButton
           title="This will erase current layout with default layout"
-          (click)="action.emit({ action: 'resetLayout' })"
+          (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
         >
           {{ 'components.widget.grid.layout.reset' | translate }}
         </button>

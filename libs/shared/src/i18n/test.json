@@ -494,6 +494,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"groupingRules": "******",
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
@@ -2380,12 +2381,17 @@
 			"csv": "******",
 			"fields": {
 				"fetch": "******",
+				"help": "******",
 				"missingConfig": "****** {{config}}",
 				"noFields": "******",
 				"title": "******"
 			},
 			"graphQLFilter": "******",
 			"path": "******",
+			"payload": {
+				"label": "******",
+				"show": "******"
+			},
 			"placeholder": {
 				"csv": "******",
 				"graphQLFilter": "******"

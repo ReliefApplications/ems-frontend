@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createTabsWidgetFormGroup } from './tabs-settings.form';
@@ -25,15 +18,15 @@ import { takeUntil } from 'rxjs';
 })
 export class TabsSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
-  /** Settings */
-  public widgetForm!: FormGroup;
   /** Widget definition */
   @Input() widget: any;
   /** Emit the applied change */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
+  /** Widget form group */
+  public widgetForm!: FormGroup;
 
   ngOnInit(): void {
     // Create form group, and extend it to get display settings ( such as borderless )
@@ -47,15 +40,10 @@ export class TabsSettingsComponent
       }
     );
     this.change.emit(this.widgetForm);
-  }
-
-  /**
-   * Detect the form changes to emit the new configuration.
-   */
-  ngAfterViewInit(): void {
     this.widgetForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.widgetForm.markAsDirty({ onlySelf: true });
         this.change.emit(this.widgetForm);
       });
   }
