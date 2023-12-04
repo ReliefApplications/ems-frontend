@@ -1,7 +1,7 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <app-reference-data-filter
     (filter)="onFilter($event)"
-    [loading]="filterLoading"
+    [loading]="updating"
   ></app-reference-data-filter>
   <!-- Actions -->
   <ui-button
@@ -130,7 +130,7 @@
   </div>
 </div>
 <ui-paginator
-  [disabled]="loading"
+  [disabled]="loading || updating"
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"
   [totalItems]="pageInfo.length"
