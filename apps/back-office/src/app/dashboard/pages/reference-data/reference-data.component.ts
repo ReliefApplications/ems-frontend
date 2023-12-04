@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
+  FormBuilder,
   FormControl,
   FormGroup,
   Validators,
@@ -31,7 +32,7 @@ import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
-import { get } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import { SnackbarService, TextareaComponent } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
 import { Dialog } from '@angular/cdk/dialog';
@@ -71,6 +72,20 @@ export class ReferenceDataComponent
   public payload: any;
   public loadingFields = false;
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  /** Has the fields that's currently being edited, if any */
+  public currEditingField: NonNullable<ReferenceData['fields']>[number] | null =
+    null;
+  /** Form for the inline edition */
+  public inlineEditionForm = this.createEditionForm();
+  /** Valid json types */
+  public validJsonTypes = [
+    'string',
+    'number',
+    'boolean',
+    'object',
+    'array',
+    'null',
+  ];
 
   // === CSV ===
   public csvValue = '';
@@ -122,6 +137,7 @@ export class ReferenceDataComponent
    * @param breadcrumbService Setups the breadcrumb component variables
    * @param refDataService Reference data service
    * @param dialog dialog
+   * @param fb form builder
    */
   constructor(
     private apollo: Apollo,
@@ -131,9 +147,23 @@ export class ReferenceDataComponent
     private translateService: TranslateService,
     private breadcrumbService: BreadcrumbService,
     private refDataService: ReferenceDataService,
-    public dialog: Dialog
+    public dialog: Dialog,
+    private fb: FormBuilder
   ) {
     super();
+  }
+
+  /**
+   * Create a new edition form group.
+   *
+   * @returns the edition form group
+   */
+  private createEditionForm() {
+    return this.fb.group({
+      name: this.fb.control('', Validators.required),
+      type: this.fb.control('string', Validators.required),
+      index: this.fb.control(-1, Validators.required),
+    });
   }
 
   /**
@@ -651,5 +681,71 @@ export class ReferenceDataComponent
         payload: this.payload,
       },
     });
+  }
+
+  /**
+   * Toggles the inline editor for the field
+   *
+   * @param field field to edit
+   */
+  public toggleInlineEditor(field: typeof this.currEditingField) {
+    // Start the edition
+    if (field) {
+      this.inlineEditionForm.reset();
+      const index = this.valueFields.indexOf(field);
+
+      this.inlineEditionForm.patchValue({
+        name: field.name,
+        type: field.type,
+        index,
+      });
+    }
+    // Close the edition (null as parameter)
+    else {
+      const isValid = this.inlineEditionForm.valid;
+      if (isValid) {
+        const { name, type, index } = this.inlineEditionForm.value;
+        const fieldsCopy = cloneDeep(this.valueFields);
+
+        // Update the field in the list
+        if (typeof index === 'number' && index >= 0 && !!name && type) {
+          fieldsCopy[index].name = name;
+          fieldsCopy[index].type = type;
+        }
+        this.valueFields = fieldsCopy;
+        this.inlineEditionForm.reset();
+
+        // Update the fields in the form
+        this.referenceForm.get('fields')?.setValue(this.valueFields);
+        this.referenceForm.get('fields')?.markAsDirty();
+      }
+    }
+
+    // Store the field we're currently editing or null if we're not editing any
+    this.currEditingField = field;
+  }
+
+  /** Adds a new field to the field list */
+  public addField() {
+    // Save any field that's currently being edited
+    this.toggleInlineEditor(null);
+
+    this.inlineEditionForm.patchValue({
+      index: this.valueFields.length,
+    });
+
+    // Add a new field to the list
+    this.valueFields = [
+      ...this.valueFields,
+      {
+        name: this.translateService.instant(
+          'components.referenceData.fields.new'
+        ),
+        type: 'string',
+      },
+    ];
+
+    // Start the edition
+    this.toggleInlineEditor(this.valueFields[this.valueFields.length - 1]);
   }
 }

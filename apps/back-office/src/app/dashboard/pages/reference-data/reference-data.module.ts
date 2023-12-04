@@ -23,6 +23,8 @@ import {
   DialogModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 /**
  * Reference Data page module.
@@ -50,6 +52,8 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     FormsModule,
     DialogModule,
     AlertModule,
+    InputsModule,
+    DropDownsModule,
   ],
 })
 export class ReferenceDataModule {}
