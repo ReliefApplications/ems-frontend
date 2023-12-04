@@ -56,7 +56,7 @@ export class ReferenceDatasComponent
   public cachedReferenceDatas: ReferenceData[] = [];
 
   // === SORTING ===
-  sort?: TableSort;
+  private sort: TableSort = { active: '', sortDirection: '' };
 
   // === FILTERS ===
   public searchText = '';
@@ -118,11 +118,6 @@ export class ReferenceDatasComponent
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
-    // Initializing sort to an empty one
-    this.sort = {
-      active: '',
-      sortDirection: '',
-    };
   }
 
   /**
@@ -150,19 +145,8 @@ export class ReferenceDatasComponent
    */
   onFilter(filter: any) {
     this.filterLoading = true;
-    this.cachedReferenceDatas = [];
-    this.pageInfo.pageIndex = 0;
     this.filter = filter;
-    this.referenceDatasQuery
-      .fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          filter: this.filter,
-        },
-      })
-      .then((results: ApolloQueryResult<ReferenceDatasQueryResponse>) => {
-        this.updateValues(results.data, false);
-      });
+    this.fetchReferenceDatas(true, filter);
   }
 
   /**
@@ -324,10 +308,11 @@ export class ReferenceDatasComponent
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: filter ?? this.filter,
       sortField:
-        this.sort?.sortDirection && this.sort.active
+        (this.sort?.sortDirection && this.sort.active) !== ''
           ? this.sort?.sortDirection && this.sort.active
           : 'name',
-      sortOrder: this.sort?.sortDirection ? this.sort?.sortDirection : 'asc',
+      sortOrder:
+        this.sort?.sortDirection !== '' ? this.sort?.sortDirection : 'asc',
     };
     const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
       this.apollo.client,
