@@ -70,6 +70,7 @@ export const init = (
     },
     isDefaultRender: false,
     afterRender: (question: any, el: HTMLElement): void => {
+      let currentSearchValue = '';
       const defaultTagbox = el.querySelector('sv-ng-tagbox-question');
       if (defaultTagbox) {
         el.removeChild(defaultTagbox);
@@ -82,7 +83,8 @@ export const init = (
       ) {
         question.choices = parentQuestion.choices;
       }
-      let currentSearchValue = '';
+      // Remove previous input if already rendered
+      el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
