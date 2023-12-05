@@ -296,7 +296,6 @@ export class ReferenceDatasComponent
     );
     this.loading = loading;
     this.updating = false;
-    console.log(this.pageInfo);
   }
 
   /**
