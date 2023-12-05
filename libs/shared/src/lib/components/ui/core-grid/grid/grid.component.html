@@ -35,7 +35,6 @@
       actions.export ||
       editable ||
       filterable ||
-      admin ||
       hasEnabledActions
     "
     kendoGridToolbarTemplate
@@ -97,12 +96,12 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
-    <!-- ADMIN FEATURES -->
-    <ng-container *ngIf="admin">
+    <!-- GRID LAYOUT FEATURES -->
+    <ng-container *ngIf="!useAggregation">
       <span kendotooltip>
         <button
           kendoButton
-          title="This will erase current layout with default layout"
+          title="{{ 'components.widget.grid.layout.button.title' | translate }}"
           (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
         >
           {{ 'components.widget.grid.layout.reset' | translate }}
@@ -557,7 +556,7 @@
           ></kendo-datetimepicker>
         </ng-template>
       </kendo-grid-column>
-      <!-- REFERENCE DATA MULTI SELECT -->
+      <!-- Reference data -->
       <ng-container *ngIf="field.meta && field.meta.type === 'referenceData'">
         <ng-container *ngFor="let subField of field.subFields">
           <kendo-grid-column
@@ -577,6 +576,7 @@
               let-filterService="filterService"
             >
               <shared-grid-filter-menu
+                [isNotArray]="subField.meta.type === 'dropdown'"
                 [filter]="filter"
                 [filterService]="filterService"
                 [data]="subField.meta.choices || []"
@@ -592,6 +592,7 @@
               let-dataItem="dataItem"
             >
               <shared-grid-filter
+                [isNotArray]="subField.meta.type === 'dropdown'"
                 [filter]="filter"
                 [data]="subField.meta.choices || []"
                 [field]="subField.name"
@@ -605,14 +606,14 @@
                 class="textbox-container"
                 [style]="dataItem.style[field.name]"
               >
+                {{ dataItem.text[subField.name] }}
                 <!-- <button
-              kendoButton
-              icon="hyperlink-open-sm"
-              (click)="openReferenceDataSelector(field)"
-              [look]="'flat'"
-              [uiTooltip]="'common.edit' | translate"
-            ></button> -->
-                {{ dataItem.text[field.name] }}
+                  kendoButton
+                  icon="hyperlink-open-sm"
+                  (click)="openReferenceDataSelector(field)"
+                  [look]="'flat'"
+                  [uiTooltip]="'common.edit' | translate"
+                ></button> -->
               </div>
             </ng-template>
           </kendo-grid-column>
