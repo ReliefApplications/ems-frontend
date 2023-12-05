@@ -1852,6 +1852,7 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateFormat": "YYYY/MM/DD or expression ({{today}} or {{now}})",
 			"dateLabel": "Select a date",
 			"endLabel": "Select a end date",
 			"startLabel": "Select a start date",

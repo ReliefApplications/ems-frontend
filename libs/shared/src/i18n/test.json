@@ -1852,6 +1852,7 @@
 			"noDataText": "******"
 		},
 		"datepicker": {
+			"dateFormat": "****** {{today}} ****** {{now}} ******",
 			"dateLabel": "******",
 			"endLabel": "******",
 			"startLabel": "******",
