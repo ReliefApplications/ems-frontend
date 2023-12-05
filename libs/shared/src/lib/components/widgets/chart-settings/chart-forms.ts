@@ -2,6 +2,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { createFilterGroup } from '../../query-builder/query-builder-forms';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -133,6 +135,7 @@ export const createChartForm = (value: any) => {
             disabled: !get(axes, 'y.enableMax', false),
           },
         ],
+        stepSize: [get(axes, 'y.stepSize', false)],
       }),
       x: fb.group({
         enableMin: [get(axes, 'x.enableMin', false)],
@@ -153,6 +156,7 @@ export const createChartForm = (value: any) => {
             disabled: !get(axes, 'x.enableMax', false),
           },
         ],
+        stepSize: [get(axes, 'x.stepSize', false)],
       }),
     }),
     stack: fb.group({
@@ -316,21 +320,40 @@ const DEFAULT_CONTEXT_FILTER = `{
 }`;
 
 /**
+ * Create filter form group
+ *
+ * @param value filter settings
+ * @returns filter form group
+ */
+const createFilterForm = (value: any) => {
+  return fb.group({
+    filter: createFilterGroup(get(value, 'filter', null)),
+    label: [get(value, 'label', null), Validators.required],
+  });
+};
+
+/**
  * Create chart widget form group
  *
  * @param id widget id
  * @param value chart widget settings
  * @returns chart widget form group
  */
-export const createChartWidgetForm = (id: any, value: any) =>
-  fb.group({
+export const createChartWidgetForm = (id: any, value: any) => {
+  const form = fb.group({
     id,
     title: [get(value, 'title', ''), Validators.required],
     chart: createChartForm(get(value, 'chart')),
     resource: [get(value, 'resource', null), Validators.required],
     contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
+    filters: fb.array(
+      get(value, 'filters', []).map((x: any) => createFilterForm(x))
+    ),
     at: [get(value, 'at', '')],
   });
+
+  return extendWidgetForm(form, value?.widgetDisplay);
+};
 
 /**
  * Create chart serie category form group

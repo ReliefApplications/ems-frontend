@@ -1,6 +1,6 @@
 <div class="items-center p-4 border-b">
   <!-- HEADER -->
-  <div class="flex justify-between items-center mb-2">
+  <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
     <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
     <ui-button
       [isIcon]="true"
@@ -37,7 +37,7 @@
       <label>{{ 'components.history.field.select' | translate }}</label>
       <ui-select-menu
         (selectedOption)="applyFilter($event)"
-        [value]="filterFields"
+        [ngModel]="filterFields"
         [multiselect]="true"
       >
         <ui-select-option

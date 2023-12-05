@@ -378,16 +378,6 @@ export class FormRecordsComponent
   }
 
   /**
-   * Take file from upload event and call upload method.
-   *
-   * @param event Upload event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
    * Upload file and indicate status of request.
    *
    * @param file file to upload.
@@ -406,8 +396,8 @@ export class FormRecordsComponent
           this.showUpload = false;
         }
       },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
+      error: () => {
+        // The error message has already been handled in DownloadService
         this.showUpload = false;
       },
     });

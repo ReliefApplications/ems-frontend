@@ -6,7 +6,7 @@
     <p class="text-sm text-gray-500">{{ content }}</p>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose variant="default">{{ cancelText }}</ui-button>
+    <ui-button [uiDialogClose] variant="default">{{ cancelText }}</ui-button>
     <ui-button
       category="secondary"
       [variant]="confirmVariant"

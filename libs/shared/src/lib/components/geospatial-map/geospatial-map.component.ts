@@ -87,6 +87,7 @@ export class GeospatialMapComponent
       measure: true,
       layer: false,
       search: true,
+      lastUpdate: null,
     },
     zoomControl: true,
   };

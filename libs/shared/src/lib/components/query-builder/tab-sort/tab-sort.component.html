@@ -3,9 +3,6 @@
     <div uiFormFieldDirective class="w-44">
       <label>{{ 'components.queryBuilder.sort.field' | translate }}</label>
       <ui-select-menu formControlName="field">
-        <ui-select-option>{{
-          'common.input.none' | translate
-        }}</ui-select-option>
         <ng-container *ngFor="let field of fields">
           <ui-select-option
             *ngIf="field.type.kind === 'SCALAR'"
@@ -29,6 +26,16 @@
           </ng-container>
         </ng-container>
       </ui-select-menu>
+      <ui-button
+        *ngIf="form.value.sort.field"
+        uiSuffix
+        [isIcon]="true"
+        variant="danger"
+        icon="close"
+        [uiTooltip]="'common.remove' | translate"
+        size="small"
+        (click)="form.get('sort.field')?.setValue(null)"
+      ></ui-button>
     </div>
     <div *ngIf="form.value.sort.field" uiFormFieldDirective class="w-44">
       <label>{{ 'components.queryBuilder.sort.order' | translate }}</label>

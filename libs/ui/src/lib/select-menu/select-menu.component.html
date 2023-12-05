@@ -49,20 +49,27 @@
 </button>
 <!-- Listbox showing when focus on the component, change in function of inputs -->
 <ng-template #optionPanel>
-  <div class="relative w-full">
+  <div
+    id="optionsContainer"
+    class="relative w-full shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ease-in-out duration-100 rounded-md overflow-hidden"
+  >
+    <!-- Search -->
+    <ng-container *ngIf="filterable">
+      <ng-container *ngTemplateOutlet="search"></ng-container>
+    </ng-container>
     <ul
       id="optionList"
       [ngClass]="{
         'max-h-36 py-1': !isGraphQlSelect,
         'max-h-52': isGraphQlSelect
       }"
-      class="shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ease-in-out duration-100 w-full overflow-auto rounded-md bg-white text-base"
+      class="w-full overflow-auto bg-white text-base"
     >
       <!-- Display the elements of the list -->
       <ng-content></ng-content>
       <!-- Display a message to indicate the list is empty -->
       <div
-        *ngIf="!optionList.length"
+        *ngIf="emptyList"
         class="h-24 flex flex-col gap-2 justify-center items-center"
       >
         <ui-icon icon="error_outline" variant="grey"></ui-icon>
@@ -71,5 +78,30 @@
         </p>
       </div>
     </ul>
+  </div>
+</ng-template>
+<!-- Search template -->
+<ng-template #search>
+  <div
+    class="w-full flex shadow-sm !sticky top-0 border-b-gray-300 !h-auto z-10 !bg-white !p-0"
+  >
+    <input
+      class="bg-transparent block w-full px-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 border-0"
+      [formControl]="searchControl"
+      [placeholder]="'common.placeholder.search' | translate"
+      type="text"
+      #searchInput
+    />
+    <ui-spinner
+      [size]="'medium'"
+      *ngIf="loading"
+      class="items-center"
+    ></ui-spinner>
+    <ui-button
+      [isIcon]="true"
+      icon="close"
+      (click)="searchControl.setValue('')"
+      [uiTooltip]="'common.close' | translate"
+    ></ui-button>
   </div>
 </ng-template>

@@ -14,7 +14,7 @@ import { GET_RECORD_DETAILS } from './graphql/queries';
 
 describe('ConvertModalComponent', () => {
   let component: ConvertModalComponent;
-  let fixture: ComponentFixture<sharedConvertModalComponent>;
+  let fixture: ComponentFixture<ConvertModalComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

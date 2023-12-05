@@ -205,6 +205,7 @@
 			"none": "Pas de groupes",
 			"one": "Groupe"
 		},
+		"hide": "Cacher",
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -219,6 +220,7 @@
 			"none": "Aucune mise en page",
 			"one": "Mise en page"
 		},
+		"loading": "Chargement",
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
@@ -250,6 +252,7 @@
 				},
 				"upload": {
 					"error": "Un problème est survenu lors de l'import",
+					"maxFileSize": "La taille maximale du fichier est de {{size}} Mo.",
 					"processing": "Fichier en cours d'importation...",
 					"ready": "Fichier importé"
 				}
@@ -309,6 +312,12 @@
 		},
 		"platform": {
 			"backOffice": "Back-Office"
+		},
+		"position": {
+			"bottomleft": "En bas à gauche",
+			"bottomright": "En bas à droite",
+			"topleft": "En haut à gauche",
+			"topright": "En haut à droite"
 		},
 		"positionAttribute": {
 			"few": "Attributs de position",
@@ -386,6 +395,7 @@
 		},
 		"title": "Titre",
 		"tooltip": {
+			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
 				"insert": "Tapez '{' pour utiliser des expressions et des variables"
 			}
@@ -475,7 +485,7 @@
 				"addFields": "Ajouter des champs",
 				"custom": "Personnaliser",
 				"filter": "Filtrer",
-				"group": "Grouper",
+				"group": "Grouper & Accumulateur",
 				"sort": "Trier",
 				"unwind": "Dissocier"
 			},
@@ -483,9 +493,10 @@
 				"addFields": "Ajouter de nouveaux champs au document.",
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
-				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"group": "Regroupe les enregistrements en fonction des valeurs de champ et construit des accumulateurs personnalisés.",
+				"groupingRules": "Les règles de regroupement sont facultatives.",
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
-				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
 		},
@@ -512,6 +523,8 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"enterEditMode": "Entrer en mode édition",
+				"enterPreviewMode": "Entrer en mode prévisualisation",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
 					"filterPosition": {
@@ -525,7 +538,26 @@
 				},
 				"filterSettings": "Paramètres du filtre",
 				"settings": {
-					"defaultPosition": "Position par défaut du filtre"
+					"defaultPosition": "Position par défaut du filtre",
+					"fixedRowHeight": "Hauteur de ligne fixe",
+					"gridOptions": "Options de grille",
+					"help": {
+						"minCols": "Réduire le nombre de colonnes peut ne pas avoir un impact direct si les widgets dépassent la limite spécifiée en largeur."
+					},
+					"margin": "Marge entre les widgets",
+					"minCols": "Nombre de colonnes",
+					"tooltip": {
+						"fixedRowHeight": "Taille des lignes en pixels.\nDoit être supérieur ou égal à 50.",
+						"margin": "Marge entre les widgets.\nDoit être un entier positif.",
+						"minCols": "Nombre de colonnes.\nDoit être compris entre 4 et 24.",
+						"reset": "Réinitialiser la valeur"
+					},
+					"tooltips": {
+						"clear": "Définir les valeurs par défaut",
+						"fixedRowHeight": "Minimum: 50, Par défaut: 200, Pas de max",
+						"margin": "Minimum: 0, Par défaut: 10, Pas de max",
+						"minCols": "Minimum: 4, Par défaut: 8, Maximum: 24"
+					}
 				}
 			},
 			"delete": {
@@ -589,8 +621,13 @@
 				"title": "Déverrouiller l'édition"
 			},
 			"update": {
+				"hideMenu": "Cacher le menu vertical de navigation par défaut",
 				"placeholder": {
 					"description": "Veuillez entrer une description pour l'application."
+				},
+				"sideMenu": "Afficher le menu sur le côté",
+				"tooltip": {
+					"hideMenu": "Ne s'applique que lorsque le menu est sur le côté"
 				}
 			},
 			"users": {
@@ -728,6 +765,25 @@
 			"display": {
 				"submissionMessage": "Le formulaire a été sauvegardé."
 			},
+			"draftRecords": {
+				"buttonLoad": "Charger un brouillon",
+				"confirmModal": {
+					"confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
+					"confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",
+					"delete": "Supprimer ce brouillon",
+					"load": "Charger ce brouillon"
+				},
+				"creationDate": "Date de création",
+				"delete": "Supprimer ce brouillon",
+				"load": "Charger ce brouillon",
+				"noDrafts": "Aucun enregistrement brouillon disponible",
+				"preview": "Prévisualiser ce brouillon",
+				"previewTitle": "Enregistrement brouillon",
+				"save": "Enregistrer comme brouillon",
+				"select": "Sélectionner le brouillon",
+				"successEdit": "Brouillon modifié avec succès",
+				"successSave": "Enregistré dans les brouillons avec succès"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
@@ -760,6 +816,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
+				"incorrectJSON": "Le JSON est invalide dans le JSON Editor, les changements n'ont pas été sauvegardés",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
@@ -1244,6 +1301,9 @@
 						"invalid": "Agrégation invalide"
 					}
 				},
+				"filters": {
+					"select": "Sélectionnez un filtre..."
+				},
 				"other": "Autre"
 			},
 			"expand": "Étendre",
@@ -1258,7 +1318,8 @@
 					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
-						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
+						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur",
+						"widgets": "Configuration de grille non valide, veuillez contacter votre administrateur"
 					},
 					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
 					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",
@@ -1299,6 +1360,9 @@
 					"one": "{{count}} élément"
 				},
 				"layout": {
+					"button": {
+						"title": "Cela effacera la mise en page actuelle avec la mise en page par défaut"
+					},
 					"reset": "Réinitialiser la mise en page par défaut"
 				},
 				"loading": {
@@ -1330,6 +1394,12 @@
 					"axes": "Axes",
 					"categories": "Catégories",
 					"color": "Couleur",
+					"filters": {
+						"add": "Ajouter un filtre",
+						"delete": "Supprimer le filtre",
+						"empty": "Aucun filtre configuré",
+						"title": "Filtres prédéfinis"
+					},
 					"grid": {
 						"title": "Grille",
 						"x": {
@@ -1369,6 +1439,7 @@
 						"title": "Séries"
 					},
 					"size": "Taille",
+					"stepSize": "Intervalle entre les marques",
 					"style": "Style",
 					"text": "Texte",
 					"title": {
@@ -1376,7 +1447,8 @@
 						"format": "Format"
 					},
 					"tooltip": {
-						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie.",
+						"stepSize": "Intervalle entre chaque marque de graduation sur l'axe, lorsque possible"
 					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -1395,16 +1467,22 @@
 						"convert": "Convertir des enregistrements",
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
+						"goTo": {
+							"column": {
+								"label": "Nom de la colonne",
+								"placeholder": "Entrez un nom pour la colonne..."
+							},
+							"field": {
+								"label": "Passer le champ comme paramètre de requête",
+								"placeholder": "Sélectionnez un champ"
+							},
+							"label": "Accédez à la page",
+							"target": {
+								"label": "Naviguez vers la page",
+								"placeholder": "Sélectionnez une page"
+							}
+						},
 						"inline": "Modifier par ligne",
-						"navigateToPage": "Accédez à la page",
-						"pageUrl": {
-							"label": "Url de la source de la page",
-							"placeholder": "Entrez l'id de la page"
-						},
-						"pageUrlTitle": {
-							"label": "Nom de la colonne",
-							"placeholder": "Entrez un nom pour la colonne..."
-						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
@@ -1447,6 +1525,9 @@
 						"create": "Ajouter un bouton",
 						"defaultName": "Bouton d'action",
 						"enable": "Activer",
+						"placeholder": {
+							"modifyValue": "Supprimer la valeur"
+						},
 						"title": "Bouton d'action rapide",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
@@ -1464,8 +1545,8 @@
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
-							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
@@ -1492,6 +1573,10 @@
 					"tooltip": {
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
 						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
+					},
+					"warnings": {
+						"add": "Veuillez sélectionner un modèle",
+						"general": "Attention: les actions contiennent des erreurs"
 					}
 				},
 				"iconPicker": {
@@ -1658,6 +1743,9 @@
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
+							"lastUpdate": "Dernière mise à jour le",
+							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
+							"lastUpdatePosition": "Choisissez une position pour afficher l'élément",
 							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",
@@ -1714,7 +1802,8 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage",
+							"padding": "Utiliser la marge intérieure",
+							"title": "Affichage de la carte",
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
@@ -1961,6 +2050,7 @@
 		},
 		"upload": {
 			"dropFilesHere": "Déposez les fichiers ici pour les importer",
+			"invalidMaxFileSize": "Taille du fichier trop grande.",
 			"select": "Sélectionner les fichiers..."
 		}
 	},
@@ -2008,6 +2098,7 @@
 				"text": "Texte du bouton",
 				"variant": "Variante de bouton"
 			},
+			"closable": "Peut être fermé",
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -2036,13 +2127,23 @@
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
 			"deactivateFiltering": "Désactiver le filtre",
+			"filterVariant": {
+				"title": "Variante de filtre",
+				"variantsOptions": {
+					"selectOrigin": "Sélectionner une variante de filtre",
+					"variant_default": "Défaut",
+					"variant_modern": "Moderne"
+				}
+			},
 			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
-				"dashboardFilter": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
-				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}.",
-				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
-				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+				"filter": {
+					"closable": "Lorsque la variante est moderne ou que l'application est utilisée comme élément web, un bouton s'affichera pour permettre à l'utilisateur de cacher le filtre",
+					"fields": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
+					"position": "Ne s'applique que lorsque la variant par défaut est active"
+				},
+				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}."
 			}
 		},
 		"form": {
@@ -2074,7 +2175,6 @@
 		"page": {
 			"add": "Ajouter une page",
 			"tooltip": {
-				"drag": "Glissez-déposez pour réorganiser",
 				"duplicate": "Sélectionner l'application où copier la page"
 			}
 		},
@@ -2142,6 +2242,9 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"expand": "Afficher le bouton pour développer le widget",
+				"header": "Afficher l'en-tête du widget",
+				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
@@ -2164,6 +2267,11 @@
 				"title": "Tri"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Étendre le widget",
+					"help": "Apparaît uniquement dans le front-office ou en mode prévisualisation.",
+					"restore": "Restaurer la taille"
+				},
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"
@@ -2291,12 +2399,17 @@
 			"csv": "Fichier CSV d'entrée",
 			"fields": {
 				"fetch": "Récupérer les champs",
+				"help": "Les champs sont calculés en fonction des attributs du premier élément dans la réponse de l'API",
 				"missingConfig": "Impossible de récupérer les champs. Configuration manquante : {{config}}",
 				"noFields": "Aucun champ trouvé",
 				"title": "Champ"
 			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
+			"payload": {
+				"label": "Réponse de l'API",
+				"show": "Afficher la réponse de l'API"
+			},
 			"placeholder": {
 				"csv": "Insérer le CSV ici",
 				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"

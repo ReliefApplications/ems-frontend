@@ -3,7 +3,6 @@ import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
 import { SurveyModel, surveyLocalization } from 'survey-core';
-import localForage from 'localforage';
 import { Question } from '../types';
 
 /**
@@ -118,6 +117,11 @@ export const buildAddButton = (
         dialogRef.closed.subscribe((result: any) => {
           if (result) {
             const { data } = result;
+            question.template = result.template;
+            question.draftData = {
+              ...question.draftData,
+              [data.id]: data.data,
+            };
             // TODO: call reload method
             // if (question.displayAsGrid && gridComponent) {
             //   gridComponent.availableRecords.push({
@@ -185,50 +189,26 @@ export const processNewCreatedRecords = (
   const temporaryRecords: any[] = [];
   if (multiselect) {
     question.newCreatedRecords?.forEach((recordId: string) => {
-      const promise = new Promise<void>((resolve, reject) => {
-        localForage
-          .getItem(recordId)
-          .then((data: any) => {
-            if (data != null) {
-              // We ensure to make it only if such a record is found
-              const parsedData = JSON.parse(data);
-              temporaryRecords.push({
-                id: recordId,
-                template: parsedData.template,
-                ...parsedData.data,
-                isTemporary: true,
-              });
-            }
-            resolve();
-          })
-          .catch((error: any) => {
-            console.error(error); // Handle any errors that occur while getting the item
-            reject(error);
-          });
+      const promise = new Promise<void>((resolve) => {
+        temporaryRecords.push({
+          id: recordId,
+          template: question.template,
+          ...question.draftData[recordId],
+          isTemporary: true,
+        });
+        resolve();
       });
       promises.push(promise);
     });
   } else {
-    new Promise<void>((resolve, reject) => {
-      localForage
-        .getItem(question.newCreatedRecords)
-        .then((data: any) => {
-          if (data != null) {
-            // We ensure to make it only if such a record is found
-            const parsedData = JSON.parse(data);
-            temporaryRecords.push({
-              id: question.newCreatedRecords,
-              template: parsedData.template,
-              ...parsedData.data,
-              isTemporary: true,
-            });
-          }
-          resolve();
-        })
-        .catch((error: any) => {
-          console.error(error); // Handle any errors that occur while getting the item
-          reject(error);
-        });
+    new Promise<void>((resolve) => {
+      temporaryRecords.push({
+        id: question.newCreatedRecords,
+        template: question.template,
+        ...question.draftData[question.newCreatedRecords],
+        isTemporary: true,
+      });
+      resolve();
     });
   }
 
@@ -246,8 +226,10 @@ export const processNewCreatedRecords = (
               field: 'ids',
               operator: 'eq',
               value:
+                // Was used exclude the temporary records by excluding id in UUID format
+                // But we not longer use UUID or local storage for the temporary records
                 question.value.filter((id: string) => !uuidRegExpr.test(id)) ||
-                [], //We exclude the temporary records by excluding id in UUID format
+                [],
             },
           ],
         }),

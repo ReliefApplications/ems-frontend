@@ -9,6 +9,7 @@ import {
   EventEmitter,
   OnDestroy,
   Injector,
+  ElementRef,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -63,6 +64,7 @@ import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { ShadowDomService } from '@oort-front/ui';
 
 /** Component for the map widget */
 @Component({
@@ -86,15 +88,6 @@ export class MapComponent
     }
   }
 
-  @Output() mapEvent: EventEmitter<MapEvent> = new EventEmitter<MapEvent>();
-
-  // === MAP ===
-  public mapId: string;
-  public map!: L.Map;
-  private basemap: any;
-  private currentBasemapKey!: string;
-  private esriApiKey!: string;
-
   /**
    * Update map settings and redraw it with those
    */
@@ -107,18 +100,10 @@ export class MapComponent
     }
   }
 
-  private mapSettingsValue: MapConstructorSettings = {
-    initialState: {
-      viewpoint: {
-        center: {
-          longitude: 0,
-          latitude: 0,
-        },
-        zoom: 2,
-      },
-    },
-    controls: DefaultMapControls,
-  };
+  /** Map even emitter */
+  @Output() mapEvent: EventEmitter<MapEvent> = new EventEmitter<MapEvent>();
+  /** Search event emitter */
+  @Output() search = new EventEmitter();
 
   /**
    * Get current map settings without the layers
@@ -131,43 +116,62 @@ export class MapComponent
     return { settings: rest };
   }
 
-  private arcGisWebMap: any;
-
-  // === ZOOM ===
+  /** Current map id */
+  public mapId: string;
+  /** Leaflet map */
+  public map!: L.Map;
+  /** Leaflet current zoom level */
   public currentZoom = 2;
+  /** Active zoom control */
   public zoomControl: any = undefined;
-
-  // === MARKERS ===
-  // private baseTree!: L.Control.Layers.TreeObject;
-  private layerControlButtons: any;
-
-  // === Controls ===
-  // Search
+  /** Active search control */
   public searchControl?: L.Control;
-  @Output() search = new EventEmitter();
-
-  // === QUERY UPDATE INFO ===
-  public lastUpdate = '';
+  /** Active last update control */
+  public lastUpdateControl?: L.Control;
+  /** Leaflet active layers */
+  public layers: Layer[] = [];
+  /** Leaflet basemap */
+  private basemap: any;
+  /** Esri basemap key */
+  private currentBasemapKey!: string;
+  /** Esri API key */
+  private esriApiKey!: string;
+  /** Map constructor settings */
+  private mapSettingsValue: MapConstructorSettings = {
+    initialState: {
+      viewpoint: {
+        center: {
+          longitude: 0,
+          latitude: 0,
+        },
+        zoom: 2,
+      },
+    },
+    controls: DefaultMapControls,
+  };
+  /** Current arcgis web map */
+  private arcGisWebMap: any;
+  /** Layer control buttons */
+  private layerControlButtons: any;
+  /** Applied dashboard filters */
   private appliedDashboardFilters: Record<string, any>;
-
-  // === LAYERS ===
-  layers: Layer[] = [];
+  /** Current layer ids */
   private layerIds: string[] = [];
-
+  /** Resize observer on map container */
   private resizeObserver?: ResizeObserver;
-
+  /** First load timeout */
+  private firstLoadEmitTimeoutListener!: NodeJS.Timeout;
+  /** Current basemap tree */
   private basemapTree: L.Control.Layers.TreeObject[][] = [];
+  /** Current layers tree */
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
-
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
-
-  /** Timeout listeners */
-  firstLoadEmitTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Map widget component
    *
+   * @param document document
    * @param environment platform environment
    * @param translate Angular translate service
    * @param mapControlsService Map controls handler service
@@ -177,9 +181,11 @@ export class MapComponent
    * @param contextService The context service
    * @param platform Platform
    * @param injector Injector containing all needed providers
-   * @param document document
+   * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param el Element reference
    */
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private mapControlsService: MapControlsService,
@@ -189,7 +195,8 @@ export class MapComponent
     private contextService: ContextService,
     private platform: Platform,
     public injector: Injector,
-    @Inject(DOCUMENT) private document: Document
+    private shadowDomService: ShadowDomService,
+    public el: ElementRef
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -197,61 +204,10 @@ export class MapComponent
     this.appliedDashboardFilters = this.contextService.filter.getValue();
   }
 
-  /** Set map listeners */
-  private setUpMapListeners() {
-    this.resizeObserver = new ResizeObserver(() => {
-      this.map.invalidateSize();
-    });
-    this.resizeObserver.observe(this.map.getContainer());
-
-    // Set event listener to log map bounds when zooming, moving and resizing screen.
-    this.map.on('moveend', () => {
-      // If searched address marker exists, if we move, the item should disappear
-      if (this.mapControlsService.addressMarker) {
-        this.map.removeLayer(this.mapControlsService.addressMarker);
-        this.mapControlsService.addressMarker = null;
-      }
-      this.mapEvent.emit({
-        type: MapEventType.MOVE_END,
-        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
-      });
-    });
-
-    this.map.on('zoomend', () => {
-      this.currentZoom = this.map.getZoom();
-      this.mapEvent.emit({
-        type: MapEventType.ZOOM_END,
-        content: { zoom: this.map.getZoom() },
-      });
-    });
-
-    // The scroll jump issue only happens on chrome client browser
-    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
-    if (this.platform.WEBKIT || this.platform.BLINK) {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      this.map.getContainer().focus = () => {};
-    }
-
-    // Listen for language change
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        // Update controls that use translation
-        if (event.lang !== this.mapControlsService.lang) {
-          this.mapControlsService.getMeasureControl(
-            this.map,
-            this.extractSettings().controls.measure
-          );
-          this.mapControlsService.getFullScreenControl(this.map);
-        }
-      });
-  }
-
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
     // Creates the map and adds all the controls we use.
     this.drawMap();
-
     this.setUpMapListeners();
 
     if (this.firstLoadEmitTimeoutListener) {
@@ -318,6 +274,56 @@ export class MapComponent
     this.resizeObserver?.disconnect();
   }
 
+  /** Set map listeners */
+  private setUpMapListeners() {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.map.invalidateSize();
+    });
+    this.resizeObserver.observe(this.map.getContainer());
+
+    // Set event listener to log map bounds when zooming, moving and resizing screen.
+    this.map.on('moveend', () => {
+      // If searched address marker exists, if we move, the item should disappear
+      if (this.mapControlsService.addressMarker) {
+        this.map.removeLayer(this.mapControlsService.addressMarker);
+        this.mapControlsService.addressMarker = null;
+      }
+      this.mapEvent.emit({
+        type: MapEventType.MOVE_END,
+        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
+      });
+    });
+
+    this.map.on('zoomend', () => {
+      this.currentZoom = this.map.getZoom();
+      this.mapEvent.emit({
+        type: MapEventType.ZOOM_END,
+        content: { zoom: this.map.getZoom() },
+      });
+    });
+
+    // The scroll jump issue only happens on chrome client browser
+    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
+    if (this.platform.WEBKIT || this.platform.BLINK) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.map.getContainer().focus = () => {};
+    }
+
+    // Listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        // Update controls that use translation
+        if (event.lang !== this.mapControlsService.lang) {
+          this.mapControlsService.getMeasureControl(
+            this.map,
+            this.extractSettings().controls.measure
+          );
+          this.mapControlsService.getFullScreenControl(this.map);
+        }
+      });
+  }
+
   /**
    * Extract settings
    *
@@ -382,21 +388,31 @@ export class MapComponent
     } = this.extractSettings();
 
     if (initMap) {
+      // If the map is initiated in a web element, we will used directly the html element
+      // As leaflet cannot fetch the element in shadow doms with just the id
+
       // Create leaflet map
-      this.map = L.map(this.mapId, {
-        zoomControl,
-        maxBounds: maxBounds
-          ? L.latLngBounds(
-              L.latLng(maxBounds[0][0], maxBounds[0][1]),
-              L.latLng(maxBounds[1][0], maxBounds[1][1])
-            )
-          : undefined,
-        minZoom,
-        maxZoom,
-        worldCopyJump,
-        // timeDimension: true,
-        disableAutoPan: true,
-      } as any).setView(
+      this.map = L.map(
+        this.shadowDomService.isShadowRoot
+          ? (this.shadowDomService.currentHost.getElementById(
+              this.mapId
+            ) as HTMLElement)
+          : this.mapId,
+        {
+          zoomControl,
+          maxBounds: maxBounds
+            ? L.latLngBounds(
+                L.latLng(maxBounds[0][0], maxBounds[0][1]),
+                L.latLng(maxBounds[1][0], maxBounds[1][1])
+              )
+            : undefined,
+          minZoom,
+          maxZoom,
+          worldCopyJump,
+          // timeDimension: true,
+          disableAutoPan: true,
+        } as any
+      ).setView(
         L.latLng(
           initialState.viewpoint.center.latitude,
           initialState.viewpoint.center.longitude
@@ -611,6 +627,7 @@ export class MapComponent
       this.searchControl?.remove();
       this.searchControl = undefined;
     }
+    this.refreshLastUpdate();
   }
 
   /**
@@ -656,39 +673,43 @@ export class MapComponent
       leafletLayer?: L.Layer
     ): Promise<OverlayLayerTree> => {
       // Add to the layers array if not already added
-      if (!this.layers.find((l) => l.id === layer.id)) {
-        this.layers.push(layer);
-      }
+      if (this.layers.find((l) => l.id === layer.id)) return {} as any;
 
-      // Gets the leaflet layer. Either the one passed as parameter
-      // (from parent) or the one created by the layer itself (if no parent)
-      const featureLayer = leafletLayer ?? (await layer.getLayer());
-
-      // Adds the layer to the map if not already added
-      // note: group layers are of type L.LayerGroup
-      // so we should check if the layer is not already added
-      if (!this.map.hasLayer(featureLayer)) {
-        this.map.addLayer(featureLayer);
-      }
-
-      const children = await layer.getChildren();
+      this.layers.push(layer);
 
       if (layer.type === 'GroupLayer') {
+        const children = layer.getChildren();
+        const childrenPromisse = children.map((Childrenlayer) => {
+          return this.mapLayersService
+            .createLayersFromId(Childrenlayer, this.injector)
+            .then(async (sublayer) => {
+              if (sublayer.type === 'GroupLayer') {
+                const layer = await sublayer.getLayer();
+                return parseTreeNode(sublayer, layer);
+              } else return parseTreeNode(sublayer);
+            });
+        });
+
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
         return {
           label: layer.name,
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? await Promise.all(
-                  children.map(async (sublayer) => {
-                    const layer = await sublayer.getLayer();
-                    return parseTreeNode(sublayer, layer);
-                  })
-                )
+              ? await Promise.all(childrenPromisse)
               : undefined,
         };
       } else {
+        // Gets the leaflet layer. Either the one passed as parameter
+        // (from parent) or the one created by the layer itself (if no parent)
+        const featureLayer = leafletLayer ?? (await layer.getLayer());
+
+        // Adds the layer to the map if not already added
+        // note: group layers are of type L.LayerGroup
+        // so we should check if the layer is not already added
+        if (!this.map.hasLayer(featureLayer)) {
+          this.map.addLayer(featureLayer);
+        }
         // It is a node, it does not have any children but it displays a layer
         return {
           label: layer.name,
@@ -698,18 +719,18 @@ export class MapComponent
     };
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
-      this.mapLayersService
-        .createLayersFromIds(layerIds, this.injector)
-        .then((layers) => {
-          const layersTree: any[] = [];
-          // Add each layer to the tree
-          layers.forEach((layer) => {
-            layersTree.push(parseTreeNode(layer));
+      const layerPromises = layerIds.map((id) => {
+        return this.mapLayersService
+          .createLayersFromId(id, this.injector)
+          .then((layer) => {
+            return parseTreeNode(layer);
           });
-          Promise.all(layersTree).then((layersTree) => {
-            resolve({ layers: layersTree });
-          });
-        });
+      });
+
+      Promise.all(layerPromises).then((layersTree) => {
+        this.refreshLastUpdate();
+        resolve({ layers: layersTree });
+      });
     });
   }
 
@@ -1028,6 +1049,8 @@ export class MapComponent
           (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
           if (!shouldDisplayStatuses[id]) {
             x.layer.remove();
+          } else {
+            this.map.addLayer(x.layer);
           }
         }
       }
@@ -1067,5 +1090,29 @@ export class MapComponent
     (this.map as any)['_handlers']?.forEach((handler: L.Handler) => {
       disable ? handler.disable() : handler.enable();
     });
+  }
+
+  /**
+   * Updates the last update control with the latest map refresh time
+   */
+  private refreshLastUpdate(): void {
+    const controls = this.extractSettings().controls;
+    if (!isNil(controls.lastUpdate)) {
+      if (!this.lastUpdateControl) {
+        this.lastUpdateControl = this.mapControlsService.getLastUpdateControl(
+          this.map,
+          this.extractSettings().controls.lastUpdate as L.ControlPosition
+        );
+      } else {
+        this.lastUpdateControl.remove();
+        this.lastUpdateControl = this.mapControlsService.getLastUpdateControl(
+          this.map,
+          this.extractSettings().controls.lastUpdate as L.ControlPosition
+        );
+      }
+    } else {
+      this.lastUpdateControl?.remove();
+      this.lastUpdateControl = undefined;
+    }
   }
 }

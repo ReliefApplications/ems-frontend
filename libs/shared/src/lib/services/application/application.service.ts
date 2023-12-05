@@ -96,6 +96,7 @@ import {
 } from '../../models/custom-notification.model';
 import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
 import {
+  ShadowDomService,
   SnackbarService,
   UILayoutService,
   faV4toV6Mapper,
@@ -200,7 +201,7 @@ export class ApplicationService {
    * @param {RestService} restService - The REST API service.
    * @param {DownloadService} downloadService - The download service.
    * @param {Document} document - The Document object.
-   * @memberof ApplicationService
+   * @param shadowDomService shadow dom service to handle the current host of the component
    */
   constructor(
     @Inject('environment') environment: any,
@@ -212,7 +213,8 @@ export class ApplicationService {
     private layoutService: UILayoutService,
     private restService: RestService,
     private downloadService: DownloadService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private shadowDomService: ShadowDomService
   ) {
     this.environment = environment;
   }
@@ -306,9 +308,8 @@ export class ApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      this.document
-        .getElementsByTagName('head')[0]
-        .removeChild(this.customStyle);
+      const parentNode = this.customStyle.parentNode;
+      parentNode?.removeChild(this.customStyle);
       this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;
@@ -374,6 +375,7 @@ export class ApplicationService {
             name: value.name,
             description: value.description,
             sideMenu: value.sideMenu,
+            hideMenu: value.hideMenu,
             status: value.status,
           },
         })
@@ -390,6 +392,7 @@ export class ApplicationService {
                 name: data.editApplication.name,
                 description: data.editApplication.description,
                 sideMenu: value.sideMenu,
+                hideMenu: value.hideMenu,
                 status: data.editApplication.status,
               };
               this.application.next(newApplication);
@@ -1962,9 +1965,16 @@ export class ApplicationService {
             .then((css) => {
               if (this.customStyle) {
                 this.customStyle.innerText = css;
-                this.document
-                  .getElementsByTagName('head')[0]
-                  .appendChild(this.customStyle);
+                // Add stylesheet to shadow root instead of document head
+                if (this.shadowDomService.isShadowRoot) {
+                  this.shadowDomService.currentHost.appendChild(
+                    this.customStyle
+                  );
+                } else {
+                  this.document
+                    .getElementsByTagName('head')[0]
+                    .appendChild(this.customStyle);
+                }
               }
             })
             .catch(() => {

@@ -409,9 +409,7 @@ export class ApplicationsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applications.push(value);
-        // eslint-disable-next-line no-self-assign
-        this.applications = this.applications;
+        this.onOpenApplication(value.id);
       }
     });
   }

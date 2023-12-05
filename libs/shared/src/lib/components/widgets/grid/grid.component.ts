@@ -18,11 +18,9 @@ import {
   Input,
   Output,
   EventEmitter,
-  Inject,
   TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
-import { AuthService } from '../../../services/auth/auth.service';
 import { EmailService } from '../../../services/email/email.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { CoreGridComponent } from '../../ui/core-grid/core-grid.component';
@@ -30,7 +28,6 @@ import { GridLayoutService } from '../../../services/grid-layout/grid-layout.ser
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
-import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { ApplicationService } from '../../../services/application/application.service';
@@ -86,11 +83,7 @@ export class GridWidgetComponent
   public aggregation: Aggregation | null = null;
   public aggregations: Aggregation[] = [];
 
-  // === VERIFICATION IF USER IS ADMIN ===
-  public isAdmin: boolean;
-
   // === SETTINGS ===
-  @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
   @Input() canUpdate = false;
@@ -117,6 +110,11 @@ export class GridWidgetComponent
       : true;
   }
 
+  /** @returns list of active floating buttons */
+  get floatingButtons() {
+    return (this.settings.floatingButtons || []).filter((x: any) => x.show);
+  }
+
   @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
   @ViewChild(AggregationGridComponent)
   aggregationGridComponent?: AggregationGridComponent;
@@ -124,12 +122,10 @@ export class GridWidgetComponent
   /**
    * Heavy constructor for the grid widget component
    *
-   * @param environment Environment variables
    * @param apollo The apollo client
    * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
-   * @param authService Shared authentication service
    * @param emailService Shared email service
    * @param queryBuilder Shared query builder service
    * @param gridLayoutService Shared grid layout service
@@ -139,12 +135,10 @@ export class GridWidgetComponent
    * @param aggregationService Shared aggregation service
    */
   constructor(
-    @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private workflowService: WorkflowService,
-    private authService: AuthService,
     private emailService: EmailService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: GridLayoutService,
@@ -154,8 +148,6 @@ export class GridWidgetComponent
     private aggregationService: AggregationService
   ) {
     super();
-    this.isAdmin =
-      this.authService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit() {
@@ -528,16 +520,20 @@ export class GridWidgetComponent
     const update: any = {};
     for (const modification of modifications) {
       if (modification.field) {
-        set(update, modification.field, modification.value);
+        // If no value, set at null
+        if (modification.value === undefined || modification.value === '') {
+          set(update, modification.field, null);
+        } else {
+          set(update, modification.field, modification.value);
+        }
       }
     }
-    const data = cleanRecord(update);
     return firstValueFrom(
       this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: update,
           template: get(this.settings, 'template', null),
         },
       })

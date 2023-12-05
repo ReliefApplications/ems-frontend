@@ -478,8 +478,6 @@ export const createClusterForm = (value?: any): FormGroup =>
 
 export type LayerFormT = ReturnType<typeof createLayerForm>;
 
-// === MAP ===
-
 /**
  * Create map controls from value
  *
@@ -494,6 +492,7 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
     measure: [get(value, 'measure', false)],
     layer: [get(value, 'layer', true)],
     search: [get(value, 'search', false)],
+    lastUpdate: [get(value, 'lastUpdate', null)],
   });
 
 /**

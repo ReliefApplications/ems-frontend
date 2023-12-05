@@ -9,7 +9,7 @@ import { QueryBuilderComponent } from './query-builder.component';
 
 describe('QueryBuilderComponent', () => {
   let component: QueryBuilderComponent;
-  let fixture: ComponentFixture<sharedQueryBuilderComponent>;
+  let fixture: ComponentFixture<QueryBuilderComponent>;
   let controller: ApolloTestingController;
 
   beforeEach(async () => {

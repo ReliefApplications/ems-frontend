@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostBinding,
   Inject,
   OnDestroy,
   OnInit,
@@ -16,7 +17,6 @@ import {
   ApplicationService,
   WorkflowService,
   DashboardService,
-  AuthService,
   Application,
   UnsubscribeComponent,
   WidgetGridComponent,
@@ -45,7 +45,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -53,6 +53,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { GridsterConfig } from 'angular-gridster2';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -109,16 +110,13 @@ export class DashboardComponent
   public contextRecord: Record | null = null;
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
-
+  /** Timeout to scroll to newly added widget */
   private timeoutListener!: NodeJS.Timeout;
-
-  /** @returns get newest widget id from existing ids */
-  get newestId(): number {
-    const widgets = this.widgets?.slice() || [];
-    return widgets.length === 0
-      ? 0
-      : Math.max(...widgets.map((x: any) => x.id)) + 1;
-  }
+  /** Is edition active */
+  @HostBinding('class.edit-mode-dashboard')
+  public editionActive = true;
+  /** Additional grid configuration */
+  public gridOptions: GridsterConfig = {};
 
   /** @returns type of context element */
   get contextType() {
@@ -147,7 +145,6 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
@@ -167,7 +164,6 @@ export class DashboardComponent
     private snackBar: SnackbarService,
     private dashboardService: DashboardService,
     private translate: TranslateService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private contextService: ContextService,
     private refDataService: ReferenceDataService,
@@ -310,25 +306,39 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+            scrollToNewItems: false,
+          };
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
+          this.editionActive = this.canUpdate;
 
           this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = this.dashboard.structure
-            ? [...this.dashboard.structure.filter((x: any) => x !== null)]
-            : [];
+          this.widgets = cloneDeep(
+            this.dashboard.structure
+              ? [...this.dashboard.structure.filter((x: any) => x !== null)]
+              : []
+          );
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          setTimeout(() => {
+            this.gridOptions = {
+              ...this.gridOptions,
+              scrollToNewItems: true,
+            };
+          }, 1000);
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
@@ -357,8 +367,8 @@ export class DashboardComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
-    localForage.removeItem(this.applicationId + 'contextualFilter');
+    localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'filterStructure');
     this.dashboardService.closeDashboard();
   }
 
@@ -393,18 +403,19 @@ export class DashboardComponent
    * @param e add event
    */
   onAdd(e: any): void {
-    const widget = JSON.parse(JSON.stringify(e));
-    widget.id = this.newestId;
-    this.widgets = [...this.widgets, widget];
-    this.autoSaveChanges();
+    const widget = cloneDeep(e);
+    this.widgets.push(widget);
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
     // scroll to the element once it is created
     this.timeoutListener = setTimeout(() => {
-      const el = this.document.getElementById(`widget-${widget.id}`);
+      const widgetComponents =
+        this.widgetGridComponent.widgetComponents.toArray();
+      const target = widgetComponents[widgetComponents.length - 1];
+      const el = this.document.getElementById(target.id);
       el?.scrollIntoView({ behavior: 'smooth' });
-    });
+    }, 1000);
   }
 
   /**
@@ -413,40 +424,40 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
-    // make sure that we save the default layout.
-    const index = this.widgets.findIndex((v: any) => v.id === e.id);
-    const options = this.widgets[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: this.widgets[index].settings.defaultLayout,
+    switch (e.type) {
+      case 'display': {
+        this.autoSaveChanges();
+        break;
+      }
+      case 'data': {
+        // Find the widget to be edited
+        const widgetComponents =
+          this.widgetGridComponent.widgetComponents.toArray();
+        const targetIndex = widgetComponents.findIndex(
+          (v: any) => v.id === e.id
+        );
+        if (targetIndex > -1) {
+          // Update the configuration
+          const options = this.widgets[targetIndex]?.settings?.defaultLayout
+            ? {
+                ...e.options,
+                defaultLayout: this.widgets[targetIndex].settings.defaultLayout,
+              }
+            : e.options;
+          if (options) {
+            // Save configuration
+            this.widgets[targetIndex] = {
+              ...this.widgets[targetIndex],
+              settings: options,
+            };
+            this.autoSaveChanges();
+          }
         }
-      : e.options;
-    if (options) {
-      switch (e.type) {
-        case 'display': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x.defaultCols = options.cols;
-              x.defaultRows = options.rows;
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        case 'data': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x = { ...x, settings: options };
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        default: {
-          break;
-        }
+
+        break;
+      }
+      default: {
+        break;
       }
     }
   }
@@ -457,8 +468,13 @@ export class DashboardComponent
    * @param e delete event
    */
   onDeleteTile(e: any): void {
-    this.widgets = this.widgets.filter((x) => x.id !== e.id);
-    this.autoSaveChanges();
+    const widgetComponents =
+      this.widgetGridComponent.widgetComponents.toArray();
+    const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
+    if (targetIndex > -1) {
+      this.widgets.splice(targetIndex, 1);
+      this.autoSaveChanges();
+    }
   }
 
   /**
@@ -475,21 +491,6 @@ export class DashboardComponent
       },
     });
     this.layoutService.closeRightSidenav = true;
-  }
-
-  /**
-   * Drags and drops a widget to move it.
-   *
-   * @param e move event.
-   */
-  onMove(e: any): void {
-    // Duplicates array, some times the arrays is write protected
-    this.widgets = this.widgets.slice();
-    [this.widgets[e.oldIndex], this.widgets[e.newIndex]] = [
-      this.widgets[e.newIndex],
-      this.widgets[e.oldIndex],
-    ];
-    this.autoSaveChanges();
   }
 
   /** Save the dashboard changes in the database. */
@@ -565,41 +566,6 @@ export class DashboardComponent
           );
         }
       }
-    }
-  }
-
-  /**
-   * Toggles the filter for the current dashboard.
-   */
-  toggleFiltering(): void {
-    if (this.dashboard) {
-      this.showFilter = !this.showFilter;
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.id,
-            showFilter: this.showFilter,
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
-              });
-            }
-          },
-          complete: () => {
-            this.contextService.isFilterEnabled.next(this.showFilter);
-            this.loading = false;
-          },
-        });
     }
   }
 
@@ -814,6 +780,7 @@ export class DashboardComponent
           : this.dashboard?.step
           ? this.dashboard?.step.canUpdate
           : false,
+        dashboard: this.dashboard,
       },
     });
     // Subscribes to settings updates
@@ -825,20 +792,33 @@ export class DashboardComponent
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               step: {
                 ...this.dashboard?.step,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
           } else {
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               page: {
                 ...this.dashboard?.page,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
+          }
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+          };
+
+          if (updates.filter) {
+            this.showFilter = updates.filter.show;
+            this.contextService.isFilterEnabled.next(this.showFilter);
           }
         }
       });
@@ -846,5 +826,33 @@ export class DashboardComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       subscription?.unsubscribe();
     });
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  public onSearchChange(search: string): void {
+    const context = this.dashboard?.page?.context;
+    if (!context) return;
+    if ('resource' in context) {
+      this.recordsQuery.refetch({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          id: context.resource,
+        },
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              field: context.displayField,
+              operator: 'contains',
+              value: search,
+            },
+          ],
+        },
+      });
+    }
   }
 }

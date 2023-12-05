@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Inject,
   Input,
@@ -20,7 +21,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AuthService } from '../../../services/auth/auth.service';
 import { DownloadService } from '../../../services/download/download.service';
 import {
   QueryBuilderService,
@@ -116,7 +116,6 @@ export class CoreGridComponent
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
   @Input() showExport = true;
-  @Input() admin = false;
   @Input() canCreateRecords = false;
 
   // === OUTPUTS ===
@@ -237,9 +236,6 @@ export class CoreGridComponent
   // === LAYOUT CHANGES ===
   public hasLayoutChanges = false;
 
-  // === AUTHORIZATION ===
-  public isAdmin: boolean;
-
   // === ACTIONS ON SELECTION ===
   public selectedRowsIndex: number[] = [];
   public editionActive = false;
@@ -273,7 +269,7 @@ export class CoreGridComponent
     showDetails: true,
     navigateToPage: false,
     navigateSettings: {
-      useRecordId: false,
+      field: '',
       pageUrl: '',
       title: '',
     },
@@ -296,7 +292,6 @@ export class CoreGridComponent
    * @param layoutService UI layout service
    * @param snackBar Shared snackbar service
    * @param downloadService Shared download service
-   * @param authService Shared authentication service
    * @param gridService Shared grid service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
@@ -304,6 +299,7 @@ export class CoreGridComponent
    * @param applicationService Shared application service
    * @param contextService Shared context service
    * @param router Angular Router
+   * @param el Element reference
    */
   constructor(
     @Inject('environment') environment: any,
@@ -313,19 +309,17 @@ export class CoreGridComponent
     private layoutService: UILayoutService,
     private snackBar: SnackbarService,
     private downloadService: DownloadService,
-    private authService: AuthService,
     private gridService: GridService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private applicationService: ApplicationService,
     private contextService: ContextService,
-    private router: Router
+    private router: Router,
+    private el: ElementRef
   ) {
     super();
     this.environment = environment;
-    this.isAdmin =
-      this.authService.userIsAdmin && environment.module === 'backoffice';
 
     contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
@@ -369,11 +363,7 @@ export class CoreGridComponent
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
-        useRecordId: get(
-          this.settings,
-          'actions.navigateSettings.useRecordId',
-          false
-        ),
+        field: get(this.settings, 'actions.navigateSettings.field', false),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
         title: get(this.settings, 'actions.navigateSettings.title', ''),
       },
@@ -851,7 +841,6 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
-   * @param event.useRecordId boolean to use record id
    */
   public onAction(event: {
     action: string;
@@ -860,7 +849,6 @@ export class CoreGridComponent
     value?: any;
     field?: any;
     pageUrl?: string;
-    useRecordId?: boolean;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -898,9 +886,10 @@ export class CoreGridComponent
       case 'goTo': {
         if (event.item) {
           let fullUrl = this.getPageUrl(event.pageUrl as string);
-          if (event.useRecordId) {
-            const recordId = event.item.id;
-            fullUrl = `${fullUrl}?id=${recordId}`;
+          if (event.field) {
+            const field = get(event, 'field', '');
+            const value = get(event, `item.${field}`);
+            fullUrl = `${fullUrl}?id=${value}`;
           }
           this.router.navigateByUrl(fullUrl);
         }
@@ -1208,19 +1197,38 @@ export class CoreGridComponent
    * @param item item to get history of
    */
   public onViewHistory(item: any): void {
-    import('../../record-history/record-history.component').then(
-      ({ RecordHistoryComponent }) => {
-        this.layoutService.setRightSidenav({
-          component: RecordHistoryComponent,
-          inputs: {
-            id: item.id,
-            revert: (version: any) => this.confirmRevertDialog(item, version),
-            template: this.settings.template || null,
-            refresh$: this.refresh$,
-          },
-        });
-      }
-    );
+    const cdkOverlay = document.querySelector('.cdk-overlay-container');
+    // use modal to show history
+    if (cdkOverlay && cdkOverlay.contains(this.el.nativeElement)) {
+      import('../../record-history-modal/record-history-modal.component').then(
+        ({ RecordHistoryModalComponent }) => {
+          this.dialog.open(RecordHistoryModalComponent, {
+            data: {
+              id: item.id,
+              revert: (version: any) => this.confirmRevertDialog(item, version),
+              template: this.settings.template || null,
+              refresh$: this.refresh$,
+            },
+            autoFocus: false,
+          });
+        }
+      );
+    } else {
+      // Use sidenav
+      import('../../record-history/record-history.component').then(
+        ({ RecordHistoryComponent }) => {
+          this.layoutService.setRightSidenav({
+            component: RecordHistoryComponent,
+            inputs: {
+              id: item.id,
+              revert: (version: any) => this.confirmRevertDialog(item, version),
+              template: this.settings.template || null,
+              refresh$: this.refresh$,
+            },
+          });
+        }
+      );
+    }
   }
 
   /**

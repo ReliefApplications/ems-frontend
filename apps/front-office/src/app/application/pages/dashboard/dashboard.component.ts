@@ -28,6 +28,7 @@ import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard page.
@@ -62,6 +63,10 @@ export class DashboardComponent
   public showFilter!: boolean;
   /** Show name ( contextual pages ) */
   public showName = false;
+  /** Current style variant */
+  public variant!: string;
+  /** hide / show the close icon on the right */
+  public closable = true;
 
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
@@ -207,12 +212,14 @@ export class DashboardComponent
         if (data.dashboard) {
           this.dashboard = data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = data.dashboard.structure
-            ? data.dashboard.structure
-            : [];
+          this.widgets = cloneDeep(
+            data.dashboard.structure ? data.dashboard.structure : []
+          );
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.variant = this.dashboard.filter?.variant || 'default';
+          this.closable = this.dashboard.filter?.closable ?? false;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
@@ -247,7 +254,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.widgetGridComponent && !this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('pages.dashboard.update.exit'),
         content: this.translate.instant('pages.dashboard.update.exitMessage'),

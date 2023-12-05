@@ -6,7 +6,7 @@ import { EditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EditorControlComponent } from '../editor-control/editor-control.component';
+import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
 import {
   DialogModule,
   ButtonModule,
@@ -95,7 +95,7 @@ export class EditCalculatedFieldModalComponent implements OnInit {
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending form value.
    */
   onSubmit(): void {
     this.dialogRef.close(this.form?.getRawValue());

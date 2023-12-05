@@ -12,7 +12,7 @@ import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.
 import { takeUntil } from 'rxjs/operators';
 
 /**
- * Group Stage pipeline component.
+ * Group Stage (it's also about accumulators) pipeline component.
  */
 @Component({
   selector: 'shared-group-stage',
