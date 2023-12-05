@@ -146,8 +146,8 @@ export class GridComponent
   @Input() searchable = true;
   /** Sortable status */
   @Input() sortable = true;
-  /** Grid contains aggregation flag */
-  @Input() hasAggregation = false;
+  /** Grid uses aggregation */
+  @Input() useAggregation = false;
   /** Sort descriptor */
   @Input() sort: SortDescriptor[] = [];
   /** Page size */
