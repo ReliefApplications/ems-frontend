@@ -41,35 +41,38 @@ export class ReferenceDatasComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  // === DATA ===
+  /** Loading status */
   public loading = true;
+  /** Updating status */
   public updating = false;
-  private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
-  displayedColumns = [
+  /** Available columns */
+  public displayedColumns = [
     'name',
     'type',
     'apiConfiguration',
     'modifiedAt',
     'actions',
   ];
-  dataSource = new Array<ReferenceData>();
+  /** Table data */
+  public dataSource = new Array<ReferenceData>();
+  /** Cached table data */
   public cachedReferenceDatas: ReferenceData[] = [];
-
-  // === SORTING ===
-  private sort!: TableSort;
-
-  // === FILTERS ===
+  /** Query filters */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
-
+  /** Pagination info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: '',
   };
+  /** Reference data apollo query */
+  private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
+  /** Table sorting */
+  private sort!: TableSort;
 
   /**
    * List of Reference data page.
@@ -293,6 +296,7 @@ export class ReferenceDatasComponent
     );
     this.loading = loading;
     this.updating = false;
+    console.log(this.pageInfo);
   }
 
   /**
@@ -309,21 +313,19 @@ export class ReferenceDatasComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
-    const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
-      this.apollo.client,
-      GET_REFERENCE_DATAS,
-      variables
-    );
     if (refetch) {
       this.cachedReferenceDatas = [];
       this.pageInfo.pageIndex = 0;
-    }
-    if (cachedValues) {
-      this.updateValues(cachedValues, false);
+      // Rebuild the query
+      this.referenceDatasQuery.refetch(variables);
     } else {
-      if (refetch) {
-        // Rebuild the query
-        this.referenceDatasQuery.refetch(variables);
+      const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
+        this.apollo.client,
+        GET_REFERENCE_DATAS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
       } else {
         // Fetch more records
         this.referenceDatasQuery
