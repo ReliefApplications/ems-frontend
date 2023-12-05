@@ -93,7 +93,7 @@
     settings.title
   }}</span>
   <!-- Switch between grid and cards view -->
-  <div class="flex">
+  <div class="flex export-hide">
     <!-- Searchbar -->
     <div
       *ngIf="
@@ -101,7 +101,7 @@
         !settings.card?.aggregation &&
         displayMode === 'cards'
       "
-      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 flex-1 max-w-[200px]"
+      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 flex-1 max-w-[200px] export-hide"
     >
       <kendo-textbox
         class="!border-0 !shadow-none"

@@ -154,3 +154,26 @@ ui-checkbox {
     align-items: center;
   }
 }
+
+.k-pdf-export {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  overflow: visible !important;
+  .export-hide {
+    display: none;
+    i {
+      display: none;
+    }
+  }
+
+  .leaflet-control-fullscreen, shared-map-zoom, .geocoder-control {
+    display: none;
+  }
+
+  kendo-grid-column-menu, .k-checkbox, kendo-grid-toolbar, shared-grid-row-actions {
+    display: none;
+  }
+
+  kendo-datapager {
+    display: none;
+  }
+}

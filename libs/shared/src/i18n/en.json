@@ -179,6 +179,10 @@
 		"exitFullscreen": "Exit Fullscreen",
 		"export": "Export",
 		"exportObject": "Export {{name}}",
+		"exportType": {
+			"pdf": "Export to PDF",
+			"png": "Export to PNG"
+		},
 		"false": "False",
 		"field": {
 			"few": "Fields",

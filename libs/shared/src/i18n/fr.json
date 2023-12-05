@@ -179,6 +179,10 @@
 		"exitFullscreen": "Quitter le mode plein écran",
 		"export": "Exporter",
 		"exportObject": "Exporter {{name}}",
+		"exportType": {
+			"pdf": "Exporter au format PDF",
+			"png": "Exporter au format PNG"
+		},
 		"false": "Faux",
 		"field": {
 			"few": "Champs",
