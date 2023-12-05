@@ -137,6 +137,7 @@
           'models.dashboard.context.edition.element' | translate
         }}</ui-alert>
       </ng-container>
+      <!-- DATASOURCE CONTEXT -->
       <span>
         <!-- Selection of record, to see dashboard per record -->
         <div
@@ -180,6 +181,45 @@
               [value]="element[refDataValueField]"
             >
               {{ element[dashboard.page.context.displayField] }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </span>
+      <!-- GEOGRAPHIC CONTEXT -->
+      <span *ngIf="dashboard.page?.geographicContext?.enabled">
+        <!-- Regions -->
+        <div uiFormFieldDirective [outline]="false">
+          <label>{{
+            'components.user.summary.region' | translate
+          }}</label>
+          <ui-select-menu
+            (selectedOption)="onSearchChangeGeographicContext({ region: $any($event) })"
+            [filterable]="true"
+            [formControl]="regionCode"
+          >
+            <ui-select-option
+              *ngFor="let region of geographicContextRegions"
+              [value]="region.code"
+            >
+              {{ region.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <!-- Countries -->
+        <div uiFormFieldDirective [outline]="false">
+          <label>{{
+            'components.user.summary.country' | translate
+          }}</label>
+          <ui-select-menu 
+            [formControl]="countryCode"
+            (selectedOption)="onSearchChangeGeographicContext({ country: $any($event) })"
+            [filterable]="true"
+          >
+            <ui-select-option
+              *ngFor="let country of geographicContextCountries"
+              [value]="country.code"
+            >
+              {{ country.name }}
             </ui-select-option>
           </ui-select-menu>
         </div>

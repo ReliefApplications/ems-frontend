@@ -28,6 +28,7 @@ import {
   DashboardQueryResponse,
   EditDashboardMutationResponse,
   RecordQueryResponse,
+  PageGeographicContextType,
 } from '@oort-front/shared';
 import { EDIT_DASHBOARD } from './graphql/mutations';
 import {
@@ -54,6 +55,7 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
+import countries from 'assets/countries.json';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -117,6 +119,43 @@ export class DashboardComponent
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
+  /** Regions static list for geographic context */
+  public geographicContextRegions = [
+    {
+      code: 'AF',
+      name: 'AFRO',
+    },
+    {
+      code: 'AM',
+      name: 'AMRO',
+    },
+    {
+      code: 'EM',
+      name: 'EMRO',
+    },
+    {
+      code: 'EU',
+      name: 'EURO',
+    },
+    {
+      code: 'SE',
+      name: 'SEARO',
+    },
+    {
+      code: 'WP',
+      name: 'WPRO',
+    },
+    {
+      code: 'HQ',
+      name: 'HQ',
+    },
+  ];
+  /** Countries for geographic context */
+  public geographicContextCountries = countries;
+  /** Geographic context country form control */
+  public countryCode = new FormControl<string | undefined>('');
+  /** Geographic context region form control */
+  public regionCode = new FormControl<string | undefined>('');
 
   /** @returns type of context element */
   get contextType() {
@@ -311,6 +350,17 @@ export class DashboardComponent
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
+          if (this.dashboard.page?.geographicContext?.enabled) {
+            this.countryCode.setValue(
+              this.dashboard.page?.geographicContext?.country
+            );
+            this.regionCode.setValue(
+              this.dashboard.page?.geographicContext?.region
+            );
+          } else {
+            this.countryCode.setValue('');
+            this.regionCode.setValue('');
+          }
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
@@ -854,5 +904,39 @@ export class DashboardComponent
         },
       });
     }
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param update values to update in the page geographicContext
+   * @param update.region region selected
+   * @param update.country country selected
+   */
+  public onSearchChangeGeographicContext(update: {
+    region?: string;
+    country?: string;
+  }): void {
+    const geographicContext = {
+      ...this.dashboard?.page?.geographicContext,
+      ...(update.region && { region: update.region }),
+      ...(update.country && { country: update.country }),
+    };
+    const callback = () => {
+      this.dashboard = {
+        ...this.dashboard,
+        page: {
+          ...this.dashboard?.page,
+          geographicContext: geographicContext as PageGeographicContextType,
+        },
+      };
+    };
+    this.applicationService.updatePageGeographicContext(
+      {
+        id: this.dashboard?.page?.id,
+        geographicContext: geographicContext as PageGeographicContextType,
+      },
+      callback
+    );
   }
 }

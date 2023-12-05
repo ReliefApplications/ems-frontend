@@ -35,6 +35,15 @@
                 '-mb-4': data.type === 'page'
               }"
             ></app-view-icon-selector>
+            <!-- Features available only for dashboards pages-->
+            <ng-container *ngIf="data.canUpdate && data.type === 'page' && dashboard">
+              <!-- Geographic context  -->
+              <ui-toggle formControlName="geographicContext" class="mb-2">
+                <ng-container ngProjectAs="label">
+                  {{ 'components.application.pages.settings.geographicContext' | translate }}
+                </ng-container>
+              </ui-toggle>
+            </ng-container>
             <!-- Features available only for pages -->
             <ng-container *ngIf="data.type === 'page'">
               <!-- Visibility -->

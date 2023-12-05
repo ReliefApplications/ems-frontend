@@ -577,6 +577,7 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"geographicContext": "Enable geographic context",
 					"selectIcon": "Select an icon",
 					"tooltip": {
 						"autoSave": "Changes are automatically saved"

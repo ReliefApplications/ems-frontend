@@ -159,6 +159,16 @@ export class ViewSettingsModalComponent
             this.onUpdateVisibility(value);
           }
         });
+
+      if (this.dashboard) {
+        this.settingsForm?.controls.geographicContext?.valueChanges
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((value: boolean | null) => {
+            if (!isNil(value)) {
+              this.onUpdateGeographicContext(value);
+            }
+          });
+      }
     }
 
     if (this.dashboard) {
@@ -257,6 +267,13 @@ export class ViewSettingsModalComponent
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
+      ...(this.dashboard &&
+        this.data.canUpdate &&
+        this.data.type === 'page' && {
+          geographicContext: this.fb.control(
+            this.page?.geographicContext?.enabled ?? false
+          ),
+        }),
       ...(this.dashboard && {
         gridOptions: this.fb.group({
           minCols: this.fb.control(
@@ -370,5 +387,33 @@ export class ViewSettingsModalComponent
       this.onUpdate.emit(updates);
     };
     this.dashboardService.editGridOptions(gridOptions, callback);
+  }
+
+  /**
+   * Enable/disable dashboard page geographic context on change.
+   *
+   * @param enabled boolean
+   */
+  private onUpdateGeographicContext(enabled: boolean): void {
+    const geographicContext = {
+      ...this.page?.geographicContext,
+      enabled,
+    };
+    const callback = () => {
+      this.page = {
+        ...this.page,
+        geographicContext,
+      };
+      // Updates parent component
+      const updates = { geographicContext };
+      this.onUpdate.emit(updates);
+    };
+    this.applicationService.updatePageGeographicContext(
+      {
+        id: this.page?.id,
+        geographicContext,
+      },
+      callback
+    );
   }
 }
