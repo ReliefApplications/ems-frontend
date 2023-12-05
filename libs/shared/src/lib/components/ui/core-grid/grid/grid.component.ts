@@ -146,14 +146,14 @@ export class GridComponent
   @Input() searchable = true;
   /** Sortable status */
   @Input() sortable = true;
+  /** Grid uses aggregation */
+  @Input() useAggregation = false;
   /** Sort descriptor */
   @Input() sort: SortDescriptor[] = [];
   /** Page size */
   @Input() pageSize = 10;
   /** Skip value */
   @Input() skip = 0;
-  /** Admin mode status */
-  @Input() admin = false;
   /** Output decorator for action */
   @Output() action = new EventEmitter();
   /** Output decorator for export */

@@ -35,7 +35,6 @@
       actions.export ||
       editable ||
       filterable ||
-      admin ||
       hasEnabledActions
     "
     kendoGridToolbarTemplate
@@ -97,12 +96,12 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
-    <!-- ADMIN FEATURES -->
-    <ng-container *ngIf="admin">
+    <!-- GRID LAYOUT FEATURES -->
+    <ng-container *ngIf="!useAggregation">
       <span kendotooltip>
         <button
           kendoButton
-          title="This will erase current layout with default layout"
+          title="{{ 'components.widget.grid.layout.button.title' | translate }}"
           (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
         >
           {{ 'components.widget.grid.layout.reset' | translate }}
