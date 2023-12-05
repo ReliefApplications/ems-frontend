@@ -7,6 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagboxModule } from '../tagbox/tagbox.module';
 import { GridModule } from '../core-grid/grid/grid.module';
 import { SpinnerModule, CheckboxModule, ButtonModule } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+
 /**
  * Aggregation Builder module.
  * Used by edit-aggregation-modal component.
@@ -24,6 +26,7 @@ import { SpinnerModule, CheckboxModule, ButtonModule } from '@oort-front/ui';
     SpinnerModule,
     CheckboxModule,
     ButtonModule,
+    MonacoEditorModule,
   ],
   exports: [AggregationBuilderComponent],
 })

@@ -1,25 +1,43 @@
-<ui-spinner size="large" *ngIf="loading"></ui-spinner>
-<ng-container *ngIf="!loading">
-  <div class="flex">
-    <!-- Selection of fields -->
-    <shared-tagbox
-      class="flex flex-1"
-      [choices$]="fields$"
-      [control]="$any(aggregationForm.get('sourceFields'))"
-      [label]="'components.aggregationBuilder.sourceFields' | translate"
-    ></shared-tagbox>
-  </div>
-  <!-- Pipeline builder -->
-  <div class="flex pipeline-content">
-    <shared-pipeline
-      [fields$]="selectedFields$"
-      [metaFields$]="metaFields$"
-      [pipelineForm]="pipelineForm"
-      (previewPipelineFormChange)="onPreviewPipelineFormChange($event)"
-    ></shared-pipeline>
-    <div class="aggregation-preview">{{ aggregationPreview | json }}</div>
-  </div>
-  <ui-button icon="remove_red_eye" category="primary" (click)="togglePreview()">
-    {{ 'components.aggregationBuilder.togglePreview' | translate }}
-  </ui-button>
-</ng-container>
+<div class="w-full h-full flex flex-col">
+  <ui-spinner size="large" *ngIf="loading"></ui-spinner>
+  <ng-container *ngIf="!loading">
+    <div class="flex">
+      <!-- Selection of fields -->
+      <shared-tagbox
+        class="flex flex-1"
+        [choices$]="fields$"
+        [control]="$any(aggregationForm.get('sourceFields'))"
+        [label]="'components.aggregationBuilder.sourceFields' | translate"
+      ></shared-tagbox>
+      <!-- Toggle preview -->
+      <ui-button
+        class="ml-3 mb-4 self-end max-h-min"
+        [icon]="showPreview ? 'visibility_off' : 'visibility'"
+        category="primary"
+        (click)="showPreview = !showPreview"
+        >{{
+          (showPreview
+            ? 'components.aggregationBuilder.preview.hide'
+            : 'components.aggregationBuilder.preview.show'
+          ) | translate
+        }}
+      </ui-button>
+    </div>
+    <!-- Pipeline builder -->
+    <div class="flex grow gap-2">
+      <shared-pipeline
+        class="basis-2/3 grow"
+        [fields$]="selectedFields$"
+        [metaFields$]="metaFields$"
+        [pipelineForm]="pipelineForm"
+        [showCheckboxes]="showPreview"
+      ></shared-pipeline>
+      <ngx-monaco-editor
+        class="!h-full basis-1/3"
+        *ngIf="showPreview"
+        [options]="editorOptions"
+        [(ngModel)]="aggregationPreview"
+      ></ngx-monaco-editor>
+    </div>
+  </ng-container>
+</div>

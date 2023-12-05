@@ -88,7 +88,7 @@ export class AggregationService {
    */
   aggregationDataQuery(
     resource: string,
-    aggregation: string,
+    aggregation: string | Aggregation,
     mapping?: any,
     contextFilters?: CompositeFilterDescriptor,
     at?: Date
@@ -158,7 +158,13 @@ export class AggregationService {
         id: aggregation.id,
         resource,
         form,
-        aggregation: value,
+        aggregation: {
+          ...value,
+          pipeline: value.pipeline.map((x: any) => ({
+            type: x.type,
+            form: x.form,
+          })),
+        },
       },
     });
   }

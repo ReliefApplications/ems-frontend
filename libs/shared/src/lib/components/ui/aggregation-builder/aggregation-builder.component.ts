@@ -12,6 +12,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { GET_FIELDS_METADATA } from './graphql/queries';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Main component of Aggregation builder.
@@ -45,9 +46,22 @@ export class AggregationBuilderComponent
   private mappingFields = new BehaviorSubject<any[]>([]);
   public mappingFields$!: Observable<any[]>;
 
+  /** Result of the current pipeline */
   public pipelinePreview: any;
+  /** Whether or not to display the aggregation result preview */
+  public showPreview = false;
+  /** Monaco editor options */
+  readonly editorOptions = {
+    theme: 'vs-dark',
+    language: 'jsonc',
+    fixedOverflowWidgets: false,
+    minimap: {
+      enabled: false,
+    },
+    lineNumbers: 'off',
+  };
 
-  public aggregationPreview = 'aggregation preview';
+  public aggregationPreview = '';
 
   /**
    * Getter for the pipeline of the aggregation form
@@ -63,11 +77,13 @@ export class AggregationBuilderComponent
    *
    * @param queryBuilder This is a service that is used to build queries.
    * @param aggregationBuilder This is the service that will be used to build the aggregation query.
+   * @param aggregationService This is the service that will be used to build the aggregation query.
    * @param apollo Shared apollo service
    */
   constructor(
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
+    private aggregationService: AggregationService,
     private apollo: Apollo
   ) {
     super();
@@ -123,6 +139,32 @@ export class AggregationBuilderComponent
         // Trigger check on fields being removable or not
         this.fields.next(this.fields.getValue());
       });
+
+    // For the result preview
+    this.aggregationForm.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(1000))
+      .subscribe((value: any) => {
+        if (!this.resource.id) {
+          return;
+        }
+        this.aggregationService
+          .aggregationDataQuery(this.resource.id, {
+            pipeline: (value.pipeline ?? []).filter((x: any) => x.preview),
+            sourceFields: value.sourceFields,
+          })
+          .subscribe((result) => {
+            if (result.errors?.[0]) {
+              this.aggregationPreview = result.errors[0].message;
+              return;
+            }
+
+            this.aggregationPreview = JSON.stringify(
+              result.data?.recordsAggregation?.items ?? [],
+              null,
+              2
+            );
+          });
+      });
     this.loading = false;
   }
 
@@ -131,36 +173,6 @@ export class AggregationBuilderComponent
    */
   private initFields(): void {
     this.updateFields();
-  }
-
-  /**
-   * Toggles the preview of the aggregation
-   */
-  public togglePreview() {
-    const aggregationPreview = document.querySelector(
-      '.aggregation-preview'
-    ) as HTMLElement;
-    const pipelineContainer = document.getElementById(
-      'shared-pipeline'
-    ) as HTMLElement;
-    if (
-      aggregationPreview.style.display === 'none' ||
-      aggregationPreview.style.display === ''
-    ) {
-      aggregationPreview.style.display = 'block';
-      pipelineContainer.style.flex = '1';
-    } else {
-      aggregationPreview.style.display = 'none';
-      pipelineContainer.style.flex = '1';
-    }
-  }
-
-  /**
-   * Updates the pipelinePreview
-   */
-  public onPreviewPipelineFormChange(pipeline: any) {
-    this.pipelinePreview = pipeline;
-    console.log('onPreviewPipelineFormChange', this.pipelinePreview);
   }
 
   /**

@@ -481,6 +481,10 @@
 				"week": "******",
 				"year": "******"
 			},
+			"preview": {
+				"hide": "******",
+				"show": "******"
+			},
 			"sourceFields": "******",
 			"stages": {
 				"addFields": "******",

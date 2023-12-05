@@ -481,6 +481,10 @@
 				"week": "Week",
 				"year": "Year"
 			},
+			"preview": {
+				"hide": "Hide preview",
+				"show": "Show preview"
+			},
 			"sourceFields": "Select fields",
 			"stages": {
 				"addFields": "Add fields",

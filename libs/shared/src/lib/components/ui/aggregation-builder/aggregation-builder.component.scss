@@ -1,14 +1,3 @@
-ui-button {
-  margin-left: 1em;
-}
-
-.pipeline-content shared-pipeline {
-  flex: 1;
-  box-sizing: border-box;
-}
-
-.aggregation-preview {
-  flex: 0 0 30%;
-  box-sizing: border-box;
-  display: none;
+::ng-deep ui-button button {
+  @apply h-11;
 }
