@@ -385,14 +385,10 @@ export class ReferenceDataService {
 
     if (result) {
       if (result.length > 0) {
-        console.log('par ici');
         const fields: {
           name: string;
           type: string;
         }[] = [];
-        // for (const key of Object.keys(result[0])) {
-        //   fields.push({ name: key, type: typeof result[0][key] });
-        // }
         const schema = toJsonSchema(result, { arrays: { mode: 'first' } });
         const properties = get(schema, 'items.properties') || {};
         /**
