@@ -1360,6 +1360,9 @@
 					"one": "{{count}} élément"
 				},
 				"layout": {
+					"button": {
+						"title": "Cela effacera la mise en page actuelle avec la mise en page par défaut"
+					},
 					"reset": "Réinitialiser la mise en page par défaut"
 				},
 				"loading": {
