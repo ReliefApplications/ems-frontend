@@ -312,19 +312,21 @@ export class ReferenceDatasComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
+    const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_REFERENCE_DATAS,
+      variables
+    );
     if (refetch) {
       this.cachedReferenceDatas = [];
       this.pageInfo.pageIndex = 0;
-      // Rebuild the query
-      this.referenceDatasQuery.refetch(variables);
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
-        this.apollo.client,
-        GET_REFERENCE_DATAS,
-        variables
-      );
-      if (cachedValues) {
-        this.updateValues(cachedValues, false);
+      if (refetch) {
+        // Rebuild the query
+        this.referenceDatasQuery.refetch(variables);
       } else {
         // Fetch more records
         this.referenceDatasQuery

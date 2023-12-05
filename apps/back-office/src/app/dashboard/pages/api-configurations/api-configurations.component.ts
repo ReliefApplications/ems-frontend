@@ -325,19 +325,21 @@ export class ApiConfigurationsComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
+    const cachedValues: ApiConfigurationsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_API_CONFIGURATIONS,
+      variables
+    );
     if (refetch) {
       this.cachedApiConfigurations = [];
       this.pageInfo.pageIndex = 0;
-      // Rebuild the query
-      this.apiConfigurationsQuery.refetch(variables);
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      const cachedValues: ApiConfigurationsQueryResponse = getCachedValues(
-        this.apollo.client,
-        GET_API_CONFIGURATIONS,
-        variables
-      );
-      if (cachedValues) {
-        this.updateValues(cachedValues, false);
+      if (refetch) {
+        // Rebuild the query
+        this.apiConfigurationsQuery.refetch(variables);
       } else {
         // Fetch more records
         this.apiConfigurationsQuery
