@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { takeUntil, Observable } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
@@ -12,7 +12,7 @@ import { EditLayoutModalComponent } from '../../../../grid-layout/edit-layout-mo
 import { GridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { AggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { EditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Fields } from '../../../../../models/layer.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { DomPortal } from '@angular/cdk/portal';
@@ -44,10 +44,7 @@ const ADMIN_FIELDS = [
   templateUrl: './layer-datasource.component.html',
   styleUrls: ['./layer-datasource.component.scss'],
 })
-export class LayerDatasourceComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class LayerDatasourceComponent extends UnsubscribeComponent {
   /** Current form group */
   @Input() formGroup!: FormGroup;
   /** Selected resource */
@@ -64,8 +61,6 @@ export class LayerDatasourceComponent
   @Input() mapPortal?: DomPortal;
   /** Emit new fields */
   @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
-  /** Type of origin ( resource or reference data ) */
-  public origin!: FormControl<string | null>;
   /** Admin fields */
   public adminFields = ADMIN_FIELDS;
 
@@ -82,24 +77,6 @@ export class LayerDatasourceComponent
     private aggregationService: AggregationService
   ) {
     super();
-  }
-
-  ngOnInit(): void {
-    // Set origin form control
-    if (this.formGroup.value.resource) {
-      this.origin = new FormControl('resource');
-    } else {
-      if (this.formGroup.value.refData) {
-        this.origin = new FormControl('refData');
-      } else {
-        this.origin = new FormControl();
-      }
-    }
-
-    // Listen to origin changes
-    this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.formGroup.patchValue({ resource: null, refData: null });
-    });
   }
 
   /** Opens modal for layout selection/creation */

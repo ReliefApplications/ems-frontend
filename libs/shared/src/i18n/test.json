@@ -1347,6 +1347,9 @@
 					"one": "{{count}} ******"
 				},
 				"layout": {
+					"button": {
+						"title": "******"
+					},
 					"reset": "******"
 				},
 				"loading": {

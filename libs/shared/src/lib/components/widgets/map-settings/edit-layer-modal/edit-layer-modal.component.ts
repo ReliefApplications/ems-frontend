@@ -381,6 +381,7 @@ export class EditLayerModalComponent
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
           if (value) {
+            this.form.get('datasource.resource')?.setValue(null);
             this.getReferenceData();
           } else {
             this.referenceData = null;
@@ -411,6 +412,7 @@ export class EditLayerModalComponent
           this.layout = null;
           this.aggregation = null;
           if (value) {
+            this.form.get('datasource.referenceData')?.setValue(null);
             this.getResource();
           } else {
             this.resource = null;

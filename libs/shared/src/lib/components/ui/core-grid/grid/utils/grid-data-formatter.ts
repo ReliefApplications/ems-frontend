@@ -29,6 +29,7 @@ export interface GridField {
   width: number;
   order: number;
   canSee: boolean;
+  subFields: GridField[];
 }
 
 /**
@@ -39,6 +40,8 @@ export interface Meta {
   name: string;
   readOnly: boolean;
   permissions: Permissions;
+  graphQLFieldName?: string;
+  choices?: any[];
 }
 
 /**
@@ -80,54 +83,73 @@ export function formatGridRowData(
   const showFullScreenButtonObj = {
     showFullScreenButton: {},
   };
-  fields
-    .filter((field) => !!get(rowData, field.name))
-    .forEach((field) => {
-      // Format styling for each field
-      Object.assign(styleObj.style, {
-        [field.name]: getStyle(rowData, field.name),
+  /**
+   * Iterate fields to fill properties.
+   *
+   * @param fields fields to iterate
+   * @param parent parent field ( for ref data )
+   */
+  function iterateFields(fields: GridField[], parent?: GridField) {
+    fields
+      .filter((field) => !!get(rowData, parent ? parent.name : field.name))
+      .forEach((field) => {
+        // Reference data
+        if (field.subFields && field.meta.type === 'referenceData') {
+          iterateFields(field.subFields, field);
+        } else {
+          // Format styling for each field
+          Object.assign(styleObj.style, {
+            [field.name]: getStyle(rowData, field.name),
+          });
+          // Format text for each field
+          if (!(field.type === 'JSON' && field.meta.type === 'file')) {
+            // Format text text for each field
+            const text = getFieldText(rowData, field, datePipe, parent);
+            Object.assign(textObj.text, {
+              [field.name]: text,
+            });
+            // Format url if exists for each field
+            if (field.meta.type === 'url') {
+              const url = getUrl(getPropertyValue(rowData, field));
+              Object.assign(urlObj.urlValue, {
+                [field.name]: url,
+              });
+            }
+            // Format value for email and telephone if exists for each field
+            if (field.meta.type === 'email' || field.meta.type === 'tel') {
+              const value = getPropertyValue(rowData, field);
+              Object.assign(valueObj.value, {
+                [field.name]: value,
+              });
+            }
+            // Initialize property to display the kendo button used to open the grid cell content in a modal
+            Object.assign(showFullScreenButtonObj.showFullScreenButton, {
+              [field.name]: false,
+            });
+          } else {
+            // Format files name and icons for each field
+            (get(rowData, field.name) || {}).forEach(
+              (file: { name: string }) => {
+                const text = applyFieldFormat(
+                  removeFileExtension(file.name),
+                  field
+                );
+                Object.assign(textObj.text, {
+                  [field.name]: {
+                    [file.name]: text,
+                  },
+                });
+                const icon = 'k-icon ' + getFileIcon(file.name);
+                Object.assign(iconObj.icon, {
+                  [file.name]: icon,
+                });
+              }
+            );
+          }
+        }
       });
-      // Format text for each field
-      if (!(field.type === 'JSON' && field.meta.type === 'file')) {
-        // Format text text for each field
-        const text = getFieldText(rowData, field, datePipe);
-        Object.assign(textObj.text, {
-          [field.name]: text,
-        });
-        // Format url if exists for each field
-        if (field.meta.type === 'url') {
-          const url = getUrl(getPropertyValue(rowData, field));
-          Object.assign(urlObj.urlValue, {
-            [field.name]: url,
-          });
-        }
-        // Format value for email and telephone if exists for each field
-        if (field.meta.type === 'email' || field.meta.type === 'tel') {
-          const value = getPropertyValue(rowData, field);
-          Object.assign(valueObj.value, {
-            [field.name]: value,
-          });
-        }
-        // Initialize property to display the kendo button used to open the grid cell content in a modal
-        Object.assign(showFullScreenButtonObj.showFullScreenButton, {
-          [field.name]: false,
-        });
-      } else {
-        // Format files name and icons for each field
-        (get(rowData, field.name) || {}).forEach((file: { name: string }) => {
-          const text = applyFieldFormat(removeFileExtension(file.name), field);
-          Object.assign(textObj.text, {
-            [field.name]: {
-              [file.name]: text,
-            },
-          });
-          const icon = 'k-icon ' + getFileIcon(file.name);
-          Object.assign(iconObj.icon, {
-            [file.name]: icon,
-          });
-        });
-      }
-    });
+  }
+  iterateFields(fields);
   // General properties
   Object.assign(rowData, styleObj);
   Object.assign(rowData, textObj);
@@ -171,9 +193,15 @@ export function applyFieldFormat(
  * @param rowData grid row data object
  * @param {GridField} field field from which take and format data from the given row
  * @param {DatePipe} datePipe SafeDate pipe to format date/time options
+ * @param {GridField} parent parent field
  * @returns {string} formatted by field type text content
  */
-function getFieldText(rowData: any, field: GridField, datePipe: DatePipe) {
+function getFieldText(
+  rowData: any,
+  field: GridField,
+  datePipe: DatePipe,
+  parent?: GridField
+) {
   let finalText: any = '';
   switch (field.meta.type) {
     case 'time':
@@ -196,7 +224,10 @@ function getFieldText(rowData: any, field: GridField, datePipe: DatePipe) {
       );
       break;
     default:
-      finalText = applyFieldFormat(getPropertyValue(rowData, field), field);
+      finalText = applyFieldFormat(
+        getPropertyValue(rowData, field, parent),
+        field
+      );
       break;
   }
   return finalText ?? '';
@@ -245,36 +276,44 @@ function getFileIcon(name: string): string {
     : 'k-i-file';
 }
 
-// === DATA ===
 /**
  * Returns property value in object from path.
  *
  * @param item Item to get property of.
  * @param field parent field
- * @param subField subfield ( optional, used by reference data)
+ * @param parent parent field
  * @returns Value of the property.
  */
-function getPropertyValue(item: any, field: any, subField?: any): any {
-  let value = get(item, field.name);
-  const meta = subField ? subField.meta : field.meta;
+function getPropertyValue(
+  item: any,
+  field: GridField,
+  parent?: GridField
+): any {
+  let value = get(item, parent ? parent.name : field.name);
+  const meta = field.meta;
   if (meta.choices) {
     if (Array.isArray(value)) {
-      if (subField) {
+      if (parent) {
         if (meta.graphQLFieldName) {
-          value = value.map((x) => get(x, meta.graphQLFieldName));
+          value = value.map((x) => get(x, meta.graphQLFieldName as string));
         }
       }
-      const text = meta.choices.reduce(
-        (acc: string[], x: any) =>
-          value.includes(x.value) ? acc.concat([x.text]) : acc,
-        []
-      );
+      const text = meta.choices
+        .filter((x) => x.value)
+        .reduce(
+          (acc: string[], x: any) =>
+            value.includes(x.value) ? acc.concat([x.text]) : acc,
+          []
+        );
       if (text.length < value.length) {
         return value;
       } else {
         return text;
       }
     } else {
+      if (parent) {
+        value = get(item, field.name);
+      }
       return meta.choices.find((x: any) => x.value === value)?.text || value;
     }
   } else {

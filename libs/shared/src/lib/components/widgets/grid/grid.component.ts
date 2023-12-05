@@ -18,11 +18,9 @@ import {
   Input,
   Output,
   EventEmitter,
-  Inject,
   TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
-import { AuthService } from '../../../services/auth/auth.service';
 import { EmailService } from '../../../services/email/email.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { CoreGridComponent } from '../../ui/core-grid/core-grid.component';
@@ -85,9 +83,6 @@ export class GridWidgetComponent
   public aggregation: Aggregation | null = null;
   public aggregations: Aggregation[] = [];
 
-  // === VERIFICATION IF USER IS ADMIN ===
-  public isAdmin: boolean;
-
   // === SETTINGS ===
   @Input() settings: any = null;
   @Input() id = '';
@@ -127,12 +122,10 @@ export class GridWidgetComponent
   /**
    * Heavy constructor for the grid widget component
    *
-   * @param environment Environment variables
    * @param apollo The apollo client
    * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
-   * @param authService Shared authentication service
    * @param emailService Shared email service
    * @param queryBuilder Shared query builder service
    * @param gridLayoutService Shared grid layout service
@@ -142,12 +135,10 @@ export class GridWidgetComponent
    * @param aggregationService Shared aggregation service
    */
   constructor(
-    @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private workflowService: WorkflowService,
-    private authService: AuthService,
     private emailService: EmailService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: GridLayoutService,
@@ -157,8 +148,6 @@ export class GridWidgetComponent
     private aggregationService: AggregationService
   ) {
     super();
-    this.isAdmin =
-      this.authService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit() {

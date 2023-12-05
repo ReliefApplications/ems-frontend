@@ -42,7 +42,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="type">
-        <th uiTableHeaderSort="type" uiCellHeader *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'pages.referenceData.type' | translate }}
           </span>
@@ -51,12 +51,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="apiConfiguration">
-        <th
-          uiTableHeaderSort="apiConfiguration"
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.apiConfiguration.one' | translate }}
           </span>
@@ -67,12 +62,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="modifiedAt">
-        <th
-          uiTableHeaderSort="modifiedAt"
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.modifiedOn' | translate }}
           </span>
@@ -131,6 +121,7 @@
 </div>
 <ui-paginator
   [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"
   [totalItems]="pageInfo.length"
