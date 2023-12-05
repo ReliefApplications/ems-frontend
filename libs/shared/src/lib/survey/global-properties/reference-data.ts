@@ -35,6 +35,10 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       category: 'Choices from Reference data',
       type: CustomPropertyGridComponentTypes.referenceDataDropdown,
       visibleIndex: 1,
+      onSetValue: (obj: QuestionSelectBase, value: string) => {
+        obj.choicesByUrl.setData([]); 
+        obj.setPropertyValue('referenceData', value);
+      }
     });
 
     registerCustomPropertyEditor(
