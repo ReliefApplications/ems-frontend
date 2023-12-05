@@ -1310,6 +1310,7 @@ export class CoreGridComponent
               filters: [{ operator: 'eq', field: 'ids', value: ids }],
             }
           : this.queryFilter,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       query: this.settings.query,
       sortField: this.sortField,
       sortOrder: this.sortOrder,
