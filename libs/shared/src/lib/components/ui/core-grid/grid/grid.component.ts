@@ -556,8 +556,8 @@ export class GridComponent
    */
   onColumnVisibilityChange(): void {
     this.columnChange.emit();
-        this.setColumnsWidth();
-      }
+    this.setColumnsWidth();
+  }
 
   /**
    * Detects cell click event and opens row form if user is authorized.
@@ -901,7 +901,9 @@ export class GridComponent
     // Set the width of fixed width columns
     const fixedWidthColumns = this.columns.filter(
       (column) =>
-        this.fields.find((field) => field.name === column.field)?.fixedWidth
+        this.fields.find(
+          (field) => field.name === column.field && !column.hidden
+        )?.fixedWidth
     );
     fixedWidthColumns.forEach(
       (column) =>
@@ -909,20 +911,15 @@ export class GridComponent
           (field) => field.name === column.field
         ).fixedWidth)
     );
-
     /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
-    let gridTotalWidth =
+    const gridTotalWidth =
       gridElement.offsetWidth -
       totalWidthSticky -
       fixedWidthColumns.reduce((sum, column) => sum + column.width, 0) -
       12;
-    if (gridTotalWidth < 0) {
-      gridTotalWidth = Math.abs(gridTotalWidth);
-    }
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
       (column) => !column.hidden && !!column.title && !column.sticky
-      // && !fixedWidthColumns.includes(column)
     );
     // Verify what kind of field is and deal with this logic
     const typesFields: {
@@ -931,10 +928,17 @@ export class GridComponent
       title: string;
     }[] = [];
     this.fields.forEach((field: any) => {
-      const availableFields = availableColumns.filter(
-        (column: any) => column.field === field.name
-        // || (column.title === field.title)
-      );
+      const availableFields = availableColumns.filter((column: any) => {
+        // To correctly size referenceData columns when hiding / show them
+        if (
+          field.meta.type === 'referenceData' &&
+          field.meta[column.field.split(field.name + '.')[1]]
+        ) {
+          return true;
+        } else {
+          return column.field === field.name;
+        }
+      });
       // should only add items to typesFields if they are available in availableColumns
       if (availableFields.length > 0) {
         typesFields.push({
