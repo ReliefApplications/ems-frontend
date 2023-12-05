@@ -485,7 +485,7 @@
 				"addFields": "Add fields",
 				"custom": "Custom",
 				"filter": "Filter",
-				"group": "Group",
+				"group": "Group & Accumulator",
 				"sort": "Sort",
 				"unwind": "Unwind"
 			},
@@ -493,7 +493,8 @@
 				"addFields": "Adds new fields to documents.",
 				"custom": "Defines a custom aggregation function or expression in JavaScript.",
 				"filter": "Returns an array with only those elements that match the condition.",
-				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+				"group": "Group records based on field values and construct personalized accumulators",
+				"groupingRules": "Grouping rules are optional.",
 				"selectedFields": "Only unused fields can removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
@@ -710,6 +711,15 @@
 			"fields": "Select fields to write in body",
 			"subject": "Subject",
 			"withoutRecords": "Without records"
+		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "The subject of the email cannot be empty."
+			},
+			"from": "From",
+			"subject": "Subject",
+			"title": "Email preview",
+			"to": "To"
 		},
 		"form": {
 			"aggregation": {
@@ -1084,7 +1094,9 @@
 				"select": "From Reference data"
 			},
 			"fields": {
-				"ariaLabel": "Input available fields of reference data"
+				"add": "Add field",
+				"ariaLabel": "Input available fields of reference data",
+				"new": "New field"
 			},
 			"paginator": {
 				"ariaLabel": "Select page of reference data"
@@ -1337,6 +1349,9 @@
 					"one": "{{count}} item"
 				},
 				"layout": {
+					"button": {
+						"title": "This will erase current layout with default layout"
+					},
 					"reset": "Reset default Layout"
 				},
 				"loading": {
@@ -2371,12 +2386,17 @@
 			"csv": "CSV input",
 			"fields": {
 				"fetch": "Fetch fields",
+				"help": "The fields are calculated based on the attributes of the first item in the payload.",
 				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
 				"noFields": "No fields found",
 				"title": "Field"
 			},
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
+			"payload": {
+				"label": "Payload",
+				"show": "Show payload"
+			},
 			"placeholder": {
 				"csv": "Insert CSV here",
 				"graphQLFilter": "Enter a filter to be used once choices are already cached"

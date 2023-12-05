@@ -64,7 +64,7 @@ export class DashboardComponent
   /** Show name ( contextual pages ) */
   public showName = false;
   /** Current style variant */
-  public variant: string | undefined;
+  public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
 
@@ -218,7 +218,7 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          this.variant = this.dashboard.filter?.variant;
+          this.variant = this.dashboard.filter?.variant || 'default';
           this.closable = this.dashboard.filter?.closable ?? false;
         } else {
           this.contextService.isFilterEnabled.next(false);

@@ -69,7 +69,7 @@ const MAX_COLUMN_WIDTH = 250;
 const matches = (el: any, selector: any) =>
   (el.matches || el.msMatchesSelector).call(el, selector);
 
-/** Component for grid widgets */
+/** Core grid element */
 @Component({
   selector: 'shared-grid',
   templateUrl: './grid.component.html',
@@ -146,14 +146,14 @@ export class GridComponent
   @Input() searchable = true;
   /** Sortable status */
   @Input() sortable = true;
+  /** Grid uses aggregation */
+  @Input() useAggregation = false;
   /** Sort descriptor */
   @Input() sort: SortDescriptor[] = [];
   /** Page size */
   @Input() pageSize = 10;
   /** Skip value */
   @Input() skip = 0;
-  /** Admin mode status */
-  @Input() admin = false;
   /** Output decorator for action */
   @Output() action = new EventEmitter();
   /** Output decorator for export */
@@ -282,7 +282,7 @@ export class GridComponent
   }
 
   /**
-   * Constructor of the grid component
+   * Core grid element
    *
    * @param widgetComponent parent widget component ( optional )
    * @param environment Current environment
@@ -1116,6 +1116,13 @@ export class GridComponent
       if (column.width <= 0) {
         column.width = MIN_COLUMN_WIDTH;
       }
+    });
+  }
+
+  /** Restore all columns visibility when reset the layout of the grid */
+  restoreColumns() {
+    this.columns.forEach((column: any) => {
+      column.hidden = false;
     });
   }
 }

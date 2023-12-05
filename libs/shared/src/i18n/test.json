@@ -494,6 +494,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"groupingRules": "******",
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
@@ -710,6 +711,15 @@
 			"fields": "******",
 			"subject": "******",
 			"withoutRecords": "******"
+		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "******"
+			},
+			"from": "******",
+			"subject": "******",
+			"title": "******",
+			"to": "******"
 		},
 		"form": {
 			"aggregation": {
@@ -1084,7 +1094,9 @@
 				"select": "******"
 			},
 			"fields": {
-				"ariaLabel": "******"
+				"add": "******",
+				"ariaLabel": "******",
+				"new": "******"
 			},
 			"paginator": {
 				"ariaLabel": "******"
@@ -1337,6 +1349,9 @@
 					"one": "{{count}} ******"
 				},
 				"layout": {
+					"button": {
+						"title": "******"
+					},
 					"reset": "******"
 				},
 				"loading": {
@@ -2371,12 +2386,17 @@
 			"csv": "******",
 			"fields": {
 				"fetch": "******",
+				"help": "******",
 				"missingConfig": "****** {{config}}",
 				"noFields": "******",
 				"title": "******"
 			},
 			"graphQLFilter": "******",
 			"path": "******",
+			"payload": {
+				"label": "******",
+				"show": "******"
+			},
 			"placeholder": {
 				"csv": "******",
 				"graphQLFilter": "******"

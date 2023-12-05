@@ -25,7 +25,7 @@ import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
-import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import centroid from '@turf/centroid';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
@@ -168,7 +168,7 @@ export class Layer implements LayerModel {
   // If the layer is a group, the sublayers array has the ids of the layers
   public sublayers: string[] = [];
 
-  public _sublayers: Layer[] = [];
+  public _sublayers: string[] = [];
 
   public sublayersLoaded = new BehaviorSubject(false);
 
@@ -192,8 +192,7 @@ export class Layer implements LayerModel {
    *
    * @returns Children of the current layer
    */
-  public async getChildren() {
-    await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
+  public getChildren() {
     return this._sublayers;
   }
 
@@ -280,12 +279,7 @@ export class Layer implements LayerModel {
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
-      this._sublayers = options.sublayers?.length
-        ? await this.layerService.createLayersFromIds(
-            options.sublayers,
-            this.injector
-          )
-        : [];
+      this._sublayers = options.sublayers?.length ? options.sublayers : [];
 
       this.sublayersLoaded.next(true);
     }
@@ -532,7 +526,11 @@ export class Layer implements LayerModel {
 
     switch (this.type) {
       case 'GroupLayer':
-        const sublayers = await this.getChildren();
+        const ChildrenIds = this.getChildren();
+        const layerPromises = ChildrenIds.map((layer) => {
+          return this.layerService.createLayersFromId(layer, this.injector);
+        });
+        const sublayers = await Promise.all(layerPromises);
 
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
@@ -1102,11 +1100,16 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
-    const children = await this.getChildren();
+    const children = this.getChildren();
     if (children.length) {
-      children.forEach((cl) => {
-        cl.removeAllListeners(map);
+      const removeAllListenersLayerPromises = children.map((layer) => {
+        return this.layerService
+          .createLayersFromId(layer, this.injector)
+          .then((layer) => {
+            return layer.removeAllListeners(map);
+          });
       });
+      await Promise.all(removeAllListenersLayerPromises);
     }
     this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
     this.listeners.forEach((listener) => {

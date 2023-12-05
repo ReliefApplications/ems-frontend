@@ -10,11 +10,14 @@ import {
   TableModule,
   FormWrapperModule,
   SelectMenuModule,
-  GraphQLSelectModule,
   DividerModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
+import {
+  ReferenceDataSelectComponent,
+  ResourceSelectComponent,
+} from '../../../../controls/public-api';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -25,7 +28,6 @@ import { PortalModule } from '@angular/cdk/portal';
     ReactiveFormsModule,
     SelectMenuModule,
     TranslateModule,
-    GraphQLSelectModule,
     ButtonModule,
     DividerModule,
     TranslateModule,
@@ -36,6 +38,8 @@ import { PortalModule } from '@angular/cdk/portal';
     AlertModule,
     TooltipModule,
     PortalModule,
+    ResourceSelectComponent,
+    ReferenceDataSelectComponent,
   ],
   exports: [LayerDatasourceComponent],
 })

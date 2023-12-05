@@ -10,7 +10,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { Fields } from '../../../../../../models/layer.model';
 import { Observable, takeUntil } from 'rxjs';
-import { EditorControlComponent } from '../../../../../editor-control/editor-control.component';
+import { EditorControlComponent } from '../../../../../controls/editor-control/editor-control.component';
 import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { EditorService } from '../../../../../../services/editor/editor.service';
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';

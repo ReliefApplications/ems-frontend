@@ -1,7 +1,7 @@
 <ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && apiConfiguration">
-  <div class="page-header">
-    <h1 class="page-title">
+  <div class="flex justify-start items-center mb-5">
+    <h1 class="overflow-hidden whitespace-nowrap text-ellipsis mb-0">
       {{ apiConfiguration.name }}
     </h1>
     <shared-access
@@ -120,7 +120,12 @@
     </div>
 
     <!-- Authentication settings -->
-    <ng-container *ngIf="apiForm.value.authType === authType.serviceToService || apiForm.value.authType === authType.userToService">
+    <ng-container
+      *ngIf="
+        apiForm.value.authType === authType.serviceToService ||
+        apiForm.value.authType === authType.userToService
+      "
+    >
       <h2 class="mt-8">
         {{ 'pages.apiConfiguration.authentication' | translate }}
       </h2>

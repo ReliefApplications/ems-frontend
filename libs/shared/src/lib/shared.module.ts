@@ -31,7 +31,7 @@ import { CronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { UnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
 import { ViewsModule } from './views/views.module';
 import { EditableTextModule } from './components/editable-text/editable-text.module';
-import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
+import { CronExpressionControlModule } from './components/controls/cron-expression-control/cron-expression-control.module';
 import { MapModule } from './components/ui/map';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';

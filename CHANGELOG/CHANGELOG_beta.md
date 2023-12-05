@@ -1,3 +1,48 @@
+# [2.2.0-beta.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.13...v2.2.0-beta.14) (2023-12-05)
+
+
+### Bug Fixes
+
+* Changing form locale duplicates some questions ([#2124](https://github.com/ReliefApplications/ems-frontend/issues/2124)) ([ed9bbe6](https://github.com/ReliefApplications/ems-frontend/commit/ed9bbe66421f7fe19bae89aa3580d0a059c29f57))
+* incorrect sorting on api configuration ([#2125](https://github.com/ReliefApplications/ems-frontend/issues/2125)) ([5acf213](https://github.com/ReliefApplications/ems-frontend/commit/5acf213d1c7e3880ae69be8a6b62e2de98f09aa2))
+* reference data would appear as object object in grid ([b9b1910](https://github.com/ReliefApplications/ems-frontend/commit/b9b191032ef2bf74a4fbeec9459d973c99e1b835))
+* reset default button not available in front-office ([#2122](https://github.com/ReliefApplications/ems-frontend/issues/2122)) ([ab81073](https://github.com/ReliefApplications/ems-frontend/commit/ab810737f245ea4b527d4f477dd77ff09819c1e1))
+* some fields would not be accessible in map popup ([48f98aa](https://github.com/ReliefApplications/ems-frontend/commit/48f98aaa83ad05520b21638068254ec171656e43))
+* sorting in ref data table not working ([#2126](https://github.com/ReliefApplications/ems-frontend/issues/2126)) ([1ae1e27](https://github.com/ReliefApplications/ems-frontend/commit/1ae1e276a7eef1682ab73bfa2ac645bb30ad0dea))
+
+
+### Features
+
+* add possibility to fetch nested fields in ref data ([efbcc1d](https://github.com/ReliefApplications/ems-frontend/commit/efbcc1db4e278f346966952fb3411dae3e4c3d9a))
+* allow to edit / add reference data fields ([#2128](https://github.com/ReliefApplications/ems-frontend/issues/2128)) ([c7f047b](https://github.com/ReliefApplications/ems-frontend/commit/c7f047b654235516d42cb9f5e645b33b2fc9d715))
+
+# [2.2.0-beta.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.12...v2.2.0-beta.13) (2023-12-02)
+
+
+### Bug Fixes
+
+* reset default button not restoring sticky columns if hidden ([#2119](https://github.com/ReliefApplications/ems-frontend/issues/2119)) ([d9c9dbd](https://github.com/ReliefApplications/ems-frontend/commit/d9c9dbd11d323df30bdc7697169fe45ee157d6d5))
+* tabs widget would not correctly indicate when updated, preventing modal to appear when closing ([8395a71](https://github.com/ReliefApplications/ems-frontend/commit/8395a71c2547d3985e462631b4b6d65a510ce534))
+* when selected reference data would not appear in summary card settings ([ba067b3](https://github.com/ReliefApplications/ems-frontend/commit/ba067b3a3938b49c0584935a26a87b1e912d1046))
+
+# [2.2.0-beta.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.11...v2.2.0-beta.12) (2023-11-30)
+
+
+### Bug Fixes
+
+* filter value incorrectly reset ([08785a8](https://github.com/ReliefApplications/ems-frontend/commit/08785a8dc8e38566cbe0843d02e4dd4c0aec24c7))
+* history now appearing in nested grids, in modals ([efe9421](https://github.com/ReliefApplications/ems-frontend/commit/efe94216d7658844348cf2a8ce45842da42e4c6e))
+* issue with build ([7db6463](https://github.com/ReliefApplications/ems-frontend/commit/7db646399d64ea0b720eac47367e1819f7139893))
+* manually enabled layers on map would not appear after filter refresh ([4e7653b](https://github.com/ReliefApplications/ems-frontend/commit/4e7653b223b59fa7d338ff58925c4a137fd3f655))
+* some options would not correctly appear in some instances of form builder ([#2105](https://github.com/ReliefApplications/ems-frontend/issues/2105)) ([2763ff2](https://github.com/ReliefApplications/ems-frontend/commit/2763ff22931dcaba59136c8044257f22e54559c7))
+
+
+### Features
+
+* can now use reference data in summary card ([ba3c61a](https://github.com/ReliefApplications/ems-frontend/commit/ba3c61aad1c3122511cd87b735945b43b8c69482))
+* now use filter at dashboard level ([#2078](https://github.com/ReliefApplications/ems-frontend/issues/2078)) ([38e0b13](https://github.com/ReliefApplications/ems-frontend/commit/38e0b136aaa47c21988aed7e90edcaefe40f84be))
+* reference data now usable in text widget ([b0cefc5](https://github.com/ReliefApplications/ems-frontend/commit/b0cefc5f1377912e9fca79c7a37eae0c15550977))
+
 # [2.2.0-beta.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.10...v2.2.0-beta.11) (2023-11-27)
 
 

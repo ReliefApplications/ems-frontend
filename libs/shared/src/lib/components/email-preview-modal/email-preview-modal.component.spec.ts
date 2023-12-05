@@ -5,11 +5,11 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { EmailPreviewComponent } from './email-preview.component';
+import { EmailPreviewModalComponent } from './email-preview-modal.component';
 
-describe('EmailPreviewComponent', () => {
-  let component: EmailPreviewComponent;
-  let fixture: ComponentFixture<EmailPreviewComponent>;
+describe('EmailPreviewModalComponent', () => {
+  let component: EmailPreviewModalComponent;
+  let fixture: ComponentFixture<EmailPreviewModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,13 +23,13 @@ describe('EmailPreviewComponent', () => {
         },
         UntypedFormBuilder,
       ],
-      declarations: [EmailPreviewComponent],
+      declarations: [EmailPreviewModalComponent],
       imports: [DialogCdkModule],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EmailPreviewComponent);
+    fixture = TestBed.createComponent(EmailPreviewModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

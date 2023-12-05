@@ -91,7 +91,8 @@
           "color",
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
-          "jsonpath"
+          "jsonpath",
+          "to-json-schema"
         ]
       },
       "configurations": {
