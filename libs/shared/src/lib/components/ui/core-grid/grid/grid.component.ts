@@ -901,7 +901,9 @@ export class GridComponent
     // Set the width of fixed width columns
     const fixedWidthColumns = this.columns.filter(
       (column) =>
-        this.fields.find((field) => field.name === column.field)?.fixedWidth
+        this.fields.find(
+          (field) => field.name === column.field && !column.hidden
+        )?.fixedWidth
     );
     fixedWidthColumns.forEach(
       (column) =>
@@ -909,7 +911,6 @@ export class GridComponent
           (field) => field.name === column.field
         ).fixedWidth)
     );
-
     /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
     const gridTotalWidth =
       gridElement.offsetWidth -
@@ -918,11 +919,7 @@ export class GridComponent
       12;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
-      (column) =>
-        !column.hidden &&
-        !!column.title &&
-        !column.sticky &&
-        !fixedWidthColumns.includes(column)
+      (column) => !column.hidden && !!column.title && !column.sticky
     );
     // Verify what kind of field is and deal with this logic
     const typesFields: {
@@ -931,9 +928,17 @@ export class GridComponent
       title: string;
     }[] = [];
     this.fields.forEach((field: any) => {
-      const availableFields = availableColumns.filter(
-        (column: any) => column.field === field.name
-      );
+      const availableFields = availableColumns.filter((column: any) => {
+        // To correctly size referenceData columns when hiding / show them
+        if (
+          field.meta.type === 'referenceData' &&
+          field.meta[column.field.split(field.name + '.')[1]]
+        ) {
+          return true;
+        } else {
+          return column.field === field.name;
+        }
+      });
       // should only add items to typesFields if they are available in availableColumns
       if (availableFields.length > 0) {
         typesFields.push({
@@ -974,7 +979,9 @@ export class GridComponent
               break;
             }
             case 'file': {
-              contentSize = data[type.field][0]?.name?.length || 0;
+              contentSize = data[type.field]
+                ? data[type.field][0]?.name?.length
+                : 0;
               break;
             }
             case 'numeric': {
