@@ -9,13 +9,24 @@
     <ui-date-picker #calendar> </ui-date-picker>
   </div>
 </div>
-<div class="w-60" uiFormFieldDirective [defaultMargin]="false" *ngIf="useExpression">
+<div
+  class="w-60"
+  uiFormFieldDirective
+  [defaultMargin]="false"
+  *ngIf="useExpression"
+>
   <label>{{ 'common.value.one' | translate }}</label>
   <shared-editor-control
     [formControl]="control"
-    uiTooltip="{{'kendo.datepicker.dateFormat' | translate}}"
     [editorConfig]="editorTinymce"
   ></shared-editor-control>
+  <ui-icon
+    uiSuffix
+    class="cursor-help"
+    icon="info_outline"
+    variant="grey"
+    [uiTooltip]="'kendo.datepicker.dateFormat' | translate | translate"
+  ></ui-icon>
 </div>
 <ui-button
   [isIcon]="true"

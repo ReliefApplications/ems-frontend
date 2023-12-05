@@ -13,10 +13,11 @@ import { EditorService } from '../../../services/editor/editor.service';
   styleUrls: ['./date-filter-editor.component.scss'],
 })
 export class DateFilterEditorComponent implements OnInit {
+  /** Date filter control */
   @Input() control!: UntypedFormControl;
+  /** Is using expression */
   public useExpression = false;
-
-  /** tinymce editor */
+  /** Tinymce editor configuration */
   public editorTinymce: any = INLINE_EDITOR_CONFIG;
 
   /** @returns Is the first input a date or not. */
