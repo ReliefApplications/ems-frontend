@@ -1,3 +1,77 @@
+# [2.2.0-beta.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.12...v2.2.0-beta.13) (2023-12-02)
+
+
+### Bug Fixes
+
+* reset default button not restoring sticky columns if hidden ([#2119](https://github.com/ReliefApplications/ems-frontend/issues/2119)) ([d9c9dbd](https://github.com/ReliefApplications/ems-frontend/commit/d9c9dbd11d323df30bdc7697169fe45ee157d6d5))
+* tabs widget would not correctly indicate when updated, preventing modal to appear when closing ([8395a71](https://github.com/ReliefApplications/ems-frontend/commit/8395a71c2547d3985e462631b4b6d65a510ce534))
+* when selected reference data would not appear in summary card settings ([ba067b3](https://github.com/ReliefApplications/ems-frontend/commit/ba067b3a3938b49c0584935a26a87b1e912d1046))
+
+# [2.2.0-beta.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.11...v2.2.0-beta.12) (2023-11-30)
+
+
+### Bug Fixes
+
+* filter value incorrectly reset ([08785a8](https://github.com/ReliefApplications/ems-frontend/commit/08785a8dc8e38566cbe0843d02e4dd4c0aec24c7))
+* history now appearing in nested grids, in modals ([efe9421](https://github.com/ReliefApplications/ems-frontend/commit/efe94216d7658844348cf2a8ce45842da42e4c6e))
+* issue with build ([7db6463](https://github.com/ReliefApplications/ems-frontend/commit/7db646399d64ea0b720eac47367e1819f7139893))
+* manually enabled layers on map would not appear after filter refresh ([4e7653b](https://github.com/ReliefApplications/ems-frontend/commit/4e7653b223b59fa7d338ff58925c4a137fd3f655))
+* some options would not correctly appear in some instances of form builder ([#2105](https://github.com/ReliefApplications/ems-frontend/issues/2105)) ([2763ff2](https://github.com/ReliefApplications/ems-frontend/commit/2763ff22931dcaba59136c8044257f22e54559c7))
+
+
+### Features
+
+* can now use reference data in summary card ([ba3c61a](https://github.com/ReliefApplications/ems-frontend/commit/ba3c61aad1c3122511cd87b735945b43b8c69482))
+* now use filter at dashboard level ([#2078](https://github.com/ReliefApplications/ems-frontend/issues/2078)) ([38e0b13](https://github.com/ReliefApplications/ems-frontend/commit/38e0b136aaa47c21988aed7e90edcaefe40f84be))
+* reference data now usable in text widget ([b0cefc5](https://github.com/ReliefApplications/ems-frontend/commit/b0cefc5f1377912e9fca79c7a37eae0c15550977))
+
+# [2.2.0-beta.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.10...v2.2.0-beta.11) (2023-11-27)
+
+
+### Bug Fixes
+
+* incorrect reorder & delete events in tabs widget ([#2097](https://github.com/ReliefApplications/ems-frontend/issues/2097)) ([9e4246b](https://github.com/ReliefApplications/ems-frontend/commit/9e4246bc4091ac735146c471fb49b7eded345beb))
+* legend now correctly working for unique value layer points ([4fdb7f9](https://github.com/ReliefApplications/ems-frontend/commit/4fdb7f9d4b0b3c43e38101a5349ff16927d33c6b))
+* some fields would not appear in style fields selector ([a0094e1](https://github.com/ReliefApplications/ems-frontend/commit/a0094e1901cd03df69ada53bea13557d1125766b))
+* unique renderer would not render correctly ([ca83272](https://github.com/ReliefApplications/ems-frontend/commit/ca83272417b2b6d3be76c8e04a4f67017b038540))
+
+# [2.2.0-beta.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.9...v2.2.0-beta.10) (2023-11-24)
+
+
+### Bug Fixes
+
+* add resource fields to history ([30c0846](https://github.com/ReliefApplications/ems-frontend/commit/30c0846a36a34db56f4024c4f482ad1bdce6ff71))
+* better indicate file size in uploads ([#2095](https://github.com/ReliefApplications/ems-frontend/issues/2095)) ([40dae08](https://github.com/ReliefApplications/ems-frontend/commit/40dae087910a34b87c86961d4d5038357df40062))
+* could not load aggregation grid ([d660f07](https://github.com/ReliefApplications/ems-frontend/commit/d660f0727b8b8d74cd128fc626f262c4672a58e1))
+* could not set as null in auto modify fields grid action ([#2041](https://github.com/ReliefApplications/ems-frontend/issues/2041)) ([a92230c](https://github.com/ReliefApplications/ems-frontend/commit/a92230c4c2e445aa4978b970293570f43d1c682d))
+* createdBy & modifiedBy would not appear in grids ([8b18cc6](https://github.com/ReliefApplications/ems-frontend/commit/8b18cc65a8deb0f32a9c8adcaec701bc0b14b9a8))
+* default json editor tab of surveyjs would not work ([#2076](https://github.com/ReliefApplications/ems-frontend/issues/2076)) ([0fcd954](https://github.com/ReliefApplications/ems-frontend/commit/0fcd9541f4c9bed7bdc37638271346dd5e139a07))
+* dialog close directive could sometimes send empty string instead of undefined ([ef6a3af](https://github.com/ReliefApplications/ems-frontend/commit/ef6a3afc7e33f658e50aa0ce5fa1265674d1010e))
+* disable the button clear button if the question is read only ([#2038](https://github.com/ReliefApplications/ems-frontend/issues/2038)) ([4656d2e](https://github.com/ReliefApplications/ems-frontend/commit/4656d2eb5297f5dbba624122e9f9cad08d5e49b0))
+* fields not being correctly removed in history ([#2036](https://github.com/ReliefApplications/ems-frontend/issues/2036)) ([8aaf87a](https://github.com/ReliefApplications/ems-frontend/commit/8aaf87a17430e1d23056834961892335f08d9c80))
+* i18n issue when errors in grid in web widgets ([38ecef2](https://github.com/ReliefApplications/ems-frontend/commit/38ecef2e9a7ff5a579545b9e6048906f0bcc75c7))
+* icon picker sending error due to web elements changes [#79780](https://github.com/ReliefApplications/ems-frontend/issues/79780) ([#2094](https://github.com/ReliefApplications/ems-frontend/issues/2094)) ([eb94e7f](https://github.com/ReliefApplications/ems-frontend/commit/eb94e7fc03095e082d6beb9ecfd13481f35582b4))
+* improve front-office navigation that could sometimes lost track of redirection ([#1991](https://github.com/ReliefApplications/ems-frontend/issues/1991)) ([196d5ea](https://github.com/ReliefApplications/ems-frontend/commit/196d5ea040edc3280aaf15e7402777cb8437387c))
+* incorrect default scroll when loading dashboards ([#2086](https://github.com/ReliefApplications/ems-frontend/issues/2086)) ([0f40b0d](https://github.com/ReliefApplications/ems-frontend/commit/0f40b0d83928e830b455c57200dbe6b9a8240a30))
+* incorrect scroll due to new gridster library could cause some conflicts ([9fc9504](https://github.com/ReliefApplications/ems-frontend/commit/9fc950494d75106e4ad9e372ae29cfaa2458d3d8))
+* incorrect scroll in grid widgets & some unexpected effects when showing / hiding columns ([#2087](https://github.com/ReliefApplications/ems-frontend/issues/2087)) ([35adb87](https://github.com/ReliefApplications/ems-frontend/commit/35adb872ec62a2e67de3aa4824a33acb1cc9f52d))
+* incorrect style of record history modal ([7011939](https://github.com/ReliefApplications/ems-frontend/commit/701193988a52b19a58c21f5ae863a57c93cab319))
+* page is taking too much resource when showing a grid with many columns records ([#1982](https://github.com/ReliefApplications/ems-frontend/issues/1982)) ([8205b20](https://github.com/ReliefApplications/ems-frontend/commit/8205b20cc99ffbd152f266d55f20f9466a2ec88a))
+* prevent min & max of lines charts to not be integers, and add possibility to set them manually ([#1985](https://github.com/ReliefApplications/ems-frontend/issues/1985)) ([4194d5f](https://github.com/ReliefApplications/ems-frontend/commit/4194d5f5cdc89c881dc7b8021e7dd193dba0f782))
+* remove initImplicitFlow ([4e9ddd0](https://github.com/ReliefApplications/ems-frontend/commit/4e9ddd046b16013f360d89fdcda7c9f9cf48c165))
+* resources question grid actions could appear in display mode ([#2037](https://github.com/ReliefApplications/ems-frontend/issues/2037)) ([dd56837](https://github.com/ReliefApplications/ems-frontend/commit/dd56837ff34b903a3a56fd45093e6bfde4d57363))
+* search was shared between instances of dropdown & tagbox questions ([ce748fa](https://github.com/ReliefApplications/ems-frontend/commit/ce748faa88eeb8dc65a0f2f0d76b52662b9800a2))
+* shadow dom not working in all cases ([a7d920d](https://github.com/ReliefApplications/ems-frontend/commit/a7d920d2c75dbceb742018f957edc74ec14f8cee))
+
+
+### Features
+
+* allow nested fields to be used in map layers fields selectors ([#2089](https://github.com/ReliefApplications/ems-frontend/issues/2089)) ([0bed298](https://github.com/ReliefApplications/ems-frontend/commit/0bed29848e9cd7b01dee606befe81f40c143f3a3))
+* can customize dashboards, by setting number of columns, size of rows, and margin ([#2055](https://github.com/ReliefApplications/ems-frontend/issues/2055)) ([fbdf27a](https://github.com/ReliefApplications/ems-frontend/commit/fbdf27a76ca183c095b95a54d52a9098f8d4db43))
+* can expand widgets horizontally ([#2080](https://github.com/ReliefApplications/ems-frontend/issues/2080)) ([5203e74](https://github.com/ReliefApplications/ems-frontend/commit/5203e7461340d30c3fec646d6f796121c9e61701))
+* can update grid options inside tabs widgets ([#2093](https://github.com/ReliefApplications/ems-frontend/issues/2093)) ([055152d](https://github.com/ReliefApplications/ems-frontend/commit/055152d5debc04fc39f1a699d0366d59fa15bde0))
+* user attributes now usable in form builder ([#2075](https://github.com/ReliefApplications/ems-frontend/issues/2075)) ([446b9b1](https://github.com/ReliefApplications/ems-frontend/commit/446b9b12e334bfff32f41866250154814aba148e))
+
 # [2.2.0-beta.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.8...v2.2.0-beta.9) (2023-11-20)
 
 

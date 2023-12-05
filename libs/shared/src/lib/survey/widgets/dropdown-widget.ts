@@ -18,7 +18,6 @@ export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
-  let currentSearchValue = '';
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
@@ -28,10 +27,13 @@ export const init = (
       question: QuestionDropdownModel,
       el: HTMLInputElement
     ): void => {
+      let currentSearchValue = '';
       const defaultDropdown = el.querySelector('sv-ng-dropdown-question');
       if (defaultDropdown) {
         el.removeChild(defaultDropdown);
       }
+      // Remove previous input if already rendered
+      el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();

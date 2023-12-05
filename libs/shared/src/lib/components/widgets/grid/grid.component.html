@@ -38,7 +38,6 @@
     class="min-h-0 flex-1"
     [defaultLayout]="layout?.display || {}"
     [settings]="gridSettings"
-    [admin]="isAdmin"
     (defaultLayoutReset)="onResetLayout()"
     (edit)="edit.emit($event)"
     [widget]="widget"

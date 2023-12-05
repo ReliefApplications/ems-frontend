@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter, map, pairwise } from 'rxjs';
-import { ApplicationService } from '../application/application.service';
-import { Application } from '../../models/application.model';
 import localForage from 'localforage';
 import {
   CompositeFilterDescriptor,
@@ -9,9 +7,23 @@ import {
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
 import { isNil, isEmpty, get, isEqual } from 'lodash';
+import { DashboardService } from '../dashboard/dashboard.service';
+import {
+  Dashboard,
+  EditDashboardMutationResponse,
+} from '../../models/dashboard.model';
+import { FilterPosition } from '../../components/dashboard-filter/enums/dashboard-filters.enum';
+import { Dialog } from '@angular/cdk/dialog';
+import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
+import { Apollo } from 'apollo-angular';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
+import { SurveyModel } from 'survey-core';
+import { FormBuilderService } from '../form-builder/form-builder.service';
+import { ApplicationService } from '../application/application.service';
 
 /**
- * Application context service
+ * Dashboard context service
  * Used to get filter value
  */
 @Injectable({
@@ -32,8 +44,26 @@ export class ContextService {
   public filterPosition = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
-  /** The current application id */
-  private currentApplicationId?: string | null = null;
+  /** Dashboard object */
+  public dashboard?: Dashboard;
+  /** Available filter positions */
+  public positionList = [
+    FilterPosition.LEFT,
+    FilterPosition.TOP,
+    FilterPosition.BOTTOM,
+    FilterPosition.RIGHT,
+  ] as const;
+  /** Has the translation for the tooltips of each button */
+  public FilterPositionTooltips: Record<FilterPosition, string> = {
+    [FilterPosition.LEFT]:
+      'components.application.dashboard.filter.filterPosition.left',
+    [FilterPosition.TOP]:
+      'components.application.dashboard.filter.filterPosition.top',
+    [FilterPosition.BOTTOM]:
+      'components.application.dashboard.filter.filterPosition.bottom',
+    [FilterPosition.RIGHT]:
+      'components.application.dashboard.filter.filterPosition.right',
+  };
 
   /** @returns filter value as observable */
   get filter$() {
@@ -66,7 +96,7 @@ export class ContextService {
 
   /** @returns key for storing position of filter */
   get positionKey(): string {
-    return this.currentApplicationId + ':filterPosition';
+    return this.dashboard?.id + ':filterPosition';
   }
 
   /** Used to update the state of whether the filter is enabled */
@@ -83,37 +113,57 @@ export class ContextService {
   }
 
   /**
-   * Application context service
+   * Dashboard context service
    *
+   * @param dashboardService Shared dashboard service
+   * @param dialog The Dialog service
+   * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
+   * @param formBuilderService Form builder service
    * @param applicationService Shared application service
    */
-  constructor(private applicationService: ApplicationService) {
-    this.applicationService.application$.subscribe(
-      (application: Application | null) => {
-        if (application) {
-          if (this.currentApplicationId !== application.id) {
-            this.currentApplicationId = application.id;
-            this.filter.next({});
-            this.filterStructure.next(application.contextualFilter);
-            localForage.getItem(this.positionKey).then((position) => {
-              if (position) {
-                this.filterPosition.next(position);
-              } else {
-                this.filterPosition.next(application.contextualFilterPosition);
-              }
-            });
+  constructor(
+    private dashboardService: DashboardService,
+    private dialog: Dialog,
+    private apollo: Apollo,
+    private snackBar: SnackbarService,
+    private translate: TranslateService,
+    private formBuilderService: FormBuilderService,
+    private applicationService: ApplicationService
+  ) {
+    this.dashboardService.dashboard$.subscribe(
+      (dashboard: Dashboard | null) => {
+        if (dashboard) {
+          if (this.dashboard?.id !== dashboard.id) {
+            this.dashboard = dashboard;
           }
+          this.filterStructure.next(dashboard.filter?.structure);
+          localForage.getItem(this.positionKey).then((position) => {
+            if (position) {
+              this.filterPosition.next(position);
+            } else {
+              this.filterPosition.next(
+                dashboard.filter?.position ?? FilterPosition.BOTTOM
+              );
+            }
+          });
         } else {
-          this.currentApplicationId = null;
-          this.filter.next({});
           this.filterStructure.next(null);
           this.filterPosition.next(null);
+          this.dashboard = undefined;
         }
       }
     );
     this.filterPosition$.subscribe((position: any) => {
-      if (position && this.currentApplicationId) {
+      if (position && this.dashboard?.id) {
         localForage.setItem(this.positionKey, position);
+      }
+    });
+    this.applicationService.application$.subscribe((value) => {
+      if (!value) {
+        // Reset filter when leaving application
+        this.filter.next({});
       }
     });
   }
@@ -176,5 +226,94 @@ export class ContextService {
       }
     }
     return undefined;
+  }
+
+  /**
+   * Opens the modal to edit filters
+   */
+  public onEditFilter() {
+    import(
+      '../../components/dashboard-filter/filter-builder-modal/filter-builder-modal.component'
+    ).then(({ FilterBuilderModalComponent }) => {
+      const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
+        data: { surveyStructure: this.filterStructure.getValue() },
+        autoFocus: false,
+      });
+      dialogRef.closed.subscribe((newStructure) => {
+        if (newStructure) {
+          this.filterStructure.next(newStructure);
+          this.initSurvey();
+          this.saveFilter();
+        }
+      });
+    });
+  }
+
+  /**
+   * Render the survey using the saved structure
+   *
+   * @returns survey model created from the structure
+   */
+  public initSurvey(): SurveyModel {
+    const surveyStructure = this.filterStructure.getValue();
+    const survey = this.formBuilderService.createSurvey(surveyStructure);
+    if (this.filter.getValue()) {
+      survey.data = this.filter.getValue();
+    }
+    return survey;
+  }
+
+  /** Saves the dashboard contextual filter using the editDashboard mutation */
+  private saveFilter(): void {
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD_FILTER,
+        variables: {
+          id: this.dashboard?.id,
+          filter: {
+            ...this.dashboard?.filter,
+            structure: this.filterStructure.getValue(),
+          },
+        },
+      })
+      .subscribe(({ errors, data }) => {
+        this.handleFilterMutationResponse({ data, errors });
+      });
+  }
+
+  /**
+   * Handle filter update mutation response depending of mutation type, for filter structure or position
+   *
+   * @param response Graphql mutation response
+   * @param response.data response data
+   * @param response.errors response errors
+   * @param defaultPosition filter position
+   */
+  private handleFilterMutationResponse(
+    response: { data: any; errors: any },
+    defaultPosition?: FilterPosition
+  ) {
+    const { data, errors } = response;
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant('common.filter.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      if (defaultPosition) {
+        this.filterPosition.next(defaultPosition);
+      } else {
+        this.filterStructure.next(data.editDashboard.filter?.structure);
+      }
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.filter.one').toLowerCase(),
+          value: data?.editDashboard.name ?? '',
+        })
+      );
+    }
   }
 }

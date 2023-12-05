@@ -15,6 +15,7 @@ import { DateModule } from '../../pipes/date/date.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 /**
  * RecordHistoryModule is a class used to manage all the modules and components
@@ -36,6 +37,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     FormWrapperModule,
     TooltipModule,
+    FormsModule,
   ],
   exports: [RecordHistoryComponent],
 })

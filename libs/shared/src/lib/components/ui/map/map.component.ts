@@ -9,6 +9,7 @@ import {
   EventEmitter,
   OnDestroy,
   Injector,
+  ElementRef,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -181,6 +182,7 @@ export class MapComponent
    * @param platform Platform
    * @param injector Injector containing all needed providers
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param el Element reference
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -193,7 +195,8 @@ export class MapComponent
     private contextService: ContextService,
     private platform: Platform,
     public injector: Injector,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    public el: ElementRef
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -201,61 +204,10 @@ export class MapComponent
     this.appliedDashboardFilters = this.contextService.filter.getValue();
   }
 
-  /** Set map listeners */
-  private setUpMapListeners() {
-    this.resizeObserver = new ResizeObserver(() => {
-      this.map.invalidateSize();
-    });
-    this.resizeObserver.observe(this.map.getContainer());
-
-    // Set event listener to log map bounds when zooming, moving and resizing screen.
-    this.map.on('moveend', () => {
-      // If searched address marker exists, if we move, the item should disappear
-      if (this.mapControlsService.addressMarker) {
-        this.map.removeLayer(this.mapControlsService.addressMarker);
-        this.mapControlsService.addressMarker = null;
-      }
-      this.mapEvent.emit({
-        type: MapEventType.MOVE_END,
-        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
-      });
-    });
-
-    this.map.on('zoomend', () => {
-      this.currentZoom = this.map.getZoom();
-      this.mapEvent.emit({
-        type: MapEventType.ZOOM_END,
-        content: { zoom: this.map.getZoom() },
-      });
-    });
-
-    // The scroll jump issue only happens on chrome client browser
-    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
-    if (this.platform.WEBKIT || this.platform.BLINK) {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      this.map.getContainer().focus = () => {};
-    }
-
-    // Listen for language change
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        // Update controls that use translation
-        if (event.lang !== this.mapControlsService.lang) {
-          this.mapControlsService.getMeasureControl(
-            this.map,
-            this.extractSettings().controls.measure
-          );
-          this.mapControlsService.getFullScreenControl(this.map);
-        }
-      });
-  }
-
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
     // Creates the map and adds all the controls we use.
     this.drawMap();
-
     this.setUpMapListeners();
 
     if (this.firstLoadEmitTimeoutListener) {
@@ -320,6 +272,56 @@ export class MapComponent
       clearTimeout(this.firstLoadEmitTimeoutListener);
     }
     this.resizeObserver?.disconnect();
+  }
+
+  /** Set map listeners */
+  private setUpMapListeners() {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.map.invalidateSize();
+    });
+    this.resizeObserver.observe(this.map.getContainer());
+
+    // Set event listener to log map bounds when zooming, moving and resizing screen.
+    this.map.on('moveend', () => {
+      // If searched address marker exists, if we move, the item should disappear
+      if (this.mapControlsService.addressMarker) {
+        this.map.removeLayer(this.mapControlsService.addressMarker);
+        this.mapControlsService.addressMarker = null;
+      }
+      this.mapEvent.emit({
+        type: MapEventType.MOVE_END,
+        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
+      });
+    });
+
+    this.map.on('zoomend', () => {
+      this.currentZoom = this.map.getZoom();
+      this.mapEvent.emit({
+        type: MapEventType.ZOOM_END,
+        content: { zoom: this.map.getZoom() },
+      });
+    });
+
+    // The scroll jump issue only happens on chrome client browser
+    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
+    if (this.platform.WEBKIT || this.platform.BLINK) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.map.getContainer().focus = () => {};
+    }
+
+    // Listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        // Update controls that use translation
+        if (event.lang !== this.mapControlsService.lang) {
+          this.mapControlsService.getMeasureControl(
+            this.map,
+            this.extractSettings().controls.measure
+          );
+          this.mapControlsService.getFullScreenControl(this.map);
+        }
+      });
   }
 
   /**
@@ -392,7 +394,9 @@ export class MapComponent
       // Create leaflet map
       this.map = L.map(
         this.shadowDomService.isShadowRoot
-          ? this.shadowDomService.currentHost.getElementById(this.mapId)
+          ? (this.shadowDomService.currentHost.getElementById(
+              this.mapId
+            ) as HTMLElement)
           : this.mapId,
         {
           zoomControl,
@@ -669,39 +673,43 @@ export class MapComponent
       leafletLayer?: L.Layer
     ): Promise<OverlayLayerTree> => {
       // Add to the layers array if not already added
-      if (!this.layers.find((l) => l.id === layer.id)) {
-        this.layers.push(layer);
-      }
+      if (this.layers.find((l) => l.id === layer.id)) return {} as any;
 
-      // Gets the leaflet layer. Either the one passed as parameter
-      // (from parent) or the one created by the layer itself (if no parent)
-      const featureLayer = leafletLayer ?? (await layer.getLayer());
-
-      // Adds the layer to the map if not already added
-      // note: group layers are of type L.LayerGroup
-      // so we should check if the layer is not already added
-      if (!this.map.hasLayer(featureLayer)) {
-        this.map.addLayer(featureLayer);
-      }
-
-      const children = await layer.getChildren();
+      this.layers.push(layer);
 
       if (layer.type === 'GroupLayer') {
+        const children = layer.getChildren();
+        const childrenPromisse = children.map((Childrenlayer) => {
+          return this.mapLayersService
+            .createLayersFromId(Childrenlayer, this.injector)
+            .then(async (sublayer) => {
+              if (sublayer.type === 'GroupLayer') {
+                const layer = await sublayer.getLayer();
+                return parseTreeNode(sublayer, layer);
+              } else return parseTreeNode(sublayer);
+            });
+        });
+
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
         return {
           label: layer.name,
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? await Promise.all(
-                  children.map(async (sublayer) => {
-                    const layer = await sublayer.getLayer();
-                    return parseTreeNode(sublayer, layer);
-                  })
-                )
+              ? await Promise.all(childrenPromisse)
               : undefined,
         };
       } else {
+        // Gets the leaflet layer. Either the one passed as parameter
+        // (from parent) or the one created by the layer itself (if no parent)
+        const featureLayer = leafletLayer ?? (await layer.getLayer());
+
+        // Adds the layer to the map if not already added
+        // note: group layers are of type L.LayerGroup
+        // so we should check if the layer is not already added
+        if (!this.map.hasLayer(featureLayer)) {
+          this.map.addLayer(featureLayer);
+        }
         // It is a node, it does not have any children but it displays a layer
         return {
           label: layer.name,
@@ -711,19 +719,18 @@ export class MapComponent
     };
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
-      this.mapLayersService
-        .createLayersFromIds(layerIds, this.injector)
-        .then((layers) => {
-          const layersTree: any[] = [];
-          // Add each layer to the tree
-          layers.forEach((layer) => {
-            layersTree.push(parseTreeNode(layer));
+      const layerPromises = layerIds.map((id) => {
+        return this.mapLayersService
+          .createLayersFromId(id, this.injector)
+          .then((layer) => {
+            return parseTreeNode(layer);
           });
-          Promise.all(layersTree).then((layersTree) => {
-            this.refreshLastUpdate();
-            resolve({ layers: layersTree });
-          });
-        });
+      });
+
+      Promise.all(layerPromises).then((layersTree) => {
+        this.refreshLastUpdate();
+        resolve({ layers: layersTree });
+      });
     });
   }
 
@@ -1042,6 +1049,8 @@ export class MapComponent
           (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
           if (!shouldDisplayStatuses[id]) {
             x.layer.remove();
+          } else {
+            this.map.addLayer(x.layer);
           }
         }
       }

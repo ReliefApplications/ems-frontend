@@ -34,6 +34,7 @@ import {
 import { debounceTime, takeUntil } from 'rxjs';
 import { get, isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
+import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -74,6 +75,7 @@ interface DialogData {
     SearchMenuModule,
     AlertModule,
     AbilityModule,
+    DashboardFilterSettingsComponent,
   ],
   templateUrl: './view-settings-modal.component.html',
   styleUrls: ['./view-settings-modal.component.scss'],
@@ -102,6 +104,8 @@ export class ViewSettingsModalComponent
   private step?: Step;
   /** Page object */
   private page?: Page;
+  /** Show dashboard filter */
+  public showFilter!: boolean;
 
   /**
    * Common settings of pages / steps.

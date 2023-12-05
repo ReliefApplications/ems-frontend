@@ -165,7 +165,7 @@ export class LineChartComponent implements OnChanges {
     const titleColor = get(this.title, 'color', undefined);
     const titleVisible = titleText !== '';
 
-    // log min an max
+    // Configure chartjs options based on widget settings
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
@@ -183,8 +183,11 @@ export class LineChartComponent implements OnChanges {
           grid: {
             display: get(this.options, 'grid.y.display', true),
           },
-          min: this.min - 0.1 * this.min,
-          max: this.max + 0.1 * this.max,
+          min: get(this.options, 'axes.y.min', undefined),
+          max: get(this.options, 'axes.y.max', undefined),
+          ticks: {
+            stepSize: get(this.options, 'axes.y.stepSize', undefined),
+          },
         },
       },
       plugins: {

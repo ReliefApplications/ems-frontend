@@ -76,8 +76,8 @@
     </ng-container>
   </div>
   <!-- Map -->
-  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
-    <ng-template #mapContainer></ng-template>
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0 rounded overflow-hidden">
+    <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
   </div>
 </div>
 
@@ -91,8 +91,6 @@
     {{ 'components.widget.settings.map.layers.add' | translate }}
   </ui-button>
 </ng-template>
-
-<ng-template #mapContainer></ng-template>
 
 <!-- Contextual menu for layer addition -->
 <ui-menu #layerMenu>

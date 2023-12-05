@@ -1,14 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Fields } from '../../../../../models/layer.model';
+import { DomPortal } from '@angular/cdk/portal';
 
 /**
  * Map layer fields settings component.
@@ -18,15 +11,12 @@ import { Fields } from '../../../../../models/layer.model';
   templateUrl: './layer-fields.component.html',
   styleUrls: ['./layer-fields.component.scss'],
 })
-export class LayerFieldsComponent implements AfterViewInit {
+export class LayerFieldsComponent {
+  /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
-
-  // Display of map
-  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
-  @ViewChild('mapContainer', { read: ViewContainerRef })
-  mapContainerRef!: ViewContainerRef;
-  @Input() destroyTab$!: Subject<boolean>;
-
+  /** Map dom portal */
+  @Input() mapPortal?: DomPortal;
+  /** Update field event emitter */
   @Output() updatedField: EventEmitter<Fields> = new EventEmitter();
 
   /**
@@ -39,21 +29,5 @@ export class LayerFieldsComponent implements AfterViewInit {
     if (event) {
       this.updatedField.emit({ ...field, label: event });
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.currentMapContainerRef
-      .pipe(takeUntil(this.destroyTab$))
-      .subscribe((viewContainerRef) => {
-        if (viewContainerRef) {
-          if (viewContainerRef !== this.mapContainerRef) {
-            const view = viewContainerRef.detach();
-            if (view) {
-              this.mapContainerRef.insert(view);
-              this.currentMapContainerRef.next(this.mapContainerRef);
-            }
-          }
-        }
-      });
   }
 }

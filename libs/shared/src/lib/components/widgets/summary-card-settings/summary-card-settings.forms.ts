@@ -8,6 +8,7 @@ import {
 import get from 'lodash/get';
 import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import isNil from 'lodash/isNil';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -115,12 +116,18 @@ export const templateRequiredWhenAddRecord = (
 const createCardForm = (value?: any) => {
   return fb.group({
     title: get<string>(value, 'title', 'New Card'),
+    referenceData: get<string | null>(value, 'referenceData', null),
     resource: get<string | null>(value, 'resource', null),
     template: get<string | null>(value, 'template', null),
     layout: get<string | null>(value, 'layout', null),
     aggregation: get<string | null>(value, 'aggregation', null),
     html: get<string | null>(value, 'html', null),
-    showDataSourceLink: get<boolean>(value, 'showDataSourceLink', false),
+    showDataSourceLink: [
+      {
+        value: get<boolean>(value, 'showDataSourceLink', false),
+        disabled: !isNil(get<string | null>(value, 'referenceData', null)),
+      },
+    ],
     useStyles: get<boolean>(value, 'useStyles', true),
     wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
     usePadding: get<boolean>(value, 'usePadding', true),

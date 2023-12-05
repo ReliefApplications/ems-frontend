@@ -29,4 +29,7 @@ export const environment: Environment = {
   availableLanguages: ['en'],
   authConfig,
   theme,
+  user: {
+    attributes: ['country', 'region', 'location'],
+  },
 };

@@ -164,7 +164,6 @@ export class CustomStyleComponent
 
   /** Save application custom css styling */
   async onSave(): Promise<void> {
-    // todo(beta): check
     this.loading = true;
     if (!this.applicationId) {
       throw new Error('No application id');
@@ -190,7 +189,6 @@ export class CustomStyleComponent
         type: '',
       })
     );
-    // todo(beta): check
     if (path) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectUpdated', {

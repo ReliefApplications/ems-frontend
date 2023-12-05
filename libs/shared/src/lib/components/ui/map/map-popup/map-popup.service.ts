@@ -234,21 +234,14 @@ export class MapPopupService {
       if (element.type === 'fields') {
         let imageElement = '';
         let contentGridTemplate = '';
-        // Extract properties and check that fields were selected in the popup info
-        for (const property in feature.properties) {
-          if (property && element.fields?.includes(property)) {
-            const field = popupInfo.fieldsInfo?.find(
-              (field) => field.name === property
-            );
-            if (!property.toLowerCase().includes('img')) {
-              if (field) {
-                contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
-                  field?.label || property
-                )} ${propertyValueTemplate(property)}`;
-              }
-            } else {
-              imageElement = imageTemplate(property);
-            }
+        for (const field of element.fields || []) {
+          const dataField = popupInfo.fieldsInfo?.find((x) => x.name === field);
+          if (!field.toLowerCase().includes('img')) {
+            contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
+              dataField?.label || field
+            )} ${propertyValueTemplate(field)}`;
+          } else {
+            imageElement = imageTemplate(field);
           }
         }
         template =

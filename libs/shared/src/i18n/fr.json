@@ -220,6 +220,7 @@
 			"none": "Aucune mise en page",
 			"one": "Mise en page"
 		},
+		"loading": "Chargement",
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
@@ -251,6 +252,7 @@
 				},
 				"upload": {
 					"error": "Un problème est survenu lors de l'import",
+					"maxFileSize": "La taille maximale du fichier est de {{size}} Mo.",
 					"processing": "Fichier en cours d'importation...",
 					"ready": "Fichier importé"
 				}
@@ -483,7 +485,7 @@
 				"addFields": "Ajouter des champs",
 				"custom": "Personnaliser",
 				"filter": "Filtrer",
-				"group": "Grouper",
+				"group": "Grouper & Accumulateur",
 				"sort": "Trier",
 				"unwind": "Dissocier"
 			},
@@ -491,9 +493,10 @@
 				"addFields": "Ajouter de nouveaux champs au document.",
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
-				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"group": "Regroupe les enregistrements en fonction des valeurs de champ et construit des accumulateurs personnalisés.",
+				"groupingRules": "Les règles de regroupement sont facultatives.",
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
-				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
 		},
@@ -1357,6 +1360,9 @@
 					"one": "{{count}} élément"
 				},
 				"layout": {
+					"button": {
+						"title": "Cela effacera la mise en page actuelle avec la mise en page par défaut"
+					},
 					"reset": "Réinitialiser la mise en page par défaut"
 				},
 				"loading": {
@@ -1433,6 +1439,7 @@
 						"title": "Séries"
 					},
 					"size": "Taille",
+					"stepSize": "Intervalle entre les marques",
 					"style": "Style",
 					"text": "Texte",
 					"title": {
@@ -1440,7 +1447,8 @@
 						"format": "Format"
 					},
 					"tooltip": {
-						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie.",
+						"stepSize": "Intervalle entre chaque marque de graduation sur l'axe, lorsque possible"
 					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -1517,6 +1525,9 @@
 						"create": "Ajouter un bouton",
 						"defaultName": "Bouton d'action",
 						"enable": "Activer",
+						"placeholder": {
+							"modifyValue": "Supprimer la valeur"
+						},
 						"title": "Bouton d'action rapide",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
@@ -2038,6 +2049,7 @@
 		},
 		"upload": {
 			"dropFilesHere": "Déposez les fichiers ici pour les importer",
+			"invalidMaxFileSize": "Taille du fichier trop grande.",
 			"select": "Sélectionner les fichiers..."
 		}
 	},
@@ -2085,6 +2097,7 @@
 				"text": "Texte du bouton",
 				"variant": "Variante de bouton"
 			},
+			"closable": "Peut être fermé",
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -2113,13 +2126,23 @@
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
 			"deactivateFiltering": "Désactiver le filtre",
+			"filterVariant": {
+				"title": "Variante de filtre",
+				"variantsOptions": {
+					"selectOrigin": "Sélectionner une variante de filtre",
+					"variant_default": "Défaut",
+					"variant_modern": "Moderne"
+				}
+			},
 			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
-				"dashboardFilter": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
-				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}.",
-				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
-				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+				"filter": {
+					"closable": "Lorsque la variante est moderne ou que l'application est utilisée comme élément web, un bouton s'affichera pour permettre à l'utilisateur de cacher le filtre",
+					"fields": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
+					"position": "Ne s'applique que lorsque la variant par défaut est active"
+				},
+				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}."
 			}
 		},
 		"form": {
@@ -2375,12 +2398,17 @@
 			"csv": "Fichier CSV d'entrée",
 			"fields": {
 				"fetch": "Récupérer les champs",
+				"help": "Les champs sont calculés en fonction des attributs du premier élément dans la réponse de l'API",
 				"missingConfig": "Impossible de récupérer les champs. Configuration manquante : {{config}}",
 				"noFields": "Aucun champ trouvé",
 				"title": "Champ"
 			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
+			"payload": {
+				"label": "Réponse de l'API",
+				"show": "Afficher la réponse de l'API"
+			},
 			"placeholder": {
 				"csv": "Insérer le CSV ici",
 				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"

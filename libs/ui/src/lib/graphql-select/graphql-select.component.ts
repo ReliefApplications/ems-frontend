@@ -29,11 +29,19 @@ import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
 
-/** Component for a dropdown with pagination */
+/**
+ * Component for a dropdown with pagination.
+ * Extended by:
+ * - resource select
+ * - reference data select
+ *
+ * BE AWARE: changes made on this component may affect extended ones!!!
+ */
 @Component({
   selector: 'ui-graphql-select',
   templateUrl: './graphql-select.component.html',
   styleUrls: ['./graphql-select.component.scss'],
+  template: '<div></div>',
 })
 export class GraphQLSelectComponent
   implements OnInit, OnChanges, OnDestroy, ControlValueAccessor
@@ -179,9 +187,9 @@ export class GraphQLSelectComponent
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     public elementRef: ElementRef<HTMLElement>,
-    private renderer: Renderer2,
-    private changeDetectorRef: ChangeDetectorRef,
-    private shadowDomService: ShadowDomService
+    protected renderer: Renderer2,
+    protected changeDetectorRef: ChangeDetectorRef,
+    protected shadowDomService: ShadowDomService
   ) {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;

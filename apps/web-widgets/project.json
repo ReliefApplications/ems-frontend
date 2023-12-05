@@ -38,7 +38,8 @@
           "esri-leaflet-vector",
           "leaflet",
           "leaflet.markercluster",
-          "jsonpath"
+          "jsonpath",
+          "to-json-schema"
         ]
       },
       "configurations": {

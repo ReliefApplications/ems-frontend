@@ -220,6 +220,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"loading": "******",
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
@@ -251,6 +252,7 @@
 				},
 				"upload": {
 					"error": "******",
+					"maxFileSize": "****** {{size}} ******",
 					"processing": "******",
 					"ready": "******"
 				}
@@ -492,6 +494,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"groupingRules": "******",
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
@@ -708,6 +711,15 @@
 			"fields": "******",
 			"subject": "******",
 			"withoutRecords": "******"
+		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "******"
+			},
+			"from": "******",
+			"subject": "******",
+			"title": "******",
+			"to": "******"
 		},
 		"form": {
 			"aggregation": {
@@ -1335,6 +1347,9 @@
 					"one": "{{count}} ******"
 				},
 				"layout": {
+					"button": {
+						"title": "******"
+					},
 					"reset": "******"
 				},
 				"loading": {
@@ -1411,6 +1426,7 @@
 						"title": "******"
 					},
 					"size": "******",
+					"stepSize": "******",
 					"style": "******",
 					"text": "******",
 					"title": {
@@ -1418,7 +1434,8 @@
 						"format": "******"
 					},
 					"tooltip": {
-						"palette": "******"
+						"palette": "******",
+						"stepSize": "******"
 					},
 					"type": "******",
 					"xAxis": "******",
@@ -1495,6 +1512,9 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
+						"placeholder": {
+							"modifyValue": "******"
+						},
 						"title": "******",
 						"tooltip": {
 							"attach": "******",
@@ -2016,6 +2036,7 @@
 		},
 		"upload": {
 			"dropFilesHere": "******",
+			"invalidMaxFileSize": "******",
 			"select": "******"
 		}
 	},
@@ -2062,6 +2083,7 @@
 				"text": "******",
 				"variant": "******"
 			},
+			"closable": "******",
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -2090,13 +2112,23 @@
 			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"filterVariant": {
+				"title": "******",
+				"variantsOptions": {
+					"selectOrigin": "******",
+					"variant_default": "******",
+					"variant_modern": "******"
+				}
+			},
 			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
-				"dashboardFilter": "******",
-				"historicalDate": "****** {{filter.<name>}} ******",
-				"useDashboardFilterEditor": "******",
-				"useDefaultEditor": "******"
+				"filter": {
+					"closable": "******",
+					"fields": "******",
+					"position": "******"
+				},
+				"historicalDate": "****** {{filter.<name>}} ******"
 			}
 		},
 		"form": {
@@ -2352,12 +2384,17 @@
 			"csv": "******",
 			"fields": {
 				"fetch": "******",
+				"help": "******",
 				"missingConfig": "****** {{config}}",
 				"noFields": "******",
 				"title": "******"
 			},
 			"graphQLFilter": "******",
 			"path": "******",
+			"payload": {
+				"label": "******",
+				"show": "******"
+			},
 			"placeholder": {
 				"csv": "******",
 				"graphQLFilter": "******"

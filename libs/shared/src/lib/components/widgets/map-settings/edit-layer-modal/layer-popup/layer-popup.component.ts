@@ -1,12 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import {
   PopupElement,
@@ -14,10 +7,11 @@ import {
 } from '../../../../../models/layer.model';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../../../../../models/layer.model';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
 import { EditorService } from '../../../../../services/editor/editor.service';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
+import { DomPortal } from '@angular/cdk/portal';
 
 /**
  * Map layer popup settings component.
@@ -29,24 +23,23 @@ import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.
 })
 export class LayerPopupComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
+  /** Current form group */
   @Input() formGroup!: FormGroup;
+  /** Map dom portal */
+  @Input() mapPortal?: DomPortal;
+  /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
-
+  /** Keys for editor */
   public keys: { text: string; value: string }[] = [];
+  /** Editor configuration */
   public editorConfig = INLINE_EDITOR_CONFIG;
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
     return this.formGroup.get('popupElements') as FormArray;
   }
-
-  // Display of map
-  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
-  @ViewChild('mapContainer', { read: ViewContainerRef })
-  mapContainerRef!: ViewContainerRef;
-  @Input() destroyTab$!: Subject<boolean>;
 
   /**
    * Creates an instance of LayerPopupComponent.
@@ -69,22 +62,6 @@ export class LayerPopupComponent
         this.keys
       );
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.currentMapContainerRef
-      .pipe(takeUntil(this.destroyTab$))
-      .subscribe((viewContainerRef) => {
-        if (viewContainerRef) {
-          if (viewContainerRef !== this.mapContainerRef) {
-            const view = viewContainerRef.detach();
-            if (view) {
-              this.mapContainerRef.insert(view);
-              this.currentMapContainerRef.next(this.mapContainerRef);
-            }
-          }
-        }
-      });
   }
 
   /**
