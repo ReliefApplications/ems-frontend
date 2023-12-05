@@ -60,7 +60,7 @@ export class AggregationBuilderComponent
     },
     lineNumbers: 'off',
   };
-
+  /** The text displayed in the aggregation result preview */
   public aggregationPreview = '';
 
   /**
@@ -153,11 +153,13 @@ export class AggregationBuilderComponent
             sourceFields: value.sourceFields,
           })
           .subscribe((result) => {
+            // Update the preview with the error message
             if (result.errors?.[0]) {
               this.aggregationPreview = result.errors[0].message;
               return;
             }
 
+            // Update the preview with the items from the aggregation
             this.aggregationPreview = JSON.stringify(
               result.data?.recordsAggregation?.items ?? [],
               null,
