@@ -181,6 +181,7 @@
   *ngIf="!empty"
   [disabled]="loading"
   [pageSize]="pageInfo.pageSize"
+  [pageIndex]="pageInfo.pageIndex"
   [totalItems]="pageInfo.length"
   [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
   (pageChange)="onPage($event)"
