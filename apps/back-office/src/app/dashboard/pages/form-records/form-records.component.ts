@@ -119,7 +119,6 @@ export class FormRecordsComponent
    */
   private getFormData(): void {
     this.loading = true;
-    this.cachedRecords = [];
 
     // get the records linked to the form
     this.recordsQuery = this.apollo.watchQuery<FormRecordsQueryResponse>({
@@ -412,7 +411,16 @@ export class FormRecordsComponent
   onSwitchView(e: any): void {
     e.stopPropagation();
     this.showDeletedRecords = !this.showDeletedRecords;
+    this.clearScreen();
     this.getFormData();
+  }
+
+  /**
+   * Clear cached records and reset pagination.
+   */
+  private clearScreen(): void {
+    this.cachedRecords = [];
+    this.pageInfo.pageIndex = 0;
   }
 
   /**
