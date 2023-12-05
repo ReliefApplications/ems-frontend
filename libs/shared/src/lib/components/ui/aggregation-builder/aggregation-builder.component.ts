@@ -45,6 +45,23 @@ export class AggregationBuilderComponent
   private mappingFields = new BehaviorSubject<any[]>([]);
   public mappingFields$!: Observable<any[]>;
 
+  /** Result of the current pipeline */
+  public pipelinePreview: any;
+  /** Whether or not to display the aggregation result preview */
+  public showPreview = false;
+  /** Monaco editor options */
+  readonly editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: false,
+    minimap: {
+      enabled: false,
+    },
+    lineNumbers: 'off',
+  };
+  /** The text displayed in the aggregation result preview */
+  public aggregationPreview = '';
+
   /**
    * Getter for the pipeline of the aggregation form
    *
