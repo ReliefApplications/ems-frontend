@@ -24,7 +24,7 @@
       variant="primary"
       icon="open_in_new"
       (click)="openDataSource()"
-      *ngIf="settings.showDataSourceLink || false"
+      *ngIf="showDataSourceButton"
     >
       {{ 'components.widget.summaryCard.dataSource' | translate }}
     </ui-button>
