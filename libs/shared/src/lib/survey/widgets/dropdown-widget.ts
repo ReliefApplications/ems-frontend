@@ -32,6 +32,8 @@ export const init = (
       if (defaultDropdown) {
         el.removeChild(defaultDropdown);
       }
+      // Remove previous input if already rendered
+      el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
