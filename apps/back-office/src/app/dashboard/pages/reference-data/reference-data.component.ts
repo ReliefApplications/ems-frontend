@@ -1,4 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -36,6 +44,8 @@ import { cloneDeep, get } from 'lodash';
 import { SnackbarService, TextareaComponent } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
 import { Dialog } from '@angular/cdk/dialog';
+import { DOCUMENT } from '@angular/common';
+import { GridComponent } from '@progress/kendo-angular-grid';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -54,7 +64,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 })
 export class ReferenceDataComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   // === DATA ===
   public loading = true;
@@ -95,6 +105,7 @@ export class ReferenceDataComponent
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: TextareaComponent;
+  @ViewChild(GridComponent) kendoGrid!: GridComponent;
 
   // === MONACO EDITOR ===
   public editorOptions = {
@@ -102,6 +113,9 @@ export class ReferenceDataComponent
     language: 'graphql',
     formatOnPaste: true,
   };
+
+  /** Outside click listener for inline edition */
+  private inlineEditionOutsideClickListener!: any;
 
   /** @returns the graphqlQuery form control */
   get queryControl() {
@@ -138,6 +152,8 @@ export class ReferenceDataComponent
    * @param refDataService Reference data service
    * @param dialog dialog
    * @param fb form builder
+   * @param renderer Angular Renderer2 service
+   * @param document Current document token
    */
   constructor(
     private apollo: Apollo,
@@ -148,7 +164,9 @@ export class ReferenceDataComponent
     private breadcrumbService: BreadcrumbService,
     private refDataService: ReferenceDataService,
     public dialog: Dialog,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -236,6 +254,27 @@ export class ReferenceDataComponent
    * Create the Reference data query, and subscribe to the query changes.
    */
   ngOnInit(): void {
+    this.inlineEditionOutsideClickListener = this.renderer.listen(
+      this.document,
+      'click',
+      (event) => {
+        // If there is a current inline edition on going, trigger check
+        if (this.currEditingField) {
+          const gridRows = this.kendoGrid.ariaRoot.nativeElement
+            .querySelector('kendo-grid-list')
+            .querySelectorAll('tr');
+          // If current inline edition row does not contain the target element
+          if (
+            !gridRows[
+              this.inlineEditionForm.get('index')?.value as number
+            ]?.contains(event.target)
+          ) {
+            // Cancel edition
+            this.currEditingField = null;
+          }
+        }
+      }
+    );
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
@@ -748,5 +787,12 @@ export class ReferenceDataComponent
 
     // Start the edition
     this.toggleInlineEditor(this.valueFields[this.valueFields.length - 1]);
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.inlineEditionOutsideClickListener) {
+      this.inlineEditionOutsideClickListener();
+    }
   }
 }

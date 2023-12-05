@@ -155,8 +155,8 @@
           [resizable]="false"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <ng-container *ngIf="currEditingField !== dataItem"
-              ><button
+            <div [ngClass]="{ hidden: currEditingField === dataItem }">
+              <button
                 kendoButton
                 class="text-center"
                 icon="edit"
@@ -172,9 +172,9 @@
                 (click)="onRemoveField(dataItem)"
                 [uiTooltip]="'common.remove' | translate"
               ></button>
-            </ng-container>
-            <ng-container *ngIf="currEditingField === dataItem"
-              ><button
+            </div>
+            <div [ngClass]="{ hidden: currEditingField !== dataItem }">
+              <button
                 kendoButton
                 class="text-center"
                 icon="save"
@@ -190,7 +190,7 @@
                 (click)="currEditingField = null"
                 [uiTooltip]="'common.cancel' | translate"
               ></button>
-            </ng-container>
+            </div>
           </ng-template>
         </kendo-grid-column>
         <ng-template kendoGridNoRecordsTemplate>
