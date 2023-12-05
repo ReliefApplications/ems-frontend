@@ -19,6 +19,8 @@ import getNumberOfMembers from './getNumberOfMembers';
 import formatDate from './formatDate';
 import getLoadedRecord from './getLoadedRecord';
 import getListByProp from './getListByProp';
+import filter from './filter';
+import sum from './sum';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -41,6 +43,8 @@ export const functions = [
   { fn: formatDate, name: 'formatDate' },
   { fn: getLoadedRecord, name: 'getLoadedRecord' },
   { fn: getListByProp, name: 'getListByProp' },
+  { fn: filter, name: 'filter' },
+  { fn: sum, name: 'sum' },
 ];
 
 /** Generators for each async custom function available  */
