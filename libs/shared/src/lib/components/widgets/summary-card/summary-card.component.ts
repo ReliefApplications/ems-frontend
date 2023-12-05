@@ -181,6 +181,16 @@ export class SummaryCardComponent
     return !isNil(this.settings.card?.referenceData);
   }
 
+  /** @returns should show data source button */
+  get showDataSourceButton() {
+    return (
+      ((this.settings.card?.showDataSourceLink &&
+        this.displayMode === 'cards') ||
+        false) &&
+      !this.useReferenceData
+    );
+  }
+
   /**
    * Get the summary card pdf name
    *

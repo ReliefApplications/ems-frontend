@@ -1347,6 +1347,9 @@
 					"one": "{{count}} item"
 				},
 				"layout": {
+					"button": {
+						"title": "This will erase current layout with default layout"
+					},
 					"reset": "Reset default Layout"
 				},
 				"loading": {
