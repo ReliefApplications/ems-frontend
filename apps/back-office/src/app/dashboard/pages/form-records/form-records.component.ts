@@ -119,6 +119,7 @@ export class FormRecordsComponent
    */
   private getFormData(): void {
     this.loading = true;
+    this.cachedRecords = [];
 
     // get the records linked to the form
     this.recordsQuery = this.apollo.watchQuery<FormRecordsQueryResponse>({
