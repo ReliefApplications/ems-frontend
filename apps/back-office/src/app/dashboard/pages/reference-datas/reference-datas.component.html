@@ -42,7 +42,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="type">
-        <th uiTableHeaderSort="type" uiCellHeader *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'pages.referenceData.type' | translate }}
           </span>
@@ -52,7 +52,6 @@
 
       <ng-container cdkColumnDef="apiConfiguration">
         <th
-          uiTableHeaderSort="apiConfiguration"
           uiCellHeader
           *cdkHeaderCellDef
           scope="col"
@@ -68,7 +67,6 @@
 
       <ng-container cdkColumnDef="modifiedAt">
         <th
-          uiTableHeaderSort="modifiedAt"
           uiCellHeader
           *cdkHeaderCellDef
           scope="col"
