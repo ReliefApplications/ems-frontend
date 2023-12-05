@@ -5,7 +5,6 @@ import {
   Injector,
   NgModule,
 } from '@angular/core';
-import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
 import {
@@ -13,17 +12,8 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { AppComponent } from './app.component';
-import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
-import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
-import { DashboardWidgetComponent } from './widgets/dashboard-widget/dashboard-widget.component';
-import { DashboardWidgetModule } from './widgets/dashboard-widget/dashboard-widget.module';
-import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
-import { WorkflowWidgetComponent } from './widgets/workflow-widget/workflow-widget.component';
-import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
-import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
   TranslateLoader,
@@ -33,17 +23,42 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
+  AppAbility,
   KendoTranslationService,
-  SafeAuthInterceptorService,
-} from '@oort-front/safe';
+  AuthInterceptorService,
+  FormService,
+  DatePipe,
+} from '@oort-front/shared';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
-import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
+import { PureAbility } from '@casl/ability';
+// Config
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
+import { createCustomElement } from '@angular/elements';
+import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
+import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
+import { APP_BASE_HREF, LOCATION_INITIALIZED } from '@angular/common';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { AppWidgetComponent } from './widgets/app-widget/app-widget.component';
+import { ApplicationWidgetRoutingModule } from './widgets/app-widget/app-widget-routing.module';
+import { AppWidgetModule } from './widgets/app-widget/app-widget.module';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import get from 'lodash/get';
+
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 /**
  * Initialize authentication in the platform.
@@ -51,14 +66,51 @@ import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } fro
  * Use oAuth
  *
  * @param oauth OAuth Service
- * @returns oAuth configuration
+ * @param translate Translate service
+ * @param injector Injector
+ * @param {FormService} formService Form service containing initialize for survey features
+ * @returns oAuth configuration and translation content loaded
  */
-const initializeAuth =
-  (oauth: OAuthService): any =>
+const initializeAuthAndTranslations =
+  (
+    oauth: OAuthService,
+    translate: TranslateService,
+    injector: Injector,
+    formService: FormService
+  ): (() => Promise<any>) =>
   () => {
+    // todo: check if used or not
     oauth.configure(environment.authConfig);
+    formService.initialize();
+    // Add fa icon font to check in the application
+    library.add(fas, fab);
+    // Make sure that all translations are available before the app initializes
+    return new Promise<any>((resolve: any) => {
+      const locationInitialized = injector.get(
+        LOCATION_INITIALIZED,
+        Promise.resolve(null)
+      );
+      locationInitialized.then(() => {
+        translate.addLangs(environment.availableLanguages);
+        translate.setDefaultLang(environment.availableLanguages[0]);
+        translate.use(environment.availableLanguages[0]).subscribe({
+          next: () => {
+            console.log(
+              `Successfully initialized '${environment.availableLanguages[0]}' language.'`
+            );
+          },
+          error: () => {
+            console.error(
+              `Problem with '${environment.availableLanguages[0]}' language initialization.'`
+            );
+          },
+          complete: () => {
+            resolve(null);
+          },
+        });
+      });
+    });
   };
-
 /**
  * Sets up translator.
  *
@@ -66,7 +118,7 @@ const initializeAuth =
  * @returns Translator.
  */
 export const httpTranslateLoader = (http: HttpClient) =>
-  new TranslateHttpLoader(http);
+  new TranslateHttpLoader(http, environment.i18nUrl, '.json');
 
 /**
  * Provides custom overlay to inject modals / snackbars in shadow root.
@@ -75,19 +127,30 @@ export const httpTranslateLoader = (http: HttpClient) =>
  * @returns custom Overlay container.
  */
 const provideOverlay = (_platform: Platform): AppOverlayContainer =>
-  new AppOverlayContainer(_platform);
+  new AppOverlayContainer(_platform, document);
+
+/**
+ * Get base href from window configuration.
+ *
+ * @returns dynamic base href
+ */
+export const getBaseHref = () => {
+  // Your logic to determine the base href dynamically
+  // For example, you might get it from a global variable set by the embedding platform
+  const dynamicBaseHref: string = get(window, 'baseHref') || '/';
+  return dynamicBaseHref;
+};
 
 /**
  * Web Widget project root module.
  */
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    RouterModule.forRoot([]),
     OAuthModule.forRoot(),
+    DialogCdkModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -96,11 +159,11 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       },
     }),
     OverlayModule,
-    DashboardWidgetModule,
     FormWidgetModule,
-    WorkflowWidgetModule,
-    ApplicationWidgetModule,
+    AppWidgetModule,
+    ApplicationWidgetRoutingModule,
     GraphQLModule,
+    DateInputsModule,
   ],
   providers: [
     {
@@ -109,22 +172,9 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeAuth,
+      useFactory: initializeAuthAndTranslations,
       multi: true,
-      deps: [OAuthService],
-    },
-    {
-      provide: POPUP_CONTAINER,
-      useFactory: () =>
-        // return the container ElementRef, where the popup will be injected
-        ({ nativeElement: document.body } as ElementRef),
-    },
-    // Default parameters of material tooltip
-    {
-      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
-      useValue: {
-        showDelay: 500,
-      },
+      deps: [OAuthService, TranslateService, Injector, FormService],
     },
     {
       provide: OverlayContainer,
@@ -141,9 +191,29 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
+    {
+      provide: AppAbility,
+      useValue: new AppAbility(),
+    },
+    {
+      provide: PureAbility,
+      useExisting: AppAbility,
+    },
+    {
+      provide: POPUP_CONTAINER,
+      useFactory: () => {
+        return {
+          nativeElement: document.body,
+        } as ElementRef;
+      },
+    },
+    PopupService,
+    ResizeBatchService,
+    DatePipe,
+    { provide: APP_BASE_HREF, useFactory: getBaseHref },
   ],
 })
 export class AppModule implements DoBootstrap {
@@ -151,37 +221,24 @@ export class AppModule implements DoBootstrap {
    * Main project root module
    *
    * @param injector Angular injector
-   * @param translate Angular translate service
    */
-  constructor(private injector: Injector, private translate: TranslateService) {
-    this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang(environment.availableLanguages[0]);
-  }
+  constructor(private injector: Injector) {}
 
   /**
    * Bootstrap the project.
    * Create the web elements.
    */
   ngDoBootstrap(): void {
-    // Dashboard
-    const dashboard = createCustomElement(DashboardWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('dashboard-widget', dashboard);
     // Form
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
-    customElements.define('form-widget', form);
-    // Workflow
-    const workflow = createCustomElement(WorkflowWidgetComponent, {
+    customElements.define('apb-form', form);
+
+    // Form
+    const application = createCustomElement(AppWidgetComponent, {
       injector: this.injector,
     });
-    customElements.define('workflow-widget', workflow);
-    // Application
-    const application = createCustomElement(ApplicationWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('application-widget', application);
+    customElements.define('apb-application', application);
   }
 }

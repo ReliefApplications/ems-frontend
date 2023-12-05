@@ -2,24 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Layout,
-  SafeGridLayoutService,
-  SafeConfirmService,
+  GridLayoutService,
+  ConfirmService,
   Resource,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+  ResourceQueryResponse,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../utils/update-queries';
-import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_LAYOUTS,
-} from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import { GET_RESOURCE_LAYOUTS } from './graphql/queries';
 
 /**
  * Layouts tab of resource page
@@ -30,7 +28,7 @@ import { UIPageChangeEvent } from '@oort-front/ui';
   styleUrls: ['./layouts-tab.component.scss'],
 })
 export class LayoutsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public resource!: Resource;
@@ -40,7 +38,7 @@ export class LayoutsTabComponent
   public displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
   // ==== PAGINATION ====
-  private layoutsQuery!: QueryRef<GetResourceByIdQueryResponse>;
+  private layoutsQuery!: QueryRef<ResourceQueryResponse>;
   private cachedLayouts: Layout[] = [];
   public pageInfo = {
     pageIndex: 0,
@@ -66,8 +64,8 @@ export class LayoutsTabComponent
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
-    private gridLayoutService: SafeGridLayoutService,
-    private confirmService: SafeConfirmService,
+    private gridLayoutService: GridLayoutService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -77,10 +75,10 @@ export class LayoutsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.layoutsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+    this.layoutsQuery = this.apollo.watchQuery<ResourceQueryResponse>({
       query: GET_RESOURCE_LAYOUTS,
       variables: {
-        id: this.resource.id,
+        id: this.resource?.id,
         first: this.pageInfo.pageSize,
         afterCursor: this.pageInfo.endCursor,
       },
@@ -97,30 +95,16 @@ export class LayoutsTabComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedLayouts.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedLayouts.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchLayouts();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedLayouts
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.layouts = cachedData;
     } else {
-      this.layouts = this.cachedLayouts.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchLayouts();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -134,7 +118,7 @@ export class LayoutsTabComponent
       first: this.pageInfo.pageSize,
       afterCursor: this.pageInfo.endCursor,
     };
-    const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
+    const cachedValues: ResourceQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCE_LAYOUTS,
       variables
@@ -151,11 +135,31 @@ export class LayoutsTabComponent
   }
 
   /**
+   * Handle action from the data list presentation component
+   *
+   * @param action action containing action type and layout item if exists
+   * @param action.type type of action, add, edit, delete
+   * @param action.item layout item for the given action type
+   */
+  handleAction(action: {
+    type: 'add' | 'edit' | 'delete';
+    item?: Layout | null;
+  }) {
+    if (action.type === 'add') {
+      this.onAddLayout();
+    } else if (action.type === 'edit') {
+      this.onEditLayout(action.item as Layout);
+    } else if (action.type === 'delete') {
+      this.onDeleteLayout(action.item as Layout);
+    }
+  }
+
+  /**
    * Adds a new layout for the resource.
    */
   async onAddLayout(): Promise<void> {
-    const { SafeEditLayoutModalComponent } = await import('@oort-front/safe');
-    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
+    const { EditLayoutModalComponent } = await import('@oort-front/shared');
+    const dialogRef = this.dialog.open(EditLayoutModalComponent, {
       disableClose: true,
       data: {
         queryName: this.resource.queryName,
@@ -168,6 +172,7 @@ export class LayoutsTabComponent
           .subscribe(({ data }: any) => {
             if (data.addLayout) {
               this.layouts = [...this.layouts, data?.addLayout];
+              this.pageInfo.length += 1;
             }
           });
       }
@@ -180,8 +185,8 @@ export class LayoutsTabComponent
    * @param layout Layout to edit
    */
   async onEditLayout(layout: Layout): Promise<void> {
-    const { SafeEditLayoutModalComponent } = await import('@oort-front/safe');
-    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
+    const { EditLayoutModalComponent } = await import('@oort-front/shared');
+    const dialogRef = this.dialog.open(EditLayoutModalComponent, {
       disableClose: true,
       data: {
         layout,
@@ -234,6 +239,7 @@ export class LayoutsTabComponent
               this.layouts = this.layouts.filter(
                 (x: any) => x.id !== layout.id
               );
+              this.pageInfo.length -= 1;
             }
           });
       }
@@ -246,7 +252,7 @@ export class LayoutsTabComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
+  private updateValues(data: ResourceQueryResponse, loading: boolean) {
     if (data.resource) {
       const mappedValues =
         data.resource.layouts?.edges.map((x) => x.node) ?? [];

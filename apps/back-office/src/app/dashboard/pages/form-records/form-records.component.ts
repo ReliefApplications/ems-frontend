@@ -1,36 +1,34 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { GET_FORM_RECORDS } from './graphql/queries';
 import {
-  GetFormByIdQueryResponse,
-  GetFormRecordsQueryResponse,
-  GetRecordDetailsQueryResponse,
-  GET_FORM_BY_ID,
-  GET_FORM_RECORDS,
-  GET_RECORD_DETAILS,
-} from './graphql/queries';
-import {
-  EditRecordMutationResponse,
   EDIT_RECORD,
-  DeleteRecordMutationResponse,
   DELETE_RECORD,
-  RestoreRecordMutationResponse,
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  SafeLayoutService,
-  SafeConfirmService,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-  SafeDownloadService,
+  UnsubscribeComponent,
   Record,
-} from '@oort-front/safe';
+  FormRecordsQueryResponse,
+  DeleteRecordMutationResponse,
+  EditRecordMutationResponse,
+  RestoreRecordMutationResponse,
+  BreadcrumbService,
+  ConfirmService,
+  DownloadService,
+} from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
-import { Metadata } from '@oort-front/safe';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import { Metadata } from '@oort-front/shared';
+import {
+  SnackbarService,
+  UIPageChangeEvent,
+  UILayoutService,
+} from '@oort-front/ui';
+import { GraphQLError } from 'graphql';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -47,13 +45,13 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   styleUrls: ['./form-records.component.scss'],
 })
 export class FormRecordsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
   public loading = true;
   public loadingMore = false;
-  private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
+  private recordsQuery!: QueryRef<FormRecordsQueryResponse>;
   public id = '';
   public form: any;
   displayedColumns: string[] = [];
@@ -70,7 +68,7 @@ export class FormRecordsComponent
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
-    endCursor: '',
+    endCursor: null as string | null,
   };
 
   /** @returns True if the layouts tab is empty */
@@ -87,7 +85,7 @@ export class FormRecordsComponent
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param downloadService Shared download service
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
@@ -97,13 +95,13 @@ export class FormRecordsComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService,
+    private downloadService: DownloadService,
+    private layoutService: UILayoutService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
-    private confirmService: SafeConfirmService
+    private breadcrumbService: BreadcrumbService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -123,7 +121,7 @@ export class FormRecordsComponent
     this.loading = true;
 
     // get the records linked to the form
-    this.recordsQuery = this.apollo.watchQuery<GetFormRecordsQueryResponse>({
+    this.recordsQuery = this.apollo.watchQuery<FormRecordsQueryResponse>({
       query: GET_FORM_RECORDS,
       variables: {
         id: this.id,
@@ -135,7 +133,7 @@ export class FormRecordsComponent
 
     this.recordsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
+      .subscribe(({ errors, data, loading }) => {
         this.cachedRecords.push(
           ...data.form.records.edges.map((x: any) => x.node)
         );
@@ -146,29 +144,12 @@ export class FormRecordsComponent
         this.pageInfo.length = data.form.records.totalCount;
         this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
         this.loadingMore = false;
-      });
 
-    // get the form detail
-    this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.id,
-          display: true,
-          showDeletedRecords: this.showDeletedRecords,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(({ errors, data, loading }) => {
-        if (data.form) {
-          this.form = data.form;
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          this.setDisplayedColumns();
-          this.loading = loading;
-        }
+        this.form = data.form;
+        this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
+        this.setDisplayedColumns();
+        this.loading = loading;
+
         if (errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
@@ -276,25 +257,14 @@ export class FormRecordsComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.record.one'),
-              })
-            );
-            this.dataSource = this.dataSource.filter((x) => x.id !== id);
-            if (id === this.historyId) {
-              this.layoutService.setRightSidenav(null);
-            }
-          }
+          this.handleRecordMutationResponse(
+            errors,
+            {
+              success: 'common.notifications.objectDeleted',
+              error: 'common.notifications.objectNotDeleted',
+            },
+            id
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -306,7 +276,7 @@ export class FormRecordsComponent
    * Open confirm modal to ask user for reversion of data
    *
    * @param record record to update
-   * @param version version to applu
+   * @param version version to apply
    */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
@@ -358,31 +328,21 @@ export class FormRecordsComponent
   }
 
   /**
-   * Open the history of the record on the right side of the screen.
+   * Opens the history of the record on the right side of the screen.
    *
-   * @param id id of version
+   * @param item item to get history of
    */
-  public onViewHistory(id: string): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id,
+  public onViewHistory(item: any): void {
+    import('@oort-front/shared').then(({ RecordHistoryComponent }) => {
+      this.historyId = item.id;
+      this.layoutService.setRightSidenav({
+        component: RecordHistoryComponent,
+        inputs: {
+          id: item.id,
+          revert: (version: any) => this.confirmRevertDialog(item, version),
         },
-      })
-      .subscribe(({ data }) => {
-        this.historyId = id;
-        import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
-          this.layoutService.setRightSidenav({
-            component: SafeRecordHistoryComponent,
-            inputs: {
-              id: data.record.id,
-              revert: (version: any) =>
-                this.confirmRevertDialog(data.record, version),
-            },
-          });
-        });
       });
+    });
   }
 
   /**
@@ -418,16 +378,6 @@ export class FormRecordsComponent
   }
 
   /**
-   * Take file from upload event and call upload method.
-   *
-   * @param event Upload event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
    * Upload file and indicate status of request.
    *
    * @param file file to upload.
@@ -446,8 +396,8 @@ export class FormRecordsComponent
           this.showUpload = false;
         }
       },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
+      error: () => {
+        // The error message has already been handled in DownloadService
         this.showUpload = false;
       },
     });
@@ -481,29 +431,53 @@ export class FormRecordsComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotRestored', {
-                type: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectRestored', {
-                type: this.translate.instant('common.record.one'),
-              })
-            );
-            this.dataSource = this.dataSource.filter((x) => x.id !== id);
-            if (id === this.historyId) {
-              this.layoutService.setRightSidenav(null);
-            }
-          }
+          this.handleRecordMutationResponse(
+            errors,
+            {
+              success: 'common.notifications.objectRestored',
+              error: 'common.notifications.objectNotRestored',
+            },
+            id
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handle response from record mutation
+   *
+   * @param {GraphQLError[]} errors mutation errors if any
+   * @param messageKeys containing keys for success and error response messages
+   * @param {string} messageKeys.success success key response messages
+   * @param {string} messageKeys.error error key response messages
+   * @param {string} recordId mutated record id
+   */
+  private handleRecordMutationResponse(
+    errors: readonly GraphQLError[] | undefined,
+    messageKeys: { success: string; error: string },
+    recordId: string
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.error, {
+          value: this.translate.instant('common.record.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.success, {
+          value: this.translate.instant('common.record.one'),
+        })
+      );
+      this.dataSource = this.dataSource.filter((x) => x.id !== recordId);
+      if (recordId === this.historyId) {
+        this.layoutService.setRightSidenav(null);
+      }
+    }
   }
 }

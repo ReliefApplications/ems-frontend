@@ -35,7 +35,10 @@ export class FormWrapperDirective
    * Will the form field be wrapped ?
    */
   @Input() outline = false;
-
+  /**
+   * Set default margin for separation in the current form field
+   */
+  @Input() defaultMargin = true;
   // === GET THE ELEMENTS ON WHICH SUFFIX/PREFIX ARE APPLIED ===
   @ContentChildren(SuffixDirective)
   private allSuffixDirectives: QueryList<SuffixDirective> = new QueryList();
@@ -83,7 +86,7 @@ export class FormWrapperDirective
     'p-0',
     'text-gray-900',
     'placeholder:text-gray-400',
-    'sm:text-sm',
+    'text-sm',
     'sm:leading-6',
     'focus:ring-0',
     'focus:ring-inset',
@@ -100,7 +103,7 @@ export class FormWrapperDirective
     'text-gray-900',
     'placeholder:text-gray-400',
     'focus:ring-0',
-    'sm:text-sm',
+    'text-sm',
     'sm:leading-6',
   ] as const;
 
@@ -160,6 +163,7 @@ export class FormWrapperDirective
 
   private destroy$ = new Subject<void>();
   elementWrapped = new BehaviorSubject<boolean>(false);
+
   /**
    * Constructor including a ref to the element on which the directive is applied
    * and the renderer.
@@ -167,12 +171,13 @@ export class FormWrapperDirective
    * @param renderer renderer
    * @param elementRef references to the element on which the directive is applied
    */
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {
-    this.renderer.addClass(this.elementRef.nativeElement, 'mb-4');
-  }
+  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
 
   //We need to use afterViewInit for select menu, otherwise removing class does not work
   ngAfterViewInit() {
+    if (this.defaultMargin) {
+      this.renderer.addClass(this.elementRef.nativeElement, 'mb-4');
+    }
     // Do the same with selectMenu
     if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
       if (this.currentGraphQLSelectComponent) {
@@ -294,6 +299,7 @@ export class FormWrapperDirective
     if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
       this.renderer.removeClass(this.beyondLabelContainer, 'px-2');
       this.renderer.addClass(this.beyondLabelContainer, 'pl-2');
+      this.renderer.addClass(this.beyondLabelContainer, 'bg-white');
     }
 
     if (this.currentInputElement && !this.dateWrapperElement) {

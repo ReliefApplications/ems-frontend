@@ -2,8 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { SafeAccessModule } from '@oort-front/safe';
-import { GraphQLSelectModule, IconModule, SpinnerModule } from '@oort-front/ui';
+import { AccessModule } from '@oort-front/shared';
+import {
+  AlertModule,
+  GraphQLSelectModule,
+  IconModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { GridModule } from '@progress/kendo-angular-grid';
@@ -14,8 +19,12 @@ import {
   SelectMenuModule,
   TextareaModule,
   FormWrapperModule,
+  FixedWrapperModule,
+  DialogModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 /**
  * Reference Data page module.
@@ -25,7 +34,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
   imports: [
     CommonModule,
     ReferenceDataRoutingModule,
-    SafeAccessModule,
+    AccessModule,
     SpinnerModule,
     ReactiveFormsModule,
     TranslateModule,
@@ -39,7 +48,12 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     SelectMenuModule,
     FormWrapperModule,
     MonacoEditorModule,
+    FixedWrapperModule,
     FormsModule,
+    DialogModule,
+    AlertModule,
+    InputsModule,
+    DropDownsModule,
   ],
 })
 export class ReferenceDataModule {}

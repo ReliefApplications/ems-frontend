@@ -1,0 +1,52 @@
+<div *ngIf="filteredPages.length">
+  <h2>{{ 'common.form.few' | translate }}</h2>
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table cdk-table uiTableWrapper [dataSource]="filteredPages">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'common.name' | translate }}
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
+            {{ element.name }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              [icon]="
+                accessiblePages.includes(element.id)
+                  ? 'visibility'
+                  : 'visibility_off'
+              "
+              [variant]="
+                accessiblePages.includes(element.id) ? 'primary' : 'grey'
+              "
+              (click)="onEditAccess(element)"
+              [disabled]="loading"
+              [uiTooltip]="
+                (accessiblePages.includes(element.id)
+                  ? 'components.role.tooltip.hideFeature'
+                  : 'components.role.tooltip.showFeature'
+                ) | translate : { page: element.name }
+              "
+            >
+            </ui-button>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+      </table>
+    </div>
+  </div>
+</div>

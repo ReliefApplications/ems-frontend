@@ -2,20 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { IconModule } from '@oort-front/ui';
-import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeDateModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
 import { LayoutsTabComponent } from './layouts-tab.component';
-import {
-  MenuModule,
-  ButtonModule,
-  TableModule,
-  PaginatorModule,
-} from '@oort-front/ui';
+import { PaginatorModule } from '@oort-front/ui';
+import { DataPresentationListComponent } from '../components/data-presentation-list/data-presentation-list.component';
 
 /**
  * Layouts tab of resource page
@@ -25,16 +14,9 @@ import {
   imports: [
     CommonModule,
     LayoutsTabRoutingModule,
-    IconModule,
-    MenuModule,
-    TranslateModule,
     OverlayModule,
-    SafeDateModule,
-    SafeSkeletonTableModule,
     PaginatorModule,
-    SafeEmptyModule,
-    ButtonModule,
-    TableModule,
+    DataPresentationListComponent,
   ],
 })
 export class LayoutsTabModule {}

@@ -2,19 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PullJobsRoutingModule } from './pull-jobs-routing.module';
 import { PullJobsComponent } from './pull-jobs.component';
-import { IconModule } from '@oort-front/ui';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import {
-  SafeSkeletonTableModule,
-  SafeCronParserModule,
-  SafeDateModule,
-} from '@oort-front/safe';
+  SkeletonTableModule,
+  CronParserModule,
+  DateModule,
+  StatusOptionsComponent,
+  EmptyModule,
+} from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   DividerModule,
   MenuModule,
   ButtonModule,
   TableModule,
-  ChipModule,
   PaginatorModule,
 } from '@oort-front/ui';
 
@@ -29,12 +30,14 @@ import {
     DividerModule,
     PaginatorModule,
     TranslateModule,
-    SafeSkeletonTableModule,
-    SafeCronParserModule,
-    SafeDateModule,
+    SkeletonTableModule,
+    CronParserModule,
+    DateModule,
     ButtonModule,
     TableModule,
-    ChipModule,
+    StatusOptionsComponent,
+    EmptyModule,
+    TooltipModule,
   ],
 })
 export class PullJobsModule {}

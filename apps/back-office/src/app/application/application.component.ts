@@ -4,10 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   ContentType,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -21,22 +21,24 @@ import { Observable } from 'rxjs';
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Application title */
   public title = '';
-  /** List of application pages */
+  /** Navigation groups */
   public navGroups: any[] = [];
-  /** List of settings pages */
+  /** Admin pages */
   public adminNavItems: any[] = [];
   /** Current application */
   public application?: Application;
   /** Use side menu or not */
   public sideMenu = false;
+  /** Should hide menu by default ( only when vertical ) */
+  public hideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
-  /** Is loading */
+  /** Loading indicator */
   public loading = true;
 
   /**
@@ -49,11 +51,11 @@ export class ApplicationComponent
    * @param confirmService Shared confirmation service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: ConfirmService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -80,7 +82,8 @@ export class ApplicationComponent
                   x.type === ContentType.form
                     ? `./${x.type}/${x.id}`
                     : `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type || ''),
+                icon: x.icon || this.getNavIcon(x.type || ''),
+                fontFamily: x.icon ? 'fa' : 'material',
                 class: null,
                 orderable: true,
                 visible: x.visible ?? true,
@@ -145,6 +148,13 @@ export class ApplicationComponent
               },
             ];
           }
+          if (application.canUpdate) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.archive.few'),
+              path: './settings/archive',
+              icon: 'delete',
+            });
+          }
           this.navGroups = [
             {
               name: this.translate.instant('common.page.few'),
@@ -171,7 +181,8 @@ export class ApplicationComponent
             }
           }
           this.application = application;
-          this.sideMenu = this.application?.sideMenu ?? false;
+          this.sideMenu = this.application?.sideMenu ?? true;
+          this.hideMenu = this.application?.hideMenu ?? false;
         } else {
           this.title = '';
           this.navGroups = [];

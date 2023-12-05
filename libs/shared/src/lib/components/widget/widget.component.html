@@ -1,0 +1,125 @@
+<div
+  class="flex flex-col h-full w-full !rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 overflow-hidden group"
+  [ngClass]="{
+    '!shadow-sm !border-gray-300': showBorder,
+    '!border-transparent': !showBorder || fullscreen,
+    'hover:!border-gray-400 hover:!shadow-sm': canUpdate && !fullscreen
+  }"
+>
+  <ng-container *ngIf="header">
+    <ng-container *ngIf="!showHeader; else defaultHeaderTemplate">
+      <div
+        class="floating-widget-header pointer-events-none"
+        *ngIf="canUpdate && !fullscreen"
+      >
+        <!-- Setting pointer-events to none so buttons below header are still accessible -->
+        <ng-container
+          *ngIf="headerLeftTemplate"
+          [ngTemplateOutlet]="headerLeftTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="headerRightTemplate"
+          [ngTemplateOutlet]="headerRightTemplate"
+          [ngTemplateOutletContext]="{ $implicit: id }"
+        ></ng-container>
+      </div>
+    </ng-container>
+
+    <ng-template #defaultHeaderTemplate>
+      <div
+        class="widget-header border-b"
+        [ngClass]="{
+          '!border-transparent': !showBorder,
+          '!border-b-gray-300': showBorder,
+        }"
+      >
+        <ng-container
+          *ngIf="headerLeftTemplate && !fullscreen"
+          [ngTemplateOutlet]="headerLeftTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="widgetContentComponent?.headerTemplate"
+          [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+        ></ng-container>
+        <ng-container
+          *ngIf="headerRightTemplate && !fullscreen"
+          [ngTemplateOutlet]="headerRightTemplate"
+          [ngTemplateOutletContext]="{ $implicit: id }"
+        ></ng-container>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <!-- Button to expand widget -->
+  <button
+    *ngIf="showExpand"
+    (click)="onResize()"
+    [uiTooltip]="
+      expanded ? 
+      ('models.widget.tooltip.expandButton.restore'  | translate) 
+      : ('models.widget.tooltip.expandButton.expand'  | translate)"
+    class="bg-white absolute right-0 top-[50%] border-gray-300 hidden group-hover:block z-10 py-1 rounded-l-lg border-y border-l"
+  >
+    <ui-icon [icon]="expanded ? 'chevron_left' : 'chevron_right'"></ui-icon>
+  </button>
+
+  <ng-container [ngSwitch]="widget.component">
+    <!-- CHART -->
+    <shared-chart
+      *ngSwitchCase="'chart'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden gridster-item-content"
+    ></shared-chart>
+    <!-- GRID -->
+    <shared-grid-widget
+      *ngSwitchCase="'grid'"
+      #widgetContent
+      [settings]="widget.settings"
+      (changeStep)="changeStep.emit($event)"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+      [canUpdate]="canUpdate"
+      class="flex-1 overflow-hidden gridster-item-content"
+    ></shared-grid-widget>
+    <!-- MAP -->
+    <shared-map-widget
+      *ngSwitchCase="'map'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden gridster-item-content"
+    ></shared-map-widget>
+    <!-- TEXT EDITOR -->
+    <shared-editor
+      *ngSwitchCase="'editor'"
+      #widgetContent
+      [settings]="widget.settings"
+      [usePadding]="usePadding"
+      class="flex-1 overflow-hidden gridster-item-content"
+    >
+    </shared-editor>
+    <!-- SUMMARY CARD -->
+    <shared-summary-card
+      *ngSwitchCase="'summaryCard'"
+      #widgetContent
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+      [usePadding]="usePadding"
+      class="flex-1 overflow-hidden gridster-item-content"
+    >
+    </shared-summary-card>
+    <!-- Tabs -->
+    <shared-tabs
+      *ngSwitchCase="'tabs'"
+      #widgetContent
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [canUpdate]="canUpdate"
+      [widget]="widget"
+      [usePadding]="usePadding"
+      class="flex-1 overflow-hidden gridster-item-content"
+    >
+    </shared-tabs>
+  </ng-container>
+</div>

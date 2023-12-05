@@ -37,7 +37,7 @@ The project is seperated into three sub-projects:
 - web-widgets, an application to genereate the web components
 
 One library exists:
-- safe, a library for common ui / capacity, shared with other projects
+- shared, a library for common ui / capacity, shared with other projects
 
 Library changes should automatically be detected when serving the other projects.
 
@@ -53,26 +53,6 @@ For prod, replace `azure-dev` with `azure-prod`.
 For uat, replace `azure-dev` with `azure-uat`.
 
 The compiled applications can be found there in ./dist/apps/ folder.
-
-<!-- # Bundle Analysis
-
-First, install globally the bundle analyzer:
-```
-npm install -g webpack-bundle-analyzer
-```
-
-You can then run, for both back, front office and web widgets projects:
-```
-ng build --stats-json
-```
-This will create an additional find stats.json in your ./dist folder of each project.
-
-
-Finally, run:
-```
-webpack-bundle-analyzer ./dist/<project-name>/stats.json
-```
-and your browser will pop up the page at localhost:8888. -->
 
 # Useful commands
 
@@ -123,10 +103,10 @@ Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all
 
 ## Analyze bundle
 
-Start by building apps adding `--stats-json` flag. For example:
+Start by building apps adding `--statsJson` flag. For example:
 
 ```
-npx nx run back-office:build -- --stats-json
+npx nx run back-office:build --statsJson
 ```
 
 Then, run `webpack-bundle-analyzer` command to see the tree of your bundles:
@@ -149,6 +129,14 @@ npx nx run ui:build-storybook
 ```
 
 Pushing the code on the repo should automatically deploy storybook on a public environment.
+
+## Web components
+
+To test web components, you can:
+- go to this repo: https://github.com/ReliefApplications/app-builder-widgets-poc
+- Switch to the branch: https://github.com/ReliefApplications/app-builder-widgets-poc/tree/fix/68747_add_forms_and_missing_styles_file
+- execute: `npm i && npm run start`
+You should find under the form widget dropdown some form types in order to test the form web component.
 
 <!-- ## Build the web components
 

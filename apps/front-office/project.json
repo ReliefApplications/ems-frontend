@@ -18,7 +18,7 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/",
+            "input": "libs/shared/src/i18n/",
             "output": "/assets/i18n/"
           },
           {
@@ -35,13 +35,8 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/tinymce/",
+            "input": "libs/shared/src/i18n/tinymce/",
             "output": "/tinymce/langs"
-          },
-          {
-            "glob": "**/*",
-            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
-            "output": "/assets/webfonts/"
           },
           {
             "glob": "**/*",
@@ -50,33 +45,29 @@
           }
         ],
         "styles": [
-          {
-            "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
-            "inject": true
-          },
           "apps/front-office/src/styles.scss",
-          "libs/safe/src/lib/style/styles.scss",
-          "node_modules/survey-angular/survey.min.css",
-          "node_modules/survey-creator/survey-creator.min.css",
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css",
+          "node_modules/survey-creator-core/survey-creator-core.min.css",
           "node_modules/leaflet/dist/leaflet.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
           "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
           "node_modules/leaflet-measure/dist/leaflet-measure.css",
           "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
-          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
-          "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
+          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
         ],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -84,7 +75,9 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular",
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
           "fast-sha256",
           "leaflet",
           "esri-leaflet-geocoder",
@@ -93,7 +86,8 @@
           "color",
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
-          "jsonpath"
+          "jsonpath",
+          "to-json-schema"
         ]
       },
       "configurations": {
@@ -113,12 +107,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-uat": {
@@ -137,12 +131,36 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "azure-sit": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.azure.sit.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "14kb"
+            }
+          ],
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-dev": {
@@ -161,12 +179,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-prod": {
@@ -185,12 +203,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-dev": {
@@ -209,12 +227,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-tailwind": {
@@ -233,12 +251,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-guyane": {
@@ -257,12 +275,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-alimentaide": {
@@ -281,12 +299,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-demo": {
@@ -305,12 +323,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-lift": {
@@ -329,12 +347,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/lift"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-expertisefr": {
@@ -353,12 +371,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "14kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
+            "includePaths": ["libs/styles/src/lib/themes/expertisefr"]
           }
         },
         "oort-local": {
@@ -375,7 +393,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "development": {
@@ -386,7 +404,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         }
       },
@@ -434,6 +452,55 @@
         "ci": {
           "ci": true,
           "codeCoverage": true
+        }
+      }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "apps/front-office/.storybook",
+        "browserTarget": "front-office:build",
+        "compodoc": true,
+        "compodocArgs": ["-e", "json", "-d", "apps/front-office"],
+        "styles": [
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/styles/src/lib/themes/default"]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "outputDir": "dist/storybook/front-office",
+        "configDir": "apps/front-office/.storybook",
+        "browserTarget": "front-office:build",
+        "compodoc": false,
+        "styles": ["libs/shared/src/lib/style/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/styles/src/lib/themes/default",
+            "libs/styles/src/lib/kendo"
+          ]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
         }
       }
     }

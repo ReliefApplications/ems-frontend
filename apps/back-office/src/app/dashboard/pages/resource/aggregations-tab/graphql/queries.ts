@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '@oort-front/safe';
 
 /** Graphql query for getting resource aggregations */
 export const GET_RESOURCE_AGGREGATIONS = gql`
@@ -26,8 +25,3 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
     }
   }
 `;
-
-/** Model for GetResourceByIdQueryResponse object */
-export interface GetResourceByIdQueryResponse {
-  resource: Resource;
-}

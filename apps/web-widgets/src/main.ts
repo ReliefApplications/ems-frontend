@@ -10,4 +10,16 @@ if (environment.production) {
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
+  .then(() => {
+    /** Automatic insertion of form widget on application bootstrap on locally serving it */
+    const body = document.getElementById('bodyPlaceholder');
+    if (body) {
+      // Form web widget
+      // const formWidget = document.createElement('apb-form');
+      // body.appendChild(formWidget);
+      // Application web widget
+      const appWidget = document.createElement('apb-application');
+      body.appendChild(appWidget);
+    }
+  })
   .catch((err) => console.error(err));

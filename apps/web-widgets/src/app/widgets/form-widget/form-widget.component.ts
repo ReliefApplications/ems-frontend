@@ -3,24 +3,30 @@ import {
   AfterViewInit,
   Component,
   ComponentRef,
+  ElementRef,
+  Injector,
   Input,
-  OnInit,
   ViewChild,
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { SafeFormService, SafeLayoutService } from '@oort-front/safe';
 import { AppOverlayContainer } from '../../utils/overlay-container';
+import { UILayoutService } from '@oort-front/ui';
+import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extended-host.component';
 
 /** Form web widget component */
 @Component({
-  selector: 'app-form-widget',
+  selector: 'oort-form-widget',
   templateUrl: './form-widget.component.html',
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class FormWidgetComponent implements OnInit, AfterViewInit {
-  @Input() id = '';
+export class FormWidgetComponent
+  extends ShadowRootExtendedHostComponent
+  implements AfterViewInit
+{
+  @Input() id = '626b96227ad4dd0c96f3b8a1';
+  // @Input() id = '642061d1b7109549fa3035e8';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
@@ -30,17 +36,21 @@ export class FormWidgetComponent implements OnInit, AfterViewInit {
   /**
    * Form web widget component
    *
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param overlayContainer Angular overlay container
-   * @param formService Shared form service
+   * @param el ElementRef
+   * @param injector Injector
    */
   constructor(
-    private layoutService: SafeLayoutService,
+    private layoutService: UILayoutService,
     private overlayContainer: OverlayContainer,
-    private formService: SafeFormService
-  ) {}
+    el: ElementRef,
+    injector: Injector
+  ) {
+    super(el, injector);
+  }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
@@ -62,9 +72,6 @@ export class FormWidgetComponent implements OnInit, AfterViewInit {
         }
       }
     });
-  }
-
-  ngAfterViewInit(): void {
     const test: AppOverlayContainer = this
       .overlayContainer as AppOverlayContainer;
     test.updateContainer('form-widget');

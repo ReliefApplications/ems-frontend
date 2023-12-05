@@ -32,10 +32,17 @@
         "port": 4400,
         "configDir": "libs/ui/.storybook",
         "browserTarget": "ui:build-storybook",
-        "compodoc": false,
-        "styles": ["libs/ui/src/style/styles.scss"],
+        "compodoc": true,
+        "compodocArgs": ["-e", "json", "-d", "libs/ui"],
+        "styles": [
+          "libs/ui/src/style/styles.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss"
+        ],
         "stylePreprocessorOptions": {
-          "includePaths": ["libs/ui/src/style/themes/default"]
+          "includePaths": ["libs/styles/src/lib/themes/default"]
         }
       },
       "configurations": {
@@ -52,9 +59,15 @@
         "configDir": "libs/ui/.storybook",
         "browserTarget": "ui:build-storybook",
         "compodoc": false,
-        "styles": ["libs/ui/src/style/styles.scss"],
+        "styles": [
+          "libs/ui/src/style/styles.scss",
+          "libs/styles/src/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss"
+        ],
         "stylePreprocessorOptions": {
-          "includePaths": ["libs/ui/src/style/themes/default"]
+          "includePaths": ["libs/styles/src/lib/themes/default"]
         }
       },
       "configurations": {

@@ -1,3 +1,155 @@
+## [2.1.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.7...v2.1.8) (2023-11-12)
+
+
+### Bug Fixes
+
+* remove initImplicitFlow ([4e9ddd0](https://github.com/ReliefApplications/oort-frontend/commit/4e9ddd046b16013f360d89fdcda7c9f9cf48c165))
+
+## [2.1.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.6...v2.1.7) (2023-11-07)
+
+
+### Bug Fixes
+
+* add resource fields to history ([30c0846](https://github.com/ReliefApplications/oort-frontend/commit/30c0846a36a34db56f4024c4f482ad1bdce6ff71))
+
+## [2.1.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.5...v2.1.6) (2023-11-06)
+
+
+### Bug Fixes
+
+* could not set as null in auto modify fields grid action ([#2041](https://github.com/ReliefApplications/oort-frontend/issues/2041)) ([a92230c](https://github.com/ReliefApplications/oort-frontend/commit/a92230c4c2e445aa4978b970293570f43d1c682d))
+
+## [2.1.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.4...v2.1.5) (2023-11-03)
+
+
+### Bug Fixes
+
+* disable the button clear button if the question is read only ([#2038](https://github.com/ReliefApplications/oort-frontend/issues/2038)) ([4656d2e](https://github.com/ReliefApplications/oort-frontend/commit/4656d2eb5297f5dbba624122e9f9cad08d5e49b0))
+* fields not being correctly removed in history ([#2036](https://github.com/ReliefApplications/oort-frontend/issues/2036)) ([8aaf87a](https://github.com/ReliefApplications/oort-frontend/commit/8aaf87a17430e1d23056834961892335f08d9c80))
+* incorrect style of record history modal ([7011939](https://github.com/ReliefApplications/oort-frontend/commit/701193988a52b19a58c21f5ae863a57c93cab319))
+* resources question grid actions could appear in display mode ([#2037](https://github.com/ReliefApplications/oort-frontend/issues/2037)) ([dd56837](https://github.com/ReliefApplications/oort-frontend/commit/dd56837ff34b903a3a56fd45093e6bfde4d57363))
+* search was shared between instances of dropdown & tagbox questions ([ce748fa](https://github.com/ReliefApplications/oort-frontend/commit/ce748faa88eeb8dc65a0f2f0d76b52662b9800a2))
+
+## [2.1.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.3...v2.1.4) (2023-10-25)
+
+
+### Bug Fixes
+
+* createdBy & modifiedBy would not appear in grids ([8b18cc6](https://github.com/ReliefApplications/oort-frontend/commit/8b18cc65a8deb0f32a9c8adcaec701bc0b14b9a8))
+* dialog close directive could sometimes send empty string instead of undefined ([ef6a3af](https://github.com/ReliefApplications/oort-frontend/commit/ef6a3afc7e33f658e50aa0ce5fa1265674d1010e))
+
+## [2.1.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.2...v2.1.3) (2023-10-24)
+
+
+### Bug Fixes
+
+* could not load aggregation grid ([d660f07](https://github.com/ReliefApplications/oort-frontend/commit/d660f0727b8b8d74cd128fc626f262c4672a58e1))
+* improve front-office navigation that could sometimes lost track of redirection ([#1991](https://github.com/ReliefApplications/oort-frontend/issues/1991)) ([196d5ea](https://github.com/ReliefApplications/oort-frontend/commit/196d5ea040edc3280aaf15e7402777cb8437387c))
+* page is taking too much resource when showing a grid with many columns records ([#1982](https://github.com/ReliefApplications/oort-frontend/issues/1982)) ([8205b20](https://github.com/ReliefApplications/oort-frontend/commit/8205b20cc99ffbd152f266d55f20f9466a2ec88a))
+* prevent min & max of lines charts to not be integers, and add possibility to set them manually ([#1985](https://github.com/ReliefApplications/oort-frontend/issues/1985)) ([4194d5f](https://github.com/ReliefApplications/oort-frontend/commit/4194d5f5cdc89c881dc7b8021e7dd193dba0f782))
+
+## [2.1.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.1...v2.1.2) (2023-10-09)
+
+
+### Bug Fixes
+
+* prevent metadata error to appear while building aggregation grid ([20470f9](https://github.com/ReliefApplications/oort-frontend/commit/20470f97cb299cbcd88cab8b9e01c0b8aa169b3d))
+* unfriendly api configuration edition ([#1937](https://github.com/ReliefApplications/oort-frontend/issues/1937)) ([ee341e9](https://github.com/ReliefApplications/oort-frontend/commit/ee341e9cec5c90bf9ca27f90cd3ad629d357db2d))
+
+## [2.0.11](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.10...v2.0.11) (2023-10-09)
+
+
+### Bug Fixes
+
+* prevent metadata error to appear while building aggregation grid ([20470f9](https://github.com/ReliefApplications/oort-frontend/commit/20470f97cb299cbcd88cab8b9e01c0b8aa169b3d))
+
+## [2.1.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0...v2.1.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* unable to invite new users, UI was broken ([#1902](https://github.com/ReliefApplications/oort-frontend/issues/1902)) ([a0a5eb6](https://github.com/ReliefApplications/oort-frontend/commit/a0a5eb6cdb61582c257cba9d4366a1143b31310c))
+
+# [2.1.0](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.10...v2.1.0) (2023-09-21)
+
+
+### Features
+
+* add tooltip when widget grid text overflows ([44850ed](https://github.com/ReliefApplications/oort-frontend/commit/44850ed0981eba04fa28c07d994323deec082146))
+* automatically open widget settings on addition ([#1843](https://github.com/ReliefApplications/oort-frontend/issues/1843)) ([6ab4174](https://github.com/ReliefApplications/oort-frontend/commit/6ab41740e9f15d8d83b12d72f7cbd30cab6987b0)), closes [feat/AB#74663](https://github.com/feat/AB/issues/74663)
+
+
+### Performance Improvements
+
+* update apollo versions ([#1771](https://github.com/ReliefApplications/oort-frontend/issues/1771)) ([#1810](https://github.com/ReliefApplications/oort-frontend/issues/1810)) ([30180a1](https://github.com/ReliefApplications/oort-frontend/commit/30180a1013c8f9bdac58d9b107b570ca48eec9ba))
+
+## [2.0.10](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.9...v2.0.10) (2023-09-21)
+
+
+### Bug Fixes
+
+* access to the platform could fail due to login not completed ([#1854](https://github.com/ReliefApplications/oort-frontend/issues/1854)) ([10ba120](https://github.com/ReliefApplications/oort-frontend/commit/10ba1204a6a0d12728af039fd8fd85d60f4d5628))
+* aggregation filters only appling after saving twice ([#1829](https://github.com/ReliefApplications/oort-frontend/issues/1829)) ([3dd8bd4](https://github.com/ReliefApplications/oort-frontend/commit/3dd8bd409a117bfb51e46d7d4d2dee8145a898f1))
+* aggregation filters only appling after saving twice ([#1829](https://github.com/ReliefApplications/oort-frontend/issues/1829)) ([5a788cb](https://github.com/ReliefApplications/oort-frontend/commit/5a788cbd9585437232783fb2764866a4583c8237))
+* custom form variables not reused when creating multiple records from same view ([#1838](https://github.com/ReliefApplications/oort-frontend/issues/1838)) ([8fb2564](https://github.com/ReliefApplications/oort-frontend/commit/8fb25647aa7ee0e75765c7253255685c994ae7ae))
+* date could not be cleared if opening a record with value in field ([2c0d047](https://github.com/ReliefApplications/oort-frontend/commit/2c0d0470f3889dbadf84d69c7aa529ef5d19bd05))
+* date filters in grid could filter out items based on timezone ([2f37b39](https://github.com/ReliefApplications/oort-frontend/commit/2f37b39cfcf41df304673680c128a118ee8856ab))
+* items per page would not correctly work on some page change  ([#1801](https://github.com/ReliefApplications/oort-frontend/issues/1801)) ([063391d](https://github.com/ReliefApplications/oort-frontend/commit/063391d6613bb1797bb00330a831c49bb3484b2d)), closes [bugfix/AB#74313](https://github.com/bugfix/AB/issues/74313)
+* last option in grid tagbox filter remains active when removing options one by one ([#1777](https://github.com/ReliefApplications/oort-frontend/issues/1777)) ([f266e52](https://github.com/ReliefApplications/oort-frontend/commit/f266e522d688c841c53b46c1c730b0e5f3941d5c))
+* only get visible fields when exporting grid data [#35940](https://github.com/ReliefApplications/oort-frontend/issues/35940) ([#1807](https://github.com/ReliefApplications/oort-frontend/issues/1807)) ([ce008da](https://github.com/ReliefApplications/oort-frontend/commit/ce008daba3cca2216bd3c40fd7a8ae6d2a68f358))
+* only get visible fields when exporting grid data [#35940](https://github.com/ReliefApplications/oort-frontend/issues/35940) ([#1807](https://github.com/ReliefApplications/oort-frontend/issues/1807)) ([2d76aa8](https://github.com/ReliefApplications/oort-frontend/commit/2d76aa8eb4aaea48b0b0a95e935f34fcbd807c01))
+* remove format filter method in grid, that could cause some date issues ([df3ee09](https://github.com/ReliefApplications/oort-frontend/commit/df3ee094c637b02c001eca81fe6ad6436ce0bd6f))
+* remove format filter method in grid, that could cause some date issues ([bce889a](https://github.com/ReliefApplications/oort-frontend/commit/bce889aae3b862c08fbdfd7aa84562ef8290678e))
+* tagbox filter could produce empty grid when removing value in grid quick filter ([7f05dce](https://github.com/ReliefApplications/oort-frontend/commit/7f05dce3000134bba8ae9a755196ed95718f1c7e))
+* use flex-end and default margin false to the date field in the tab-filter component in order to align the element to the rest of the y axis ([#1809](https://github.com/ReliefApplications/oort-frontend/issues/1809)) ([d8b10c5](https://github.com/ReliefApplications/oort-frontend/commit/d8b10c57893e78f577972b1fd311a2ab94c99d69))
+* use flex-end and default margin false to the date field in the tab-filter component in order to align the element to the rest of the y axis ([#1809](https://github.com/ReliefApplications/oort-frontend/issues/1809)) ([bd171c7](https://github.com/ReliefApplications/oort-frontend/commit/bd171c792a24d4b93528db1e443734b7ac3a3707))
+
+
+### Features
+
+* remove hidden class from date picker clear button on first load if picker contains any value, as the valueChange event only triggers from the calendar UI, not on setting a value into the date picker refactor: use the writeValue default built in method of kendo date picker in order to avoid any strange misbehavior on setting value ([#1799](https://github.com/ReliefApplications/oort-frontend/issues/1799)) ([aad4fca](https://github.com/ReliefApplications/oort-frontend/commit/aad4fcaf0414ebede98cccf0c687c90ab8c7b5ff))
+
+## [2.0.10](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.9...v2.0.10) (2023-09-21)
+
+
+### Bug Fixes
+
+* access to the platform could fail due to login not completed ([#1854](https://github.com/ReliefApplications/oort-frontend/issues/1854)) ([10ba120](https://github.com/ReliefApplications/oort-frontend/commit/10ba1204a6a0d12728af039fd8fd85d60f4d5628))
+* aggregation filters only appling after saving twice ([#1829](https://github.com/ReliefApplications/oort-frontend/issues/1829)) ([3dd8bd4](https://github.com/ReliefApplications/oort-frontend/commit/3dd8bd409a117bfb51e46d7d4d2dee8145a898f1))
+* aggregation filters only appling after saving twice ([#1829](https://github.com/ReliefApplications/oort-frontend/issues/1829)) ([5a788cb](https://github.com/ReliefApplications/oort-frontend/commit/5a788cbd9585437232783fb2764866a4583c8237))
+* custom form variables not reused when creating multiple records from same view ([#1838](https://github.com/ReliefApplications/oort-frontend/issues/1838)) ([8fb2564](https://github.com/ReliefApplications/oort-frontend/commit/8fb25647aa7ee0e75765c7253255685c994ae7ae))
+* date could not be cleared if opening a record with value in field ([2c0d047](https://github.com/ReliefApplications/oort-frontend/commit/2c0d0470f3889dbadf84d69c7aa529ef5d19bd05))
+* date filters in grid could filter out items based on timezone ([2f37b39](https://github.com/ReliefApplications/oort-frontend/commit/2f37b39cfcf41df304673680c128a118ee8856ab))
+* items per page would not correctly work on some page change  ([#1801](https://github.com/ReliefApplications/oort-frontend/issues/1801)) ([063391d](https://github.com/ReliefApplications/oort-frontend/commit/063391d6613bb1797bb00330a831c49bb3484b2d)), closes [bugfix/AB#74313](https://github.com/bugfix/AB/issues/74313)
+* last option in grid tagbox filter remains active when removing options one by one ([#1777](https://github.com/ReliefApplications/oort-frontend/issues/1777)) ([f266e52](https://github.com/ReliefApplications/oort-frontend/commit/f266e522d688c841c53b46c1c730b0e5f3941d5c))
+* only get visible fields when exporting grid data [#35940](https://github.com/ReliefApplications/oort-frontend/issues/35940) ([#1807](https://github.com/ReliefApplications/oort-frontend/issues/1807)) ([ce008da](https://github.com/ReliefApplications/oort-frontend/commit/ce008daba3cca2216bd3c40fd7a8ae6d2a68f358))
+* only get visible fields when exporting grid data [#35940](https://github.com/ReliefApplications/oort-frontend/issues/35940) ([#1807](https://github.com/ReliefApplications/oort-frontend/issues/1807)) ([2d76aa8](https://github.com/ReliefApplications/oort-frontend/commit/2d76aa8eb4aaea48b0b0a95e935f34fcbd807c01))
+* remove format filter method in grid, that could cause some date issues ([df3ee09](https://github.com/ReliefApplications/oort-frontend/commit/df3ee094c637b02c001eca81fe6ad6436ce0bd6f))
+* remove format filter method in grid, that could cause some date issues ([bce889a](https://github.com/ReliefApplications/oort-frontend/commit/bce889aae3b862c08fbdfd7aa84562ef8290678e))
+* tagbox filter could produce empty grid when removing value in grid quick filter ([7f05dce](https://github.com/ReliefApplications/oort-frontend/commit/7f05dce3000134bba8ae9a755196ed95718f1c7e))
+* use flex-end and default margin false to the date field in the tab-filter component in order to align the element to the rest of the y axis ([#1809](https://github.com/ReliefApplications/oort-frontend/issues/1809)) ([d8b10c5](https://github.com/ReliefApplications/oort-frontend/commit/d8b10c57893e78f577972b1fd311a2ab94c99d69))
+* use flex-end and default margin false to the date field in the tab-filter component in order to align the element to the rest of the y axis ([#1809](https://github.com/ReliefApplications/oort-frontend/issues/1809)) ([bd171c7](https://github.com/ReliefApplications/oort-frontend/commit/bd171c792a24d4b93528db1e443734b7ac3a3707))
+
+
+### Features
+
+* remove hidden class from date picker clear button on first load if picker contains any value, as the valueChange event only triggers from the calendar UI, not on setting a value into the date picker refactor: use the writeValue default built in method of kendo date picker in order to avoid any strange misbehavior on setting value ([#1799](https://github.com/ReliefApplications/oort-frontend/issues/1799)) ([aad4fca](https://github.com/ReliefApplications/oort-frontend/commit/aad4fcaf0414ebede98cccf0c687c90ab8c7b5ff))
+
+## [2.0.9](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.8...v2.0.9) (2023-08-29)
+
+
+### Bug Fixes
+
+* Change detection on POST choices by url ([#1764](https://github.com/ReliefApplications/oort-frontend/issues/1764)) ([a6c740e](https://github.com/ReliefApplications/oort-frontend/commit/a6c740ef65ca8c736d1277f6ef256a42930928b1))
+* storybook not building ([7f17a8c](https://github.com/ReliefApplications/oort-frontend/commit/7f17a8c22cb148c8bb87901861ebc2a56d6bb09d))
+
+## [2.0.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.7...v2.0.8) (2023-08-25)
+
+
+### Bug Fixes
+
+* aplly search to add new form page/step graphql-select ([#1739](https://github.com/ReliefApplications/oort-frontend/issues/1739)) ([3653dcc](https://github.com/ReliefApplications/oort-frontend/commit/3653dcc3080e712cf4529e5d39bbb23794e15d2b))
+
 ## [2.0.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.6...v2.0.7) (2023-08-17)
 
 

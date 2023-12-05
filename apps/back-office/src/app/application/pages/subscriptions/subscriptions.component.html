@@ -27,7 +27,7 @@
             <td
               uiCell
               *cdkCellDef="let element"
-              class="!text-gray-900 !font-medium"
+              class="!text-gray-900 !font-medium max-w-[30vw]"
             >
               {{ element.title }}
             </td>
@@ -56,6 +56,7 @@
                 icon="more_vert"
                 [uiMenuTriggerFor]="menu"
                 (click)="$event.stopPropagation()"
+                [uiTooltip]="'common.actions' | translate"
               >
               </ui-button>
               <ui-menu #menu>
@@ -79,14 +80,14 @@
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
-    <safe-empty
+    <shared-empty
       [title]="'common.subscription.none' | translate"
       [footerTemplate]="newSubscription"
-    ></safe-empty>
+    ></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
   <!-- Loading indicator -->
-  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
-  </safe-skeleton-table>
+  <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </shared-skeleton-table>
 </ng-template>

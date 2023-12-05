@@ -1,0 +1,27 @@
+<div class="flex flex-wrap items-center mb-6 gap-4 justify-end">
+  <!-- Edit the grid options -->
+  <ui-button icon="style" variant="primary" (click)="onEditGridOptions()">
+    {{ 'components.application.dashboard.settings.gridOptions' | translate }}
+  </ui-button>
+  <!-- Remove tab -->
+  <ui-button (click)="delete.emit()" variant="danger" category="tertiary">{{
+    'components.widget.settings.tabs.deleteTab' | translate
+  }}</ui-button>
+</div>
+<!-- Tab label edition -->
+<div [formGroup]="tabGroup">
+  <div uiFormFieldDirective>
+    <label>{{ 'common.label' | translate }}</label>
+    <input formControlName="label" type="text" placeholder="Type a label..." />
+  </div>
+</div>
+<!-- tab structure edition -->
+<shared-widget-grid
+  [widgets]="tabGroup.value.structure"
+  [canUpdate]="true"
+  [options]="gridOptions"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+  (style)="onStyle($event)"
+  (add)="onAdd($event)"
+></shared-widget-grid>

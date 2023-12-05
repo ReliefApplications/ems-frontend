@@ -1,15 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { DUPLICATE_APPLICATION } from './graphql/mutations';
 import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
-import {
+  Application,
   DuplicateApplicationMutationResponse,
-  DUPLICATE_APPLICATION,
-} from './graphql/mutations';
-import { Application } from '@oort-front/safe';
+  SnackbarSpinnerComponent,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,15 +37,21 @@ import {
   templateUrl: './duplicate-application-modal.component.html',
   styleUrls: ['./duplicate-application-modal.component.scss'],
 })
-export class DuplicateApplicationModalComponent implements OnInit {
+export class DuplicateApplicationModalComponent {
+  /** Application to duplicate */
   public currentApp: Application;
-  public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
+  /** Duplication form group */
+  public duplicateForm = this.fb.group({
+    name: ['', Validators.required],
+  });
+  /** Loading indicator */
+  public loading = false;
 
   /**
    * Duplicate application component.
    *
    * @param snackBar Shared snackbar service
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param dialogRef Dialog ref
    * @param translateService Angular translate service
@@ -56,7 +59,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
    */
   constructor(
     private snackBar: SnackbarService,
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,
@@ -65,17 +68,23 @@ export class DuplicateApplicationModalComponent implements OnInit {
     this.currentApp = data;
   }
 
-  ngOnInit(): void {
-    this.duplicateForm = this.formBuilder.group({
-      name: ['', Validators.required],
-    });
-  }
-
   /**
    * Submit duplicate application form.
    * Send mutation.
    */
-  onSubmit(): void {
+  onDuplicate(): void {
+    this.loading = true;
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: 'Duplicating',
+          loading: true,
+        },
+      }
+    );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     this.apollo
       .mutate<DuplicateApplicationMutationResponse>({
         mutation: DUPLICATE_APPLICATION,
@@ -87,43 +96,35 @@ export class DuplicateApplicationModalComponent implements OnInit {
       .subscribe({
         next: ({ errors, data }) => {
           if (errors) {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotDuplicated',
-                {
-                  type: this.translateService
-                    .instant('common.application.one')
-                    .toLowerCase(),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
-              { error: true }
+            snackBarSpinner.instance.message = this.translateService.instant(
+              'common.notifications.objectNotDuplicated',
+              {
+                type: this.translateService
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                error: errors ? errors[0].message : '',
+              }
             );
+            snackBarSpinner.instance.error = true;
           } else {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectDuplicated',
-                {
-                  type: this.translateService
-                    .instant('common.application.one')
-                    .toLowerCase(),
-                  value: this.currentApp.name,
-                }
-              )
+            snackBarSpinner.instance.message = this.translateService.instant(
+              'common.notifications.objectDuplicated',
+              {
+                type: this.translateService
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                value: this.currentApp.name,
+              }
             );
           }
+          snackBarSpinner.instance.loading = false;
           this.dialogRef.close(data?.duplicateApplication as any);
         },
         error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+          snackBarSpinner.instance.message = err.message;
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
         },
       });
-  }
-
-  /**
-   * Close dialog.
-   */
-  onCancel(): void {
-    this.dialogRef.close();
   }
 }

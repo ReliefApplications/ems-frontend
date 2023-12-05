@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -12,21 +12,16 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   PageContextT,
   ReferenceData,
+  ReferenceDataQueryResponse,
   Resource,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+  ResourceQueryResponse,
+  ResourceSelectComponent,
+  ReferenceDataSelectComponent,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
-import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  GetReferenceDataQueryResponse,
-  GetReferenceDatasQueryResponse,
-  GetResourceQueryResponse,
-  GetResourcesQueryResponse,
-  GET_REFERENCE_DATA,
-  GET_REFERENCE_DATAS,
-  GET_RESOURCE,
-  GET_RESOURCES,
-} from './graphql/queries';
+import { Apollo } from 'apollo-angular';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import {
   ButtonModule,
   SelectMenuModule,
@@ -34,13 +29,8 @@ import {
   AlertModule,
   DialogModule,
   TooltipModule,
-  GraphQLSelectComponent,
-  GraphQLSelectModule,
   IconModule,
 } from '@oort-front/ui';
-
-/** Default items per resources query, for pagination */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Create a form group for the page context datasource selection
@@ -81,33 +71,25 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     SelectMenuModule,
     FormWrapperModule,
     AlertModule,
-    GraphQLSelectModule,
+    ResourceSelectComponent,
+    ReferenceDataSelectComponent,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
 })
 export class ContextDatasourceComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
-  // Form
+  /** Context form group */
   public form!: ReturnType<typeof createContextDatasourceForm>;
-
-  // Data
+  /** Selected resource */
   public resource: Resource | null = null;
+  /** Selected reference data */
   public refData: ReferenceData | null = null;
+  /** Current display field */
   public displayField: string | null = null;
-
-  // Queries
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-  public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
-
-  @ViewChild(GraphQLSelectComponent)
-  resourceSelect?: GraphQLSelectComponent;
-  @ViewChild(GraphQLSelectComponent)
-  refDataSelect?: GraphQLSelectComponent;
-
-  // Available fields
+  /** Available fields */
   public availableFields: string[] = [];
 
   /**
@@ -127,8 +109,6 @@ export class ContextDatasourceComponent
   }
 
   ngOnInit(): void {
-    this.initQueries();
-
     // When origin changes, reset the other fields
     this.form
       .get('origin')
@@ -139,30 +119,47 @@ export class ContextDatasourceComponent
         this.form.get('displayField')?.setValue(null);
       });
 
-    // When resource or refData changes, reset the displayField
-    // and update the respective variables values
-    (['resource', 'refData'] as const).forEach((field) => {
-      this.form
-        .get(field)
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          // Set displayField to null
-          const displayField = this.form.get('displayField');
-          displayField?.setValue(null);
+    // If the form has a resource, fetch it
+    const resourceID = this.form.get('resource')?.value;
+    if (resourceID) {
+      this.getResource(resourceID);
+    }
+    // Set subscription of resource
+    this.form.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // Set displayField to null
+        const displayField = this.form.get('displayField');
+        displayField?.setValue(null);
 
-          if (value) displayField?.enable();
-          else displayField?.disable();
+        if (value) displayField?.enable();
+        else displayField?.disable();
+        if (value) {
+          this.getResource(value);
+        }
+      });
 
-          // Update the respective variables values
-          this[field] =
-            this[`${field}Select`]?.elements
-              .getValue()
-              .find((x) => x.id === value) ?? null;
+    // If form has a refData, fetch it
+    const refDataID = this.form.get('refData')?.value;
+    if (refDataID) {
+      this.getReferenceData(refDataID);
+    }
+    // Set subscription of resource
+    this.form.controls.refData.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // Set displayField to null
+        const displayField = this.form.get('displayField');
+        displayField?.setValue(null);
 
-          // Update the displayField options
-          this.updateDisplayFieldOptions();
-        });
-    });
+        if (value) displayField?.enable();
+        else displayField?.disable();
+        if (value) {
+          this.getReferenceData(value);
+        }
+      });
+
+    // do the same for ref data
 
     const sourceSelected =
       !!this.form.get('resource')?.value || !!this.form.get('refData')?.value;
@@ -170,56 +167,42 @@ export class ContextDatasourceComponent
     if (!sourceSelected) this.form.get('displayField')?.disable();
   }
 
-  /** Initializes queries and fetches initial data */
-  private initQueries(): void {
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-
-    this.refDatasQuery = this.apollo.watchQuery<GetReferenceDatasQueryResponse>(
-      {
-        query: GET_REFERENCE_DATAS,
+  /**
+   * Get reference data by id
+   *
+   * @param id reference data id
+   */
+  private getReferenceData(id: string) {
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
         variables: {
-          first: ITEMS_PER_PAGE,
+          id,
         },
-      }
-    );
+      })
+      .subscribe(({ data }) => {
+        this.refData = data.referenceData;
+        this.updateDisplayFieldOptions();
+      });
+  }
 
-    // If the form has a resource, fetch it
-    const resourceID = this.form.get('resource')?.value;
-    if (resourceID) {
-      this.apollo
-        .query<GetResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: resourceID,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.resource = data.resource;
-          this.updateDisplayFieldOptions();
-        });
-    }
-
-    // If form has a refData, fetch it
-    const refDataID = this.form.get('refData')?.value;
-    if (refDataID) {
-      this.apollo
-        .query<GetReferenceDataQueryResponse>({
-          query: GET_REFERENCE_DATA,
-          variables: {
-            id: refDataID,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.refData = data.referenceData;
-          this.updateDisplayFieldOptions();
-        });
-    }
+  /**
+   * Get resource by id
+   *
+   * @param id resource id
+   */
+  private getResource(id: string) {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+        },
+      })
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
+        this.updateDisplayFieldOptions();
+      });
   }
 
   /** Updates the options for the display field select */
@@ -241,28 +224,6 @@ export class ContextDatasourceComponent
       default:
         this.availableFields = [];
     }
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    this.resourcesQuery.refetch({
-      first: ITEMS_PER_PAGE,
-      sortField: 'name',
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
   }
 
   /** Emits the selected context */

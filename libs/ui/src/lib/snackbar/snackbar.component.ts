@@ -1,8 +1,10 @@
 import {
   Component,
+  ComponentRef,
   ElementRef,
   EventEmitter,
   Inject,
+  OnDestroy,
   Output,
   TemplateRef,
   ViewChild,
@@ -15,22 +17,40 @@ import { BehaviorSubject } from 'rxjs';
 
 /**
  * UI Snackbar component
+ * Snackbar is a UI component that displays a temporary message about an operation.
  */
 @Component({
   selector: 'ui-snackbar',
   templateUrl: './snackbar.component.html',
   styleUrls: ['./snackbar.component.scss'],
 })
-export class SnackbarComponent {
+export class SnackbarComponent implements OnDestroy {
+  /** Event emitter for when an action is completed. */
   @Output() actionComplete = new EventEmitter<void>();
+  /** Reference to the content view of the snack bar. */
   @ViewChild('snackBarContent', { static: true, read: ViewContainerRef })
   snackBarContentView!: ViewContainerRef;
-
+  /** The data for the snack bar. */
   data!: BehaviorSubject<SnackBarData>;
+  /** Message displayed in snackbar */
   message!: string;
+  /** Boolean indicating whether there is an error. */
   error = false;
+  /** Boolean indicating whether to display the snack bar. */
   displaySnackBar = false;
+  /** The action to perform. */
   action!: string;
+  /** Reference to nested component ( if created from one ) */
+  public nestedComponent?: ComponentRef<any>;
+  /** Timeout to remove snackbar */
+  private snackbarRemovalTimeoutListener!: NodeJS.Timeout;
+
+  /**
+   * Function to resolve after a certain duration.
+   *
+   * @param duration duration in ms
+   * @returns Promise
+   */
   durationResolver = (duration: number) =>
     new Promise((resolve) => setTimeout(resolve, duration));
 
@@ -79,7 +99,7 @@ export class SnackbarComponent {
    */
   dismiss() {
     this.displaySnackBar = false;
-    setTimeout(() => {
+    this.snackbarRemovalTimeoutListener = setTimeout(() => {
       this.host.nativeElement.remove();
     }, 300);
   }
@@ -111,7 +131,9 @@ export class SnackbarComponent {
    */
   openFromComponent(component: ComponentType<any>, config: SnackBarConfig) {
     this.setSnackbarProperties(config);
-    this.snackBarContentView?.createComponent(component);
+    const ref = this.snackBarContentView?.createComponent(component);
+    this.nestedComponent = ref;
+    ref.changeDetectorRef.detectChanges();
     this.triggerSnackBar(config.duration);
   }
 
@@ -125,5 +147,11 @@ export class SnackbarComponent {
     this.setSnackbarProperties(config);
     this.snackBarContentView?.createEmbeddedView(template);
     this.triggerSnackBar(config.duration);
+  }
+
+  ngOnDestroy(): void {
+    if (this.snackbarRemovalTimeoutListener) {
+      clearTimeout(this.snackbarRemovalTimeoutListener);
+    }
   }
 }

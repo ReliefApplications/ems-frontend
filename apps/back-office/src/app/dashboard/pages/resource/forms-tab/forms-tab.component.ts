@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
+  DeleteFormMutationResponse,
   Form,
   Resource,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ConfirmService,
+  UnsubscribeComponent,
+  ResourceQueryResponse,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
+import { DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
-import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
@@ -23,10 +24,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './forms-tab.component.html',
   styleUrls: ['./forms-tab.component.scss'],
 })
-export class FormsTabComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
   private resource!: Resource;
   public forms: Form[] = [];
   public loading = true;
@@ -52,7 +50,7 @@ export class FormsTabComponent
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private translate: TranslateService,
     private dialog: Dialog
   ) {
@@ -64,10 +62,10 @@ export class FormsTabComponent
     this.resource = get(state, 'resource', null);
 
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE_FORMS,
         variables: {
-          id: this.resource.id,
+          id: this.resource?.id,
         },
       })
       .subscribe(({ data }) => {

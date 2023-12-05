@@ -1,0 +1,269 @@
+<ui-dialog [closable]="true" [size]="'medium'">
+  <ng-container ngProjectAs="header">
+    <div class="flex flex-row gap-2">
+      <h3>{{ 'common.settings' | translate }}</h3>
+      <ui-icon
+        class="cursor-help"
+        icon="info_outline"
+        [size]="18"
+        variant="grey"
+        [uiTooltip]="
+          'components.application.pages.settings.tooltip.autoSave' | translate
+        "
+      ></ui-icon>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="settingsForm">
+      <ui-tabs [vertical]="true">
+        <!-- General settings -->
+        <ui-tab>
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="settings"
+              [size]="18"
+              uiTooltip="{{ 'common.general' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.general' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex gap-4 flex-col" *ngIf="settingsForm">
+            <!-- Page / step icon -->
+            <app-view-icon-selector
+              [iconControl]="this.settingsForm.controls.icon"
+              [ngClass]="{
+                '-mb-4': data.type === 'page'
+              }"
+            ></app-view-icon-selector>
+            <!-- Features available only for pages -->
+            <ng-container *ngIf="data.type === 'page'">
+              <!-- Visibility -->
+              <ui-toggle formControlName="visible" class="mb-2">
+                <ng-container ngProjectAs="label">
+                  {{ 'components.application.pages.show' | translate }}
+                </ng-container>
+              </ui-toggle>
+              <div>
+                <h4>
+                  {{
+                    'components.application.pages.settings.actions' | translate
+                  }}
+                </h4>
+                <!-- Duplicate page  -->
+                <ng-container *ngIf="'create' | able : 'Application'">
+                  <ui-button
+                    variant="primary"
+                    category="tertiary"
+                    icon="file_copy"
+                    (click)="onAppSelection()"
+                    cdkOverlayOrigin
+                    #appMenuTrigger="cdkOverlayOrigin"
+                  >
+                    {{ 'common.duplicate' | translate }}
+                  </ui-button>
+                  <ng-template #searchMenuHeaderTemplate>
+                    <ui-alert [closable]="true">
+                      {{ 'models.page.tooltip.duplicate' | translate }}
+                    </ui-alert>
+                  </ng-template>
+                  <ng-template
+                    cdkConnectedOverlay
+                    [cdkConnectedOverlayOrigin]="appMenuTrigger"
+                    [cdkConnectedOverlayOpen]="showDuplicateMenu"
+                  >
+                    <shared-search-menu
+                      [headerTemplate]="searchMenuHeaderTemplate"
+                      [currentApplicationId]="data.applicationId"
+                      [applications]="applications"
+                      (close)="showDuplicateMenu = false"
+                      (open)="onDuplicate($event)"
+                    ></shared-search-menu>
+                  </ng-template>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </ui-tab>
+        <!-- Access (visibility) settings -->
+        <ui-tab *ngIf="data.canUpdate">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="visibility"
+              [size]="18"
+              uiTooltip="{{ 'common.access' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.access' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex flex-col">
+            <!-- Edit access -->
+            <shared-edit-access
+              (updateAccess)="onUpdateAccess($event)"
+            ></shared-edit-access>
+          </div>
+        </ui-tab>
+        <!-- Grid layout style settings -->
+        <ui-tab *ngIf="dashboard">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="style"
+              [size]="18"
+              uiTooltip="{{
+                'components.application.dashboard.settings.gridOptions'
+                  | translate
+              }}"
+            ></ui-icon>
+            <span>{{
+              'components.application.dashboard.settings.gridOptions'
+                | translate
+            }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex gap-4 flex-col" formGroupName="gridOptions">
+            <!-- Number of columns -->
+            <div class="flex flex-col">
+              <div uiFormFieldDirective>
+                <label class="flex items-center gap-1">
+                  {{
+                    'components.application.dashboard.settings.minCols'
+                      | translate
+                  }}
+                  <ui-icon
+                    class="cursor-help self-center"
+                    icon="info_outline"
+                    variant="grey"
+                    [size]="18"
+                    [uiTooltip]="
+                      'components.application.dashboard.settings.tooltip.minCols'
+                        | translate
+                    "
+                  ></ui-icon>
+                </label>
+                <input
+                  type="number"
+                  formControlName="minCols"
+                  min="4"
+                  max="24"
+                />
+                <ui-icon
+                  uiSuffix
+                  class="cursor-pointer"
+                  icon="restart_alt"
+                  variant="grey"
+                  (click)="
+                    settingsForm
+                      .get('gridOptions.minCols')
+                      ?.setValue(defaultGridOptions.minCols)
+                  "
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.reset'
+                      | translate
+                  "
+                ></ui-icon>
+              </div>
+              <ui-alert>{{
+                'components.application.dashboard.settings.help.minCols'
+                  | translate
+              }}</ui-alert>
+            </div>
+            <!-- Change default size of rows -->
+            <div uiFormFieldDirective [outline]="false">
+              <label class="flex items-center gap-1">
+                {{
+                  'components.application.dashboard.settings.fixedRowHeight'
+                    | translate
+                }}
+                <!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.fixedRowHeight'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="fixedRowHeight" min="50" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="restart_alt"
+                variant="grey"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.fixedRowHeight')
+                    ?.setValue(defaultGridOptions.fixedRowHeight)
+                "
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltip.reset'
+                    | translate
+                "
+              ></ui-icon>
+            </div>
+            <!-- Specify inner gap -->
+            <div uiFormFieldDirective>
+              <label class="flex items-center gap-1"
+                >{{
+                  'components.application.dashboard.settings.margin'
+                    | translate
+                }}<!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.margin'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="margin" min="0" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="restart_alt"
+                variant="grey"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.margin')
+                    ?.setValue(defaultGridOptions.margin)
+                "
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltip.reset'
+                    | translate
+                "
+              ></ui-icon>
+            </div>
+          </div>
+        </ui-tab>
+        <!-- Dashboard filter -->
+        <ui-tab *ngIf="dashboard">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="filter_list"
+              [size]="18"
+              uiTooltip="{{ 'common.filter.one' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.filter.one' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex flex-col">
+            <app-dashboard-filter-settings
+              [dashboard]="dashboard"
+            ></app-dashboard-filter-settings>
+          </div>
+        </ui-tab>
+      </ui-tabs>
+    </form>
+  </ng-container>
+
+  <!-- Action buttons -->
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">
+      {{ 'common.cancel' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

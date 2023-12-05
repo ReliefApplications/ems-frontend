@@ -1,0 +1,10 @@
+.show-icons {
+  .hide-icons {
+    display: none;
+  }
+  &:hover {
+    .hide-icons {
+      display: block;
+    }
+  }
+}

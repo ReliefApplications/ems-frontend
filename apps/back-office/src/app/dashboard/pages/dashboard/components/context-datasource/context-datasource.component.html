@@ -1,17 +1,22 @@
-<ui-dialog size="medium" [closable]="true">
+<ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h2>{{ 'models.dashboard.context.datasource.title' | translate }}</h2>
+    <h3 class="font-semibold">
+      {{ 'models.dashboard.context.datasource.title' | translate }}
+    </h3>
   </ng-container>
 
   <ng-container ngProjectAs="content">
     <form [formGroup]="form" class="flex justify-between w-full flex-col py-2">
-      <ui-alert class="mb-6">
+      <ui-alert class="mb-6 text-sm">
         {{ 'models.dashboard.context.datasource.alert' | translate }}
       </ui-alert>
       <!-- Origin -->
       <div uiFormFieldDirective [outline]="false" class="mb-2">
         <label>{{ 'models.dashboard.context.origin' | translate }}</label>
-        <ui-select-menu formControlName="origin">
+        <ui-select-menu
+          formControlName="origin"
+          [placeholder]="'models.dashboard.context.selectOrigin' | translate"
+        >
           <ui-select-option value="resource">
             {{ 'common.resource.one' | translate }}
           </ui-select-option>
@@ -28,17 +33,10 @@
         *ngIf="form.get('origin')?.value === 'resource'"
       >
         <label>{{ 'common.resource.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="resourcesQuery"
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
+        <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        >
-        </ui-graphql-select>
+        ></shared-resource-select>
       </div>
 
       <!-- Reference data selection  -->
@@ -48,21 +46,20 @@
         *ngIf="form.get('origin')?.value === 'refData'"
       >
         <label>{{ 'common.referenceData.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="refDatasQuery"
-          valueField="id"
-          textField="name"
-          [query]="refDatasQuery"
+        <shared-reference-data-select
           formControlName="refData"
           [selectedElements]="[refData]"
-        >
-        </ui-graphql-select>
+        ></shared-reference-data-select>
       </div>
-
       <!-- Field selection -->
       <div uiFormFieldDirective [outline]="false">
         <label>{{ 'models.dashboard.context.displayField' | translate }}</label>
-        <ui-select-menu formControlName="displayField">
+        <ui-select-menu
+          formControlName="displayField"
+          [placeholder]="
+            'models.dashboard.context.selectDisplayField' | translate
+          "
+        >
           <ui-select-option
             *ngFor="let field of availableFields"
             [value]="field"
@@ -83,6 +80,9 @@
   </ng-container>
 
   <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]>
+      {{ 'common.close' | translate }}
+    </ui-button>
     <ui-button
       category="secondary"
       variant="primary"

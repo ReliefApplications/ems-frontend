@@ -1,0 +1,26 @@
+<div
+  class="w-full cursor-pointer"
+  (click)="onOpenSelect()"
+  #trigger="cdkOverlayOrigin"
+  cdkOverlayOrigin
+>
+  <ng-container *ngIf="value; else defaultTemplate">
+    <span class="mr-2"></span>{{ value }}
+  </ng-container>
+</div>
+
+<ng-template #defaultTemplate>
+  <div class="text-gray-400 text-sm">{{ placeholder }}</div>
+</ng-template>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="showList"
+>
+  <shared-icon-picker-popup
+    [icons]="icons"
+    [color]="color"
+    (close)="setIcon($event)"
+  ></shared-icon-picker-popup>
+</ng-template>

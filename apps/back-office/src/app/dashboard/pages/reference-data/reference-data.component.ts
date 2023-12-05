@@ -1,6 +1,15 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
+  FormBuilder,
   FormControl,
   FormGroup,
   Validators,
@@ -8,22 +17,20 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  ApiConfiguration,
   ReferenceData,
   referenceDataType,
-  ApiConfiguration,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-  SafeReferenceDataService,
-} from '@oort-front/safe';
-import { Apollo, QueryRef } from 'apollo-angular';
-import {
+  BreadcrumbService,
+  UnsubscribeComponent,
+  ReferenceDataService,
+  ApiConfigurationsQueryResponse,
+  ReferenceDataQueryResponse,
+  ApiConfigurationQueryResponse,
   EditReferenceDataMutationResponse,
-  EDIT_REFERENCE_DATA,
-} from './graphql/mutations';
+} from '@oort-front/shared';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { EDIT_REFERENCE_DATA } from './graphql/mutations';
 import {
-  GetApiConfigurationQueryResponse,
-  GetApiConfigurationsQueryResponse,
-  GetReferenceDataQueryResponse,
   GET_API_CONFIGURATION,
   GET_API_CONFIGURATIONS_NAMES,
   GET_REFERENCE_DATA,
@@ -33,8 +40,12 @@ import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
-import { get } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import { SnackbarService, TextareaComponent } from '@oort-front/ui';
+import { GraphQLError } from 'graphql';
+import { Dialog } from '@angular/cdk/dialog';
+import { DOCUMENT } from '@angular/common';
+import { GridComponent } from '@progress/kendo-angular-grid';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -52,8 +63,8 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   styleUrls: ['./reference-data.component.scss'],
 })
 export class ReferenceDataComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
 {
   // === DATA ===
   public loading = true;
@@ -65,12 +76,26 @@ export class ReferenceDataComponent
   public referenceTypeChoices = Object.values(referenceDataType);
 
   public selectedApiConfiguration?: ApiConfiguration;
-  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   public valueFields: NonNullable<ReferenceData['fields']> = [];
-  public triedToGetFields = false;
+  public payload: any;
   public loadingFields = false;
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  /** Has the fields that's currently being edited, if any */
+  public currEditingField: NonNullable<ReferenceData['fields']>[number] | null =
+    null;
+  /** Form for the inline edition */
+  public inlineEditionForm = this.createEditionForm();
+  /** Valid json types */
+  public validJsonTypes = [
+    'string',
+    'number',
+    'boolean',
+    'object',
+    'array',
+    'null',
+  ];
 
   // === CSV ===
   public csvValue = '';
@@ -80,12 +105,17 @@ export class ReferenceDataComponent
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: TextareaComponent;
+  @ViewChild(GridComponent) kendoGrid!: GridComponent;
 
   // === MONACO EDITOR ===
   public editorOptions = {
+    theme: 'vs-dark',
     language: 'graphql',
     formatOnPaste: true,
   };
+
+  /** Outside click listener for inline edition */
+  private inlineEditionOutsideClickListener!: any;
 
   /** @returns the graphqlQuery form control */
   get queryControl() {
@@ -102,6 +132,14 @@ export class ReferenceDataComponent
     return this.referenceForm.get('type')?.value || '';
   }
 
+  /** @returns admin can fetch fields */
+  get canFetchFields(): boolean {
+    const formValue = this.referenceForm.value;
+    return (
+      !!formValue.apiConfiguration && !!formValue.query && !!formValue.type
+    );
+  }
+
   /**
    * Reference data page.
    *
@@ -112,6 +150,10 @@ export class ReferenceDataComponent
    * @param translateService Angular translate service
    * @param breadcrumbService Setups the breadcrumb component variables
    * @param refDataService Reference data service
+   * @param dialog dialog
+   * @param fb form builder
+   * @param renderer Angular Renderer2 service
+   * @param document Current document token
    */
   constructor(
     private apollo: Apollo,
@@ -119,13 +161,34 @@ export class ReferenceDataComponent
     private snackBar: SnackbarService,
     private router: Router,
     private translateService: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
-    private refDataService: SafeReferenceDataService
+    private breadcrumbService: BreadcrumbService,
+    private refDataService: ReferenceDataService,
+    public dialog: Dialog,
+    private fb: FormBuilder,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
 
-  /** @returns the reference data group form */
+  /**
+   * Create a new edition form group.
+   *
+   * @returns the edition form group
+   */
+  private createEditionForm() {
+    return this.fb.group({
+      name: this.fb.control('', Validators.required),
+      type: this.fb.control('string', Validators.required),
+      index: this.fb.control(-1, Validators.required),
+    });
+  }
+
+  /**
+   * Build Reference data form group
+   *
+   * @returns Reference data form group
+   */
   private getRefDataForm() {
     const form = new FormGroup({
       name: new FormControl(this.referenceData?.name, Validators.required),
@@ -145,7 +208,7 @@ export class ReferenceDataComponent
 
     // Clear valueFields when type, apiConfiguration, path or query changes
     const clearFields = () => {
-      this.triedToGetFields = false;
+      this.payload = null;
       this.valueFields = [];
       form.get('fields')?.setValue([]);
     };
@@ -179,11 +242,6 @@ export class ReferenceDataComponent
         .subscribe(clearFields);
 
       form
-        .get('path')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(clearFields);
-
-      form
         .get('query')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe(clearFields);
@@ -196,10 +254,31 @@ export class ReferenceDataComponent
    * Create the Reference data query, and subscribe to the query changes.
    */
   ngOnInit(): void {
+    this.inlineEditionOutsideClickListener = this.renderer.listen(
+      this.document,
+      'click',
+      (event) => {
+        // If there is a current inline edition on going, trigger check
+        if (this.currEditingField) {
+          const gridRows = this.kendoGrid.ariaRoot.nativeElement
+            .querySelector('kendo-grid-list')
+            .querySelectorAll('tr');
+          // If current inline edition row does not contain the target element
+          if (
+            !gridRows[
+              this.inlineEditionForm.get('index')?.value as number
+            ]?.contains(event.target)
+          ) {
+            // Cancel edition
+            this.currEditingField = null;
+          }
+        }
+      }
+    );
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
-        .watchQuery<GetReferenceDataQueryResponse>({
+        .watchQuery<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: this.id,
@@ -270,7 +349,7 @@ export class ReferenceDataComponent
       this.referenceForm.get('fields')?.setValidators(Validators.required);
       if (this.referenceForm.value.apiConfiguration) {
         this.apollo
-          .query<GetApiConfigurationQueryResponse>({
+          .query<ApiConfigurationQueryResponse>({
             query: GET_API_CONFIGURATION,
             variables: {
               id: this.referenceForm.value.apiConfiguration,
@@ -284,7 +363,7 @@ export class ReferenceDataComponent
       }
 
       this.apiConfigurationsQuery =
-        this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+        this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
           query: GET_API_CONFIGURATIONS_NAMES,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -320,41 +399,51 @@ export class ReferenceDataComponent
       })
       .subscribe({
         next: ({ errors, data, loading }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant(
-                    'common.referenceData.one'
-                  ),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant(
-                      'common.referenceData.one'
-                    ),
-                    value: '',
-                  }
-                )
-              );
-              this.referenceData = data.editReferenceData;
-              this.loading = loading;
-            }
-          }
+          this.handleEditReferenceDataResponse(data, errors, loading);
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handles the reference data mutation response
+   *
+   * @param {EditReferenceDataMutationResponse} data save mutation data
+   * @param {GraphQLError[]} errors save mutation errors
+   * @param {boolean} loading save mutation loading state
+   * @param {boolean} usingForm if saved data comes from the reference data form
+   */
+  private handleEditReferenceDataResponse(
+    data: EditReferenceDataMutationResponse | null | undefined,
+    errors: readonly GraphQLError[] | undefined,
+    loading: boolean,
+    usingForm: boolean = false
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translateService.instant('common.notifications.objectNotUpdated', {
+          type: this.translateService.instant('common.referenceData.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      if (data) {
+        this.snackBar.openSnackBar(
+          this.translateService.instant('common.notifications.objectUpdated', {
+            type: this.translateService.instant('common.referenceData.one'),
+            value: '',
+          })
+        );
+        this.referenceData = data.editReferenceData;
+      }
+      if (usingForm) {
+        this.referenceForm.markAsPristine();
+      }
+    }
+    this.loading = loading;
   }
 
   /**
@@ -410,25 +499,7 @@ export class ReferenceDataComponent
       })
       .subscribe({
         next: ({ errors, data, loading }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant(
-                    'common.referenceData.one'
-                  ),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
-              { error: true }
-            );
-            this.loading = false;
-          } else {
-            this.referenceData = data?.editReferenceData;
-            this.referenceForm.markAsPristine();
-            this.loading = loading || false;
-          }
+          this.handleEditReferenceDataResponse(data, errors, loading, true);
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -461,9 +532,7 @@ export class ReferenceDataComponent
           valueFieldsCopy.push(value.trim());
           this.valueFields = valueFieldsCopy;
         }
-        this.referenceForm?.get('fields')?.setValue(this.valueFields);
-        this.referenceForm?.get('fields')?.updateValueAndValidity();
-        this.referenceForm?.markAsDirty();
+        this.setReferenceFormValue();
         // Reset the input value
         if (input) {
           input.value = '';
@@ -471,6 +540,15 @@ export class ReferenceDataComponent
       },
       event.type === 'focusout' ? 500 : 0
     );
+  }
+
+  /**
+   * Update reference form value programmatically with the current value fields
+   */
+  private setReferenceFormValue() {
+    this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    this.referenceForm?.get('fields')?.updateValueAndValidity();
+    this.referenceForm?.markAsDirty();
   }
 
   /**
@@ -486,9 +564,7 @@ export class ReferenceDataComponent
       valueFieldsCopy.splice(index, 1);
       this.valueFields = valueFieldsCopy;
     }
-    this.referenceForm?.get('fields')?.setValue(this.valueFields);
-    this.referenceForm?.get('fields')?.updateValueAndValidity();
-    this.referenceForm?.markAsDirty();
+    this.setReferenceFormValue();
   }
 
   /**
@@ -572,7 +648,7 @@ export class ReferenceDataComponent
     }
     // get the api configuration
     this.loadingFields = true;
-    const query$ = this.apollo.query<GetApiConfigurationQueryResponse>({
+    const query$ = this.apollo.query<ApiConfigurationQueryResponse>({
       query: GET_API_CONFIGURATION,
       variables: {
         id: apiConfID,
@@ -585,16 +661,17 @@ export class ReferenceDataComponent
       return;
     }
     try {
-      this.triedToGetFields = true;
-      // get the fields
-      const fields = await this.refDataService.getFields(
+      // get the fields & payload
+      const result = await this.refDataService.getFields(
         apiConfData.apiConfiguration,
         path || '',
         query,
         type
       );
-      this.valueFields = fields;
+      this.valueFields = result.fields;
+      this.payload = result.payload;
       this.referenceForm?.get('fields')?.setValue(this.valueFields);
+      this.referenceForm.get('fields')?.markAsDirty();
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
         this.snackBar.openSnackBar(e.message, { error: true });
@@ -630,6 +707,92 @@ export class ReferenceDataComponent
             queryControl.markAsPristine();
           });
       }, 100);
+    }
+  }
+
+  /** Open payload modal */
+  public async onOpenPayload() {
+    const { ReferenceDataPayloadModalComponent } = await import(
+      './reference-data-payload-modal/reference-data-payload-modal.component'
+    );
+    this.dialog.open(ReferenceDataPayloadModalComponent, {
+      data: {
+        payload: this.payload,
+      },
+    });
+  }
+
+  /**
+   * Toggles the inline editor for the field
+   *
+   * @param field field to edit
+   */
+  public toggleInlineEditor(field: typeof this.currEditingField) {
+    // Start the edition
+    if (field) {
+      this.inlineEditionForm.reset();
+      const index = this.valueFields.indexOf(field);
+
+      this.inlineEditionForm.patchValue({
+        name: field.name,
+        type: field.type,
+        index,
+      });
+    }
+    // Close the edition (null as parameter)
+    else {
+      const isValid = this.inlineEditionForm.valid;
+      if (isValid && this.currEditingField) {
+        const { name, type } = this.inlineEditionForm.value;
+        const index = this.valueFields.indexOf(this.currEditingField);
+        const fieldsCopy = cloneDeep(this.valueFields);
+
+        // Update the field in the list
+        if (index >= 0 && !!name && type) {
+          fieldsCopy[index].name = name;
+          fieldsCopy[index].type = type;
+        }
+        this.valueFields = fieldsCopy;
+        this.inlineEditionForm.reset();
+
+        // Update the fields in the form
+        this.referenceForm.get('fields')?.setValue(this.valueFields);
+        this.referenceForm.get('fields')?.markAsDirty();
+      }
+    }
+
+    // Store the field we're currently editing or null if we're not editing any
+    this.currEditingField = field;
+  }
+
+  /** Adds a new field to the field list */
+  public addField() {
+    // Save any field that's currently being edited
+    this.toggleInlineEditor(null);
+
+    this.inlineEditionForm.patchValue({
+      index: this.valueFields.length,
+    });
+
+    // Add a new field to the list
+    this.valueFields = [
+      ...this.valueFields,
+      {
+        name: this.translateService.instant(
+          'components.referenceData.fields.new'
+        ),
+        type: 'string',
+      },
+    ];
+
+    // Start the edition
+    this.toggleInlineEditor(this.valueFields[this.valueFields.length - 1]);
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.inlineEditionOutsideClickListener) {
+      this.inlineEditionOutsideClickListener();
     }
   }
 }

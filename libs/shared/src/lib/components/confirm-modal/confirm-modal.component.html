@@ -1,0 +1,19 @@
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">{{ title }}</h3>
+  </ng-container>
+  <ng-container *ngIf="content" ngProjectAs="content">
+    <p class="text-sm text-gray-500">{{ content }}</p>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{ cancelText }}</ui-button>
+    <ui-button
+      category="secondary"
+      [variant]="confirmVariant"
+      [uiDialogClose]="true"
+      cdkFocusInitial
+    >
+      {{ confirmText }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -4,25 +4,31 @@ import {
   EventEmitter,
   OnInit,
   OnDestroy,
+  Inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   Application,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-  SafeConfirmService,
-  SafeRestService,
-} from '@oort-front/safe';
-import { firstValueFrom } from 'rxjs';
+  ApplicationService,
+  UnsubscribeComponent,
+  ConfirmService,
+  RestService,
+  BlobType,
+  DownloadService,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
-import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
-import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SnackbarService,
+  SpinnerModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -39,12 +45,13 @@ const DEFAULT_STYLE = '';
     TranslateModule,
     ButtonModule,
     SpinnerModule,
+    TooltipModule,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
 })
 export class CustomStyleComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   public formControl = new FormControl(DEFAULT_STYLE);
@@ -69,14 +76,18 @@ export class CustomStyleComponent
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
    * @param restService Shared rest service
+   * @param document document
+   * @param downloadService Shared download service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
-    private restService: SafeRestService
+    private confirmService: ConfirmService,
+    private restService: RestService,
+    @Inject(DOCUMENT) private document: Document,
+    private downloadService: DownloadService
   ) {
     super();
     // Updates the style when the value changes
@@ -88,7 +99,6 @@ export class CustomStyleComponent
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe({
             next: (css) => {
-              console.log(this.applicationService.customStyle);
               if (this.applicationService.customStyle) {
                 this.applicationService.customStyle.innerText = css;
               }
@@ -106,9 +116,9 @@ export class CustomStyleComponent
       this.formControl.setValue(this.rawCustomStyle, { emitEvent: false });
       this.formControl.markAsPristine();
     } else {
-      const styleElement = document.createElement('style');
+      const styleElement = this.document.createElement('style');
       styleElement.innerText = '';
-      document.getElementsByTagName('head')[0].appendChild(styleElement);
+      this.document.getElementsByTagName('head')[0].appendChild(styleElement);
       this.applicationService.rawCustomStyle = this.rawCustomStyle;
       this.applicationService.customStyle = styleElement;
     }
@@ -155,6 +165,9 @@ export class CustomStyleComponent
   /** Save application custom css styling */
   async onSave(): Promise<void> {
     this.loading = true;
+    if (!this.applicationId) {
+      throw new Error('No application id');
+    }
 
     const file = new File(
       [this.formControl.value as string],
@@ -164,22 +177,19 @@ export class CustomStyleComponent
       }
     );
 
-    const res = await firstValueFrom(
-      this.apollo.mutate<UploadApplicationStyleMutationResponse>({
-        mutation: UPLOAD_APPLICATION_STYLE,
-        variables: {
-          file,
-          application: this.applicationId,
-        },
-        context: {
-          useMultipart: true,
-        },
+    const path = await this.downloadService.uploadBlob(
+      file,
+      BlobType.APPLICATION_STYLE,
+      this.applicationId
+    );
+
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.objectUpdated', {
+        value: this.translate.instant('components.application.customStyling'),
+        type: '',
       })
     );
-    if (res.errors) {
-      this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-      return;
-    } else {
+    if (path) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectUpdated', {
           value: this.translate.instant('components.application.customStyling'),

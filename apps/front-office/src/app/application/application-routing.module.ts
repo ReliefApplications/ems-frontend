@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SafePermissionGuard } from '@oort-front/safe';
+import { PermissionGuard } from '@oort-front/shared';
 import { ApplicationComponent } from './application.component';
 
 /**
@@ -34,7 +34,7 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadChildren: () =>
-          import('@oort-front/safe').then((m) => m.SafeProfileViewModule),
+          import('@oort-front/shared').then((m) => m.ProfileViewModule),
       },
       {
         path: 'settings',
@@ -42,10 +42,10 @@ export const routes: Routes = [
           {
             path: 'templates',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationTemplatesViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationTemplatesViewModule
               ),
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
             data: {
               permission: {
                 action: 'manage',
@@ -56,10 +56,10 @@ export const routes: Routes = [
           {
             path: 'distribution-lists',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationDistributionListsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationDistributionListsViewModule
               ),
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
             data: {
               permission: {
                 action: 'manage',
@@ -70,10 +70,10 @@ export const routes: Routes = [
           {
             path: 'notifications',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationNotificationsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationNotificationsViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'roles',
@@ -84,7 +84,7 @@ export const routes: Routes = [
                   import('./pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -97,10 +97,10 @@ export const routes: Routes = [
                     alias: '@role',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
             data: {
               breadcrumb: {
                 key: 'common.role.few',
@@ -117,10 +117,10 @@ export const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('@oort-front/safe').then(
-                    (m) => m.SafeApplicationUsersViewModule
+                  import('@oort-front/shared').then(
+                    (m) => m.ApplicationUsersViewModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -133,10 +133,10 @@ export const routes: Routes = [
                     alias: '@user',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
             data: {
               breadcrumb: {
                 key: 'common.user.few',
@@ -149,28 +149,12 @@ export const routes: Routes = [
           },
         ],
       },
-      // {
-      //   path: 'share',
-      //   children: [
-      //     // Redirect to main page
-      //     {
-      //       path: '',
-      //       redirectTo: '/',
-      //       pathMatch: 'full',
-      //     },
-      //     {
-      //       path: ':id',
-      //       loadChildren: () =>
-      //         import('./pages/share/share.module').then((m) => m.ShareModule),
-      //     },
-      //   ],
-      // },
     ],
   },
 ];
 
 /**
- * Application routing module.
+ * Routing module of the Front-Office main navigation.
  */
 @NgModule({
   imports: [RouterModule.forChild(routes)],

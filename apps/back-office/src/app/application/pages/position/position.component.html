@@ -41,6 +41,7 @@
                 icon="more_vert"
                 [uiMenuTriggerFor]="menu"
                 (click)="$event.stopPropagation()"
+                [uiTooltip]="'common.actions' | translate"
               >
               </ui-button>
               <ui-menu #menu>
@@ -48,6 +49,7 @@
                   <ui-icon icon="edit" variant="grey"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>
+                <ui-divider class="py-1"></ui-divider>
                 <button uiMenuItem (click)="onDelete(element)">
                   <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
@@ -69,14 +71,14 @@
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
-    <safe-empty
+    <shared-empty
       [title]="'common.positionCategory.none' | translate"
       [footerTemplate]="newPosition"
-    ></safe-empty>
+    ></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
   <!-- Loading indicator -->
-  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
-  </safe-skeleton-table>
+  <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </shared-skeleton-table>
 </ng-template>

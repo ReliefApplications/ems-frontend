@@ -1,0 +1,15 @@
+.summary-card-container {
+  display: grid;
+  grid-auto-rows: 200px;
+  gap: 16px;
+  grid-auto-flow: row;
+  background-color: unset;
+  max-height: 80vh;
+
+  .k-card {
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
+  }
+}

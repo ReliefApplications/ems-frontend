@@ -1,0 +1,45 @@
+<ui-dialog size="fullscreen">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.aggregation.edit.title' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="formGroup" class="flex flex-col gap-8">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.name' | translate }}</label>
+          <input formControlName="name" type="string" />
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-select-menu [value]="resource.name" [disabled]="true">
+            <ui-select-option [value]="resource.name" [disabled]="true">
+              {{ resource.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <shared-aggregation-builder
+          [resource]="resource"
+          [aggregationForm]="formGroup"
+        ></shared-aggregation-builder>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!formGroup.valid"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

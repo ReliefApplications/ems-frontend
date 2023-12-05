@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Dashboard } from '@oort-front/safe';
 
 /**
  * Dashboard query.
@@ -28,7 +27,8 @@ export const GET_DASHBOARD_BY_ID = gql`
       buttons
       canSee
       canUpdate
-      showFilter
+      filter
+      gridOptions
       page {
         id
         visible
@@ -43,13 +43,3 @@ export const GET_DASHBOARD_BY_ID = gql`
     }
   }
 `;
-
-/**
- * Interface of dashboard query response.
- */
-export interface GetDashboardByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application dashboard */
-  dashboard: Dashboard;
-}

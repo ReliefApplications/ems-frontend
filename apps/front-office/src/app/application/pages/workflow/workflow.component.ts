@@ -5,15 +5,14 @@ import {
   ContentType,
   Step,
   Workflow,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import {
-  GetWorkflowByIdQueryResponse,
-  GET_WORKFLOW_BY_ID,
-} from './graphql/queries';
+  UnsubscribeComponent,
+  WorkflowQueryResponse,
+} from '@oort-front/shared';
+import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { Subscription } from 'rxjs';
 
 /**
  * Workflow page.
@@ -23,10 +22,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   /** Loading state of the page */
   public loading = true;
   /** Current workflow id */
@@ -37,6 +33,8 @@ export class WorkflowComponent
   public steps: Step[] = [];
   /** Current step */
   public activeStep = 0;
+  /** Subscription to change step events */
+  private changeStepSubscription!: Subscription;
 
   /**
    * Workflow page.
@@ -65,13 +63,14 @@ export class WorkflowComponent
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .watchQuery<GetWorkflowByIdQueryResponse>({
+        .watchQuery<WorkflowQueryResponse>({
           query: GET_WORKFLOW_BY_ID,
           variables: {
             id: this.id,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             if (data.workflow) {
               this.workflow = data.workflow;
@@ -131,14 +130,23 @@ export class WorkflowComponent
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: any) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
+      this.changeStepSubscription = elementRef.changeStep.subscribe(
+        (event: any) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
         }
-      });
+      );
     }
+  }
+
+  /**
+   * Clear subscriptions set from the router-outlet
+   */
+  clearSubscriptions() {
+    this.changeStepSubscription?.unsubscribe();
   }
 
   /**

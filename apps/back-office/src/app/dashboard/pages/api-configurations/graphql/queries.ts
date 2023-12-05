@@ -1,12 +1,23 @@
 import { gql } from 'apollo-angular';
-import { ApiConfiguration } from '@oort-front/safe';
 
 // === GET API CONFIGURATIONS ===
 
 /** Graphql query for getting multiple api configurations object with a cursor */
 export const GET_API_CONFIGURATIONS = gql`
-  query GetApiConfigurations($first: Int, $afterCursor: ID) {
-    apiConfigurations(first: $first, afterCursor: $afterCursor) {
+  query GetApiConfigurations(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    apiConfigurations(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
       edges {
         node {
           id
@@ -44,18 +55,3 @@ export const GET_API_CONFIGURATIONS = gql`
     }
   }
 `;
-
-/** Model for GetApiConfigurationQueryResponse object */
-export interface GetApiConfigurationsQueryResponse {
-  apiConfigurations: {
-    edges: {
-      node: ApiConfiguration;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

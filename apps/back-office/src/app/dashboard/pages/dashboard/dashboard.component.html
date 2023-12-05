@@ -1,9 +1,27 @@
+<shared-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [editable]="true"
+  [isFullScreen]="isFullScreen"
+  [variant]="dashboard?.filter?.variant ?? 'default'"
+  [closable]="dashboard?.filter?.closable ?? false"
+></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+<div
+  [ngClass]="{
+    'py-8 px-6 h-full bg-white overflow-y-auto overflow-x-hidden': isFullScreen
+  }"
+>
+  <shared-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [editable]="true"
+    [isFullScreen]="isFullScreen"
+    [variant]="dashboard?.filter?.variant ?? 'default'"
+    [closable]="dashboard?.filter?.closable ?? false"
+  ></shared-dashboard-filter>
   <ng-container
-    safeFullScreen
+    sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
-    *safeSkeleton="
+    *sharedSkeleton="
       loading;
       repeat: 1;
       height: '32px';
@@ -13,10 +31,13 @@
   >
     <!-- Dashboard options -->
     <ng-container *ngIf="dashboard">
-      <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <div
+        id="dashboard-header"
+        class="flex flex-wrap items-center justify-between mb-6 gap-4"
+      >
         <!-- Dashboard title -->
         <div class="flex items-center gap-1">
-          <safe-editable-text
+          <shared-editable-text
             [text]="dashboard.name"
             [canEdit]="canUpdate"
             (onChange)="saveName($event)"
@@ -25,23 +46,29 @@
             <h1 class="!m-0 overflow-hidden text-ellipsis">
               {{ dashboard.name }}
             </h1>
-          </safe-editable-text>
+          </shared-editable-text>
+          <!-- Settings -->
           <ui-button
-            *ngIf="!isStep"
-            [isIcon]="true"
+            *ngIf="!formActive"
             variant="grey"
-            category="primary"
-            [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
-            (click)="togglePageVisibility()"
-            [uiTooltip]="
-              (dashboard.page?.visible
-                ? 'components.application.pages.hide'
-                : 'components.application.pages.show'
+            (click)="onOpenSettings()"
+            [isIcon]="true"
+            icon="settings"
+            [uiTooltip]="'common.settings' | translate"
+          ></ui-button>
+          <ui-button
+            *ngIf="canUpdate"
+            [icon]="editionActive ? 'edit' : 'preview'"
+            (click)="editionActive = !editionActive"
+            >{{
+              (editionActive
+                ? 'components.application.dashboard.enterPreviewMode'
+                : 'components.application.dashboard.enterEditMode'
               ) | translate
-            "
+            }}</ui-button
           >
-          </ui-button>
         </div>
+        <!-- Other dashboard settings -->
         <div
           class="flex items-center gap-1"
           *ngIf="!formActive"
@@ -49,11 +76,11 @@
           (cdkDropListDropped)="onButtonActionDrop($event)"
         >
           <!-- Button actions -->
-          <safe-button-action
+          <shared-button-action
             [buttonActions]="buttonActions"
             [dashboard]="dashboard"
             [canUpdate]="canUpdate"
-          ></safe-button-action>
+          ></shared-button-action>
 
           <!-- Fullscreen -->
           <ui-button
@@ -67,21 +94,6 @@
             "
           >
           </ui-button>
-          <!-- Access -->
-          <safe-access
-            [access]="dashboard.permissions"
-            [application]="applicationId"
-            [objectTypeName]="'common.page.one' | translate"
-            (save)="saveAccess($event)"
-            *ngIf="
-              dashboard.page
-                ? dashboard.page.canUpdate
-                : dashboard.step
-                ? dashboard.step.canUpdate
-                : false
-            "
-          >
-          </safe-access>
           <!-- Context -->
           <ui-button
             variant="grey"
@@ -102,24 +114,10 @@
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
-            cdkOverlayOrigin
-            #appMenuTrigger="cdkOverlayOrigin"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #menu>
-            <button uiMenuItem (click)="toggleFiltering()">
-              <ui-icon icon="tune" variant="grey"></ui-icon>
-              {{
-                (showFilter
-                  ? 'models.dashboard.deactivateFiltering'
-                  : 'models.dashboard.activateFiltering'
-                ) | translate
-              }}
-            </button>
-            <button uiMenuItem (click)="onAppSelection()">
-              <ui-icon icon="file_copy" variant="grey"></ui-icon>
-              {{ 'common.duplicate' | translate }}
-            </button>
             <button uiMenuItem (click)="onAddButtonAction()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.add' | translate }}
@@ -129,25 +127,6 @@
               {{ 'models.dashboard.share' | translate }}
             </button>
           </ui-menu>
-
-          <ng-template #searchMenuHeaderTemplate>
-            <ui-alert [closable]="true">
-              {{ 'models.page.tooltip.duplicate' | translate }}
-            </ui-alert>
-          </ng-template>
-          <ng-template
-            cdkConnectedOverlay
-            [cdkConnectedOverlayOrigin]="appMenuTrigger"
-            [cdkConnectedOverlayOpen]="showAppMenu"
-          >
-            <safe-search-menu
-              [headerTemplate]="searchMenuHeaderTemplate"
-              [currentApplicationId]="applicationId"
-              [applications]="applications"
-              (close)="showAppMenu = false"
-              (open)="onDuplicate($event)"
-            ></safe-search-menu>
-          </ng-template>
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">
@@ -173,6 +152,8 @@
           <ui-graphql-select
             [query]="recordsQuery"
             [formControl]="contextId"
+            [filterable]="true"
+            (searchChange)="onSearchChange($event)"
             path="records"
             valueField="id"
             textField="data.{{ dashboard.page.context.displayField }}"
@@ -193,7 +174,7 @@
           <label>{{
             'models.dashboard.context.refData.element' | translate
           }}</label>
-          <ui-select-menu [formControl]="contextId">
+          <ui-select-menu [formControl]="contextId" [filterable]="true">
             <ui-select-option
               *ngFor="let element of refDataElements"
               [value]="element[refDataValueField]"
@@ -206,25 +187,15 @@
     </ng-container>
   </ng-container>
   <!-- Widgets -->
-  <safe-widget-grid
+  <shared-widget-grid
     [loading]="loading"
-    [widgets]="tiles"
-    [canUpdate]="dashboard?.canUpdate || false"
-    (move)="onMove($event)"
+    [widgets]="widgets"
+    [options]="gridOptions"
+    [canUpdate]="(canUpdate && editionActive) || false"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
-  ></safe-widget-grid>
-  <safe-dashboard-filter
-    *ngIf="showFilter && isFullScreen"
-    [editable]="true"
-    [isFullScreen]="isFullScreen"
-  ></safe-dashboard-filter>
+  ></shared-widget-grid>
 </div>
-<safe-dashboard-filter
-  *ngIf="showFilter && !isFullScreen"
-  [editable]="true"
-  [isFullScreen]="isFullScreen"
-></safe-dashboard-filter>

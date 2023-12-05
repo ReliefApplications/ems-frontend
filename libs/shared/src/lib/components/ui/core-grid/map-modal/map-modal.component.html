@@ -1,0 +1,27 @@
+<ui-dialog [closable]="true" size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold flex gap-2 items-center">
+      {{ 'components.widget.grid.map.mapDetailsTitle' | translate }}
+      <ui-icon
+        class="cursor-help"
+        [size]="18"
+        icon="info_outline"
+        variant="grey"
+        [uiTooltip]="'components.widget.grid.map.mapDetailsTooltip' | translate"
+      >
+      </ui-icon>
+    </h3>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <div class="h-[600px] w-full">
+      <shared-map class="w-full h-full"></shared-map>
+    </div>
+  </ng-container>
+
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+  </ng-container>
+</ui-dialog>

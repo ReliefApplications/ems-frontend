@@ -1,14 +1,13 @@
 <ui-dialog size="medium">
   <!-- Modal header -->
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         data.pullJob
-          ? ('common.editObject'
-            | translate : { name: 'common.pullJob.one' | translate })
+          ? ('models.pullJob.edit' | translate)
           : ('models.pullJob.new' | translate)
       }}
-    </h1>
+    </h3>
   </ng-container>
 
   <!-- Modal content -->
@@ -51,10 +50,10 @@
           </div>
         </div>
         <!-- Schedule -->
-        <safe-cron-expression-control
+        <shared-cron-expression-control
           class="flex"
           formControlName="schedule"
-        ></safe-cron-expression-control>
+        ></shared-cron-expression-control>
         <!-- API to use -->
         <div uiFormFieldDirective class="flex-1">
           <label>{{ 'common.apiConfiguration.one' | translate }}</label>
@@ -191,9 +190,13 @@
                 <form
                   [formGroup]="$any(element)"
                   *ngFor="let element of mappingArray.controls; index as i"
-                  class="flex gap-x-2 items-center"
+                  class="flex gap-x-2 items-end"
                 >
-                  <div uiFormFieldDirective [outline]="false" class="flex-1">
+                  <div
+                    uiFormFieldDirective
+                    [defaultMargin]="false"
+                    class="flex-1"
+                  >
                     <label>{{ 'common.field.one' | translate }}</label>
                     <ui-select-menu formControlName="name">
                       <ui-select-option
@@ -205,8 +208,9 @@
                     </ui-select-menu>
                   </div>
                   <div
-                    uiFormFieldDirective
                     *ngIf="element.value.name"
+                    uiFormFieldDirective
+                    [defaultMargin]="false"
                     class="flex-1"
                   >
                     <label>{{ 'common.value.one' | translate }}</label>
@@ -217,16 +221,17 @@
                     icon="remove_circle_outline"
                     variant="danger"
                     (click)="onDeleteElement(i)"
+                    [uiTooltip]="'common.delete' | translate"
                   >
                   </ui-button>
                 </form>
                 <ui-button
                   *ngIf="filteredFields('').length > 0"
-                  [isIcon]="true"
                   icon="add_circle_outline"
                   variant="primary"
                   (click)="onAddElement()"
                 >
+                  {{ 'components.pullJob.modal.addMappingField' | translate }}
                 </ui-button>
               </div>
             </ng-container>
@@ -257,7 +262,9 @@
   </ng-container>
   <!-- Modal actions -->
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
@@ -273,15 +280,5 @@
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <div uiChipList>
-    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
-      {{ 'common.status_active' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
-      {{ 'common.status_pending' | translate | titlecase }}
-    </ui-chip>
-    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
-      {{ 'common.status_archived' | translate | titlecase }}
-    </ui-chip>
-  </div>
+  <shared-status-options [status]="status"></shared-status-options>
 </ng-template>

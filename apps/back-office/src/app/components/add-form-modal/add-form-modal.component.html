@@ -1,6 +1,6 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h1>{{ 'models.form.new' | translate }}</h1>
+    <h3 class="font-semibold">{{ 'models.form.new' | translate }}</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
@@ -20,30 +20,36 @@
         >
           <ui-radio [value]="true">
             <ng-container ngProjectAs="label">
-              {{ 'components.form.create.choice.resource' | translate }}
-              <ui-icon
-                [size]="18"
-                icon="info_outline"
-                variant="grey"
-                [uiTooltip]="
-                  'components.form.create.tooltip.resource' | translate
-                "
-              >
-              </ui-icon>
+              <span class="flex items-center gap-1">
+                {{ 'components.form.create.choice.resource' | translate }}
+                <ui-icon
+                  class="cursor-help"
+                  [size]="18"
+                  icon="info_outline"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.resource' | translate
+                  "
+                >
+                </ui-icon>
+              </span>
             </ng-container>
           </ui-radio>
           <ui-radio [value]="false">
             <ng-container ngProjectAs="label">
-              {{ 'components.form.create.choice.inherit' | translate }}
-              <ui-icon
-                [size]="18"
-                icon="info_outline"
-                variant="grey"
-                [uiTooltip]="
-                  'components.form.create.tooltip.inherit' | translate
-                "
-              >
-              </ui-icon>
+              <span class="flex items-center gap-1">
+                {{ 'components.form.create.choice.inherit' | translate }}
+                <ui-icon
+                  class="cursor-help"
+                  [size]="18"
+                  icon="info_outline"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.inherit' | translate
+                  "
+                >
+                </ui-icon>
+              </span>
             </ng-container>
           </ui-radio>
         </div>
@@ -52,21 +58,19 @@
             <label>{{
               'components.form.create.template.title' | translate
             }}</label>
-            <ui-graphql-select
-              valueField="id"
-              textField="name"
-              [query]="resourcesQuery"
+            <shared-resource-select
               formControlName="resource"
-              (searchChange)="onResourceSearchChange($event)"
-              [filterable]="true"
-            >
-            </ui-graphql-select>
+              [placeholder]="
+                'components.form.create.template.selectResource' | translate
+              "
+            ></shared-resource-select>
           </div>
           <ng-container *ngIf="form.controls.resource.value !== null">
             <ui-toggle formControlName="inheritsTemplate" class="mb-5">
               <ng-container ngProjectAs="label">
                 {{ 'components.form.create.choice.template' | translate }}
                 <ui-icon
+                  class="ml-1 cursor-help self-center"
                   icon="info_outline"
                   variant="grey"
                   [size]="18"
@@ -81,19 +85,23 @@
                 <label>{{
                   'components.form.create.template.from' | translate
                 }}</label>
-                <ui-select-menu formControlName="template">
+                <ui-select-menu
+                  formControlName="template"
+                  [customTemplate]="{
+                    template: formOptionTmpl,
+                    context: { $implicit: selectedTemplate }
+                  }"
+                >
                   <ui-select-option
                     *ngFor="let template of templates"
                     [value]="template.id"
                   >
-                    {{ template.name }}
-                    <ng-container ngProjectAs="icon">
-                      <div uiChipList *ngIf="template.core">
-                        <ui-chip class="!rounded-lg" variant="grey">{{
-                          'models.form.core' | translate
-                        }}</ui-chip>
-                      </div>
-                    </ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="
+                        formOptionTmpl;
+                        context: { $implicit: template }
+                      "
+                    ></ng-container>
                   </ui-select-option>
                 </ui-select-menu>
               </div>
@@ -104,7 +112,9 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
@@ -116,3 +126,15 @@
     </ui-button>
   </ng-container>
 </ui-dialog>
+
+<!-- Template to display templates available -->
+<ng-template #formOptionTmpl let-template>
+  <div class="flex gap-2 items-center">
+    <div uiChipList *ngIf="template?.core">
+      <ui-chip class="!rounded-lg" variant="grey">
+        {{ 'models.form.core' | translate }}
+      </ui-chip>
+    </div>
+    {{ template?.name }}
+  </div>
+</ng-template>

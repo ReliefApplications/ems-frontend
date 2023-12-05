@@ -3,7 +3,7 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/web-widgets/src",
-  "prefix": "oort-front",
+  "prefix": "oort",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
@@ -12,50 +12,17 @@
         "outputPath": "dist/apps/web-widgets",
         "index": "apps/web-widgets/src/index.html",
         "main": "apps/web-widgets/src/main.ts",
-        "polyfills": ["apps/web-widget/src/polyfills.ts"],
+        "polyfills": ["apps/web-widgets/src/polyfills.ts"],
         "tsConfig": "apps/web-widgets/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "libs/safe/src/i18n/",
-            "output": "/assets/i18n/"
-          },
-          {
-            "glob": "**/*",
-            "input": "assets/",
-            "output": "/assets/"
-          },
-          "apps/web-widgets/src/favicon.ico",
-          {
-            "glob": "**/*",
-            "input": "node_modules/tinymce",
-            "output": "/tinymce/"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/safe/src/i18n/tinymce/",
-            "output": "/tinymce/langs"
-          }
-        ],
-        "styles": [
-          "apps/web-widgets/src/styles.scss",
-          "libs/safe/src/lib/style/styles.scss",
-          "node_modules/survey-angular/survey.min.css",
-          "node_modules/survey-creator/survey-creator.min.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
-        ],
+        "styles": ["apps/web-widgets/src/styles.scss"],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
-          "node_modules/tinymce/tinymce.js",
-          "node_modules/tinymce/themes/silver/theme.js"
+          "node_modules/tinymce/tinymce.min.js",
+          "node_modules/tinymce/themes/silver/theme.min.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -63,11 +30,73 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular",
-          "fast-sha256"
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
+          "fast-sha256",
+          "color",
+          "esri-leaflet-vector",
+          "leaflet",
+          "leaflet.markercluster",
+          "jsonpath",
+          "to-json-schema"
         ]
       },
       "configurations": {
+        "azure-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.azure.dev.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            }
+          ],
+          "outputHashing": "none",
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/styles/src/lib/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
+          }
+        },
+        "azure-uat": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            }
+          ],
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/styles/src/lib/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.azure.uat.ts"
+            }
+          ],
+          "outputHashing": "none"
+        },
         "oort-dev": {
           "budgets": [
             {
@@ -82,7 +111,10 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/styles/src/lib/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           },
           "fileReplacements": [
             {
@@ -90,7 +122,34 @@
               "with": "apps/web-widgets/src/environments/environment.oort.dev.ts"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "none"
+        },
+        "oort-local": {
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.oort.local.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            }
+          ],
+          "outputHashing": "none",
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/styles/src/lib/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
+          }
         },
         "development": {
           "buildOptimizer": false,
@@ -100,7 +159,10 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/styles/src/lib/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           }
         }
       },

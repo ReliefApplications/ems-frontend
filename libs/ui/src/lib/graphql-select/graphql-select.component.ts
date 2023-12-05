@@ -1,9 +1,9 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostBinding,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -18,26 +18,30 @@ import {
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { get } from 'lodash';
-import {
-  NgControl,
-  ControlValueAccessor,
-  UntypedFormControl,
-} from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { updateQueryUniqueValues } from './utils/update-queries';
-import { DOCUMENT } from '@angular/common';
+import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
 
-/** Component for a dropdown with pagination */
+/**
+ * Component for a dropdown with pagination.
+ * Extended by:
+ * - resource select
+ * - reference data select
+ *
+ * BE AWARE: changes made on this component may affect extended ones!!!
+ */
 @Component({
   selector: 'ui-graphql-select',
   templateUrl: './graphql-select.component.html',
   styleUrls: ['./graphql-select.component.scss'],
+  template: '<div></div>',
 })
 export class GraphQLSelectComponent
   implements OnInit, OnChanges, OnDestroy, ControlValueAccessor
@@ -47,13 +51,16 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   @Input() textField = '';
   @Input() path = '';
+  @Input() isSurveyQuestion = false;
   /** Add type to selectedElements */
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
+  @Input() placeholder = '';
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
   /** Query reference for getting the available contents */
   @Input() query!: QueryRef<any>;
+
   /**
    * Gets the value
    *
@@ -62,27 +69,14 @@ export class GraphQLSelectComponent
   @Input() get value(): string | string[] | null {
     return this.ngControl?.value;
   }
+
   /** Sets the value */
   set value(val: string | string[] | null) {
     this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);
   }
-  /**
-   * Gets the placeholder for the select
-   *
-   * @returns the placeholder
-   */
-  @Input() get placeholder() {
-    return this.ePlaceholder;
-  }
-  /**
-   * Sets the placeholder
-   */
-  set placeholder(plh) {
-    this.ePlaceholder = plh;
-    this.stateChanges.next();
-  }
+
   /**
    * Indicates whether the field is required
    *
@@ -92,6 +86,7 @@ export class GraphQLSelectComponent
   get required() {
     return this.isRequired;
   }
+
   /**
    * Sets whether the field is required
    */
@@ -99,6 +94,7 @@ export class GraphQLSelectComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+
   /**
    * Indicates whether the field is disabled
    *
@@ -108,6 +104,7 @@ export class GraphQLSelectComponent
   get disabled(): boolean {
     return this.ngControl?.disabled || false;
   }
+
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
@@ -120,7 +117,7 @@ export class GraphQLSelectComponent
   @Output() searchChange = new EventEmitter<string>();
 
   public stateChanges = new Subject<void>();
-  public searchControl = new UntypedFormControl('');
+  public searchControl = new FormControl('', { nonNullable: true });
   public controlType = 'ui-graphql-select';
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
@@ -137,7 +134,6 @@ export class GraphQLSelectComponent
     endCursor: '',
     hasNextPage: true,
   };
-  private ePlaceholder = '';
   private isRequired = false;
   private scrollListener!: any;
 
@@ -184,16 +180,18 @@ export class GraphQLSelectComponent
    *
    * @param ngControl form control shared service,
    * @param elementRef shared element ref service
-   * @param renderer Renderer2
-   * @param document document
+   * @param renderer - Angular - Renderer2
+   * @param changeDetectorRef - Angular - ChangeDetectorRef
+   * @param shadowDomService shadow dom service to handle the current host of the component
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     public elementRef: ElementRef<HTMLElement>,
-    private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
+    protected renderer: Renderer2,
+    protected changeDetectorRef: ChangeDetectorRef,
+    protected shadowDomService: ShadowDomService
   ) {
-    if (this.ngControl != null) {
+    if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
   }
@@ -387,7 +385,8 @@ export class GraphQLSelectComponent
   onOpenSelect(): void {
     // focus on search input, if filterable
     if (this.filterable) this.searchInput?.nativeElement.focus();
-    const panel = document.getElementById('optionList');
+    const panel =
+      this.shadowDomService.currentHost.getElementById('optionList');
     if (this.scrollListener) {
       this.scrollListener();
     }
@@ -433,6 +432,10 @@ export class GraphQLSelectComponent
             this.updateValues(results.data, results.loading);
           });
       }
+      // If it's used as a survey question, then change detector have to be manually triggered
+      if (this.isSurveyQuestion) {
+        this.changeDetectorRef.detectChanges();
+      }
     }
   }
 
@@ -443,6 +446,10 @@ export class GraphQLSelectComponent
    */
   public onSelectionChange(event: any) {
     this.value = event.value;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /** Triggers on close of select */
@@ -492,6 +499,10 @@ export class GraphQLSelectComponent
     this.queryElements = this.cachedElements;
     this.pageInfo = get(data, path).pageInfo;
     this.loading = loading;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /**

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Dashboard } from '@oort-front/safe';
 
 // === GET DASHBOARD BY ID ===
 /** Graphql query for getting a dashboard by its id */
@@ -45,12 +44,8 @@ export const GET_DASHBOARD_BY_ID = gql`
           }
         }
         canUpdate
+        filter
       }
     }
   }
 `;
-
-/** Model for GetDashboardByIdQueryResponse object */
-export interface GetDashboardByIdQueryResponse {
-  dashboard: Dashboard;
-}

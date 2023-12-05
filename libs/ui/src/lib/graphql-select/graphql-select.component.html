@@ -6,6 +6,7 @@
   [isGraphQlSelect]="true"
   (focusin)="onFocusIn()"
   (focusout)="onFocusOut($event)"
+  [placeholder]="placeholder"
 >
   <!-- Search -->
   <ng-container *ngIf="filterable">
@@ -40,6 +41,7 @@
       [isIcon]="true"
       icon="close"
       (click)="searchControl.setValue('')"
+      [uiTooltip]="'common.close' | translate"
     ></ui-button>
   </div>
 </ng-template>

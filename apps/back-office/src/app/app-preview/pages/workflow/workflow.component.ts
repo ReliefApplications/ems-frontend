@@ -5,16 +5,15 @@ import {
   ContentType,
   Step,
   Workflow,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import {
-  GetWorkflowByIdQueryResponse,
-  GET_WORKFLOW_BY_ID,
-} from './graphql/queries';
-import { PreviewService } from '../../../services/preview.service';
+  UnsubscribeComponent,
+  WorkflowQueryResponse,
+} from '@oort-front/shared';
+import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { PreviewService } from '../../../services/preview.service';
+import { Subscription } from 'rxjs';
 
 /**
  * Workflow page component for application preview.
@@ -24,23 +23,21 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
-  // === DATA ===
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading indicator */
   public loading = true;
-
-  // === WORKFLOW ===
+  /** Current workflow id */
   public id = '';
+  /** Current workflow */
   public workflow?: Workflow;
+  /** Workflow steps */
   public steps: Step[] = [];
-
-  // === ACTIVE STEP ===
+  /** Current step index */
   public activeStep = 0;
-
-  // === PREVIEWED ROLE ===
+  /** Role used for preview */
   public role = '';
+  /** Subscription to change step events */
+  private changeStepSubscription!: Subscription;
 
   /**
    * Workflow page component for application preview
@@ -76,14 +73,15 @@ export class WorkflowComponent
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .watchQuery<GetWorkflowByIdQueryResponse>({
+        .watchQuery<WorkflowQueryResponse>({
           query: GET_WORKFLOW_BY_ID,
           variables: {
             id: this.id,
             asRole: this.role,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             if (data.workflow) {
               this.workflow = data.workflow;
@@ -121,14 +119,23 @@ export class WorkflowComponent
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: any) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
+      this.changeStepSubscription = elementRef.changeStep.subscribe(
+        (event: any) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
         }
-      });
+      );
     }
+  }
+
+  /**
+   * Clear subscriptions set from the router-outlet
+   */
+  clearSubscriptions() {
+    this.changeStepSubscription?.unsubscribe();
   }
 
   /**
