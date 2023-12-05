@@ -481,6 +481,10 @@
 				"week": "Semaine",
 				"year": "Année"
 			},
+			"preview": {
+				"hide": "Masquer l'aperçu",
+				"show": "Afficher l'aperçu"
+			},
 			"sourceFields": "Sélectionner les champs",
 			"stages": {
 				"addFields": "Ajouter des champs",

@@ -19,6 +19,13 @@
             | translate
         "
       ></ui-icon>
+      <ui-checkbox
+        *ngIf="showCheckboxes"
+        (click)="$event.stopPropagation()"
+        [formControl]="$any(stageForm).controls.preview"
+        class="ml-auto"
+      >
+      </ui-checkbox>
     </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">

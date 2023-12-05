@@ -32,7 +32,7 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
 export const GET_AGGREGATION_DATA = gql`
   query GetAggregationData(
     $resource: ID!
-    $aggregation: ID!
+    $aggregation: JSON!
     $mapping: JSON
     $first: Int
     $skip: Int

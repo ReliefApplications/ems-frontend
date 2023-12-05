@@ -5,7 +5,7 @@
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form [formGroup]="formGroup" class="flex flex-col gap-8">
+    <form [formGroup]="formGroup" class="flex flex-col gap-8 h-full">
       <div class="flex flex-col">
         <div uiFormFieldDirective>
           <label>{{ 'common.name' | translate }}</label>
@@ -20,8 +20,9 @@
           </ui-select-menu>
         </div>
       </div>
-      <div class="flex flex-col">
+      <div class="flex flex-col h-full">
         <shared-aggregation-builder
+          class="h-full"
           [resource]="resource"
           [aggregationForm]="formGroup"
         ></shared-aggregation-builder>
