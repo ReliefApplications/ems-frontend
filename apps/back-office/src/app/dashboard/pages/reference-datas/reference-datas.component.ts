@@ -4,7 +4,6 @@ import {
   AddReferenceDataMutationResponse,
   DeleteReferenceDataMutationResponse,
   ReferenceData,
-  AuthService,
   ConfirmService,
   UnsubscribeComponent,
   ReferenceDatasQueryResponse,
@@ -44,6 +43,7 @@ export class ReferenceDatasComponent
 {
   // === DATA ===
   public loading = true;
+  public updating = false;
   private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
   displayedColumns = [
     'name',
@@ -56,16 +56,13 @@ export class ReferenceDatasComponent
   public cachedReferenceDatas: ReferenceData[] = [];
 
   // === SORTING ===
-  private sort: TableSort = { active: '', sortDirection: '' };
+  private sort!: TableSort;
 
   // === FILTERS ===
-  public searchText = '';
-  // === FILTERING ===
   public filter: any = {
     filters: [],
     logic: 'and',
   };
-  public filterLoading = false;
 
   public pageInfo = {
     pageIndex: 0,
@@ -80,7 +77,6 @@ export class ReferenceDatasComponent
    * @param apollo Apollo service
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translation service
@@ -89,7 +85,6 @@ export class ReferenceDatasComponent
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private router: Router,
     private translate: TranslateService
@@ -106,10 +101,10 @@ export class ReferenceDatasComponent
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
-          sortField: 'name',
-          sortOrder: 'asc',
-          afterCursor: null,
+          afterCursor: this.pageInfo.endCursor,
           filter: this.filter,
+          sortField: this.sort?.sortDirection && this.sort.active,
+          sortOrder: this.sort?.sortDirection,
         },
       });
 
@@ -118,6 +113,12 @@ export class ReferenceDatasComponent
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
+
+    // Initializing sort to an empty one
+    this.sort = {
+      active: '',
+      sortDirection: '',
+    };
   }
 
   /**
@@ -144,9 +145,8 @@ export class ReferenceDatasComponent
    * @param filter Filter to apply
    */
   onFilter(filter: any) {
-    this.filterLoading = true;
     this.filter = filter;
-    this.fetchReferenceDatas(true, filter);
+    this.fetchReferenceDatas(true);
   }
 
   /**
@@ -292,27 +292,22 @@ export class ReferenceDatasComponent
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
     this.loading = loading;
-    this.filterLoading = false;
+    this.updating = false;
   }
 
   /**
    * Update reference datas query.
    *
    * @param refetch erase previous query results
-   * @param filter filter
    */
-  private fetchReferenceDatas(refetch?: boolean, filter?: any): void {
-    this.loading = true;
+  private fetchReferenceDatas(refetch?: boolean): void {
+    this.updating = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
-      filter: filter ?? this.filter,
-      sortField:
-        (this.sort?.sortDirection && this.sort.active) !== ''
-          ? this.sort?.sortDirection && this.sort.active
-          : 'name',
-      sortOrder:
-        this.sort?.sortDirection !== '' ? this.sort?.sortDirection : 'asc',
+      filter: this.filter,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
     };
     const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
       this.apollo.client,
