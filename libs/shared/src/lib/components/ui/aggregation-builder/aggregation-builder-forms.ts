@@ -124,6 +124,14 @@ export const addStage = (value: any) => {
         ?.setValidators([Validators.required, jsonValidator]);
       return formGroup;
     }
+    case PipelineStage.LABEL: {
+      return formBuilder.group({
+        type: [PipelineStage.LABEL],
+        form: formBuilder.group({
+          field: [get(value, 'form.field', ''), Validators.required],
+        }),
+      });
+    }
     default: {
       return formBuilder.group({
         type: [PipelineStage.CUSTOM],

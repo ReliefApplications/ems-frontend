@@ -491,6 +491,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"label": "******",
 				"sort": "******",
 				"unwind": "******"
 			},
@@ -499,6 +500,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"label": "******",
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
@@ -951,6 +953,9 @@
 				"fields": "******",
 				"sortingDisabled": "******",
 				"style": "******"
+			},
+			"label": {
+				"field": "******"
 			},
 			"pagination": {
 				"first": "******",

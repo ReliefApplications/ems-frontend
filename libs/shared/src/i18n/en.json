@@ -491,6 +491,7 @@
 				"custom": "Custom",
 				"filter": "Filter",
 				"group": "Group",
+				"label": "Label",
 				"sort": "Sort",
 				"unwind": "Unwind"
 			},
@@ -499,6 +500,7 @@
 				"custom": "Defines a custom aggregation function or expression in JavaScript.",
 				"filter": "Returns an array with only those elements that match the condition.",
 				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+				"label": "Replaces the choice values for the choice texts (if defined) in the specified field.",
 				"selectedFields": "Only unused fields can removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
@@ -951,6 +953,9 @@
 				"fields": "Select data points below and drag them to 'selected fields' on the right",
 				"sortingDisabled": "Sorting fields is disabled when search is active",
 				"style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
+			},
+			"label": {
+				"field": "Field"
 			},
 			"pagination": {
 				"first": "Limit",

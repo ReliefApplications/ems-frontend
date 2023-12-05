@@ -58,6 +58,13 @@
           [fields]="fieldsPerStage[index]"
         ></shared-field-dropdown>
       </ng-container>
+      <ng-container *ngSwitchCase="stageType.LABEL">
+        <shared-label-stage
+          [form]="$any(stageForm).controls.form"
+          [fields]="fieldsPerStage[index]"
+          [metaFields]="metaFields"
+        ></shared-label-stage>
+      </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
         <div uiFormFieldDirective>
           <label>{{ 'common.input.rawJson' | translate }}</label>

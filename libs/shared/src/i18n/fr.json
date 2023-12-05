@@ -491,6 +491,7 @@
 				"custom": "Personnaliser",
 				"filter": "Filtrer",
 				"group": "Grouper",
+				"label": "Étiqueter",
 				"sort": "Trier",
 				"unwind": "Dissocier"
 			},
@@ -499,6 +500,7 @@
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"label": "Remplace les valeurs de choix pour les textes de choix (si définis) dans le champ spécifié.",
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
@@ -956,6 +958,9 @@
 				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
+			},
+			"label": {
+				"field": "Champ"
 			},
 			"pagination": {
 				"first": "Limite",
