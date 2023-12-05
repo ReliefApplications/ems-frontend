@@ -12,6 +12,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { GET_FIELDS_METADATA } from './graphql/queries';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Main component of Aggregation builder.
@@ -76,11 +77,13 @@ export class AggregationBuilderComponent
    *
    * @param queryBuilder This is a service that is used to build queries.
    * @param aggregationBuilder This is the service that will be used to build the aggregation query.
+   * @param aggregationService This is the service that will be used to build the aggregation query.
    * @param apollo Shared apollo service
    */
   constructor(
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
+    private aggregationService: AggregationService,
     private apollo: Apollo
   ) {
     super();
@@ -135,6 +138,34 @@ export class AggregationBuilderComponent
         );
         // Trigger check on fields being removable or not
         this.fields.next(this.fields.getValue());
+      });
+
+    // For the result preview
+    this.aggregationForm.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(1000))
+      .subscribe((value: any) => {
+        if (!this.resource.id) {
+          return;
+        }
+        this.aggregationService
+          .aggregationDataQuery(this.resource.id, {
+            pipeline: (value.pipeline ?? []).filter((x: any) => x.preview),
+            sourceFields: value.sourceFields,
+          })
+          .subscribe((result) => {
+            // Update the preview with the error message
+            if (result.errors?.[0]) {
+              this.aggregationPreview = result.errors[0].message;
+              return;
+            }
+
+            // Update the preview with the items from the aggregation
+            this.aggregationPreview = JSON.stringify(
+              result.data?.recordsAggregation?.items ?? [],
+              null,
+              2
+            );
+          });
       });
     this.loading = false;
   }

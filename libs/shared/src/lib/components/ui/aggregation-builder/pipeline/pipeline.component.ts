@@ -34,6 +34,9 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   /** Array to hold the fields per stage. */
   public fieldsPerStage: any[] = [];
 
+  /** Whether or not to show the pipeline checkboxes */
+  @Input() showCheckboxes = true;
+
   /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
 
@@ -59,7 +62,9 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500))
       .pipe(takeUntil(this.destroy$))
-      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
+      .subscribe((pipeline: any[]) => {
+        this.updateFieldsPerStage(pipeline);
+      });
   }
 
   /**

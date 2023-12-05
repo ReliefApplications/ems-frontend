@@ -59,12 +59,14 @@ export const addStage = (value: any) => {
     case PipelineStage.FILTER: {
       return formBuilder.group({
         type: [PipelineStage.FILTER],
+        preview: true,
         form: createFilterGroup(get(value, 'form', {})),
       });
     }
     case PipelineStage.SORT: {
       return formBuilder.group({
         type: [PipelineStage.SORT],
+        preview: true,
         form: formBuilder.group({
           field: [get(value, 'form.field', ''), Validators.required],
           order: [get(value, 'form.order', 'asc'), Validators.required],
@@ -74,6 +76,7 @@ export const addStage = (value: any) => {
     case PipelineStage.GROUP: {
       return formBuilder.group({
         type: [PipelineStage.GROUP],
+        preview: true,
         form: formBuilder.group({
           groupBy: formBuilder.array(
             get(value, 'form.groupBy', [{}]).map((x: any) => groupByRuleForm(x))
@@ -89,6 +92,7 @@ export const addStage = (value: any) => {
     case PipelineStage.ADD_FIELDS: {
       return formBuilder.group({
         type: [PipelineStage.ADD_FIELDS],
+        preview: true,
         form: formBuilder.array(
           value.form
             ? value.form.map((x: any) => addFieldsForm(x))
@@ -100,6 +104,7 @@ export const addStage = (value: any) => {
     case PipelineStage.UNWIND: {
       return formBuilder.group({
         type: [PipelineStage.UNWIND],
+        preview: true,
         form: formBuilder.group({
           field: [get(value, 'form.field', ''), Validators.required],
         }),
@@ -108,6 +113,7 @@ export const addStage = (value: any) => {
     case PipelineStage.CUSTOM: {
       const formGroup = formBuilder.group({
         type: [PipelineStage.CUSTOM],
+        preview: true,
         form: formBuilder.group({
           raw: [get(value, 'form.raw', ''), Validators.required],
         }),
@@ -121,6 +127,7 @@ export const addStage = (value: any) => {
     default: {
       return formBuilder.group({
         type: [PipelineStage.CUSTOM],
+        preview: true,
         form: formBuilder.group({
           raw: [get(value, 'form.raw', ''), Validators.required],
         }),

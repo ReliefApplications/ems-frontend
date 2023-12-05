@@ -13,3 +13,7 @@
   padding: 16px 8px 16px 24px;
   margin-top: 1em;
 }
+
+::ng-deep .accordion-item span {
+  @apply flex w-full;
+}
