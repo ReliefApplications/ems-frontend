@@ -114,13 +114,17 @@ const replaceRecordFields = (
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     for (const field of fields) {
-      let value = fieldsValue[field.name];
-      if (value && typeof value === 'object') {
-        value = Object.keys(fieldsValue[field.name])
-          .filter((key) => key !== '__typename')
-          .map((key) => `${key}: ${fieldsValue[field.name][key]}`)
-          .join(', ');
-      }
+      const toReadableObject = (obj: any): any =>
+        typeof obj === 'object' && obj !== null
+          ? Array.isArray(obj)
+            ? obj.map((o) => toReadableObject(o)).join('<br>') // If array, return mapped elements
+            : Object.keys(obj) // If object, return object keys and values as strings
+                .filter((key) => key !== '__typename')
+                .map((key) => `${key}: ${obj[key]}`)
+                .join(', ')
+          : `${obj}`; // If not an object, return string representation
+
+      const value = toReadableObject(fieldsValue[field.name]);
 
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
