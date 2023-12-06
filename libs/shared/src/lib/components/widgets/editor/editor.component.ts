@@ -57,6 +57,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public formattedStyle?: string;
 
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  /** Reference to html content component */
   @ViewChild(HtmlWidgetContentComponent)
   htmlContentComponent!: HtmlWidgetContentComponent;
 
@@ -162,7 +163,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   private async openEditRecordModal() {
     if (this.record && this.record.canUpdate) {
       const { FormModalComponent } = await import(
-        '../../../components/form-modal/form-modal.component'
+        '../../form-modal/form-modal.component'
       );
       const dialogRef = this.dialog.open(FormModalComponent, {
         disableClose: true,
