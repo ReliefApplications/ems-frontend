@@ -4,10 +4,11 @@ import {
   Input,
   TemplateRef,
   ViewChild,
+  HostListener,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
@@ -26,6 +27,8 @@ import {
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
 import { GET_REFERENCE_DATA } from './graphql/queries';
+import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Text widget component using KendoUI
@@ -35,13 +38,14 @@ import { GET_REFERENCE_DATA } from './graphql/queries';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Widget settings */
   @Input() settings: any;
   /** Should show padding */
   @Input() usePadding = true;
 
   private layout: any;
+  private record?: any;
   /** Configured reference data */
   private referenceData?: ReferenceData;
   private fields: any[] = [];
@@ -53,6 +57,8 @@ export class EditorComponent implements OnInit {
   public formattedStyle?: string;
 
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  @ViewChild(HtmlWidgetContentComponent)
+  htmlContentComponent!: HtmlWidgetContentComponent;
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -87,7 +93,9 @@ export class EditorComponent implements OnInit {
     private translate: TranslateService,
     private gridService: GridService,
     private referenceDataService: ReferenceDataService
-  ) {}
+  ) {
+    super();
+  }
 
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
@@ -129,6 +137,60 @@ export class EditorComponent implements OnInit {
       this.formattedHtml = this.dataTemplateService.renderHtml(
         this.settings.text
       );
+    }
+  }
+
+  /**
+   * Listen to click events from host element, if record editor is clicked, open record editor modal
+   *
+   * @param event Click event from host element
+   */
+  @HostListener('click', ['$event'])
+  onContentClick(event: any) {
+    const content = this.htmlContentComponent.el.nativeElement;
+    const editorTriggers = content.querySelectorAll('.record-editor');
+    editorTriggers.forEach((recordEditor: HTMLElement) => {
+      if (recordEditor.contains(event.target)) {
+        this.openEditRecordModal();
+      }
+    });
+  }
+
+  /**
+   * Open edit record modal.
+   */
+  private async openEditRecordModal() {
+    if (this.record && this.record.canUpdate) {
+      const { FormModalComponent } = await import(
+        '../../../components/form-modal/form-modal.component'
+      );
+      const dialogRef = this.dialog.open(FormModalComponent, {
+        disableClose: true,
+        data: {
+          recordId: this.record.id,
+          // template: this.settings.template || null,
+          template: null,
+        },
+        autoFocus: false,
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+        if (value) {
+          // Update the record, based on new configuration
+          this.getRecord().then(() => {
+            this.formattedStyle = this.dataTemplateService.renderStyle(
+              this.settings.wholeCardStyles || false,
+              this.fieldsValue,
+              this.styles
+            );
+            this.formattedHtml = this.dataTemplateService.renderHtml(
+              this.settings.text,
+              this.fieldsValue,
+              this.fields,
+              this.styles
+            );
+          });
+        }
+      });
     }
   }
 
@@ -225,8 +287,8 @@ export class EditorComponent implements OnInit {
           },
         })
       );
-      const record: any = get(res.data, `${queryName}.edges[0].node`, null);
-      this.fieldsValue = { ...record };
+      this.record = get(res.data, `${queryName}.edges[0].node`, null);
+      this.fieldsValue = { ...this.record };
       const metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
       if (metaQuery) {
         const metaData = await firstValueFrom(metaQuery);
