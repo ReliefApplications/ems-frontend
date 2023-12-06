@@ -58,7 +58,9 @@
     <ng-template #columnChooser>
       <shared-grid-column-chooser
         [originalColumns]="grid?.columns"
-        (hideColumnChooser)="toggleColumnChooser(anchor.element, columnChooser, $event)"
+        (hideColumnChooser)="
+          toggleColumnChooser(anchor.element, columnChooser, $event)
+        "
       ></shared-grid-column-chooser>
     </ng-template>
 
@@ -91,18 +93,15 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
-    <!-- GRID LAYOUT FEATURES -->
-    <ng-container>
-      <span kendotooltip>
-        <button
-          kendoButton
-          title="{{ 'components.widget.grid.layout.button.title' | translate }}"
-          (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
-        >
-          {{ 'components.widget.grid.layout.reset' | translate }}
-        </button>
-      </span>
-    </ng-container>
+    <!-- Reset default layout -->
+    <button
+      kendoTooltip
+      kendoButton
+      [title]="'components.widget.grid.layout.button.title' | translate"
+      (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
+    >
+      {{ 'components.widget.grid.layout.reset' | translate }}
+    </button>
     <shared-grid-toolbar
       [actions]="actions"
       [items]="selectedItems"
