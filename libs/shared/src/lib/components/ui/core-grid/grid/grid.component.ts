@@ -1126,8 +1126,12 @@ export class GridComponent
     });
   }
 
-  /** Restore all columns visibility when reset the layout of the grid */
+  /** Restore all columns visibility and size when reset the layout of the grid */
   restoreColumns() {
+    // If aggregation, set the width of the columns here (cannot use layout parameters)
+    if (this.useAggregation) {
+      this.setColumnsWidth();
+    }
     this.columns.forEach((column: any) => {
       column.hidden = false;
     });
