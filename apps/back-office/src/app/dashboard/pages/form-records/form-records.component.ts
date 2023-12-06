@@ -27,8 +27,14 @@ import {
   SnackbarService,
   UIPageChangeEvent,
   UILayoutService,
+  handleTablePageEvent,
 } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
+import { ApolloQueryResult } from '@apollo/client';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -60,6 +66,8 @@ export class FormRecordsComponent
   private historyId = '';
   public cachedRecords: Record[] = [];
   public defaultColumns = DEFAULT_COLUMNS;
+  /** Updating status */
+  public updating = false;
 
   // === DELETED RECORDS VIEW ===
   public showDeletedRecords = false;
@@ -68,7 +76,7 @@ export class FormRecordsComponent
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
-    endCursor: null as string | null,
+    endCursor: '',
   };
 
   /** @returns True if the layouts tab is empty */
@@ -126,6 +134,7 @@ export class FormRecordsComponent
       variables: {
         id: this.id,
         first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
         display: false,
         showDeletedRecords: this.showDeletedRecords,
       },
@@ -134,21 +143,7 @@ export class FormRecordsComponent
     this.recordsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ errors, data, loading }) => {
-        this.cachedRecords.push(
-          ...data.form.records.edges.map((x: any) => x.node)
-        );
-        this.dataSource = this.cachedRecords.slice(
-          ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-          ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = data.form.records.totalCount;
-        this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
-        this.loadingMore = false;
-
-        this.form = data.form;
-        this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
-        this.setDisplayedColumns();
-        this.loading = loading;
+        this.updateValues(data, loading, true);
 
         if (errors) {
           // TO-DO: Check why it's not working as intended.
@@ -164,28 +159,92 @@ export class FormRecordsComponent
   }
 
   /**
+   * Update Records datas query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchRecordsData(refetch?: boolean): void {
+    this.loading = true;
+    this.updating = true;
+    const variables = {
+      id: this.id,
+      first: ITEMS_PER_PAGE,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      display: false,
+      showDeletedRecords: this.showDeletedRecords,
+    };
+    // get the records linked to the form
+    const recordsQuery: FormRecordsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_FORM_RECORDS,
+      variables
+    );
+
+    if (refetch) this.clearScreen();
+
+    if (recordsQuery) {
+      this.updateValues(recordsQuery, false, refetch);
+    } else {
+      if (refetch) {
+        this.recordsQuery.refetch(variables);
+      } else {
+        this.recordsQuery
+          .fetchMore({ variables })
+          .then((results: ApolloQueryResult<FormRecordsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
+    }
+  }
+
+  /**
+   * Update ref data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   * @param setForm control if form should be set
+   */
+  private updateValues(
+    data: FormRecordsQueryResponse,
+    loading: boolean,
+    setForm?: boolean
+  ) {
+    const mappedValues = data.form.records.edges.map((x) => x.node);
+    console.log('mappedValues', mappedValues, this.cachedRecords);
+    this.cachedRecords = updateQueryUniqueValues(
+      this.cachedRecords,
+      mappedValues
+    );
+    this.pageInfo.length = data.form.records.totalCount;
+    this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
+    this.dataSource = this.cachedRecords.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.loading = loading;
+    this.updating = false;
+    if (setForm) {
+      this.form = data.form;
+      this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
+      this.setDisplayedColumns();
+    }
+  }
+
+  /**
    * Handles page event.
    *
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    if (
-      e.pageIndex > e.previousPageIndex &&
-      e.totalItems > this.cachedRecords.length &&
-      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
-    ) {
-      this.loadingMore = true;
-      this.recordsQuery.refetch({
-        id: this.id,
-        first: ITEMS_PER_PAGE,
-        afterCursor: this.pageInfo.endCursor,
-      });
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedRecords
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.dataSource = cachedData;
     } else {
-      this.dataSource = this.cachedRecords.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchRecordsData();
     }
   }
 
@@ -392,7 +451,7 @@ export class FormRecordsComponent
               'models.record.notifications.uploadSuccessful'
             )
           );
-          this.getFormData();
+          this.fetchRecordsData(true);
           this.showUpload = false;
         }
       },
@@ -411,8 +470,7 @@ export class FormRecordsComponent
   onSwitchView(e: any): void {
     e.stopPropagation();
     this.showDeletedRecords = !this.showDeletedRecords;
-    this.clearScreen();
-    this.getFormData();
+    this.fetchRecordsData(true);
   }
 
   /**
