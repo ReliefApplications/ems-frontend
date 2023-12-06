@@ -52,20 +52,15 @@
     <kendo-button
       #anchor
       fillMode="flat"
-      (click)="toggleColumnChooser()"
+      (click)="toggleColumnChooser(anchor.element, columnChooser)"
       icon="columns"
     ></kendo-button>
-    <kendo-popup
-      [anchor]="anchor.element"
-      (anchorViewportLeave)="showColumnChooser = false"
-      [collision]="{ horizontal: 'fit', vertical: 'fit' }"
-      *ngIf="showColumnChooser"
-    >
+    <ng-template #columnChooser>
       <shared-grid-column-chooser
         [originalColumns]="grid?.columns"
-        (hideColumnChooser)="toggleColumnChooser($event)"
+        (hideColumnChooser)="toggleColumnChooser(anchor.element, columnChooser, $event)"
       ></shared-grid-column-chooser>
-    </kendo-popup>
+    </ng-template>
 
     <button
       *ngIf="actions.add && canAdd"
@@ -789,7 +784,7 @@
               : field.meta.items
           "
         >
-        <kendo-grid-column
+          <kendo-grid-column
             [field]="field.name"
             [title]="column.label"
             [columnMenu]="false"

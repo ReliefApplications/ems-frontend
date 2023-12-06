@@ -13,6 +13,7 @@ import {
   QueryList,
   Renderer2,
   SimpleChanges,
+  TemplateRef,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -37,7 +38,7 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { PopupService } from '@progress/kendo-angular-popup';
+import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
@@ -223,6 +224,8 @@ export class GridComponent
   private closeEditorListener!: any;
   /** A boolean indicating if actions are enabled */
   public hasEnabledActions = false;
+  /** Reference to the column chooser element */
+  private columnChooserRef: PopupRef | null = null;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -296,6 +299,7 @@ export class GridComponent
    * @param snackBar The snackbar service
    * @param el Ref to html element
    * @param document document
+   * @param popupService Kendo popup service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -309,7 +313,8 @@ export class GridComponent
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private el: ElementRef,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private popupService: PopupService
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -518,9 +523,15 @@ export class GridComponent
   /**
    * Toggles the menu for choosing columns
    *
+   * @param anchor button reference to attach the popup to
+   * @param template Template to use for the popup
    * @param showColumnChooser optional parameter to decide of the state of the popup
    */
-  public toggleColumnChooser(showColumnChooser?: boolean) {
+  public toggleColumnChooser(
+    anchor: ElementRef | HTMLElement,
+    template: TemplateRef<{ [Key: string]: unknown }>,
+    showColumnChooser?: boolean
+  ) {
     // Emit column change event
     if (this.showColumnChooser) {
       this.onColumnVisibilityChange();
@@ -529,6 +540,19 @@ export class GridComponent
       this.showColumnChooser = showColumnChooser;
     } else {
       this.showColumnChooser = !this.showColumnChooser;
+    }
+    switch (this.showColumnChooser) {
+      case false:
+        this.columnChooserRef?.close();
+        this.columnChooserRef = null;
+        break;
+      case true:
+        this.columnChooserRef = this.popupService.open({
+          anchor: anchor,
+          content: template,
+          collision: { horizontal: 'fit', vertical: 'fit' },
+        });
+        break;
     }
   }
 
