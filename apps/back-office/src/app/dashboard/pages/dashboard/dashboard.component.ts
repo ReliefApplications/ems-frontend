@@ -424,6 +424,7 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
+    console.log(e);
     switch (e.type) {
       case 'display': {
         this.autoSaveChanges();
@@ -509,12 +510,6 @@ export class DashboardComponent
             errors,
             this.translate.instant('common.dashboard.one')
           );
-          if (!errors) {
-            this.dashboardService.openDashboard({
-              ...this.dashboard,
-              structure: this.widgets,
-            });
-          }
         },
         complete: () => (this.loading = false),
       });
