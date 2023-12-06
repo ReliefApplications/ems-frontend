@@ -509,12 +509,6 @@ export class DashboardComponent
             errors,
             this.translate.instant('common.dashboard.one')
           );
-          if (!errors) {
-            this.dashboardService.openDashboard({
-              ...this.dashboard,
-              structure: this.widgets,
-            });
-          }
         },
         complete: () => (this.loading = false),
       });
