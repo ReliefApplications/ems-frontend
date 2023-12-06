@@ -198,7 +198,7 @@ export class FormRecordsComponent
   }
 
   /**
-   * Update ref data value
+   * Update records data value
    *
    * @param data query response data
    * @param loading loading status
