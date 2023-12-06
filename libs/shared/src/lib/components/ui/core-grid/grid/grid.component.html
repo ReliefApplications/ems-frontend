@@ -52,20 +52,17 @@
     <kendo-button
       #anchor
       fillMode="flat"
-      (click)="toggleColumnChooser()"
+      (click)="toggleColumnChooser(anchor.element, columnChooser)"
       icon="columns"
     ></kendo-button>
-    <kendo-popup
-      [anchor]="anchor.element"
-      (anchorViewportLeave)="showColumnChooser = false"
-      [collision]="{ horizontal: 'fit', vertical: 'fit' }"
-      *ngIf="showColumnChooser"
-    >
+    <ng-template #columnChooser>
       <shared-grid-column-chooser
         [originalColumns]="grid?.columns"
-        (hideColumnChooser)="toggleColumnChooser($event)"
+        (hideColumnChooser)="
+          toggleColumnChooser(anchor.element, columnChooser, $event)
+        "
       ></shared-grid-column-chooser>
-    </kendo-popup>
+    </ng-template>
 
     <button
       *ngIf="actions.add && canAdd"
@@ -96,18 +93,15 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
-    <!-- GRID LAYOUT FEATURES -->
-    <ng-container *ngIf="!useAggregation">
-      <span kendotooltip>
-        <button
-          kendoButton
-          title="{{ 'components.widget.grid.layout.button.title' | translate }}"
-          (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
-        >
-          {{ 'components.widget.grid.layout.reset' | translate }}
-        </button>
-      </span>
-    </ng-container>
+    <!-- Reset default layout -->
+    <button
+      kendoTooltip
+      kendoButton
+      [title]="'components.widget.grid.layout.button.title' | translate"
+      (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
+    >
+      {{ 'components.widget.grid.layout.reset' | translate }}
+    </button>
     <shared-grid-toolbar
       [actions]="actions"
       [items]="selectedItems"
@@ -721,6 +715,7 @@
       </kendo-grid-column>
       <!-- FILE -->
       <kendo-grid-column
+        [field]="field.name"
         [title]="field.title"
         *ngIf="field.type === 'JSON' && field.meta.type === 'file'"
         [columnMenu]="false"
@@ -763,6 +758,7 @@
         >
           <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
           <kendo-grid-column
+            [title]="field.title"
             [columnMenu]="false"
             [width]="field.width"
             [hidden]="field.hidden"
@@ -788,6 +784,7 @@
           "
         >
           <kendo-grid-column
+            [field]="field.name"
             [title]="column.label"
             [columnMenu]="false"
             [width]="field.width"

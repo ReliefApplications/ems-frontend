@@ -1,3 +1,21 @@
+# [2.2.0-beta.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.13...v2.2.0-beta.14) (2023-12-05)
+
+
+### Bug Fixes
+
+* Changing form locale duplicates some questions ([#2124](https://github.com/ReliefApplications/ems-frontend/issues/2124)) ([ed9bbe6](https://github.com/ReliefApplications/ems-frontend/commit/ed9bbe66421f7fe19bae89aa3580d0a059c29f57))
+* incorrect sorting on api configuration ([#2125](https://github.com/ReliefApplications/ems-frontend/issues/2125)) ([5acf213](https://github.com/ReliefApplications/ems-frontend/commit/5acf213d1c7e3880ae69be8a6b62e2de98f09aa2))
+* reference data would appear as object object in grid ([b9b1910](https://github.com/ReliefApplications/ems-frontend/commit/b9b191032ef2bf74a4fbeec9459d973c99e1b835))
+* reset default button not available in front-office ([#2122](https://github.com/ReliefApplications/ems-frontend/issues/2122)) ([ab81073](https://github.com/ReliefApplications/ems-frontend/commit/ab810737f245ea4b527d4f477dd77ff09819c1e1))
+* some fields would not be accessible in map popup ([48f98aa](https://github.com/ReliefApplications/ems-frontend/commit/48f98aaa83ad05520b21638068254ec171656e43))
+* sorting in ref data table not working ([#2126](https://github.com/ReliefApplications/ems-frontend/issues/2126)) ([1ae1e27](https://github.com/ReliefApplications/ems-frontend/commit/1ae1e276a7eef1682ab73bfa2ac645bb30ad0dea))
+
+
+### Features
+
+* add possibility to fetch nested fields in ref data ([efbcc1d](https://github.com/ReliefApplications/ems-frontend/commit/efbcc1db4e278f346966952fb3411dae3e4c3d9a))
+* allow to edit / add reference data fields ([#2128](https://github.com/ReliefApplications/ems-frontend/issues/2128)) ([c7f047b](https://github.com/ReliefApplications/ems-frontend/commit/c7f047b654235516d42cb9f5e645b33b2fc9d715))
+
 # [2.2.0-beta.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.12...v2.2.0-beta.13) (2023-12-02)
 
 

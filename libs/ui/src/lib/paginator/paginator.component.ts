@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { v4 as uuidv4 } from 'uuid';
 import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
@@ -12,7 +19,7 @@ import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.scss'],
 })
-export class PaginatorComponent {
+export class PaginatorComponent implements OnChanges {
   /** Disable pagination */
   @Input() disabled = false;
   /** Number of items */
@@ -54,5 +61,11 @@ export class PaginatorComponent {
       previousPageIndex: this.pageIndex,
     });
     this.pageIndex = currentPage;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['pageIndex']) {
+      this.skip = changes['pageIndex'].currentValue * this.pageSize;
+    }
   }
 }

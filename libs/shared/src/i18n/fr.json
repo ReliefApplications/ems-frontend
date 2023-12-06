@@ -1105,7 +1105,9 @@
 				"select": "Depuis la référence de données"
 			},
 			"fields": {
-				"ariaLabel": "Indiquez les champs de la référence de données"
+				"add": "Ajouter le champ",
+				"ariaLabel": "Indiquez les champs de la référence de données",
+				"new": "Nouveau champ"
 			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de références de données"

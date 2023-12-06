@@ -1094,7 +1094,9 @@
 				"select": "From Reference data"
 			},
 			"fields": {
-				"ariaLabel": "Input available fields of reference data"
+				"add": "Add field",
+				"ariaLabel": "Input available fields of reference data",
+				"new": "New field"
 			},
 			"paginator": {
 				"ariaLabel": "Select page of reference data"
