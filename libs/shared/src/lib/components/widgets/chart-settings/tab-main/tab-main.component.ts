@@ -1,11 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
 import {
-  Resource,
-  ResourceQueryResponse,
-} from '../../../../models/resource.model';
-import { GET_RESOURCE } from '../graphql/queries';
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
+import { Resource } from '../../../../models/resource.model';
+import { ReferenceData } from '../../../../models/reference-data.model';
 import { CHART_TYPES } from '../constants';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
@@ -24,7 +27,10 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './tab-main.component.html',
   styleUrls: ['./tab-main.component.scss'],
 })
-export class TabMainComponent extends UnsubscribeComponent implements OnInit {
+export class TabMainComponent
+  extends UnsubscribeComponent
+  implements OnChanges
+{
   /** Reactive form group */
   @Input() formGroup!: UntypedFormGroup;
   /** Selected chart type */
@@ -32,11 +38,15 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   /** Available chart types */
   public types = CHART_TYPES;
   /** Current resource */
-  public resource?: Resource;
+  @Input() resource?: Resource;
+  /** Current reference data */
+  @Input() referenceData?: ReferenceData;
   /** Current aggregation */
-  public aggregation?: Aggregation;
+  @Input() aggregation?: Aggregation;
   /** Available fields */
   public availableSeriesFields: any[] = [];
+  /** Emits when the aggregation changes */
+  @Output() aggregationChange = new EventEmitter<Aggregation | null>();
 
   /**
    * Get the selected chart type object
@@ -54,14 +64,12 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Main tab of chart settings modal.
    *
-   * @param apollo Apollo service
    * @param dialog Dialog service
    * @param aggregationBuilder Shared aggregation builder service
    * @param queryBuilder Shared query builder service
    * @param aggregationService Shared aggregation service
    */
   constructor(
-    private apollo: Apollo,
     private dialog: Dialog,
     private aggregationBuilder: AggregationBuilderService,
     private queryBuilder: QueryBuilderService,
@@ -70,42 +78,10 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     super();
   }
 
-  ngOnInit(): void {
-    this.formGroup
-      .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.getResource(value);
-        this.formGroup.get('chart.aggregationId')?.setValue(null);
-      });
-    if (this.formGroup.value.resource) {
-      this.getResource(this.formGroup.value.resource);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.aggregation || changes.referenceData) {
+      this.setAvailableSeriesFields();
     }
-  }
-
-  /**
-   * Get a resource by id and associated aggregations
-   *
-   * @param id resource id
-   */
-  private getResource(id: string): void {
-    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
-    this.apollo
-      .query<ResourceQueryResponse>({
-        query: GET_RESOURCE,
-        variables: {
-          id,
-          aggregationIds: aggregationId ? [aggregationId] : null,
-        },
-      })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.resource = data.resource;
-        if (aggregationId && this.resource.aggregations?.edges[0]) {
-          this.aggregation = this.resource.aggregations.edges[0].node;
-          this.setAvailableSeriesFields();
-        }
-      });
   }
 
   /**
@@ -142,6 +118,15 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         selectedFields,
         this.aggregation?.pipeline
       );
+    } else if (this.referenceData) {
+      this.availableSeriesFields = (this.referenceData.fields ?? [])
+        .filter((f) => f.type !== 'object')
+        .map((f) => ({
+          name: f.name,
+          type: {
+            kind: 'SCALAR',
+          },
+        }));
     } else {
       this.availableSeriesFields = [];
     }
@@ -163,9 +148,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.formGroup.get('chart.aggregationId')?.setValue(value.id);
-        this.aggregation = value;
-        this.setAvailableSeriesFields();
-        // this.getResource(this.resource?.id as string);
+        this.aggregationChange.emit(value);
       }
     });
   }
@@ -190,8 +173,8 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           .editAggregation(this.aggregation, value, this.resource?.id)
           .pipe(takeUntil(this.destroy$))
           .subscribe(({ data }) => {
-            if (data?.editAggregation) {
-              this.getResource(this.resource?.id as string);
+            if (data?.editAggregation?.id) {
+              this.aggregationChange.emit(data.editAggregation);
             }
           });
       }

@@ -114,7 +114,14 @@ const replaceRecordFields = (
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      let value = fieldsValue[field.name];
+      if (value && typeof value === 'object') {
+        value = Object.keys(fieldsValue[field.name])
+          .filter((key) => key !== '__typename')
+          .map((key) => `${key}: ${fieldsValue[field.name][key]}`)
+          .join(', ');
+      }
+
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       // Inject avatars
@@ -476,7 +483,7 @@ export const applyLayoutFormat = (
 };
 
 /**
- * Loops throught the layout styles and returns the last style that pass the filters
+ * Loops through the layout styles and returns the last style that pass the filters
  *
  * @param layouts Array of layout styles
  * @param key The key of the actual property in the html

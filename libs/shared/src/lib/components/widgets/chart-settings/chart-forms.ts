@@ -25,7 +25,7 @@ export const createChartForm = (value: any) => {
 
   const formGroup = fb.group({
     type: [get(value, 'type', null), Validators.required],
-    aggregationId: [get(value, 'aggregationId', null), Validators.required],
+    aggregationId: [get(value, 'aggregationId', null)],
     mapping: createMappingForm(
       get(value, 'mapping', null),
       get(value, 'type', null)
@@ -344,7 +344,8 @@ export const createChartWidgetForm = (id: any, value: any) => {
     id,
     title: [get(value, 'title', ''), Validators.required],
     chart: createChartForm(get(value, 'chart')),
-    resource: [get(value, 'resource', null), Validators.required],
+    resource: [get(value, 'resource', null)],
+    refData: [get(value, 'refData', null)],
     contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
     filters: fb.array(
       get(value, 'filters', []).map((x: any) => createFilterForm(x))

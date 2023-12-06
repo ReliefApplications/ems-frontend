@@ -11,7 +11,7 @@ import {
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy, isEqual } from 'lodash';
+import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 
 /**
  * Default file name for chart exports
@@ -130,12 +131,14 @@ export class ChartComponent
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
+   * @param referenceDataService Shared reference data service
    * @param document document
    */
   constructor(
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
+    private referenceDataService: ReferenceDataService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super();
@@ -206,6 +209,8 @@ export class ChartComponent
           }
         })
         .catch(() => (this.loading = false));
+    } else if (this.settings.refData) {
+      this.getData();
     } else {
       this.loading = false;
     }
@@ -277,74 +282,104 @@ export class ChartComponent
 
   /** Load the data, using widget parameters. */
   private getData(): void {
-    this.dataQuery
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ errors, data, loading }: any) => {
-        if (errors) {
-          this.loading = false;
-          this.hasError = true;
-          this.series.next([]);
+    const handleErrors = () => {
+      this.loading = false;
+      this.hasError = true;
+      this.series.next([]);
+    };
+
+    const handleData = (recordsAggregation: any) => {
+      this.hasError = false;
+      const today = new Date();
+      this.lastUpdate =
+        ('0' + today.getHours()).slice(-2) +
+        ':' +
+        ('0' + today.getMinutes()).slice(-2);
+      if (
+        ['pie', 'donut', 'radar', 'line', 'bar', 'column', 'polar'].includes(
+          this.settings.chart.type
+        )
+      ) {
+        const aggregationData = cloneDeep(recordsAggregation);
+
+        // If series
+        if (get(this.settings, 'chart.mapping.series', null)) {
+          const groups = groupBy(aggregationData, 'series');
+          const categories = uniq(aggregationData.map((x: any) => x.category));
+          this.series.next(
+            Object.keys(groups).map((key) => {
+              const rawData = groups[key];
+              const returnData = Array.from(
+                categories,
+                (category) =>
+                  rawData.find((x) => x.category === category) || {
+                    category,
+                    field: null,
+                  }
+              );
+              return {
+                label:
+                  key ||
+                  this.translate.instant('components.widget.chart.other'),
+                name: key,
+                data: returnData,
+              };
+            })
+          );
         } else {
-          this.hasError = false;
-          const today = new Date();
-          this.lastUpdate =
-            ('0' + today.getHours()).slice(-2) +
-            ':' +
-            ('0' + today.getMinutes()).slice(-2);
-          if (
-            [
-              'pie',
-              'donut',
-              'radar',
-              'line',
-              'bar',
-              'column',
-              'polar',
-            ].includes(this.settings.chart.type)
-          ) {
-            const aggregationData = JSON.parse(
-              JSON.stringify(data.recordsAggregation)
-            );
-            // If series
-            if (get(this.settings, 'chart.mapping.series', null)) {
-              const groups = groupBy(aggregationData, 'series');
-              const categories = uniq(
-                aggregationData.map((x: any) => x.category)
-              );
-              this.series.next(
-                Object.keys(groups).map((key) => {
-                  const rawData = groups[key];
-                  const returnData = Array.from(
-                    categories,
-                    (category) =>
-                      rawData.find((x) => x.category === category) || {
-                        category,
-                        field: null,
-                      }
-                  );
-                  return {
-                    label:
-                      key ||
-                      this.translate.instant('components.widget.chart.other'),
-                    name: key,
-                    data: returnData,
-                  };
-                })
-              );
-            } else {
-              // Group under same series
-              this.series.next([
-                {
-                  data: aggregationData,
-                },
-              ]);
-            }
-          } else {
-            this.series.next(data.recordsAggregation);
-          }
-          this.loading = loading;
+          // Group under same series
+          this.series.next([
+            {
+              data: aggregationData,
+            },
+          ]);
         }
-      });
+      }
+    };
+
+    if (this.dataQuery) {
+      this.dataQuery
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ errors, data, loading }: any) => {
+          if (errors) {
+            handleErrors();
+          } else {
+            if (data?.recordsAggregation) {
+              handleData(data.recordsAggregation);
+            }
+            this.loading = loading;
+          }
+        });
+    } else if (this.settings.refData) {
+      this.referenceDataService
+        .loadReferenceData(this.settings.refData)
+        .then((rd) => {
+          this.referenceDataService
+            .fetchItems(rd)
+            .then((items) => {
+              const category = get(this.settings, 'chart.mapping.category');
+              const field = get(this.settings, 'chart.mapping.field');
+              const series = get(this.settings, 'chart.mapping.series');
+
+              const data = items.map((item: any) => ({
+                category: item[category],
+                field: item[field],
+                series: item[series],
+              }));
+
+              handleData(data);
+            })
+            .catch(() => {
+              handleErrors();
+            });
+        })
+        .catch(() => {
+          handleErrors();
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    }
   }
 
   /**
