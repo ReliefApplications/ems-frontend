@@ -10,6 +10,12 @@
     <!-- GRID CONTENT -->
     <ng-container *ngTemplateOutlet="aggregationGridTemplate"></ng-container>
   </ng-container>
+
+  <!-- Reference data grid display -->
+  <ng-container *ngIf="useReferenceData">
+    <!-- GRID CONTENT -->
+    <ng-container *ngTemplateOutlet="refDataGridTemplate"></ng-container>
+  </ng-container>
 </div>
 
 <!-- Header -->
@@ -56,6 +62,13 @@
     [contextFilters]="widget.settings.contextFilters"
     [at]="widget.settings.at"
   ></shared-aggregation-grid>
+</ng-template>
+
+<!-- Reference data Grid -->
+<ng-template #refDataGridTemplate>
+  <shared-reference-data-grid
+    [settings]="settings"
+  ></shared-reference-data-grid>
 </ng-template>
 
 <!-- Quick action buttons -->

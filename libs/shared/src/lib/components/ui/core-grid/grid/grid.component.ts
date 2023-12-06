@@ -86,7 +86,7 @@ export class GridComponent
   @Input() editable = false;
   /* If the grid has changes */
   @Input() hasChanges = false;
-  /** Input decorator for fields.   */
+  /** Input decorator for fields. */
   @Input() fields: any[] = [];
   /** Input decorator for data. */
   @Input() data: GridDataResult = { data: [], total: 0 };
@@ -146,8 +146,8 @@ export class GridComponent
   @Input() searchable = true;
   /** Sortable status */
   @Input() sortable = true;
-  /** Grid uses aggregation */
-  @Input() useAggregation = false;
+  /** Grid don't uses layout (uses aggregation or reference data) */
+  @Input() noLayout = false;
   /** Sort descriptor */
   @Input() sort: SortDescriptor[] = [];
   /** Page size */

@@ -572,7 +572,13 @@ export class SummaryCardComponent
    */
   private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
-    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
+    if (
+      !card ||
+      (!card.referenceData &&
+        !card.resource &&
+        (!card.layout || !card.aggregation))
+    )
+      return;
     const settings = {
       template: card.template,
       resource: card.resource,
@@ -596,13 +602,16 @@ export class SummaryCardComponent
       },
       contextFilters: JSON.stringify(this.contextFilters),
     };
-
-    Object.assign(
-      settings,
-      card.aggregation
-        ? { aggregations: card.aggregation }
-        : { layouts: card.layout }
-    );
+    if (card.referenceData) {
+      Object.assign(settings, { referenceData: card.referenceData });
+    } else {
+      Object.assign(
+        settings,
+        card.aggregation
+          ? { aggregations: card.aggregation }
+          : { layouts: card.layout }
+      );
+    }
 
     this.gridSettings = settings;
   }
@@ -665,6 +674,11 @@ export class SummaryCardComponent
     this.widget.settings.sortFields?.forEach((sortField: any) => {
       this.sortFields.push(sortField);
     });
+    if (this.gridSettings?.referenceData) {
+      Object.assign(this.gridSettings, {
+        refDataCards: cloneDeep(this.cachedCards),
+      });
+    }
   }
 
   /**
