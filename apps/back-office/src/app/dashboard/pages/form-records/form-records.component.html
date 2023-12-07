@@ -159,7 +159,7 @@
       </div>
     </div>
     <ui-paginator
-      [disabled]="loadingMore"
+      [disabled]="loadingMore || updating"
       [pageSize]="pageInfo.pageSize"
       [pageIndex]="pageInfo.pageIndex"
       [totalItems]="pageInfo.length"
