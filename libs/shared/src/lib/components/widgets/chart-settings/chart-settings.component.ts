@@ -61,18 +61,4 @@ export class ChartSettingsComponent
     });
     this.resourceId = this.formGroup.get('resource')?.value;
   }
-
-  /**
-   *  Handles the a tab change event
-   *
-   * @param event Event triggered on tab switch
-   */
-  handleTabChange(event: number): void {
-    this.selectedTab = event;
-    this.chartForm.controls.type.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.type = this.types.find((x) => x.name === value);
-      });
-  }
 }

@@ -105,9 +105,9 @@ export class SummaryCardSettingsComponent
     this.change.emit(this.widgetFormGroup);
 
     // Initialize resource
-    const resourceID = this.widgetFormGroup?.get('card.resource')?.value;
-    if (resourceID) {
-      this.getResource(resourceID);
+    this.resourceId = this.widgetFormGroup?.get('card.resource')?.value;
+    if (this.resourceId) {
+      this.getResource(this.resourceId);
     }
     // Subscribe on resource changes
     this.widgetFormGroup.controls.card.controls.resource.valueChanges

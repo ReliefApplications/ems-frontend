@@ -103,13 +103,12 @@ export class ContextualFiltersSettingsComponent
     super();
   }
 
-  ngOnInit(): void {
-    this.getDataFilter();
-    if (!this.dataFilter) {
+  async ngOnInit(): Promise<void> {
+    if (!this.resourceId) {
       this.showFilterBuilder = false;
       return;
     }
-
+    await this.getDataFilter();
     this.updateQueryBuilderForm();
   }
 
@@ -125,7 +124,7 @@ export class ContextualFiltersSettingsComponent
   /**
    * Updates the query builder form
    */
-  private updateQueryBuilderForm(): void {
+  updateQueryBuilderForm(): void {
     this.queryBuilder.availableQueries$.subscribe(() => {
       const hasDataForm = this.dataFilter.form !== null;
       const queryName = this.queryBuilder.getQueryNameFromResourceName(
@@ -146,25 +145,29 @@ export class ContextualFiltersSettingsComponent
   /**
    * Gets the data filter from the resource
    */
-  private getDataFilter(): void {
-    this.apollo
-      .query<ResourceQueryResponse>({
-        query: GET_RESOURCE,
-        variables: {
-          id: this.resourceId,
-        },
-      })
-      .subscribe(({ data }) => {
-        if (data.resource && data.resource.name) {
-          const nameTrimmed = data.resource.name
-            .replace(/\s/g, '')
-            .toLowerCase();
-          const formValue = this.form.get('contextFilters')?.value;
-          this.dataFilter = {
-            form: typeof formValue === 'string' ? JSON.parse(formValue) : null,
-            resourceName: nameTrimmed,
-          };
-        }
-      });
+  async getDataFilter(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            id: this.resourceId,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data.resource && data.resource.name) {
+            const nameTrimmed = data.resource.name
+              .replace(/\s/g, '')
+              .toLowerCase();
+            const formValue = this.form.get('contextFilters')?.value;
+            this.dataFilter = {
+              form:
+                typeof formValue === 'string' ? JSON.parse(formValue) : null,
+              resourceName: nameTrimmed,
+            };
+          }
+          resolve();
+        });
+    });
   }
 }
