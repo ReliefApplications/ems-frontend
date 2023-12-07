@@ -114,7 +114,7 @@ const replaceRecordFields = (
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      const value = get(fieldsValue, field.name);
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       // Inject avatars
@@ -319,12 +319,12 @@ const replaceRecordFields = (
             break;
           }
           default:
+            const formattedValue = applyLayoutFormat(value, field);
             convertedValue = style
-              ? `<span style='${style}'>${applyLayoutFormat(
-                  value,
-                  field
-                )}</span>`
-              : applyLayoutFormat(value, field) || '';
+              ? `<span style='${style}'>${formattedValue}</span>`
+              : isNil(formattedValue)
+              ? ''
+              : formattedValue;
             break;
         }
       }
@@ -449,29 +449,26 @@ export const getPageKeys = (
 /**
  * Applies layout field format ignoring html tags
  *
- * @param name Original value of the field
+ * @param value Original value of the field
  * @param field Field information, used to get field name and format
  * @returns Formatted field value
  */
-export const applyLayoutFormat = (
-  name: string | null,
-  field: any
-): string | null => {
+export const applyLayoutFormat = (value: any, field: any): any => {
   // replaces value for label, if it exists
   if (field.options)
-    name = field.options.find((o: any) => o.value === name)?.text || name;
+    value = field.options.find((o: any) => o.value === value)?.text || value;
 
-  if (name && field.layoutFormat && field.layoutFormat.length > 1) {
+  if (value && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(
       `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
       'gi'
     );
-    const value = field.layoutFormat
+    const formattedValue = field.layoutFormat
       .replace(/<(.|\n)*?>/g, '')
-      .replace(regex, name);
-    return applyOperations(value);
+      .replace(regex, value);
+    return applyOperations(formattedValue);
   } else {
-    return name;
+    return value;
   }
 };
 
