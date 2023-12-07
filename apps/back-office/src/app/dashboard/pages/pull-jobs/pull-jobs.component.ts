@@ -46,7 +46,7 @@ export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
   public pullJobs = new Array<PullJob>();
   public cachedPullJobs: PullJob[] = [];
 
-  public displayedColumns: string[] = ['name', 'status', 'schedule'];
+  public displayedColumns: string[] = ['name', 'status', 'schedule', 'actions'];
 
   // === SUBSCRIPTIONS ===
   private channels: Channel[] = [];

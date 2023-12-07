@@ -60,3 +60,15 @@ export const GET_LAYOUT = gql`
     }
   }
 `;
+
+/** Get reference data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+    }
+  }
+`;
