@@ -1,3 +1,15 @@
+# [2.2.0-beta.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.14...v2.2.0-beta.15) (2023-12-07)
+
+
+### Bug Fixes
+
+* editing widgets could sometimes scroll to top of dashboard ([#2135](https://github.com/ReliefApplications/ems-frontend/issues/2135)) ([da6dd93](https://github.com/ReliefApplications/ems-frontend/commit/da6dd93460ada1446233159ed5988484bd2f9530))
+* few issues with templating & reference data ([c504e92](https://github.com/ReliefApplications/ems-frontend/commit/c504e922e1f73a6f8030b1388f066b6853a0dd4c))
+* incorrectly sized columns ([#2127](https://github.com/ReliefApplications/ems-frontend/issues/2127)) ([c0be7b1](https://github.com/ReliefApplications/ems-frontend/commit/c0be7b1e30ac4b71f659b97845caf2f79adf8edd))
+* pull jobs would not be editable ([cc9d685](https://github.com/ReliefApplications/ems-frontend/commit/cc9d685c3620450a38bd3f0cbbaf38d697dcac6d))
+* remove code information in url after login ([bcfb603](https://github.com/ReliefApplications/ems-frontend/commit/bcfb603b2a74a03437ae6a236451de22c343ca3d))
+* text widget edition would lose widget display configuration ([7f3b18b](https://github.com/ReliefApplications/ems-frontend/commit/7f3b18ba98fded73b0a90681a6019fbc86504707))
+
 # [2.2.0-beta.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.13...v2.2.0-beta.14) (2023-12-05)
 
 
