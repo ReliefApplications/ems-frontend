@@ -17,7 +17,6 @@
       <shared-tab-main
         [formGroup]="formGroup"
         [resource]="resource"
-        [queries]="filteredQueries"
         [templates]="templates"
       ></shared-tab-main>
     </ng-template>
@@ -42,12 +41,17 @@
         variant="danger"
         icon="warning"
         [size]="18"
-        [uiTooltip]="'components.widget.settings.grid.warnings.general' | translate"
+        [uiTooltip]="
+          'components.widget.settings.grid.warnings.general' | translate
+        "
         uiTooltipPosition="right"
       ></ui-icon>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-actions [formGroup]="formGroup"></shared-tab-actions>
+      <shared-tab-actions
+        [formGroup]="formGroup"
+        [fields]="fields"
+      ></shared-tab-actions>
     </ng-template>
   </ui-tab>
   <!-- BUTTONS -->

@@ -53,7 +53,7 @@ export class AggregationService {
    * @param options query options
    * @param options.ids list of aggregation id
    * @param options.first number of items to get
-   * @returns Aggregations as promise
+   * @returns Aggregations as Promise
    */
   async getAggregations(
     resourceId: string,

@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostBinding,
   Inject,
   OnDestroy,
   OnInit,
@@ -52,6 +53,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { GridsterConfig } from 'angular-gridster2';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -111,7 +113,10 @@ export class DashboardComponent
   /** Timeout to scroll to newly added widget */
   private timeoutListener!: NodeJS.Timeout;
   /** Is edition active */
+  @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
+  /** Additional grid configuration */
+  public gridOptions: GridsterConfig = {};
 
   /** @returns type of context element */
   get contextType() {
@@ -285,7 +290,6 @@ export class DashboardComponent
       return;
     }
 
-    this.editionActive = true;
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
@@ -302,25 +306,39 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+            scrollToNewItems: false,
+          };
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
+          this.editionActive = this.canUpdate;
 
           this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = this.dashboard.structure
-            ? [...this.dashboard.structure.filter((x: any) => x !== null)]
-            : [];
+          this.widgets = cloneDeep(
+            this.dashboard.structure
+              ? [...this.dashboard.structure.filter((x: any) => x !== null)]
+              : []
+          );
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          setTimeout(() => {
+            this.gridOptions = {
+              ...this.gridOptions,
+              scrollToNewItems: true,
+            };
+          }, 1000);
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
@@ -349,8 +367,8 @@ export class DashboardComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
-    localForage.removeItem(this.applicationId + 'contextualFilter');
+    localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'filterStructure');
     this.dashboardService.closeDashboard();
   }
 
@@ -491,12 +509,6 @@ export class DashboardComponent
             errors,
             this.translate.instant('common.dashboard.one')
           );
-          if (!errors) {
-            this.dashboardService.openDashboard({
-              ...this.dashboard,
-              structure: this.widgets,
-            });
-          }
         },
         complete: () => (this.loading = false),
       });
@@ -548,41 +560,6 @@ export class DashboardComponent
           );
         }
       }
-    }
-  }
-
-  /**
-   * Toggles the filter for the current dashboard.
-   */
-  toggleFiltering(): void {
-    if (this.dashboard) {
-      this.showFilter = !this.showFilter;
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.id,
-            showFilter: this.showFilter,
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
-              });
-            }
-          },
-          complete: () => {
-            this.contextService.isFilterEnabled.next(this.showFilter);
-            this.loading = false;
-          },
-        });
     }
   }
 
@@ -797,6 +774,7 @@ export class DashboardComponent
           : this.dashboard?.step
           ? this.dashboard?.step.canUpdate
           : false,
+        dashboard: this.dashboard,
       },
     });
     // Subscribes to settings updates
@@ -808,20 +786,33 @@ export class DashboardComponent
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               step: {
                 ...this.dashboard?.step,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
           } else {
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               page: {
                 ...this.dashboard?.page,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
+          }
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+          };
+
+          if (updates.filter) {
+            this.showFilter = updates.filter.show;
+            this.contextService.isFilterEnabled.next(this.showFilter);
           }
         }
       });

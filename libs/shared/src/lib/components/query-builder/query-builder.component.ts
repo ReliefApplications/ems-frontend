@@ -56,6 +56,8 @@ export class QueryBuilderComponent
   @Input() showFilter = true;
   @Input() showSort = true;
   @Input() showFields = true;
+  /** Toggles the column width parameter */
+  @Input() showColumnWidth = false;
 
   // Tab options
   @Input() showLimit = false;

@@ -58,7 +58,7 @@ export const createButtonFormGroup = (value: any) => {
         ? value.modifications.map((x: any) =>
             fb.group({
               field: [x.field, Validators.required],
-              value: [x.value, Validators.required],
+              value: [x.value],
             })
           )
         : []
@@ -219,9 +219,7 @@ export const createGridActionsFormGroup = (configuration: any) => {
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
     navigateSettings: fb.group({
       pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
-      useRecordId: [
-        get(configuration, 'actions.navigateSettings.useRecordId', false),
-      ],
+      field: [get(configuration, 'actions.navigateSettings.field', '')],
       title: [
         get(configuration, 'actions.navigateSettings.title', 'Details view'),
       ],

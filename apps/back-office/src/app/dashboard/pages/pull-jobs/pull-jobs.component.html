@@ -114,6 +114,7 @@
   *ngIf="pullJobs.length"
   [disabled]="loading"
   [pageSize]="pageInfo.pageSize"
+  [pageIndex]="pageInfo.pageIndex"
   [pageSizeOptions]="[10, 25, 50]"
   [totalItems]="pageInfo.length"
   [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"

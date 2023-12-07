@@ -6,27 +6,48 @@
 
   <ng-container formGroupName="card">
     <div class="flex gap-2 flex-wrap">
-      <!-- RESOURCE SELECTION  -->
-      <div uiFormFieldDirective class="flex-1">
-        <label>{{ 'models.resource.select' | translate }}</label>
-        <ui-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
-          formControlName="resource"
-          [selectedElements]="[selectedResource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        ></ui-graphql-select>
+      <div class="flex-1 flex-col">
+        <!-- Reference data selection  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!formGroup.value.card?.resource"
+        >
+          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <shared-reference-data-select
+            formControlName="referenceData"
+            [selectedElements]="[referenceData]"
+          ></shared-reference-data-select>
+        </div>
+        <ui-divider
+          class="max-w-xs m-auto"
+          [text]="'common.or' | translate"
+          *ngIf="
+            !formGroup.value.card?.resource &&
+            !formGroup.value.card?.referenceData
+          "
+        ></ui-divider>
+        <!-- RESOURCE SELECTION  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!formGroup.value.card?.referenceData"
+        >
+          <label>{{ 'models.resource.select' | translate }}</label>
+          <shared-resource-select
+            formControlName="resource"
+            [selectedElements]="[resource]"
+          ></shared-resource-select>
+        </div>
       </div>
 
       <!-- TEMPLATE SELECTION -->
-      <div uiFormFieldDirective class="flex-1">
+      <div uiFormFieldDirective class="flex-1" *ngIf="resource">
         <label>{{ 'models.form.template' | translate }}</label>
         <ui-select-menu formControlName="template">
           <ui-select-option>-</ui-select-option>
           <ui-select-option
-            *ngFor="let template of templates"
+            *ngFor="let template of resource.forms || []"
             [value]="template.id"
           >
             {{ template.name }}
@@ -44,14 +65,11 @@
     </div>
 
     <!-- SELECT AGGREGATION OR LAYOUT -->
-    <div
-      class="flex flex-col mt-8 gap-8"
-      *ngIf="formGroup.get('card.resource')?.value"
-    >
-      <div *ngIf="!selectedAggregation">
+    <div class="flex flex-col mt-8 gap-8" *ngIf="resource">
+      <div *ngIf="!aggregation">
         <h2>{{ 'common.layout.one' | translate }}</h2>
       </div>
-      <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+      <ng-container *ngIf="!layout && !aggregation">
         <div class="flex justify-center mt-4">
           <ui-button
             category="tertiary"
@@ -64,13 +82,13 @@
         </div>
       </ng-container>
       <ui-divider
-        *ngIf="!selectedAggregation && !selectedLayout"
+        *ngIf="!aggregation && !layout"
         [text]="'common.or' | translate"
       ></ui-divider>
-      <div *ngIf="!selectedLayout">
+      <div *ngIf="!layout">
         <h2>{{ 'common.aggregation.one' | translate }}</h2>
       </div>
-      <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+      <ng-container *ngIf="!layout && !aggregation">
         <div class="flex justify-center mt-4">
           <ui-button
             category="tertiary"
@@ -83,14 +101,12 @@
     </div>
 
     <!-- FROM LAYOUTS -->
-    <ng-container
-      *ngIf="selectedLayout && formGroup.get('card.resource')?.value"
-    >
+    <ng-container *ngIf="layout && resource">
       <div uiFormFieldDirective>
         <label>{{ 'common.layout.one' | translate }}</label>
-        <ui-select-menu [disabled]="true" [value]="selectedLayout.name">
-          <ui-select-option [value]="selectedLayout.name">{{
-            selectedLayout.name
+        <ui-select-menu [disabled]="true" [value]="layout.name">
+          <ui-select-option [value]="layout.name">{{
+            layout.name
           }}</ui-select-option>
         </ui-select-menu>
         <ui-button
@@ -106,9 +122,7 @@
           variant="danger"
           [isIcon]="true"
           icon="close"
-          (click)="
-            formGroup.get('card.layout')?.setValue(null); layoutChange.emit(null)
-          "
+          (click)="formGroup.get('card.layout')?.setValue(null)"
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
@@ -157,14 +171,12 @@
       </div>
     </ng-container>
     <!-- FROM AGGREGATIONS -->
-    <ng-container
-      *ngIf="selectedAggregation && formGroup.get('card.resource')?.value"
-    >
+    <ng-container *ngIf="aggregation && resource">
       <div uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
-        <ui-select-menu [disabled]="true" [value]="selectedAggregation.id">
-          <ui-select-option [value]="selectedAggregation.id">{{
-            selectedAggregation.name
+        <ui-select-menu [disabled]="true" [value]="aggregation.name">
+          <ui-select-option [value]="aggregation.name">{{
+            aggregation.name
           }}</ui-select-option>
         </ui-select-menu>
         <ui-button
@@ -180,10 +192,7 @@
           variant="danger"
           [isIcon]="true"
           icon="close"
-          (click)="
-            formGroup.get('card.aggregation')?.setValue(null);
-            aggregationChange.emit(null)
-          "
+          (click)="formGroup.get('card.aggregation')?.setValue(null)"
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>

@@ -19,13 +19,21 @@ import { GridsterConfig } from 'angular-gridster2';
 export class TabComponent implements AfterViewInit {
   /** Structure of the tab ( list of widgets ) */
   @Input() structure: any;
+  /** Should show padding */
+  @Input() usePadding = true;
+  /** Additional grid options */
+  @Input() options?: GridsterConfig;
   /** Reference to content view container */
   @ViewChild('content', { read: ViewContainerRef })
   content!: ViewContainerRef;
-  /** Additional grid configuration */
-  public gridOptions: GridsterConfig = {
-    outerMargin: true,
-  };
+
+  /** @returns Additional grid configuration */
+  get gridOptions(): GridsterConfig {
+    return {
+      outerMargin: this.usePadding,
+      ...this.options,
+    };
+  }
 
   ngAfterViewInit(): void {
     const componentRef = this.content.createComponent(WidgetGridComponent);

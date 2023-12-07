@@ -119,7 +119,9 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       });
     // Initialize width and show sidenav value
     this.uiSidenavDirective.forEach((sidenavDirective, index) => {
-      this.showSidenav[index] = sidenavDirective.opened;
+      this.showSidenav[index] = sidenavDirective.visible
+        ? sidenavDirective.opened
+        : false;
       this.mode[index] = sidenavDirective.mode;
       this.position[index] = sidenavDirective.position;
       this.setRightSidenavHeight(
@@ -134,7 +136,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       sidenavDirective.openedChange
         .pipe(takeUntil(this.destroy$))
         .subscribe((opened: boolean) => {
-          this.showSidenav[index] = opened;
+          this.showSidenav[index] = sidenavDirective.visible ? opened : false;
           // Change the mode if it has changed since last opening/closure
           this.mode[index] = sidenavDirective.mode;
         });

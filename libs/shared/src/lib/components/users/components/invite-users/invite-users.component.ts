@@ -29,6 +29,8 @@ interface DialogData {
 export class InviteUsersComponent extends UnsubscribeComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
   public formGroup!: ReturnType<typeof this.createFormGroup>;
+  /** File size limit, in MB */
+  public maxFileSize: number;
   private editedRowIndex = 0;
   private editionActive = false;
 
@@ -53,6 +55,7 @@ export class InviteUsersComponent extends UnsubscribeComponent {
    * @param dialogRef The reference to a Dialog
    * @param translate The translation service
    * @param data The input data of the component
+   * @param environment environment
    */
   constructor(
     private downloadService: DownloadService,
@@ -61,9 +64,11 @@ export class InviteUsersComponent extends UnsubscribeComponent {
     public dialog: Dialog,
     public dialogRef: DialogRef<InviteUsersComponent>,
     public translate: TranslateService,
-    @Inject(DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData,
+    @Inject('environment') public environment: any
   ) {
     super();
+    this.maxFileSize = environment.maxFileSize;
   }
 
   /**

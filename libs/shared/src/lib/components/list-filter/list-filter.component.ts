@@ -71,7 +71,9 @@ export class ListFilterComponent implements OnInit, OnDestroy {
   showSignal = false;
 
   ngOnInit(): void {
-    this.parentForm.addControl(this.controlKey, new FormControl(''));
+    this.parentForm.addControl(this.controlKey, new FormControl(''), {
+      emitEvent: false,
+    });
   }
 
   /**
@@ -83,6 +85,6 @@ export class ListFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.parentForm.removeControl(this.controlKey);
+    this.parentForm.removeControl(this.controlKey, { emitEvent: false });
   }
 }

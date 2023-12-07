@@ -7,6 +7,7 @@ import { SimpleRendererComponent } from './simple-renderer/simple-renderer.compo
 import { HeatmapRendererComponent } from './heatmap-renderer/heatmap-renderer.component';
 import { UniqueValueRendererComponent } from './unique-value-renderer/unique-value-renderer.component';
 import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
+import { PortalModule } from '@angular/cdk/portal';
 
 /**
  * Layer styling module.
@@ -23,6 +24,7 @@ import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
     SimpleRendererComponent,
     HeatmapRendererComponent,
     UniqueValueRendererComponent,
+    PortalModule,
   ],
   exports: [LayerStylingComponent],
 })

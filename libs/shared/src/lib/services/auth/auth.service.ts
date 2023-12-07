@@ -139,7 +139,7 @@ export class AuthService {
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        this.oauthService.initCodeFlow();
+        this.oauthService.initLoginFlow();
       });
     // Redirect to previous path
     this.oauthService.events
@@ -155,7 +155,7 @@ export class AuthService {
           // Which triggers a new token fetch with an invalid(deprecated) code
           // can cause an issue with navigation
           // console.log(e);
-          // this.router.navigateByUrl(this.origin);
+          // this.router.navigateByUrl(this.environment.authConfig.redirectUri);
         }
         localStorage.removeItem('redirectPath');
       });

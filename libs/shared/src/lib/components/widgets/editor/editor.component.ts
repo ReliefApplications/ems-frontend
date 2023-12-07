@@ -4,15 +4,16 @@ import {
   Input,
   TemplateRef,
   ViewChild,
+  HostListener,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get } from 'lodash';
+import { clone, get, isNil } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -20,6 +21,14 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GridService } from '../../../services/grid/grid.service';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../models/reference-data.model';
+import { GET_REFERENCE_DATA } from './graphql/queries';
+import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Text widget component using KendoUI
@@ -29,11 +38,16 @@ import { GridService } from '../../../services/grid/grid.service';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent implements OnInit {
-  // === WIDGET CONFIGURATION ===
+export class EditorComponent extends UnsubscribeComponent implements OnInit {
+  /** Widget settings */
   @Input() settings: any;
+  /** Should show padding */
+  @Input() usePadding = true;
 
   private layout: any;
+  private record?: any;
+  /** Configured reference data */
+  private referenceData?: ReferenceData;
   private fields: any[] = [];
   private fieldsValue: any;
   private styles: any[] = [];
@@ -43,6 +57,21 @@ export class EditorComponent implements OnInit {
   public formattedStyle?: string;
 
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  /** Reference to html content component */
+  @ViewChild(HtmlWidgetContentComponent)
+  htmlContentComponent!: HtmlWidgetContentComponent;
+
+  /** @returns does the card use reference data */
+  get useReferenceData() {
+    return !isNil(this.settings.referenceData);
+  }
+
+  /** @returns should show data source button */
+  get showDataSourceButton() {
+    return (
+      (this.settings.showDataSourceLink || false) && !this.useReferenceData
+    );
+  }
 
   /**
    * Constructor for shared-editor component
@@ -54,6 +83,7 @@ export class EditorComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param gridService Shared grid service
+   * @param referenceDataService Shared reference data service
    */
   constructor(
     private apollo: Apollo,
@@ -62,21 +92,17 @@ export class EditorComponent implements OnInit {
     private dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private gridService: GridService
-  ) {}
-
-  /** Sanitizes the text. */
-  ngOnInit(): void {
-    this.setContentFromLayout();
+    private gridService: GridService,
+    private referenceDataService: ReferenceDataService
+  ) {
+    super();
   }
 
-  /**
-   * Sets content of the text widget, querying associated record if any.
-   */
-  private async setContentFromLayout(): Promise<void> {
-    if (this.settings.record) {
+  /** Sanitizes the text. */
+  async ngOnInit(): Promise<void> {
+    if (this.settings.record && this.settings.resource) {
       await this.getLayout();
-      await this.getData();
+      await this.getRecord();
       this.formattedStyle = this.dataTemplateService.renderStyle(
         this.settings.wholeCardStyles || false,
         this.fieldsValue,
@@ -88,11 +114,112 @@ export class EditorComponent implements OnInit {
         this.fields,
         this.styles
       );
+    } else if (this.settings.element && this.settings.referenceData) {
+      await this.getReferenceData();
+      await this.referenceDataService
+        .cacheItems(this.settings.referenceData)
+        .then((value) => {
+          if (value) {
+            const field = this.referenceData?.valueField;
+            const selectedItemKey = String(this.settings.element);
+            if (field) {
+              this.fieldsValue = value.find(
+                (x: any) => String(get(x, field)) === selectedItemKey
+              );
+            }
+          }
+        });
+      this.formattedHtml = this.dataTemplateService.renderHtml(
+        this.settings.text,
+        this.fieldsValue,
+        this.fields
+      );
     } else {
       this.formattedHtml = this.dataTemplateService.renderHtml(
         this.settings.text
       );
     }
+  }
+
+  /**
+   * Listen to click events from host element, if record editor is clicked, open record editor modal
+   *
+   * @param event Click event from host element
+   */
+  @HostListener('click', ['$event'])
+  onContentClick(event: any) {
+    const content = this.htmlContentComponent.el.nativeElement;
+    const editorTriggers = content.querySelectorAll('.record-editor');
+    editorTriggers.forEach((recordEditor: HTMLElement) => {
+      if (recordEditor.contains(event.target)) {
+        this.openEditRecordModal();
+      }
+    });
+  }
+
+  /**
+   * Open edit record modal.
+   */
+  private async openEditRecordModal() {
+    if (this.record && this.record.canUpdate) {
+      const { FormModalComponent } = await import(
+        '../../form-modal/form-modal.component'
+      );
+      const dialogRef = this.dialog.open(FormModalComponent, {
+        disableClose: true,
+        data: {
+          recordId: this.record.id,
+          // template: this.settings.template || null,
+          template: null,
+        },
+        autoFocus: false,
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+        if (value) {
+          // Update the record, based on new configuration
+          this.getRecord().then(() => {
+            this.formattedStyle = this.dataTemplateService.renderStyle(
+              this.settings.wholeCardStyles || false,
+              this.fieldsValue,
+              this.styles
+            );
+            this.formattedHtml = this.dataTemplateService.renderHtml(
+              this.settings.text,
+              this.fieldsValue,
+              this.fields,
+              this.styles
+            );
+          });
+        }
+      });
+    }
+  }
+
+  /**
+   * Get reference data.
+   */
+  private async getReferenceData() {
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: this.settings.referenceData,
+        },
+      })
+      .subscribe(({ data }) => {
+        if (data.referenceData) {
+          this.referenceData = data.referenceData;
+          this.fields = (data.referenceData.fields || [])
+            .filter((field) => field && typeof field !== 'string')
+            .map((field) => {
+              return {
+                label: field.name,
+                name: field.name,
+                type: field.type,
+              };
+            });
+        }
+      });
   }
 
   /** Sets layout */
@@ -118,7 +245,7 @@ export class EditorComponent implements OnInit {
   /**
    * Queries the data.
    */
-  private async getData() {
+  private async getRecord() {
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
@@ -161,8 +288,8 @@ export class EditorComponent implements OnInit {
           },
         })
       );
-      const record: any = get(res.data, `${queryName}.edges[0].node`, null);
-      this.fieldsValue = { ...record };
+      this.record = get(res.data, `${queryName}.edges[0].node`, null);
+      this.fieldsValue = { ...this.record };
       const metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
       if (metaQuery) {
         const metaData = await firstValueFrom(metaQuery);

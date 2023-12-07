@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { GradientPickerModule } from '../../../../../gradient-picker/gradient-picker.module';
+import { GradientPickerModule } from '../../../../../controls/gradient-picker/gradient-picker.module';
 import { FormWrapperModule, SliderModule } from '@oort-front/ui';
 
 /**
@@ -24,5 +24,6 @@ import { FormWrapperModule, SliderModule } from '@oort-front/ui';
   styleUrls: ['./heatmap-renderer.component.scss'],
 })
 export class HeatmapRendererComponent {
+  /** Current form group */
   @Input() formGroup!: FormGroup;
 }

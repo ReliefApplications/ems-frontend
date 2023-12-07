@@ -25,7 +25,7 @@ import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
-import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import centroid from '@turf/centroid';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
@@ -168,7 +168,7 @@ export class Layer implements LayerModel {
   // If the layer is a group, the sublayers array has the ids of the layers
   public sublayers: string[] = [];
 
-  public _sublayers: Layer[] = [];
+  public _sublayers: string[] = [];
 
   public sublayersLoaded = new BehaviorSubject(false);
 
@@ -192,8 +192,7 @@ export class Layer implements LayerModel {
    *
    * @returns Children of the current layer
    */
-  public async getChildren() {
-    await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
+  public getChildren() {
     return this._sublayers;
   }
 
@@ -280,12 +279,7 @@ export class Layer implements LayerModel {
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
-      this._sublayers = options.sublayers?.length
-        ? await this.layerService.createLayersFromIds(
-            options.sublayers,
-            this.injector
-          )
-        : [];
+      this._sublayers = options.sublayers?.length ? options.sublayers : [];
 
       this.sublayersLoaded.next(true);
     }
@@ -532,7 +526,11 @@ export class Layer implements LayerModel {
 
     switch (this.type) {
       case 'GroupLayer':
-        const sublayers = await this.getChildren();
+        const ChildrenIds = this.getChildren();
+        const layerPromises = ChildrenIds.map((layer) => {
+          return this.layerService.createLayersFromId(layer, this.injector);
+        });
+        const sublayers = await Promise.all(layerPromises);
 
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
@@ -1051,10 +1049,11 @@ export class Layer implements LayerModel {
     label?: string
   ): string {
     if (symbol) {
+      let svg: string;
       switch (type) {
         case 'Polygon': {
           // We avoid stroke width to be too important
-          const svgTemplate = `<svg 
+          svg = `<svg 
                 
                   width="16" 
                   height="16"
@@ -1068,16 +1067,10 @@ export class Layer implements LayerModel {
                     height="16" />
                     </g>
                 </svg>`;
-          return `<span class="flex gap-2 items-center">${svgTemplate}${
-            label || ''
-          }</span>`;
+          break;
         }
         default:
         case 'Point': {
-          const wrapper = this.renderer.createElement('span');
-          ['flex', 'gap-2', 'items-center'].forEach((classProp) => {
-            this.renderer.addClass(wrapper, classProp);
-          });
           const iconDef = getIconDefinition(symbol.style as IconName);
           const i = iconCreator(iconDef, {
             styles: {
@@ -1086,13 +1079,13 @@ export class Layer implements LayerModel {
               color: symbol.color,
               'line-height': '1rem',
               'font-size': '1rem',
-              'padding-left': '.5rem',
             },
           });
-          this.renderer.appendChild(wrapper, i.node[0]);
-          return wrapper.outerHTML;
+          svg = i.node[0].outerHTML;
+          break;
         }
       }
+      return `<span class="flex gap-2 items-start">${svg}${label || ''}</span>`;
     } else {
       return '';
     }
@@ -1107,11 +1100,16 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
-    const children = await this.getChildren();
+    const children = this.getChildren();
     if (children.length) {
-      children.forEach((cl) => {
-        cl.removeAllListeners(map);
+      const removeAllListenersLayerPromises = children.map((layer) => {
+        return this.layerService
+          .createLayersFromId(layer, this.injector)
+          .then((layer) => {
+            return layer.removeAllListeners(map);
+          });
       });
+      await Promise.all(removeAllListenersLayerPromises);
     }
     this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
     this.listeners.forEach((listener) => {

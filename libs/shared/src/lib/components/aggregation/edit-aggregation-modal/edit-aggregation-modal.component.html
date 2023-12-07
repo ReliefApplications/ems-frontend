@@ -13,8 +13,8 @@
         </div>
         <div uiFormFieldDirective>
           <label>{{ 'common.resource.one' | translate }}</label>
-          <ui-select-menu [value]="resource.id" [disabled]="true">
-            <ui-select-option [value]="resource.id" [disabled]="true">
+          <ui-select-menu [value]="resource.name" [disabled]="true">
+            <ui-select-option [value]="resource.name" [disabled]="true">
               {{ resource.name }}
             </ui-select-option>
           </ui-select-menu>
@@ -29,7 +29,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose variant="default">
+    <ui-button [uiDialogClose] variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

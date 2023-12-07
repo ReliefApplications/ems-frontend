@@ -210,10 +210,10 @@ export class EmailService {
           );
           snackBarSpinner.instance.loading = false;
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
-          const { EmailPreviewComponent } = await import(
-            '../../components/email-preview/email-preview.component'
+          const { EmailPreviewModalComponent } = await import(
+            '../../components/email-preview-modal/email-preview-modal.component'
           );
-          const dialogRef = this.dialog.open(EmailPreviewComponent, {
+          const dialogRef = this.dialog.open(EmailPreviewModalComponent, {
             data: res,
             autoFocus: false,
             disableClose: true,

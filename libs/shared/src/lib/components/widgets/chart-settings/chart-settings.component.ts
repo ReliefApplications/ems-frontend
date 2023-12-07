@@ -2,7 +2,8 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /**
  * Chart settings component
@@ -13,19 +14,20 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
   styleUrls: ['./chart-settings.component.scss'],
 })
 /** Modal content for the settings of the chart widgets. */
-export class ChartSettingsComponent implements OnInit {
-  // === REACTIVE FORM ===
-  public formGroup!: UntypedFormGroup;
-
-  // === WIDGET ===
+export class ChartSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
+  /** Widget definition */
   @Input() widget: any;
-
-  // === EMIT THE CHANGES APPLIED ===
+  /** Emit the applied change */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
-  // === DATA ===
+  /** Widget form group */
+  public formGroup!: ReturnType<typeof createChartWidgetForm>;
+  /** Available chart types */
   public types = CHART_TYPES;
+  /** Current chart type */
   public type: any;
   public dataFilter: any;
 
@@ -39,19 +41,18 @@ export class ChartSettingsComponent implements OnInit {
     return (this.formGroup?.controls.chart as UntypedFormGroup) || null;
   }
 
-  /** Stores the selected tab */
-  public selectedTab = 0;
-
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.formGroup = extendWidgetForm(
-      createChartWidgetForm(this.widget.id, this.widget.settings),
-      this.widget.settings?.widgetDisplay
+    this.formGroup = createChartWidgetForm(
+      this.widget.id,
+      this.widget.settings
     );
+
     this.type = this.types.find((x) => x.name === this.chartForm.value.type);
     this.change.emit(this.formGroup);
 
-    this.formGroup?.valueChanges.subscribe(() => {
+    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.formGroup.markAsDirty({ onlySelf: true });
       this.change.emit(this.formGroup);
     });
 
@@ -68,5 +69,10 @@ export class ChartSettingsComponent implements OnInit {
    */
   handleTabChange(event: number): void {
     this.selectedTab = event;
+    this.chartForm.controls.type.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.type = this.types.find((x) => x.name === value);
+      });
   }
 }

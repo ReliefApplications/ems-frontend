@@ -6,6 +6,7 @@
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
           class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
+          [ngClass]="{ 'p-4': usePadding }"
           style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
         >
           <ng-container
@@ -109,9 +110,7 @@
       variant="primary"
       icon="open_in_new"
       (click)="openDataSource()"
-      *ngIf="
-        (settings.card?.showDataSourceLink && displayMode === 'cards') || false
-      "
+      *ngIf="showDataSourceButton"
     >
       {{ 'components.widget.summaryCard.dataSource' | translate }}
     </ui-button>

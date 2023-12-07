@@ -22,8 +22,8 @@ import { OptionComponent } from './components/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DOCUMENT } from '@angular/common';
 import { ScrollStrategies } from './types/scroll-strategies';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * UI Autocomplete directive
@@ -151,7 +151,7 @@ export class AutocompleteDirective
         });
     }
     this.clickOutsideListener = this.renderer.listen(
-      window,
+      this.document,
       'click',
       (event) => {
         if (

@@ -11,6 +11,7 @@ export const GET_PROFILE = gql`
       username
       isAdmin
       name
+      attributes
       roles {
         id
         title

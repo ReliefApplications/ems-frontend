@@ -72,16 +72,6 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
         if (application) {
           this.application = application;
           this.settingsForm = this.createSettingsForm(application);
-          this.settingsForm.controls.sideMenu.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((value) => {
-              if (value) {
-                this.settingsForm.controls.hideMenu.enable();
-              } else {
-                this.settingsForm.controls.hideMenu.disable();
-              }
-              this.settingsForm.updateValueAndValidity();
-            });
           this.locked = this.application?.locked;
           this.lockedByUser = this.application?.lockedByUser;
         }
@@ -99,9 +89,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
       id: [{ value: application.id, disabled: true }],
       name: [application.name, Validators.required],
       sideMenu: [application.sideMenu],
-      hideMenu: [
-        { value: application.hideMenu, disabled: !application.sideMenu },
-      ],
+      hideMenu: [application.hideMenu],
       description: [application.description],
       status: [application.status],
     });

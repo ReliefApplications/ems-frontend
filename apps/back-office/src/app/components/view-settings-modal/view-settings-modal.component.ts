@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -21,6 +21,7 @@ import {
   AccessModule,
   ApplicationService,
   Page,
+  Dashboard,
   Step,
   UnsubscribeComponent,
   WorkflowService,
@@ -28,10 +29,12 @@ import {
   SearchMenuModule,
   AuthService,
   Application,
+  DashboardService,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
-import { isNil } from 'lodash';
+import { debounceTime, takeUntil } from 'rxjs';
+import { get, isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
+import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -43,6 +46,7 @@ interface DialogData {
   visible?: boolean;
   accessData: AccessData;
   canUpdate: boolean;
+  dashboard?: Dashboard;
 }
 
 /**
@@ -71,6 +75,7 @@ interface DialogData {
     SearchMenuModule,
     AlertModule,
     AbilityModule,
+    DashboardFilterSettingsComponent,
   ],
   templateUrl: './view-settings-modal.component.html',
   styleUrls: ['./view-settings-modal.component.scss'],
@@ -87,20 +92,31 @@ export class ViewSettingsModalComponent
   public showDuplicateMenu = false;
   /** List of available applications */
   public applications: Application[] = [];
+  /** Dashboard object */
+  public dashboard?: Dashboard;
+  /** Default grid options */
+  public defaultGridOptions = {
+    minCols: 8,
+    fixedRowHeight: 200,
+    margin: 10,
+  };
   /** Step object */
   private step?: Step;
   /** Page object */
   private page?: Page;
+  /** Show dashboard filter */
+  public showFilter!: boolean;
 
   /**
    * Common settings of pages / steps.
    *
    * @param dialogRef Dialog ref
    * @param data Data that will be passed to the dialog
-   * @param fb This is the service that will be used to build forms.
+   * @param fb Angular form builder
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
    * @param authService Shared authentication service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     public dialogRef: DialogRef<ViewSettingsModalComponent>,
@@ -108,12 +124,14 @@ export class ViewSettingsModalComponent
     private fb: FormBuilder,
     private workflowService: WorkflowService,
     private applicationService: ApplicationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dashboardService: DashboardService
   ) {
     super();
     if (this.data) {
-      this.page = this.data?.page;
-      this.step = this.data?.step;
+      this.page = this.data.page;
+      this.step = this.data.step;
+      this.dashboard = this.data.dashboard;
     }
   }
 
@@ -139,6 +157,18 @@ export class ViewSettingsModalComponent
         .subscribe((value: boolean | null) => {
           if (!isNil(value)) {
             this.onUpdateVisibility(value);
+          }
+        });
+    }
+
+    if (this.dashboard) {
+      // Listen to grid settings updates
+      this.settingsForm?.controls.gridOptions?.valueChanges
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          // update only if the form is valid
+          if (this.settingsForm?.controls.gridOptions?.valid) {
+            this.onUpdateGridOptions(value);
           }
         });
     }
@@ -227,6 +257,34 @@ export class ViewSettingsModalComponent
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
+      ...(this.dashboard && {
+        gridOptions: this.fb.group({
+          minCols: this.fb.control(
+            get<number>(
+              this.dashboard.gridOptions,
+              'minCols',
+              this.defaultGridOptions.minCols
+            ),
+            Validators.compose([Validators.min(4), Validators.max(24)])
+          ),
+          fixedRowHeight: this.fb.control(
+            get<number>(
+              this.dashboard.gridOptions,
+              'fixedRowHeight',
+              this.defaultGridOptions.fixedRowHeight
+            ),
+            Validators.min(50)
+          ),
+          margin: this.fb.control(
+            get<number>(
+              this.dashboard.gridOptions,
+              'margin',
+              this.defaultGridOptions.margin
+            ),
+            Validators.min(0)
+          ),
+        }),
+      }),
     });
   }
 
@@ -288,5 +346,29 @@ export class ViewSettingsModalComponent
       },
       callback
     );
+  }
+
+  /**
+   * Save grid settings on change.
+   *
+   * @param gridOptions grid options
+   */
+  public onUpdateGridOptions(gridOptions: any): void {
+    gridOptions = {
+      ...gridOptions,
+      // block adding more columns by dragging or resizing
+      maxCols: gridOptions.minCols,
+    };
+
+    const callback = () => {
+      this.dashboard = {
+        ...this.dashboard,
+        gridOptions,
+      };
+      // Updates parent component
+      const updates = { gridOptions };
+      this.onUpdate.emit(updates);
+    };
+    this.dashboardService.editGridOptions(gridOptions, callback);
   }
 }

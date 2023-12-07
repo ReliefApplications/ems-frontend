@@ -1,11 +1,8 @@
 <div uiFormFieldDirective class="flex-1">
-  <ui-graphql-select
+  <shared-reference-data-select
     [formControl]="control"
-    valueField="id"
-    textField="name"
     [isSurveyQuestion]="true"
     [selectedElements]="[selectedReferenceData]"
-    [query]="referenceDatasQuery"
   >
-  </ui-graphql-select>
+  </shared-reference-data-select>
 </div>

@@ -30,24 +30,18 @@
   </ng-container>
   <div uiFormFieldDirective>
     <label>{{ 'common.resource.one' | translate }}</label>
-    <ui-graphql-select
-      valueField="id"
-      textField="name"
-      [query]="resourcesQuery"
+    <shared-resource-select
       formControlName="resource"
       [selectedElements]="[resource]"
-      (searchChange)="onResourceSearchChange($event)"
-      [filterable]="true"
-    >
-    </ui-graphql-select>
+    ></shared-resource-select>
   </div>
   <ng-container *ngIf="resource">
     <!-- Aggregation -->
     <ng-container *ngIf="formGroup.value.chart.aggregationId">
       <div *ngIf="aggregation" uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
-        <ui-select-menu [disabled]="true" [value]="aggregation.id">
-          <ui-select-option [value]="aggregation.id">{{
+        <ui-select-menu [disabled]="true" [value]="aggregation.name">
+          <ui-select-option [value]="aggregation.name">{{
             aggregation.name
           }}</ui-select-option>
         </ui-select-menu>

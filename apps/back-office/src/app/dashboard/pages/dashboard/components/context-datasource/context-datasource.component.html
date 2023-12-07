@@ -33,17 +33,10 @@
         *ngIf="form.get('origin')?.value === 'resource'"
       >
         <label>{{ 'common.resource.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="resourcesQuery"
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
+        <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        >
-        </ui-graphql-select>
+        ></shared-resource-select>
       </div>
 
       <!-- Reference data selection  -->
@@ -53,17 +46,11 @@
         *ngIf="form.get('origin')?.value === 'refData'"
       >
         <label>{{ 'common.referenceData.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="refDatasQuery"
-          valueField="id"
-          textField="name"
-          [query]="refDatasQuery"
+        <shared-reference-data-select
           formControlName="refData"
           [selectedElements]="[refData]"
-        >
-        </ui-graphql-select>
+        ></shared-reference-data-select>
       </div>
-
       <!-- Field selection -->
       <div uiFormFieldDirective [outline]="false">
         <label>{{ 'models.dashboard.context.displayField' | translate }}</label>
@@ -93,7 +80,7 @@
   </ng-container>
 
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

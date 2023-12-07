@@ -25,7 +25,8 @@ import {
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
-import { cloneDeep, isNil } from 'lodash';
+import { cloneDeep } from 'lodash';
+import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -81,10 +82,9 @@ export class WidgetGridComponent
   public gridOptions!: GridsterConfig;
   /** Detect structure changes */
   public structureChanges = new Subject<boolean>();
-  /** Resize observer for the parent container */
-  private resizeObserver!: ResizeObserver;
   /** Set grid options timeout, to enable events that can save dashboard */
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
+  /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
 
   /**
@@ -94,6 +94,12 @@ export class WidgetGridComponent
    */
   get canDeactivate() {
     return !this.widgetComponents.some((x) => !x.canDeactivate);
+  }
+
+  /** @returns maximum number of columns of widgets in the grid */
+  get maxCols(): number {
+    const cols = this.widgets.map((x) => x.cols);
+    return Math.max(...cols);
   }
 
   /**
@@ -111,16 +117,18 @@ export class WidgetGridComponent
     super();
   }
 
-  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.availableWidgets = this.dashboardService.availableWidgets;
     this.skeletons = this.getSkeletons();
     this.setLayout();
-    this.resizeObserver = new ResizeObserver(() => {
-      this.colsNumber = this.setColsNumber(this._host.nativeElement.innerWidth);
-      this.setGridOptions();
-    });
-    this.resizeObserver.observe(this._host.nativeElement);
+    new ResizeObservable(this._host.nativeElement)
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.colsNumber = this.setColsNumber(
+          this._host.nativeElement.innerWidth
+        );
+        this.setGridOptions();
+      });
     this.setGridOptions();
   }
 
@@ -131,6 +139,9 @@ export class WidgetGridComponent
     }
     if (changes['widgets']) {
       this.setLayout();
+    }
+    if (changes['options']) {
+      this.setGridOptions();
     }
     if (
       changes['canUpdate'] &&
@@ -146,7 +157,6 @@ export class WidgetGridComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.resizeObserver.disconnect();
   }
 
   /**
@@ -181,12 +191,8 @@ export class WidgetGridComponent
       ...this.gridOptions,
       ...(isDashboardSet && {
         itemChangeCallback: () => this.structureChanges.next(true),
-        scrollToNewItems: true,
       }),
-      ...(!isDashboardSet && {
-        // Prevent dashboard to scroll to bottom widget by default
-        scrollToNewItems: false,
-      }),
+      scrollToNewItems: false,
       gridType: GridType.VerticalFixed,
       compactType: CompactType.CompactLeftAndUp,
       displayGrid: DisplayGrid.OnDragAndResize,
@@ -194,7 +200,6 @@ export class WidgetGridComponent
       outerMargin: false,
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
-      maxCols: this.colsNumber,
       minCols: this.colsNumber,
       fixedRowHeight: 200,
       draggable: {
@@ -208,8 +213,8 @@ export class WidgetGridComponent
       },
       pushItems: true,
       swap: true,
-      swapWhileDragging: false,
-      disablePushOnDrag: true,
+      swapWhileDragging: true,
+      disablePushOnDrag: false,
       disablePushOnResize: false,
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
@@ -219,6 +224,11 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
+    // Set maxCols at the end, based on widgets & existing max
+    this.gridOptions.maxCols = Math.max(
+      this.maxCols,
+      (this.gridOptions.maxCols || this.gridOptions.minCols) as number
+    );
   }
 
   /**
@@ -402,16 +412,14 @@ export class WidgetGridComponent
       this.changesSubscription.unsubscribe();
     }
     this.widgets.forEach((widget) => {
-      if (isNil(widget.cols) || isNil(widget.rows)) {
-        widget.cols = widget.cols ?? widget.defaultCols;
-        widget.rows = widget.rows ?? widget.defaultRows;
-        widget.minItemRows = widget.minItemRows ?? widget.minRow;
-        widget.resizeEnabled = this.canUpdate;
-        widget.dragEnabled = this.canUpdate;
-        delete widget.defaultCols;
-        delete widget.defaultRows;
-        delete widget.minItemRows;
-      }
+      widget.cols = widget.cols ?? widget.defaultCols;
+      widget.rows = widget.rows ?? widget.defaultRows;
+      widget.minItemRows = widget.minItemRows ?? widget.minRow;
+      widget.resizeEnabled = this.canUpdate;
+      widget.dragEnabled = this.canUpdate;
+      delete widget.defaultCols;
+      delete widget.defaultRows;
+      delete widget.minItemRows;
     });
     // Prevent changes to be saved too often
     this.changesSubscription = this.structureChanges
