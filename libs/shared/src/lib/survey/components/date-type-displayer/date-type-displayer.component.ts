@@ -19,6 +19,7 @@ import {
   getDateDisplay,
 } from '../utils/create-picker-instance';
 import { v4 as uuidv4 } from 'uuid';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Component for the selection of the interest fields from date type question
@@ -39,12 +40,13 @@ export class DateTypeDisplayerComponent
   /**
    * Component for the selection of the interest fields from date type question
    *
-   * @param {Document} document Current document object
-   * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
-   * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
-   * @param {ViewContainerRef} domService - AppBuilder - Dom servie to handle any DOM element update
-   * @param {Renderer2} renderer - Angular - This is renderer instance that handles any DOM update safely
-   * @param {ElementRef} el - Angular - Current class instance linked element ref template
+   * @param document Current document object
+   * @param changeDetectorRef This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param viewContainerRef This is angular view container ref of the component instance needed for the survey AngularQuestion class
+   * @param domService Dom service to handle any DOM element update
+   * @param renderer This is renderer instance that handles any DOM update safely
+   * @param el Current class instance linked element ref template
+   * @param translateService  Translate service
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -52,7 +54,8 @@ export class DateTypeDisplayerComponent
     viewContainerRef: ViewContainerRef,
     private domService: DomService,
     private renderer: Renderer2,
-    private el: ElementRef
+    private el: ElementRef,
+    private translateService: TranslateService
   ) {
     super(changeDetectorRef, viewContainerRef);
   }
@@ -86,7 +89,8 @@ export class DateTypeDisplayerComponent
     const pickerInstance = createPickerInstance(
       this.model.inputType as DateInputFormat,
       pickerDiv,
-      this.domService
+      this.domService,
+      this.translateService
     );
     if (pickerInstance) {
       if (this.model.obj[this.model.obj.name as keyof QuestionText]) {

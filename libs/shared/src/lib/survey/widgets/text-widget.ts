@@ -18,16 +18,19 @@ import {
   getDateDisplay,
   setDateValue,
 } from '../components/utils/create-picker-instance';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
  *
  * @param domService Shared DOM service
+ * @param translateService Angular translate service
  * @param customWidgetCollectionInstance CustomWidgetCollection * @param document Document
  * @param document Document
  */
 export const init = (
   domService: DomService,
+  translateService: TranslateService,
   customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
@@ -108,7 +111,8 @@ export const init = (
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
             pickerDiv,
-            domService
+            domService,
+            translateService
           );
 
           if (pickerInstance) {
@@ -139,7 +143,8 @@ export const init = (
             iconInstance.icon = 'close';
             iconInstance.variant = 'grey';
 
-            pickerInstance.registerOnChange((value: Date | null) => {
+            pickerInstance.onBlur.subscribe(() => {
+              const value = pickerInstance.value;
               if (value) {
                 question.value = setDateValue(value, question.inputType);
                 // show the clear button
@@ -150,20 +155,8 @@ export const init = (
             });
             if (question.value) {
               // Init the question with the date in the correct format
-              let value = question.value;
-              if (question.inputType === 'date') {
-                const date = new Date(value);
-                // make sure it's always in the current user's timezone
-                const dateParts = value?.split('T')[0]?.split('-');
-                if (dateParts?.length === 3) {
-                  date.setFullYear(+dateParts[0]);
-                  date.setMonth(+dateParts[1] - 1);
-                  date.setDate(+dateParts[2]);
-                  value = date.toISOString();
-                }
-              }
               pickerInstance.writeValue(
-                getDateDisplay(value, question.inputType)
+                getDateDisplay(question.value, question.inputType)
               );
               //The register on change event only triggers from the calendar UI selection, therefor we have to manually show the clear button in first load
               // https://www.telerik.com/kendo-angular-ui/components/dateinputs/api/DatePickerComponent/#toc-valuechange
@@ -198,7 +191,7 @@ export const init = (
             el.parentElement?.classList.add('relative');
             button.classList.add('absolute', 'right-7', 'z-10');
             (question.survey as SurveyModel).onValueChanged.add(
-              (sender: any, options: any) => {
+              (_: any, options: any) => {
                 if (options.question.name === question.name) {
                   if (options.question.value) {
                     pickerInstance.writeValue(

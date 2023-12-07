@@ -33,6 +33,7 @@ import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
 } from './components/utils/components.enum';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -54,6 +55,7 @@ export const initCustomSurvey = (
   const apollo = injector.get(Apollo);
   const authService = injector.get(AuthService);
   const referenceDataService = injector.get(ReferenceDataService);
+  const translateService = injector.get(TranslateService);
 
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
@@ -62,7 +64,12 @@ export const initCustomSurvey = (
   }
 
   TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
-  TextWidget.init(domService, CustomWidgetCollection.Instance, document);
+  TextWidget.init(
+    domService,
+    translateService,
+    CustomWidgetCollection.Instance,
+    document
+  );
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
   Matrices.init(domService);
 

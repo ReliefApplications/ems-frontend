@@ -17,7 +17,7 @@ import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import { AddRecordMutationResponse } from '../../models/record.model';
-import { Question, QuestionText } from '../../survey/types';
+import { Question } from '../../survey/types';
 import { WorkflowService } from '../workflow/workflow.service';
 import { ApplicationService } from '../application/application.service';
 import { DomService } from '../dom/dom.service';
@@ -31,54 +31,6 @@ import { DomService } from '../dom/dom.service';
 export const transformSurveyData = (survey: SurveyModel) => {
   // Cloning data to avoid mutating the original survey data
   const data = cloneDeep(survey.data) ?? {};
-  const formatDate = (value: string | null) => {
-    if (!value) {
-      return value;
-    }
-
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!value.includes('T') && dateRegex.test(value)) {
-      const [year, month, day] = value.split('-').map((v) => parseInt(v, 10));
-      // If in the format YYYY-MM-DD, transform to UTC and ISO string
-      return new Date(Date.UTC(year, month - 1, day)).toISOString();
-    } else if (value.endsWith('T00:00:00.000Z')) {
-      // If already in UTC, return as is
-      return value;
-    }
-
-    // If in ISO format, but not UTC time, transform to UTC and ISO string
-    const date = new Date(value);
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
-    return new Date(Date.UTC(year, month, day)).toISOString();
-  };
-
-  survey.getAllQuestions(true).forEach((question) => {
-    if (question.getType() === 'text' && question.inputType === 'date') {
-      data[question.name] = formatDate(question.value);
-    } else if (question.getType() === 'paneldynamic') {
-      const nestedQuestions = (
-        question as QuestionPanelDynamicModel
-      ).templateElements.filter(
-        (v) =>
-          v.getType() === 'text' && (v as QuestionText).inputType === 'date'
-      ) as QuestionText[];
-      // Update nested questions inside panel dynamic
-      (question as QuestionPanelDynamicModel).panels.forEach((panel, index) => {
-        nestedQuestions.forEach((nestedQuestion) => {
-          const panelValue = panel.getValue();
-          if (panelValue[nestedQuestion.name]) {
-            set(
-              data,
-              `${question.name}.${index}.${nestedQuestion.name}`,
-              formatDate(panelValue[nestedQuestion.name])
-            );
-          }
-        });
-      });
-    }
-  });
 
   Object.keys(data).forEach((filed) => {
     const question = survey.getQuestionByName(filed);

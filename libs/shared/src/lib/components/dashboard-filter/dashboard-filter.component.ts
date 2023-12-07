@@ -396,9 +396,8 @@ export class DashboardFilterComponent
       }
     };
     if (checkDate(value)) {
-      const date = new Date(value);
       const formatted = new DatePipe(this.dateTranslate).transform(
-        date,
+        value,
         'shortDate'
       );
       return { isDate: true, formattedValue: `${questionName}: ${formatted}` };

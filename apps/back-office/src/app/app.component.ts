@@ -12,7 +12,7 @@ import {
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
-
+import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
 /**
  * Root component of back-office.
  */
@@ -40,13 +40,17 @@ export class AppComponent implements OnInit {
    *
    * @param authService Shared authentication service
    * @param translate Angular translate service
+   * @param kendoIntl Kendo Intl Service
    */
   constructor(
     private authService: AuthService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private kendoIntl: IntlService
   ) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
+    (this.kendoIntl as CldrIntlService).localeId =
+      environment.availableLanguages[0];
   }
 
   /**
