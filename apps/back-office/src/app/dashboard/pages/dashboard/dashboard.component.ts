@@ -231,50 +231,29 @@ export class DashboardComponent
       )
       .subscribe(() => {
         this.loading = true;
-        // Reset context
-        this.contextRecord = null;
-        this.contextId.setValue(null, {
-          emitEvent: false,
-          emitModelToViewChange: false,
-          emitViewToModelChange: false,
-        });
-        this.contextId.markAsPristine();
-        this.contextId.markAsUntouched();
-        // Reset scroll when changing page
-        const pageContainer = this.document.getElementById('appPageContainer');
-        if (pageContainer) {
-          pageContainer.scrollTop = 0;
-        }
-
-        /** Extract main dashboard id */
-        const id = this.route.snapshot.paramMap.get('id');
-        /** Extract query id to load template */
-        const queryId = this.route.snapshot.queryParamMap.get('id');
-        if (id) {
-          if (queryId) {
-            this.loadDashboard(id).then(() => {
-              const templates = this.dashboard?.page?.contentWithContext;
-              const type = this.contextType;
-              if (type) {
-                // Find template from parent's templates, based on query params id
+        if (this.dashboard?.page?.geographicContext?.enabled) {
+          // Reset scroll when changing page
+          const pageContainer =
+            this.document.getElementById('appPageContainer');
+          if (pageContainer) {
+            pageContainer.scrollTop = 0;
+          }
+          /** Extract main dashboard id */
+          const id = this.route.snapshot.paramMap.get('id');
+          /** Extract query id to load template */
+          const queryId = this.route.snapshot.queryParamMap.get('id');
+          if (id) {
+            if (queryId) {
+              this.loadDashboard(id).then(() => {
+                const templates = this.dashboard?.page?.contentWithContext;
                 const template = templates?.find((d) => {
-                  // If templates use reference data
-                  if (type === 'element')
-                    return (
-                      'element' in d &&
-                      d.element.toString().trim() === queryId.trim()
-                    );
-                  // If templates use resource
-                  else if (type === 'record')
-                    return (
-                      'record' in d &&
-                      d.record.toString().trim() === queryId.trim()
-                    );
-                  return false;
+                  return (
+                    'geographic' in d &&
+                    d.geographic.toString().trim() === queryId.trim()
+                  );
                 });
-
                 if (template) {
-                  // if we found the contextual dashboard, load it
+                  // if we found the geographic dashboard, load it
                   this.loadDashboard(template.content).then(
                     () => (this.loading = false)
                   );
@@ -288,7 +267,7 @@ export class DashboardComponent
                     this.dashboardService
                       .createDashboardWithContext(
                         this.dashboard?.page?.id as string,
-                        type, // type of context
+                        'geographic', // type of context
                         queryId // id of the context
                       )
                       .then(({ data }) => {
@@ -298,21 +277,110 @@ export class DashboardComponent
                             'models.dashboard.context.notifications.templateCreated'
                           )
                         );
-                        // load the contextual dashboard
+                        // load the geographic dashboard
                         this.loadDashboard(
                           data.addDashboardWithContext.id
                         ).then(() => (this.loading = false));
                       });
                   }
                 }
-              } else {
-                this.loading = false;
-              }
-            });
-          } else {
-            // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
-            this.loadDashboard(id).then(() => (this.loading = false));
+              });
+            }
           }
+        } else {
+          // Reset context
+          this.contextRecord = null;
+          this.contextId.setValue(null, {
+            emitEvent: false,
+            emitModelToViewChange: false,
+            emitViewToModelChange: false,
+          });
+          this.contextId.markAsPristine();
+          this.contextId.markAsUntouched();
+          // Reset scroll when changing page
+          const pageContainer =
+            this.document.getElementById('appPageContainer');
+          if (pageContainer) {
+            pageContainer.scrollTop = 0;
+          }
+
+          /** Extract main dashboard id */
+          const id = this.route.snapshot.paramMap.get('id');
+          /** Extract query id to load template */
+          const queryId = this.route.snapshot.queryParamMap.get('id');
+          if (id) {
+            if (queryId) {
+              this.loadDashboard(id).then(() => {
+                const templates = this.dashboard?.page?.contentWithContext;
+                const type = this.contextType;
+                if (type) {
+                  // Find template from parent's templates, based on query params id
+                  const template = templates?.find((d) => {
+                    // If templates use reference data
+                    if (type === 'element')
+                      return (
+                        'element' in d &&
+                        d.element.toString().trim() === queryId.trim()
+                      );
+                    // If templates use resource
+                    else if (type === 'record')
+                      return (
+                        'record' in d &&
+                        d.record.toString().trim() === queryId.trim()
+                      );
+                    return false;
+                  });
+
+                  if (template) {
+                    // if we found the contextual dashboard, load it
+                    this.loadDashboard(template.content).then(
+                      () => (this.loading = false)
+                    );
+                  } else {
+                    if (this.dashboard?.page && this.canUpdate) {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'models.dashboard.context.notifications.creatingTemplate'
+                        )
+                      );
+                      this.dashboardService
+                        .createDashboardWithContext(
+                          this.dashboard?.page?.id as string,
+                          type, // type of context
+                          queryId // id of the context
+                        )
+                        .then(({ data }) => {
+                          if (!data?.addDashboardWithContext?.id) return;
+                          this.snackBar.openSnackBar(
+                            this.translate.instant(
+                              'models.dashboard.context.notifications.templateCreated'
+                            )
+                          );
+                          // load the contextual dashboard
+                          this.loadDashboard(
+                            data.addDashboardWithContext.id
+                          ).then(() => (this.loading = false));
+                        });
+                    }
+                  }
+                } else {
+                  this.loading = false;
+                }
+              });
+            } else {
+              // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
+              this.loadDashboard(id).then(() => (this.loading = false));
+            }
+          }
+        }
+      });
+    this.countryCode.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        console.log(value);
+        console.log(this.dashboard);
+        if (value) {
+          this.onGeographicContextChange(value);
         }
       });
   }
@@ -713,6 +781,32 @@ export class DashboardComponent
           this.refDataElements = items;
         });
       });
+    }
+  }
+
+  private async onGeographicContextChange(value: string | null | undefined) {
+    if (
+      !this.dashboard?.id ||
+      !this.dashboard?.page?.id ||
+      !this.dashboard.page.geographicContext
+    )
+      return;
+    if (value) {
+      console.log("aqui1");
+      this.router.navigate(['.'], {
+        relativeTo: this.route,
+        queryParams: {
+          id: value,
+        },
+      });
+    } else {
+      console.log("aqui2");
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.dashboard.context.notifications.loadDefault'
+        )
+      );
+      this.router.navigate(['.'], { relativeTo: this.route });
     }
   }
 

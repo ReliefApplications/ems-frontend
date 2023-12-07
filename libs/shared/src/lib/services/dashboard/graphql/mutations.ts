@@ -64,8 +64,18 @@ export const UPDATE_PAGE_CONTEXT = gql`
 
 /** GraphQL mutation for creating a dashboard with context */
 export const CREATE_DASHBOARD_WITH_CONTEXT = gql`
-  mutation createDashboardWithContext($page: ID!, $element: JSON, $record: ID) {
-    addDashboardWithContext(page: $page, element: $element, record: $record) {
+  mutation createDashboardWithContext(
+    $page: ID!
+    $element: JSON
+    $record: ID
+    $geographic: String!
+  ) {
+    addDashboardWithContext(
+      page: $page
+      element: $element
+      record: $record
+      geographic: $geographic
+    ) {
       id
       structure
       page {

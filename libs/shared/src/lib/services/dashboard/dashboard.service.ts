@@ -164,7 +164,7 @@ export class DashboardService {
    */
   public createDashboardWithContext(
     page: string,
-    context: 'element' | 'record',
+    context: 'element' | 'record' | 'geographic',
     id: string | number
   ) {
     return firstValueFrom(
