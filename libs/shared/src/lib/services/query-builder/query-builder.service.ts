@@ -108,6 +108,7 @@ export class QueryBuilderService {
 
   /** Loading indicator that asserts whether available queries are done loading */
   private isDoneLoading = new ReplaySubject<boolean>();
+  /** Loading indicator as observable */
   public isDoneLoading$ = this.isDoneLoading.asObservable();
 
   /** User fields */
