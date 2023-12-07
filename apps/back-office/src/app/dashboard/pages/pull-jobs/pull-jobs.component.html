@@ -106,7 +106,14 @@
 </ng-container>
 <ng-template #loadingTmpl>
   <!-- Loading indicator -->
-  <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+  <shared-skeleton-table
+    [columns]="[
+      'common.name',
+      'common.status',
+      'models.pullJob.nextIteration',
+    ]"
+    [actions]="true"
+  >
   </shared-skeleton-table>
 </ng-template>
 
