@@ -1,6 +1,11 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  Observable,
+  ReplaySubject,
+} from 'rxjs';
 import { GET_QUERY_META_DATA, GET_QUERY_TYPES } from './graphql/queries';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
@@ -101,6 +106,10 @@ export class QueryBuilderService {
     return this.availableTypes.asObservable();
   }
 
+  /** Loading indicator that asserts whether available queries are done loading */
+  private isDoneLoading = new ReplaySubject<boolean>();
+  public isDoneLoading$ = this.isDoneLoading.asObservable();
+
   /** User fields */
   private userFields = [];
 
@@ -111,20 +120,19 @@ export class QueryBuilderService {
    * @param apollo Apollo client
    */
   constructor(private apollo: Apollo) {
+    this.isDoneLoading.next(false);
     this.apollo
       .query<QueryTypes>({
         query: GET_QUERY_TYPES,
       })
       .subscribe(({ data }) => {
-        // eslint-disable-next-line no-underscore-dangle
+        this.isDoneLoading.next(true);
         this.availableTypes.next(data.__schema.types);
         this.availableQueries.next(
-          // eslint-disable-next-line no-underscore-dangle
           data.__schema.queryType.fields.filter((x: any) =>
             x.name.startsWith('all')
           )
         );
-        // eslint-disable-next-line no-underscore-dangle
         this.userFields = data.__schema.types
           .find((x: any) => x.name === 'User')
           .fields.filter((x: any) => USER_FIELDS.includes(x.name));
