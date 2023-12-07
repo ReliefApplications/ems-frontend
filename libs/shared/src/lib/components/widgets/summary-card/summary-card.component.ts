@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { GET_RESOURCE_METADATA } from './graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE_METADATA } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
@@ -45,6 +45,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -647,24 +648,44 @@ export class SummaryCardComponent
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
     this.loading = true;
-    this.cachedCards = (
-      (await this.referenceDataService.cacheItems(
-        card.referenceData as string
-      )) || []
-    ).map((x: any, index: number) => ({
-      ...this.settings.card,
-      rawValue: x,
-      index,
-    }));
-    this.pageInfo.length = this.cachedCards.length;
-    this.sortedCachedCards = cloneDeep(this.cachedCards);
-    this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
-    this.loading = false;
-    // Set sort fields
-    this.sortFields = [];
-    this.widget.settings.sortFields?.forEach((sortField: any) => {
-      this.sortFields.push(sortField);
-    });
+    const metaData = await firstValueFrom(
+      this.apollo.query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: card.referenceData,
+        },
+      })
+    );
+    if (metaData.data.referenceData) {
+      const fields = (metaData.data.referenceData.fields || [])
+        .filter((field) => field && typeof field !== 'string')
+        .map((field) => {
+          return {
+            label: field.name,
+            name: field.name,
+            type: field.type,
+          };
+        });
+      this.cachedCards = (
+        (await this.referenceDataService.cacheItems(
+          card.referenceData as string
+        )) || []
+      ).map((x: any, index: number) => ({
+        ...this.settings.card,
+        rawValue: x,
+        index,
+        metadata: fields,
+      }));
+      this.pageInfo.length = this.cachedCards.length;
+      this.sortedCachedCards = cloneDeep(this.cachedCards);
+      this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
+      this.loading = false;
+      // Set sort fields
+      this.sortFields = [];
+      this.widget.settings.sortFields?.forEach((sortField: any) => {
+        this.sortFields.push(sortField);
+      });
+    }
   }
 
   /**
