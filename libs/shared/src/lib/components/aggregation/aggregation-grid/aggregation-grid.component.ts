@@ -11,12 +11,8 @@ import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GET_RESOURCE } from './graphql/queries';
 import { debounceTime, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  QueryBuilderService,
-  REFERENCE_DATA_END,
-} from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GridService } from '../../../services/grid/grid.service';
-import { createDefaultField } from '../../query-builder/query-builder-forms';
 import { ContextService } from '../../../services/context/context.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ResourceQueryResponse } from '../../../models/resource.model';
@@ -176,106 +172,37 @@ export class AggregationGridComponent
         },
       })
       .subscribe({
-        next: (res) => {
-          const resource = res.data.resource;
-          const allGqlFields = this.queryBuilder.getFields(
-            resource.queryName || ''
+        next: ({ data }) => {
+          const resource = data.resource;
+          const fields = this.queryBuilder.getFields(resource.queryName || '');
+          const selectedFields = this.aggregation.sourceFields
+            .map((x: string) => {
+              const field = fields.find((y) => x === y.name);
+              if (!field) return null;
+              if (field.type.kind !== 'SCALAR') {
+                Object.assign(field, {
+                  fields: this.queryBuilder.deconfineFields(
+                    field.type,
+                    new Set().add(resource.name).add(field.type.ofType?.name)
+                  ),
+                });
+              }
+              return field;
+            })
+            .filter((x: any) => x !== null);
+          const aggregationFields = this.aggregationBuilderService.fieldsAfter(
+            selectedFields,
+            this.aggregation?.pipeline
           );
-          // Fetch fields at the end of the pipeline
-          const aggFields = this.aggregationBuilderService.fieldsAfter(
-            allGqlFields
-              ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
-              .map((field: any) => {
-                const mappedField = { ...field };
-                if (mappedField.type.kind !== 'SCALAR') {
-                  mappedField.fields = this.queryBuilder
-                    .getFieldsFromType(
-                      mappedField.type.kind === 'OBJECT'
-                        ? mappedField.type.name
-                        : mappedField.type.ofType.name
-                    )
-                    .filter(
-                      (y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR'
-                    );
-                }
-                return mappedField;
-              }) || [],
-            this.aggregation.pipeline
+          this.fields = this.gridService.getFields(
+            aggregationFields,
+            null,
+            null
           );
-          const fieldNames = aggFields.map((x) => x.name);
-          // Convert them to query fields
-          const queryFields = this.aggregationBuilderService.formatFields(
-            aggFields.filter((field) =>
-              allGqlFields.some((x) => x.name === field.name)
-            )
-          );
-          // Create meta query from query fields
-          const metaQuery = this.queryBuilder.buildMetaQuery({
-            name: resource.queryName || '',
-            fields: queryFields,
-          });
-          if (metaQuery) {
-            metaQuery.subscribe({
-              next: async ({ data }) => {
-                this.status = {
-                  error: false,
-                };
-                for (const key in data) {
-                  if (Object.prototype.hasOwnProperty.call(data, key)) {
-                    const metaFields = Object.assign({}, data[key]);
-                    try {
-                      await this.gridService.populateMetaFields(metaFields);
-                      // Remove ref data meta fields because it messes up with the display
-                      for (const field of queryFields) {
-                        if (field.type.endsWith(REFERENCE_DATA_END)) {
-                          delete metaFields[field.name];
-                        }
-                      }
-                    } catch (err) {
-                      console.error(err);
-                    }
-                    this.loadingSettings = false;
-                    // Concat query fields with dummy one for newly added fields
-                    const fields = queryFields.concat(
-                      fieldNames.reduce((arr, fieldName) => {
-                        if (
-                          !queryFields.some((field) => field.name === fieldName)
-                        ) {
-                          arr.push(createDefaultField(fieldName));
-                        }
-                        return arr;
-                      }, [])
-                    );
-                    // Generate grid fields
-                    this.fields = this.gridService.getFields(
-                      fields,
-                      metaFields,
-                      {}
-                    );
-                  }
-                }
-              },
-              error: (err: any) => {
-                this.loadingSettings = false;
-                this.setErrorStatus(
-                  err,
-                  'components.widget.grid.errors.metaQueryFetchFailed'
-                );
-              },
-            });
-          } else {
-            this.loadingSettings = false;
-            // todo(infinite): check
-            // this.status = {
-            //   error: !this.loadingSettings,
-            //   message: this.translate.instant(
-            //     'components.widget.grid.errors.metaQueryBuildFailed'
-            //   ),
-            // };
-            this.status = {
-              error: false,
-            };
-          }
+          this.loadingSettings = false;
+          this.status = {
+            error: false,
+          };
         },
         error: (err: any) => {
           this.loadingSettings = false;

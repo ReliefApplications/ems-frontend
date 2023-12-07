@@ -49,7 +49,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     } else {
       // Using reference data
       this.fieldsValue = this.card.rawValue;
-      this.setContentFromAggregation();
+      this.styles = [];
     }
   }
 
