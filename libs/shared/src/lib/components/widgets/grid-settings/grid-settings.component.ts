@@ -64,9 +64,9 @@ export class GridSettingsComponent
   public templates: Form[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
-  public dataFilter: any;
   /** Stores the selected tab */
   public selectedTab = 0;
+  public resourceId: any;
 
   /** @returns application templates */
   get appTemplates(): any[] {
@@ -293,7 +293,8 @@ export class GridSettingsComponent
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
-    if (this.formGroup.get('resource')?.value) {
+    this.resourceId = this.formGroup.get('resource')?.value;
+    if (this.resourceId) {
       const layoutIds: string[] | undefined =
         this.formGroup?.get('layouts')?.value;
       const aggregationIds: string[] | undefined =
@@ -302,7 +303,7 @@ export class GridSettingsComponent
         .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
-            resource: this.formGroup.get('resource')?.value,
+            resource: this.resourceId,
             layoutIds,
             firstLayouts: layoutIds?.length || 10,
             aggregationIds,
@@ -322,18 +323,6 @@ export class GridSettingsComponent
               this.fields = this.queryBuilder.getFields(
                 this.resource.queryName as string
               );
-            }
-            // verify how to the dashboardFilters is, if is necessary to convert to formGroup
-            if (data.resource && data.resource.name) {
-              const nameTrimmed = data.resource.name
-                .replace(/\s/g, '')
-                .toLowerCase();
-              this.dataFilter = {
-                form: !this.formGroup.get('contextFilters')
-                  ? null
-                  : JSON.parse(this.formGroup.get('contextFilters')?.value),
-                resourceName: nameTrimmed,
-              };
             }
           } else {
             this.relatedForms = [];

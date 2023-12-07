@@ -59,7 +59,7 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
   public templates: Form[] = [];
-  public dataFilter: any;
+  public resourceId: any;
 
   /**
    * Summary Card Settings component.
@@ -136,33 +136,18 @@ export class SummaryCardSettingsComponent
    * Gets the templates for the selected resource
    */
   private getTemplates(): void {
-    if (this.widgetFormGroup?.get('card.resource')?.value) {
+    this.resourceId = this.widgetFormGroup?.get('card.resource')?.value;
+    if (this.resourceId) {
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
-            resource: this.widgetFormGroup?.get('card.resource')?.value,
+            resource: this.resourceId,
           },
         })
         .subscribe(({ data }) => {
           if (data) {
             this.templates = data.resource.forms || [];
-            if (
-              data.resource &&
-              data.resource.name &&
-              this.widgetFormGroup !== undefined
-            ) {
-              const nameTrimmed = data.resource.name
-                .replace(/\s/g, '')
-                .toLowerCase();
-              const formValue =
-                this.widgetFormGroup.get('contextFilters')?.value;
-              this.dataFilter = {
-                form:
-                  typeof formValue === 'string' ? JSON.parse(formValue) : null,
-                resourceName: nameTrimmed,
-              };
-            }
           }
         });
     }

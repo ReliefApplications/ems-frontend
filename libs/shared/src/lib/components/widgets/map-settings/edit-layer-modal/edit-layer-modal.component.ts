@@ -117,7 +117,7 @@ export class EditLayerModalComponent
   public currentZoom!: number;
   private currentLayer!: L.Layer;
   public isDatasourceValid = false;
-  public dataFilter: any;
+  public resourceId: any;
 
   // This property would handle the form change side effects to be triggered once all
   // layer related updates are done in order to avoid multiple mismatches and duplications between
@@ -448,15 +448,15 @@ export class EditLayerModalComponent
 
   /** If the form has a resource, fetch it */
   getResource(): void {
-    const resourceID = this.form.get('datasource')?.value?.resource;
-    if (resourceID) {
+    this.resourceId = this.form.get('datasource')?.value?.resource;
+    if (this.resourceId) {
       const layoutID = this.form.get('datasource')?.value?.layout;
       const aggregationID = this.form.get('datasource')?.value?.aggregation;
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {
-            id: resourceID,
+            id: this.resourceId,
             layout: layoutID ? [layoutID] : [],
             aggregation: aggregationID ? [aggregationID] : [],
           },
@@ -484,17 +484,6 @@ export class EditLayerModalComponent
                   : []
               );
             }
-          }
-          if (data.resource && data.resource.name) {
-            const nameTrimmed = data.resource.name
-              .replace(/\s/g, '')
-              .toLowerCase();
-            const formValue = this.form.get('contextFilters')?.value;
-            this.dataFilter = {
-              form:
-                typeof formValue === 'string' ? JSON.parse(formValue) : null,
-              resourceName: nameTrimmed,
-            };
           }
         });
     }
