@@ -174,16 +174,17 @@ export class FormRecordsComponent
       showDeletedRecords: this.showDeletedRecords,
     };
     // get the records linked to the form
-    const recordsQuery: FormRecordsQueryResponse = getCachedValues(
+    const cachedValues: FormRecordsQueryResponse = getCachedValues(
       this.apollo.client,
       GET_FORM_RECORDS,
       variables
     );
-
-    if (refetch) this.clearScreen();
-
-    if (recordsQuery) {
-      this.updateValues(recordsQuery, false, refetch);
+    if (refetch) {
+      this.cachedRecords = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false, refetch);
     } else {
       if (refetch) {
         this.recordsQuery.refetch(variables);
@@ -210,7 +211,6 @@ export class FormRecordsComponent
     setForm?: boolean
   ) {
     const mappedValues = data.form.records.edges.map((x) => x.node);
-    console.log('mappedValues', mappedValues, this.cachedRecords);
     this.cachedRecords = updateQueryUniqueValues(
       this.cachedRecords,
       mappedValues
@@ -471,14 +471,6 @@ export class FormRecordsComponent
     e.stopPropagation();
     this.showDeletedRecords = !this.showDeletedRecords;
     this.fetchRecordsData(true);
-  }
-
-  /**
-   * Clear cached records and reset pagination.
-   */
-  private clearScreen(): void {
-    this.cachedRecords = [];
-    this.pageInfo.pageIndex = 0;
   }
 
   /**
