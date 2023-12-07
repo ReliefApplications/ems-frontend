@@ -32,6 +32,7 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
@@ -49,7 +50,6 @@ import { ApplicationService } from '../../../services/application/application.se
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
-import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -210,7 +210,9 @@ export class CoreGridComponent
           { logic: 'and', filters: gridFilters },
           {
             logic: 'or',
-            filters: searchFilters(
+            field: '_globalSearch',
+            operator: 'contains',
+            value: searchFilters(
               this.search,
               this.fields.map((field) => field.meta),
               skippedFields
