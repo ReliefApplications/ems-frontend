@@ -231,9 +231,7 @@ export class GridWidgetComponent
         return;
       }
     } else if (this.settings.referenceData) {
-      const referenceData = get(this.settings, 'referenceData', []);
       buildSortFields = true;
-      console.log('referenceData', referenceData);
       this.useReferenceData = true;
     }
 

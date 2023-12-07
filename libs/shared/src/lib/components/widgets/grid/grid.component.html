@@ -1,6 +1,6 @@
 <div class="h-full flex flex-col">
   <!-- Core grid display -->
-  <ng-container *ngIf="aggregations.length === 0">
+  <ng-container *ngIf="aggregations.length === 0 && !useReferenceData">
     <!-- GRID CONTENT -->
     <ng-container *ngTemplateOutlet="coreGridTemplate"></ng-container>
   </ng-container>
@@ -28,7 +28,7 @@
     <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
   </ng-container>
   <!-- Core grid actions -->
-  <ng-container *ngIf="aggregations.length === 0">
+  <ng-container *ngIf="aggregations.length === 0 && !useReferenceData">
     <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
     <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
   </ng-container>

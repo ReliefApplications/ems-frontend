@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CardT } from '../../widgets/summary-card/summary-card.component';
-import { cloneDeep } from 'lodash';
 
 /**
  * Shared reference data grid component.
@@ -24,13 +23,31 @@ export class ReferenceDataGridComponent implements OnInit {
   public pageSize = 10;
   /** Pagination: skip number */
   public skip = 0;
+  /** If the grid settings are loading */
+  public loadingSettings = true;
+  /** If the grid records are loading */
+  public loadingRecords = true;
 
   ngOnInit(): void {
     if (this.settings && this.settings.refDataCards) {
       this.cards = this.settings.refDataCards;
+      //  Get fields
+      this.settings.refDataCards[0].metadata.forEach((field: any) =>
+        this.fields.push({
+          // Remove white spaces to avoid kendo warnings
+          name: field.name.replace(/\s/g, ''),
+          title: field.name,
+          type: field.type,
+          meta: {
+            type: field.type,
+          },
+          disabled: true,
+          hidden: false,
+          canSee: true,
+        })
+      );
       this.setGridData();
-
-      // Get fields with reference data service
+      this.loadingSettings = false;
     }
   }
 
@@ -38,10 +55,22 @@ export class ReferenceDataGridComponent implements OnInit {
    * Set grid data with the cards values
    */
   private setGridData(): void {
-    // const data = this.cards.map((card) => {});
+    const data = this.cards.map((card: CardT) => {
+      const rawValue = card.rawValue;
+      const values: any = {};
+      for (const key in rawValue) {
+        values[key.replace(/\s/g, '')] = rawValue[key];
+      }
+      const cardData = {
+        ...values,
+        ...{ text: values },
+      };
+      return cardData;
+    });
     this.gridData = {
-      data: cloneDeep(this.cards), // update to use cards rawValue
+      data: data,
       total: this.cards.length,
     };
+    this.loadingRecords = false;
   }
 }

@@ -1,19 +1,15 @@
 <shared-grid
   [fields]="fields"
   [data]="gridData"
+  [loadingRecords]="loadingRecords"
+  [loadingSettings]="loadingSettings"
   [skip]="skip"
   [pageSize]="pageSize"
   [searchable]="false"
   [filterable]="false"
   [sortable]="false"
   [selectable]="false"
-  [blank]="cards.length === 0"
+  [blank]="!settings || !cards.length"
   [noLayout]="true"
-  >
-  <!-- 
-    [status]="status"
-    (pageChange)="onPageChange($event)"
-    [loadingRecords]="loadingSettings"
-    [loadingSettings]="loadingSettings"
-  -->
+>
 </shared-grid>
