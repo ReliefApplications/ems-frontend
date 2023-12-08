@@ -1,0 +1,126 @@
+<ng-container *ngIf="!hasError && (series$ | async) as series">
+  <ui-button
+    *ngIf="export"
+    [isIcon]="true"
+    icon="get_app"
+    class="absolute bottom-0 right-0 z-10"
+    variant="grey"
+    (click)="onExport()"
+    [uiTooltip]="'common.export' | translate"
+  >
+  </ui-button>
+  <div class="group flex-1 overflow-hidden">
+    <shared-line-chart
+      #chartWrapper
+      *ngIf="settings.chart.type === 'line'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></shared-line-chart>
+    <shared-pie-donut-chart
+      #chartWrapper
+      chartType="pie"
+      class="widget-content"
+      *ngIf="settings.chart.type === 'pie'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></shared-pie-donut-chart>
+    <shared-pie-donut-chart
+      #chartWrapper
+      chartType="polarArea"
+      class="widget-content"
+      *ngIf="settings.chart.type === 'polar'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></shared-pie-donut-chart>
+    <shared-pie-donut-chart
+      #chartWrapper
+      chartType="doughnut"
+      class="widget-content"
+      *ngIf="settings.chart.type === 'donut'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></shared-pie-donut-chart>
+    <shared-pie-donut-chart
+      #chartWrapper
+      chartType="radar"
+      class="widget-content"
+      *ngIf="settings.chart.type === 'radar'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></shared-pie-donut-chart>
+    <shared-bar-chart
+      #chartWrapper
+      orientation="vertical"
+      class="widget-content"
+      *ngIf="settings.chart.type === 'column'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></shared-bar-chart>
+    <shared-bar-chart
+      #chartWrapper
+      orientation="horizontal"
+      class="widget-content"
+      *ngIf="settings.chart.type === 'bar'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></shared-bar-chart>
+    <!-- Widget last query time -->
+    <div
+      class="invisible group-hover:visible absolute bottom-0 px-1 z-10 text-gray-300 text-xs"
+      *ngIf="lastUpdate && lastUpdate.length > 0"
+    >
+      Last update: {{ lastUpdate }}
+    </div>
+  </div>
+</ng-container>
+<ui-spinner
+  class="absolute top-0 bottom-0 left-0 right-0 flex-col items-center"
+  *ngIf="loading"
+></ui-spinner>
+<div *ngIf="hasError" class="chart-error">
+  <ui-icon variant="danger" icon="error_outline"></ui-icon>
+  <p color="danger">
+    {{ 'components.widget.chart.errors.aggregation.invalid' | translate }}
+  </p>
+</div>
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings.title">{{
+    settings.title
+  }}</span>
+  <!-- Selection of predefined filter -->
+  <ng-container *ngIf="predefinedFilters.length > 0">
+    <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- Selection of predefined filter -->
+<ng-template #filterTemplate>
+  <div uiFormFieldDirective class="!m-0 w-44 self-center">
+    <ui-select-menu
+      [ngModel]="selectedFilter"
+      (selectedOption)="onFilterSelected($any($event))"
+      [placeholder]="'components.widget.chart.filters.select' | translate"
+    >
+      <ui-select-option
+        *ngFor="let filter of predefinedFilters"
+        [value]="filter"
+      >
+        {{ filter.label }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
+</ng-template>

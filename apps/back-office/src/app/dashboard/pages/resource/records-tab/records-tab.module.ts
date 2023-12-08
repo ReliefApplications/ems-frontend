@@ -5,7 +5,7 @@ import { RecordsTabComponent } from './records-tab.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { DividerModule, IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeSkeletonTableModule, SafeEmptyModule } from '@oort-front/safe';
+import { SkeletonTableModule, EmptyModule } from '@oort-front/shared';
 import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu.module';
 import {
   TooltipModule,
@@ -30,8 +30,8 @@ import {
     TranslateModule,
     OverlayModule,
     UploadMenuModule,
-    SafeSkeletonTableModule,
-    SafeEmptyModule,
+    SkeletonTableModule,
+    EmptyModule,
     ButtonModule,
     TableModule,
     DividerModule,

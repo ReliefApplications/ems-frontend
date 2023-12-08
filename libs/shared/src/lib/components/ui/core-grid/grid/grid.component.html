@@ -1,0 +1,1116 @@
+<!-- GRID HEADER -->
+<kendo-grid
+  id="recordsGrid"
+  class="w-full"
+  [class.border-none]="!showBorder"
+  [loading]="loadingRecords || loadingSettings"
+  [data]="status.error ? [] : data"
+  [autoSize]="false"
+  [resizable]="resizable"
+  [reorderable]="reorderable"
+  [columnMenu]="reorderable && columnMenu"
+  [pageable]="pagerSettings"
+  [pageSize]="pageSize"
+  [skip]="skip"
+  [filterable]="filterable ? (showFilter ? true : 'menu') : false"
+  [filter]="filter"
+  (filterChange)="onFilterChange($event)"
+  (pageChange)="onPageChange($event)"
+  [sortable]="sortable"
+  [sort]="sort"
+  (sortChange)="onSortChange($event)"
+  [selectable]="selectable && selectableSettings"
+  [rowSelected]="isRowSelected"
+  (selectionChange)="onSelectionChange($event)"
+  (columnResize)="onColumnResize($event)"
+  (columnVisibilityChange)="onColumnVisibilityChange()"
+  (cellClick)="cellClickHandler($event)"
+>
+  <!-- ACTIONS -->
+  <ng-template
+    *ngIf="
+      searchable ||
+      reorderable ||
+      actions.add ||
+      actions.export ||
+      editable ||
+      filterable ||
+      hasEnabledActions
+    "
+    kendoGridToolbarTemplate
+    position="top"
+  >
+    <kendo-textbox
+      class="!w-full"
+      *ngIf="searchable"
+      [placeholder]="'common.placeholder.search' | translate"
+      [formControl]="search"
+      [clearButton]="true"
+    >
+    </kendo-textbox>
+    <!-- Column Chooser -->
+    <kendo-button
+      #anchor
+      fillMode="flat"
+      (click)="toggleColumnChooser(anchor.element, columnChooser)"
+      icon="columns"
+    ></kendo-button>
+    <ng-template #columnChooser>
+      <shared-grid-column-chooser
+        [originalColumns]="grid?.columns"
+        (hideColumnChooser)="
+          toggleColumnChooser(anchor.element, columnChooser, $event)
+        "
+      ></shared-grid-column-chooser>
+    </ng-template>
+
+    <button
+      *ngIf="actions.add && canAdd"
+      kendoButton
+      (click)="action.emit({ action: 'add' })"
+    >
+      {{ 'common.add' | translate }}
+    </button>
+    <button *ngIf="actions.export" kendoButton (click)="onExport()">
+      {{ 'common.export' | translate }}
+    </button>
+    <ng-container *ngIf="editable">
+      <button kendoButton (click)="onSave()" [disabled]="!hasChanges">
+        {{ 'common.save' | translate }}
+      </button>
+      <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">
+        {{ 'common.cancel' | translate }}
+      </button>
+    </ng-container>
+    <button
+      *ngIf="filterable"
+      [uiTooltip]="'components.widget.grid.filter.toggle' | translate"
+      kendoButton
+      icon="eye"
+      (click)="onToggleFilter()"
+    >
+      {{
+        (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
+      }}
+    </button>
+    <!-- Reset default layout -->
+    <button
+      kendoTooltip
+      kendoButton
+      [title]="'components.widget.grid.layout.button.title' | translate"
+      (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
+    >
+      {{ 'components.widget.grid.layout.reset' | translate }}
+    </button>
+    <shared-grid-toolbar
+      [actions]="actions"
+      [items]="selectedItems"
+      (action)="action.emit($event)"
+    >
+    </shared-grid-toolbar>
+  </ng-template>
+  <ng-container *ngIf="fields.length > 0">
+    <!-- ROW SELECTION -->
+    <kendo-grid-checkbox-column
+      *ngIf="selectable"
+      [width]="41"
+      [headerClass]="{ 'text-center': true }"
+      [class]="{ 'text-center': true }"
+      [resizable]="false"
+      [columnMenu]="false"
+      [showSelectAll]="multiSelect"
+      [sticky]="true"
+    ></kendo-grid-checkbox-column>
+    <!-- FIELDS -->
+    <ng-container *ngFor="let field of fields">
+      <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
+      <kendo-grid-column
+        *ngIf="
+          field.type !== 'JSON' &&
+          (!field.meta || field.meta.type !== 'referenceData')
+        "
+        [field]="field.name"
+        [title]="field.title"
+        [format]="field.format"
+        [editor]="field.editor"
+        [editable]="field.editor && !field.disabled"
+        [filter]="field.filter"
+        [filterable]="filterable && field.filter"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <!-- FILTER -->
+        <ng-container *ngIf="field.meta">
+          <!-- FILTER ( datetime / date ) -->
+          <ng-container *ngIf="['datetime', 'date'].includes(field.meta.type)">
+            <ng-template
+              kendoGridFilterMenuTemplate
+              let-filter
+              let-column="column"
+              let-filterService="filterService"
+            >
+              <shared-date-filter-menu
+                [filter]="filter"
+                [field]="field.name"
+                [filterService]="filterService"
+                valueField="value"
+              >
+              </shared-date-filter-menu>
+            </ng-template>
+          </ng-container>
+          <!-- FILTER ( dropdown / radiogroup ) -->
+          <ng-container
+            *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
+          >
+            <ng-template
+              kendoGridFilterMenuTemplate
+              let-filter
+              let-column="column"
+              let-filterService="filterService"
+            >
+              <shared-grid-filter-menu
+                [isNotArray]="true"
+                [filter]="filter"
+                [filterService]="filterService"
+                [data]="field.meta.choices"
+                [field]="field.name"
+                textField="text"
+                valueField="value"
+              >
+              </shared-grid-filter-menu>
+            </ng-template>
+            <ng-template
+              kendoGridFilterCellTemplate
+              let-filter
+              let-dataItem="dataItem"
+            >
+              <shared-grid-filter
+                [isNotArray]="true"
+                [filter]="filter"
+                [data]="field.meta.choices"
+                [field]="field.name"
+                textField="text"
+                valueField="value"
+              >
+              </shared-grid-filter>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+        <!-- DISPLAY -->
+        <ng-container *ngIf="field.meta">
+          <!-- DISPLAY ( text / comment / disabled fields ) -->
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['text'].includes(field.meta.type) || !field.meta.type"
+          >
+            <div
+              class="translate textbox-container"
+              [style]="dataItem.style[field.name]"
+            >
+              <div
+                class="truncate"
+                [uiTooltip]="dataItem.text[field.name]"
+                tooltipEnableBy="truncate"
+              >
+                {{ dataItem.text[field.name] }}
+              </div>
+              <button
+                kendoButton
+                *ngIf="dataItem.showFullScreenButton[field.name]"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.viewFullscreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <!-- DISPLAY ( date / datetime / time ) -->
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="
+              ['datetime', 'datetime-local', 'date', 'time'].includes(
+                field.meta.type
+              )
+            "
+          >
+            <div
+              class="translate textbox-container"
+              [style]="dataItem.style[field.name]"
+            >
+              <div
+                class="truncate"
+                [uiTooltip]="dataItem.text[field.name]"
+                tooltipEnableBy="truncate"
+              >
+                {{ dataItem.text[field.name] }}
+              </div>
+            </div>
+          </ng-template>
+          <!-- DISPLAY ( url / email / tel ) -->
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['url'].includes(field.meta.type)"
+          >
+            <div class="textbox-container" [style]="dataItem.style[field.name]">
+              <a
+                class="url-container truncate"
+                href="{{ dataItem.urlValue[field.name] }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  class="truncate"
+                  [uiTooltip]="dataItem.text[field.name]"
+                  tooltipEnableBy="truncate"
+                >
+                  {{ dataItem.text[field.name] }}
+                </div>
+              </a>
+              <button
+                kendoButton
+                *ngIf="dataItem.showFullScreenButton[field.name]"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.openFullScreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['email'].includes(field.meta.type)"
+          >
+            <div class="textbox-container" [style]="dataItem.style[field.name]">
+              <a
+                class="url-container truncate"
+                href="mailto:{{ dataItem.value[field.name] }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  class="truncate"
+                  [uiTooltip]="dataItem.text[field.name]"
+                  tooltipEnableBy="truncate"
+                >
+                  {{ dataItem.text[field.name] }}
+                </div>
+              </a>
+              <button
+                kendoButton
+                *ngIf="dataItem.showFullScreenButton[field.name]"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.openFullScreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['tel'].includes(field.meta.type)"
+          >
+            <div class="textbox-container" [style]="dataItem.style[field.name]">
+              <a
+                class="url-container truncate"
+                href="tel:{{ dataItem.value[field.name] }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  class="truncate"
+                  [uiTooltip]="dataItem.text[field.name]"
+                  tooltipEnableBy="truncate"
+                >
+                  {{ dataItem.text[field.name] }}
+                </div>
+              </a>
+              <button
+                kendoButton
+                *ngIf="dataItem.showFullScreenButton[field.name]"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.viewFullscreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <!-- DISPLAY ( boolean ) -->
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="field.meta.type === 'boolean'"
+          >
+            <div class="textbox-container" [style]="dataItem.style[field.name]">
+              <input
+                type="checkbox"
+                kendoCheckBox
+                [(ngModel)]="dataItem[field.name]"
+                disabled
+              />
+            </div>
+          </ng-template>
+          <!-- DISPLAY ( number ) -->
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="field.meta.type === 'numeric'"
+          >
+            <div
+              class="translate textbox-container"
+              [style]="dataItem.style[field.name]"
+            >
+              <div
+                class="truncate"
+                [uiTooltip]="dataItem.text[field.name]"
+                tooltipEnableBy="truncate"
+              >
+                {{ dataItem.text[field.name] }}
+              </div>
+              <button
+                kendoButton
+                *ngIf="dataItem.showFullScreenButton[field.name]"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.viewFullscreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <!-- DISPLAY ( color ) -->
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="field.meta.type === 'color'"
+          >
+            <!-- In order to display the div -->
+            <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
+          </ng-template>
+          <!-- DISPLAY ( records / TODO ) -->
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="field.meta.type === 'records'"
+          >
+            <div *ngIf="dataItem[field.name]" class="textbox-container">
+              <div
+                #refSpan
+                class="textbox hover:cursor-pointer text-primary-500"
+                *ngIf="dataItem[field.name].length > 0"
+                [uiTooltip]="
+                  'components.widget.grid.actions.detail' | translate
+                "
+                (click)="
+                  action.emit({
+                    action: 'details',
+                    items: dataItem[field.name],
+                    field: field
+                  })
+                "
+              >
+                {{
+                  (dataItem[field.name].length > 1
+                    ? 'components.widget.grid.item.few'
+                    : 'components.widget.grid.item.one'
+                  )
+                    | translate
+                      : {
+                          count: dataItem[field.name].length
+                        }
+                }}
+              </div>
+            </div>
+          </ng-template>
+          <!-- DISPLAY ( dropdown / radiogroup / form ) -->
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
+          >
+            <div class="textbox-container" [style]="dataItem.style[field.name]">
+              <div
+                class="truncate"
+                [uiTooltip]="dataItem.text[field.name]"
+                tooltipEnableBy="truncate"
+              >
+                {{ dataItem.text[field.name] }}
+              </div>
+            </div>
+          </ng-template>
+        </ng-container>
+        <!-- EDITION ( text / color / comment - resource - dropdown ) -->
+        <ng-template
+          kendoGridEditTemplate
+          let-dataItem="dataItem"
+          let-formGroup="formGroup"
+          *ngIf="field.editor === 'text'"
+        >
+          <!-- EDITION ( text / comment ) -->
+          <ng-container *ngIf="field.meta.type === 'text'">
+            <ui-textarea
+              [formControl]="formGroup.get(field.name)"
+              [minRows]="2"
+              [maxRows]="2"
+              [name]="field.name"
+              class="w-full"
+              kendoGridFocusable
+            >
+            </ui-textarea>
+          </ng-container>
+          <!-- EDITION ( url / email / tel ) -->
+          <ng-container
+            *ngIf="['url', 'email', 'tel'].includes(field.meta.type)"
+          >
+            <input
+              [formControl]="formGroup.get(field.name)"
+              [name]="field.name"
+              class="k-textbox"
+              kendoGridFocusable
+            />
+          </ng-container>
+          <!-- EDITION ( color ) -->
+          <ng-container *ngIf="field.meta.type === 'color'">
+            <kendo-colorpicker
+              [formControl]="formGroup.get(field.name)"
+              [format]="'hex'"
+              [gradientSettings]="gradientSettings"
+              (open)="editing = true"
+              (close)="editing = false"
+            >
+            </kendo-colorpicker>
+          </ng-container>
+          <!-- EDITION ( dropdown / radiogroup ) -->
+          <ng-container
+            *ngIf="
+              field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'
+            "
+          >
+            <kendo-dropdownlist
+              [data]="field.meta.choices"
+              textField="text"
+              valueField="value"
+              [valuePrimitive]="true"
+              [formControl]="formGroup.get(field.name)"
+            ></kendo-dropdownlist>
+          </ng-container>
+        </ng-template>
+        <!-- EDITION ( date ) -->
+        <ng-template
+          kendoGridEditTemplate
+          let-dataItem="dataItem"
+          let-formGroup="formGroup"
+          *ngIf="field.editor === 'date'"
+        >
+          <kendo-datepicker
+            [formControl]="formGroup.get(field.name)"
+            [format]="field.format"
+            (open)="editing = true"
+            (close)="editing = false"
+          ></kendo-datepicker>
+        </ng-template>
+        <!-- EDITION ( time ) -->
+        <ng-template
+          kendoGridEditTemplate
+          let-dataItem="dataItem"
+          let-formGroup="formGroup"
+          *ngIf="field.editor === 'time'"
+        >
+          <kendo-timepicker
+            [formControl]="formGroup.get(field.name)"
+            [format]="field.format"
+            (open)="editing = true"
+            (close)="editing = false"
+          ></kendo-timepicker>
+        </ng-template>
+        <!-- EDITION ( datetime / datetime-local ) -->
+        <ng-template
+          kendoGridEditTemplate
+          let-dataItem="dataItem"
+          let-formGroup="formGroup"
+          *ngIf="field.editor === 'datetime'"
+        >
+          <kendo-datetimepicker
+            [formControl]="formGroup.get(field.name)"
+            [format]="field.format"
+            (open)="editing = true"
+            (close)="editing = false"
+          ></kendo-datetimepicker>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Reference data -->
+      <ng-container *ngIf="field.meta && field.meta.type === 'referenceData'">
+        <ng-container *ngFor="let subField of field.subFields">
+          <kendo-grid-column
+            [field]="subField.name"
+            [title]="subField.title"
+            [filterable]="true"
+            [width]="subField.width"
+            [hidden]="subField.hidden"
+            [minResizableWidth]="50"
+            [editable]="!subField.disabled"
+            class="no-padding"
+          >
+            <ng-template
+              kendoGridFilterMenuTemplate
+              let-filter
+              let-column="column"
+              let-filterService="filterService"
+            >
+              <shared-grid-filter-menu
+                [isNotArray]="subField.meta.type === 'dropdown'"
+                [filter]="filter"
+                [filterService]="filterService"
+                [data]="subField.meta.choices || []"
+                [field]="subField.name"
+                textField="text"
+                valueField="value"
+              >
+              </shared-grid-filter-menu>
+            </ng-template>
+            <ng-template
+              kendoGridFilterCellTemplate
+              let-filter
+              let-dataItem="dataItem"
+            >
+              <shared-grid-filter
+                [isNotArray]="subField.meta.type === 'dropdown'"
+                [filter]="filter"
+                [data]="subField.meta.choices || []"
+                [field]="subField.name"
+                textField="text"
+                valueField="value"
+              >
+              </shared-grid-filter>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div
+                class="textbox-container"
+                [style]="dataItem.style[field.name]"
+              >
+                {{ dataItem.text[subField.name] }}
+                <!-- <button
+                  kendoButton
+                  icon="hyperlink-open-sm"
+                  (click)="openReferenceDataSelector(field)"
+                  [look]="'flat'"
+                  [uiTooltip]="'common.edit' | translate"
+                ></button> -->
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+        </ng-container>
+      </ng-container>
+      <!-- Geospatial -->
+      <kendo-grid-column
+        *ngIf="field.type === 'JSON' && field.meta.type === 'geospatial'"
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="!field.disabled"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <a
+              class="url-container textbox cursor-pointer"
+              rel="noopener noreferrer"
+              (click)="onOpenMapModal(dataItem, field)"
+              [uiTooltip]="
+                'components.widget.grid.tooltip.displayMap' | translate
+              "
+            >
+              {{ dataItem.text[field.name] }}
+            </a>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
+      <kendo-grid-column
+        *ngIf="
+          field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)
+        "
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="!field.disabled"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template
+          kendoGridFilterMenuTemplate
+          let-filter
+          let-column="column"
+          let-filterService="filterService"
+        >
+          <shared-grid-filter-menu
+            [filter]="filter"
+            [filterService]="filterService"
+            [data]="field.meta.choices || []"
+            [field]="field.name"
+            textField="text"
+            valueField="value"
+          >
+          </shared-grid-filter-menu>
+        </ng-template>
+        <ng-template
+          kendoGridFilterCellTemplate
+          let-filter
+          let-dataItem="dataItem"
+        >
+          <shared-grid-filter
+            [filter]="filter"
+            [data]="field.meta.choices || []"
+            [field]="field.name"
+            textField="text"
+            valueField="value"
+          >
+          </shared-grid-filter>
+        </ng-template>
+        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="truncate"
+              [uiTooltip]="dataItem.text[field.name]"
+              tooltipEnableBy="truncate"
+            >
+              {{ dataItem.text[field.name] }}
+            </div>
+          </div>
+        </ng-template>
+        <ng-template
+          kendoGridEditTemplate
+          let-dataItem="dataItem"
+          let-formGroup="formGroup"
+        >
+          <kendo-multiselect
+            [data]="field.meta.choices"
+            textField="text"
+            valueField="value"
+            [valuePrimitive]="true"
+            [formControl]="formGroup.get(field.name)"
+            [autoClose]="false"
+          >
+          </kendo-multiselect>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- FILE -->
+      <kendo-grid-column
+        [field]="field.name"
+        [title]="field.title"
+        *ngIf="field.type === 'JSON' && field.meta.type === 'file'"
+        [columnMenu]="false"
+        [editable]="false"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <button
+              kendoButton
+              *ngFor="let file of dataItem[field.name]"
+              [look]="'flat'"
+              [uiTooltip]="file.name"
+              (click)="onDownload(file)"
+              class="w-full justify-start overflow-hidden text-overflow-ellipsis"
+            >
+              <span [class]="dataItem.icon[file.name]"></span>
+              <span class="textbox">{{
+                dataItem.text[field.name][file.name]
+              }}</span>
+            </button>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
+      <kendo-grid-column-group
+        [title]="field.title"
+        *ngIf="
+          field.type === 'JSON' &&
+          !multiSelectTypes.includes(field.meta.type) &&
+          field.meta.type !== 'file' &&
+          field.meta.type !== 'geospatial'
+        "
+      >
+        <ng-container
+          *ngIf="!['multipletext', 'matrixdynamic'].includes(field.meta.type)"
+        >
+          <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
+          <kendo-grid-column
+            [title]="field.title"
+            [columnMenu]="false"
+            [width]="field.width"
+            [hidden]="field.hidden"
+            [minResizableWidth]="50"
+            [editable]="!field.disabled"
+            class="no-padding"
+          >
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <ul class="matrix-cell">
+                <li *ngFor="let row of field.meta.rows">
+                  {{ row.label }}
+                </li>
+              </ul>
+            </ng-template>
+          </kendo-grid-column>
+        </ng-container>
+        <!-- QUESTION COLUMNS / ITEMS -->
+        <ng-container
+          *ngFor="
+            let column of field.meta.columns
+              ? field.meta.columns
+              : field.meta.items
+          "
+        >
+          <kendo-grid-column
+            [field]="field.name"
+            [title]="column.label"
+            [columnMenu]="false"
+            [width]="field.width"
+            [hidden]="field.hidden"
+            [minResizableWidth]="50"
+            [editable]="!field.disabled"
+          >
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <!-- DISPLAY ( matrix / matrixdropdown / matrixdynamic ) -->
+              <ng-container *ngIf="field.meta.type !== 'multipletext'">
+                <ul class="matrix-cell">
+                  <ng-container *ngIf="field.meta.type === 'matrix'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <input
+                        type="radio"
+                        kendoRadioButton
+                        [checked]="
+                          dataItem[field.name] &&
+                          dataItem[field.name][row.name] === column.name
+                        "
+                        disabled
+                      />
+                    </li>
+                  </ng-container>
+                  <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <ng-container
+                        *ngIf="
+                          dataItem[field.name] && dataItem[field.name][row.name]
+                        "
+                      >
+                        {{ dataItem[field.name][row.name][column.name] }}
+                      </ng-container>
+                    </li>
+                  </ng-container>
+                  <ng-container *ngIf="field.meta.type === 'matrixdynamic'">
+                    <li *ngFor="let row of dataItem[field.name]">
+                      <ng-container
+                        *ngIf="row[column.name] || row[column.name] === false"
+                      >
+                        {{ row[column.name] }}
+                      </ng-container>
+                    </li>
+                  </ng-container>
+                </ul>
+              </ng-container>
+              <!-- DISPLAY ( multipletext ) -->
+              <ng-container
+                *ngIf="
+                  field.meta.type === 'multipletext' && dataItem[field.name]
+                "
+              >
+                <span class="translate">
+                  {{ dataItem[field.name][column.name] }}
+                </span>
+              </ng-container>
+            </ng-template>
+            <ng-template
+              kendoGridEditTemplate
+              let-dataItem="dataItem"
+              let-formGroup="formGroup"
+            >
+              <!-- EDITION ( matrix / matrixdropdown / matrixdynamic ) -->
+              <ng-container *ngIf="field.meta.type !== 'multipletext'">
+                <ul class="matrix-cell">
+                  <!-- EDITION ( matrix ) -->
+                  <ng-container *ngIf="field.meta.type === 'matrix'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <input
+                        type="radio"
+                        kendoRadioButton
+                        [value]="column.name"
+                        [name]="field.name + row.name"
+                        [formControl]="formGroup.get([field.name, row.name])"
+                      />
+                    </li>
+                  </ng-container>
+                  <!-- EDITION ( matrixdropdown ) -->
+                  <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
+                    <li *ngFor="let row of field.meta.rows">
+                      <ng-container *ngIf="column.type === 'text'">
+                        <ui-textarea
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
+                          [minRows]="2"
+                          [maxRows]="2"
+                          [name]="row.name"
+                          class="w-full"
+                          kendoGridFocusable
+                        >
+                        </ui-textarea>
+                      </ng-container>
+                      <ng-container
+                        *ngIf="
+                          ['default', 'dropdown', 'radiogroup'].includes(
+                            column.type
+                          )
+                        "
+                      >
+                        <kendo-dropdownlist
+                          [data]="field.meta.choices"
+                          textField="text"
+                          [valueField]="'value'"
+                          [valuePrimitive]="true"
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
+                        >
+                        </kendo-dropdownlist>
+                      </ng-container>
+                      <ng-container *ngIf="column.type === 'boolean'">
+                        <input
+                          type="checkbox"
+                          kendoCheckBox
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
+                        />
+                      </ng-container>
+                      <ng-container
+                        *ngIf="multiSelectTypes.includes(column.type)"
+                      >
+                        <kendo-multiselect
+                          [data]="field.meta.choices"
+                          textField="text"
+                          [valueField]="'value'"
+                          [valuePrimitive]="true"
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
+                          [autoClose]="false"
+                        >
+                        </kendo-multiselect>
+                      </ng-container>
+                    </li>
+                  </ng-container>
+                  <!-- EDITION ( matrixdynamic ) -->
+                  <ng-container *ngIf="field.meta.type === 'matrixdynamic'">
+                    <li
+                      *ngFor="
+                        let group of formGroup.get(field.name).controls;
+                        let i = index
+                      "
+                      [formGroup]="group"
+                    >
+                      <ng-container *ngIf="column.type === 'text'">
+                        <ui-textarea
+                          [formControlName]="column.name"
+                          [name]="field.name + i"
+                          [minRows]="2"
+                          [maxRows]="2"
+                          class="w-full"
+                          kendoGridFocusable
+                        >
+                        </ui-textarea>
+                      </ng-container>
+                      <ng-container
+                        *ngIf="
+                          ['default', 'dropdown', 'radiogroup'].includes(
+                            column.type
+                          )
+                        "
+                      >
+                        <kendo-dropdownlist
+                          [data]="field.meta.choices"
+                          textField="text"
+                          [valueField]="'value'"
+                          [valuePrimitive]="true"
+                          [formControlName]="column.name"
+                        >
+                        </kendo-dropdownlist>
+                      </ng-container>
+                      <ng-container *ngIf="column.type === 'boolean'">
+                        <input
+                          type="checkbox"
+                          kendoCheckBox
+                          [formControlName]="column.name"
+                        />
+                      </ng-container>
+                      <ng-container
+                        *ngIf="multiSelectTypes.includes(column.type)"
+                      >
+                        <kendo-multiselect
+                          [data]="field.meta.choices"
+                          textField="text"
+                          [valueField]="'value'"
+                          [valuePrimitive]="true"
+                          [formControlName]="column.name"
+                          [autoClose]="false"
+                        >
+                        </kendo-multiselect>
+                      </ng-container>
+                    </li>
+                  </ng-container>
+                </ul>
+              </ng-container>
+              <!-- EDITION ( multipletext ) -->
+              <ng-container *ngIf="field.meta.type === 'multipletext'">
+                <ui-textarea
+                  [formControl]="formGroup.get([field.name, column.name])"
+                  [minRows]="2"
+                  [maxRows]="2"
+                  [name]="column.name"
+                  class="w-full"
+                  kendoGridFocusable
+                >
+                </ui-textarea>
+              </ng-container>
+            </ng-template>
+          </kendo-grid-column>
+        </ng-container>
+      </kendo-grid-column-group>
+    </ng-container>
+    <!-- ROW DETAILS -->
+    <kendo-grid-column
+      *ngIf="hasDetails && actions.showDetails"
+      [columnMenu]="false"
+      [width]="68"
+      [resizable]="false"
+      title="Details"
+      [sticky]="true"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <button
+          class="text-center"
+          kendoButton
+          icon="detail-section"
+          [look]="'flat'"
+          (click)="action.emit({ action: 'details', items: dataItem })"
+          [uiTooltip]="'components.widget.grid.actions.detail' | translate"
+        ></button>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Go to page ( navigateToPage action ) -->
+    <kendo-grid-column
+      *ngIf="actions.navigateToPage"
+      [columnMenu]="false"
+      [width]="54"
+      [resizable]="true"
+      [title]="actions.navigateSettings.title"
+      [sticky]="true"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <button
+          class="text-center"
+          kendoButton
+          icon="hyperlink-open-sm"
+          [look]="'flat'"
+          (click)="
+            action.emit({
+              action: 'goTo',
+              item: dataItem,
+              pageUrl: actions.navigateSettings.pageUrl,
+              field: actions.navigateSettings.field
+            })
+          "
+          [uiTooltip]="'components.widget.grid.actions.goTo' | translate"
+        ></button>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- ROW ACTIONS -->
+    <kendo-grid-column
+      *ngIf="hasEnabledActions"
+      [columnMenu]="false"
+      [width]="54"
+      [resizable]="false"
+      [sticky]="true"
+    >
+      <ng-template
+        kendoGridCellTemplate
+        let-dataItem="dataItem"
+        let-idx="rowIndex"
+      >
+        <shared-grid-row-actions
+          [item]="dataItem"
+          [actions]="actions"
+          (action)="action.emit($event)"
+        >
+        </shared-grid-row-actions>
+        <button
+          *ngIf="dataItem.validationErrors"
+          kendoButton
+          icon="error"
+          look="flat"
+          class="k-color-error"
+          (click)="showErrors(dataItem)"
+          [uiTooltip]="
+            'components.widget.grid.tooltip.uploadFailed' | translate
+          "
+        ></button>
+        <span
+          *ngIf="dataItem.saved === false && !dataItem.validationErrors"
+          kendoButton
+          icon="exclamation-circle"
+          look="flat"
+          class="k-color-warning cursor-default"
+          [uiTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
+        ></span>
+        <span
+          *ngIf="dataItem.saved"
+          kendoButton
+          icon="check-outline"
+          look="flat"
+          class="k-color-success cursor-default"
+          [uiTooltip]="'components.widget.grid.tooltip.saved' | translate"
+        ></span>
+      </ng-template>
+    </kendo-grid-column>
+  </ng-container>
+  <!-- EMPTY TABLE / INVALID QUERY -->
+  <ng-template kendoGridNoRecordsTemplate>
+    {{ statusMessage }}
+    <div class="mt-8 flex justify-center">
+      <ui-button
+        *ngIf="
+          !loadingSettings &&
+          !loadingRecords &&
+          canUpdate &&
+          (status.error || blank)
+        "
+        variant="primary"
+        category="secondary"
+        (click)="openSettings()"
+        >{{ 'components.widget.grid.openSettings' | translate }}
+      </ui-button>
+    </div>
+  </ng-template>
+</kendo-grid>

@@ -4,12 +4,11 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import {
   AddApiConfigurationMutationResponse,
   ApiConfiguration,
+  ConfirmService,
+  UnsubscribeComponent,
   ApiConfigurationsQueryResponse,
   DeleteApiConfigurationMutationResponse,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import { GET_API_CONFIGURATIONS } from './graphql/queries';
+} from '@oort-front/shared';
 import {
   ADD_API_CONFIGURATION,
   DELETE_API_CONFIGURATION,
@@ -28,6 +27,8 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { GET_API_CONFIGURATIONS } from './graphql/queries';
+import { FormBuilder } from '@angular/forms';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -41,24 +42,27 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./api-configurations.component.scss'],
 })
 export class ApiConfigurationsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
   public loading = true;
+  public updating = false;
   private apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new Array<ApiConfiguration>();
-  filteredDataSources = new Array<ApiConfiguration>();
   public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === SORTING ===
-  sort?: TableSort;
+  private sort!: TableSort;
 
   // === FILTERS ===
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
+  form = this.fb.group({});
   public showFilters = false;
-  public searchText = '';
-  public statusFilter = '';
 
   public pageInfo = {
     pageIndex: 0,
@@ -76,14 +80,16 @@ export class ApiConfigurationsComponent
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param fb Angular Form Builder
    */
   constructor(
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private router: Router,
-    private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
+    private translate: TranslateService, // private uiTableWrapper: TableWrapperDirective
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -98,14 +104,19 @@ export class ApiConfigurationsComponent
         variables: {
           first: ITEMS_PER_PAGE,
           afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.sortDirection && this.sort.active,
+          sortOrder: this.sort?.sortDirection,
         },
       });
 
     this.apiConfigurationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((results) => {
-        this.updateValues(results.data, results.loading);
-      });
+      .subscribe(
+        (results: ApolloQueryResult<ApiConfigurationsQueryResponse>) => {
+          this.updateValues(results.data, results.loading);
+        }
+      );
     // Initializing sort to an empty one
     this.sort = {
       active: '',
@@ -126,51 +137,19 @@ export class ApiConfigurationsComponent
     );
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData;
-      this.filteredDataSources = this.dataSource;
     } else {
       this.fetchApiConfigurations();
     }
   }
 
   /**
-   * Frontend filtering.
-   */
-  private filterPredicate(): void {
-    this.filteredDataSources = this.dataSource.filter(
-      (data: any) =>
-        (this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 &&
-            data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 &&
-            data.status.toLowerCase().includes(this.statusFilter.trim())))
-    );
-  }
-
-  /**
    * Applies the filter to the data source.
    *
-   * @param column Column to filter on.
-   * @param event Value of the filter.
+   * @param event event value of the filter.
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = event ?? '';
-    } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
-    }
-    this.filterPredicate();
-  }
-
-  /**
-   * Removes all the filters.
-   */
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.applyFilter('', null);
+  applyFilter(event: any): void {
+    this.filter = event;
+    this.fetchApiConfigurations(true);
   }
 
   /**
@@ -272,7 +251,6 @@ export class ApiConfigurationsComponent
                 this.dataSource = this.dataSource.filter(
                   (x) => x.id !== element.id
                 );
-                this.filteredDataSources = this.dataSource;
               } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
@@ -319,7 +297,7 @@ export class ApiConfigurationsComponent
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;
-    this.filterPredicate();
+    this.updating = false;
   }
 
   /**
@@ -339,10 +317,11 @@ export class ApiConfigurationsComponent
    * @param refetch erase previous query results
    */
   private fetchApiConfigurations(refetch?: boolean): void {
-    this.loading = true;
+    this.updating = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };

@@ -1,0 +1,85 @@
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <ng-container *ngIf="rules?.length">
+    <div class="flex justify-end">
+      <ng-container *ngTemplateOutlet="newRule"></ng-container>
+    </div>
+  </ng-container>
+  <ng-template #newRule>
+    <ui-button
+      icon="add"
+      variant="primary"
+      category="secondary"
+      (click)="addRule()"
+      >{{
+        'components.role.summary.autoAssignment.rule.add' | translate
+      }}</ui-button
+    >
+  </ng-template>
+  <ng-container *ngIf="rules?.length; else emptyTmpl">
+    <!-- Table container -->
+    <div class="overflow-x-hidden shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <table cdk-table uiTableWrapper [dataSource]="rules" *ngIf="!loading">
+          <ng-container cdkColumnDef="filter">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{
+                'components.role.summary.autoAssignment.rule.title' | translate
+              }}
+            </th>
+            <td uiCell *cdkCellDef="let element" class="capitalize">
+              {{ getRuleDisplay(element) }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+            <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+            <td uiCell *cdkCellDef="let i = index">
+              <div class="flex">
+                <ui-button
+                  [isIcon]="true"
+                  icon="edit"
+                  variant="grey"
+                  [uiTooltip]="'common.edit' | translate"
+                  (click)="editRule(i)"
+                >
+                </ui-button>
+                <ui-button
+                  [isIcon]="true"
+                  icon="delete"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.role.summary.autoAssignment.rule.delete'
+                      | translate
+                  "
+                  (click)="deleteRule(i)"
+                >
+                </ui-button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr
+            *cdkRowDef="let row; columns: displayedColumns; let i = index"
+            cdk-row
+          ></tr>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #emptyTmpl>
+    <!-- Empty indicator -->
+    <shared-empty
+      [title]="'components.role.summary.autoAssignment.rule.none' | translate"
+      [footerTemplate]="newRule"
+    ></shared-empty>
+  </ng-template>
+</ng-container>
+<ng-template #loadingTmpl>
+  <shared-skeleton-table
+    [columns]="['components.role.summary.autoAssignment.rule.title']"
+    [actions]="true"
+    [rows]="5"
+  >
+  </shared-skeleton-table>
+</ng-template>

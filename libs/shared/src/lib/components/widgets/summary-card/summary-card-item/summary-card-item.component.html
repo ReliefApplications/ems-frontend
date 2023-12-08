@@ -1,0 +1,23 @@
+<!-- Default Header -->
+<div class="widget-header k-card-header" *ngIf="card.title">
+  <!-- Title -->
+  <span class="widget-title" [title]="card.title">{{ card.title }}</span>
+  <!-- Actions -->
+  <div class="floating-button"></div>
+</div>
+<!-- HTML content -->
+<shared-summary-card-item-content
+  *ngIf="
+    card.html &&
+    card.wholeCardStyles !== null &&
+    card.wholeCardStyles !== undefined
+  "
+  [html]="card.html"
+  [fields]="fields"
+  [fieldsValue]="fieldsValue"
+  [styles]="card.useStyles ? styles : []"
+  [wholeCardStyles]="card.wholeCardStyles"
+  class="flex-1 overflow-auto"
+  [ngClass]="{'p-[14px]': usePadding}"
+>
+</shared-summary-card-item-content>

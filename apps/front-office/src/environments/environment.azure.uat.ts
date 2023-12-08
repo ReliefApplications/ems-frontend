@@ -10,7 +10,9 @@ const authConfig: AuthConfig = {
   redirectUri: 'https://ems-safe-test.who.int/',
   postLogoutRedirectUri: 'https://ems-safe-test.who.int/auth',
   clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
-  scope: 'openid profile email offline_access',
+  scope:
+    'openid profile email offline_access offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user',
+  // Last scope is used to authenticate against Common Services
   responseType: 'code',
   showDebugInformation: true,
   strictDiscoveryDocumentValidation: false,
@@ -26,8 +28,6 @@ export const environment: Environment = {
   backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
   availableLanguages: ['en'],
   authConfig,
-  esriApiKey:
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
   sentry: {
     environment: 'staging',

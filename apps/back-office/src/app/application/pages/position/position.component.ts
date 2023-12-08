@@ -3,11 +3,11 @@ import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
-  SafeApplicationService,
+  ApplicationService,
   PositionAttributeCategory,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 
 /**
@@ -18,10 +18,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './position.component.html',
   styleUrls: ['./position.component.scss'],
 })
-export class PositionComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class PositionComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public positionCategories: any[] = [];
@@ -37,8 +34,8 @@ export class PositionComponent
    */
   constructor(
     public dialog: Dialog,
-    private applicationService: SafeApplicationService,
-    private confirmService: SafeConfirmService,
+    private applicationService: ApplicationService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();

@@ -6,12 +6,12 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeUnsubscribeComponent,
+  FormComponent as SharedFormComponent,
+  UnsubscribeComponent,
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
@@ -27,9 +27,9 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+export class FormComponent extends UnsubscribeComponent implements OnInit {
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
   // === DATA ===
   public loading = true;

@@ -1,17 +1,19 @@
-<li
-  [ngClass]="{
-    'bg-primary-300 text-white': !isGroup && selected,
-    'cursor-pointer hover:bg-primary-200 hover:text-white flex items-center text-gray-900 py-[5px] text-sm':
-      !isGroup,
-    'text-gray-400 text-xs font-semibold pt-[5px]': isGroup
-  }"
-  (click)="onChangeFunction()"
-  class="px-2 relative w-full justify-between"
->
-  <!-- Text, changes if selected -->
-  <span class="font-normal truncate">
-    <ng-content></ng-content>
-  </span>
+<ng-container *ngIf="display">
+  <li
+    [ngClass]="{
+      'bg-primary-300 text-white': !isGroup && selected,
+      'cursor-pointer hover:bg-primary-200 hover:text-white flex items-center text-gray-900 py-[5px] text-sm':
+        !isGroup,
+      'text-gray-400 text-xs font-semibold pt-[5px]': isGroup
+    }"
+    (click)="onChangeFunction()"
+    class="px-2 relative w-full justify-between"
+  >
+    <!-- Text, changes if selected -->
+    <span class="font-normal truncate">
+      <ng-content></ng-content>
+    </span>
 
-  <ng-content select="icon"></ng-content>
-</li>
+    <ng-content select="icon"></ng-content>
+  </li>
+</ng-container>

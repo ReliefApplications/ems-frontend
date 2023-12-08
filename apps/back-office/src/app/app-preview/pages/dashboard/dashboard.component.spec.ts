@@ -9,7 +9,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { SafeWidgetGridModule } from '@oort-front/safe';
+import { WidgetGridModule } from '@oort-front/shared';
 import {
   OAuthService,
   UrlHelperService,
@@ -26,7 +26,7 @@ describe('DashboardComponent', () => {
       declarations: [DashboardComponent],
       imports: [
         ApolloTestingModule,
-        SafeWidgetGridModule,
+        WidgetGridModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

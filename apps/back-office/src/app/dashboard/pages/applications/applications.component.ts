@@ -5,13 +5,12 @@ import { Router } from '@angular/router';
 import {
   AddApplicationMutationResponse,
   Application,
+  ConfirmService,
+  UnsubscribeComponent,
   ApplicationsApplicationNodesQueryResponse,
   DeleteApplicationMutationResponse,
   EditApplicationMutationResponse,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import { GET_APPLICATIONS } from './graphql/queries';
+} from '@oort-front/shared';
 import {
   DELETE_APPLICATION,
   ADD_APPLICATION,
@@ -31,6 +30,7 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { GET_APPLICATIONS } from './graphql/queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -42,7 +42,7 @@ const DEFAULT_PAGE_SIZE = 10;
   styleUrls: ['./applications.component.scss'],
 })
 export class ApplicationsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -89,7 +89,7 @@ export class ApplicationsComponent
     private router: Router,
     private snackBar: SnackbarService,
     private previewService: PreviewService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -409,9 +409,7 @@ export class ApplicationsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applications.push(value);
-        // eslint-disable-next-line no-self-assign
-        this.applications = this.applications;
+        this.onOpenApplication(value.id);
       }
     });
   }

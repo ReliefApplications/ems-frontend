@@ -16,8 +16,8 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
-import { SafeLayoutModule } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
+import { LayoutModule } from '@oort-front/shared';
 import { DialogModule } from '@angular/cdk/dialog';
 import { AppPreviewModule } from './app-preview.module';
 
@@ -52,7 +52,7 @@ describe('AppPreviewComponent', () => {
       imports: [
         ApolloTestingModule,
         HttpClientTestingModule,
-        SafeLayoutModule,
+        LayoutModule,
         DialogModule,
         AppPreviewModule,
         TranslateModule.forRoot({

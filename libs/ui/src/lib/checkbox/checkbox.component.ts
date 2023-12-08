@@ -17,6 +17,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 
 /**
  * UI Checkbox Component
+ * Checkbox is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.
  */
 @Component({
   selector: 'ui-checkbox',
@@ -25,15 +26,23 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class CheckboxComponent implements ControlValueAccessor {
+  /** Boolean indicating whether the checkbox is checked. */
   @Input() checked = false;
+  /** Boolean indicating whether the checkbox is in an indeterminate state. */
   @Input() indeterminate = false;
+  /** Aria label for accessibility. */
   @Input() ariaLabel = '';
+  /** Name of the checkbox. */
   @Input() name = '';
+  /** Variant of the checkbox. */
   @Input() variant: Variant = 'primary';
-
+  /** Boolean indicating whether the checkbox is disabled. */
   disabled = false;
+  /** Event emitter for value changes. */
   valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  /** Function to handle value changes. */
   onChange!: (value: boolean) => void;
+  /** Function to handle touch events. */
   onTouch!: () => void;
 
   /** @returns shot toggle classes and variant */
@@ -75,8 +84,10 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnChange(fn: any): void {
-    this.onChange = fn;
+  public registerOnChange(fn: (value: boolean) => void): void {
+    if (!this.onChange) {
+      this.onChange = fn;
+    }
   }
 
   /**
@@ -84,8 +95,10 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnTouched(fn: any): void {
-    this.onTouch = fn;
+  public registerOnTouched(fn: () => void): void {
+    if (!this.onTouch) {
+      this.onTouch = fn;
+    }
   }
 
   /**

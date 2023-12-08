@@ -23,10 +23,13 @@ export const GET_DASHBOARD_BY_ID = gql`
           title
         }
       }
+      buttons
       canSee
       canUpdate
       page {
         id
+        icon
+        visible
         application {
           id
         }
@@ -37,6 +40,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       step {
         id
+        icon
         workflow {
           id
           page {
@@ -48,7 +52,8 @@ export const GET_DASHBOARD_BY_ID = gql`
         }
         canUpdate
       }
-      showFilter
+      filter
+      gridOptions
     }
   }
 `;

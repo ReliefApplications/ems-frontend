@@ -3,14 +3,14 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
   Form,
-  SafeConfirmService,
+  ConfirmService,
   Resource,
-  SafeDownloadService,
-  SafeUnsubscribeComponent,
+  DownloadService,
+  UnsubscribeComponent,
   ResourceRecordsNodesQueryResponse,
   DeleteRecordMutationResponse,
   RestoreRecordMutationResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -25,6 +25,7 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
+import { GraphQLError } from 'graphql';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -43,7 +44,7 @@ const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   styleUrls: ['./records-tab.component.scss'],
 })
 export class RecordsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
@@ -81,8 +82,8 @@ export class RecordsTabComponent
     private apollo: Apollo,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
-    private downloadService: SafeDownloadService
+    private confirmService: ConfirmService,
+    private downloadService: DownloadService
   ) {
     super();
   }
@@ -102,9 +103,11 @@ export class RecordsTabComponent
           showDeletedRecords: this.showDeletedRecords,
         },
       });
-    this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.recordsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -156,27 +159,51 @@ export class RecordsTabComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.record.one'),
-              })
-            );
-            this.fetchRecords(true);
-          }
+          this.handleRecordMutationResponse(
+            {
+              success: 'common.notifications.objectDeleted',
+              error: 'common.notifications.objectNotDeleted',
+            },
+            errors
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handle record mutation response
+   *
+   * @param messageKeys Message keys containing success or error response messages
+   * @param messageKeys.success success message key
+   * @param messageKeys.error error message key
+   * @param {GraphQLError[] | undefined} errors error array response if any
+   */
+  private handleRecordMutationResponse(
+    messageKeys: {
+      success: string;
+      error: string;
+    },
+    errors: readonly GraphQLError[] | undefined
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.error, {
+          value: this.translate.instant('common.record.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.success, {
+          value: this.translate.instant('common.record.one'),
+        })
+      );
+      this.fetchRecords(true);
+    }
   }
 
   /**
@@ -196,22 +223,13 @@ export class RecordsTabComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotRestored', {
-                type: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectRestored', {
-                type: this.translate.instant('common.record.one'),
-              })
-            );
-            this.fetchRecords(true);
-          }
+          this.handleRecordMutationResponse(
+            {
+              success: 'common.notifications.objectRestored',
+              error: 'common.notifications.objectNotRestored',
+            },
+            errors
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -294,16 +312,6 @@ export class RecordsTabComponent
   }
 
   /**
-   * Detects changes on the file.
-   *
-   * @param event new file event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
    * Calls rest endpoint to upload new records for the resource.
    *
    * @param file File to upload.
@@ -317,8 +325,8 @@ export class RecordsTabComponent
           this.showUpload = false;
         }
       },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
+      error: () => {
+        // The error message has already been handled in DownloadService
         this.showUpload = false;
       },
     });
@@ -354,6 +362,30 @@ export class RecordsTabComponent
   }
 
   /**
+   * Formats the passed value to be readable
+   *
+   * @param value Value to format
+   * @returns Formatted value
+   */
+  formatValue(value: any): string {
+    // Geo spatial field
+    if (
+      value &&
+      typeof value === 'object' &&
+      value.type === 'Feature' &&
+      value.geometry
+    ) {
+      return [
+        get(value, 'properties.address'),
+        get(value, 'properties.countryName'),
+      ]
+        .filter((x) => x)
+        .join(', ');
+    }
+    return value;
+  }
+
+  /**
    * Fetch records, using GraphQL
    *
    * @param refetch rebuild query
@@ -361,8 +393,8 @@ export class RecordsTabComponent
   private fetchRecords(refetch?: boolean): void {
     this.loading = true;
     const variables = {
-      id: this.resource.id,
       first: this.pageInfo.pageSize,
+      id: this.resource.id,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       display: false,
       showDeletedRecords: this.showDeletedRecords,

@@ -3,12 +3,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   Aggregation,
-  SafeAggregationService,
-  SafeConfirmService,
+  AggregationService,
+  ConfirmService,
   Resource,
-  SafeUnsubscribeComponent,
+  UnsubscribeComponent,
   ResourceQueryResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -28,7 +28,7 @@ import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
   styleUrls: ['./aggregations-tab.component.scss'],
 })
 export class AggregationsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public resource!: Resource;
@@ -51,11 +51,6 @@ export class AggregationsTabComponent
     endCursor: '',
   };
 
-  /** @returns True if the aggregations tab is empty */
-  get empty(): boolean {
-    return !this.loading && this.aggregations.length === 0;
-  }
-
   /**
    * Aggregations tab of resource page
    *
@@ -68,8 +63,8 @@ export class AggregationsTabComponent
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
-    private aggregationService: SafeAggregationService,
-    private confirmService: SafeConfirmService,
+    private aggregationService: AggregationService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -139,13 +134,33 @@ export class AggregationsTabComponent
   }
 
   /**
+   * Handle action from the data list presentation component
+   *
+   * @param action action containing action type and aggregation item if exists
+   * @param action.type type of action, add, edit, delete
+   * @param action.item aggregation item for the given action type
+   */
+  handleAction(action: {
+    type: 'add' | 'edit' | 'delete';
+    item?: Aggregation | null;
+  }) {
+    if (action.type === 'add') {
+      this.onAddAggregation();
+    } else if (action.type === 'edit') {
+      this.onEditAggregation(action.item as Aggregation);
+    } else if (action.type === 'delete') {
+      this.onDeleteAggregation(action.item as Aggregation);
+    }
+  }
+
+  /**
    * Adds a new aggregation for the resource.
    */
   async onAddAggregation(): Promise<void> {
-    const { SafeEditAggregationModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditAggregationModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+    const dialogRef = this.dialog.open(EditAggregationModalComponent, {
       disableClose: true,
       data: {
         resource: this.resource,
@@ -158,6 +173,7 @@ export class AggregationsTabComponent
           .subscribe(({ data }: any) => {
             if (data.addAggregation) {
               this.aggregations = [...this.aggregations, data?.addAggregation];
+              this.pageInfo.length += 1;
             }
           });
       }
@@ -170,10 +186,10 @@ export class AggregationsTabComponent
    * @param aggregation Aggregation to edit
    */
   async onEditAggregation(aggregation: Aggregation): Promise<void> {
-    const { SafeEditAggregationModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditAggregationModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+    const dialogRef = this.dialog.open(EditAggregationModalComponent, {
       disableClose: true,
       data: {
         resource: this.resource,
@@ -226,6 +242,7 @@ export class AggregationsTabComponent
               this.aggregations = this.aggregations.filter(
                 (x: any) => x.id !== aggregation.id
               );
+              this.pageInfo.length -= 1;
             }
           });
       }

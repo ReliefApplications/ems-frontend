@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
-import { SafeFormModule } from '@oort-front/safe';
+import { FormModule as SharedFormModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
 
@@ -14,7 +14,7 @@ import { ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     FormRoutingModule,
-    SafeFormModule,
+    SharedFormModule,
     TranslateModule,
     ButtonModule,
   ],

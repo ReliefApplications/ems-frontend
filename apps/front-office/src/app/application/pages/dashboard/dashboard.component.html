@@ -1,9 +1,9 @@
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+<div [ngClass]="{ 'py-8 px-6 h-full bg-white overflow-auto': isFullScreen }">
   <ng-container
-    safeFullScreen
+    sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
-    *safeSkeleton="
+    *sharedSkeleton="
       loading;
       repeat: 1;
       height: '32px';
@@ -11,32 +11,54 @@
       shape: 'rectangle'
     "
   >
-    <ng-container *ngIf="dashboard">
-      <div class="flex flex-wrap items-center justify-end mb-6 gap-4">
+    <ng-container *ngIf="dashboard && (showName || buttonActions.length > 0)">
+      <div
+        id="dashboard-header"
+        class="flex flex-wrap items-center mb-6 gap-4 justify-between"
+      >
+        <ng-container *ngIf="showName">
+          <h1 class="!m-0 overflow-hidden text-ellipsis">
+            {{ dashboard.name }}
+          </h1>
+        </ng-container>
         <div class="flex items-center gap-1">
+          <!-- Button actions -->
+          <shared-button-action
+            [buttonActions]="buttonActions"
+            [dashboard]="dashboard"
+          ></shared-button-action>
           <!-- Fullscreen -->
-          <ui-button
+          <!-- <ui-button
             variant="grey"
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
             (click)="isFullScreen = !isFullScreen"
+            [uiTooltip]="
+              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
+                | translate
+            "
           >
-          </ui-button>
+          </ui-button> -->
         </div>
       </div>
     </ng-container>
   </ng-container>
-  <safe-widget-grid
+  <shared-widget-grid
     [loading]="loading"
     [widgets]="widgets"
-    (goToNextStep)="goToNextStep.emit($event)"
-  ></safe-widget-grid>
-  <safe-dashboard-filter
+    [options]="dashboard?.gridOptions"
+    (changeStep)="changeStep.emit($event)"
+  ></shared-widget-grid>
+  <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [isFullScreen]="isFullScreen"
-  ></safe-dashboard-filter>
+    [variant]="variant"
+    [closable]="closable"
+  ></shared-dashboard-filter>
 </div>
-<safe-dashboard-filter
+<shared-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [isFullScreen]="isFullScreen"
-></safe-dashboard-filter>
+  [variant]="variant"
+  [closable]="closable"
+></shared-dashboard-filter>

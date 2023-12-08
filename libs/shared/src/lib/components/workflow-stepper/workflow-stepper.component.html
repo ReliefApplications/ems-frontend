@@ -1,0 +1,32 @@
+<ui-tabs
+  (selectedIndexChange)="onStep($event)"
+  [selectedIndex]="activeStep"
+  cdkDropListOrientation="horizontal"
+  cdkDropList
+  (cdkDropListDropped)="onReorder($event)"
+>
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <ui-tab *ngFor="let step of steps; let i = index" cdkDrag>
+      <ng-container ngProjectAs="label">
+        <shared-step
+          [step]="step"
+          [canUpdate]="canUpdate"
+          (delete)="delete.emit(i)"
+        ></shared-step>
+      </ng-container>
+    </ui-tab>
+  </ng-container>
+  <ng-template #loadingTemplate>
+    <ui-tab *ngFor="let step of steps; let i = index">
+      <ng-container ngProjectAs="label">
+        <kendo-skeleton
+          shape="rectangle"
+          animation="pulse"
+          width="100px"
+          height="32px"
+          class="rounded-lg"
+        ></kendo-skeleton>
+      </ng-container>
+    </ui-tab>
+  </ng-template>
+</ui-tabs>

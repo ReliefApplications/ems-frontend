@@ -10,15 +10,15 @@ import {
 import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
-  SafeAuthService,
+  AuthService,
   Form,
-  SafeConfirmService,
-  SafeBreadcrumbService,
+  ConfirmService,
+  BreadcrumbService,
   status,
   FormQueryResponse,
   EditFormMutationResponse,
-  SafeSnackbarSpinnerComponent,
-} from '@oort-front/safe';
+  SnackbarSpinnerComponent,
+} from '@oort-front/shared';
 import { SpinnerComponent } from '@oort-front/ui';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,6 +26,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import { GraphQLError } from 'graphql';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 
@@ -61,6 +62,8 @@ export class FormBuilderComponent implements OnInit {
   public formActive = false;
   public hasChanges = false;
   private isStep = false;
+  /** Prevent form builder to display multiple modals when exiting. */
+  private deactivating = false;
 
   /**
    * Form builder page
@@ -82,10 +85,10 @@ export class FormBuilderComponent implements OnInit {
     private router: Router,
     private snackBar: SnackbarService,
     public dialog: Dialog,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
+    private breadcrumbService: BreadcrumbService,
     private overlay: Overlay
   ) {}
 
@@ -95,7 +98,8 @@ export class FormBuilderComponent implements OnInit {
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.hasChanges) {
+    if (this.hasChanges && !this.deactivating) {
+      this.deactivating = true;
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('components.form.update.exit'),
         content: this.translate.instant('components.form.update.exitMessage'),
@@ -104,6 +108,7 @@ export class FormBuilderComponent implements OnInit {
       });
       return dialogRef.closed.pipe(
         map((value) => {
+          this.deactivating = false;
           if (value) {
             this.authService.canLogout.next(true);
             window.localStorage.removeItem(`form:${this.id}`);
@@ -212,7 +217,7 @@ export class FormBuilderComponent implements OnInit {
   ) {
     // Opens a loader in a snackbar
     const snackBarRef = this.snackBar.openComponentSnackBar(
-      SafeSnackbarSpinnerComponent,
+      SnackbarSpinnerComponent,
       {
         duration,
         data: {
@@ -287,6 +292,7 @@ export class FormBuilderComponent implements OnInit {
             }
           },
           error: (err) => {
+            // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
             this.snackBar.openSnackBar(err.message, { error: true });
           },
@@ -319,30 +325,10 @@ export class FormBuilderComponent implements OnInit {
         next: ({ errors, data }) => {
           // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
-          // Open new snackbar with the request error or success message
-          const message = errors
-            ? this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.status'),
-                error: errors ? errors[0].message : '',
-              })
-            : this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.status'),
-                value: status,
-              });
-          const snackbarConfig = {
-            ...REQUEST_SNACKBAR_CONF,
-            error: errors ? true : false,
-          };
-          this.snackBar.openSnackBar(message, snackbarConfig);
-
-          if (!errors) {
-            this.form = { ...this.form, status: data?.editForm.status };
-            this.statusControl.setValue(data?.editForm.status, {
-              emitEvent: false,
-            });
-          }
+          this.handleFormMutationResponse(data, errors);
         },
         error: (err) => {
+          // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
           this.snackBar.openSnackBar(err.message, { error: true });
         },
@@ -351,6 +337,50 @@ export class FormBuilderComponent implements OnInit {
           overlayRef.detach();
         },
       });
+  }
+
+  /**
+   * Handles form mutations response
+   *
+   * @param {EditFormMutationResponse} data data retrieved from the graphql mutation
+   * @param {GraphQLError[]} errors errors from the graphql mutation if any
+   * @param {string} formName new form name if any
+   */
+  private handleFormMutationResponse(
+    data: EditFormMutationResponse | null | undefined,
+    errors: readonly GraphQLError[] | undefined,
+    formName?: string
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant(
+            formName ? 'common.form.one' : 'common.status'
+          ),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      const successMessage = formName
+        ? this.translate.instant('common.notifications.objectUpdated', {
+            type: this.translate.instant('common.form.one').toLowerCase(),
+            value: formName,
+          })
+        : this.translate.instant('common.notifications.statusUpdated', {
+            value: data?.editForm.status,
+          });
+      this.snackBar.openSnackBar(successMessage);
+      if (formName) {
+        this.form = { ...this.form, name: data?.editForm.name };
+        this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
+      } else {
+        this.form = { ...this.form, status: data?.editForm.status };
+        this.statusControl.setValue(data?.editForm.status, {
+          emitEvent: false,
+        });
+      }
+    }
   }
 
   /**
@@ -415,36 +445,11 @@ export class FormBuilderComponent implements OnInit {
           next: ({ errors, data }) => {
             // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
-            // Open new snackbar with the request error or success message
-            const message = errors
-              ? this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.form.one'),
-                    error: errors[0].message,
-                  }
-                )
-              : this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.form.one').toLowerCase(),
-                  value: formName,
-                });
-            const snackbarConfig = {
-              ...REQUEST_SNACKBAR_CONF,
-              error: errors ? true : false,
-            };
-            this.snackBar.openSnackBar(message, snackbarConfig);
-
-            if (!errors) {
-              this.form = { ...this.form, name: data?.editForm.name };
-              this.breadcrumbService.setBreadcrumb(
-                '@form',
-                this.form.name as string
-              );
-            }
+            this.handleFormMutationResponse(data, errors, formName);
           },
-          error: (err) => {
+          error: () => {
+            // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
-            this.snackBar.openSnackBar(err.message, { error: true });
           },
           complete: () => {
             // Detach the current set overlay

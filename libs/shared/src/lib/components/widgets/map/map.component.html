@@ -1,0 +1,7 @@
+<shared-map class="flex-1" [mapSettings]="settings" />
+
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings ? settings.title : ''">{{
+    settings.title
+  }}</span>
+</ng-template>

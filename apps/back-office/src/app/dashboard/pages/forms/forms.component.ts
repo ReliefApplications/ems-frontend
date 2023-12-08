@@ -3,14 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
-  SafeAuthService,
-  SafeConfirmService,
+  AuthService,
+  ConfirmService,
   Form,
-  SafeUnsubscribeComponent,
+  UnsubscribeComponent,
   FormsQueryResponse,
   DeleteFormMutationResponse,
   AddFormMutationResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { GET_SHORT_FORMS } from './graphql/queries';
 import { DELETE_FORM, ADD_FORM } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
@@ -36,7 +36,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss'],
 })
-export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
+export class FormsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public updating = false;
@@ -85,8 +85,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     public dialog: Dialog,
     private router: Router,
     private snackBar: SnackbarService,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();

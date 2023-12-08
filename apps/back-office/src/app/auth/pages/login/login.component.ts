@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SafeAuthService } from '@oort-front/safe';
+import { AuthService } from '@oort-front/shared';
 
 /**
  * Login Page component.
@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
    * @param authService Shared authentication service
    * @param router Angular router
    */
-  constructor(private authService: SafeAuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   /**
    * Check that user is authenticated, and redirect to main page if true.

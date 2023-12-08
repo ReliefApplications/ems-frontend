@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -6,9 +6,9 @@ import {
   AppAbility,
   Application,
   ContentType,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../services/preview.service';
@@ -63,8 +63,8 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
   styleUrls: ['./app-preview.component.scss'],
 })
 export class AppPreviewComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
 {
   /**
    * Title of application.
@@ -86,6 +86,8 @@ export class AppPreviewComponent
    * Use side menu or not.
    */
   public sideMenu = false;
+  /** Should hide menu by default ( only when vertical ) */
+  public hideMenu = false;
   /**
    * Is large device.
    */
@@ -102,7 +104,7 @@ export class AppPreviewComponent
    */
   constructor(
     private route: ActivatedRoute,
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     private previewService: PreviewService,
     private router: Router,
     private translate: TranslateService
@@ -140,12 +142,14 @@ export class AppPreviewComponent
           this.title = application.name + ' (Preview)';
           const ability = getAbilityForAppPreview(application, this.role);
           const adminNavItems: any[] = [];
-          this.sideMenu = application?.sideMenu ?? false;
+          this.sideMenu = this.application?.sideMenu ?? true;
+          this.hideMenu = this.application?.hideMenu ?? false;
           if (ability.can('read', 'User')) {
             adminNavItems.push({
               name: this.translate.instant('common.user.few'),
               path: './settings/users',
               icon: 'supervisor_account',
+              visible: true,
             });
           }
           if (ability.can('read', 'Role')) {
@@ -153,6 +157,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.role.few'),
               path: './settings/roles',
               icon: 'admin_panel_settings',
+              visible: true,
             });
           }
           if (ability.can('manage', 'Template')) {
@@ -160,6 +165,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.template.few'),
               path: './settings/templates',
               icon: 'description',
+              visible: true,
             });
           }
           if (ability.can('manage', 'DistributionList')) {
@@ -167,6 +173,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.distributionList.few'),
               path: './settings/distribution-lists',
               icon: 'mail',
+              visible: true,
             });
           }
           if (ability.can('manage', 'CustomNotification')) {
@@ -174,6 +181,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.customNotification.few'),
               path: './settings/notifications',
               icon: 'schedule_send',
+              visible: true,
             });
           }
           this.navGroups = [
@@ -187,7 +195,9 @@ export class AppPreviewComponent
                     x.type === ContentType.form
                       ? `./${x.type}/${x.id}`
                       : `./${x.type}/${x.content}`,
-                  icon: this.getNavIcon(x.type || ''),
+                  icon: x.icon || this.getNavIcon(x.type || ''),
+                  fontFamily: x.icon ? 'fa' : 'material',
+                  visible: x.visible ?? false,
                 })),
             },
             {
@@ -200,7 +210,8 @@ export class AppPreviewComponent
             if (
               this.router.url.endsWith('/') ||
               (this.application && application.id !== this.application?.id) ||
-              !firstPage
+              !firstPage ||
+              (!this.application && application)
             ) {
               if (firstPage) {
                 this.router.navigate(
@@ -223,6 +234,14 @@ export class AppPreviewComponent
           this.navGroups = [];
         }
       });
+  }
+
+  /**
+   * Remove application data such as styling when exiting preview.
+   */
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.applicationService.leaveApplication();
   }
 
   /**

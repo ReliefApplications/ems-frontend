@@ -22,31 +22,6 @@ export const DELETE_STEP = gql`
   }
 `;
 
-// === EDIT PAGE ===
-/** Edit page gql mutation definition */
-export const EDIT_PAGE = gql`
-  mutation editPage($id: ID!, $name: String, $permissions: JSON) {
-    editPage(id: $id, name: $name, permissions: $permissions) {
-      id
-      name
-      permissions {
-        canSee {
-          id
-          title
-        }
-        canUpdate {
-          id
-          title
-        }
-        canDelete {
-          id
-          title
-        }
-      }
-    }
-  }
-`;
-
 // === ADD FORM ===
 /** Add form gql mutation definition */
 export const ADD_FORM = gql`
