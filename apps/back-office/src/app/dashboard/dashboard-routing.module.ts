@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
-import { SafePermissionGuard } from '@oort-front/safe';
+import { PermissionGuard } from '@oort-front/shared';
 
 /**
  * Divide the dashboard module into three modules:
@@ -23,7 +23,7 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadChildren: () =>
-          import('@oort-front/safe').then((m) => m.SafeProfileViewModule),
+          import('@oort-front/shared').then((m) => m.ProfileViewModule),
       },
       {
         path: 'referencedata',
@@ -61,7 +61,7 @@ export const routes: Routes = [
             path: '',
             loadChildren: () =>
               import('./pages/forms/forms.module').then((m) => m.FormsModule),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: ':id',
@@ -94,7 +94,7 @@ export const routes: Routes = [
                     key: 'common.add',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: 'records',
@@ -117,7 +117,7 @@ export const routes: Routes = [
                         alias: '@record',
                       },
                     },
-                    // canActivate: [SafePermissionGuard]
+                    // canActivate: [PermissionGuard]
                   },
                 ],
                 data: {
@@ -139,7 +139,7 @@ export const routes: Routes = [
           //     import('./pages/form-builder/form-builder.module').then(
           //       (m) => m.FormBuilderModule
           //     ),
-          //   // canActivate: [SafePermissionGuard]
+          //   // canActivate: [PermissionGuard]
           // },
         ],
         data: {
@@ -151,7 +151,7 @@ export const routes: Routes = [
             subject: 'Form',
           },
         },
-        canActivate: [SafePermissionGuard],
+        canActivate: [PermissionGuard],
       },
       {
         path: 'resources',
@@ -162,7 +162,7 @@ export const routes: Routes = [
               import('./pages/resources/resources.module').then(
                 (m) => m.ResourcesModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: ':id',
@@ -188,7 +188,7 @@ export const routes: Routes = [
                         alias: '@record',
                       },
                     },
-                    // canActivate: [SafePermissionGuard]
+                    // canActivate: [PermissionGuard]
                   },
                 ],
               },
@@ -226,7 +226,7 @@ export const routes: Routes = [
                             key: 'common.add',
                           },
                         },
-                        // canActivate: [SafePermissionGuard]
+                        // canActivate: [PermissionGuard]
                       },
                     ],
                     data: {
@@ -259,7 +259,7 @@ export const routes: Routes = [
             subject: 'Resource',
           },
         },
-        canActivate: [SafePermissionGuard],
+        canActivate: [PermissionGuard],
       },
       {
         path: 'applications',
@@ -270,13 +270,13 @@ export const routes: Routes = [
               import('./pages/applications/applications.module').then(
                 (m) => m.ApplicationsModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           // {
           //     path: ':id',
           //     loadChildren: () => import('../application/application.module')
           //         .then(m => m.ApplicationModule),
-          //     // canActivate: [SafePermissionGuard]
+          //     // canActivate: [PermissionGuard]
           // }
         ],
       },
@@ -292,20 +292,20 @@ export const routes: Routes = [
                   import('./pages/users/users.module').then(
                     (m) => m.UsersModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/user-summary/user-summary.module').then(
-                    (m) => m.UserSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/user-summary/user-summary.module'
+                  ).then((m) => m.UserSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@user',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -317,7 +317,7 @@ export const routes: Routes = [
                 subject: 'User',
               },
             },
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
           },
           {
             path: 'roles',
@@ -325,23 +325,23 @@ export const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('./pages/roles/roles.module').then(
+                  import('../shared/pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/role-summary/role-summary.module').then(
-                    (m) => m.RoleSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/role-summary/role-summary.module'
+                  ).then((m) => m.RoleSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@role',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -353,7 +353,7 @@ export const routes: Routes = [
                 subject: 'Role',
               },
             },
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
           },
           {
             path: 'apiconfigurations',
@@ -364,7 +364,7 @@ export const routes: Routes = [
                   import(
                     './pages/api-configurations/api-configurations.module'
                   ).then((m) => m.ApiConfigurationsModule),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -377,7 +377,7 @@ export const routes: Routes = [
                     alias: '@api',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -389,7 +389,7 @@ export const routes: Routes = [
                 subject: 'ApiConfiguration',
               },
             },
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
           },
           {
             path: 'pulljobs',
@@ -403,7 +403,7 @@ export const routes: Routes = [
                 subject: 'PullJob',
               },
             },
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
           },
           {
             path: '**',

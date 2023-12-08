@@ -15,7 +15,7 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
 import { PureAbility } from '@casl/ability';
 import { FilterComponent } from './components/filter/filter.component';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
@@ -28,7 +28,7 @@ import {
   TableModule,
   PaginatorModule,
 } from '@oort-front/ui';
-import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
+import { DateModule, SkeletonTableModule } from '@oort-front/shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('ReferenceDatasComponent', () => {
@@ -49,8 +49,8 @@ describe('ReferenceDatasComponent', () => {
         IconModule,
         TableModule,
         PaginatorModule,
-        SafeDateModule,
-        SafeSkeletonTableModule,
+        DateModule,
+        SkeletonTableModule,
         FormsModule,
         ReactiveFormsModule,
         TranslateModule.forRoot({

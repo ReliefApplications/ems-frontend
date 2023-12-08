@@ -8,7 +8,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { DialogModule } from '@angular/cdk/dialog';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 
 describe('FormsTabComponent', () => {
   let component: FormsTabComponent;
@@ -20,7 +20,7 @@ describe('FormsTabComponent', () => {
       imports: [
         ApolloTestingModule,
         DialogModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

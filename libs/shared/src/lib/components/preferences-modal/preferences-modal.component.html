@@ -1,0 +1,66 @@
+<ui-dialog [size]="'medium'">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.preferences.title' | translate }}
+    </h3>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="preferencesForm">
+      <ui-tabs [vertical]="true">
+        <ui-tab>
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="language"
+              [size]="18"
+              uiTooltip="{{ 'components.preferences.language' | translate }}"
+            ></ui-icon>
+            <span>{{ 'components.preferences.language' | translate }}</span>
+          </ng-container>
+          <div class="flex flex-col">
+            <!-- LANGUAGE SELECTION -->
+            <div uiFormFieldDirective>
+              <label>{{ 'components.preferences.language' | translate }}</label>
+              <ui-select-menu formControlName="language">
+                <ui-select-option
+                  *ngFor="let lang of languages"
+                  [value]="lang.value"
+                >
+                  {{ lang.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <!-- DATE LANGUAGE SELECTION -->
+            <div uiFormFieldDirective>
+              <label>{{
+                'components.preferences.dateFormat' | translate
+              }}</label>
+              <ui-select-menu formControlName="dateFormat">
+                <ui-select-option
+                  *ngFor="let dateLang of dateFormats"
+                  [value]="dateLang.value"
+                >
+                  {{ dateLang.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+          </div>
+        </ui-tab>
+      </ui-tabs>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [disabled]="!preferencesForm.valid"
+      [uiDialogClose]="preferencesForm"
+      cdkFocusInitial
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

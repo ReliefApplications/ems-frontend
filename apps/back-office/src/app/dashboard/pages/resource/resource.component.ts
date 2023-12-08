@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   EditResourceMutationResponse,
   ResourceQueryResponse,
-  SafeBreadcrumbService,
-} from '@oort-front/safe';
+  BreadcrumbService,
+} from '@oort-front/shared';
 import { EDIT_RESOURCE } from './graphql/mutations';
 import { GET_RESOURCE_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,11 +15,11 @@ import { SnackbarService } from '@oort-front/ui';
  * Array of tab names sorted by position index.
  */
 const ROUTE_TABS: string[] = [
-  'records',
   'forms',
   'layouts',
   'aggregations',
   'calculated-fields',
+  'records',
 ];
 
 /**
@@ -52,7 +52,7 @@ export class ResourceComponent implements OnInit {
     private router: Router,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   /** Load data from the id of the resource passed as a parameter. */

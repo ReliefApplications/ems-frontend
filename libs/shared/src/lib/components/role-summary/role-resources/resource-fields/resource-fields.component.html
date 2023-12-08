@@ -1,0 +1,79 @@
+<!-- Header -->
+<div class="flex justify-between items-center">
+  <h2>{{ 'common.field.few' | translate }}</h2>
+  <div uiFormFieldDirective class="min-w-[8rem]">
+    <label>{{ 'models.form.field.usedIn' | translate }}</label>
+    <ui-select-menu [formControl]="filterId">
+      <ui-select-option>{{
+        'common.filter.none' | translate
+      }}</ui-select-option>
+      <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
+        {{ form.name }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
+</div>
+<!-- Content -->
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table
+      cdk-table
+      uiTableWrapper
+      [dataSource]="fields"
+      *ngIf="fields.length > 0"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'common.field.one' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
+          {{ element.name }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element; let index = index">
+          <div class="flex">
+            <ui-button
+              [isIcon]="true"
+              [icon]="element.canSee ? 'visibility' : 'visibility_off'"
+              [variant]="element.canSee ? 'primary' : 'grey'"
+              [disabled]="disabled"
+              [uiTooltip]="
+                (element.canSee
+                  ? 'components.role.tooltip.allowFieldAccessibility'
+                  : 'components.role.tooltip.disallowFieldAccessibility'
+                ) | translate : { field: element.name }
+              "
+              (click)="onEditFieldAccess(index, element, 'canSee')"
+            >
+            </ui-button>
+            <ui-button
+              [isIcon]="true"
+              [icon]="element.canUpdate ? 'edit' : 'edit_off'"
+              [variant]="element.canUpdate ? 'primary' : 'grey'"
+              [disabled]="disabled"
+              [uiTooltip]="
+                (element.canUpdate
+                  ? 'components.role.tooltip.allowFieldUpdate'
+                  : 'components.role.tooltip.disallowFieldUpdate'
+                ) | translate : { field: element.name }
+              "
+              (click)="onEditFieldAccess(index, element, 'canUpdate')"
+            >
+            </ui-button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+    </table>
+  </div>
+</div>

@@ -14,6 +14,7 @@ import { AvatarShape } from '../avatar/types/avatar-shape';
 
 /**
  * UI Avatar group component
+ * Display a group of avatars.
  */
 @Component({
   selector: 'ui-avatar-group',
@@ -21,11 +22,15 @@ import { AvatarShape } from '../avatar/types/avatar-shape';
   styleUrls: ['./avatar-group.component.scss'],
 })
 export class AvatarGroupComponent implements AfterViewInit {
+  /** Size of the avatars. */
   @Input() size: Size = 'medium';
+  /** Shape of the avatars. */
   @Input() shape: AvatarShape = 'circle';
+  /** Stack order of the avatars. */
   @Input() stack: AvatarGroupStack = 'top';
+  /** Limit on the number of avatars displayed. */
   @Input() limit = 5;
-
+  /** List of AvatarComponent children. */
   @ContentChildren(AvatarComponent) avatars!: QueryList<AvatarComponent>;
 
   /**

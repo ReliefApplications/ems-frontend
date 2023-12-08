@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+::ng-deep gridster {
+  background: none !important;
+  .gridster-row,
+  .gridster-column {
+    @apply bg-gray-300/25 border-none;
+  }
+}
+
+// Apply same rounded to the grid item preview
+::ng-deep gridster-item.gridster-item-resizing,
+gridster-item.gridster-item-moving {
+  z-index: 2 !important;
+  border-radius: 0.375rem /* 6px */;
+}
+
+::ng-deep .gridster-preview {
+  @apply bg-gray-500/25;
+}
+
+// === DASHBOARD WIDGETS===
+.floating-widget-choice-wrapper {
+  position: fixed;
+  bottom: 48px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  pointer-events: none;
+}

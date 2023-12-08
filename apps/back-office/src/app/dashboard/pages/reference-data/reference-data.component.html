@@ -1,16 +1,16 @@
 <ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && referenceData">
   <!-- Header -->
-  <div class="page-header">
-    <h1 class="page-title">
+  <div class="flex justify-start items-center mb-5">
+    <h1 class="overflow-hidden whitespace-nowrap text-ellipsis mb-0">
       {{ referenceData.name }}
     </h1>
-    <safe-access
+    <shared-access
       [access]="referenceData.permissions"
       [objectTypeName]="'common.referenceData.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="referenceData?.canUpdate"
-    ></safe-access>
+    ></shared-access>
   </div>
   <!-- Form -->
   <form [formGroup]="referenceForm" class="flex flex-col mb-8">
@@ -52,34 +52,102 @@
           >
           </ui-graphql-select>
         </div>
+        <!-- GraphQL Query -->
+        <div *ngIf="type === 'graphql' && queryControl; else restQueryTmpl">
+          <label class="block text-sm font-medium leading-6 text-gray-900"
+            >{{ 'pages.referenceData.queryName' | translate }} *</label
+          >
+          <ngx-monaco-editor
+            (onInit)="initEditor($event)"
+            [options]="editorOptions"
+            [formControl]="queryControl"
+            class="mb-2"
+          ></ngx-monaco-editor>
+        </div>
         <!-- QueryName -->
-        <div uiFormFieldDirective class="flex-1">
-          <label>{{ 'pages.referenceData.queryName' | translate }}</label>
+        <ng-template #restQueryTmpl>
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{ 'pages.referenceData.queryName' | translate }}</label>
+            <input
+              formControlName="query"
+              type="text"
+              [placeholder]="'common.placeholder.name' | translate"
+            />
+          </div>
+        </ng-template>
+      </div>
+      <div class="flex gap-x-2">
+        <!-- Path -->
+        <div
+          class="flex-auto"
+          uiFormFieldDirective
+          *ngIf="['rest', 'graphql'].includes(type)"
+        >
+          <label>{{ 'pages.referenceData.path' | translate }}</label>
           <input
-            formControlName="query"
+            formControlName="path"
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
           />
+          <ui-icon
+            icon="info_outline"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
+          ></ui-icon>
         </div>
-        <!-- GraphQL Query -->
-        <ngx-monaco-editor
-          *ngIf="type === 'graphql' && queryControl"
-          (onInit)="initEditor($event)"
-          [options]="editorOptions"
-          [formControl]="queryControl"
-          class="mb-2"
-        ></ngx-monaco-editor>
+        <!-- Value field to be displayed -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!csvLoading && type && valueFields.length > 0"
+        >
+          <label>{{ 'pages.referenceData.valueField' | translate }}</label>
+          <ui-select-menu formControlName="valueField">
+            <ui-select-option
+              *ngFor="let value of valueFields"
+              [value]="value.name"
+              >{{ value.name }}</ui-select-option
+            >
+          </ui-select-menu>
+        </div>
       </div>
+      <ui-alert class="mb-4">{{
+        'pages.referenceData.fields.help' | translate
+      }}</ui-alert>
       <!-- Fields -->
-      <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">
+      <kendo-grid *ngIf="!loading" [data]="valueFields" class="rounded-md">
         <kendo-grid-column
           field="name"
           title="{{ 'pages.referenceData.fields.title' | translate }}"
-        ></kendo-grid-column>
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <p *ngIf="currEditingField !== dataItem">
+              {{ dataItem.name }}
+            </p>
+            <kendo-textbox
+              *ngIf="currEditingField === dataItem"
+              [placeholder]="'models.form.field.name' | translate"
+              [formControl]="inlineEditionForm.controls.name"
+            ></kendo-textbox>
+          </ng-template>
+        </kendo-grid-column>
         <kendo-grid-column
           field="type"
           title="{{ 'pages.referenceData.type' | translate }}"
-        ></kendo-grid-column>
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <p *ngIf="currEditingField !== dataItem">
+              {{ dataItem.type }}
+            </p>
+            <kendo-dropdownlist
+              *ngIf="currEditingField === dataItem"
+              [data]="validJsonTypes"
+              [formControl]="inlineEditionForm.controls.type"
+            ></kendo-dropdownlist>
+          </ng-template>
+        </kendo-grid-column>
         <!-- remove button -->
         <kendo-grid-column
           [columnMenu]="false"
@@ -87,34 +155,61 @@
           [resizable]="false"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <button
-              kendoButton
-              class="text-center"
-              icon="delete"
-              [look]="'flat'"
-              (click)="onRemoveField(dataItem)"
-            ></button>
+            <div [ngClass]="{ hidden: currEditingField === dataItem }">
+              <button
+                kendoButton
+                class="text-center"
+                icon="edit"
+                [look]="'flat'"
+                (click)="toggleInlineEditor(dataItem)"
+                [uiTooltip]="'common.edit' | translate"
+              ></button>
+              <button
+                kendoButton
+                class="text-center"
+                icon="delete"
+                [look]="'flat'"
+                (click)="onRemoveField(dataItem)"
+                [uiTooltip]="'common.remove' | translate"
+              ></button>
+            </div>
+            <div [ngClass]="{ hidden: currEditingField !== dataItem }">
+              <button
+                kendoButton
+                class="text-center"
+                icon="save"
+                [look]="'flat'"
+                (click)="toggleInlineEditor(null)"
+                [uiTooltip]="'common.save' | translate"
+              ></button>
+              <button
+                kendoButton
+                class="text-center"
+                icon="cancel"
+                [look]="'flat'"
+                (click)="currEditingField = null"
+                [uiTooltip]="'common.cancel' | translate"
+              ></button>
+            </div>
           </ng-template>
         </kendo-grid-column>
         <ng-template kendoGridNoRecordsTemplate>
-          <div *ngIf="triedToGetFields && !loadingFields">
-            {{ 'pages.referenceData.fields.noFields' | translate }}
-          </div>
-          <ui-button
-            *ngIf="!loadingFields"
-            category="secondary"
-            variant="primary"
-            (click)="$event.preventDefault(); getFields()"
-            class="mx-auto my-1"
-          >
-            {{ 'pages.referenceData.fields.fetch' | translate }}
-          </ui-button>
+          {{ 'pages.referenceData.fields.noFields' | translate }}
           <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
         </ng-template>
       </kendo-grid>
+      <!-- Button to add new field -->
+      <button
+        kendoButton
+        class="text-center mt-2"
+        icon="add"
+        (click)="addField()"
+      >
+        {{ 'components.referenceData.fields.add' | translate }}
+      </button>
     </div>
     <!-- CSV Input for static type -->
-    <div *ngIf="type === 'static'" class="flex gap-2">
+    <div *ngIf="type === 'static'" class="flex flex-col gap-2">
       <div uiFormFieldDirective class="flex-auto">
         <label>{{ 'pages.referenceData.csv' | translate }}</label>
         <ui-textarea
@@ -124,53 +219,28 @@
         >
         </ui-textarea>
       </div>
-      <ui-button
-        category="secondary"
-        variant="primary"
-        (click)="onValidateCSV()"
-        class="mt-8"
-      >
-        {{ 'pages.referenceData.validateCsv' | translate }}
-      </ui-button>
+      <div class="flex gap-2 items-center">
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'common.separator' | translate }}</label>
+          <ui-select-menu [formControl]="separator">
+            <ui-select-option value=",">{{
+              'common.comma' | translate
+            }}</ui-select-option>
+            <ui-select-option value=";">{{
+              'common.semicolon' | translate
+            }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+        <ui-button
+          category="secondary"
+          variant="primary"
+          (click)="onValidateCSV()"
+        >
+          {{ 'pages.referenceData.validateCsv' | translate }}
+        </ui-button>
+      </div>
     </div>
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
-    <div class="flex gap-x-2">
-      <!-- Path -->
-      <div
-        class="flex-auto"
-        uiFormFieldDirective
-        *ngIf="['rest', 'graphql'].includes(type)"
-      >
-        <label>{{ 'pages.referenceData.path' | translate }}</label>
-        <input
-          formControlName="path"
-          type="text"
-          [placeholder]="'common.placeholder.name' | translate"
-        />
-        <ui-icon
-          icon="info_outline"
-          class="cursor-pointer"
-          variant="grey"
-          uiSuffix
-          [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
-        ></ui-icon>
-      </div>
-      <!-- Value field to be displayed -->
-      <div
-        uiFormFieldDirective
-        class="flex-1"
-        *ngIf="!csvLoading && type && valueFields.length > 0"
-      >
-        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
-        <ui-select-menu formControlName="valueField">
-          <ui-select-option
-            *ngFor="let value of valueFields"
-            [value]="value.name"
-            >{{ value.name }}</ui-select-option
-          >
-        </ui-select-menu>
-      </div>
-    </div>
     <!-- For graphql -->
     <!-- <div uiFormFieldDirective *ngIf="type === 'graphql'">
       <label>{{ 'pages.referenceData.graphQLFilter' | translate }} </label>
@@ -200,14 +270,36 @@
       </kendo-grid>
     </div>
   </form>
-  <!-- Submit button -->
-  <ui-button
-    class="!w-auto"
-    category="secondary"
-    variant="primary"
-    (click)="onSave()"
-    [disabled]="referenceForm.invalid || !referenceForm.dirty"
-  >
-    {{ 'common.save' | translate }}
-  </ui-button>
+  <!-- Floating div for actions buttons -->
+  <ui-fixed-wrapper>
+    <div *ngIf="canFetchFields" class="flex gap-1 mr-auto items-center">
+      <!-- Fetch fields -->
+      <ui-button
+        [disabled]="loadingFields"
+        category="secondary"
+        variant="primary"
+        (click)="getFields()"
+      >
+        {{ 'pages.referenceData.fields.fetch' | translate }}
+      </ui-button>
+      <!-- Show payload -->
+      <ui-button
+        *ngIf="payload && !loadingFields"
+        category="secondary"
+        variant="primary"
+        (click)="onOpenPayload()"
+      >
+        {{ 'pages.referenceData.payload.show' | translate }}
+      </ui-button>
+    </div>
+    <!-- Submit button -->
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSave()"
+      [disabled]="referenceForm.invalid || !referenceForm.dirty"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
 </ng-container>

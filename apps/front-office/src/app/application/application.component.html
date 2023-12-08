@@ -1,26 +1,27 @@
 <!-- Loading indicator -->
-<ng-container *ngIf="loading">
-  <ui-spinner class="flex justify-center items-center h-screen"></ui-spinner>
-</ng-container>
-<ng-container *ngIf="!loading">
-  <!-- Application wrapper -->
-  <safe-layout
-    [applications]="applications"
-    [header]="header"
-    [leftSidenav]="pages"
-    [sideMenu]="sideMenu"
-    [profileRoute]="'/' + appID + '/profile'"
-    (openApplication)="onOpenApplication($event)"
-  ></safe-layout>
-</ng-container>
+<ui-spinner
+  class="flex justify-center items-center h-screen"
+  *ngIf="loading"
+></ui-spinner>
+<!-- Application wrapper -->
+<shared-layout
+  *ngIf="!loading"
+  [applications]="applications"
+  [header]="header"
+  [leftSidenav]="pages"
+  [sideMenu]="sideMenu"
+  [menuOpened]="!hideMenu"
+  [profileRoute]="'/' + appID + '/profile'"
+  (openApplication)="onOpenApplication($event)"
+></shared-layout>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #pages let-nav>
-  <safe-navbar
+  <shared-navbar
     [nav]="nav"
     [appLayout]="true"
     [navGroups]="navGroups"
     [vertical]="!(!sideMenu && largeDevice)"
-  ></safe-navbar>
+  ></shared-navbar>
 </ng-template>
 
 <!-- Application header -->
@@ -38,6 +39,7 @@
     [uiMenuTriggerFor]="settingsMenu"
     [uiTooltip]="'common.settings' | translate"
   ></ui-button>
+  <shared-dashboard-filter-icon></shared-dashboard-filter-icon>
 </ng-template>
 
 <!-- Admin pages -->

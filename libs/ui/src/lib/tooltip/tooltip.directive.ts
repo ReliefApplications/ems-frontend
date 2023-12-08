@@ -7,9 +7,13 @@ import {
   HostListener,
   OnDestroy,
   Inject,
+  OnInit,
   Attribute,
 } from '@angular/core';
+import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 import { TooltipEnableBy } from './types/tooltip-enable-by-list';
+
+export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
 /**
  * Directive that allows to display a tooltip on a given html element
@@ -18,16 +22,18 @@ import { TooltipEnableBy } from './types/tooltip-enable-by-list';
   selector: '[uiTooltip]',
 })
 export class TooltipDirective implements OnDestroy {
+  /** Tooltip text */
   @Input() uiTooltip = '';
+  /** Is tooltip disabled */
   @Input() tooltipDisabled = false;
-
+  /** Tooltip html element */
   private elToolTip!: HTMLSpanElement;
-  // Distance from tooltip and the host element
+  /** Distance from tooltip and the host element in px ( when possible ) */
   private tooltipSeparation = 5;
 
   // Default classes to render the tooltip
   private tooltipClasses = [
-    'opacity-70',
+    'opacity-85',
     'transition-opacity',
     'delay-300',
     'bg-gray-800',
@@ -42,20 +48,29 @@ export class TooltipDirective implements OnDestroy {
     'break-words',
   ] as const;
 
+  private currentHost!: any;
+  /** Position of the tooltip */
+  private position!: TooltipPosition;
+
   /**
-   * Constructor of the directive
+   * Tooltip directive.
    *
    * @param document current DOCUMENT
    * @param {TooltipEnableBy} enableBy special cases that enable/disable tooltip display
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
+   * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host in order to correctly insert tooltips
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Attribute('tooltipEnableBy') public enableBy: TooltipEnableBy,
     public elementRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    shadowDomService: ShadowDomService
   ) {
+    this.currentHost = shadowDomService.isShadowRoot
+      ? shadowDomService.currentHost
+      : (shadowDomService.currentHost as Document).body;
     if (!enableBy) {
       this.enableBy = 'default';
     }
@@ -88,8 +103,8 @@ export class TooltipDirective implements OnDestroy {
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    if (this.document.body.contains(this.elToolTip)) {
-      this.renderer.removeChild(this.document.body, this.elToolTip);
+    if (this.currentHost.contains(this.elToolTip)) {
+      this.renderer.removeChild(this.currentHost, this.elToolTip);
     }
   }
 
@@ -97,37 +112,58 @@ export class TooltipDirective implements OnDestroy {
    * Show the tooltip and place it on the screen accordingly to its width and height
    */
   private showHint() {
+    // Fullscreen only renders the current full-screened element,
+    // Therefor we check if exists to take it as a reference, else we use the document body by default
+    const elementRef = this.document.fullscreenElement ?? this.currentHost;
     this.elToolTip.textContent = this.uiTooltip;
     this.renderer.addClass(this.elToolTip, 'opacity-0');
-    this.renderer.appendChild(this.document.body, this.elToolTip);
+    this.renderer.appendChild(elementRef, this.elToolTip);
     // Management of tooltip placement in the screen (including screen edges cases)
     const hostPos = this.elementRef.nativeElement.getBoundingClientRect();
     const tooltipPos = this.elToolTip.getBoundingClientRect();
     this.renderer.removeClass(this.elToolTip, 'opacity-0');
-    this.renderer.removeChild(this.document.body, this.elToolTip);
+    this.renderer.removeChild(elementRef, this.elToolTip);
 
-    const top = hostPos.bottom;
-    const left = hostPos.left;
+    let top = 0;
+    let left = 0;
     const tooltipWidth = tooltipPos.width;
     const tooltipHeight = tooltipPos.height;
 
-    //Default working case
-    let topValue = `${top + this.tooltipSeparation}px`;
-    let leftValue = `${left + 0.5 * (hostPos.width - tooltipWidth)}px`;
-    // Case where it on the bottom
-    if (tooltipHeight + top > window.innerHeight) {
-      topValue = `${hostPos.top - this.tooltipSeparation - tooltipHeight}px`;
+    // Gets the preferred position from the data attribute
+    // set by the TooltipPositionDirective
+    this.position =
+      this.elementRef.nativeElement.dataset.tooltipPosition ?? 'bottom';
+
+    switch (this.position) {
+      case 'top': {
+        top = hostPos.top - tooltipHeight - this.tooltipSeparation;
+        left = hostPos.left + hostPos.width / 2 - tooltipWidth / 2;
+        break;
+      }
+      case 'bottom': {
+        top = hostPos.bottom + this.tooltipSeparation;
+        left = hostPos.left + hostPos.width / 2 - tooltipWidth / 2;
+        break;
+      }
+      case 'left': {
+        top = hostPos.top + hostPos.height / 2 - tooltipHeight / 2;
+        left = hostPos.left - tooltipWidth - this.tooltipSeparation;
+        break;
+      }
+      case 'right': {
+        top = hostPos.top + hostPos.height / 2 - tooltipHeight / 2;
+        left = hostPos.right + this.tooltipSeparation;
+        break;
+      }
     }
-    if (left + 0.5 * (hostPos.width - tooltipWidth) < 0) {
-      leftValue = `${0}px`;
-    }
-    //Right placed case
-    if (tooltipWidth + left > window.innerWidth) {
-      leftValue = `${window.innerWidth - tooltipWidth}px`;
-    }
-    this.renderer.setStyle(this.elToolTip, 'top', topValue);
-    this.renderer.setStyle(this.elToolTip, 'left', leftValue);
-    this.renderer.appendChild(this.document.body, this.elToolTip);
+
+    // Clamp the tooltip position to the screen edges
+    top = Math.max(0, Math.min(top, window.innerHeight - tooltipHeight));
+    left = Math.max(0, Math.min(left, window.innerWidth - tooltipWidth));
+
+    this.renderer.setStyle(this.elToolTip, 'top', `${top}px`);
+    this.renderer.setStyle(this.elToolTip, 'left', `${left}px`);
+    this.renderer.appendChild(elementRef, this.elToolTip);
   }
 
   /**
@@ -166,5 +202,30 @@ export class TooltipDirective implements OnDestroy {
    */
   ngOnDestroy(): void {
     this.removeHint();
+  }
+}
+
+/**
+ * Directive that allows selecting the preferred position of the tooltip
+ */
+@Directive({
+  selector: '[uiTooltipPosition]',
+})
+export class TooltipPositionDirective implements OnInit {
+  @Input('uiTooltipPosition') position: TooltipPosition = 'bottom';
+
+  /**
+   * Directive that allows selecting the preferred position of the tooltip
+   *
+   * @param elementRef Tooltip host reference
+   */
+  constructor(private elementRef: ElementRef) {}
+
+  ngOnInit() {
+    const tooltipElement = this.elementRef.nativeElement;
+    if (tooltipElement) {
+      // Add data attribute to the host element
+      tooltipElement.dataset.tooltipPosition = this.position;
+    }
   }
 }

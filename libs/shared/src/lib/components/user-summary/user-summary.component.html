@@ -1,0 +1,29 @@
+<h1>
+  {{ title }}
+</h1>
+<ui-tabs>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'components.user.summary.title' | translate
+    }}</ng-container>
+    <shared-user-details
+      *ngIf="user"
+      [user]="user"
+      (edit)="onEditProfile($event)"
+      [loading]="loading"
+    ></shared-user-details>
+    <ui-spinner *ngIf="loading"></ui-spinner>
+  </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'common.role.few' | translate
+    }}</ng-container>
+    <shared-user-roles
+      *ngIf="user"
+      [user]="user"
+      [application]="application"
+      (edit)="onEditRoles($event)"
+      [loading]="loading"
+    ></shared-user-roles>
+  </ui-tab>
+</ui-tabs>

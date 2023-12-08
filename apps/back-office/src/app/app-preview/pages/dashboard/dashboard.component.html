@@ -1,5 +1,5 @@
-<safe-widget-grid
+<shared-widget-grid
   [loading]="loading"
-  [widgets]="tiles"
-  (goToNextStep)="goToNextStep.emit($event)"
-></safe-widget-grid>
+  [widgets]="widgets"
+  (changeStep)="changeStep.emit($event)"
+></shared-widget-grid>

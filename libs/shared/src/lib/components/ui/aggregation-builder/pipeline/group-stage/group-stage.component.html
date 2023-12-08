@@ -1,0 +1,57 @@
+<div>
+  <div class="flex items-center mb-4">
+    <h3 class="m-0">{{ 'components.aggregationBuilder.groupingRules' | translate }}</h3>
+    <ui-icon
+      class="cursor-help ml-1 self-center"
+      icon="info_outline"
+      variant="grey"
+      [size]="18"
+      [uiTooltip]="'components.aggregationBuilder.tooltip.groupingRules' | translate"
+    ></ui-icon>
+  </div>
+  <div class="flex flex-col gap-2">
+    <div
+      class="flex items-end gap-2"
+      *ngFor="let rule of groupBy.controls; let i = index"
+    >
+      <shared-field-dropdown
+        [fieldControl]="$any(rule).controls.field"
+        [fields]="fields"
+      ></shared-field-dropdown>
+      <shared-expressions
+        *ngIf="usedDateFields.includes(rule.value.field)"
+        [fields]="fields"
+        [form]="$any(rule).controls.expression"
+        [operators]="$any(dateOperators)"
+        [displayField]="false"
+      ></shared-expressions>
+      <ui-button
+        *ngIf="i > 0"
+        (click)="onDeleteRule(i)"
+        [isIcon]="true"
+        icon="delete"
+        variant="danger"
+        [uiTooltip]="'common.delete' | translate"
+      ></ui-button>
+    </div>
+    <ui-button
+      class="mt-4 w-max"
+      icon="add"
+      category="tertiary"
+      (click)="onAddRule()"
+      >{{ 'components.aggregationBuilder.addRule' | translate }}</ui-button
+    >
+  </div>
+</div>
+
+<div>
+  <h3>{{ 'components.aggregationBuilder.accumulators' | translate }}</h3>
+  <div>
+    <shared-add-field-stage
+      [fields]="fields"
+      [form]="addFields"
+      [operators]="operators"
+      [displayName]="false"
+    ></shared-add-field-stage>
+  </div>
+</div>

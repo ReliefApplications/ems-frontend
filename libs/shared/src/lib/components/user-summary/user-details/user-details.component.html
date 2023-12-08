@@ -1,0 +1,63 @@
+<form [formGroup]="form">
+  <div class="flex flex-col">
+    <div class="flex gap-2">
+      <div uiFormFieldDirective>
+        <label>
+          {{ 'components.user.summary.firstName' | translate }}
+        </label>
+        <input
+          formControlName="firstName"
+          type="text"
+          [placeholder]="'components.user.summary.firstName' | translate"
+        />
+      </div>
+      <div uiFormFieldDirective>
+        <label>
+          {{ 'components.user.summary.lastName' | translate }}
+        </label>
+        <input
+          formControlName="lastName"
+          type="text"
+          [placeholder]="'components.user.summary.lastName' | translate"
+        />
+      </div>
+    </div>
+    <div uiFormFieldDirective>
+      <label>
+        {{ 'common.email.one' | translate }}
+      </label>
+      <input
+        formControlName="email"
+        type="text"
+        [placeholder]="'common.email.one' | translate"
+      />
+    </div>
+    <ng-container *ngIf="attributes.length > 0" formGroupName="attributes">
+      <h2 class="mt-8">{{ 'common.attribute.few' | translate }}</h2>
+      <ng-container *ngFor="let attribute of attributes">
+        <div uiFormFieldDirective>
+          <label>{{ attribute.text }}</label>
+          <input
+            [formControlName]="attribute.value"
+            type="text"
+            [placeholder]="attribute.text"
+          />
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</form>
+<!-- Floating div for actions buttons -->
+<ng-container *ngIf="'update' | able : 'User'">
+  <ui-fixed-wrapper>
+    <!-- Save button -->
+    <ui-button
+      variant="primary"
+      category="secondary"
+      type="submit"
+      [disabled]="!form.valid"
+      (click)="onUpdate()"
+      >{{ 'common.saveChanges' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
+</ng-container>

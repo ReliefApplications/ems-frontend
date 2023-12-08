@@ -5,18 +5,18 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   User,
-  SafeAuthService,
-  SafeApplicationService,
+  AuthService,
+  ApplicationService,
   ContentType,
-  SafeUnsubscribeComponent,
+  UnsubscribeComponent,
   AppAbility,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 
 /**
- * Main component of Front-Office navigation.
+ * Front-office Application component.
  */
 @Component({
   selector: 'app-application',
@@ -24,7 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Application title */
@@ -43,13 +43,15 @@ export class ApplicationComponent
   public application: Application | null = null;
   /** Use side menu or not */
   public sideMenu = false;
+  /** Should hide menu by default ( only when vertical ) */
+  public hideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
   /** Is loading */
   public loading = true;
 
   /**
-   * Main component of Front-Office navigation.
+   * Front-office Application component.
    *
    * @param authService Shared authentication service
    * @param applicationService Shared application service
@@ -60,8 +62,8 @@ export class ApplicationComponent
    * @param ability user ability
    */
   constructor(
-    private authService: SafeAuthService,
-    private applicationService: SafeApplicationService,
+    private authService: AuthService,
+    private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private snackBar: SnackbarService,
     private router: Router,
@@ -105,96 +107,14 @@ export class ApplicationComponent
         if (application) {
           this.loading = false;
           this.title = application.name || '';
-          this.appID = application.id || '';
           this.adminNavItems = [];
-          if (
-            this.ability.can(
-              'read',
-              subject('User', { application: application.id })
-            )
-          ) {
-            // if can see users globally / can manage apps / can see users in app
-            this.adminNavItems.push({
-              name: this.translate.instant('common.user.few'),
-              path: `./settings/users`,
-              icon: 'supervisor_account',
-            });
-          }
-          if (
-            this.ability.can(
-              'read',
-              subject('Role', { application: application.id })
-            )
-          ) {
-            // if can see roles globally / can manage apps / can see roles in app
-            this.adminNavItems.push({
-              name: this.translate.instant('common.role.few'),
-              path: `./settings/roles`,
-              icon: 'admin_panel_settings',
-            });
-          }
-          if (
-            this.ability.can(
-              'manage',
-              subject('Template', { application: application.id })
-            )
-          ) {
-            // if can manage apps / can manage templates in app
-            this.adminNavItems.push({
-              name: this.translate.instant('common.template.few'),
-              path: `./settings/templates`,
-              icon: 'description',
-            });
-          }
-          if (
-            this.ability.can(
-              'manage',
-              subject('DistributionList', { application: application.id })
-            )
-          ) {
-            // if can manage apps / can manage distribution lists in app
-            this.adminNavItems.push({
-              name: this.translate.instant('common.distributionList.few'),
-              path: `./settings/distribution-lists`,
-              icon: 'mail',
-            });
-          }
-          if (
-            this.ability.can(
-              'manage',
-              subject('CustomNotification', { application: application.id })
-            )
-          ) {
-            // if can manage apps / can manage distribution lists in app
-            this.adminNavItems.push({
-              name: this.translate.instant('common.customNotification.few'),
-              path: `./settings/notifications`,
-              icon: 'schedule_send',
-            });
-          }
-          this.navGroups = [
-            {
-              name: 'Pages',
-              navItems: application.pages
-                ?.filter((x) => x.content)
-                .map((x) => ({
-                  name: x.name,
-                  path:
-                    x.type === ContentType.form
-                      ? `./${x.type}/${x.id}`
-                      : `./${x.type}/${x.content}`,
-                  icon: this.getNavIcon(x.type || ''),
-                })),
-            },
-          ];
+          this.setAdminNavItems(application);
+          this.setNavGroups(application);
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            const urlContainsPage = new RegExp(
-              /(\/dashboard\/)|(\/form\/)|(\/workflow\/)|(\/profile\/)|(\/settings\/)/gim
-            );
-            const find = urlContainsPage.test(this.router.url);
             if (this.router.url.endsWith(application?.id || '') || !firstPage) {
-              if (firstPage && !find) {
+              // If a page is configured
+              if (firstPage) {
                 this.router.navigate(
                   [
                     `./${firstPage.type}/${
@@ -206,18 +126,15 @@ export class ApplicationComponent
                   { relativeTo: this.route }
                 );
               } else {
-                if (!find) {
-                  this.router.navigate([`./${this.appID}`], {
-                    relativeTo: this.route,
-                  });
-                }
+                this.router.navigate(['./'], { relativeTo: this.route });
               }
             }
           }
           this.application = application;
-          this.appID = application.id || '';
-          this.sideMenu = this.application?.sideMenu ?? false;
+          this.sideMenu = this.application?.sideMenu ?? true;
+          this.hideMenu = this.application?.hideMenu ?? false;
         } else {
+          this.title = '';
           this.navGroups = [];
         }
       });
@@ -246,6 +163,98 @@ export class ApplicationComponent
         return 'description';
       default:
         return 'dashboard';
+    }
+  }
+
+  /**
+   * Set nav groups ( sidenav )
+   *
+   * @param application Loading application
+   */
+  private setNavGroups(application: Application): void {
+    this.navGroups = [
+      {
+        name: 'Pages',
+        navItems: application.pages
+          ?.filter((x) => x.content)
+          .map((x) => ({
+            name: x.name,
+            path:
+              x.type === ContentType.form
+                ? `./${x.type}/${x.id}`
+                : `./${x.type}/${x.content}`,
+            icon: x.icon || this.getNavIcon(x.type || ''),
+            fontFamily: x.icon ? 'fa' : 'material',
+            visible: x.visible,
+          })),
+      },
+    ];
+  }
+
+  /**
+   * Set admin nav items ( settings )
+   *
+   * @param application Loading application
+   */
+  private setAdminNavItems(application: Application): void {
+    if (
+      this.ability.can('read', subject('User', { application: application.id }))
+    ) {
+      // if can see users globally / can manage apps / can see users in app
+      this.adminNavItems.push({
+        name: this.translate.instant('common.user.few'),
+        path: `./settings/users`,
+        icon: 'supervisor_account',
+      });
+    }
+    if (
+      this.ability.can('read', subject('Role', { application: application.id }))
+    ) {
+      // if can see roles globally / can manage apps / can see roles in app
+      this.adminNavItems.push({
+        name: this.translate.instant('common.role.few'),
+        path: `./settings/roles`,
+        icon: 'admin_panel_settings',
+      });
+    }
+    if (
+      this.ability.can(
+        'manage',
+        subject('Template', { application: application.id })
+      )
+    ) {
+      // if can manage apps / can manage templates in app
+      this.adminNavItems.push({
+        name: this.translate.instant('common.template.few'),
+        path: `./settings/templates`,
+        icon: 'description',
+      });
+    }
+    if (
+      this.ability.can(
+        'manage',
+        subject('DistributionList', { application: application.id })
+      )
+    ) {
+      // if can manage apps / can manage distribution lists in app
+      this.adminNavItems.push({
+        name: this.translate.instant('common.distributionList.few'),
+        path: `./settings/distribution-lists`,
+        icon: 'mail',
+      });
+    }
+    if (
+      this.ability.can(
+        'manage',
+        subject('CustomNotification', { application: application.id })
+      )
+    ) {
+      // if can manage apps / can manage distribution lists in app
+      this.adminNavItems.push({
+        name: this.translate.instant('common.customNotification.few'),
+        path: './settings/notifications',
+        icon: 'schedule_send',
+      });
     }
   }
 

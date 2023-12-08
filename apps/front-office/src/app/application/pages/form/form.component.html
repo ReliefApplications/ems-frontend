@@ -1,10 +1,9 @@
-<!-- Loading indicator -->
-<ng-container *ngIf="loading">
-  <ui-spinner class="flex h-full"></ui-spinner>
-</ng-container>
+<ng-container *ngIf="loading"><ui-spinner></ui-spinner></ng-container>
 <ng-container *ngIf="!loading && form && canCreateRecords">
-  <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
+  <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
-    <ui-button category="secondary" (click)="clearForm()">New record</ui-button>
+    <ui-button category="secondary" (click)="clearForm()">{{
+      'models.record.new' | translate
+    }}</ui-button>
   </ng-container>
 </ng-container>

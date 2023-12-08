@@ -22,8 +22,8 @@ import { OptionComponent } from './components/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DOCUMENT } from '@angular/common';
 import { ScrollStrategies } from './types/scroll-strategies';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * UI Autocomplete directive
@@ -48,12 +48,12 @@ export class AutocompleteDirective
 
   private inputElement!: HTMLInputElement;
   private value!: any;
-  private inputEventListener!: any;
+  private inputEventListener!: () => void;
   private destroy$ = new Subject<void>();
   private control!: NgControl;
   private autocompleteClosingActionsSubscription!: Subscription;
-  private selectOptionListener!: any;
-  private clickOutsideListener!: any;
+  private selectOptionListener!: () => void;
+  private clickOutsideListener!: () => void;
 
   /**
    * Get the value from the option to set in the input host element
@@ -151,7 +151,7 @@ export class AutocompleteDirective
         });
     }
     this.clickOutsideListener = this.renderer.listen(
-      window,
+      this.document,
       'click',
       (event) => {
         if (

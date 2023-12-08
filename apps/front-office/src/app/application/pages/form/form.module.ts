@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
-import { SafeFormModule } from '@oort-front/safe';
+import { FormModule as SharedFormModule } from '@oort-front/shared';
 import { ButtonModule, SpinnerModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Form page module.
@@ -13,8 +14,9 @@ import { ButtonModule, SpinnerModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     FormRoutingModule,
-    SafeFormModule,
+    SharedFormModule,
     ButtonModule,
+    TranslateModule,
     SpinnerModule,
   ],
   exports: [FormComponent],

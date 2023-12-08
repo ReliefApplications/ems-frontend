@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 @Component({})
 export class TestingComponent {}
 
-export class MockedSafeAuthService {
+export class MockedAuthService {
   account: any;
   getProfile() {
     return of({ data: { me: null } });

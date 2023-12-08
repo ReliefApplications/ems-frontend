@@ -16,9 +16,8 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@oort-front/leaflet": ["libs/leaflet/src/index.ts"],
-      "@oort-front/safe": ["libs/safe/src/index.ts"],
-      "@oort-front/safe/widgets": ["libs/safe/src/widgets/index.ts"],
+      "@oort-front/shared": ["libs/shared/src/index.ts"],
+      "@oort-front/shared/widgets": ["libs/shared/src/widgets/index.ts"],
       "@oort-front/ui": ["libs/ui/src/index.ts"]
     }
   },

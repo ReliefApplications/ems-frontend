@@ -1,0 +1,51 @@
+<ui-tabs class="grow" [vertical]="true">
+  <!-- Map properties -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="map" [size]="24"> </ui-icon>
+      <span>{{
+        'components.widget.settings.map.properties.title' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-map-properties
+        [form]="widgetFormGroup"
+        [mapSettings]="mapSettings"
+        [mapPortal]="mapPortal"
+      ></shared-map-properties>
+    </ng-template>
+  </ui-tab>
+  <!-- Map layers -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="layers" [size]="24"> </ui-icon>
+      <span>{{ 'common.layers' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-map-layers
+        [control]="$any(widgetFormGroup.get('layers'))"
+        [mapComponent]="mapComponent"
+        [mapPortal]="mapPortal"
+      ></shared-map-layers>
+    </ng-template>
+  </ui-tab>
+  <!-- General widget display -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="settings_overscan" [size]="24"> </ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-display-settings
+        [formGroup]="widgetFormGroup"
+      ></shared-display-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>
+
+<ng-template #mapContainer></ng-template>
+
+<!-- Hiding it by default, when there is no place to show it -->
+<div class="hidden">
+  <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
+</div>

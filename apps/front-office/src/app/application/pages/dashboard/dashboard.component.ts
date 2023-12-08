@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   OnDestroy,
   OnInit,
   Output,
@@ -10,20 +11,24 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  SafeDashboardService,
-  SafeUnsubscribeComponent,
-  SafeWidgetGridComponent,
-  SafeConfirmService,
+  DashboardService,
+  UnsubscribeComponent,
+  WidgetGridComponent,
+  ConfirmService,
+  ButtonActionT,
+  ContextService,
   DashboardQueryResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { map, takeUntil } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { DOCUMENT } from '@angular/common';
+import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard page.
@@ -34,25 +39,46 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** Change step event ( in workflow ) */
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  /** Widget grid reference */
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
+  /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
-  // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
-
-  /** Current dashboard id */
+  /** Dashboard id */
   public id = '';
-  /** Loading state of the loading */
+  /** Application id */
+  public applicationId?: string;
+  /** Is dashboard loading */
   public loading = true;
   /** List of widgets */
-  public widgets = [];
+  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
+  /** Show dashboard filter */
+  public showFilter!: boolean;
+  /** Show name ( contextual pages ) */
+  public showName = false;
+  /** Current style variant */
+  public variant!: string;
+  /** hide / show the close icon on the right */
+  public closable = true;
 
-  @ViewChild(SafeWidgetGridComponent)
-  widgetGridComponent!: SafeWidgetGridComponent;
-  public showFilter?: boolean;
+  // === BUTTON ACTIONS ===
+  public buttonActions: ButtonActionT[] = [];
+
+  /** @returns type of context element */
+  get contextType() {
+    if (this.dashboard?.page?.context) {
+      return 'resource' in this.dashboard.page.context ? 'record' : 'element';
+    } else {
+      return;
+    }
+  }
 
   /**
    * Dashboard page.
@@ -67,6 +93,8 @@ export class DashboardComponent
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
+   * @param document Document
+   * @param contextService Dashboard context service
    */
   constructor(
     private apollo: Apollo,
@@ -74,11 +102,13 @@ export class DashboardComponent
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    @Inject(DOCUMENT) private document: Document,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -87,51 +117,127 @@ export class DashboardComponent
    * Subscribes to the route to load the dashboard accordingly.
    */
   ngOnInit(): void {
+    /** Listen to router events navigation end, to get last version of params & queryParams. */
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        startWith(this.router), // initialize
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.loading = true;
+        // Reset scroll when changing page
+        const pageContainer = this.document.getElementById('appPageContainer');
+        if (pageContainer) {
+          pageContainer.scrollTop = 0;
+        }
+        /** Extract main dashboard id */
+        const id = this.route.snapshot.paramMap.get('id');
+        /** Extract query id to load template */
+        const queryId = this.route.snapshot.queryParamMap.get('id');
+        if (id) {
+          if (queryId) {
+            // Try to load template
+            this.showName = true;
+            this.loadDashboard(id).then(() => {
+              const templates = this.dashboard?.page?.contentWithContext;
+              const type = this.contextType;
+              if (type) {
+                // Find template from parent's templates, based on query params id
+                const template = templates?.find((d) => {
+                  // If templates use reference data
+                  if (type === 'element')
+                    return (
+                      'element' in d &&
+                      d.element.toString().trim() === queryId.trim()
+                    );
+                  // If templates use resource
+                  else if (type === 'record')
+                    return (
+                      'record' in d &&
+                      d.record.toString().trim() === queryId.trim()
+                    );
+                  return false;
+                });
+
+                if (template) {
+                  // Load template, it will erase current dashboard
+                  this.loadDashboard(template.content).then(
+                    () => (this.loading = false)
+                  );
+                } else {
+                  // Will use current template
+                  this.loading = false;
+                  return;
+                }
+              } else {
+                this.loading = false;
+              }
+            });
+          } else {
+            // Don't use template, and directly load the dashboard from router's params
+            this.showName = false;
+            this.loadDashboard(id).then(() => (this.loading = false));
+          }
+        }
+      });
+  }
+
+  /**
+   * Init the dashboard
+   *
+   * @param id Dashboard id
+   * @returns Promise
+   */
+  private async loadDashboard(id: string) {
+    // don't init the dashboard if the id is the same
+    if (this.dashboard?.id === id) {
+      return;
+    }
+
     const rootElement = this.elementRef.nativeElement;
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      // Doing this to be able to use custom styles on specific dashboards
-      this.renderer.setAttribute(rootElement, 'data-dashboard-id', params.id);
-      this.id = params.id;
-      this.loading = true;
-      this.apollo
-        .watchQuery<DashboardQueryResponse>({
-          query: GET_DASHBOARD_BY_ID,
-          variables: {
-            id: this.id,
-          },
-        })
-        .valueChanges.subscribe({
-          next: ({ data, loading }) => {
-            if (data.dashboard) {
-              this.dashboard = data.dashboard;
-              this.dashboardService.openDashboard(this.dashboard);
-              this.widgets = data.dashboard.structure
-                ? data.dashboard.structure
-                : [];
-              this.loading = loading;
-              this.showFilter = this.dashboard.showFilter;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.dashboard.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-              this.router.navigate(['/applications']);
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-            this.router.navigate(['/applications']);
-          },
-        });
-    });
+    // Doing this to be able to use custom styles on specific dashboards
+    this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
+    this.loading = true;
+    this.id = id;
+    return firstValueFrom(
+      this.apollo.query<DashboardQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+    )
+      .then(({ data }) => {
+        if (data.dashboard) {
+          this.dashboard = data.dashboard;
+          this.dashboardService.openDashboard(this.dashboard);
+          this.widgets = cloneDeep(
+            data.dashboard.structure ? data.dashboard.structure : []
+          );
+          this.buttonActions = this.dashboard.buttons || [];
+          this.showFilter = this.dashboard.filter?.show ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
+          this.variant = this.dashboard.filter?.variant || 'default';
+          this.closable = this.dashboard.filter?.closable ?? false;
+        } else {
+          this.contextService.isFilterEnabled.next(false);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate
+                .instant('common.dashboard.one')
+                .toLowerCase(),
+              error: '',
+            }),
+            { error: true }
+          );
+          this.router.navigate(['/applications']);
+        }
+      })
+      .catch((err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+        this.router.navigate(['/applications']);
+      });
   }
 
   /**

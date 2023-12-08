@@ -1,0 +1,108 @@
+<form [formGroup]="userForm" *ngIf="userForm">
+  <h1>{{ 'pages.profile.title' | translate }}</h1>
+  <!-- User details -->
+  <div class="flex flex-col">
+    <div class="flex gap-2 flex-wrap">
+      <div uiFormFieldDirective class="flex-1">
+        <label>
+          {{ 'models.user.firstName' | translate }}
+        </label>
+        <input formControlName="firstName" type="text" />
+      </div>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
+          {{ 'models.user.lastName' | translate }}
+        </label>
+        <input formControlName="lastName" type="text" />
+      </div>
+    </div>
+    <div uiFormFieldDirective>
+      <label>
+        {{ 'models.user.username' | translate }}
+      </label>
+      <input formControlName="username" type="text" />
+    </div>
+  </div>
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-2lg mt-6">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table cdk-table uiTableWrapper [dataSource]="user.applications">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.application.few' | translate }} ({{
+                user.applications.length
+              }})
+            </span>
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium max-w-[30vw]"
+          >
+            {{ element.name }}
+            <span *ngIf="user.favoriteApp === element.id">
+              <ui-icon icon="star" inline="true" variant="primary"></ui-icon>
+            </span>
+          </td>
+        </ng-container>
+        <ng-container cdkColumnDef="role">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.role.one' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            {{ element.role ? element.role.title : '' }}
+          </td>
+        </ng-container>
+        <ng-container cdkColumnDef="positionAttributes">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.positionAttribute.few' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            <span *ngFor="let e of element.positionAttributes"
+              >{{ e.value }},
+            </span>
+          </td>
+        </ng-container>
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+              (click)="$event.stopPropagation()"
+              [uiTooltip]="'common.actions' | translate"
+            >
+            </ui-button>
+            <ui-menu #menu>
+              <button uiMenuItem (click)="onSelectFavorite(element)">
+                <ui-icon icon="star" variant="grey"></ui-icon>
+                {{ 'models.application.setAsFavorite' | translate }}
+              </button>
+            </ui-menu>
+          </td>
+        </ng-container>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsApps"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumnsApps"></tr>
+      </table>
+    </div>
+  </div>
+  <!-- Floating div for actions buttons -->
+  <ui-fixed-wrapper>
+    <!-- Save button -->
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      [disabled]="userForm.invalid || !userForm.dirty"
+    >
+      {{ 'common.saveChanges' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
+</form>

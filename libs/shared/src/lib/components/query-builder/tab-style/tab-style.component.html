@@ -1,0 +1,29 @@
+<ui-alert class="block mb-4">
+  {{ 'components.queryBuilder.hint.style' | translate }}
+</ui-alert>
+<ng-container *ngIf="!editedStyleForm">
+  <!-- LIST OF STYLES -->
+  <shared-query-style-list
+    [form]="form"
+    (delete)="onDelete($event)"
+    (edit)="onEdit($event)"
+  ></shared-query-style-list>
+  <div class="flex justify-center mt-4">
+    <ui-button
+      class="grow max-w-xs"
+      icon="add"
+      (click)="onAdd()"
+      category="tertiary"
+      variant="primary"
+      >{{ 'components.queryBuilder.style.new' | translate }}</ui-button
+    >
+  </div>
+</ng-container>
+<ng-container *ngIf="editedStyleForm">
+  <!-- STYLE EDITION -->
+  <shared-query-style
+    [form]="editedStyleForm"
+    (closeEdition)="onClose()"
+    [query]="query"
+  ></shared-query-style>
+</ng-container>

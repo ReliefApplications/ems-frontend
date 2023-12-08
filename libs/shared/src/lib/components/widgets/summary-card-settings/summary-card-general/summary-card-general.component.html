@@ -1,0 +1,201 @@
+<form [formGroup]="formGroup" class="flex flex-col gap-3">
+  <div uiFormFieldDirective>
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+  </div>
+
+  <ng-container formGroupName="card">
+    <div class="flex gap-2 flex-wrap">
+      <div class="flex-1 flex-col">
+        <!-- Reference data selection  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!formGroup.value.card?.resource"
+        >
+          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <shared-reference-data-select
+            formControlName="referenceData"
+            [selectedElements]="[referenceData]"
+          ></shared-reference-data-select>
+        </div>
+        <ui-divider
+          class="max-w-xs m-auto"
+          [text]="'common.or' | translate"
+          *ngIf="
+            !formGroup.value.card?.resource &&
+            !formGroup.value.card?.referenceData
+          "
+        ></ui-divider>
+        <!-- RESOURCE SELECTION  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!formGroup.value.card?.referenceData"
+        >
+          <label>{{ 'models.resource.select' | translate }}</label>
+          <shared-resource-select
+            formControlName="resource"
+            [selectedElements]="[resource]"
+          ></shared-resource-select>
+        </div>
+      </div>
+
+      <!-- TEMPLATE SELECTION -->
+      <div uiFormFieldDirective class="flex-1" *ngIf="resource">
+        <label>{{ 'models.form.template' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option
+            *ngFor="let template of resource.forms || []"
+            [value]="template.id"
+          >
+            {{ template.name }}
+          </ui-select-option>
+        </ui-select-menu>
+        <ui-icon
+          uiSuffix
+          icon="info_outline"
+          variant="grey"
+          [uiTooltip]="
+            'components.widget.settings.grid.tooltip.template' | translate
+          "
+        ></ui-icon>
+      </div>
+    </div>
+
+    <!-- SELECT AGGREGATION OR LAYOUT -->
+    <div class="flex flex-col mt-8 gap-8" *ngIf="resource">
+      <div *ngIf="!aggregation">
+        <h2>{{ 'common.layout.one' | translate }}</h2>
+      </div>
+      <ng-container *ngIf="!layout && !aggregation">
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="addLayout()"
+            >{{
+              'components.widget.settings.grid.layouts.add.title' | translate
+            }}</ui-button
+          >
+        </div>
+      </ng-container>
+      <ui-divider
+        *ngIf="!aggregation && !layout"
+        [text]="'common.or' | translate"
+      ></ui-divider>
+      <div *ngIf="!layout">
+        <h2>{{ 'common.aggregation.one' | translate }}</h2>
+      </div>
+      <ng-container *ngIf="!layout && !aggregation">
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="addAggregation()"
+            >{{ 'components.aggregation.add.title' | translate }}</ui-button
+          >
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- FROM LAYOUTS -->
+    <ng-container *ngIf="layout && resource">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.layout.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="layout.name">
+          <ui-select-option [value]="layout.name">{{
+            layout.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editLayout()"
+          [uiTooltip]="'common.edit' | translate"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="formGroup.get('card.layout')?.setValue(null)"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+      <h2>
+        {{
+          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
+            | translate
+        }}
+      </h2>
+      <ui-checkbox formControlName="useStyles">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
+              | translate
+          }}
+        </ng-container>
+      </ui-checkbox>
+      <div *ngIf="this.formGroup.value.card?.useStyles">
+        <p>
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
+              | translate
+          }}
+        </p>
+        <div
+          uiRadioGroupDirective="applyStyles"
+          formControlName="wholeCardStyles"
+        >
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+        </div>
+      </div>
+    </ng-container>
+    <!-- FROM AGGREGATIONS -->
+    <ng-container *ngIf="aggregation && resource">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.aggregation.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="aggregation.name">
+          <ui-select-option [value]="aggregation.name">{{
+            aggregation.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editAggregation()"
+          [uiTooltip]="'common.edit' | translate"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="formGroup.get('card.aggregation')?.setValue(null)"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+    </ng-container>
+  </ng-container>
+</form>
