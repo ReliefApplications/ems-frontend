@@ -50,7 +50,7 @@ const QUESTION_TYPES = [
   // 'imagepicker',
   'boolean',
   // 'image',
-  // 'html',
+  'html',
   // 'signaturepad',
   // 'expression',
   // 'matrix',
