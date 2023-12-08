@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CardT } from '../../widgets/summary-card/summary-card.component';
+import { PageChangeEvent } from '@progress/kendo-angular-pager';
 
 /**
  * Shared reference data grid component.
@@ -39,15 +40,36 @@ export class ReferenceDataGridComponent implements OnInit {
           title: field.name,
           type: field.type,
           meta: {
-            type: field.type,
+            type: this.getMetaTypeFromJson(field.type),
           },
           disabled: true,
           hidden: false,
           canSee: true,
         })
       );
+      console.log(this.fields);
       this.setGridData();
       this.loadingSettings = false;
+    }
+  }
+
+  /**
+   * Get meta type for grid based on json type
+   *
+   * @param type json type
+   * @returns meta type
+   */
+  private getMetaTypeFromJson(type: string): string {
+    switch (type) {
+      case 'string':
+        return 'text';
+      case 'integer':
+      case 'number':
+        return 'numeric';
+      case 'boolean':
+        return 'boolean';
+      default:
+        return type;
     }
   }
 
@@ -68,9 +90,13 @@ export class ReferenceDataGridComponent implements OnInit {
       return cardData;
     });
     this.gridData = {
-      data: data,
+      data: data.slice(0, 10),
       total: this.cards.length,
     };
     this.loadingRecords = false;
+  }
+
+  public onPageChange(event: PageChangeEvent): void {
+    console.log(event);
   }
 }

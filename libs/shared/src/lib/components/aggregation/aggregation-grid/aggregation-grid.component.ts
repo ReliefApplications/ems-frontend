@@ -203,6 +203,7 @@ export class AggregationGridComponent
             null,
             null
           );
+          console.log(this.fields);
           this.loadingSettings = false;
           this.status = {
             error: false,
