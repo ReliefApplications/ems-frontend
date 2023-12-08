@@ -1,3 +1,17 @@
+# [2.2.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2023-12-08)
+
+
+### Bug Fixes
+
+* prevent aggregation fields to be fetched before query builder is ready ([#2139](https://github.com/ReliefApplications/ems-frontend/issues/2139)) ([3bee583](https://github.com/ReliefApplications/ems-frontend/commit/3bee5837c221a799d9e479e91cab0131afb3c259))
+* toggle of archived records would create incorrect list ([#2132](https://github.com/ReliefApplications/ems-frontend/issues/2132)) ([f1abf81](https://github.com/ReliefApplications/ems-frontend/commit/f1abf811189f67841a8770ac5e6cc35af0bf745c))
+
+
+### Features
+
+* add filter input & output in app-widget ([4d94cef](https://github.com/ReliefApplications/ems-frontend/commit/4d94cefd8718f0b382679e2d0fc79e6242bb49e7))
+* allow fields from ref data linked to a resource to be used  ([#1575](https://github.com/ReliefApplications/ems-frontend/issues/1575)) ([cb8b30c](https://github.com/ReliefApplications/ems-frontend/commit/cb8b30ca36074c1544bf3d95796a6553f1de1b55))
+
 # [2.2.0-beta.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.14...v2.2.0-beta.15) (2023-12-07)
 
 
