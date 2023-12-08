@@ -13,7 +13,6 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { GridModule as KendoGridModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
-import { PopupModule } from '@progress/kendo-angular-popup';
 import { DateModule } from '../../../../pipes/date/date.module';
 import { DateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
 import { ExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
@@ -41,7 +40,6 @@ import { GridFilterMenuModule } from '../filter-menu/filter-menu.module';
     DateInputsModule,
     DropDownsModule,
     ButtonsModule,
-    PopupModule,
     // === UTILS ===
     ExpandedCommentModule,
     // === FILTER ===
