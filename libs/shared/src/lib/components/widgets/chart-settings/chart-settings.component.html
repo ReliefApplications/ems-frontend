@@ -10,14 +10,7 @@
       <span>{{ 'common.general' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-main
-        [formGroup]="formGroup"
-        [type]="type"
-        [resource]="resource"
-        [aggregation]="aggregation"
-        [referenceData]="referenceData"
-        (aggregationChange)="aggregation = $event ?? undefined"
-      ></shared-tab-main>
+      <shared-tab-main [formGroup]="formGroup" [type]="type"></shared-tab-main>
     </ng-template>
   </ui-tab>
   <!-- Display options -->
