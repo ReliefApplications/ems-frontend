@@ -162,17 +162,13 @@ export class DashboardService {
    * @param id The id of the context to be added to the dashboard
    * @returns The newly created dashboard
    */
-  public createDashboardWithContext(
-    page: string,
-    context: 'element' | 'record' | 'geographic',
-    id: string | number
-  ) {
+  public createDashboardWithContext(page: string, context: any) {
     return firstValueFrom(
       this.apollo.mutate<CreateDashboardWithContextMutationResponse>({
         mutation: CREATE_DASHBOARD_WITH_CONTEXT,
         variables: {
           page,
-          [context]: id,
+          ...context,
         },
       })
     );

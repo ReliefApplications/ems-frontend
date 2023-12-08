@@ -93,11 +93,10 @@ export interface Page {
     | {
         record: string;
       }
-    | {
-        geographic: string;
-      }
   ) & {
     content: string;
+  } & {
+    geographic?: string;
   })[];
   geographicContext?: PageGeographicContextType;
   autoDeletedAt?: Date;

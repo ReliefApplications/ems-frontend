@@ -68,7 +68,7 @@ export const CREATE_DASHBOARD_WITH_CONTEXT = gql`
     $page: ID!
     $element: JSON
     $record: ID
-    $geographic: String!
+    $geographic: String
   ) {
     addDashboardWithContext(
       page: $page
