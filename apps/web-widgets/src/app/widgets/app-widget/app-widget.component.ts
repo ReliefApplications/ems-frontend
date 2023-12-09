@@ -18,7 +18,7 @@ import {
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { Router } from '@angular/router';
-import { Location, LocationStrategy } from '@angular/common';
+import { Location } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 
 /**
@@ -56,13 +56,25 @@ export class AppWidgetComponent
     this.onToggleFilter(opened);
   }
 
+  /** Navigation path */
   @Input()
   set path(value: string) {
     this.router.navigate([value]);
   }
 
+  /** Pass new value to the filter */
+  @Input()
+  set filter(value: any) {
+    this.contextService.filter.next(value);
+  }
+
+  /** Is filter active */
   @Output()
   filterActive$ = new EventEmitter<boolean>();
+  /** Emit filter value */
+  @Output()
+  filter$ = new EventEmitter<any>();
+  /** Available pages */
   @Output()
   pages = new EventEmitter<any[]>();
 
@@ -72,6 +84,10 @@ export class AppWidgetComponent
    * @param el class related element reference
    * @param injector angular application injector
    * @param contextService Shared context service
+   * @param router Angular routter
+   * @param applicationService Shared application service
+   * @param location Angular location
+   * @param shadowDomService Shared shadow dom service
    */
   constructor(
     el: ElementRef,
@@ -80,13 +96,13 @@ export class AppWidgetComponent
     private router: Router,
     private applicationService: ApplicationService,
     private location: Location,
-    private locationStrategy: LocationStrategy,
     private shadowDomService: ShadowDomService
   ) {
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
     this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
       this.filterActive$.emit(!isEmpty(value));
+      this.filter$.emit(value);
     });
     this.applicationService.application$.subscribe(
       (application: Application | null) => {
