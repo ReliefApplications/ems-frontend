@@ -138,22 +138,22 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
-    // const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
+    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
         variables: {
           id,
-          // aggregationIds: aggregationId ? [aggregationId] : null,
+          aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
         this.referenceData = data.referenceData;
-        // if (aggregationId && this.resource.aggregations?.edges[0]) {
-        //   this.aggregation = this.resource.aggregations.edges[0].node;
-        //   this.setAvailableSeriesFields();
-        // }
+        if (aggregationId && this.referenceData.aggregations?.edges[0]) {
+          this.aggregation = this.referenceData.aggregations.edges[0].node;
+          this.setAvailableSeriesFields();
+        }
       });
   }
 
@@ -162,8 +162,11 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    */
   private setAvailableSeriesFields(): void {
     if (this.aggregation) {
+      const queryName = this.resource
+        ? this.resource.queryName
+        : this.referenceData?.graphQLTypeName;
       const fields = this.queryBuilder
-        .getFields(this.resource?.queryName as string)
+        .getFields(queryName as string)
         .filter(
           (field: any) =>
             !(
@@ -180,7 +183,13 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
             Object.assign(field, {
               fields: this.queryBuilder.deconfineFields(
                 field.type,
-                new Set().add(this.resource?.name).add(field.type.ofType?.name)
+                new Set()
+                  .add(
+                    this.resource
+                      ? this.resource.name
+                      : this.referenceData?.name
+                  )
+                  .add(field.type.ofType?.name)
               ),
             });
           }
@@ -220,7 +229,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         this.formGroup.get('chart.aggregationId')?.setValue(value.id);
         this.aggregation = value;
         this.setAvailableSeriesFields();
-        // this.getResource(this.resource?.id as string);
       }
     });
   }

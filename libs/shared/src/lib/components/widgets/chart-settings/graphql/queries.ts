@@ -33,7 +33,7 @@ export const GET_RESOURCE = gql`
 
 /** Get reference data gql query definition */
 export const GET_REFERENCE_DATA = gql`
-  query GetReferenceData($id: ID!) {
+  query GetReferenceData($id: ID!, $aggregationIds: [ID]) {
     referenceData(id: $id) {
       id
       name
@@ -41,6 +41,22 @@ export const GET_REFERENCE_DATA = gql`
       fields
       valueField
       graphQLTypeName
+      aggregations(ids: $aggregationIds) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
     }
   }
 `;

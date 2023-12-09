@@ -1,4 +1,5 @@
 import { Connection } from '../utils/public-api';
+import { Aggregation } from './aggregation.model';
 import { ApiConfiguration } from './api-configuration.model';
 import { GraphqlNodesResponse } from './graphql-query.model';
 
@@ -27,6 +28,7 @@ export interface ReferenceData {
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
+  aggregations?: Connection<Aggregation>;
 }
 
 /** Model for reference data graphql query response */

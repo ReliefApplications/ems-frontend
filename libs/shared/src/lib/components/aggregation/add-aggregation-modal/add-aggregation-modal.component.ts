@@ -110,7 +110,7 @@ export class AddAggregationModalComponent
       this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
         query: GET_REFERENCE_DATA_AGGREGATIONS,
         variables: {
-          resource: this.referenceData?.id,
+          referenceData: this.referenceData?.id,
         },
       });
     }
