@@ -318,10 +318,13 @@ export class SummaryCardSettingsComponent
   private getCustomAggregation(): void {
     if (!this.aggregation || !this.resource?.id) return;
     this.aggregationService
-      .aggregationDataQuery(this.resource.id, this.aggregation.id || '')
-      ?.subscribe((res) => {
-        if (res.data?.recordsAggregation) {
-          this.customAggregation = res.data.recordsAggregation;
+      .aggregationDataQuery({
+        resource: this.resource.id,
+        aggregation: this.aggregation.id || '',
+      })
+      ?.subscribe(({ data }: any) => {
+        if (data.recordsAggregation) {
+          this.customAggregation = data.recordsAggregation;
           // @TODO: Figure out fields' types from aggregation
           this.fields = this.customAggregation.items[0]
             ? Object.keys(this.customAggregation.items[0]).map((f) => ({

@@ -244,6 +244,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       disableClose: true,
       data: {
         resource: this.resource,
+        referenceData: this.referenceData,
         aggregation: this.aggregation,
       },
     });
@@ -252,11 +253,16 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         this.aggregationService
           .editAggregation(this.aggregation, value, {
             resource: this.resource?.id,
+            referenceData: this.referenceData?.id,
           })
           .pipe(takeUntil(this.destroy$))
           .subscribe(({ data }) => {
             if (data?.editAggregation) {
-              this.getResource(this.resource?.id as string);
+              if (this.resource) {
+                this.getResource(this.resource?.id as string);
+              } else {
+                this.getReferenceData(this.referenceData?.id as string);
+              }
             }
           });
       }
