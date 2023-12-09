@@ -205,8 +205,14 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+        hasAggregations:
+          get(
+            this.resource ? this.resource : this.referenceData,
+            'aggregations.totalCount',
+            0
+          ) > 0, // check if at least one existing aggregation
         resource: this.resource,
+        referenceData: this.referenceData,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

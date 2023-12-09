@@ -170,18 +170,21 @@ export class AggregationService {
    * @param value the value of the aggregation
    * @param options operation options
    * @param options.resource resource the aggregation is attached to ( optional )
+   * @param options.referenceData reference data the aggregation is attached to ( optional )
    * @returns Mutation observable
    */
   public addAggregation(
     value: Aggregation,
     options: {
       resource?: string;
+      referenceData?: string;
     }
   ) {
     return this.apollo.mutate<AddAggregationMutationResponse>({
       mutation: ADD_AGGREGATION,
       variables: {
         resource: options.resource,
+        referenceData: options.referenceData,
         aggregation: value,
       },
     });

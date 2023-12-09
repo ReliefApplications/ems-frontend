@@ -8,6 +8,7 @@ import { Resource } from '../../../models/resource.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '../../../models/metadata.model';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /**
  * Main component of Aggregation builder.
@@ -25,7 +26,9 @@ export class AggregationBuilderComponent
   /** Aggregation reactive form group */
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
   /** Current resource */
-  @Input() resource!: Resource;
+  @Input() resource?: Resource;
+  /** Current reference data */
+  @Input() referenceData?: ReferenceData;
   /** Loading indicator */
   public loading = true;
   /** Available fields */
@@ -135,21 +138,23 @@ export class AggregationBuilderComponent
    * Get the filter fields needed for the current resource
    */
   private setFilterFields(): void {
-    this.queryBuilder
-      .getFilterFields({
-        name: this.resource.queryName as string,
-      })
-      .then((filterFields: Metadata[]) => {
-        this.filterFields.next(filterFields);
-        // On first load we update the selected filter fields from this function
-        // As the getFilterFields request takes time to complete
-        if (!this.selectedFilterFields.value.length) {
-          const currentFilterFields = filterFields.filter((mfi) =>
-            this.selectedFields.value.find((si) => si.name === mfi.name)
-          );
-          this.selectedFilterFields.next(currentFilterFields);
-        }
-      });
+    if (this.resource) {
+      this.queryBuilder
+        .getFilterFields({
+          name: this.resource.queryName as string,
+        })
+        .then((filterFields: Metadata[]) => {
+          this.filterFields.next(filterFields);
+          // On first load we update the selected filter fields from this function
+          // As the getFilterFields request takes time to complete
+          if (!this.selectedFilterFields.value.length) {
+            const currentFilterFields = filterFields.filter((mfi) =>
+              this.selectedFields.value.find((si) => si.name === mfi.name)
+            );
+            this.selectedFilterFields.next(currentFilterFields);
+          }
+        });
+    }
   }
 
   /**
@@ -165,17 +170,20 @@ export class AggregationBuilderComponent
    * Updates fields depending on selected form.
    */
   private updateFields(): void {
-    const fields = this.queryBuilder
-      .getFields(this.resource.queryName as string)
-      .filter(
-        (field: any) =>
-          !(
-            field.name.includes('_id') &&
-            (field.type.name === 'ID' ||
-              (field.type?.kind === 'LIST' && field.type.ofType.name === 'ID'))
-          )
-      );
-    this.fields.next(fields);
+    if (this.resource) {
+      const fields = this.queryBuilder
+        .getFields(this.resource.queryName as string)
+        .filter(
+          (field: any) =>
+            !(
+              field.name.includes('_id') &&
+              (field.type.name === 'ID' ||
+                (field.type?.kind === 'LIST' &&
+                  field.type.ofType.name === 'ID'))
+            )
+        );
+      this.fields.next(fields);
+    }
   }
 
   /**
@@ -185,33 +193,35 @@ export class AggregationBuilderComponent
    */
   private updateSelectedAndMetaFields(fieldsNames: string[]): void {
     if (fieldsNames && fieldsNames.length) {
-      const currentFields = this.fields.value;
-      const selectedFields = fieldsNames.map((x: string) => {
-        const field = { ...currentFields.find((y) => x === y.name) };
-        if (field.type?.kind !== 'SCALAR') {
-          field.fields = this.queryBuilder.deconfineFields(
-            field.type,
-            new Set()
-              .add(this.resource.name)
-              .add(field.type.name ?? field.type.ofType.name)
-          );
-        }
-        return field;
-      });
+      if (this.resource) {
+        const currentFields = this.fields.value;
+        const selectedFields = fieldsNames.map((x: string) => {
+          const field = { ...currentFields.find((y) => x === y.name) };
+          if (field.type?.kind !== 'SCALAR') {
+            field.fields = this.queryBuilder.deconfineFields(
+              field.type,
+              new Set()
+                .add((this.resource as Resource).name)
+                .add(field.type.name ?? field.type.ofType.name)
+            );
+          }
+          return field;
+        });
 
-      const currentFilterFields = this.filterFields.value.filter((x) =>
-        selectedFields.find((y) => y.name === x.name)
-      );
-      this.selectedFilterFields.next(currentFilterFields);
+        const currentFilterFields = this.filterFields.value.filter((x) =>
+          selectedFields.find((y) => y.name === x.name)
+        );
+        this.selectedFilterFields.next(currentFilterFields);
 
-      this.selectedFields.next(selectedFields);
+        this.selectedFields.next(selectedFields);
 
-      this.mappingFields.next(
-        this.aggregationBuilder.fieldsAfter(
-          selectedFields,
-          this.aggregationForm.get('pipeline')?.value
-        )
-      );
+        this.mappingFields.next(
+          this.aggregationBuilder.fieldsAfter(
+            selectedFields,
+            this.aggregationForm.get('pipeline')?.value
+          )
+        );
+      }
     } else {
       this.selectedFields.next([]);
       this.selectedFilterFields.next([]);

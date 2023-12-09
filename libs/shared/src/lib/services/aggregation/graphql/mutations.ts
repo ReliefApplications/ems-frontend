@@ -2,8 +2,16 @@ import { gql } from 'apollo-angular';
 
 /** Graphql request for adding a new aggregation with a given type */
 export const ADD_AGGREGATION = gql`
-  mutation addAggregation($resource: ID, $aggregation: AggregationInputType!) {
-    addAggregation(resource: $resource, aggregation: $aggregation) {
+  mutation addAggregation(
+    $resource: ID
+    $referenceData: ID
+    $aggregation: AggregationInputType!
+  ) {
+    addAggregation(
+      resource: $resource
+      referenceData: $referenceData
+      aggregation: $aggregation
+    ) {
       id
       name
       sourceFields

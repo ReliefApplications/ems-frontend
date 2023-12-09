@@ -55,7 +55,7 @@
       ></shared-resource-select>
     </div>
   </div>
-  <ng-container *ngIf="resource">
+  <ng-container *ngIf="resource || referenceData">
     <!-- Aggregation -->
     <ng-container *ngIf="formGroup.value.chart.aggregationId">
       <div *ngIf="aggregation" uiFormFieldDirective>
