@@ -236,7 +236,9 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value && this.aggregation) {
         this.aggregationService
-          .editAggregation(this.aggregation, value, this.resource?.id)
+          .editAggregation(this.aggregation, value, {
+            resource: this.resource?.id,
+          })
           .pipe(takeUntil(this.destroy$))
           .subscribe(({ data }) => {
             if (data?.editAggregation) {

@@ -143,22 +143,22 @@ export class AggregationService {
    *
    * @param aggregation aggregation to edit
    * @param value new value of the aggregation
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param form form the aggregation is attached to ( optional )
+   * @param options operation options
+   * @param options.resource resource the aggregation is attached to ( optional )
    * @returns Mutation observable
    */
   public editAggregation(
     aggregation: Aggregation,
     value: Aggregation,
-    resource?: string,
-    form?: string
+    options: {
+      resource?: string;
+    }
   ) {
     return this.apollo.mutate<EditAggregationMutationResponse>({
       mutation: EDIT_AGGREGATION,
       variables: {
         id: aggregation.id,
-        resource,
-        form,
+        resource: options.resource,
         aggregation: value,
       },
     });
@@ -168,16 +168,20 @@ export class AggregationService {
    * Create a new aggregation
    *
    * @param value the value of the aggregation
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param form form the aggregation is attached to ( optional )
+   * @param options operation options
+   * @param options.resource resource the aggregation is attached to ( optional )
    * @returns Mutation observable
    */
-  public addAggregation(value: Aggregation, resource?: string, form?: string) {
+  public addAggregation(
+    value: Aggregation,
+    options: {
+      resource?: string;
+    }
+  ) {
     return this.apollo.mutate<AddAggregationMutationResponse>({
       mutation: ADD_AGGREGATION,
       variables: {
-        resource,
-        form,
+        resource: options.resource,
         aggregation: value,
       },
     });
@@ -187,20 +191,20 @@ export class AggregationService {
    * Delete an aggregation
    *
    * @param aggregation aggregation to edit
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param form form the aggregation is attached to ( optional )
+   * @param options operation options
+   * @param options.resource resource the aggregation is attached to ( optional )
    * @returns Mutation observable
    */
   public deleteAggregation(
     aggregation: Aggregation,
-    resource?: string,
-    form?: string
+    options: {
+      resource?: string;
+    }
   ) {
     return this.apollo.mutate<DeleteAggregationMutationResponse>({
       mutation: DELETE_AGGREGATION,
       variables: {
-        resource,
-        form,
+        resource: options.resource,
         id: aggregation.id,
       },
     });

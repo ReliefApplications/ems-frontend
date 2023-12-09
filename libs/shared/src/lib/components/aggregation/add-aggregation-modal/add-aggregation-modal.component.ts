@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Form } from '../../../models/form.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import {
   Resource,
@@ -28,7 +27,6 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
  */
 interface DialogData {
   hasAggregations: boolean;
-  form?: Form;
   resource?: Resource;
 }
 
@@ -56,7 +54,6 @@ export class AddAggregationModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  private form?: Form;
   private resource?: Resource;
   public hasAggregations = false;
   public nextStep = false;
@@ -88,7 +85,6 @@ export class AddAggregationModalComponent
   ) {
     super();
     this.hasAggregations = data.hasAggregations;
-    this.form = data.form;
     this.resource = data.resource;
   }
 
@@ -130,7 +126,7 @@ export class AddAggregationModalComponent
       .subscribe((aggregation: any) => {
         if (aggregation) {
           this.aggregationService
-            .addAggregation(aggregation, this.resource?.id, this.form?.id)
+            .addAggregation(aggregation, { resource: this.resource?.id })
             .subscribe(({ data }) => {
               if (data?.addAggregation) {
                 this.dialogRef.close(data.addAggregation as any);
