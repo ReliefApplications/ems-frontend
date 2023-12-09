@@ -9,13 +9,11 @@ import {
   ConfirmService,
   UnsubscribeComponent,
   ResourcesQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   TableSort,

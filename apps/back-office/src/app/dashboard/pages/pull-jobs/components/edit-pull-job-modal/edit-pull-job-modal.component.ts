@@ -15,6 +15,8 @@ import {
   FormQueryResponse,
   FormsQueryResponse,
   StatusOptionsComponent,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -31,10 +33,6 @@ import {
   distinctUntilChanged,
 } from 'rxjs';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../../utils/update-queries';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
