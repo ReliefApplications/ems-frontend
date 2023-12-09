@@ -40,6 +40,7 @@ export const GET_REFERENCE_DATA = gql`
       type
       fields
       valueField
+      graphQLTypeName
     }
   }
 `;

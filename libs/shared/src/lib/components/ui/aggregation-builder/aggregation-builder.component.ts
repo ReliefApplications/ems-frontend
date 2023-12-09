@@ -183,6 +183,19 @@ export class AggregationBuilderComponent
             )
         );
       this.fields.next(fields);
+    } else if (this.referenceData) {
+      const fields = this.queryBuilder
+        .getFields(this.referenceData.graphQLTypeName as string)
+        .filter(
+          (field: any) =>
+            !(
+              field.name.includes('_id') &&
+              (field.type.name === 'ID' ||
+                (field.type?.kind === 'LIST' &&
+                  field.type.ofType.name === 'ID'))
+            )
+        );
+      this.fields.next(fields);
     }
   }
 
@@ -193,7 +206,7 @@ export class AggregationBuilderComponent
    */
   private updateSelectedAndMetaFields(fieldsNames: string[]): void {
     if (fieldsNames && fieldsNames.length) {
-      if (this.resource) {
+      if (this.resource || this.referenceData) {
         const currentFields = this.fields.value;
         const selectedFields = fieldsNames.map((x: string) => {
           const field = { ...currentFields.find((y) => x === y.name) };
@@ -201,7 +214,9 @@ export class AggregationBuilderComponent
             field.fields = this.queryBuilder.deconfineFields(
               field.type,
               new Set()
-                .add((this.resource as Resource).name)
+                .add(
+                  this.resource ? this.resource.name : this.referenceData?.name
+                )
                 .add(field.type.name ?? field.type.ofType.name)
             );
           }

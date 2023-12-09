@@ -16,6 +16,7 @@ export interface ReferenceData {
   modifiedAt?: string;
   type?: referenceDataType;
   apiConfiguration?: ApiConfiguration;
+  graphQLTypeName?: string;
   query?: string;
   fields?: { name: string; type: string }[];
   valueField?: string;
