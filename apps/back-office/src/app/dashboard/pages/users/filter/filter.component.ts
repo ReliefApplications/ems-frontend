@@ -50,7 +50,7 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
   expandedFilter!: TemplateRef<any>;
 
   public form = this.fb.group({
-    roleFilter: [null],
+    role: [null],
   });
   public show = false;
 
@@ -81,7 +81,23 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    * @param value Value to be emitted.
    */
   private emitFilter(value: any): void {
-    this.filter.emit(value);
+    console.log(value);
+    const filters: any[] = [];
+    if (value.search) {
+      filters.push({
+        field: 'name',
+        operator: 'contains',
+        value: value.search,
+      });
+    }
+    if (value.role) {
+      filters.push({ field: 'roles', operator: 'eq', value: value.role });
+    }
+    const filter = {
+      logic: 'and',
+      filters,
+    };
+    this.filter.emit(filter);
   }
 
   /**

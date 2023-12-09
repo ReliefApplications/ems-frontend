@@ -69,6 +69,11 @@ export interface UsersQueryResponse {
   users: User[];
 }
 
+/** Query response for users using cursor */
+export interface UsersNodeQueryResponse {
+  users: GraphqlNodesResponse<User>;
+}
+
 /** Model for add users graphql mutation response */
 export interface AddUsersMutationResponse {
   addUsers: User[];

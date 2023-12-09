@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { GET_USERS, GET_ROLES } from './graphql/queries';
 import { ADD_USERS, DELETE_USERS } from './graphql/mutations';
@@ -11,15 +11,25 @@ import {
   RolesQueryResponse,
   UnsubscribeComponent,
   User,
-  UsersQueryResponse,
+  UsersNodeQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { SnackbarService } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
-import { uniqBy } from 'lodash';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { ApolloQueryResult } from '@apollo/client';
+
+/** Default items per page for pagination. */
+const ITEMS_PER_PAGE = 10;
 
 /**
  * Component which will show all the user in the app.
@@ -39,8 +49,6 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
   public loading = true;
   /** All users */
   public users = new Array<User>();
-  /** Filtered users */
-  public filteredUsers = new Array<User>();
   /** Back-office roles */
   public roles: Role[] = [];
   /** Table columns */
@@ -54,10 +62,22 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
   ];
   /** Users selection */
   public selection = new SelectionModel<User>(true, []);
-  /** Filter on role */
-  public roleFilter = '';
-  /** Search text */
-  private searchText = '';
+  /** Cached users */
+  public cachedUsers: User[] = [];
+  /** Page info */
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: '',
+  };
+  /** Applied filters */
+  public filter: CompositeFilterDescriptor = {
+    filters: [],
+    logic: 'and',
+  };
+  /** Users query */
+  private usersQuery!: QueryRef<UsersNodeQueryResponse>;
 
   /**
    * Component which will show all the user in the app.
@@ -88,66 +108,38 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
 
   /** Load the users */
   ngOnInit(): void {
+    this.usersQuery = this.apollo.watchQuery<UsersNodeQueryResponse>({
+      query: GET_USERS,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        afterCursor: null,
+        filter: this.filter,
+      },
+    });
     this.apollo
-      .watchQuery<UsersQueryResponse>({
-        query: GET_USERS,
+      .watchQuery<RolesQueryResponse>({
+        query: GET_ROLES,
       })
-      .valueChanges.subscribe(({ data }) => {
+      .valueChanges.subscribe(({ data, loading }) => {
+        this.roles = data.roles;
+        this.loading = loading;
+      });
+    this.usersQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
         this.loading = true;
-        this.users = data.users;
-        this.filterPredicate();
-        this.apollo
-          .watchQuery<RolesQueryResponse>({
-            query: GET_ROLES,
-          })
-          .valueChanges.subscribe(({ data, loading }) => {
-            this.roles = data.roles;
-            this.loading = loading;
-          });
+        this.updateValues(data, loading);
       });
   }
 
   /**
-   * Apply the filters to the list
+   * Filters users and updates table.
    *
-   * @param event event value
+   * @param filter filter event.
    */
-  applyFilter(event: any): void {
-    if (event.roleFilter) {
-      this.roleFilter = event.roleFilter;
-    } else {
-      this.roleFilter = '';
-    }
-    if (event.search) {
-      this.searchText = event.search.toLowerCase();
-    } else {
-      this.searchText = '';
-    }
-    this.filterPredicate();
-  }
-
-  /**
-   * Filter current user list by search and role
-   */
-  private filterPredicate() {
-    this.filteredUsers = this.users.filter(
-      (data: any) =>
-        (this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 &&
-            !!data.name &&
-            data.name.toLowerCase().includes(this.searchText.trim())) ||
-          (!!data.username &&
-            data.username.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.roleFilter.trim().toLowerCase().length === 0 ||
-          (this.roleFilter.trim().toLowerCase().length > 0 &&
-            !!data.roles &&
-            data.roles.length > 0 &&
-            data.roles.filter((r: any) =>
-              r.title
-                .toLowerCase()
-                .includes(this.roleFilter.trim().toLowerCase())
-            ).length > 0))
-    );
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.fetchUsers(true);
   }
 
   /**
@@ -158,7 +150,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(InviteUsersModalComponent, {
       data: {
         roles: this.roles,
-        users: this.filteredUsers,
+        users: this.users,
         downloadPath: 'download/invite',
         uploadPath: 'upload/invite',
       },
@@ -185,11 +177,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
                     this.translate.instant('components.users.onInvite.singular')
                   );
                 }
-                this.users = uniqBy(
-                  [...(data?.addUsers || []), ...this.users],
-                  'username'
-                );
-                this.filterPredicate();
+                this.fetchUsers(true);
               } else {
                 if (value.length > 1) {
                   this.snackBar.openSnackBar(
@@ -292,8 +280,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
                       )
                     );
                   }
-                  this.users = this.users.filter((u) => !ids.includes(u.id));
-                  this.filteredUsers = this.users;
+                  this.fetchUsers(true);
                 } else {
                   if (ids.length > 1) {
                     this.snackBar.openSnackBar(
@@ -337,7 +324,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
    */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.filteredUsers.length;
+    const numRows = this.users.length;
     return numSelected === numRows;
   }
 
@@ -348,7 +335,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected()
       ? this.selection.clear()
-      : this.filteredUsers.forEach((row) => this.selection.select(row));
+      : this.users.forEach((row) => this.selection.select(row));
   }
 
   /**
@@ -376,5 +363,77 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
       type,
       this.selection.selected.map((x) => x.id || '').filter((x) => x !== '')
     );
+  }
+
+  /**
+   * Handles page event.
+   *
+   * @param e page event.
+   */
+  onPage(e: UIPageChangeEvent): void {
+    const cachedData = handleTablePageEvent(e, this.pageInfo, this.cachedUsers);
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.users = cachedData;
+    } else {
+      this.fetchUsers();
+    }
+  }
+
+  /**
+   * Update users query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchUsers(refetch?: boolean): void {
+    this.loading = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
+    };
+    const cachedValues: UsersNodeQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_USERS,
+      variables
+    );
+    if (refetch) {
+      this.cachedUsers = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        // Rebuild the query
+        this.usersQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.usersQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results: ApolloQueryResult<UsersNodeQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
+    }
+  }
+
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(data: UsersNodeQueryResponse, loading: boolean): void {
+    const mappedValues = data.users.edges.map((x) => x.node);
+    this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
+    this.pageInfo.length = data.users.totalCount;
+    this.pageInfo.endCursor = data.users.pageInfo.endCursor;
+    this.users = this.cachedUsers.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.loading = loading;
   }
 }

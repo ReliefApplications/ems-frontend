@@ -69,7 +69,6 @@ export class ApplicationUsersComponent
     const dialogRef = this.dialog.open(InviteUsersModalComponent, {
       data: {
         roles: this.roles,
-        users: [],
         downloadPath: this.applicationService
           ? this.applicationService.usersDownloadPath
           : 'download/invite',

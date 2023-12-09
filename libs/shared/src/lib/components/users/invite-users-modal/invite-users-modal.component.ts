@@ -1,7 +1,7 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
-import { Role, User } from '../../../models/user.model';
+import { Role } from '../../../models/user.model';
 import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DownloadService } from '../../../services/download/download.service';
@@ -24,7 +24,6 @@ import { DialogModule } from '@oort-front/ui';
 /** Model fot the input data */
 interface DialogData {
   roles: Role[];
-  users: User[];
   positionAttributeCategories?: PositionAttributeCategory[];
   uploadPath: string;
   downloadPath: string;
@@ -102,14 +101,10 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
    * Opens a modal to invite a new user.
    */
   async onAdd(): Promise<void> {
-    const invitedUsers = this.gridData.data.map((x) => x.email);
     const { AddUserComponent } = await import('../add-user/add-user.component');
     const dialogRef = this.dialog.open(AddUserComponent, {
       data: {
         roles: this.data.roles,
-        users: this.data.users.filter(
-          (x) => !invitedUsers.includes(x.username)
-        ),
         ...(this.data.positionAttributeCategories && {
           positionAttributeCategories: this.data.positionAttributeCategories,
         }),

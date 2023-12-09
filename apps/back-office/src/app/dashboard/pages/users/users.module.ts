@@ -8,6 +8,7 @@ import {
   CheckboxModule,
   IconModule,
   MenuModule,
+  PaginatorModule,
   TableModule,
   TooltipModule,
 } from '@oort-front/ui';
@@ -29,6 +30,7 @@ import { SkeletonTableModule } from '@oort-front/shared';
     IconModule,
     SkeletonTableModule,
     TooltipModule,
+    PaginatorModule,
   ],
   exports: [UsersComponent],
 })

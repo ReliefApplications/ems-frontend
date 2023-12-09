@@ -13,16 +13,7 @@
             [placeholder]="'common.placeholder.email' | translate"
             #emailInput
             formControlName="email"
-            [uiAutocomplete]="auto"
           />
-          <ui-autocomplete #auto>
-            <ui-option
-              *ngFor="let user of filteredUsers | async"
-              [value]="user.username"
-            >
-              {{ user.username }}
-            </ui-option>
-          </ui-autocomplete>
         </div>
         <div uiFormFieldDirective>
           <label>{{
