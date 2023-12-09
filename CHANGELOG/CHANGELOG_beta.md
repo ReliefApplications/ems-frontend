@@ -1,3 +1,10 @@
+# [2.3.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0...v2.3.0-beta.1) (2023-12-09)
+
+
+### Features
+
+* allow text & summary card widgets to use record edition when using resource & layout ([#2134](https://github.com/ReliefApplications/ems-frontend/issues/2134)) ([a0f0ca0](https://github.com/ReliefApplications/ems-frontend/commit/a0f0ca0be44bb0c4e908d8317f08abe835592ff8))
+
 # [2.2.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2023-12-08)
 
 
