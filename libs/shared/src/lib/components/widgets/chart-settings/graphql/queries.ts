@@ -31,6 +31,19 @@ export const GET_RESOURCE = gql`
   }
 `;
 
+/** Get reference data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+      valueField
+    }
+  }
+`;
+
 /** Graphql request to get resource metadata */
 export const GET_RESOURCE_METADATA = gql`
   query GetResourceMetadata($id: ID!) {

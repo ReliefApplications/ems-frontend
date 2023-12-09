@@ -5,9 +5,13 @@ import {
   Resource,
   ResourceQueryResponse,
 } from '../../../../models/resource.model';
-import { GET_RESOURCE } from '../graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
 import { CHART_TYPES } from '../constants';
 import { Aggregation } from '../../../../models/aggregation.model';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../../models/reference-data.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
@@ -32,7 +36,9 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   /** Available chart types */
   public types = CHART_TYPES;
   /** Current resource */
-  public resource?: Resource;
+  public resource: Resource | null = null;
+  /** Current reference data */
+  public referenceData: ReferenceData | null = null;
   /** Current aggregation */
   public aggregation?: Aggregation;
   /** Available fields */
@@ -75,11 +81,29 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.getResource(value);
-        this.formGroup.get('chart.aggregationId')?.setValue(null);
+        if (value) {
+          this.formGroup.get('chart.aggregationId')?.setValue(null);
+          this.getResource(value);
+        } else {
+          this.resource = null;
+        }
       });
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
+    }
+    this.formGroup
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup.get('chart.aggregationId')?.setValue(null);
+          this.getReferenceData(value);
+        } else {
+          this.referenceData = null;
+        }
+      });
+    if (this.formGroup.value.referenceData) {
+      this.getReferenceData(this.formGroup.value.referenceData);
     }
   }
 
@@ -105,6 +129,31 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           this.aggregation = this.resource.aggregations.edges[0].node;
           this.setAvailableSeriesFields();
         }
+      });
+  }
+
+  /**
+   * Get reference data by id
+   *
+   * @param id reference data id
+   */
+  private getReferenceData(id: string): void {
+    // const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id,
+          // aggregationIds: aggregationId ? [aggregationId] : null,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.referenceData = data.referenceData;
+        // if (aggregationId && this.resource.aggregations?.edges[0]) {
+        //   this.aggregation = this.resource.aggregations.edges[0].node;
+        //   this.setAvailableSeriesFields();
+        // }
       });
   }
 
