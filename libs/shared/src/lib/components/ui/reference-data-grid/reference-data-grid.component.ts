@@ -28,6 +28,8 @@ export class ReferenceDataGridComponent implements OnInit {
   public loadingSettings = true;
   /** If the grid records are loading */
   public loadingRecords = true;
+  /** Data for the gridData */
+  private data: any[] = [];
 
   ngOnInit(): void {
     if (this.settings && this.settings.refDataCards) {
@@ -47,7 +49,6 @@ export class ReferenceDataGridComponent implements OnInit {
           canSee: true,
         })
       );
-      console.log(this.fields);
       this.setGridData();
       this.loadingSettings = false;
     }
@@ -77,7 +78,7 @@ export class ReferenceDataGridComponent implements OnInit {
    * Set grid data with the cards values
    */
   private setGridData(): void {
-    const data = this.cards.map((card: CardT) => {
+    this.data = this.cards.map((card: CardT) => {
       const rawValue = card.rawValue;
       const values: any = {};
       for (const key in rawValue) {
@@ -90,13 +91,25 @@ export class ReferenceDataGridComponent implements OnInit {
       return cardData;
     });
     this.gridData = {
-      data: data.slice(0, 10),
+      data: this.data.slice(0, this.pageSize),
       total: this.cards.length,
     };
     this.loadingRecords = false;
   }
 
+  /**
+   * Detects pagination events and update the items loaded.
+   *
+   * @param event Page change event.
+   */
   public onPageChange(event: PageChangeEvent): void {
-    console.log(event);
+    this.skip = event.skip;
+    this.pageSize = event.take;
+    const startIndex = event.skip;
+    const endIndex = startIndex + event.take;
+    this.gridData = {
+      data: this.data.slice(startIndex, endIndex),
+      total: this.data.length,
+    };
   }
 }
