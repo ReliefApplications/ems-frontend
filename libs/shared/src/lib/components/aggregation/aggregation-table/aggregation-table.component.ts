@@ -101,6 +101,10 @@ export class AggregationTableComponent
         if (!this.allAggregations.find((x) => x.id === value.id)) {
           this.allAggregations.push(value);
         }
+        this.resource?.aggregations?.edges?.push({
+          node: value,
+          cursor: value.id,
+        });
         this.selectedAggregations?.setValue(
           this.selectedAggregations?.value.concat(value.id)
         );

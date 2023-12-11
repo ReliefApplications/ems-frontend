@@ -117,6 +117,10 @@ export class LayoutTableComponent
         if (!this.allLayouts.find((x) => x.id === value.id)) {
           this.allLayouts.push(value);
         }
+        this.resource?.layouts?.edges?.push({
+          node: value,
+          cursor: value.id,
+        });
         this.selectedLayouts?.setValue(
           this.selectedLayouts?.value.concat(value.id)
         );
