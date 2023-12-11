@@ -4,7 +4,6 @@ import {
   EventEmitter,
   Injector,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   ViewEncapsulation,
@@ -32,7 +31,7 @@ import { ApplicationRoutingService } from './services/application-routing.servic
 })
 export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Application Id */
   @Input()
@@ -184,9 +183,5 @@ export class AppWidgetComponent
       default:
         return 'dashboard';
     }
-  }
-
-  ngOnDestroy(): void {
-    sessionStorage.removeItem('currentPath');
   }
 }
