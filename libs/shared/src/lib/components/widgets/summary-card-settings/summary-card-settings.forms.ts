@@ -56,6 +56,12 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       usePadding: new FormControl(
         get<boolean>(configuration, 'widgetDisplay.usePadding', true)
       ),
+      hideExportButton: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.hideExportButton', false)
+      ),
+      hideGridCardButtons: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.hideGridCardButtons', false)
+      ),
     }
   );
 

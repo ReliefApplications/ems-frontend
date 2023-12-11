@@ -136,11 +136,21 @@
               'models.widget.display.searchable' | translate
             }}</ng-container>
           </ui-toggle>
-          <ui-toggle>
+          <ui-toggle
+            [formControl]="
+              $any(widgetFormGroup.get('widgetDisplay.hideExportButton'))
+            "
+          >
             <ng-container ngProjectAs="label">Hide export button</ng-container>
           </ui-toggle>
-          <ui-toggle>
-            <ng-container ngProjectAs="label">Hide view as card/grid buttons</ng-container>
+          <ui-toggle
+            [formControl]="
+              $any(widgetFormGroup.get('widgetDisplay.hideGridCardButtons'))
+            "
+          >
+            <ng-container ngProjectAs="label"
+              >Hide view as card/grid buttons</ng-container
+            >
           </ui-toggle>
           <div>
             <p class="font-medium mt-0 mb-0.5">
