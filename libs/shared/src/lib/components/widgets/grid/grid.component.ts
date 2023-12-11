@@ -209,7 +209,8 @@ export class GridWidgetComponent
 
       if (aggregations.length > 0) {
         this.aggregationService
-          .getAggregations(this.settings.resource, {
+          .getAggregations({
+            resource: this.settings.resource,
             ids: aggregations,
             first: aggregations.length,
           })

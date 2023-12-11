@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 
 /**
@@ -16,4 +16,11 @@ import { SafeHtml } from '@angular/platform-browser';
 export class HtmlWidgetContentComponent {
   @Input() html: SafeHtml = '';
   @Input() style?: string;
+
+  /**
+   * HTML Widget content component
+   *
+   * @param {ElementRef} el Element reference
+   */
+  constructor(public el: ElementRef) {}
 }

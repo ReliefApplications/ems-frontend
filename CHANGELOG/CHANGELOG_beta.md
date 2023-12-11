@@ -1,3 +1,36 @@
+# [2.3.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.1...v2.3.0-beta.2) (2023-12-11)
+
+
+### Bug Fixes
+
+* put Accept headers in graphql module instead of auth-interceptor ([4ba7456](https://github.com/ReliefApplications/ems-frontend/commit/4ba74563471b2a0c5808e7f0719df595dd383f5d))
+
+
+### Features
+
+* allow reference data to be used in charts ([#2148](https://github.com/ReliefApplications/ems-frontend/issues/2148)) ([6adf1d1](https://github.com/ReliefApplications/ems-frontend/commit/6adf1d1a6e2f88e92a61576f8b7db007be6ff49d)), closes [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346)
+
+# [2.3.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0...v2.3.0-beta.1) (2023-12-09)
+
+
+### Features
+
+* allow text & summary card widgets to use record edition when using resource & layout ([#2134](https://github.com/ReliefApplications/ems-frontend/issues/2134)) ([a0f0ca0](https://github.com/ReliefApplications/ems-frontend/commit/a0f0ca0be44bb0c4e908d8317f08abe835592ff8))
+
+# [2.2.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2023-12-08)
+
+
+### Bug Fixes
+
+* prevent aggregation fields to be fetched before query builder is ready ([#2139](https://github.com/ReliefApplications/ems-frontend/issues/2139)) ([3bee583](https://github.com/ReliefApplications/ems-frontend/commit/3bee5837c221a799d9e479e91cab0131afb3c259))
+* toggle of archived records would create incorrect list ([#2132](https://github.com/ReliefApplications/ems-frontend/issues/2132)) ([f1abf81](https://github.com/ReliefApplications/ems-frontend/commit/f1abf811189f67841a8770ac5e6cc35af0bf745c))
+
+
+### Features
+
+* add filter input & output in app-widget ([4d94cef](https://github.com/ReliefApplications/ems-frontend/commit/4d94cefd8718f0b382679e2d0fc79e6242bb49e7))
+* allow fields from ref data linked to a resource to be used  ([#1575](https://github.com/ReliefApplications/ems-frontend/issues/1575)) ([cb8b30c](https://github.com/ReliefApplications/ems-frontend/commit/cb8b30ca36074c1544bf3d95796a6553f1de1b55))
+
 # [2.2.0-beta.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.14...v2.2.0-beta.15) (2023-12-07)
 
 

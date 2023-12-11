@@ -28,14 +28,34 @@
       </ui-select-menu>
     </div>
   </ng-container>
-  <div uiFormFieldDirective>
-    <label>{{ 'common.resource.one' | translate }}</label>
-    <shared-resource-select
-      formControlName="resource"
-      [selectedElements]="[resource]"
-    ></shared-resource-select>
+  <div class="flex-1 flex-col">
+    <!-- Reference data selection  -->
+    <div uiFormFieldDirective class="flex-1" *ngIf="!formGroup.value.resource">
+      <label>{{ 'common.referenceData.one' | translate }}</label>
+      <shared-reference-data-select
+        formControlName="referenceData"
+        [selectedElements]="[referenceData]"
+      ></shared-reference-data-select>
+    </div>
+    <ui-divider
+      class="max-w-xs m-auto"
+      [text]="'common.or' | translate"
+      *ngIf="!formGroup.value.resource && !formGroup.value.referenceData"
+    ></ui-divider>
+    <!-- Resource selection -->
+    <div
+      uiFormFieldDirective
+      class="flex-1"
+      *ngIf="!formGroup.value.referenceData"
+    >
+      <label>{{ 'models.resource.select' | translate }}</label>
+      <shared-resource-select
+        formControlName="resource"
+        [selectedElements]="[resource]"
+      ></shared-resource-select>
+    </div>
   </div>
-  <ng-container *ngIf="resource">
+  <ng-container *ngIf="resource || referenceData">
     <!-- Aggregation -->
     <ng-container *ngIf="formGroup.value.chart.aggregationId">
       <div *ngIf="aggregation" uiFormFieldDirective>

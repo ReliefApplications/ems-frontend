@@ -260,13 +260,7 @@ export class SummaryCardComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.onPage({
-          pageSize: DEFAULT_PAGE_SIZE,
-          skip: 0,
-          previousPageIndex: 0,
-          pageIndex: 0,
-          totalItems: 0,
-        });
+        this.refresh();
       });
   }
 
@@ -763,6 +757,19 @@ export class SummaryCardComponent
         this.pageInfo.skip + this.pageInfo.pageSize
       );
     }
+  }
+
+  /**
+   * Refresh view
+   */
+  public refresh() {
+    this.onPage({
+      pageSize: DEFAULT_PAGE_SIZE,
+      skip: 0,
+      previousPageIndex: 0,
+      pageIndex: 0,
+      totalItems: 0,
+    });
   }
 
   /**
