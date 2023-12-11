@@ -1,11 +1,7 @@
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
-import { GET_RESOURCES, GET_RESOURCE_BY_ID } from './graphql/queries';
+import { Validators, FormBuilder } from '@angular/forms';
+import { GET_RESOURCE_BY_ID } from './graphql/queries';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,17 +14,14 @@ import {
   SelectMenuModule,
   ChipModule,
   FormWrapperModule,
-  GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
 import {
+  Form,
   ResourceQueryResponse,
-  ResourcesQueryResponse,
-} from '@oort-front/safe';
-
-/** Default items per query, for pagination */
-const ITEMS_PER_PAGE = 10;
+  ResourceSelectComponent,
+} from '@oort-front/shared';
 
 /**
  * Add form component (modal)
@@ -42,7 +35,6 @@ const ITEMS_PER_PAGE = 10;
     FormWrapperModule,
     ToggleModule,
     TranslateModule,
-    GraphQLSelectModule,
     DialogModule,
     TooltipModule,
     RadioModule,
@@ -51,42 +43,50 @@ const ITEMS_PER_PAGE = 10;
     SelectMenuModule,
     FormWrapperModule,
     ChipModule,
+    ResourceSelectComponent,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
   styleUrls: ['./add-form-modal.component.scss'],
 })
 export class AddFormModalComponent implements OnInit {
-  // === REACTIVE FORM ===
-  public form!: UntypedFormGroup;
+  /** Form group */
+  public form = this.fb.group({
+    name: ['', Validators.required],
+    newResource: this.fb.nonNullable.control(true),
+    resource: [null],
+    inheritsTemplate: this.fb.nonNullable.control(false),
+    template: null,
+  });
+  /** Available templates */
+  public templates: Form[] = [];
 
-  // === DATA ===
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-
-  public templates: any[] = [];
+  /**
+   * Selected template
+   *
+   * @returns {Form} selected template
+   */
+  get selectedTemplate() {
+    return this.templates.find(
+      (x) => x.id === this.form.get('template')?.value
+    );
+  }
 
   /**
    * Add form modal
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}
 
   /** Load the resources and build the form. */
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: ['', Validators.required],
-      newResource: [true],
-      resource: [null],
-      inheritsTemplate: [false],
-      template: [null],
-    });
     this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
       if (value) {
         this.form.get('resource')?.clearValidators();
@@ -115,46 +115,18 @@ export class AddFormModalComponent implements OnInit {
         this.form.get('template')?.updateValueAndValidity();
       });
 
-    this.form.get('resource')?.valueChanges.subscribe((value: string) => {
-      if (value) {
-        this.getResource(value);
-      } else {
-        this.templates = [];
-      }
-      this.form.patchValue({
-        template: null,
+    this.form
+      .get('resource')
+      ?.valueChanges.subscribe((value: string | null) => {
+        if (value) {
+          this.getResource(value);
+        } else {
+          this.templates = [];
+        }
+        this.form.patchValue({
+          template: null,
+        });
       });
-    });
-
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    const variables = this.resourcesQuery.variables;
-    this.resourcesQuery.refetch({
-      ...variables,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
   }
 
   /**

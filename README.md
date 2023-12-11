@@ -37,7 +37,7 @@ The project is seperated into three sub-projects:
 - web-widgets, an application to genereate the web components
 
 One library exists:
-- safe, a library for common ui / capacity, shared with other projects
+- shared, a library for common ui / capacity, shared with other projects
 
 Library changes should automatically be detected when serving the other projects.
 
@@ -53,26 +53,6 @@ For prod, replace `azure-dev` with `azure-prod`.
 For uat, replace `azure-dev` with `azure-uat`.
 
 The compiled applications can be found there in ./dist/apps/ folder.
-
-<!-- # Bundle Analysis
-
-First, install globally the bundle analyzer:
-```
-npm install -g webpack-bundle-analyzer
-```
-
-You can then run, for both back, front office and web widgets projects:
-```
-ng build --stats-json
-```
-This will create an additional find stats.json in your ./dist folder of each project.
-
-
-Finally, run:
-```
-webpack-bundle-analyzer ./dist/<project-name>/stats.json
-```
-and your browser will pop up the page at localhost:8888. -->
 
 # Useful commands
 
@@ -123,10 +103,10 @@ Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all
 
 ## Analyze bundle
 
-Start by building apps adding `--stats-json` flag. For example:
+Start by building apps adding `--statsJson` flag. For example:
 
 ```
-npx nx run back-office:build -- --stats-json
+npx nx run back-office:build --statsJson
 ```
 
 Then, run `webpack-bundle-analyzer` command to see the tree of your bundles:

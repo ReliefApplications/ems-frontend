@@ -48,10 +48,12 @@ export class SnackbarService {
    * @param snackBar SnackbarComponent component reference
    */
   private updateView(snackBar: ComponentRef<SnackbarComponent>) {
+    // not sure everything is needed there
     const appendBody = this.shadowDom ?? this.document.body;
     this.app.attachView(snackBar.hostView);
     this.app.tick();
     appendBody.appendChild(snackBar.location.nativeElement);
+    snackBar.changeDetectorRef.detectChanges();
   }
 
   /**

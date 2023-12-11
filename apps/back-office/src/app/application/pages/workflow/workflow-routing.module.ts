@@ -34,7 +34,7 @@ const routes: Routes = [
             path: '',
             loadChildren: () =>
               import('../form/form.module').then((m) => m.FormModule),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'builder/:id',
@@ -42,7 +42,7 @@ const routes: Routes = [
               import(
                 '../../../dashboard/pages/form-builder/form-builder.module'
               ).then((m) => m.FormBuilderModule),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
         ],
       },

@@ -23,7 +23,7 @@ import {
   IconModule,
   ButtonModule
 } from '@oort-front/ui';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 import { FormsModule } from '@angular/forms';
 
 describe('ApiConfigurationsComponent', () => {
@@ -48,7 +48,7 @@ describe('ApiConfigurationsComponent', () => {
         PaginatorModule,
         ErrorMessageModule,
         DialgModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         FormsModule,
         TranslateModule.forRoot({
           loader: {

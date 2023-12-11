@@ -1,0 +1,7 @@
+:host ::ng-deep {
+  kendo-grid {
+    .k-grid-aria-root {
+      border-radius: inherit;
+    }
+  }
+}

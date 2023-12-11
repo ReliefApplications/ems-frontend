@@ -1,5 +1,5 @@
-<div class="page-header">
-  <h1 class="page-title">
+<div class="flex justify-start items-center mb-5">
+  <h1 class="overflow-hidden whitespace-nowrap text-ellipsis mb-0">
     {{
       'common.updateObject'
         | translate : { name: 'common.record.one' | translate }
@@ -7,5 +7,5 @@
   </h1>
 </div>
 <ng-container *ngIf="!loading && form">
-  <safe-form [form]="form" [record]="record"></safe-form>
+  <shared-form [form]="form" [record]="record"></shared-form>
 </ng-container>

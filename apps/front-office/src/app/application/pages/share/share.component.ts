@@ -5,8 +5,8 @@ import { Apollo } from 'apollo-angular';
 import {
   Dashboard,
   DashboardQueryResponse,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { GET_SHARE_DASHBOARD_BY_ID } from './graphql/queries';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -19,7 +19,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './share.component.html',
   styleUrls: ['./share.component.scss'],
 })
-export class ShareComponent extends SafeUnsubscribeComponent implements OnInit {
+export class ShareComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Share URL access component.
    *

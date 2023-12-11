@@ -1,18 +1,14 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
-  SafeUnsubscribeComponent,
-  SafeWorkflowService,
+  UnsubscribeComponent,
+  WorkflowService,
   FormsQueryResponse,
   AddFormMutationResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { ADD_FORM } from '../../graphql/mutations';
@@ -31,23 +27,23 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss'],
 })
-export class AddStepComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class AddStepComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
   public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === REACTIVE FORM ===
-  public stepForm: UntypedFormGroup = new UntypedFormGroup({});
+  public stepForm = this.fb.group({
+    type: ['', Validators.required],
+    content: [''],
+  });
   public stage = 1;
 
   /**
    * Add step page component
    *
    * @param route Angular activated route
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param apollo Apollo service
@@ -55,20 +51,16 @@ export class AddStepComponent
    */
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private apollo: Apollo,
-    private workflowService: SafeWorkflowService
+    private workflowService: WorkflowService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.stepForm = this.formBuilder.group({
-      type: ['', Validators.required],
-      content: [''],
-    });
     this.stepForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.stepForm.controls.content;
       if (type === ContentType.form) {
@@ -172,7 +164,7 @@ export class AddStepComponent
             next: ({ data }) => {
               if (data) {
                 const { id } = data.addForm;
-                this.stepForm.controls.content.setValue(id);
+                this.stepForm.controls.content.setValue(id as string);
                 this.onSubmit();
               }
             },

@@ -19,6 +19,7 @@ const routes: Routes = [
         loadChildren: () =>
           import('./redirect/redirect.module').then((m) => m.RedirectModule),
         pathMatch: 'full',
+        // canActivate: [AccessGuard],
       },
       {
         path: ':id',
@@ -26,10 +27,16 @@ const routes: Routes = [
           import('./application/application.module').then(
             (m) => m.ApplicationModule
           ),
+        // canActivate: [AccessGuard],
       },
     ],
     canActivate: [AuthGuard, AccessGuard],
   },
+  // {
+  //   path: '**',
+  //   redirectTo: '',
+  //   pathMatch: 'full',
+  // },
 ];
 
 /**

@@ -14,13 +14,13 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { DialogModule } from '@angular/cdk/dialog';
-import { SafeLayoutModule } from '@oort-front/safe';
-import { SafeApplicationToolbarModule } from '@oort-front/safe';
-import { SafeNavbarModule } from '@oort-front/safe';
+import { LayoutModule } from '@oort-front/shared';
+import { ApplicationToolbarModule } from '@oort-front/shared';
+import { NavbarModule } from '@oort-front/shared';
 
 describe('ApplicationComponent', () => {
   let component: ApplicationComponent;
@@ -54,9 +54,9 @@ describe('ApplicationComponent', () => {
         ApolloTestingModule,
         HttpClientTestingModule,
         DialogModule,
-        SafeLayoutModule,
-        SafeApplicationToolbarModule,
-        SafeNavbarModule,
+        LayoutModule,
+        ApplicationToolbarModule,
+        NavbarModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

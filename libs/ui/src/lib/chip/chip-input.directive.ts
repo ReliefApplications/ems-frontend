@@ -23,7 +23,7 @@ export class ChipInputDirective implements AfterContentInit, OnDestroy {
 
   @Output() chipTokenEnd = new EventEmitter<string>();
 
-  private inputListener!: any;
+  private inputListener!: () => void;
   private wrapperDivClasses = [
     'border-solid',
     'rounded-md',

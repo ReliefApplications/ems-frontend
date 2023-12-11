@@ -8,7 +8,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { SafeEmptyModule } from '@oort-front/safe';
+import { EmptyModule } from '@oort-front/shared';
 import { ButtonModule } from '@oort-front/ui';
 
 describe('CalculatedFieldsTabComponent', () => {
@@ -21,7 +21,7 @@ describe('CalculatedFieldsTabComponent', () => {
       imports: [
         ApolloTestingModule,
         DialogModule,
-        SafeEmptyModule,
+        EmptyModule,
         ButtonModule,
         TranslateModule.forRoot({
           loader: {

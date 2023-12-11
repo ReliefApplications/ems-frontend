@@ -1,0 +1,100 @@
+<ui-dialog [size]="'medium'">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.form.draftRecords.select' | translate }}
+    </h3>
+  </ng-container>
+
+  <ng-container ngProjectAs="content" *ngIf="!loading; else loadingTmpl">
+    <ng-container *ngIf="!empty; else emptyTmpl">
+      <!-- Table container -->
+      <div class="mt-4 overflow-x-hidden shadow-2lg">
+        <!-- Table scroll container -->
+        <div class="overflow-x-auto">
+          <table cdk-table uiTableWrapper [dataSource]="draftRecords">
+            <ng-container cdkColumnDef="createdAt">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
+                <span class="headerTitle">
+                  {{ 'components.form.draftRecords.creationDate' | translate }}
+                </span>
+              </th>
+              <td
+                uiCell
+                *cdkCellDef="let element"
+                class="!text-gray-900 !font-medium max-w-[30vw]"
+              >
+                {{ element.createdAt | sharedDate : 'short' }}
+              </td>
+            </ng-container>
+
+            <ng-container cdkColumnDef="actions">
+              <th uiCellHeader *cdkHeaderCellDef scope="col"></th>
+              <td uiCell class="flex justify-end" *cdkCellDef="let element">
+                <div class="flex items-center">
+                  <ui-button
+                    [isIcon]="true"
+                    icon="refresh"
+                    variant="primary"
+                    [disabled]="loading"
+                    uiTooltip=" {{
+                      'components.form.draftRecords.load' | translate
+                    }}"
+                    (click)="onClose(element)"
+                  >
+                  </ui-button>
+                  <ui-button
+                    [isIcon]="true"
+                    icon="visibility"
+                    variant="primary"
+                    [disabled]="loading"
+                    uiTooltip=" {{
+                      'components.form.draftRecords.preview' | translate
+                    }}"
+                    (click)="onPreview(element)"
+                  >
+                  </ui-button>
+                  <ui-button
+                    [isIcon]="true"
+                    icon="delete"
+                    variant="danger"
+                    [disabled]="loading"
+                    uiTooltip=" {{
+                      'components.form.draftRecords.delete' | translate
+                    }}"
+                    (click)="onDelete(element)"
+                  >
+                  </ui-button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+            <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+  </ng-container>
+</ui-dialog>
+
+<!-- Empty indicator -->
+<ng-template #emptyTmpl>
+  <shared-empty
+    [title]="'components.form.draftRecords.noDrafts' | translate"
+  ></shared-empty>
+</ng-template>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <shared-skeleton-table
+    class="my-4 mx-0 w-full"
+    [columns]="displayedColumnsForSkeleton"
+  >
+  </shared-skeleton-table>
+</ng-template>

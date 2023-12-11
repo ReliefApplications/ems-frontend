@@ -1,0 +1,16 @@
+<div class="shared-content-choice">
+  <div
+    class="shared-content-type shadow-2lg"
+    *ngFor="let type of contentTypes"
+    (click)="onSelect(type.value)"
+    [style.background]="type.color"
+  >
+    <img [src]="type.img" />
+    <span>{{ type.name | titlecase }}</span>
+    <div
+      *ngIf="type.value === selected"
+      [style.background]="type.focusColor"
+      class="shared-type-selected"
+    ></div>
+  </div>
+</div>

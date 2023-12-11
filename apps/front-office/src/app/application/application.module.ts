@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationComponent } from './application.component';
 import { ApplicationRoutingModule } from './application-routing.module';
-import { SafeLayoutModule, SafeNavbarModule } from '@oort-front/safe';
+import {
+  LayoutModule,
+  EmptyModule,
+  NavbarModule,
+  DashboardFilterIconComponent,
+} from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -13,23 +18,24 @@ import {
 } from '@oort-front/ui';
 
 /**
- * Front-Office Dashboard module.
+ * Front-Office Application module.
  * Accessible if user is authenticated.
- * Main Navigation.
  */
 @NgModule({
   declarations: [ApplicationComponent],
   imports: [
     CommonModule,
-    SafeLayoutModule,
+    LayoutModule,
     ApplicationRoutingModule,
+    EmptyModule,
     TranslateModule,
-    SafeNavbarModule,
+    NavbarModule,
     MenuModule,
     IconModule,
     ButtonModule,
     SpinnerModule,
     TooltipModule,
+    DashboardFilterIconComponent,
   ],
 })
 export class ApplicationModule {}

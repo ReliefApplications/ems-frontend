@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/oort/oort.prod';
+import { theme } from '../themes/lift/lift.prod';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
@@ -28,7 +28,6 @@ export const environment: Environment = {
   backOfficeUri: 'https://lift.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
-  esriApiKey: '',
   theme,
   availableWidgets: [
     'donut-chart',
@@ -40,5 +39,6 @@ export const environment: Environment = {
     'text',
     'map',
     'summaryCard',
+    'tabs',
   ],
 };

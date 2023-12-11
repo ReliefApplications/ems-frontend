@@ -6,7 +6,7 @@ import {
   RolesQueryResponse,
   User,
   UsersQueryResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 
 /**
  * Component which will show all the user in the app.

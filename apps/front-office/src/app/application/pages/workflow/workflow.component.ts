@@ -5,13 +5,14 @@ import {
   ContentType,
   Step,
   Workflow,
-  SafeUnsubscribeComponent,
+  UnsubscribeComponent,
   WorkflowQueryResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { Subscription } from 'rxjs';
 
 /**
  * Workflow page.
@@ -21,10 +22,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   /** Loading state of the page */
   public loading = true;
   /** Current workflow id */
@@ -35,6 +33,8 @@ export class WorkflowComponent
   public steps: Step[] = [];
   /** Current step */
   public activeStep = 0;
+  /** Subscription to change step events */
+  private changeStepSubscription!: Subscription;
 
   /**
    * Workflow page.
@@ -69,7 +69,8 @@ export class WorkflowComponent
             id: this.id,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             if (data.workflow) {
               this.workflow = data.workflow;
@@ -128,13 +129,24 @@ export class WorkflowComponent
    * @param elementRef Ref to the stepper
    */
   onActivate(elementRef: any): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
-        if (event) {
-          this.goToNextStep();
+    if (elementRef.changeStep) {
+      this.changeStepSubscription = elementRef.changeStep.subscribe(
+        (event: any) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
         }
-      });
+      );
     }
+  }
+
+  /**
+   * Clear subscriptions set from the router-outlet
+   */
+  clearSubscriptions() {
+    this.changeStepSubscription?.unsubscribe();
   }
 
   /**
@@ -177,6 +189,29 @@ export class WorkflowComponent
       this.snackBar.openSnackBar(
         this.translate.instant(
           'models.workflow.notifications.cannotGoToNextStep'
+        ),
+        { error: true }
+      );
+    }
+  }
+
+  /**
+   * Navigates to the previous step if possible and change selected step / index consequently
+   */
+  private goToPreviousStep(): void {
+    if (this.activeStep > 0) {
+      this.onOpenStep(this.activeStep - 1);
+    } else if (this.activeStep === 0) {
+      this.onOpenStep(this.steps.length - 1);
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[this.steps.length - 1].name,
+        })
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToPreviousStep'
         ),
         { error: true }
       );
