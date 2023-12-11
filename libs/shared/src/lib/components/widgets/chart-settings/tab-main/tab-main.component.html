@@ -34,6 +34,16 @@
       formControlName="resource"
       [selectedElements]="[resource]"
     ></shared-resource-select>
+    <ui-button
+      *ngIf="formGroup.value.resource"
+      uiSuffix
+      size="small"
+      [isIcon]="true"
+      (click)="clearFormField('resource', $event)"
+      icon="close"
+      variant="danger"
+      [uiTooltip]="'common.remove' | translate"
+    ></ui-button>
   </div>
   <ng-container *ngIf="resource">
     <!-- Aggregation -->

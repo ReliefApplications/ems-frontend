@@ -10,6 +10,7 @@ import {
   FormWrapperModule,
   SelectMenuModule,
   IconModule,
+  ButtonModule
 } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
 import { ResourceSelectComponent } from '../../../controls/public-api';
@@ -32,6 +33,7 @@ import { ResourceSelectComponent } from '../../../controls/public-api';
     AggregationTableModule,
     SelectMenuModule,
     ResourceSelectComponent,
+    ButtonModule,
   ],
   exports: [TabMainComponent],
 })
