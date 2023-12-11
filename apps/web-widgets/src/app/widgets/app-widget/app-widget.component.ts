@@ -18,7 +18,7 @@ import {
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
-import { ApplicationRoutingService } from './services/application-routing.service';
+import { Router } from '@angular/router';
 
 /**
  * Application as Web Widget.
@@ -37,15 +37,13 @@ export class AppWidgetComponent
   @Input()
   set id(value: string) {
     // Get the current path
-    const currentPath = this.applicationRoutingService.currentPath;
+    const currentPath = this.router.url;
     if (currentPath.includes(value)) {
       // Path includes the id
-      this.applicationRoutingService.navigateByUrlAndNormalizeUrl(
-        `${currentPath}`
-      );
+      this.router.navigateByUrl(currentPath);
     } else {
       // Else, navigate to homepage of the app
-      this.applicationRoutingService.navigateAndNormalizeUrl(`./${value}`);
+      this.router.navigate([`./${value}`]);
     }
   }
 
@@ -60,7 +58,7 @@ export class AppWidgetComponent
   /** Navigation path */
   @Input()
   set path(value: string) {
-    this.applicationRoutingService.navigateAndNormalizeUrl(value);
+    this.router.navigate([value]);
   }
 
   /** Pass new value to the filter */
@@ -86,7 +84,7 @@ export class AppWidgetComponent
    * @param injector angular application injector
    * @param contextService Shared context service
    * @param applicationService Shared application service
-   * @param applicationRoutingService Shared application routing service
+   * @param router Angular router service
    * @param shadowDomService Shared shadow dom service
    */
   constructor(
@@ -94,7 +92,7 @@ export class AppWidgetComponent
     injector: Injector,
     private contextService: ContextService,
     private applicationService: ApplicationService,
-    private applicationRoutingService: ApplicationRoutingService,
+    private router: Router,
     private shadowDomService: ShadowDomService
   ) {
     super(el, injector);

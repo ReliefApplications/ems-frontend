@@ -11,7 +11,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
@@ -29,7 +29,6 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 import { cloneDeep } from 'lodash';
-import { ApplicationRoutingService } from '../../../services/application-routing.service';
 
 /**
  * Dashboard page.
@@ -86,7 +85,7 @@ export class DashboardComponent
    *
    * @param apollo Apollo client
    * @param route Angular current page
-   * @param applicationRoutingService Shared application routing service
+   * @param router Angular router service
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
@@ -100,7 +99,7 @@ export class DashboardComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private applicationRoutingService: ApplicationRoutingService,
+    private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private dashboardService: DashboardService,
@@ -119,10 +118,10 @@ export class DashboardComponent
    */
   ngOnInit(): void {
     /** Listen to router events navigation end, to get last version of params & queryParams. */
-    this.applicationRoutingService.events
+    this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        startWith(this.applicationRoutingService.router), // initialize
+        startWith(this.router), // initialize
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
@@ -232,14 +231,12 @@ export class DashboardComponent
             }),
             { error: true }
           );
-          this.applicationRoutingService.navigateAndNormalizeUrl(
-            '/applications'
-          );
+          this.router.navigate(['/applications']);
         }
       })
       .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
-        this.applicationRoutingService.navigateAndNormalizeUrl('/applications');
+        this.router.navigate(['/applications']);
       });
   }
 
