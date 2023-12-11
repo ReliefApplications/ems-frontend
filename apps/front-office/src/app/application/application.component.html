@@ -11,7 +11,7 @@
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
   [menuOpened]="!hideMenu"
-  [profileRoute]="'/' + appID + '/profile'"
+  [profileRoute]="appID ? '/' + appID + '/profile' : '/profile'"
   (openApplication)="onOpenApplication($event)"
 ></shared-layout>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
