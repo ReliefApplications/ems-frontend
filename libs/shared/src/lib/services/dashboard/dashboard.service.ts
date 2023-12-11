@@ -159,7 +159,6 @@ export class DashboardService {
    *
    * @param page Page to copy content from
    * @param context The type of context to be added to the dashboard
-   * @param id The id of the context to be added to the dashboard
    * @returns The newly created dashboard
    */
   public createDashboardWithContext(page: string, context: any) {

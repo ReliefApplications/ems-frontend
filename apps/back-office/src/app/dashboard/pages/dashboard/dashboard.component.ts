@@ -299,7 +299,7 @@ export class DashboardComponent
                     );
                   });
                 }
-              // queryId
+                // queryId
               } else if (queryId) {
                 template = templates?.find((d) => {
                   // If templates use reference data
