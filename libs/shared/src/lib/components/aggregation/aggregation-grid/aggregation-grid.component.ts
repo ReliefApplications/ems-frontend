@@ -102,7 +102,11 @@ export class AggregationGridComponent
       .subscribe(() => {
         this.getAggregationData();
       });
-    this.getAggregationFields();
+    this.queryBuilder.isDoneLoading$.subscribe((doneLoading) => {
+      if (doneLoading) {
+        this.getAggregationFields();
+      }
+    });
   }
 
   ngOnChanges(): void {

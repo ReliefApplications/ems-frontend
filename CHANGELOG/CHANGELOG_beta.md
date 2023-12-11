@@ -1,3 +1,36 @@
+# [2.3.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0...v2.3.0-beta.1) (2023-12-09)
+
+
+### Features
+
+* allow text & summary card widgets to use record edition when using resource & layout ([#2134](https://github.com/ReliefApplications/ems-frontend/issues/2134)) ([a0f0ca0](https://github.com/ReliefApplications/ems-frontend/commit/a0f0ca0be44bb0c4e908d8317f08abe835592ff8))
+
+# [2.2.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2023-12-08)
+
+
+### Bug Fixes
+
+* prevent aggregation fields to be fetched before query builder is ready ([#2139](https://github.com/ReliefApplications/ems-frontend/issues/2139)) ([3bee583](https://github.com/ReliefApplications/ems-frontend/commit/3bee5837c221a799d9e479e91cab0131afb3c259))
+* toggle of archived records would create incorrect list ([#2132](https://github.com/ReliefApplications/ems-frontend/issues/2132)) ([f1abf81](https://github.com/ReliefApplications/ems-frontend/commit/f1abf811189f67841a8770ac5e6cc35af0bf745c))
+
+
+### Features
+
+* add filter input & output in app-widget ([4d94cef](https://github.com/ReliefApplications/ems-frontend/commit/4d94cefd8718f0b382679e2d0fc79e6242bb49e7))
+* allow fields from ref data linked to a resource to be used  ([#1575](https://github.com/ReliefApplications/ems-frontend/issues/1575)) ([cb8b30c](https://github.com/ReliefApplications/ems-frontend/commit/cb8b30ca36074c1544bf3d95796a6553f1de1b55))
+
+# [2.2.0-beta.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.14...v2.2.0-beta.15) (2023-12-07)
+
+
+### Bug Fixes
+
+* editing widgets could sometimes scroll to top of dashboard ([#2135](https://github.com/ReliefApplications/ems-frontend/issues/2135)) ([da6dd93](https://github.com/ReliefApplications/ems-frontend/commit/da6dd93460ada1446233159ed5988484bd2f9530))
+* few issues with templating & reference data ([c504e92](https://github.com/ReliefApplications/ems-frontend/commit/c504e922e1f73a6f8030b1388f066b6853a0dd4c))
+* incorrectly sized columns ([#2127](https://github.com/ReliefApplications/ems-frontend/issues/2127)) ([c0be7b1](https://github.com/ReliefApplications/ems-frontend/commit/c0be7b1e30ac4b71f659b97845caf2f79adf8edd))
+* pull jobs would not be editable ([cc9d685](https://github.com/ReliefApplications/ems-frontend/commit/cc9d685c3620450a38bd3f0cbbaf38d697dcac6d))
+* remove code information in url after login ([bcfb603](https://github.com/ReliefApplications/ems-frontend/commit/bcfb603b2a74a03437ae6a236451de22c343ca3d))
+* text widget edition would lose widget display configuration ([7f3b18b](https://github.com/ReliefApplications/ems-frontend/commit/7f3b18ba98fded73b0a90681a6019fbc86504707))
+
 # [2.2.0-beta.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.13...v2.2.0-beta.14) (2023-12-05)
 
 

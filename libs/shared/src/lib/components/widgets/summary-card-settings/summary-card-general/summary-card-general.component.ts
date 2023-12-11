@@ -180,7 +180,9 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.aggregation) {
         this.aggregationService
-          .editAggregation(this.aggregation, value, this.resource?.id)
+          .editAggregation(this.aggregation, value, {
+            resource: this.resource?.id,
+          })
           .subscribe(() => {
             if (this.formGroup.get('card.aggregation')) {
               this.formGroup

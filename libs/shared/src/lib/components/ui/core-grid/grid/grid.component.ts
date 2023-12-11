@@ -1157,6 +1157,12 @@ export class GridComponent
     });
     // If aggregation, set the width of the columns here (cannot use layout parameters)
     if (this.useAggregation) {
+      this.columns.forEach((column) =>
+        this.grid?.reorderColumn(
+          column,
+          this.fields.findIndex((field: any) => field.name === column.field)
+        )
+      );
       this.setColumnsWidth();
     }
   }
