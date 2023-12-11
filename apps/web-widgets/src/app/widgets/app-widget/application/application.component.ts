@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   Application,
   ApplicationService,
@@ -8,6 +8,7 @@ import {
 } from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
+import { ApplicationRoutingService } from '../services/application-routing.service';
 
 /**
  * Front-office Application component.
@@ -39,12 +40,12 @@ export class ApplicationComponent
    *
    * @param applicationService Shared application service
    * @param route Angular current route
-   * @param router Angular router
+   * @param applicationRoutingService Shared application routing service
    */
   constructor(
     private applicationService: ApplicationService,
     public route: ActivatedRoute,
-    private router: Router
+    private applicationRoutingService: ApplicationRoutingService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -94,21 +95,26 @@ export class ApplicationComponent
           this.title = application.name || '';
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (location.href.endsWith(application?.id || '') || !firstPage) {
+            if (
+              this.applicationRoutingService.currentPath.endsWith(
+                application?.id || ''
+              ) ||
+              !firstPage
+            ) {
               // If a page is configured
               if (firstPage) {
-                this.router.navigate(
-                  [
-                    `./${firstPage.type}/${
-                      firstPage.type === ContentType.form
-                        ? firstPage.id
-                        : firstPage.content
-                    }`,
-                  ],
+                this.applicationRoutingService.navigateAndNormalizeUrl(
+                  `./${firstPage.type}/${
+                    firstPage.type === ContentType.form
+                      ? firstPage.id
+                      : firstPage.content
+                  }`,
                   { relativeTo: this.route }
                 );
               } else {
-                this.router.navigate(['./'], { relativeTo: this.route });
+                this.applicationRoutingService.navigateAndNormalizeUrl('./', {
+                  relativeTo: this.route,
+                });
               }
             }
           }

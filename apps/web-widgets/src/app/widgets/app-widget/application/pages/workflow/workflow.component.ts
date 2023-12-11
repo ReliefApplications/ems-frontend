@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   ContentType,
   Step,
@@ -12,6 +12,7 @@ import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { ApplicationRoutingService } from '../../../services/application-routing.service';
 
 /**
  * Workflow page.
@@ -39,14 +40,14 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    * @param apollo Apollo client
    * @param route Angular current route
    * @param snackBar Shared snackbar service
-   * @param router Angular router
+   * @param applicationRoutingService Angular applicationRoutingService
    * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private snackBar: SnackbarService,
-    private router: Router,
+    private applicationRoutingService: ApplicationRoutingService,
     private translate: TranslateService
   ) {
     super();
@@ -74,7 +75,9 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
               this.steps = data.workflow.steps || [];
               this.loading = loading;
               if (this.steps.length > 0) {
-                const currentStepId = this.router.url.split('/').pop();
+                const currentStepId = this.applicationRoutingService.currentPath
+                  .split('/')
+                  .pop();
                 // If redirect to the workflow beginning, just go to the firstStep
                 const firstStep = this.steps[0];
                 const firstStepIsForm = firstStep.type === ContentType.form;
@@ -127,13 +130,15 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: any) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
-        }
-      });
+      elementRef.changeStep
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((event: any) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
+        });
     }
   }
 
@@ -147,16 +152,24 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
       const step = this.steps[index];
       this.activeStep = index;
       if (step.type === ContentType.form) {
-        this.router.navigate(['./' + step.type + '/' + step.id], {
-          relativeTo: this.route,
-        });
+        this.applicationRoutingService.navigateAndNormalizeUrl(
+          './' + step.type + '/' + step.id,
+          {
+            relativeTo: this.route,
+          }
+        );
       } else {
-        this.router.navigate(['./' + step.type + '/' + step.content], {
-          relativeTo: this.route,
-        });
+        this.applicationRoutingService.navigateAndNormalizeUrl(
+          './' + step.type + '/' + step.content,
+          {
+            relativeTo: this.route,
+          }
+        );
       }
     } else {
-      this.router.navigate(['./'], { relativeTo: this.route });
+      this.applicationRoutingService.navigateAndNormalizeUrl('./', {
+        relativeTo: this.route,
+      });
     }
   }
 

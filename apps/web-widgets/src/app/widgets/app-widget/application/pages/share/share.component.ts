@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import {
@@ -10,6 +10,7 @@ import {
 import { GET_SHARE_DASHBOARD_BY_ID } from './graphql/queries';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { ApplicationRoutingService } from '../../../services/application-routing.service';
 
 /**
  * Share URL access component.
@@ -23,14 +24,14 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Share URL access component.
    *
-   * @param router Angular shared router service
+   * @param applicationRoutingService Angular shared applicationRoutingService service
    * @param route Angular shared route service
    * @param apollo Apollo client service
    * @param snackBar Shared snackbar service
    * @param translateService Angular Translate service
    */
   constructor(
-    private router: Router,
+    private applicationRoutingService: ApplicationRoutingService,
     private route: ActivatedRoute,
     private apollo: Apollo,
     private snackBar: SnackbarService,
@@ -81,7 +82,7 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
                 { error: true }
               );
             }
-            this.router.navigate([url]);
+            this.applicationRoutingService.navigateAndNormalizeUrl(url);
           });
       });
   }
