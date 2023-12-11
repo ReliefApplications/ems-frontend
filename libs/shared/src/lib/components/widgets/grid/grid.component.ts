@@ -49,6 +49,7 @@ import {
 } from '../../../models/notification.model';
 import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
+import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 
 /** Component for the grid widget */
 @Component({
@@ -64,6 +65,15 @@ export class GridWidgetComponent
   /** Template reference */
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
+  /** Reference to main grid */
+  @ViewChild(CoreGridComponent)
+  coreGridComponent?: CoreGridComponent;
+  /** Reference to aggregation grid */
+  @ViewChild(AggregationGridComponent)
+  aggregationGridComponent?: AggregationGridComponent;
+  /** Reference to reference data grid */
+  @ViewChild(ReferenceDataGridComponent)
+  referenceDataGridComponent?: ReferenceDataGridComponent;
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   /** Data */
@@ -117,10 +127,6 @@ export class GridWidgetComponent
   get floatingButtons() {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
-
-  @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
-  @ViewChild(AggregationGridComponent)
-  aggregationGridComponent?: AggregationGridComponent;
 
   /**
    * Heavy constructor for the grid widget component
@@ -260,6 +266,14 @@ export class GridWidgetComponent
     }
     if (this.aggregationGridComponent) {
       this.aggregationGridComponent.onSortChange([
+        {
+          field: e ? e.field : '',
+          dir: e ? e.order : 'asc',
+        },
+      ]);
+    }
+    if (this.referenceDataGridComponent) {
+      this.referenceDataGridComponent.onSortChange([
         {
           field: e ? e.field : '',
           dir: e ? e.order : 'asc',

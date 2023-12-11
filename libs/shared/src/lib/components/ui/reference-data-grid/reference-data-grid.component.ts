@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CardT } from '../../widgets/summary-card/summary-card.component';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
+import { SortDescriptor } from '@progress/kendo-data-query';
+import { sortBy } from 'lodash';
 
 /**
  * Shared reference data grid component.
@@ -28,8 +30,20 @@ export class ReferenceDataGridComponent implements OnInit {
   public loadingSettings = true;
   /** If the grid records are loading */
   public loadingRecords = true;
+  /** Sort descriptor */
+  public sort: SortDescriptor[] = [];
   /** Data for the gridData */
   private data: any[] = [];
+
+  /** @returns current field used for sorting */
+  get sortField(): string | null {
+    return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].field : null;
+  }
+
+  /** @returns current sorting order */
+  get sortOrder(): string {
+    return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].dir : '';
+  }
 
   ngOnInit(): void {
     if (this.settings && this.settings.refDataCards) {
@@ -90,10 +104,23 @@ export class ReferenceDataGridComponent implements OnInit {
       };
       return cardData;
     });
-    this.gridData = {
-      data: this.data.slice(0, this.pageSize),
-      total: this.cards.length,
-    };
+    const sortField = this.sortField;
+    const sortOrder = this.sortOrder;
+    console.log(sortOrder);
+    if (sortField) {
+      this.gridData = {
+        data: (sortOrder === 'asc'
+          ? sortBy(this.data, sortField)
+          : sortBy(this.data, sortField).reverse()
+        ).slice(0, this.pageSize),
+        total: this.cards.length,
+      };
+    } else {
+      this.gridData = {
+        data: this.data.slice(0, this.pageSize),
+        total: this.cards.length,
+      };
+    }
     this.loadingRecords = false;
   }
 
@@ -107,9 +134,33 @@ export class ReferenceDataGridComponent implements OnInit {
     this.pageSize = event.take;
     const startIndex = event.skip;
     const endIndex = startIndex + event.take;
-    this.gridData = {
-      data: this.data.slice(startIndex, endIndex),
-      total: this.data.length,
-    };
+    const sortField = this.sortField;
+    const sortOrder = this.sortOrder;
+    if (sortField) {
+      this.gridData = {
+        data: (sortOrder === 'asc'
+          ? sortBy(this.data, sortField)
+          : sortBy(this.data, sortField).reverse()
+        ).slice(startIndex, endIndex),
+        total: this.cards.length,
+      };
+    } else {
+      this.gridData = {
+        data: this.data.slice(startIndex, endIndex),
+        total: this.cards.length,
+      };
+    }
+  }
+
+  /**
+   * Detects sort events and update the items loaded.
+   *
+   * @param sort Sort event.
+   */
+  public onSortChange(sort: SortDescriptor[]): void {
+    console.log('sorting');
+    this.sort = sort;
+    this.skip = 0;
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
 }
