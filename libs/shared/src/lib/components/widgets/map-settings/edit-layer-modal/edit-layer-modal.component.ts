@@ -433,7 +433,12 @@ export class EditLayerModalComponent
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
           if (value) {
-            this.getResource();
+            if (this.resource) {
+              this.getResource();
+            }
+            if (this.referenceData) {
+              this.getReferenceData();
+            }
           } else {
             this.aggregation = null;
           }
@@ -532,7 +537,7 @@ export class EditLayerModalComponent
               this.fields.next(
                 this.aggregation
                   ? this.mapLayersService.getAggregationFields(
-                      data.resource,
+                      data.resource.queryName ?? '',
                       this.aggregation
                     )
                   : []
@@ -551,18 +556,36 @@ export class EditLayerModalComponent
     const formValue = this.form.getRawValue();
     const referenceDataId = get(formValue, 'datasource.refData');
     if (referenceDataId) {
+      const aggregationID = get(formValue, 'datasource.aggregation');
       this.apollo
         .query<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: referenceDataId,
+            aggregation: aggregationID ? [aggregationID] : [],
           },
         })
         .subscribe(({ data }) => {
           this.referenceData = data.referenceData;
-          this.fields.next(
-            this.getFieldsFromRefData(this.referenceData?.fields || [])
-          );
+          if (aggregationID) {
+            this.aggregation = get(
+              data,
+              'referenceData.aggregations.edges[0].node',
+              null
+            );
+            this.fields.next(
+              this.aggregation
+                ? this.mapLayersService.getAggregationFields(
+                    data.referenceData.graphQLTypeName ?? '',
+                    this.aggregation
+                  )
+                : []
+            );
+          } else {
+            this.fields.next(
+              this.getFieldsFromRefData(this.referenceData?.fields || [])
+            );
+          }
         });
     }
   }

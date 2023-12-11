@@ -21,7 +21,6 @@ import {
   LayerQueryResponse,
   LayersQueryResponse,
 } from '../../models/layer.model';
-import { Resource } from '../../models/resource.model';
 import { RestService } from '../rest/rest.service';
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 import { AggregationBuilderService } from '../aggregation-builder/aggregation-builder.service';
@@ -196,17 +195,17 @@ export class MapLayersService {
   /**
    * Get fields from aggregation
    *
-   * @param resource A resource
+   * @param queryName query name to get the fields
    * @param aggregation A aggregation
    * @returns aggregation fields
    */
   public getAggregationFields(
-    resource: Resource | null,
+    queryName: string,
     aggregation: Aggregation | null
   ) {
     //@TODO this part should be refactored
     // Get fields
-    const fields = this.getAvailableSeriesFields(resource);
+    const fields = this.getAvailableSeriesFields(queryName);
     const selectedFields = aggregation?.sourceFields
       .map((x: string) => {
         const field = fields.find((y) => x === y.name);
@@ -240,11 +239,11 @@ export class MapLayersService {
   /**
    * Set available series fields, from resource fields and aggregation definition.
    *
-   * @param resource A resource
+   * @param queryName query name to get the fields
    */
-  private getAvailableSeriesFields(resource: Resource | null): any[] {
+  private getAvailableSeriesFields(queryName: string): any[] {
     return this.queryBuilder
-      .getFields(resource?.queryName as string)
+      .getFields(queryName as string)
       .filter(
         (field: any) =>
           !(

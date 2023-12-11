@@ -73,6 +73,8 @@
           *ngIf="!layout && !aggregation"
           [text]="'common.or' | translate"
         ></ui-divider>
+      </div>
+      <div class="flex flex-col gap-8" *ngIf="!layout && !aggregation">
         <h2>{{ 'common.aggregation.one' | translate }}</h2>
         <div class="flex justify-center mt-4">
           <ui-button
