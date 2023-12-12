@@ -225,6 +225,9 @@ export class DashboardComponent
       .subscribe((value) => {
         // reset country code as it's not possible to have country and region selected
         this.countryCode.setValue(value, { emitEvent: false });
+        // In case we switch from country to region
+        // remove previous geographic context country property inside the dashboard object
+        delete this.dashboard?.page?.geographicContext?.country;
         this.onContextChange(value, 'geographic');
       });
     this.countryCode.valueChanges
@@ -232,6 +235,9 @@ export class DashboardComponent
       .subscribe((value) => {
         // reset region code as it's not possible to have country and region selected
         this.regionCode.setValue(value, { emitEvent: false });
+        // In case we switch from region to country
+        // remove previous geographic context region property inside the dashboard object
+        delete this.dashboard?.page?.geographicContext?.region;
         this.onContextChange(value, 'geographic');
       });
   }
@@ -965,9 +971,6 @@ export class DashboardComponent
     value: string | string[],
     geographicType: 'region' | 'country'
   ): void {
-    // In case we switch from region to country
-    // remove previous geographic context property inside the dashboard object
-    delete this.dashboard?.page?.geographicContext;
     const geographicContext: PageGeographicContextType = {
       enabled: true,
       ...(value && { [geographicType]: value }),
