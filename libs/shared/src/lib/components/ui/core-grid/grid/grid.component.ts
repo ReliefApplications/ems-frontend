@@ -13,6 +13,7 @@ import {
   QueryList,
   Renderer2,
   SimpleChanges,
+  TemplateRef,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -37,7 +38,7 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { PopupService } from '@progress/kendo-angular-popup';
+import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
@@ -223,6 +224,8 @@ export class GridComponent
   private closeEditorListener!: any;
   /** A boolean indicating if actions are enabled */
   public hasEnabledActions = false;
+  /** Reference to the column chooser element */
+  private columnChooserRef: PopupRef | null = null;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -296,6 +299,7 @@ export class GridComponent
    * @param snackBar The snackbar service
    * @param el Ref to html element
    * @param document document
+   * @param popupService Kendo popup service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -309,7 +313,8 @@ export class GridComponent
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private el: ElementRef,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private popupService: PopupService
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -518,9 +523,15 @@ export class GridComponent
   /**
    * Toggles the menu for choosing columns
    *
+   * @param anchor button reference to attach the popup to
+   * @param template Template to use for the popup
    * @param showColumnChooser optional parameter to decide of the state of the popup
    */
-  public toggleColumnChooser(showColumnChooser?: boolean) {
+  public toggleColumnChooser(
+    anchor: ElementRef | HTMLElement,
+    template: TemplateRef<{ [Key: string]: unknown }>,
+    showColumnChooser?: boolean
+  ) {
     // Emit column change event
     if (this.showColumnChooser) {
       this.onColumnVisibilityChange();
@@ -529,6 +540,19 @@ export class GridComponent
       this.showColumnChooser = showColumnChooser;
     } else {
       this.showColumnChooser = !this.showColumnChooser;
+    }
+    switch (this.showColumnChooser) {
+      case false:
+        this.columnChooserRef?.close();
+        this.columnChooserRef = null;
+        break;
+      case true:
+        this.columnChooserRef = this.popupService.open({
+          anchor: anchor,
+          content: template,
+          collision: { horizontal: 'fit', vertical: 'fit' },
+        });
+        break;
     }
   }
 
@@ -901,7 +925,9 @@ export class GridComponent
     // Set the width of fixed width columns
     const fixedWidthColumns = this.columns.filter(
       (column) =>
-        this.fields.find((field) => field.name === column.field)?.fixedWidth
+        this.fields.find(
+          (field) => field.name === column.field && !column.hidden
+        )?.fixedWidth
     );
     fixedWidthColumns.forEach(
       (column) =>
@@ -909,7 +935,6 @@ export class GridComponent
           (field) => field.name === column.field
         ).fixedWidth)
     );
-
     /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
     const gridTotalWidth =
       gridElement.offsetWidth -
@@ -918,11 +943,7 @@ export class GridComponent
       12;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
-      (column) =>
-        !column.hidden &&
-        !!column.title &&
-        !column.sticky &&
-        !fixedWidthColumns.includes(column)
+      (column) => !column.hidden && !!column.title && !column.sticky
     );
     // Verify what kind of field is and deal with this logic
     const typesFields: {
@@ -931,9 +952,17 @@ export class GridComponent
       title: string;
     }[] = [];
     this.fields.forEach((field: any) => {
-      const availableFields = availableColumns.filter(
-        (column: any) => column.field === field.name
-      );
+      const availableFields = availableColumns.filter((column: any) => {
+        // To correctly size referenceData columns when hiding / show them
+        if (
+          field.meta.type === 'referenceData' &&
+          field.meta[column.field.split(field.name + '.')[1]]
+        ) {
+          return true;
+        } else {
+          return column.field === field.name;
+        }
+      });
       // should only add items to typesFields if they are available in availableColumns
       if (availableFields.length > 0) {
         typesFields.push({
@@ -974,7 +1003,9 @@ export class GridComponent
               break;
             }
             case 'file': {
-              contentSize = data[type.field][0]?.name?.length || 0;
+              contentSize = data[type.field]
+                ? data[type.field][0]?.name?.length
+                : 0;
               break;
             }
             case 'numeric': {
@@ -1119,10 +1150,20 @@ export class GridComponent
     });
   }
 
-  /** Restore all columns visibility when reset the layout of the grid */
+  /** Restore all columns visibility and size when reset the layout of the grid */
   restoreColumns() {
     this.columns.forEach((column: any) => {
       column.hidden = false;
     });
+    // If aggregation, set the width of the columns here (cannot use layout parameters)
+    if (this.useAggregation) {
+      this.columns.forEach((column) =>
+        this.grid?.reorderColumn(
+          column,
+          this.fields.findIndex((field: any) => field.name === column.field)
+        )
+      );
+      this.setColumnsWidth();
+    }
   }
 }

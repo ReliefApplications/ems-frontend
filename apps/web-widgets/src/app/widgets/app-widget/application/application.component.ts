@@ -31,7 +31,7 @@ export class ApplicationComponent
   public hideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
-  /** Is loading */
+  /** Loading indicator */
   public loading = true;
 
   /**

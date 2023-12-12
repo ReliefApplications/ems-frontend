@@ -55,7 +55,7 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
-import countries from 'assets/countries.json';
+import geographicContext from 'assets/geographic-context-data.json';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -120,38 +120,9 @@ export class DashboardComponent
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
   /** Regions static list for geographic context */
-  public geographicContextRegions = [
-    {
-      code: 'AF',
-      name: 'AFRO',
-    },
-    {
-      code: 'AM',
-      name: 'AMRO',
-    },
-    {
-      code: 'EM',
-      name: 'EMRO',
-    },
-    {
-      code: 'EU',
-      name: 'EURO',
-    },
-    {
-      code: 'SE',
-      name: 'SEARO',
-    },
-    {
-      code: 'WP',
-      name: 'WPRO',
-    },
-    {
-      code: 'HQ',
-      name: 'HQ',
-    },
-  ];
+  public geographicContextRegions = geographicContext.regions;
   /** Countries for geographic context */
-  public geographicContextCountries = countries;
+  public geographicContextCountries = geographicContext.countries;
   /** Geographic context country form control */
   public countryCode = new FormControl<string | undefined>('');
   /** Geographic context region form control */
@@ -622,12 +593,6 @@ export class DashboardComponent
             errors,
             this.translate.instant('common.dashboard.one')
           );
-          if (!errors) {
-            this.dashboardService.openDashboard({
-              ...this.dashboard,
-              structure: this.widgets,
-            });
-          }
         },
         complete: () => (this.loading = false),
       });
@@ -1015,18 +980,16 @@ export class DashboardComponent
   /**
    * Update query based on text search.
    *
-   * @param update values to update in the page geographicContext
-   * @param update.region region selected
-   * @param update.country country selected
+   * @param value value selected
+   * @param geographicType geographic data type
    */
-  public onSearchChangeGeographicContext(update: {
-    region?: string;
-    country?: string;
-  }): void {
+  public onSearchChangeGeographicContext(
+    value: string | string[],
+    geographicType: 'region' | 'country'
+  ): void {
     const geographicContext = {
       ...this.dashboard?.page?.geographicContext,
-      ...(update.region && { region: update.region }),
-      ...(update.country && { country: update.country }),
+      ...(value && { [geographicType]: value }),
     };
     const callback = () => {
       this.dashboard = {

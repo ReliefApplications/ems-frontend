@@ -35,7 +35,7 @@ export const createEditorForm = (id: string, value: any) => {
     wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
   });
 
-  return extendWidgetForm(form, value?.settings?.widgetDisplay, {
+  return extendWidgetForm(form, value.widgetDisplay, {
     usePadding: fb.control(
       get<boolean>(value, 'widgetDisplay.usePadding', true)
     ),
