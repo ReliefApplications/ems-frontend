@@ -189,11 +189,9 @@
       <span *ngIf="dashboard.page?.geographicContext?.enabled">
         <!-- Regions -->
         <div uiFormFieldDirective [outline]="false">
-          <label>{{
-            'components.user.summary.region' | translate
-          }}</label>
+          <label>{{ 'components.user.summary.region' | translate }}</label>
           <ui-select-menu
-            (selectedOption)="onSearchChangeGeographicContext({ region: $any($event) })"
+            (selectedOption)="onSearchChangeGeographicContext($event, 'region')"
             [filterable]="true"
             [formControl]="regionCode"
           >
@@ -207,12 +205,12 @@
         </div>
         <!-- Countries -->
         <div uiFormFieldDirective [outline]="false">
-          <label>{{
-            'components.user.summary.country' | translate
-          }}</label>
-          <ui-select-menu 
+          <label>{{ 'components.user.summary.country' | translate }}</label>
+          <ui-select-menu
             [formControl]="countryCode"
-            (selectedOption)="onSearchChangeGeographicContext({ country: $any($event) })"
+            (selectedOption)="
+              onSearchChangeGeographicContext($event, 'country')
+            "
             [filterable]="true"
           >
             <ui-select-option

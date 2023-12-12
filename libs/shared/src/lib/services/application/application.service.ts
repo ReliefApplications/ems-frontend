@@ -2084,27 +2084,37 @@ export class ApplicationService {
             geographicContext: page.geographicContext,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = {
-                    ...x,
-                    geographicContext: data.editPage.geographicContext,
-                  };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+            if (!errors && data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = {
+                      ...x,
+                      geographicContext: data.editPage.geographicContext,
+                    };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) {
+                callback();
+              }
+            }
+          },
+          error: (errors: any) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+          },
         });
     }
   }
