@@ -8,6 +8,16 @@
           formControlName="referenceData"
           [selectedElements]="[referenceData]"
         ></shared-reference-data-select>
+        <ui-button
+          *ngIf="form.value.referenceData"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('referenceData', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
       </div>
       <ui-divider
         class="max-w-xs m-auto"
@@ -25,6 +35,16 @@
           formControlName="resource"
           [selectedElements]="[resource]"
         ></shared-resource-select>
+        <ui-button
+          *ngIf="form.value.resource"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('resource', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
       </div>
     </div>
 

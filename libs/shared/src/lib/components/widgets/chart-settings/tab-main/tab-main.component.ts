@@ -268,4 +268,18 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       }
     });
   }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.formGroup.get(formField)?.value) {
+      this.formGroup.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
+  }
 }

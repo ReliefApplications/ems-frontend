@@ -144,7 +144,11 @@ export class GridSettingsComponent
           }
           this.getQueryMetaData();
         } else {
+          this.formGroup?.get('layouts')?.setValue([]);
+          this.formGroup?.get('aggregations')?.setValue([]);
+          this.formGroup?.get('template')?.setValue(null);
           this.fields = [];
+          this.resource = null;
         }
 
         // clear sort fields array
