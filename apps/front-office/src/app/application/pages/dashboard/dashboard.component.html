@@ -1,5 +1,17 @@
+<shared-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [isFullScreen]="isFullScreen"
+  [variant]="variant"
+  [closable]="closable"
+></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div [ngClass]="{ 'py-8 px-6 h-full bg-white overflow-auto': isFullScreen }">
+  <shared-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [isFullScreen]="isFullScreen"
+    [variant]="variant"
+    [closable]="closable"
+  ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
@@ -49,16 +61,4 @@
     [options]="dashboard?.gridOptions"
     (changeStep)="changeStep.emit($event)"
   ></shared-widget-grid>
-  <shared-dashboard-filter
-    *ngIf="showFilter && isFullScreen"
-    [isFullScreen]="isFullScreen"
-    [variant]="variant"
-    [closable]="closable"
-  ></shared-dashboard-filter>
 </div>
-<shared-dashboard-filter
-  *ngIf="showFilter && !isFullScreen"
-  [isFullScreen]="isFullScreen"
-  [variant]="variant"
-  [closable]="closable"
-></shared-dashboard-filter>

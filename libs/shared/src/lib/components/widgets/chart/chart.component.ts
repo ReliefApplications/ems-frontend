@@ -152,6 +152,7 @@ export class ChartComponent
   ngOnChanges(changes: SimpleChanges): void {
     const previousDatasource = {
       resource: get(changes, 'settings.previousValue.resource'),
+      referenceData: get(changes, 'settings.previousValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -161,6 +162,7 @@ export class ChartComponent
     };
     const currentDatasource = {
       resource: get(changes, 'settings.currentValue.resource'),
+      referenceData: get(changes, 'settings.currentValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -178,24 +180,30 @@ export class ChartComponent
   /** Loads chart */
   private loadChart(): void {
     this.loading = true;
-    if (this.settings.resource) {
+    if (this.settings.resource || this.settings.referenceData) {
       this.aggregationService
-        .getAggregations(this.settings.resource, {
+        .getAggregations({
+          resource: this.settings.resource,
+          referenceData: this.settings.referenceData,
           ids: [get(this.settings, 'chart.aggregationId', null)],
           first: 1,
         })
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
-            this.dataQuery = this.aggregationService.aggregationDataQuery(
-              this.settings.resource,
-              aggregation.id || '',
-              get(this.settings, 'chart.mapping', null),
-              joinFilters(this.settings.contextFilters, this.selectedFilter),
-              this.settings.at
+            this.dataQuery = this.aggregationService.aggregationDataQuery({
+              referenceData: this.settings.referenceData,
+              resource: this.settings.resource,
+              aggregation: aggregation.id || '',
+              mapping: get(this.settings, 'chart.mapping', null),
+              contextFilters: joinFilters(
+                this.settings.contextFilters,
+                this.selectedFilter
+              ),
+              at: this.settings.at
                 ? this.contextService.atArgumentValue(this.settings.at)
-                : undefined
-            );
+                : undefined,
+            });
             if (this.dataQuery) {
               this.getData();
             } else {
@@ -303,7 +311,11 @@ export class ChartComponent
             ].includes(this.settings.chart.type)
           ) {
             const aggregationData = JSON.parse(
-              JSON.stringify(data.recordsAggregation)
+              JSON.stringify(
+                this.settings.resource
+                  ? data.recordsAggregation
+                  : data.referenceDataAggregation
+              )
             );
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
@@ -340,7 +352,11 @@ export class ChartComponent
               ]);
             }
           } else {
-            this.series.next(data.recordsAggregation);
+            this.series.next(
+              this.settings.resource
+                ? data.recordsAggregation
+                : data.referenceData
+            );
           }
           this.loading = loading;
         }

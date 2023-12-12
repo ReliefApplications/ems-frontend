@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Optional } from '@angular/core';
 import { get } from 'lodash';
-import { CardT } from '../summary-card.component';
+import { CardT, SummaryCardComponent } from '../summary-card.component';
 
 /**
  * Single Item component of Summary card widget.
@@ -24,6 +24,13 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   get usePadding() {
     return get(this.card, 'usePadding') ?? true;
   }
+
+  /**
+   * Single Item component of Summary card widget.
+   *
+   * @param parent Reference to parent summary card component
+   */
+  constructor(@Optional() public parent: SummaryCardComponent) {}
 
   ngOnInit(): void {
     this.setContent();
@@ -49,7 +56,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     } else {
       // Using reference data
       this.fieldsValue = this.card.rawValue;
-      this.setContentFromAggregation();
+      this.styles = [];
     }
   }
 
@@ -57,13 +64,13 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Set content of the card item, querying associated record.
    */
   private async setContentFromLayout(): Promise<void> {
-    await this.getStyles();
+    this.getStyles();
     this.fieldsValue = { ...this.card.record };
     this.fields = this.card.metadata || [];
   }
 
   /** Sets layout style */
-  private async getStyles(): Promise<void> {
+  private getStyles(): void {
     this.styles = get(this.card.layout, 'query.style', []);
   }
 
@@ -78,5 +85,12 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       name: key,
       editor: 'text',
     }));
+  }
+
+  /**
+   * Refresh card
+   */
+  public refresh() {
+    this.parent.refresh();
   }
 }

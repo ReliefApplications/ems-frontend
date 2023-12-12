@@ -1,7 +1,7 @@
 <shared-grid
   [fields]="fields"
   [data]="gridData"
-  [loadingRecords]="loading && loadingSettings"
+  [loadingRecords]="loadingRecords"
   [loadingSettings]="loadingSettings"
   [skip]="skip"
   [pageSize]="pageSize"
@@ -10,8 +10,7 @@
   [filterable]="false"
   [sortable]="false"
   [selectable]="false"
-  [status]="status"
-  [blank]="!resourceId || !aggregation"
+  [blank]="!settings || !cards.length"
   [noLayout]="true"
 >
 </shared-grid>
