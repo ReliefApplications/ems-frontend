@@ -451,7 +451,7 @@ const applyOperations = (html: string): string => {
   );
 
   // To identify and remove span with style elements to avoid breaking calc functions
-  const spanRegex = /<span[^>]*>([^<]+)<\/span>/g;
+  const spanRegex = /<span[^>]*>([\s\S]*?)<\/span>/g;
   const spanElements: string[] = [];
   // Clean HTML don't have span and styles
   const cleanHtml = html.replace(spanRegex, (match, spanContent) => {
