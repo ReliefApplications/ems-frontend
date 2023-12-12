@@ -1833,6 +1833,8 @@
 						}
 					},
 					"dynamic": "Dynamique",
+					"exportable": "Autoriser l'export des cartes",
+					"gridMode": "Peut être affiché en grille",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
 					},
@@ -2246,8 +2248,6 @@
 				"border": "Afficher la bordure du widget",
 				"expand": "Afficher le bouton pour développer le widget",
 				"header": "Afficher l'en-tête du widget",
-				"hideExportButton": "Masquer le bouton d'export",
-				"hideGridCardButtons": "Masquer les boutons afficher en cartes/grilles",
 				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",

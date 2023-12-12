@@ -1820,6 +1820,8 @@
 						}
 					},
 					"dynamic": "Dynamic",
+					"exportable": "Allow export of the cards",
+					"gridMode": "Allow to show as grid",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
 					},
@@ -2232,8 +2234,6 @@
 				"border": "Show widget border",
 				"expand": "Show button to expand widget",
 				"header": "Show widget header",
-				"hideExportButton": "Hide export button",
-				"hideGridCardButtons": "Hide view as card/grid buttons",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",

@@ -114,24 +114,25 @@
     >
       {{ 'components.widget.summaryCard.dataSource' | translate }}
     </ui-button>
+    <ng-container *ngIf="canChangeDisplayMode">
+      <ui-button
+        [isIcon]="true"
+        icon="grid_view"
+        [disabled]="displayMode === 'cards'"
+        (click)="changeDisplayMode('cards')"
+        [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
+      ></ui-button>
+      <ui-button
+        [isIcon]="true"
+        icon="view_list"
+        [disabled]="displayMode === 'grid'"
+        (click)="changeDisplayMode('grid')"
+        [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
+      ></ui-button>
+    </ng-container>
+
     <ui-button
-      *ngIf="!settings.widgetDisplay?.hideGridCardButtons"
-      [isIcon]="true"
-      icon="grid_view"
-      [disabled]="displayMode === 'cards'"
-      (click)="changeDisplayMode('cards')"
-      [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
-    ></ui-button>
-    <ui-button
-      *ngIf="!settings.widgetDisplay?.hideGridCardButtons"
-      [isIcon]="true"
-      icon="view_list"
-      [disabled]="displayMode === 'grid'"
-      (click)="changeDisplayMode('grid')"
-      [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
-    ></ui-button>
-    <ui-button
-      *ngIf="export && displayMode === 'cards'"
+      *ngIf="exportable && displayMode === 'cards'"
       [isIcon]="true"
       icon="get_app"
       class="text-neutral-700"

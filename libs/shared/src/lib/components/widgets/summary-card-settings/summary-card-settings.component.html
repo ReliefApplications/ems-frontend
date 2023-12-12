@@ -138,20 +138,20 @@
           </ui-toggle>
           <ui-toggle
             [formControl]="
-              $any(widgetFormGroup.get('widgetDisplay.hideExportButton'))
+              $any(widgetFormGroup.get('widgetDisplay.exportable'))
             "
           >
             <ng-container ngProjectAs="label">{{
-              'models.widget.display.hideExportButton' | translate
+              'components.widget.settings.summaryCard.exportable' | translate
             }}</ng-container>
           </ui-toggle>
           <ui-toggle
             [formControl]="
-              $any(widgetFormGroup.get('widgetDisplay.hideGridCardButtons'))
+              $any(widgetFormGroup.get('widgetDisplay.gridMode'))
             "
           >
             <ng-container ngProjectAs="label">{{
-              'models.widget.display.hideGridCardButtons' | translate
+              'components.widget.settings.summaryCard.gridMode' | translate
             }}</ng-container>
           </ui-toggle>
           <div>
