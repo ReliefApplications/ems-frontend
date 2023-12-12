@@ -113,19 +113,41 @@
           </ui-select-menu>
         </div>
       </div>
-      <ui-alert class="mb-4"
-        >{{ 'pages.referenceData.fields.help' | translate }}</ui-alert
-      >
+      <ui-alert class="mb-4">{{
+        'pages.referenceData.fields.help' | translate
+      }}</ui-alert>
       <!-- Fields -->
       <kendo-grid *ngIf="!loading" [data]="valueFields" class="rounded-md">
         <kendo-grid-column
           field="name"
           title="{{ 'pages.referenceData.fields.title' | translate }}"
-        ></kendo-grid-column>
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <p *ngIf="currEditingField !== dataItem">
+              {{ dataItem.name }}
+            </p>
+            <kendo-textbox
+              *ngIf="currEditingField === dataItem"
+              [placeholder]="'models.form.field.name' | translate"
+              [formControl]="inlineEditionForm.controls.name"
+            ></kendo-textbox>
+          </ng-template>
+        </kendo-grid-column>
         <kendo-grid-column
           field="type"
           title="{{ 'pages.referenceData.type' | translate }}"
-        ></kendo-grid-column>
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <p *ngIf="currEditingField !== dataItem">
+              {{ dataItem.type }}
+            </p>
+            <kendo-dropdownlist
+              *ngIf="currEditingField === dataItem"
+              [data]="validJsonTypes"
+              [formControl]="inlineEditionForm.controls.type"
+            ></kendo-dropdownlist>
+          </ng-template>
+        </kendo-grid-column>
         <!-- remove button -->
         <kendo-grid-column
           [columnMenu]="false"
@@ -133,14 +155,42 @@
           [resizable]="false"
         >
           <ng-template kendoGridCellTemplate let-dataItem>
-            <button
-              kendoButton
-              class="text-center"
-              icon="delete"
-              [look]="'flat'"
-              (click)="onRemoveField(dataItem)"
-              [uiTooltip]="'common.remove' | translate"
-            ></button>
+            <div [ngClass]="{ hidden: currEditingField === dataItem }">
+              <button
+                kendoButton
+                class="text-center"
+                icon="edit"
+                [look]="'flat'"
+                (click)="toggleInlineEditor(dataItem)"
+                [uiTooltip]="'common.edit' | translate"
+              ></button>
+              <button
+                kendoButton
+                class="text-center"
+                icon="delete"
+                [look]="'flat'"
+                (click)="onRemoveField(dataItem)"
+                [uiTooltip]="'common.remove' | translate"
+              ></button>
+            </div>
+            <div [ngClass]="{ hidden: currEditingField !== dataItem }">
+              <button
+                kendoButton
+                class="text-center"
+                icon="save"
+                [look]="'flat'"
+                (click)="toggleInlineEditor(null)"
+                [uiTooltip]="'common.save' | translate"
+              ></button>
+              <button
+                kendoButton
+                class="text-center"
+                icon="cancel"
+                [look]="'flat'"
+                (click)="currEditingField = null"
+                [uiTooltip]="'common.cancel' | translate"
+              ></button>
+            </div>
           </ng-template>
         </kendo-grid-column>
         <ng-template kendoGridNoRecordsTemplate>
@@ -148,6 +198,15 @@
           <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
         </ng-template>
       </kendo-grid>
+      <!-- Button to add new field -->
+      <button
+        kendoButton
+        class="text-center mt-2"
+        icon="add"
+        (click)="addField()"
+      >
+        {{ 'components.referenceData.fields.add' | translate }}
+      </button>
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex flex-col gap-2">

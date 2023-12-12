@@ -1095,7 +1095,9 @@
 				"select": "******"
 			},
 			"fields": {
-				"ariaLabel": "******"
+				"add": "******",
+				"ariaLabel": "******",
+				"new": "******"
 			},
 			"paginator": {
 				"ariaLabel": "******"

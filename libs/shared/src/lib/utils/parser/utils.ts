@@ -16,6 +16,35 @@ const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp'];
 const PLACEHOLDER_SUFFIX = '}}';
 
 /**
+ * Flattens the fields array, to also include the subfields of objects.
+ *
+ * @param fields Fields to flatten
+ * @param path Current path to the field
+ * @returns The flattened fields array
+ */
+const getFlatFields = (fields: any, path = ''): any => {
+  const flatFields: any = [];
+
+  fields.forEach((field: any) => {
+    flatFields.push({
+      ...field,
+      name: path + field.name,
+    });
+
+    // If an object, also include its subfields as data keys
+    if (field.kind === 'OBJECT') {
+      flatFields.push(...getFlatFields(field.fields, path + field.name + '.'));
+    } else if (field.kind === 'LIST') {
+      flatFields.push(
+        ...getFlatFields(field.fields, path + field.name + '.[0].')
+      );
+    }
+  });
+
+  return flatFields;
+};
+
+/**
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
  *
@@ -38,7 +67,7 @@ export const parseHtml = (
     const htmlWithRecord = replaceRecordFields(
       htmlWithLinks,
       fieldsValue,
-      fields,
+      getFlatFields(fields),
       styles
     );
     return applyOperations(htmlWithRecord);
@@ -113,8 +142,42 @@ const replaceRecordFields = (
   if (fields) {
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
+    // We check for LIST fields and duplicate their only element for each subfield
+    const listFields = fields.filter((field: any) => field.kind === 'LIST');
+    listFields.forEach((field: any) => {
+      const subFields = fields.filter((subField: any) =>
+        subField.name.startsWith(field.name + '.[0]')
+      );
+
+      const length = get(fieldsValue, field.name)?.length ?? 0;
+      // Start from 1 because we already have the first element (the one being used as a template)
+      for (let i = 1; i < length; i++) {
+        subFields.forEach((subField: any) => {
+          const subFieldName = subField.name.replace(
+            `${field.name}.[0]`,
+            `${field.name}.[${i}]`
+          );
+          fields.push({
+            ...subField,
+            name: subFieldName,
+          });
+        });
+      }
+    });
+
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      const toReadableObject = (obj: any): any =>
+        typeof obj === 'object' && obj !== null
+          ? Array.isArray(obj)
+            ? obj.map((o) => toReadableObject(o)).join('<br>') // If array, return mapped elements
+            : Object.keys(obj) // If object, return object keys and values as strings
+                .filter((key) => key !== '__typename')
+                .map((key) => `${key}: ${obj[key]}`)
+                .join(', ')
+          : `${obj}`; // If not an object, return string representation
+
+      const value = toReadableObject(get(fieldsValue, field.name));
+
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       // Inject avatars
@@ -319,18 +382,23 @@ const replaceRecordFields = (
             break;
           }
           default:
+            const formattedValue = applyLayoutFormat(value, field);
             convertedValue = style
-              ? `<span style='${style}'>${applyLayoutFormat(
-                  value,
-                  field
-                )}</span>`
-              : applyLayoutFormat(value, field) || '';
+              ? `<span style='${style}'>${formattedValue}</span>`
+              : isNil(formattedValue)
+              ? ''
+              : formattedValue;
             break;
         }
       }
 
+      const escapeFieldNameForRegex = (fieldName: string): string =>
+        fieldName.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+
       const regex = new RegExp(
-        `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
+        `${DATA_PREFIX}${escapeFieldNameForRegex(
+          field.name
+        )}${PLACEHOLDER_SUFFIX}`,
         'gi'
       );
       formattedHtml = formattedHtml.replace(regex, convertedValue);
@@ -412,11 +480,12 @@ const applyOperations = (html: string): string => {
  * @param fields Array of fields.
  * @returns list of data keys
  */
-export const getDataKeys = (fields: any): { value: string; text: string }[] =>
-  fields.map((field: any) => ({
+export const getDataKeys = (fields: any): { value: string; text: string }[] => {
+  return getFlatFields(fields).map((field: any) => ({
     value: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
     text: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
   }));
+};
 
 /**
  * Returns an array with the calc operations keys.
@@ -449,34 +518,31 @@ export const getPageKeys = (
 /**
  * Applies layout field format ignoring html tags
  *
- * @param name Original value of the field
+ * @param value Original value of the field
  * @param field Field information, used to get field name and format
  * @returns Formatted field value
  */
-export const applyLayoutFormat = (
-  name: string | null,
-  field: any
-): string | null => {
+export const applyLayoutFormat = (value: any, field: any): any => {
   // replaces value for label, if it exists
   if (field.options)
-    name = field.options.find((o: any) => o.value === name)?.text || name;
+    value = field.options.find((o: any) => o.value === value)?.text || value;
 
-  if (name && field.layoutFormat && field.layoutFormat.length > 1) {
+  if (value && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(
       `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
       'gi'
     );
-    const value = field.layoutFormat
+    const formattedValue = field.layoutFormat
       .replace(/<(.|\n)*?>/g, '')
-      .replace(regex, name);
-    return applyOperations(value);
+      .replace(regex, value);
+    return applyOperations(formattedValue);
   } else {
-    return name;
+    return value;
   }
 };
 
 /**
- * Loops throught the layout styles and returns the last style that pass the filters
+ * Loops through the layout styles and returns the last style that pass the filters
  *
  * @param layouts Array of layout styles
  * @param key The key of the actual property in the html
