@@ -17,7 +17,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   imagetools_cors_hosts: ['picsum.photos'],
   menubar: 'edit view insert format tools table help',
   toolbar:
-    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor card',
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor',
   toolbar_sticky: true,
   image_advtab: true,
   importcss_append: true,
@@ -163,32 +163,6 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
             },
           ],
         });
-      },
-    });
-    // Card
-    const cardIcon = createFontAwesomeIcon(
-      {
-        icon: 'book-open',
-        color: 'none',
-        opacity: 1,
-        size: 21,
-      },
-      (editor.editorManager as any).DOM.doc
-    );
-    editor.ui.registry.addIcon('card-icon', cardIcon.innerHTML);
-    editor.ui.registry.addButton('card', {
-      icon: 'card-icon',
-      tooltip: 'Card',
-      onAction: () => {
-        const cardElement = (editor.editorManager as any).DOM.doc.createElement(
-          'article'
-        );
-        cardElement.style.backgroundColor = '#90C5F3';
-        cardElement.style.padding = '.5rem 1rem';
-        cardElement.style.cursor = 'pointer';
-        cardElement.style.borderRadius = '6px';
-        cardElement.textContent = 'Add your card content and data here';
-        editor.insertContent(cardElement.outerHTML);
       },
     });
   },

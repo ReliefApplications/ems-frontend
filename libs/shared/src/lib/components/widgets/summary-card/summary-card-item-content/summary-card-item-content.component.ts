@@ -15,6 +15,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { HtmlWidgetContentComponent } from '../../common/html-widget-content/html-widget-content.component';
 import { takeUntil } from 'rxjs';
 import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
+import { ContextService } from '../../../../services/context/context.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -54,11 +55,13 @@ export class SummaryCardItemContentComponent
    * @param dataTemplateService Shared data template service, used to render content from template
    * @param dialog CDK Dialog service
    * @param parent Reference to parent summary card item component
+   * @param contextService Context service
    */
   constructor(
     private dataTemplateService: DataTemplateService,
     private dialog: Dialog,
-    @Optional() public parent: SummaryCardItemComponent
+    @Optional() public parent: SummaryCardItemComponent,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -101,13 +104,21 @@ export class SummaryCardItemContentComponent
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    const content = this.htmlContentComponent.el.nativeElement;
-    const editorTriggers = content.querySelectorAll('.record-editor');
-    editorTriggers.forEach((recordEditor: HTMLElement) => {
-      if (recordEditor.contains(event.target)) {
-        this.openEditRecordModal();
-      }
-    });
+    if (event.target.dataset.filterField) {
+      const { filterField, filterValue } = event.target.dataset;
+      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
+      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
+      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
+      this.contextService.filter.next({ [filterField]: cleanFilterValue });
+    } else {
+      const content = this.htmlContentComponent.el.nativeElement;
+      const editorTriggers = content.querySelectorAll('.record-editor');
+      editorTriggers.forEach((recordEditor: HTMLElement) => {
+        if (recordEditor.contains(event.target)) {
+          this.openEditRecordModal();
+        }
+      });
+    }
   }
 
   /**

@@ -29,6 +29,7 @@ import {
 import { GET_REFERENCE_DATA } from './graphql/queries';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ContextService } from '../../../services/context/context.service';
 
 /**
  * Text widget component using KendoUI
@@ -84,6 +85,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param translate Angular translate service
    * @param gridService Shared grid service
    * @param referenceDataService Shared reference data service
+   * @param contextService Context service
    */
   constructor(
     private apollo: Apollo,
@@ -93,7 +95,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private gridService: GridService,
-    private referenceDataService: ReferenceDataService
+    private referenceDataService: ReferenceDataService,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -148,13 +151,21 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    const content = this.htmlContentComponent.el.nativeElement;
-    const editorTriggers = content.querySelectorAll('.record-editor');
-    editorTriggers.forEach((recordEditor: HTMLElement) => {
-      if (recordEditor.contains(event.target)) {
-        this.openEditRecordModal();
-      }
-    });
+    if (event.target.dataset.filterField) {
+      const { filterField, filterValue } = event.target.dataset;
+      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
+      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
+      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
+      this.contextService.filter.next({ [filterField]: cleanFilterValue });
+    } else {
+      const content = this.htmlContentComponent.el.nativeElement;
+      const editorTriggers = content.querySelectorAll('.record-editor');
+      editorTriggers.forEach((recordEditor: HTMLElement) => {
+        if (recordEditor.contains(event.target)) {
+          this.openEditRecordModal();
+        }
+      });
+    }
   }
 
   /**
