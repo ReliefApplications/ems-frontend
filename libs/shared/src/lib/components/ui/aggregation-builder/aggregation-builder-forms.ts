@@ -127,8 +127,10 @@ export const addStage = (value: any) => {
     case PipelineStage.LABEL: {
       return formBuilder.group({
         type: [PipelineStage.LABEL],
+        preview: true,
         form: formBuilder.group({
           field: [get(value, 'form.field', ''), Validators.required],
+          copyFrom: [get(value, 'form.copyFrom', ''), Validators.required],
         }),
       });
     }

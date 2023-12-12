@@ -454,6 +454,7 @@
 			"addField": "******",
 			"addRule": "******",
 			"addStage": "******",
+			"copyFrom": "******",
 			"dataset": {
 				"select": "******"
 			},

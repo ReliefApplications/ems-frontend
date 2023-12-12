@@ -454,6 +454,7 @@
 			"addField": "Add field",
 			"addRule": "Add rule",
 			"addStage": "Add stage",
+			"copyFrom": "Copy labels from",
 			"dataset": {
 				"select": "Select the data source"
 			},

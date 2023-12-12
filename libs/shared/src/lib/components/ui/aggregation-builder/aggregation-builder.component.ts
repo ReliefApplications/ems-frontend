@@ -59,6 +59,7 @@ export class AggregationBuilderComponent
       enabled: false,
     },
     lineNumbers: 'off',
+    automaticLayout: true,
   };
   /** The text displayed in the aggregation result preview */
   public aggregationPreview = '';

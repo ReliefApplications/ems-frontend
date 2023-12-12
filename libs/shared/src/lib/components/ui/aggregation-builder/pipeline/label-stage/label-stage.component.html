@@ -7,11 +7,21 @@
           'common.input.none' | translate
         }}</ui-select-option>
         <ng-container *ngFor="let field of fields">
-          <ui-select-option
-            [value]="field.name"
-            *ngIf="getChoiceQuestionNames().includes(field.name)"
-          >
+          <ui-select-option [value]="field.name">
             {{ field.name }}
+          </ui-select-option>
+        </ng-container>
+      </ui-select-menu>
+    </div>
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'components.aggregationBuilder.copyFrom' | translate }}</label>
+      <ui-select-menu formControlName="copyFrom">
+        <ui-select-option>{{
+          'common.input.none' | translate
+        }}</ui-select-option>
+        <ng-container *ngFor="let field of choiceFields">
+          <ui-select-option [value]="field">
+            {{ field }}
           </ui-select-option>
         </ng-container>
       </ui-select-menu>

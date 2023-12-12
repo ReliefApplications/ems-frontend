@@ -454,6 +454,7 @@
 			"addField": "Ajouter un champ",
 			"addRule": "Ajouter une règle",
 			"addStage": "Ajouter une étape",
+			"copyFrom": "Copier les étiquettes de",
 			"dataset": {
 				"select": "Sélectionner la source de données"
 			},
