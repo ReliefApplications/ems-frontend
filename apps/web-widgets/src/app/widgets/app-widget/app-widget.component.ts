@@ -17,9 +17,8 @@ import {
 } from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
-import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { Router } from '@angular/router';
 
 /**
  * Application as Web Widget.
@@ -38,10 +37,10 @@ export class AppWidgetComponent
   @Input()
   set id(value: string) {
     // Get the current path
-    const currentPath = this.location.path();
+    const currentPath = this.router.url;
     if (currentPath.includes(value)) {
       // Path includes the id
-      this.router.navigateByUrl(`${currentPath}`);
+      this.router.navigateByUrl(currentPath);
     } else {
       // Else, navigate to homepage of the app
       this.router.navigate([`./${value}`]);
@@ -84,18 +83,16 @@ export class AppWidgetComponent
    * @param el class related element reference
    * @param injector angular application injector
    * @param contextService Shared context service
-   * @param router Angular routter
    * @param applicationService Shared application service
-   * @param location Angular location
+   * @param router Angular router service
    * @param shadowDomService Shared shadow dom service
    */
   constructor(
     el: ElementRef,
     injector: Injector,
     private contextService: ContextService,
-    private router: Router,
     private applicationService: ApplicationService,
-    private location: Location,
+    private router: Router,
     private shadowDomService: ShadowDomService
   ) {
     super(el, injector);
