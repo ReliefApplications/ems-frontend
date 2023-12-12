@@ -54,6 +54,8 @@ export class EditorSettingsComponent
   public referenceData: ReferenceData | null = null;
   /** Current layout */
   public layout: Layout | null = null;
+  /** boolean for check if added calc and keys auto completer */
+  public addedCalcKeys = false;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -231,9 +233,19 @@ export class EditorSettingsComponent
         });
     }
     // Setup editor auto complete
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
-      ...this.dataTemplateService.getAutoCompleterKeys(fields),
-      ...this.dataTemplateService.getAutoCompleterPageKeys(),
-    ]);
+    // if not added calc and keys yet add
+    if (!this.addedCalcKeys) {
+      this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
+        ...this.dataTemplateService.getAutoCompleterKeys(fields),
+        ...this.dataTemplateService.getAutoCompleterPageKeys(),
+      ]);
+      this.addedCalcKeys = true;
+      // otherwise update it
+    } else {
+      this.editorService.updateCalcAndKeysAutoCompleter(this.editor, [
+        ...this.dataTemplateService.getAutoCompleterKeys(fields),
+        ...this.dataTemplateService.getAutoCompleterPageKeys(),
+      ]);
+    }
   }
 }

@@ -14,10 +14,14 @@ import { DOCUMENT } from '@angular/common';
 export class EditorService {
   /** environment variable */
   private environment: any;
-
+  /** edit scroll listener */
   private editorScrollListener!: any;
+  /** active item scroll listener */
   public activeItemScrollListener!: any;
+  /** renderer */
   private renderer!: Renderer2;
+  /** current calc keys for auto completer */
+  private currentKeys: { value: string; text: string }[] = [];
 
   /**
    * Compute the base url based on the environment file
@@ -77,6 +81,7 @@ export class EditorService {
     editor: RawEditorSettings,
     keys: { value: string; text: string }[]
   ) {
+    this.currentKeys = keys;
     const defaultSetup = editor.setup;
     editor.setup = (e: Editor) => {
       if (defaultSetup && typeof defaultSetup === 'function') defaultSetup(e);
@@ -102,12 +107,26 @@ export class EditorService {
             this.activeItemScrollListener = null;
           }
           this.allowScrolling();
-          return keys.filter((key) =>
+          return this.currentKeys.filter((key) =>
             (key.value || key.text).includes(pattern)
           );
         },
       });
     };
+  }
+
+  /**
+   * Update auto completer with {{ }} for data and calc keys
+   *
+   * @param editor current editor
+   * @param keys list of keys
+   */
+  updateCalcAndKeysAutoCompleter(
+    editor: RawEditorSettings,
+    keys: { value: string; text: string }[]
+  ) {
+    this.currentKeys = keys;
+    editor.instance.execCommand('autocomplete');
   }
 
   /**
