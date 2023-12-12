@@ -2111,7 +2111,7 @@ export class ApplicationService {
           },
           error: (errors: any) => {
             this.handleEditionMutationResponse(
-              errors,
+              [errors],
               this.translate.instant('common.page.one')
             );
           },

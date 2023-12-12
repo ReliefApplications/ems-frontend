@@ -95,6 +95,8 @@ export interface Page {
       }
   ) & {
     content: string;
+  } & {
+    geographic?: string;
   })[];
   geographicContext?: PageGeographicContextType;
   autoDeletedAt?: Date;

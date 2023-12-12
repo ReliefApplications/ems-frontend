@@ -37,13 +37,7 @@ import {
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  map,
-  takeUntil,
-  filter,
-  startWith,
-  debounceTime,
-} from 'rxjs/operators';
+import { map, takeUntil, filter, startWith } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { cloneDeep, isEqual } from 'lodash';
@@ -187,12 +181,7 @@ export class DashboardComponent
   }
 
   ngOnInit(): void {
-    this.contextId.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        // Load template, or go back to default one
-        this.onContextChange(value);
-      });
+    this.setUpContextFieldListeners();
     /** Listen to router events navigation end, to get last version of params & queryParams. */
     this.router.events
       .pipe(
@@ -217,75 +206,169 @@ export class DashboardComponent
           pageContainer.scrollTop = 0;
         }
 
-        /** Extract main dashboard id */
-        const id = this.route.snapshot.paramMap.get('id');
-        /** Extract query id to load template */
-        const queryId = this.route.snapshot.queryParamMap.get('id');
-        if (id) {
+        this.handleContextTemplateLoad();
+      });
+  }
+
+  /**
+   * Set up all the listeners for the possible context set in the current page
+   */
+  private setUpContextFieldListeners() {
+    this.contextId.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // Load template, or go back to default one
+        this.onContextChange(value);
+      });
+    this.regionCode.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // reset country code as it's not possible to have country and region selected
+        this.countryCode.setValue(value, { emitEvent: false });
+        // In case we switch from country to region
+        // remove previous geographic context country property inside the dashboard object
+        delete this.dashboard?.page?.geographicContext?.country;
+        this.onContextChange(value, 'geographic');
+      });
+    this.countryCode.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // reset region code as it's not possible to have country and region selected
+        this.regionCode.setValue(value, { emitEvent: false });
+        // In case we switch from region to country
+        // remove previous geographic context region property inside the dashboard object
+        delete this.dashboard?.page?.geographicContext?.region;
+        this.onContextChange(value, 'geographic');
+      });
+  }
+
+  /**
+   * Load the correct context template for the given context params on the current dashboard
+   */
+  private handleContextTemplateLoad() {
+    /** Extract main dashboard id */
+    const id = this.route.snapshot.paramMap.get('id');
+    /** Extract query id to load template */
+    const queryId = this.route.snapshot.queryParamMap.get('id');
+    const queryGeographic = this.route.snapshot.queryParamMap.get('geographic');
+    const context: any = {};
+
+    if (id) {
+      // Even if query params exists, we don't want to load/create any template if option is not enabled in the dashboard
+      if (
+        (this.contextType && queryId) ||
+        (this.dashboard?.page?.geographicContext?.enabled && queryGeographic)
+      ) {
+        this.loadDashboard(id).then(() => {
+          const templates = this.dashboard?.page?.contentWithContext;
+          const type = this.contextType;
+          let template: any;
           if (queryId) {
-            this.loadDashboard(id).then(() => {
-              const templates = this.dashboard?.page?.contentWithContext;
-              const type = this.contextType;
+            // No geographic, then check reference data and record templates
+            if (!queryGeographic) {
+              template = templates?.find((d) => {
+                // If templates use reference data
+                if (type === 'element')
+                  return (
+                    'element' in d &&
+                    d.element.toString().trim() === queryId.trim()
+                  );
+                // If templates use resource
+                else if (type === 'record')
+                  return (
+                    'record' in d &&
+                    d.record.toString().trim() === queryId.trim()
+                  );
+                return false;
+              });
+            } else {
               if (type) {
-                // Find template from parent's templates, based on query params id
-                const template = templates?.find((d) => {
-                  // If templates use reference data
-                  if (type === 'element')
+                template = templates?.find((d) => {
+                  // If templates use reference data with the geographic context
+                  if (type === 'element') {
                     return (
                       'element' in d &&
-                      d.element.toString().trim() === queryId.trim()
+                      d.element.toString().trim() === queryId.trim() &&
+                      'geographic' in d &&
+                      d.geographic &&
+                      d.geographic.toString().trim() === queryGeographic.trim()
                     );
-                  // If templates use resource
-                  else if (type === 'record')
+                  }
+                  // If templates use resource with geographic context
+                  else if (type === 'record') {
                     return (
                       'record' in d &&
-                      d.record.toString().trim() === queryId.trim()
+                      d.record.toString().trim() === queryId.trim() &&
+                      'geographic' in d &&
+                      d.geographic &&
+                      d.geographic.toString().trim() === queryGeographic.trim()
                     );
+                  }
                   return false;
                 });
+              }
+            }
+          } else {
+            // If no context data but we have a geographic context
+            if (queryGeographic) {
+              template = templates?.find((d) => {
+                // If templates use geographic context
+                return (
+                  'geographic' in d &&
+                  d.geographic &&
+                  d.geographic.toString().trim() === queryGeographic.trim()
+                );
+              });
+            }
+          }
 
-                if (template) {
-                  // if we found the contextual dashboard, load it
-                  this.loadDashboard(template.content).then(
+          if (template) {
+            // if we found the contextual dashboard, load it
+            this.loadDashboard(template.content).then(
+              () => (this.loading = false)
+            );
+          } else {
+            if (this.dashboard?.page && this.canUpdate) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'models.dashboard.context.notifications.creatingTemplate'
+                )
+              );
+              if (queryGeographic && queryId && type) {
+                context[type] = queryId;
+                context['geographic'] = queryGeographic;
+              } else if (queryId && type) {
+                context[type] = queryId;
+              } else if (queryGeographic) {
+                context['geographic'] = queryGeographic;
+              }
+              this.dashboardService
+                .createDashboardWithContext(
+                  this.dashboard?.page?.id as string,
+                  context
+                )
+                .then(({ data }) => {
+                  if (!data?.addDashboardWithContext?.id) {
+                    return;
+                  }
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'models.dashboard.context.notifications.templateCreated'
+                    )
+                  );
+                  // load the contextual dashboard
+                  this.loadDashboard(data.addDashboardWithContext.id).then(
                     () => (this.loading = false)
                   );
-                } else {
-                  if (this.dashboard?.page && this.canUpdate) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'models.dashboard.context.notifications.creatingTemplate'
-                      )
-                    );
-                    this.dashboardService
-                      .createDashboardWithContext(
-                        this.dashboard?.page?.id as string,
-                        type, // type of context
-                        queryId // id of the context
-                      )
-                      .then(({ data }) => {
-                        if (!data?.addDashboardWithContext?.id) return;
-                        this.snackBar.openSnackBar(
-                          this.translate.instant(
-                            'models.dashboard.context.notifications.templateCreated'
-                          )
-                        );
-                        // load the contextual dashboard
-                        this.loadDashboard(
-                          data.addDashboardWithContext.id
-                        ).then(() => (this.loading = false));
-                      });
-                  }
-                }
-              } else {
-                this.loading = false;
-              }
-            });
-          } else {
-            // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
-            this.loadDashboard(id).then(() => (this.loading = false));
+                });
+            }
           }
-        }
-      });
+        });
+      } else {
+        // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
+        this.loadDashboard(id).then(() => (this.loading = false));
+      }
+    }
   }
 
   /**
@@ -322,15 +405,15 @@ export class DashboardComponent
             scrollToNewItems: false,
           };
           if (this.dashboard.page?.geographicContext?.enabled) {
-            this.countryCode.setValue(
-              this.dashboard.page?.geographicContext?.country
-            );
-            this.regionCode.setValue(
-              this.dashboard.page?.geographicContext?.region
-            );
-          } else {
-            this.countryCode.setValue('');
-            this.regionCode.setValue('');
+            if (this.dashboard.page.geographicContext.country) {
+              this.countryCode.setValue(
+                this.dashboard.page?.geographicContext?.country
+              );
+            } else {
+              this.regionCode.setValue(
+                this.dashboard.page?.geographicContext?.region
+              );
+            }
           }
           this.initContext();
           this.updateContextOptions();
@@ -682,39 +765,46 @@ export class DashboardComponent
   }
 
   /**
-   * Handle dashboard context change by simply updating the url.
+   * Handle dashboard context type change by simply updating the url.
    *
-   * @param value id of the element or record
+   * @param value id of the element or record,
+   * @param contextType set for the current page
    */
-  private async onContextChange(value: string | number | undefined | null) {
+  private async onContextChange(
+    value: string | number | undefined | null,
+    contextType: 'record' | 'geographic' = 'record'
+  ) {
+    const queryParams = { ...this.route.snapshot.queryParams };
     if (
       !this.dashboard?.id ||
       !this.dashboard?.page?.id ||
-      !this.dashboard.page.context ||
-      !this.contextType
-    )
+      (contextType === 'record' &&
+        (!this.dashboard.page.context || !this.contextType)) ||
+      (contextType === 'geographic' &&
+        !this.dashboard?.page?.geographicContext?.enabled)
+    ) {
       return;
+    }
+    const queryParamKey = contextType === 'record' ? 'id' : 'geographic';
     if (value) {
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {
-          id: value,
-        },
-      });
+      // Update the related key parameter if it exists, or set it if it's undefined
+      queryParams[queryParamKey] = value;
       // const urlArr = this.router.url.split('/');
       // urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
       // this.router.navigateByUrl(urlArr.join('/'));
     } else {
+      // remove related key from query params
+      delete queryParams[queryParamKey];
       this.snackBar.openSnackBar(
         this.translate.instant(
           'models.dashboard.context.notifications.loadDefault'
         )
       );
-      this.router.navigate(['.'], { relativeTo: this.route });
-      // const urlArr = this.router.url.split('/');
-      // urlArr[urlArr.length - 1] = parentDashboardId;
-      // this.router.navigateByUrl(urlArr.join('/'));
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams });
+    // const urlArr = this.router.url.split('/');
+    // urlArr[urlArr.length - 1] = parentDashboardId;
+    // this.router.navigateByUrl(urlArr.join('/'));
   }
 
   /** Initializes the dashboard context */
@@ -881,8 +971,8 @@ export class DashboardComponent
     value: string | string[],
     geographicType: 'region' | 'country'
   ): void {
-    const geographicContext = {
-      ...this.dashboard?.page?.geographicContext,
+    const geographicContext: PageGeographicContextType = {
+      enabled: true,
       ...(value && { [geographicType]: value }),
     };
     const callback = () => {
@@ -890,14 +980,14 @@ export class DashboardComponent
         ...this.dashboard,
         page: {
           ...this.dashboard?.page,
-          geographicContext: geographicContext as PageGeographicContextType,
+          geographicContext: geographicContext,
         },
       };
     };
     this.applicationService.updatePageGeographicContext(
       {
         id: this.dashboard?.page?.id,
-        geographicContext: geographicContext as PageGeographicContextType,
+        geographicContext: geographicContext,
       },
       callback
     );
