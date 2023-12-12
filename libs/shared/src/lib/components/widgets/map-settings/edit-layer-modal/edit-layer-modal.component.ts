@@ -380,6 +380,11 @@ export class EditLayerModalComponent
         .get('datasource.refData')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
+          this.clearFields();
+          this.form
+            .get('datasource.aggregation')
+            ?.setValue(null, { emitEvent: false });
+          this.aggregation = null;
           if (value) {
             this.form.get('datasource.resource')?.setValue(null);
             this.getReferenceData();
@@ -394,20 +399,11 @@ export class EditLayerModalComponent
         .get('datasource.resource')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
+          this.clearFields();
           const datasourceGroup = this.form.controls.datasource as FormGroup;
           datasourceGroup.get('layout')?.setValue(null, { emitEvent: false });
           datasourceGroup
             .get('aggregation')
-            ?.setValue(null, { emitEvent: false });
-          datasourceGroup.get('geoField')?.setValue(null, { emitEvent: false });
-          datasourceGroup
-            .get('adminField')
-            ?.setValue(null, { emitEvent: false });
-          datasourceGroup
-            .get('latitudeField')
-            ?.setValue(null, { emitEvent: false });
-          datasourceGroup
-            .get('longitudeField')
             ?.setValue(null, { emitEvent: false });
           this.layout = null;
           this.aggregation = null;
@@ -422,6 +418,7 @@ export class EditLayerModalComponent
         .get('datasource.layout')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
+          this.clearFields;
           if (value) {
             this.getResource();
           } else {
@@ -432,15 +429,17 @@ export class EditLayerModalComponent
         .get('datasource.aggregation')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
-          if (value) {
-            if (this.resource) {
-              this.getResource();
-            }
-            if (this.referenceData) {
-              this.getReferenceData();
-            }
-          } else {
+          this.clearFields();
+          const formValue = this.form.getRawValue();
+          if (!value) {
             this.aggregation = null;
+          }
+          if (get(formValue, 'datasource.refData')) {
+            //we refetch fields even when aggregation is deleted
+            this.getReferenceData();
+          }
+          if (value && get(formValue, 'datasource.resource')) {
+            this.getResource();
           }
         });
     }
@@ -448,6 +447,15 @@ export class EditLayerModalComponent
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
       next: (event: MapEvent) => this.handleMapEvent(event),
     });
+  }
+
+  /** Clears the geo, admin, latitude and longitude fields */
+  private clearFields() {
+    const datasourceGroup = this.form.controls.datasource as FormGroup;
+    datasourceGroup.get('geoField')?.setValue(null, { emitEvent: false });
+    datasourceGroup.get('adminField')?.setValue(null, { emitEvent: false });
+    datasourceGroup.get('latitudeField')?.setValue(null, { emitEvent: false });
+    datasourceGroup.get('longitudeField')?.setValue(null, { emitEvent: false });
   }
 
   /**
