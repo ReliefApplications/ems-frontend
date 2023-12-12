@@ -115,6 +115,7 @@
       {{ 'components.widget.summaryCard.dataSource' | translate }}
     </ui-button>
     <ui-button
+      *ngIf="!settings.widgetDisplay?.hideGridCardButtons"
       [isIcon]="true"
       icon="grid_view"
       [disabled]="displayMode === 'cards'"
@@ -122,6 +123,7 @@
       [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
     ></ui-button>
     <ui-button
+      *ngIf="!settings.widgetDisplay?.hideGridCardButtons"
       [isIcon]="true"
       icon="view_list"
       [disabled]="displayMode === 'grid'"
@@ -129,7 +131,7 @@
       [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
     ></ui-button>
     <ui-button
-      *ngIf="export && displayMode === 'cards'"
+      *ngIf="export && displayMode === 'cards' && !settings.widgetDisplay?.hideExportButton"
       [isIcon]="true"
       icon="get_app"
       class="text-neutral-700"
