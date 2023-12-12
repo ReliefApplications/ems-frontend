@@ -103,6 +103,7 @@
       *ngSwitchCase="'summaryCard'"
       #widgetContent
       [settings]="widget.settings"
+      [export]="!widget.settings.widgetDisplay?.hideExportButton"
       (edit)="edit.emit($event)"
       [widget]="widget"
       [usePadding]="usePadding"
