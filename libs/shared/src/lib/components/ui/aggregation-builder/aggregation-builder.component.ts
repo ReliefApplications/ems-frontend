@@ -205,6 +205,7 @@ export class AggregationBuilderComponent
           this.updateSelectedAndMetaFields(
             this.aggregationForm.value.sourceFields
           );
+          this.metaFields.next(data.resource.metadata);
         } else {
           this.metaFields.next([]);
         }
