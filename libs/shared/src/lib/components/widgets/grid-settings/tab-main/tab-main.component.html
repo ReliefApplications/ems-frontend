@@ -13,9 +13,19 @@
         formControlName="resource"
         [selectedElements]="[resource]"
       ></shared-resource-select>
+      <ui-button
+        *ngIf="formGroup.value.resource"
+        uiSuffix
+        size="small"
+        [isIcon]="true"
+        (click)="clearFormField('resource', $event)"
+        icon="close"
+        variant="danger"
+        [uiTooltip]="'common.remove' | translate"
+      ></ui-button>
     </div>
     <!-- Template selection -->
-    <div uiFormFieldDirective class="flex-1">
+    <div *ngIf="resource" uiFormFieldDirective class="flex-1">
       <label>{{ 'models.form.template' | translate }}</label>
       <ui-select-menu formControlName="template">
         <ui-select-option>-</ui-select-option>
