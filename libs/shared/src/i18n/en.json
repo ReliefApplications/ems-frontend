@@ -2232,6 +2232,8 @@
 				"border": "Show widget border",
 				"expand": "Show button to expand widget",
 				"header": "Show widget header",
+				"hideExportButton": "Hide export button",
+				"hideGridCardButtons": "Hide view as card/grid buttons",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",

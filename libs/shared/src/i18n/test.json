@@ -2232,6 +2232,8 @@
 				"border": "******",
 				"expand": "******",
 				"header": "******",
+				"hideExportButton": "******",
+				"hideGridCardButtons": "******",
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",

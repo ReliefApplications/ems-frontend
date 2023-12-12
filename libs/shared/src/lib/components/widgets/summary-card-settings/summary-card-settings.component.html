@@ -141,16 +141,18 @@
               $any(widgetFormGroup.get('widgetDisplay.hideExportButton'))
             "
           >
-            <ng-container ngProjectAs="label">Hide export button</ng-container>
+            <ng-container ngProjectAs="label">{{
+              'models.widget.display.hideExportButton' | translate
+            }}</ng-container>
           </ui-toggle>
           <ui-toggle
             [formControl]="
               $any(widgetFormGroup.get('widgetDisplay.hideGridCardButtons'))
             "
           >
-            <ng-container ngProjectAs="label"
-              >Hide view as card/grid buttons</ng-container
-            >
+            <ng-container ngProjectAs="label">{{
+              'models.widget.display.hideGridCardButtons' | translate
+            }}</ng-container>
           </ui-toggle>
           <div>
             <p class="font-medium mt-0 mb-0.5">
