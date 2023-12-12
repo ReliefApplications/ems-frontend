@@ -577,6 +577,7 @@
 				},
 				"settings": {
 					"actions": "******",
+					"geographicContext": "******",
 					"selectIcon": "******",
 					"tooltip": {
 						"autoSave": "******"

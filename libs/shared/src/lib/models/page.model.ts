@@ -32,6 +32,13 @@ export type PageContextT = (
   displayField: string;
 };
 
+/** Page geographic context interface */
+export interface PageGeographicContextType {
+  enabled: boolean;
+  region?: string;
+  country?: string;
+}
+
 /**
  * Available content types.
  */
@@ -89,6 +96,7 @@ export interface Page {
   ) & {
     content: string;
   })[];
+  geographicContext?: PageGeographicContextType;
   autoDeletedAt?: Date;
 }
 

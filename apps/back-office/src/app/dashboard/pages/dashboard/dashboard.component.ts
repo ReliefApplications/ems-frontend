@@ -28,6 +28,7 @@ import {
   DashboardQueryResponse,
   EditDashboardMutationResponse,
   RecordQueryResponse,
+  PageGeographicContextType,
 } from '@oort-front/shared';
 import { EDIT_DASHBOARD } from './graphql/mutations';
 import {
@@ -54,6 +55,7 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
+import geographicContext from 'assets/geographic-context-data.json';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -117,6 +119,14 @@ export class DashboardComponent
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
+  /** Regions static list for geographic context */
+  public geographicContextRegions = geographicContext.regions;
+  /** Countries for geographic context */
+  public geographicContextCountries = geographicContext.countries;
+  /** Geographic context country form control */
+  public countryCode = new FormControl<string | undefined>('');
+  /** Geographic context region form control */
+  public regionCode = new FormControl<string | undefined>('');
 
   /** @returns type of context element */
   get contextType() {
@@ -311,6 +321,17 @@ export class DashboardComponent
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
+          if (this.dashboard.page?.geographicContext?.enabled) {
+            this.countryCode.setValue(
+              this.dashboard.page?.geographicContext?.country
+            );
+            this.regionCode.setValue(
+              this.dashboard.page?.geographicContext?.region
+            );
+          } else {
+            this.countryCode.setValue('');
+            this.regionCode.setValue('');
+          }
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
@@ -848,5 +869,37 @@ export class DashboardComponent
         },
       });
     }
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param value value selected
+   * @param geographicType geographic data type
+   */
+  public onSearchChangeGeographicContext(
+    value: string | string[],
+    geographicType: 'region' | 'country'
+  ): void {
+    const geographicContext = {
+      ...this.dashboard?.page?.geographicContext,
+      ...(value && { [geographicType]: value }),
+    };
+    const callback = () => {
+      this.dashboard = {
+        ...this.dashboard,
+        page: {
+          ...this.dashboard?.page,
+          geographicContext: geographicContext as PageGeographicContextType,
+        },
+      };
+    };
+    this.applicationService.updatePageGeographicContext(
+      {
+        id: this.dashboard?.page?.id,
+        geographicContext: geographicContext as PageGeographicContextType,
+      },
+      callback
+    );
   }
 }

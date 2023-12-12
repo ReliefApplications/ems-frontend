@@ -81,6 +81,7 @@ export const EDIT_PAGE = gql`
     $icon: String
     $permissions: JSON
     $visible: Boolean
+    $geographicContext: PageGeographicContextInputType
   ) {
     editPage(
       id: $id
@@ -88,6 +89,7 @@ export const EDIT_PAGE = gql`
       icon: $icon
       permissions: $permissions
       visible: $visible
+      geographicContext: $geographicContext
     ) {
       id
       name
