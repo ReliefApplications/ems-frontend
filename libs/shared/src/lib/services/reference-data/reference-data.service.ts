@@ -14,6 +14,7 @@ import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query/dist/npm/filtering/filter-descriptor.interface';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -48,15 +49,20 @@ export class ReferenceDataService {
    * Return a promise with the reference data corresponding to the id passed.
    *
    * @param id Reference data ID.
+   * @param contextFilters Context filters to be used with dashboard filters.
    * @returns Promised ReferenceData.
    */
-  public loadReferenceData(id: string): Promise<ReferenceData> {
+  public loadReferenceData(
+    id: string,
+    contextFilters?: CompositeFilterDescriptor
+  ): Promise<ReferenceData> {
     return firstValueFrom(
       this.apollo
         .query<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA_BY_ID,
           variables: {
             id,
+            contextFilters,
           },
         })
         .pipe(map(({ data }) => data.referenceData))
@@ -152,12 +158,19 @@ export class ReferenceDataService {
    * Get the items and the value field of a reference data
    *
    * @param referenceDataID The reference data id
+   * @param contextFilters Context filters to be used with dashboard filters.
    * @returns The item list and the value field
    */
-  public async cacheItems(referenceDataID: string): Promise<any> {
+  public async cacheItems(
+    referenceDataID: string,
+    contextFilters?: CompositeFilterDescriptor
+  ): Promise<any> {
     // Initialization
     let items: any;
-    const referenceData = await this.loadReferenceData(referenceDataID);
+    const referenceData = await this.loadReferenceData(
+      referenceDataID,
+      contextFilters
+    );
     const cacheKey = referenceData.id || '';
     const valueField = referenceData.valueField || 'id';
     const cacheTimestamp = localStorage.getItem(cacheKey + LAST_MODIFIED_KEY);

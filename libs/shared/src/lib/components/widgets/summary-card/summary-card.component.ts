@@ -243,7 +243,6 @@ export class SummaryCardComponent
     this.contextFilters = this.widget.settings.contextFilters
       ? JSON.parse(this.widget.settings.contextFilters)
       : this.contextFilters;
-
     this.setupDynamicCards();
     this.setupGridSettings();
     this.searchControl.valueChanges
@@ -266,6 +265,8 @@ export class SummaryCardComponent
           pageIndex: 0,
           totalItems: 0,
         });
+
+        this.setupDynamicCards();
       });
   }
 
@@ -649,7 +650,8 @@ export class SummaryCardComponent
     this.loading = true;
     this.cachedCards = (
       (await this.referenceDataService.cacheItems(
-        card.referenceData as string
+        card.referenceData as string,
+        this.contextService.injectDashboardFilterValues(this.contextFilters)
       )) || []
     ).map((x: any, index: number) => ({
       ...this.settings.card,
