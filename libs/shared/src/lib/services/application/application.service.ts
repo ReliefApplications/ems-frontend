@@ -245,9 +245,13 @@ export class ApplicationService {
           // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
           data.application.pages?.map((page: Page) => {
             if (faV4toV6Mapper[page.icon as string]) {
-              (page as Page).icon = faV4toV6Mapper[page.icon as string];
+              return {
+                ...page,
+                icon: faV4toV6Mapper[page.icon as string],
+              };
+            } else {
+              return page;
             }
-            return page;
           });
           this.authService.extendAbilityForApplication(data.application);
         }
@@ -1987,7 +1991,11 @@ export class ApplicationService {
         }
       })
       .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
+        console.error(err);
+        this.snackBar.openSnackBar(
+          this.translate.instant('models.application.errors.style.notFound'),
+          { error: true }
+        );
       })
       .finally(() => (this.customStyleEdited = false));
   }
