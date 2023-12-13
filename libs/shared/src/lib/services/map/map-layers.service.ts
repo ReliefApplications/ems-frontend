@@ -169,7 +169,9 @@ export class MapLayersService {
     return this.apollo
       .query<LayersQueryResponse>({
         query: GET_LAYERS,
-        variables: {},
+        variables: {
+          sortField: 'name',
+        },
       })
       .pipe(
         filter((response) => !!response.data),
@@ -410,6 +412,12 @@ export class MapLayersService {
     );
   }
 
+  /**
+   * Check if the datasource is valid
+   *
+   * @param value datasource
+   * @returns true if the datasource is valid
+   */
   private isDatasourceValid = (value: LayerDatasource | undefined) => {
     if (value) {
       if (value.refData) {
