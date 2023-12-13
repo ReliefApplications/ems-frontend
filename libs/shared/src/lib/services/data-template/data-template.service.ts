@@ -84,11 +84,16 @@ export class DataTemplateService {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     return this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(html, data, fields, this.getPages(application), styles)
+      parseHtml(html, {
+        data,
+        fields,
+        pages: this.getPages(application),
+        styles,
+      })
     );
   }
 
-  public parseAggregation(resource: string, aggregation: string) {
+  public (resource: string, aggregation: string) {
     this.aggregationService
       .aggregationDataQuery({
         resource,
@@ -114,7 +119,9 @@ export class DataTemplateService {
   public renderLink(href: string) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
-    return parseHtml(href, null, [], this.getPages(application), []);
+    return parseHtml(href, {
+      pages: this.getPages(application),
+    });
   }
 
   /**

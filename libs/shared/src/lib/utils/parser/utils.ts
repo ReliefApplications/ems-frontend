@@ -57,18 +57,21 @@ const getFlatFields = (fields: any, path = ''): any => {
  */
 export const parseHtml = (
   html: string,
-  fieldsValue: any,
-  fields: any,
-  pages: any[],
-  styles?: any[]
+  options: {
+    data?: any;
+    fields?: any;
+    pages: any[];
+    styles?: any[];
+    aggregations?: any[];
+  }
 ) => {
-  const htmlWithLinks = replacePages(html, pages);
-  if (fieldsValue) {
+  const htmlWithLinks = replacePages(html, options.pages);
+  if (options.data) {
     const htmlWithRecord = replaceRecordFields(
       htmlWithLinks,
-      fieldsValue,
-      getFlatFields(fields),
-      styles
+      options.data,
+      getFlatFields(options.fields),
+      options.styles
     );
     return applyOperations(htmlWithRecord);
   } else {

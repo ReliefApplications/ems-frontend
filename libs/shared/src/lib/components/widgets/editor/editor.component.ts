@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isNil } from 'lodash';
+import { clone, get, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -31,6 +31,7 @@ import { GET_REFERENCE_DATA } from './graphql/queries';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ContextService } from '../../../services/context/context.service';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Text widget component using KendoUI
@@ -45,7 +46,11 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   @Input() settings: any;
   /** Should show padding */
   @Input() usePadding = true;
-
+  /** Reference to header template */
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  /** Reference to html content component */
+  @ViewChild(HtmlWidgetContentComponent)
+  htmlContentComponent!: HtmlWidgetContentComponent;
   /** Layout */
   private layout: any;
   /** Record */
@@ -60,17 +65,12 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   private styles: any[] = [];
   /** Should use whole card styles */
   private wholeCardStyles = false;
-
   /** Formatted html */
   public formattedHtml: SafeHtml = '';
   /** Formatted style */
   public formattedStyle?: string;
-
-  /** Reference to header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
-  /** Reference to html content component */
-  @ViewChild(HtmlWidgetContentComponent)
-  htmlContentComponent!: HtmlWidgetContentComponent;
+  /** Result of aggregations */
+  public aggregations: any = {};
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -108,13 +108,41 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
     private contextService: ContextService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private aggregationService: AggregationService
   ) {
     super();
   }
 
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
+    if (this.settings.aggregations) {
+      console.log('ici');
+      for (const aggregation of this.settings.aggregations) {
+        const result = (
+          await firstValueFrom(
+            this.aggregationService.aggregationDataQuery({
+              resource: aggregation.resource,
+              referenceData: aggregation.referenceData,
+              aggregation: aggregation.aggregation,
+            })
+          )
+        ).data;
+        if (aggregation.resource) {
+          set(
+            this.aggregations,
+            aggregation.id,
+            (result as any).recordsAggregation
+          );
+        } else {
+          set(
+            this.aggregations,
+            aggregation.id,
+            (result as any).referenceDataAggregation
+          );
+        }
+      }
+    }
     if (this.settings.record && this.settings.resource) {
       await this.getLayout();
       await this.getRecord();
@@ -125,7 +153,10 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       );
       this.formattedHtml = this.dataTemplateService.renderHtml(
         this.settings.text,
-        this.fieldsValue,
+        {
+          ...this.aggregations,
+          ...this.fieldsValue,
+        },
         this.fields,
         this.styles
       );
@@ -146,12 +177,16 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         });
       this.formattedHtml = this.dataTemplateService.renderHtml(
         this.settings.text,
-        this.fieldsValue,
+        {
+          ...this.aggregations,
+          ...this.fieldsValue,
+        },
         this.fields
       );
     } else {
       this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text
+        this.settings.text,
+        this.aggregations
       );
     }
   }
