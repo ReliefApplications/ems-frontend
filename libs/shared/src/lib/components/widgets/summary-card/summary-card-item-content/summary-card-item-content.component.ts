@@ -124,7 +124,19 @@ export class SummaryCardItemContentComponent
       // Cleanup filter value from the span set by default in the tinymce calculated field if exists
       const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
       const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
-      this.contextService.filter.next({ [filterField]: cleanFilterValue });
+      const currentFilters = { ...this.contextService.filter.getValue() };
+      // If current filters contains the field but there is no value set, delete it
+      if (filterField in currentFilters && !cleanFilterValue) {
+        delete currentFilters[filterField];
+      }
+      // Update filter object with existing fields and values
+      const updatedFilters = {
+        ...(currentFilters && { ...currentFilters }),
+        ...(cleanFilterValue && {
+          [filterField]: cleanFilterValue,
+        }),
+      };
+      this.contextService.filter.next(updatedFilters);
     } else {
       const content = this.htmlContentComponent.el.nativeElement;
       const editorTriggers = content.querySelectorAll('.record-editor');
