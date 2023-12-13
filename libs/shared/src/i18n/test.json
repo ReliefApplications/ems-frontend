@@ -2053,6 +2053,11 @@
 		},
 		"application": {
 			"description": "******",
+			"errors": {
+				"style": {
+					"notFound": "******"
+				}
+			},
 			"id": "******",
 			"new": "******",
 			"notifications": {

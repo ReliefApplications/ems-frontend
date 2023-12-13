@@ -2053,6 +2053,11 @@
 		},
 		"application": {
 			"description": "Description",
+			"errors": {
+				"style": {
+					"notFound": "Unable to load application's style"
+				}
+			},
 			"id": "Application ID",
 			"new": "New application",
 			"notifications": {
