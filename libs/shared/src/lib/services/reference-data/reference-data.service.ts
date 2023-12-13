@@ -22,6 +22,8 @@ const LAST_MODIFIED_KEY = '_last_modified';
 const LAST_REQUEST_KEY = '_last_request';
 /** Property for filtering in requests */
 const LAST_UPDATE_CODE = '{{lastUpdate}}';
+/** Local storage key for last modified */
+const USE_CONTEXTFILTER_KEY = '_context_filter';
 /**
  *  Interface for items stored in localForage cache.
  */
@@ -171,17 +173,41 @@ export class ReferenceDataService {
       referenceDataID,
       contextFilters
     );
+
     const cacheKey = referenceData.id || '';
     const valueField = referenceData.valueField || 'id';
     const cacheTimestamp = localStorage.getItem(cacheKey + LAST_MODIFIED_KEY);
     const modifiedAt = referenceData.modifiedAt || '';
+    const hasActiveContextFilters =
+      contextFilters && contextFilters?.filters?.length > 0 ? true : false;
+    const useContextFiltersCache = localStorage.getItem(
+      cacheKey + USE_CONTEXTFILTER_KEY
+    );
 
-    // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
-    if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
+    /**
+     * Check if items should be refreshed
+     *
+     * @returns boolean
+     */
+    function shouldRefreshItems() {
+      return (
+        !cacheTimestamp ||
+        cacheTimestamp < modifiedAt ||
+        hasActiveContextFilters ||
+        (!hasActiveContextFilters && useContextFiltersCache == 'using')
+      );
+    }
+
+    if (shouldRefreshItems()) {
       items = await this.fetchItems(referenceData);
       // Cache items and timestamp
       await localForage.setItem(cacheKey, { items, valueField });
       localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+      this.setContextFilterInLocalStorage(
+        hasActiveContextFilters,
+        useContextFiltersCache,
+        cacheKey
+      );
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
@@ -227,6 +253,25 @@ export class ReferenceDataService {
       }
     }
     return items;
+  }
+
+  /**
+   * Set the context filter in local storage
+   *
+   * @param hasActiveContextFilters has active context filters
+   * @param useContextFiltersCache use context filters cache
+   * @param cacheKey cache key
+   */
+  private setContextFilterInLocalStorage(
+    hasActiveContextFilters: boolean,
+    useContextFiltersCache: string | null,
+    cacheKey: string
+  ) {
+    if (hasActiveContextFilters) {
+      localStorage.setItem(cacheKey + USE_CONTEXTFILTER_KEY, 'using');
+    } else if (!hasActiveContextFilters && useContextFiltersCache == 'using') {
+      localStorage.setItem(cacheKey + USE_CONTEXTFILTER_KEY, '');
+    }
   }
 
   /**
