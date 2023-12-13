@@ -33,14 +33,22 @@ export class MapPopupComponent
   extends UnsubscribeComponent
   implements AfterContentInit
 {
+  /** Coordinates of the point */
   @Input() coordinates!: LatLng;
+  /** Features */
   @Input() feature: Feature<Geometry>[] = [];
+  /** Template for the popup */
   @Input() template = '';
+  /** Current zoom level */
   @Input() currZoom = 13;
 
+  /** Event emitter for the close event */
   @Output() closePopup: EventEmitter<void> = new EventEmitter<void>();
+  /** Event emitter for the zoom to event */
   @Output() zoomTo: EventEmitter<LatLng> = new EventEmitter<LatLng>();
+  /** Current html */
   public currentHtml: SafeHtml = '';
+  /** Current point */
   public current = new BehaviorSubject<number>(0);
 
   /** @returns current as an observable */

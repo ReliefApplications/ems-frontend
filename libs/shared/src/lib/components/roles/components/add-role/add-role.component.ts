@@ -11,9 +11,11 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
   styleUrls: ['./add-role.component.scss'],
 })
 export class AddRoleComponent {
+  /** Title of the dialog modal */
   title: string;
 
   // === REACTIVE FORM ===
+  /** Reactive form for the role */
   roleForm = this.fb.group({
     title: ['', Validators.required],
   });

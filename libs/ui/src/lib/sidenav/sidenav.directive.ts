@@ -26,29 +26,29 @@ import { DomPortal } from '@angular/cdk/portal';
   exportAs: 'uiSidenavDirective',
 })
 export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
-  /** If sidenav open. */
+  /** Whether the sidenav is opened */
   @Input() opened = true;
-  /** If should be full screen. */
+  /** Whether the sidenav is to be kept on fullscreen */
   @Input() keepFullscreen = false;
-  /** If is visible. */
+  /** Whether the sidenav is visible */
   @Input() visible = true;
-  /** If is visible. */
+  /** Sidenav mode */
   @Input() mode: SidenavTypes = 'side';
-  /** Sidenav position. */
+  /** Sidenav position */
   @Input() position: SidenavPositionTypes = 'start';
-  /** Event when opening/closing. */
+  /** Event emitter for opened change */
   @Output() openedChange = new EventEmitter<boolean>();
 
-  /** Function to handle click outside sidenav events. */
+  /** Click outside listener */
   private clickOutsideListener!: () => void;
-  /** Function to handle fullscreen events. */
+  /** Fullscreen listener */
   private fullscreenListener!: () => void;
-  /** Toggle of the sidenav status. */
+  /** Whether the toggle was used */
   private toggleUsed = false;
 
-  /** Overlay where the sidenav will display in dom portal. */
+  /** Overlay reference */
   private overlayRef?: OverlayRef;
-  /** Dom portal. */
+  /** Dom portal */
   private portal?: DomPortal;
 
   /**

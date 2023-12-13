@@ -12,11 +12,14 @@ interface LegendControlOptions extends L.ControlOptions {
  * Custom Legend control.
  */
 class LegendControl extends L.Control {
+  /** Legend control options */
   public override options: LegendControlOptions = {
     position: 'bottomleft',
     // layers: [],
   };
+  /** Leaflet map */
   private _map!: L.Map;
+  /** Layers */
   private layers = {};
 
   /**

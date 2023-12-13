@@ -49,6 +49,9 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
   ],
 })
 export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
+  /**
+   * List of tabs
+   */
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -77,9 +80,13 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('tabList')
   tabList!: ElementRef<any>;
 
+  /** Previous tabs length */
   previousTabsLength = 0;
+  /** Trigger animation */
   triggerAnimation = false;
+  /** Destroy subject */
   destroy$ = new Subject<void>();
+  /** Reorder subject */
   reorder$ = new Subject<void>();
 
   /**

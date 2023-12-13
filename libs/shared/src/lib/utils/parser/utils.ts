@@ -418,7 +418,6 @@ const replaceRecordFields = (
   }
   // replace all /n, removing it since we don't need because tailwind already styles it
   formattedHtml = formattedHtml.replace(/\n/g, '');
-
   return formattedHtml;
 };
 
@@ -457,8 +456,22 @@ const applyOperations = (html: string): string => {
     `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
     'gm'
   );
-  let parsedHtml = html;
-  let result = regex.exec(html);
+
+  // To identify and remove span with style elements to avoid breaking calc functions
+  const spanRegex = /<span[^>]*>([\s\S]*?)<\/span>/g;
+  const spanElements: string[] = [];
+  // Clean HTML don't have span and styles
+  const cleanHtml = html.replace(spanRegex, (match, spanContent) => {
+    // Save the removed span element
+    spanElements.push(match);
+    // Replace the span element with its content
+    return spanContent;
+  });
+
+  let parsedHtml = cleanHtml;
+  let result = regex.exec(cleanHtml);
+  // Track the index of the saved span elements
+  let spanIndex = 0;
   while (result !== null) {
     // get the function
     const calcFunc = get(calcFunctions, result[1]);
@@ -474,9 +487,20 @@ const applyOperations = (html: string): string => {
       } catch (err: any) {
         resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
       }
-      parsedHtml = parsedHtml.replace(result[0], resultText);
+      if (spanElements.length > spanIndex) {
+        // Retrieve the saved span element
+        const spanElement = spanElements[spanIndex];
+        // Replace the html with the calculated result inside the saved span element with the style
+        parsedHtml = parsedHtml.replace(
+          result[0],
+          spanElement.replace(`'>.*(</span>)`, `'>${resultText}$1`)
+        );
+      } else {
+        parsedHtml = parsedHtml.replace(result[0], resultText);
+      }
+      spanIndex++;
     }
-    result = regex.exec(html);
+    result = regex.exec(cleanHtml);
   }
   return parsedHtml;
 };

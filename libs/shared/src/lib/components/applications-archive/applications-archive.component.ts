@@ -28,18 +28,26 @@ export class ApplicationsArchiveComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Loading state */
   loading = false;
+  /** List of pages */
   @Input() pages: ArchivePage[] = [];
+  /** List of visible pages */
   public visiblePages: Array<ArchivePage> = new Array<ArchivePage>();
+  /** List of displayed columns */
   public displayedColumns = ['name', 'autoDeletedAt', 'actions'];
 
   // === FILTERS ===
+  /** List of filters */
   public filters = [
     { id: 'name', value: '' },
     { id: 'autoDeletedAt', value: '' },
   ];
+  /** Form group */
   public form = this.fb.group({});
+  /** Search text */
   public searchText = '';
+  /** Date filter */
   public dateFilter = '';
 
   /**

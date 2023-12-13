@@ -74,6 +74,7 @@ export class GridWidgetComponent
   /** Reference to reference data grid */
   @ViewChild(ReferenceDataGridComponent)
   referenceDataGridComponent?: ReferenceDataGridComponent;
+  /** Header template */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   /** Data */
@@ -84,6 +85,7 @@ export class GridWidgetComponent
 
   /** Cached configuration */
   public layout: Layout | null = null;
+  /** List of layouts */
   public layouts: Layout[] = [];
 
   /** Sort fields select */
@@ -91,6 +93,7 @@ export class GridWidgetComponent
 
   /** Aggregation */
   public aggregation: Aggregation | null = null;
+  /** List of aggregations */
   public aggregations: Aggregation[] = [];
 
   /** Reference data */
@@ -98,9 +101,13 @@ export class GridWidgetComponent
 
   /** Settings */
   @Input() settings: any = null;
+  /** Id */
   @Input() id = '';
+  /** Can update */
   @Input() canUpdate = false;
+  /** Grid settings */
   public gridSettings: any = null;
+  /** Grid status */
   public status: {
     message?: string;
     error: boolean;

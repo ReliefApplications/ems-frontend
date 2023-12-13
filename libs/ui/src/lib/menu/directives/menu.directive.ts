@@ -19,13 +19,17 @@ import { OverlayRef, Overlay, ConnectedPosition } from '@angular/cdk/overlay';
   selector: '[uiMenuTriggerFor]',
 })
 export class MenuTriggerForDirective {
+  /** Menu trigger for */
   @Input('uiMenuTriggerFor') public menuPanel!: {
     templateRef: TemplateRef<any>;
     closed: EventEmitter<void>;
   };
 
+  /** Whether the menu is open or not */
   private isMenuOpen = false;
+  /** Overlay reference */
   overlayRef!: OverlayRef;
+  /** Menu closing actions subscription */
   menuClosingActionsSubscription!: Subscription;
 
   /**

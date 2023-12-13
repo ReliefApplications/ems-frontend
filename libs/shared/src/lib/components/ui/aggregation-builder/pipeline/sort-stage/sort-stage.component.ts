@@ -10,7 +10,10 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./sort-stage.component.scss'],
 })
 export class SortStageComponent {
+  /** Form group */
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
+  /** Fields */
   @Input() fields: any[] = [];
+  /** Show limit */
   @Input() showLimit = false;
 }

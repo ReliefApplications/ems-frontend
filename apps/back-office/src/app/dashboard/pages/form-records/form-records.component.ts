@@ -55,23 +55,36 @@ export class FormRecordsComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Loading more state */
   public loadingMore = false;
+  /** Records query */
   private recordsQuery!: QueryRef<FormRecordsQueryResponse>;
+  /** Form id */
   public id = '';
+  /** Form */
   public form: any;
+  /** Columns to display */
   displayedColumns: string[] = [];
+  /** Data source array */
   dataSource: any[] = [];
+  /** Show sidenav */
   public showSidenav = true;
+  /** History id */
   private historyId = '';
+  /** Cached records */
   public cachedRecords: Record[] = [];
+  /** Default columns */
   public defaultColumns = DEFAULT_COLUMNS;
   /** Updating status */
   public updating = false;
 
   // === DELETED RECORDS VIEW ===
+  /** Show deleted records */
   public showDeletedRecords = false;
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
@@ -84,7 +97,11 @@ export class FormRecordsComponent
     return !this.loading && this.dataSource.length === 0;
   }
 
+  /**
+   * File input
+   */
   @ViewChild('xlsxFile') xlsxFile: any;
+  /** Show upload option */
   public showUpload = false;
 
   /**

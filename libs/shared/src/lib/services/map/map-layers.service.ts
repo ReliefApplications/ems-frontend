@@ -410,6 +410,12 @@ export class MapLayersService {
     );
   }
 
+  /**
+   * Check if the datasource is valid
+   *
+   * @param value datasource
+   * @returns true if the datasource is valid
+   */
   private isDatasourceValid = (value: LayerDatasource | undefined) => {
     if (value) {
       if (value.refData) {

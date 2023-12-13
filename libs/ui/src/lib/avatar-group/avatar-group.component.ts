@@ -34,7 +34,7 @@ export class AvatarGroupComponent implements AfterViewInit {
   @ContentChildren(AvatarComponent) avatars!: QueryList<AvatarComponent>;
 
   /**
-   * Constructor
+   * Constructor of AvatarGroupComponent
    *
    * @param renderer Renderer2
    * @param el The host element
