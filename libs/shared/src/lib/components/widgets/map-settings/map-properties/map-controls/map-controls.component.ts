@@ -49,8 +49,14 @@ export class MapControlsComponent implements ControlValueAccessor {
   /** Disable ControlValueAccessor */
   private disabled = false;
 
+  /** Shell function for touch */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onTouched = () => {};
+  /**
+   *  Shell function for change
+   *
+   * @param _ value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChanged = (_: any) => {};
 

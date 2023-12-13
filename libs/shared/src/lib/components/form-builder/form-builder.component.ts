@@ -102,14 +102,32 @@ export class FormBuilderComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges, OnDestroy
 {
+  /**
+   * Form object
+   */
   @Input() form!: Form;
+  /**
+   * Event emitted when the form is saved
+   */
   @Output() save: EventEmitter<any> = new EventEmitter();
+  /**
+   * Event emitted when the form is changed
+   */
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
+  /**
+   * SurveyJS creator model
+   */
   surveyCreator!: SurveyCreatorModel;
+  /**
+   * JSON object of the form
+   */
   public json: any;
 
+  /**
+   * List of related names
+   */
   private relatedNames!: string[];
 
   /**

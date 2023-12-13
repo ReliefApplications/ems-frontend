@@ -37,6 +37,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
   /** Reference to the content wrapper. */
   @ViewChild('contentWrapper') contentWrapper!: ElementRef;
+  /** Reference to the fixed wrapper actions. */
   @ViewChild('fixedWrapperActions', { read: ViewContainerRef })
   fixedWrapperActions?: ViewContainerRef;
 

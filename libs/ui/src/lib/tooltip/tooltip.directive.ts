@@ -216,7 +216,7 @@ export class TooltipDirective implements OnDestroy {
   selector: '[uiTooltipPosition]',
 })
 export class TooltipPositionDirective implements OnInit {
-  /** Tooltip position input. */
+  /** Tooltip position */
   @Input('uiTooltipPosition') position: TooltipPosition = 'bottom';
 
   /**

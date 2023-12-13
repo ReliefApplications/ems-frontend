@@ -25,11 +25,13 @@ export class TabBodyHostDirective
   extends CdkPortalOutlet
   implements OnInit, OnDestroy
 {
-  /** Subject to emit when the component is destroyed. */
+  /** Destroy subject */
   destroy$: Subject<boolean> = new Subject<boolean>();
-  /** The open tab component. */
+  /** Current opened tab */
   private _openedTab?: TabComponent;
-  /** Event emitter to get the tab whe its opened. */
+  /**
+   * Current opened tab setter
+   */
   @Input() openedTab!: EventEmitter<TabComponent>;
 
   /**
