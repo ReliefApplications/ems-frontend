@@ -53,15 +53,6 @@
         </shared-summary-card>
       </ng-template>
     </ui-tab>
-    <ui-tab>
-      <ng-container ngProjectAs="label">
-        <ui-icon icon="auto_awesome_motion" [size]="24"></ui-icon>
-        <span>{{ 'common.aggregation.few' | translate }}</span>
-      </ng-container>
-      <ng-template uiTabContent>
-        <shared-template-aggregations></shared-template-aggregations>
-      </ng-template>
-    </ui-tab>
     <!-- Available actions -->
     <ui-tab *ngIf="layout">
       <ng-container ngProjectAs="label">

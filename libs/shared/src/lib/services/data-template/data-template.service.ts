@@ -14,6 +14,8 @@ import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { RawEditorSettings } from 'tinymce';
 import { LocationStrategy } from '@angular/common';
+import { AggregationService } from '../aggregation/aggregation.service';
+import { cloneDeep } from 'lodash';
 
 /**
  * Data template service
@@ -34,13 +36,15 @@ export class DataTemplateService {
    * @param applicationService Shared application service
    * @param environment Current environment
    * @param locationStrategy Angular location strategy
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private sanitizer: DomSanitizer,
     private downloadService: DownloadService,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
-    private locationStrategy: LocationStrategy
+    private locationStrategy: LocationStrategy,
+    private aggregationService: AggregationService
   ) {
     this.environment = environment;
   }
@@ -82,6 +86,23 @@ export class DataTemplateService {
     return this.sanitizer.bypassSecurityTrustHtml(
       parseHtml(html, data, fields, this.getPages(application), styles)
     );
+  }
+
+  public parseAggregation(resource: string, aggregation: string) {
+    this.aggregationService
+      .aggregationDataQuery({
+        resource,
+        aggregation,
+      })
+      .subscribe(({ data, errors }: any) => {
+        if (errors) {
+          return '';
+        } else {
+          const result = cloneDeep(data.recordsAggregation);
+          console.log(result);
+          return;
+        }
+      });
   }
 
   /**

@@ -18,7 +18,11 @@
               <input formControlName="title" type="string" />
             </div>
           </div>
-          <editor *ngIf="!loading" [init]="editor" formControlName="text"></editor>
+          <editor
+            *ngIf="!loading"
+            [init]="editor"
+            formControlName="text"
+          ></editor>
           <ui-spinner *ngIf="loading"></ui-spinner>
         </form>
       </ng-template>
@@ -71,7 +75,9 @@
         <span>{{ 'common.aggregation.few' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-template-aggregations></shared-template-aggregations>
+        <shared-template-aggregations
+          [formGroup]="widgetFormGroup"
+        ></shared-template-aggregations>
       </ng-template>
     </ui-tab>
     <!-- Widget display options -->
