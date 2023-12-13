@@ -1820,6 +1820,8 @@
 						}
 					},
 					"dynamic": "Dynamic",
+					"exportable": "Allow export of the cards",
+					"gridMode": "Allow to show as grid",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
 					},
