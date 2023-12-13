@@ -17,6 +17,11 @@ import {
   createTemplateAggregationForm,
 } from '../../editor-settings/editor-settings.forms';
 
+/**
+ * Template aggregations component.
+ * Allow to edit and add items in the list of template aggregations.
+ * Template aggregations are used by editor widget, to inject data from aggregations on resource or reference data.
+ */
 @Component({
   selector: 'shared-template-aggregations',
   standalone: true,
@@ -37,16 +42,25 @@ export class TemplateAggregationsComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Template aggregation form group */
   @Input() formGroup!: ReturnType<typeof createEditorForm>;
   /** Bind to form group data */
   public data: any[] = [];
   /** Columns to display */
   public displayedColumns = ['name', 'id', 'actions'];
 
+  /** @returns aggregations from form group as form array */
   get aggregations() {
     return this.formGroup.controls.aggregations;
   }
 
+  /**
+   * Template aggregations component.
+   * Allow to edit and add items in the list of template aggregations.
+   * Template aggregations are used by editor widget, to inject data from aggregations on resource or reference data.
+   *
+   * @param dialog CDK dialog service
+   */
   constructor(private dialog: Dialog) {
     super();
   }
@@ -55,6 +69,9 @@ export class TemplateAggregationsComponent
     this.data = this.aggregations.value;
   }
 
+  /**
+   * Open dialog to add a new aggregation.
+   */
   public onAddAggregation() {
     import(
       '../template-aggregation-modal/template-aggregation-modal.component'
@@ -71,14 +88,22 @@ export class TemplateAggregationsComponent
     });
   }
 
+  /**
+   * Remove aggregation at index
+   *
+   * @param index aggregation index
+   */
   public onRemoveAggregation(index: number) {
-    console.log(index);
     this.aggregations.removeAt(index);
     this.data = this.aggregations.value;
   }
 
+  /**
+   * Edit aggregation at index, opening template aggregation modal.
+   *
+   * @param index aggregation index
+   */
   public onEditAggregation(index: number) {
-    console.log(index);
     import(
       '../template-aggregation-modal/template-aggregation-modal.component'
     ).then(({ TemplateAggregationModalComponent }) => {

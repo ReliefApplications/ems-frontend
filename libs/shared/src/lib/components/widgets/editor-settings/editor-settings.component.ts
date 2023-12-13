@@ -140,6 +140,13 @@ export class EditorSettingsComponent
       this.updateFields();
       this.loading = false;
     }
+
+    // Refresh when aggregations field changes
+    this.widgetFormGroup.controls.aggregations.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateFields();
+      });
   }
 
   /**
@@ -241,7 +248,10 @@ export class EditorSettingsComponent
     }
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
-      ...this.dataTemplateService.getAutoCompleterKeys(fields),
+      ...this.dataTemplateService.getAutoCompleterKeys(
+        fields,
+        this.widgetFormGroup.value.aggregations
+      ),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
     ]);
   }

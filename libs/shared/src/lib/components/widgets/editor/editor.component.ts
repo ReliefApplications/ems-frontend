@@ -70,7 +70,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Formatted style */
   public formattedStyle?: string;
   /** Result of aggregations */
-  public aggregations: any = {};
+  public aggregationsData: any = {};
+  /** Loading indicator */
+  public loading = true;
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -82,6 +84,11 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     return (
       (this.settings.showDataSourceLink || false) && !this.useReferenceData
     );
+  }
+
+  /** @returns available aggregations */
+  get aggregations() {
+    return this.settings.aggregations || [];
   }
 
   /**
@@ -97,6 +104,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param referenceDataService Shared reference data service
    * @param contextService Context service
    * @param renderer Angular renderer2 service
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,
@@ -116,79 +124,115 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
 
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
-    if (this.settings.aggregations) {
-      console.log('ici');
-      for (const aggregation of this.settings.aggregations) {
-        const result = (
-          await firstValueFrom(
+    if (this.settings.record && this.settings.resource) {
+      Promise.all([
+        new Promise<void>((resolve) => {
+          this.getLayout()
+            .then(() => this.getRecord().finally(() => resolve()))
+            .catch(() => resolve());
+        }),
+        this.getAggregationsData(),
+      ]).then(() => {
+        this.formattedStyle = this.dataTemplateService.renderStyle(
+          this.settings.wholeCardStyles || false,
+          this.fieldsValue,
+          this.styles
+        );
+        this.formattedHtml = this.dataTemplateService.renderHtml(
+          this.settings.text,
+          {
+            data: this.fieldsValue,
+            aggregation: this.aggregations,
+            fields: this.fields,
+            styles: this.styles,
+          }
+        );
+        this.loading = false;
+      });
+    } else if (this.settings.element && this.settings.referenceData) {
+      Promise.all([
+        new Promise<void>((resolve) => {
+          this.getReferenceData()
+            .then(() => {
+              this.referenceDataService
+                .cacheItems(this.settings.referenceData)
+                .then((value) => {
+                  if (value) {
+                    const field = this.referenceData?.valueField;
+                    const selectedItemKey = String(this.settings.element);
+                    if (field) {
+                      this.fieldsValue = value.find(
+                        (x: any) => String(get(x, field)) === selectedItemKey
+                      );
+                    }
+                  }
+                })
+                .finally(() => resolve());
+            })
+            .catch(() => resolve());
+        }),
+        this.getAggregationsData(),
+      ]).then(() => {
+        this.formattedHtml = this.dataTemplateService.renderHtml(
+          this.settings.text,
+          {
+            data: this.fieldsValue,
+            aggregation: this.aggregations,
+            fields: this.fields,
+          }
+        );
+        this.loading = false;
+      });
+    } else {
+      this.formattedHtml = this.dataTemplateService.renderHtml(
+        this.settings.text,
+        {
+          aggregation: this.aggregations,
+        }
+      );
+      this.loading = false;
+    }
+  }
+
+  /**
+   * Get all aggregations data
+   *
+   * @returns promise
+   */
+  private getAggregationsData() {
+    const promises: Promise<void>[] = [];
+    this.aggregations.forEach((aggregation: any) => {
+      promises.push(
+        new Promise<void>((resolve) => {
+          firstValueFrom(
             this.aggregationService.aggregationDataQuery({
               resource: aggregation.resource,
               referenceData: aggregation.referenceData,
               aggregation: aggregation.aggregation,
+              contextFilters: aggregation.contextFilters,
+              at: this.contextService.atArgumentValue(aggregation.at),
             })
           )
-        ).data;
-        if (aggregation.resource) {
-          set(
-            this.aggregations,
-            aggregation.id,
-            (result as any).recordsAggregation
-          );
-        } else {
-          set(
-            this.aggregations,
-            aggregation.id,
-            (result as any).referenceDataAggregation
-          );
-        }
-      }
-    }
-    if (this.settings.record && this.settings.resource) {
-      await this.getLayout();
-      await this.getRecord();
-      this.formattedStyle = this.dataTemplateService.renderStyle(
-        this.settings.wholeCardStyles || false,
-        this.fieldsValue,
-        this.styles
+            .then(({ data }) => {
+              if (aggregation.resource) {
+                set(
+                  this.aggregations,
+                  aggregation.id,
+                  (data as any).recordsAggregation
+                );
+              } else {
+                set(
+                  this.aggregations,
+                  aggregation.id,
+                  (data as any).referenceDataAggregation
+                );
+              }
+            })
+            .finally(() => resolve());
+        })
       );
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text,
-        {
-          ...this.aggregations,
-          ...this.fieldsValue,
-        },
-        this.fields,
-        this.styles
-      );
-    } else if (this.settings.element && this.settings.referenceData) {
-      await this.getReferenceData();
-      await this.referenceDataService
-        .cacheItems(this.settings.referenceData)
-        .then((value) => {
-          if (value) {
-            const field = this.referenceData?.valueField;
-            const selectedItemKey = String(this.settings.element);
-            if (field) {
-              this.fieldsValue = value.find(
-                (x: any) => String(get(x, field)) === selectedItemKey
-              );
-            }
-          }
-        });
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text,
-        {
-          ...this.aggregations,
-          ...this.fieldsValue,
-        },
-        this.fields
-      );
-    } else {
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text,
-        this.aggregations
-      );
-    }
+    });
+    return Promise.all(promises);
   }
 
   /**
@@ -258,20 +302,26 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
         if (value) {
+          this.loading = true;
           // Update the record, based on new configuration
-          this.getRecord().then(() => {
-            this.formattedStyle = this.dataTemplateService.renderStyle(
-              this.settings.wholeCardStyles || false,
-              this.fieldsValue,
-              this.styles
-            );
-            this.formattedHtml = this.dataTemplateService.renderHtml(
-              this.settings.text,
-              this.fieldsValue,
-              this.fields,
-              this.styles
-            );
-          });
+          this.getRecord()
+            .then(() => {
+              this.formattedStyle = this.dataTemplateService.renderStyle(
+                this.settings.wholeCardStyles || false,
+                this.fieldsValue,
+                this.styles
+              );
+              this.formattedHtml = this.dataTemplateService.renderHtml(
+                this.settings.text,
+                {
+                  data: this.fieldsValue,
+                  aggregation: this.aggregations,
+                  fields: this.fields,
+                  styles: this.styles,
+                }
+              );
+            })
+            .finally(() => (this.loading = false));
         }
       });
     }

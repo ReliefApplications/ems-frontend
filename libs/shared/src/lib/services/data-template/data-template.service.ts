@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DownloadService } from '../download/download.service';
 import get from 'lodash/get';
 import {
+  getAggregationKeys,
   getCalcKeys,
   getCardStyle,
   getDataKeys,
@@ -14,8 +15,6 @@ import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { RawEditorSettings } from 'tinymce';
 import { LocationStrategy } from '@angular/common';
-import { AggregationService } from '../aggregation/aggregation.service';
-import { cloneDeep } from 'lodash';
 
 /**
  * Data template service
@@ -36,15 +35,13 @@ export class DataTemplateService {
    * @param applicationService Shared application service
    * @param environment Current environment
    * @param locationStrategy Angular location strategy
-   * @param aggregationService Shared aggregation service
    */
   constructor(
     private sanitizer: DomSanitizer,
     private downloadService: DownloadService,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
-    private locationStrategy: LocationStrategy,
-    private aggregationService: AggregationService
+    private locationStrategy: LocationStrategy
   ) {
     this.environment = environment;
   }
@@ -53,10 +50,15 @@ export class DataTemplateService {
    * Get auto completer keys
    *
    * @param fields available fields
+   * @param aggregations available aggregations
    * @returns available keys
    */
-  public getAutoCompleterKeys(fields: any[]) {
-    return [...getDataKeys(fields), ...getCalcKeys()];
+  public getAutoCompleterKeys(fields: any[], aggregations?: any[]) {
+    return [
+      ...getDataKeys(fields),
+      ...getAggregationKeys(aggregations || []),
+      ...getCalcKeys(),
+    ];
   }
 
   /**
@@ -75,39 +77,33 @@ export class DataTemplateService {
    * Render HTML from definition
    *
    * @param html html template
-   * @param data content data
-   * @param fields definition of fields
-   * @param styles definition of styles
+   * @param options options
+   * @param options.data content data
+   * @param options.aggregation aggregation data
+   * @param options.fields definition of fields
+   * @param options.styles definition of styles
    * @returns html to render
    */
-  public renderHtml(html: string, data?: any, fields?: any[], styles?: any[]) {
+  public renderHtml(
+    html: string,
+    options: {
+      data?: any;
+      aggregation?: any;
+      fields?: any[];
+      styles?: any[];
+    }
+  ) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     return this.sanitizer.bypassSecurityTrustHtml(
       parseHtml(html, {
-        data,
-        fields,
+        data: options.data,
+        aggregation: options.aggregation,
+        fields: options.fields,
         pages: this.getPages(application),
-        styles,
+        styles: options.styles,
       })
     );
-  }
-
-  public (resource: string, aggregation: string) {
-    this.aggregationService
-      .aggregationDataQuery({
-        resource,
-        aggregation,
-      })
-      .subscribe(({ data, errors }: any) => {
-        if (errors) {
-          return '';
-        } else {
-          const result = cloneDeep(data.recordsAggregation);
-          console.log(result);
-          return;
-        }
-      });
   }
 
   /**

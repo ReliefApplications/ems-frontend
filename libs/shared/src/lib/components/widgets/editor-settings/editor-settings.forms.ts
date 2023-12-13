@@ -13,6 +13,12 @@ const DEFAULT_CONTEXT_FILTER = `{
   "filters": []
 }`;
 
+/**
+ * Create a new template aggregation form
+ *
+ * @param value previous value, if any
+ * @returns form group
+ */
 export const createTemplateAggregationForm = (value: any) => {
   return fb.group({
     id: get<string>(value, 'id', uuidv4()),

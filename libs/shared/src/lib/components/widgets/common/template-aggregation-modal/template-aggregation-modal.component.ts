@@ -11,7 +11,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContextualFiltersSettingsComponent } from '../contextual-filters-settings/contextual-filters-settings.component';
 import {
   ReferenceDataSelectComponent,
@@ -35,10 +35,15 @@ import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import get from 'lodash/get';
 import { createTemplateAggregationForm } from '../../editor-settings/editor-settings.forms';
 
+/** Dialog data interface */
 interface DialogData {
   aggregation?: ReturnType<typeof createTemplateAggregationForm>;
 }
 
+/**
+ * Modal to edit or add template aggregation.
+ * Template aggregations are used by editor widget, to inject data from aggregations on resource or reference data.
+ */
 @Component({
   selector: 'shared-template-aggregation-modal',
   standalone: true,
@@ -75,8 +80,16 @@ export class TemplateAggregationModalComponent
   /** Current aggregation */
   public aggregation?: Aggregation;
 
+  /**
+   * Modal to edit or add template aggregation.
+   * Template aggregations are used by editor widget, to inject data from aggregations on resource or reference data.
+   *
+   * @param apollo Apollo service
+   * @param aggregationService Shared aggregation service
+   * @param dialog CDK dialog service
+   * @param data Data passed to dialog
+   */
   constructor(
-    private fb: FormBuilder,
     private apollo: Apollo,
     private aggregationService: AggregationService,
     private dialog: Dialog,
