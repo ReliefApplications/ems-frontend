@@ -6,13 +6,19 @@ declare namespace Intl {
   /** DisplayNames class */
   class DisplayNames {
     /**
-     * Constructor of display names
+     * Constructor of the DisplayNames class
      *
      * @param locales The language to use
      * @param options The options
      */
     constructor(locales?: string | string[], options?: any);
 
+    /**
+     * Get the native name of a language
+     *
+     * @param lang The language code
+     * @returns The native name of the language
+     */
     public of: (lang: string) => string;
   }
 }

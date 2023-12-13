@@ -23,8 +23,14 @@ import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
   styleUrls: ['./contextual-filters-settings.component.scss'],
 })
 export class ContextualFiltersSettingsComponent {
+  /**
+   * Form group
+   */
   @Input() form!: FormGroup;
 
+  /**
+   * Editor options
+   */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'json',

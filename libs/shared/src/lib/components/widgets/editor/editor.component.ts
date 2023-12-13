@@ -46,18 +46,27 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Should show padding */
   @Input() usePadding = true;
 
+  /** Layout */
   private layout: any;
+  /** Record */
   private record?: any;
   /** Configured reference data */
   private referenceData?: ReferenceData;
+  /** Fields */
   private fields: any[] = [];
+  /** Fields value */
   private fieldsValue: any;
+  /** Styles */
   private styles: any[] = [];
+  /** Should use whole card styles */
   private wholeCardStyles = false;
 
+  /** Formatted html */
   public formattedHtml: SafeHtml = '';
+  /** Formatted style */
   public formattedStyle?: string;
 
+  /** Reference to header template */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to html content component */
   @ViewChild(HtmlWidgetContentComponent)

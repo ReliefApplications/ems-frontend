@@ -41,6 +41,7 @@ export class ResourceAvailableFieldsComponent
   extends QuestionAngular<QuestionResourceAvailableFieldsModel>
   implements OnDestroy
 {
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
   /**

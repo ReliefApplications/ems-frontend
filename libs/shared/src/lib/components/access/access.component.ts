@@ -13,14 +13,19 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 })
 export class AccessComponent extends UnsubscribeComponent {
   // === PERMISSIONS LAYER OF CURRENT OBJECT ===
+  /** Access object */
   @Input() access!: any;
+  /** Application name */
   @Input() application?: string;
 
   // === DISPLAY ===
+  /** Whether the component is displayed in a menu item */
   @Input() menuItem = false;
+  /** Object type name */
   @Input() objectTypeName!: string;
 
   // === PASS THE RESULT TO PARENT COMPONENT ===
+  /** Event emitter for save event */
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   /**

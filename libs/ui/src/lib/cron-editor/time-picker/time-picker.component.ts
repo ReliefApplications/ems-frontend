@@ -31,16 +31,25 @@ function* range(start: number, end: number) {
   styleUrls: ['./time-picker.component.scss'],
 })
 export class TimePickerComponent implements OnInit {
+  /** Whether time picker is disabled or not */
   @Input() public disabled = false;
+  /** Whether to use 24 hour time or not */
   @Input() public use24HourTime = true;
+  /** Whether to hide hours or not */
   @Input() public hideHours = false;
+  /** Whether to hide minutes or not */
   @Input() public hideMinutes = false;
+  /** Whether to hide seconds or not */
   @Input() public hideSeconds = true;
 
+  /** Form group */
   allForm!: FormGroup;
 
+  /** Minutes range */
   public minutes = [...range(0, 59)];
+  /** Seconds range */
   public seconds = [...range(0, 59)];
+  /** Hour types */
   public hourTypes = ['AM', 'PM'];
 
   /** @returns hours */

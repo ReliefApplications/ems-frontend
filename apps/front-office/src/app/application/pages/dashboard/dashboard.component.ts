@@ -65,6 +65,7 @@ export class DashboardComponent
   public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
+  // === BUTTON ACTIONS ===
   /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
 

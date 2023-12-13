@@ -140,9 +140,11 @@ export class ApplicationService {
   /** Current environment */
   private environment: any;
 
-  /** Application custom style */
+  /** Raw application custom style */
   public rawCustomStyle?: string;
+  /** Application custom style */
   public customStyle?: HTMLStyleElement;
+  /** Custom style edited */
   public customStyleEdited = false;
 
   /** @returns Path to download application users */
