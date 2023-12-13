@@ -18,7 +18,8 @@
               <input formControlName="title" type="string" />
             </div>
           </div>
-          <editor [init]="editor" formControlName="text"></editor>
+          <editor *ngIf="!loading" [init]="editor" formControlName="text"></editor>
+          <ui-spinner *ngIf="loading"></ui-spinner>
         </form>
       </ng-template>
     </ui-tab>
