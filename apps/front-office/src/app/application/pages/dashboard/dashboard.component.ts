@@ -61,14 +61,11 @@ export class DashboardComponent
   public dashboard?: Dashboard;
   /** Show dashboard filter */
   public showFilter!: boolean;
-  /** Show name ( contextual pages ) */
-  public showName = false;
   /** Current style variant */
   public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
-
-  // === BUTTON ACTIONS ===
+  /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
 
   /** @returns type of context element */
@@ -138,7 +135,6 @@ export class DashboardComponent
         if (id) {
           if (queryId) {
             // Try to load template
-            this.showName = true;
             this.loadDashboard(id).then(() => {
               const templates = this.dashboard?.page?.contentWithContext;
               const type = this.contextType;
@@ -176,7 +172,6 @@ export class DashboardComponent
             });
           } else {
             // Don't use template, and directly load the dashboard from router's params
-            this.showName = false;
             this.loadDashboard(id).then(() => (this.loading = false));
           }
         }

@@ -408,6 +408,13 @@ const replaceRecordFields = (
       );
       formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
+
+    const regex = /{{data\.(.*?)}}/g;
+    const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+      // Replace the key with correct value
+      return get(fieldsValue, p1);
+    });
+    formattedHtml = replacedHtml;
   }
   // replace all /n, removing it since we don't need because tailwind already styles it
   formattedHtml = formattedHtml.replace(/\n/g, '');
