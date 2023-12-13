@@ -2063,6 +2063,11 @@
 		},
 		"application": {
 			"description": "Description",
+			"errors": {
+				"style": {
+					"notFound": "Le style de l'application n'a pas pu être chargé"
+				}
+			},
 			"id": "ID de l'application",
 			"menu": "Menu latéral",
 			"new": "Nouvelle application",
