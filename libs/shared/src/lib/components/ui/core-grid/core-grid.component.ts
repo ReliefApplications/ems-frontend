@@ -83,6 +83,7 @@ export class CoreGridComponent
   implements OnChanges
 {
   // === INPUTS ===
+  /** Grid settings */
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
@@ -102,10 +103,15 @@ export class CoreGridComponent
   }
 
   // === SELECTION INPUTS ===
+  /** Multi select control */
   @Input() multiSelect = true;
+  /** Selected rows */
   @Input() selectedRows: string[] = [];
+  /** Selectable settings */
   @Input() selectable = true;
+  /** Evemitter for selection change */
   @Output() selectionChange = new EventEmitter();
+  /** Evemitter for row removal */
   @Output() removeRowIds = new EventEmitter<string[]>();
 
   /** @returns list of selected items in the grid */
@@ -114,55 +120,80 @@ export class CoreGridComponent
   }
 
   // === FEATURES INPUTS ===
+  /** Show details button control */
   @Input() showDetails = true;
+  /** Show export button control */
   @Input() showExport = true;
+  /** Whether new records can be created */
   @Input() canCreateRecords = false;
 
   // === OUTPUTS ===
+  /** Event emitter for layout change */
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for default layout change */
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for layout reset*/
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
+  /** Event emitter for row selection */
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
   // === TEMPLATE REFERENCE TO GRID ===
+  /** Grid component */
   @ViewChild(GridComponent)
   private grid?: GridComponent;
 
   // === DATA ===
+  /** Widget */
   @Input() widget: any;
+  /** Update permission */
   @Input() canUpdate = false;
+  /**
+   * Grid data containing the data and total count.
+   */
   public gridData: GridDataResult = { data: [], total: 0 };
+  /** Total count of items in the grid data. */
   private totalCount = 0;
+  /** Array containing the items for the grid. */
   private items: any[] = [];
+  /** Array containing fields for the grid. */
   public fields: any[] = [];
+  /** Metadata fields for the grid. */
   private metaFields: any;
+  /** Details field for the grid. */
   public detailsField?: any;
+  /** Data query reference for fetching data. */
   private dataQuery!: QueryRef<QueryResponse>;
-  private metaQuery: any;
+  /** Meta query reference for fetching metadata. */
+  private metaQuery!: any;
 
   // === PAGINATION ===
+  /** Number of items per page. */
   public pageSize = 10;
+  /** Number of items to skip in pagination. */
   public skip = 0;
+  /** Event emitter for page size changes. */
   @Output() pageSizeChanged: EventEmitter<any> = new EventEmitter<any>();
 
   // === INLINE EDITION ===
+  /** Original items data for inline editing. */
   private originalItems: any[] = this.gridData.data;
+  /** Updated items data for inline editing. */
   public updatedItems: any[] = [];
+  /** Form group for managing form controls. */
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  /** Loading status indicator. */
   public loading = false;
-  @Input() status: {
-    message?: string;
-    error: boolean;
-  } = {
-    error: false,
-  };
-  // Refresh content of the history
+  /** Status information, including a message and error flag. */
+  @Input() status: { message?: string; error: boolean } = { error: false };
+  /** Subject for triggering a content refresh in the history. */
   private refresh$: Subject<boolean> = new Subject<boolean>();
 
   // === SORTING ===
+  /** Array of sort descriptors for sorting data. */
   public sort: SortDescriptor[] = [];
 
   /** @returns current field used for sorting */
@@ -187,12 +218,16 @@ export class CoreGridComponent
   }
 
   // === FILTERING ===
+  /** Array of filter descriptors for filtering data. */
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  /** Context filters array */
   private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
     filters: [],
   };
+  /** Whether to show the filter menu. */
   public showFilter = false;
+  /** Search string */
   public search = '';
 
   /** @returns current grid filter, from grid settings and grid layout */
@@ -236,10 +271,13 @@ export class CoreGridComponent
   }
 
   // === LAYOUT CHANGES ===
+  /** Whether the layout has changes. */
   public hasLayoutChanges = false;
 
   // === ACTIONS ON SELECTION ===
+  /** Selected rows index array */
   public selectedRowsIndex: number[] = [];
+  /** Whether the edition is active */
   public editionActive = false;
 
   // === DOWNLOAD ===
@@ -261,6 +299,7 @@ export class CoreGridComponent
   }
 
   // === ACTIONS ===
+  /** Grid actions */
   public actions = {
     add: false,
     update: false,
@@ -278,6 +317,7 @@ export class CoreGridComponent
     remove: false,
   };
 
+  /** Whether the grid is editable */
   public editable = false;
 
   /** Current environment */

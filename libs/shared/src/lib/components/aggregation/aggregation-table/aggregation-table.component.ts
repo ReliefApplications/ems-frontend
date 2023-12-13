@@ -24,11 +24,16 @@ export class AggregationTableComponent
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
+  /** Aggregation resource */
   @Input() resource: Resource | null = null;
+  /** Selected aggregations form control */
   @Input() selectedAggregations: UntypedFormControl | null = null;
 
+  /** List of aggregations */
   aggregations: Layout[] = [];
+  /** List of all aggregations */
   allAggregations: Layout[] = [];
+  /** List of displayed columns */
   columns: string[] = ['name', 'createdAt', '_actions'];
 
   /**
@@ -100,6 +105,10 @@ export class AggregationTableComponent
       if (value) {
         if (!this.allAggregations.find((x) => x.id === value.id)) {
           this.allAggregations.push(value);
+          this.resource?.aggregations?.edges?.push({
+            node: value,
+            cursor: value.id,
+          });
         }
         this.selectedAggregations?.setValue(
           this.selectedAggregations?.value.concat(value.id)

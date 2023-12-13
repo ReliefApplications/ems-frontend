@@ -30,12 +30,18 @@ export class TabDisplayComponent
   extends UnsubscribeComponent
   implements OnInit, AfterViewInit
 {
+  /** Form group */
   @Input() formGroup!: UntypedFormGroup;
+  /** Type of the chart */
   @Input() type: any;
+  /** Chart settings */
   public chartSettings: any;
 
+  /** Legend positions */
   public legendPositions = LEGEND_POSITIONS;
+  /** Title positions */
   public titlePositions = TITLE_POSITIONS;
+  /** Sizes */
   public sizes = [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
     28,
@@ -46,6 +52,7 @@ export class TabDisplayComponent
     return this.formGroup.get('chart') as UntypedFormGroup;
   }
 
+  /** Chart component */
   @ViewChild(ChartComponent) chartComponent!: ChartComponent;
 
   /**

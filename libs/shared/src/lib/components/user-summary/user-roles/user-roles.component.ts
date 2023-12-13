@@ -10,12 +10,17 @@ import { AuthService } from '../../../services/auth/auth.service';
   styleUrls: ['./user-roles.component.scss'],
 })
 export class UserRolesComponent implements OnInit {
+  /** User */
   @Input() user!: User;
+  /** Application */
   @Input() application?: Application;
 
+  /** Event emitter for the edit event */
   @Output() edit = new EventEmitter();
 
+  /** Whether the component is loading or not */
   @Input() loading = false;
+  /** Whether groups can be seen or not */
   public canSeeGroups = false;
 
   /**

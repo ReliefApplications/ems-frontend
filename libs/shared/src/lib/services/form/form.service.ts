@@ -15,6 +15,7 @@ import { DOCUMENT } from '@angular/common';
  */
 @Injectable({ providedIn: 'root' })
 export class FormService {
+  /** Current environment */
   private environment: any;
 
   /**

@@ -150,4 +150,18 @@ export class RecordSelectionTabComponent
       this.selectedRecordID = null;
     }
   }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.form.get(formField)?.value) {
+      this.form.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
+  }
 }

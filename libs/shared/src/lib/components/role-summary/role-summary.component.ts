@@ -21,9 +21,13 @@ import { GET_ROLE } from './graphql/queries';
   styleUrls: ['./role-summary.component.scss'],
 })
 export class RoleSummaryComponent implements OnInit {
+  /** Role id */
   @Input() id = '';
+  /** Application */
   @Input() application?: Application;
+  /** Role */
   public role?: Role;
+  /** Loading status */
   public loading = true;
 
   /**

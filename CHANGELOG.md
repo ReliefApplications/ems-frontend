@@ -1,3 +1,21 @@
+## [2.2.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.1...v2.2.2) (2023-12-13)
+
+
+### Bug Fixes
+
+* non readable message when failing to load application's style ([06c692a](https://github.com/ReliefApplications/ems-frontend/commit/06c692a39c4475067866bb4eb88147de3d207202))
+
+## [2.2.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0...v2.2.1) (2023-12-12)
+
+
+### Bug Fixes
+
+* incorrect position of dashboard filter in front-office ([6dc6184](https://github.com/ReliefApplications/ems-frontend/commit/6dc61841a6a69dddd30abc91d62c45e8849c6cc1))
+* layout & aggregation not appearing in grid widget when adding them ([66f7dc1](https://github.com/ReliefApplications/ems-frontend/commit/66f7dc1e57d56928f685660f108a1e79a1a5a7d1))
+* profile page not working in front-office ([#2150](https://github.com/ReliefApplications/ems-frontend/issues/2150)) ([fe5bad3](https://github.com/ReliefApplications/ems-frontend/commit/fe5bad366908a5ab1fd5562a7bf0c922787b73d6))
+* put Accept headers in graphql module instead of auth-interceptor ([4ba7456](https://github.com/ReliefApplications/ems-frontend/commit/4ba74563471b2a0c5808e7f0719df595dd383f5d))
+* setting sort fields in summary cards would refresh the modal ([#2156](https://github.com/ReliefApplications/ems-frontend/issues/2156)) ([539017b](https://github.com/ReliefApplications/ems-frontend/commit/539017bca5d93214dfdeb02360e3b74a58954f75))
+
 # [2.2.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.1.8...v2.2.0) (2023-12-08)
 
 

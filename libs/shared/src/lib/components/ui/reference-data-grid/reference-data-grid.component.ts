@@ -106,7 +106,6 @@ export class ReferenceDataGridComponent implements OnInit {
     });
     const sortField = this.sortField;
     const sortOrder = this.sortOrder;
-    console.log(sortOrder);
     if (sortField) {
       this.gridData = {
         data: (sortOrder === 'asc'
@@ -158,7 +157,6 @@ export class ReferenceDataGridComponent implements OnInit {
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
-    console.log('sorting');
     this.sort = sort;
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });

@@ -1820,6 +1820,8 @@
 						}
 					},
 					"dynamic": "******",
+					"exportable": "******",
+					"gridMode": "******",
 					"hint": {
 						"dynamic": "******"
 					},
@@ -2051,6 +2053,11 @@
 		},
 		"application": {
 			"description": "******",
+			"errors": {
+				"style": {
+					"notFound": "******"
+				}
+			},
 			"id": "******",
 			"new": "******",
 			"notifications": {

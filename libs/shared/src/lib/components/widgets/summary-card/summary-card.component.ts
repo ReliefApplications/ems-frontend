@@ -67,8 +67,6 @@ export class SummaryCardComponent
 {
   /** Widget definition */
   @Input() widget: any;
-  /** Can export widget */
-  @Input() export = true;
   /** Widget settings */
   @Input() settings!: SummaryCardFormT['value'];
   /** Should show padding */
@@ -191,6 +189,16 @@ export class SummaryCardComponent
         false) &&
       !this.useReferenceData
     );
+  }
+
+  /** @returns user can change display mode */
+  get canChangeDisplayMode() {
+    return get(this.settings, 'widgetDisplay.gridMode', true);
+  }
+
+  /** @returns is widget exportable ( only cards mode ) */
+  get exportable() {
+    return get(this.settings, 'widgetDisplay.exportable', true);
   }
 
   /**

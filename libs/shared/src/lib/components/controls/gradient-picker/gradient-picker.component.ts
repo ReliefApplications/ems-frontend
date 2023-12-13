@@ -35,7 +35,9 @@ export class GradientPickerComponent
   extends FormControlComponent
   implements ControlValueAccessor, OnDestroy
 {
+  /** Next id */
   static nextId = 0;
+  /** Whether the list is to be shown */
   public showList = false;
 
   /**
@@ -53,7 +55,9 @@ export class GradientPickerComponent
     this.stateChanges.next();
   }
 
+  /** State changes */
   public stateChanges = new Subject<void>();
+  /** Id of the component */
   @HostBinding()
   id = `shared-gradient-picker-${GradientPickerComponent.nextId++}`;
 
@@ -74,8 +78,11 @@ export class GradientPickerComponent
     this.stateChanges.next();
   }
 
+  /** Placeholder */
   private ePlaceholder = '';
+  /** Focused state */
   public focused = false;
+  /** Touched state */
   public touched = false;
 
   /**
@@ -116,6 +123,7 @@ export class GradientPickerComponent
     this.stateChanges.next();
   }
 
+  /** Whether the field is required */
   private isRequired = false;
 
   /**
@@ -147,8 +155,10 @@ export class GradientPickerComponent
     // return this.selected.invalid && this.touched;
   }
 
+  /** Control type */
   public controlType = 'shared-gradient-picker';
 
+  /** Aria described by */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
@@ -168,8 +178,14 @@ export class GradientPickerComponent
     }
   }
 
+  /** onTouched function shell */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
+  /**
+   * onChange function shell
+   *
+   * @param _ value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   onChange = (_: any) => {};
 

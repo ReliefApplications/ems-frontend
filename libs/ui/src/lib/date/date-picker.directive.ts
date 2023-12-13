@@ -25,14 +25,21 @@ import { Subject, takeUntil } from 'rxjs';
   selector: '[uiDatePicker]',
 })
 export class DatePickerDirective implements OnInit, OnDestroy {
+  /** Datepicker value */
   @Input() uiDatePicker: any = 'calendar_today';
+  /** Datepicker label */
   @Input() label = '';
 
+  /** Click event */
   @Output() clickEvent = new EventEmitter<void>();
 
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** Click event listener */
   private clickEventListener!: any;
+  /** Label element */
   private labelElement!: HTMLLabelElement;
+  /** Input classes */
   private inputClasses = [
     'peer',
     'block',
@@ -48,6 +55,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'text-sm',
   ] as const;
 
+  /** Label classes */
   private labelClasses = [
     'pointer-events-none',
     'absolute',
@@ -65,6 +73,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'items-center',
   ] as const;
 
+  /** Icon classes */
   private iconClasses = [
     'flex',
     'items-center',
@@ -78,6 +87,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     '-translate-y-1/2',
   ] as const;
 
+  /** Div classes */
   private divClasses = [
     'relative',
     'focus-within:ring-2',

@@ -19,18 +19,27 @@ import { Application } from '../../models/application.model';
   styleUrls: ['./search-menu.component.scss'],
 })
 export class SearchMenuComponent implements OnInit {
+  /** Current application id */
   @Input() currentApplicationId: string | undefined = '';
+  /** Applications */
   @Input() applications: Application[] = [];
+  /** Header template */
   @Input() headerTemplate?: TemplateRef<any>;
+  /** If the menu is open or not */
   private show = true;
 
+  /** Event emitter for the open event */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() open: EventEmitter<any> = new EventEmitter<any>();
+  /** Event emitter for the close event */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<null> = new EventEmitter();
 
+  /** Current application */
   public currentApplication: Application | undefined;
+  /** Search results */
   public searchResults: any = [];
+  /** Search */
   public search = '';
 
   /** Listening to the click event on the component and setting the show variable to true. */

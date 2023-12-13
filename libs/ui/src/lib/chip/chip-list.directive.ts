@@ -28,14 +28,21 @@ import { ChipComponent } from './chip.component';
 export class ChipListDirective
   implements AfterContentInit, OnDestroy, ControlValueAccessor
 {
+  /** Chip List */
   @Input() uiChipList!: any;
 
+  /** Current chip list */
   @ContentChildren(ChipComponent) currentChipList!: QueryList<ChipComponent>;
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
+  /** Current chip list value */
   value: string[] = [];
+  /** Disabled state */
   disabled = false;
+  /** Callback function to call when control state change */
   onChange!: (value: string[]) => void;
+  /** Callback function to call when control touch state change */
   onTouch!: () => void;
 
   /**

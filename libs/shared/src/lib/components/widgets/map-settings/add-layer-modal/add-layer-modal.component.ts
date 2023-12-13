@@ -32,7 +32,13 @@ import { LayersQueryResponse } from '../../../../models/layer.model';
   styleUrls: ['./add-layer-modal.component.scss'],
 })
 export class AddLayerModalComponent {
+  /**
+   * Control to select the layer to add
+   */
   public layerControl = new FormControl<string | null>(null);
+  /**
+   * Query to get layers
+   */
   public layersQuery = this.apollo.watchQuery<LayersQueryResponse>({
     query: GET_LAYERS,
   });
