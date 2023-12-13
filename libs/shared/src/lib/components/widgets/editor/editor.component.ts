@@ -5,6 +5,7 @@ import {
   TemplateRef,
   ViewChild,
   HostListener,
+  Renderer2,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -86,6 +87,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param gridService Shared grid service
    * @param referenceDataService Shared reference data service
    * @param contextService Context service
+   * @param renderer Angular renderer2 service
    */
   constructor(
     private apollo: Apollo,
@@ -96,7 +98,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private translate: TranslateService,
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private renderer: Renderer2
   ) {
     super();
   }
@@ -151,8 +154,20 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    if (event.target.dataset.filterField) {
-      const { filterField, filterValue } = event.target.dataset;
+    let filterButtonIsClicked = !!event.target.dataset.filterField;
+    let currentNode = event.target;
+    if (!filterButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-editor' &&
+        !filterButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        filterButtonIsClicked = !!currentNode.dataset.filterField;
+      }
+    }
+    if (filterButtonIsClicked) {
+      const { filterField, filterValue } = currentNode.dataset;
       // Cleanup filter value from the span set by default in the tinymce calculated field if exists
       const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
       const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;

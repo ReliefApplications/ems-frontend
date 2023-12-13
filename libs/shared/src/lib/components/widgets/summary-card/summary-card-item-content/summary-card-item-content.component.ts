@@ -5,6 +5,7 @@ import {
   OnChanges,
   OnInit,
   Optional,
+  Renderer2,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -56,12 +57,14 @@ export class SummaryCardItemContentComponent
    * @param dialog CDK Dialog service
    * @param parent Reference to parent summary card item component
    * @param contextService Context service
+   * @param renderer Angular renderer2 service
    */
   constructor(
     private dataTemplateService: DataTemplateService,
     private dialog: Dialog,
     @Optional() public parent: SummaryCardItemComponent,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private renderer: Renderer2
   ) {
     super();
   }
@@ -104,8 +107,20 @@ export class SummaryCardItemContentComponent
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    if (event.target.dataset.filterField) {
-      const { filterField, filterValue } = event.target.dataset;
+    let filterButtonIsClicked = !!event.target.dataset.filterField;
+    let currentNode = event.target;
+    if (!filterButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-summary-card-item-content' &&
+        !filterButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        filterButtonIsClicked = !!currentNode.dataset.filterField;
+      }
+    }
+    if (filterButtonIsClicked) {
+      const { filterField, filterValue } = currentNode.dataset;
       // Cleanup filter value from the span set by default in the tinymce calculated field if exists
       const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
       const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
