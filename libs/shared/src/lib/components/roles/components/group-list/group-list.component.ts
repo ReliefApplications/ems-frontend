@@ -29,14 +29,22 @@ import { FormBuilder } from '@angular/forms';
 })
 export class GroupListComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Loading state for fetch from service */
   public loadingFetch = false;
+  /** Groups */
   public groups: Array<any> = new Array<any>();
+  /** Filtered groups */
   public filteredGroups: Array<any> = new Array<any>();
+  /** Whether groups are created manually or not */
   public manualCreation = true;
+  /** Displayed columns */
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
+  /** Form */
   form = this.fb.group({});
+  /** Search text */
   public searchText = '';
 
   /**

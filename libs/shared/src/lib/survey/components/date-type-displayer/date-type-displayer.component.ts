@@ -34,6 +34,7 @@ export class DateTypeDisplayerComponent
   extends QuestionAngular<QuestionDateTypeDisplayerModel>
   implements OnInit, OnDestroy
 {
+  /** Instance id */
   private instanceId = `survey-creator-date-picker${uuidv4()}`;
 
   /**

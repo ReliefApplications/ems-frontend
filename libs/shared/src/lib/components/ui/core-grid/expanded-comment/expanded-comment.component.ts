@@ -17,6 +17,7 @@ interface DialogData {
   styleUrls: ['./expanded-comment.component.scss'],
 })
 export class ExpandedCommentComponent {
+  /** Form control for the input */
   public formControl = new FormControl({
     value: this.data.value,
     disabled: isNil(this.data.readonly) ? true : this.data.readonly,

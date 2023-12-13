@@ -21,19 +21,31 @@ export class GridFilterMenuComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Field */
   @Input() public field = '';
+  /** Filter */
   @Input() public filter: any;
+  /** Data */
   @Input() public data: any[] = [];
+  /** Text field */
   @Input() public textField = '';
+  /** Value field */
   @Input() public valueField = '';
+  /** Filter service */
   @Input() public filterService?: FilterService;
+  /** Is not array */
   @Input() isNotArray = false;
 
+  /** Choices 1 */
   public choices1: any[] = [];
+  /** Choices 2 */
   public choices2: any[] = [];
+  /** Form */
   public form?: UntypedFormGroup;
 
+  /** Default value */
   private defaultValue!: string | Array<any>;
+  /** Default operator */
   private defaultOperator!: string;
 
   /** @returns default item choice */
@@ -49,6 +61,7 @@ export class GridFilterMenuComponent
     return this.form?.get('filters') as UntypedFormArray;
   }
 
+  /** Logics */
   public logics = [
     {
       text: this.translate.instant('kendo.grid.filterOrLogic'),
@@ -60,6 +73,7 @@ export class GridFilterMenuComponent
     },
   ] as const;
 
+  /** Operators */
   public operators = [
     {
       text: this.translate.instant('kendo.grid.filterEqOperator'),
@@ -71,6 +85,7 @@ export class GridFilterMenuComponent
     },
   ];
 
+  /** Array operators */
   arrayOperators = [
     {
       text: this.translate.instant('kendo.grid.filterContainsOperator'),

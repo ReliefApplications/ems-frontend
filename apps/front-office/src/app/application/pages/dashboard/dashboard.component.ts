@@ -69,6 +69,7 @@ export class DashboardComponent
   public closable = true;
 
   // === BUTTON ACTIONS ===
+  /** List of button actions */
   public buttonActions: ButtonActionT[] = [];
 
   /** @returns type of context element */

@@ -67,20 +67,35 @@ export class ReferenceDataComponent
   implements OnInit, OnDestroy
 {
   // === DATA ===
+  /**
+   * Loading state
+   */
   public loading = true;
+  /** Reference data id */
   public id = '';
+  /** Reference data */
   public referenceData?: ReferenceData;
 
   // === FORM ===
+  /** Reference data form */
   public referenceForm!: ReturnType<typeof this.getRefDataForm>;
+  /** Reference data types */
   public referenceTypeChoices = Object.values(referenceDataType);
 
+  // === API ===
+  /** Selected API configuration */
   public selectedApiConfiguration?: ApiConfiguration;
+  /** Api configurations query */
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
+  // === FIELDS ===
+  /** Value fields */
   public valueFields: NonNullable<ReferenceData['fields']> = [];
+  /** Payload */
   public payload: any;
+  /** Loading state for the fields */
   public loadingFields = false;
+  /** Separator keys code */
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   /** Has the fields that's currently being edited, if any */
   public currEditingField: NonNullable<ReferenceData['fields']>[number] | null =
@@ -98,16 +113,30 @@ export class ReferenceDataComponent
   ];
 
   // === CSV ===
+  /** CSV value */
   public csvValue = '';
+  /** New data */
   public newData: any = [];
+  /** CSV loading state */
   public csvLoading = false;
+  /** CSV separator */
   public separator = new FormControl(',');
 
+  /**
+   * Reference to the field input.
+   */
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
+  /**
+   * Reference to the csv data input.
+   */
   @ViewChild('csvData') csvData?: TextareaComponent;
+  /**
+   * Reference to the kendo grid.
+   */
   @ViewChild(GridComponent) kendoGrid!: GridComponent;
 
   // === MONACO EDITOR ===
+  /** Editor options */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'graphql',

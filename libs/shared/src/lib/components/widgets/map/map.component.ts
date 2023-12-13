@@ -7,6 +7,12 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
   styleUrls: ['./map.component.scss'],
 })
 export class MapWidgetComponent {
+  /**
+   * Settings
+   */
   @Input() settings: any;
+  /**
+   * Data
+   */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 }

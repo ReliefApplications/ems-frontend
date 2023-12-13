@@ -28,9 +28,13 @@ type ResourceField = {
   styleUrls: ['./resource-fields.component.scss'],
 })
 export class ResourceFieldsComponent implements OnInit, OnChanges {
+  /** Resource */
   @Input() resource!: Resource;
+  /** Role */
   @Input() role!: Role;
+  /** Disabled flag */
   @Input() disabled = false;
+  /** Event emitter for toggle */
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
@@ -38,11 +42,15 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
     permission: 'canSee' | 'canUpdate';
   }>();
 
+  /** Filter template id */
   public filterId = new FormControl<string | null | undefined>(undefined);
 
+  /** Fields */
   public fields = new Array<ResourceField>();
+  /** Displayed columns */
   public displayedColumns: string[] = ['name', 'actions'];
 
+  /** Updated field */
   private updatedField: { index: number; permission: 'canSee' | 'canUpdate' } =
     { index: -1, permission: 'canSee' };
 
@@ -65,6 +73,12 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Check if field has access for role
+   *
+   * @param field field
+   * @returns field with access data
+   */
   private hasFieldAccess = (field: any) => ({
     name: field.name,
     canSee: !!field.permissions?.canSee?.includes(this.role.id),

@@ -34,12 +34,18 @@ import { SidenavControlsMenuBasemapComponent } from '../sidenav-controls-menu-ba
   ],
 })
 export class SidenavControlsMenuComponent implements OnInit {
+  /** Whether the layers are expanded or not */
   @Input() layersMenuExpanded = false;
+  /** Layers tree */
   @Input() layersTree!: L.Control.Layers.TreeObject[];
+  /** Basemaps tree */
   @Input() basemaps!: L.Control.Layers.TreeObject[];
+  /** Map component */
   @Input() mapComponent!: MapComponent;
+  /** Event emitter for the cancel event */
   @Output() cancel = new EventEmitter();
 
+  /** Map */
   public map!: L.Map;
 
   ngOnInit(): void {

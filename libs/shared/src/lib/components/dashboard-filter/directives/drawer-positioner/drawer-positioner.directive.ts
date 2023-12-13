@@ -16,18 +16,21 @@ import { FilterPosition } from '../../enums/dashboard-filters.enum';
   selector: '[drawerPositioner]',
 })
 export class DrawerPositionerDirective implements OnChanges, AfterContentInit {
-  // Where is the element going to be positioned
+  /** Where is the element going to be positioned */
   @Input() position: FilterPosition = FilterPosition.TOP;
-  // The element width, as the directive host is positioned fixed, we need to set the width manually in order to match the parent element
+  /** The element width, as the directive host is positioned fixed, we need to set the width manually in order to match the parent element */
   @Input() elementWidth!: string;
-  // The element height, as the directive host is positioned fixed, we need to set the height manually in order to match the parent element
+  /** The element height, as the directive host is positioned fixed, we need to set the height manually in order to match the parent element */
   @Input() elementHeight!: string;
+  /** The element left offset, as the directive host is positioned fixed, we need to set the left offset manually in order to match the parent element */
   @Input() elementLeftOffset!: string;
+  /** The element top offset, as the directive host is positioned fixed, we need to set the top offset manually in order to match the parent element */
   @Input() elementTopOffset!: string;
-  // The minimum amount of element size(in px) remaining visible when the element is collapsed
+  /** The minimum amount of element size(in px) remaining visible when the element is collapsed */
   @Input() minSizeOnClosed = 48;
-  // If the element is open or not
+  /** If the element is open or not */
   @Input() opened = false;
+  /** The dashboard survey creator container */
   @Input()
   dashboardSurveyCreatorContainer!: any;
 

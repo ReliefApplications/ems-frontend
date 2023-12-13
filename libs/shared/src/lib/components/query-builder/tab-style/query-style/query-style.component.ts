@@ -31,8 +31,10 @@ export class QueryStyleComponent implements OnInit {
   /** The list of filter fields available for the query. */
   public filterFields: Field[] = [];
 
+  /** The list of checked keys. */
   public checkedKeys: any[] = [];
 
+  /** The list of field nodes. */
   public fieldNodes: any[] = [];
 
   /** Event emitter for closing the edition of the query style. */

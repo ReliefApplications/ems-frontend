@@ -14,6 +14,7 @@ import { cloneDeep } from 'lodash';
   providedIn: 'root',
 })
 export class AggregationBuilderService {
+  /** Subject used to send the data for the preview grid. */
   private gridSubject = new BehaviorSubject<any>(null);
 
   /**

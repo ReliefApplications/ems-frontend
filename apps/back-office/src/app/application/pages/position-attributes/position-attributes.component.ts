@@ -18,11 +18,17 @@ import { GET_POSITION_ATTRIBUTES_FROM_CATEGORY } from './graphql/queries';
 })
 export class PositionAttributesComponent implements OnInit {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Category id */
   public id = '';
+  /** Category name */
   public categoryName = '';
+  /** Table columns */
   public displayedColumns = ['value', 'usersCount'];
+  /** Position attributes */
   public positionAttributes: PositionAttribute[] = [];
+  /** Back path */
   public backPath = '';
 
   /**

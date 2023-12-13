@@ -20,6 +20,7 @@ interface DialogData {
 })
 export class ExportComponent implements OnInit {
   // === EXPORT MENU SELECTION ===
+  /** Export settings */
   public export = EXPORT_SETTINGS;
 
   /**

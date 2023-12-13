@@ -165,6 +165,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
 
   /**

@@ -13,6 +13,12 @@ declare namespace Intl {
      */
     constructor(locales?: string | string[], options?: any);
 
+    /**
+     * Get the native name of a language
+     *
+     * @param lang The language code
+     * @returns The native name of the language
+     */
     public of: (lang: string) => string;
   }
 }

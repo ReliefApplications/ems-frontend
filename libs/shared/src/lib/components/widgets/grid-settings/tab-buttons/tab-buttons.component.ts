@@ -15,13 +15,20 @@ import { TabsComponent } from '@oort-front/ui';
   styleUrls: ['./tab-buttons.component.scss'],
 })
 export class TabButtonsComponent {
+  /** Form group */
   @Input() formGroup!: UntypedFormGroup;
+  /** List of fields */
   @Input() fields: any[] = [];
+  /** List of forms */
   @Input() relatedForms: Form[] = [];
+  /** List of channels */
   @Input() channels: Channel[] = [];
+  /** List of templates */
   @Input() templates: any[] = [];
+  /** List of distribution lists */
   @Input() distributionLists: any[] = [];
 
+  /** Tabs component */
   @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
 
   /** @returns List of the floating buttons */

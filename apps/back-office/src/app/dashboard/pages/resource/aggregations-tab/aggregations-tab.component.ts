@@ -31,10 +31,22 @@ export class AggregationsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Resource
+   */
   public resource!: Resource;
+  /**
+   * Aggregations
+   */
   public aggregations: Aggregation[] = [];
+  /**
+   * Loading state
+   */
   public loading = true;
 
+  /**
+   * Columns to display
+   */
   public displayedColumnsAggregations: string[] = [
     'name',
     'createdAt',
@@ -42,8 +54,17 @@ export class AggregationsTabComponent
   ];
 
   // ==== PAGINATION ====
+  /**
+   * Aggregations query
+   */
   private aggregationsQuery!: QueryRef<ResourceQueryResponse>;
+  /**
+   * Cached aggregations
+   */
   private cachedAggregations: Aggregation[] = [];
+  /**
+   * Page info
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: 10,
