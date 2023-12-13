@@ -258,6 +258,24 @@
         ></kendo-grid-column>
       </kendo-grid>
     </div>
+
+    <!-- Value field selection template -->
+    <ng-template #valueFieldTmpl>
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        *ngIf="!csvLoading && type && valueFields.length > 0"
+      >
+        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
+        <ui-select-menu formControlName="valueField">
+          <ui-select-option
+            *ngFor="let value of valueFields"
+            [value]="value.name"
+            >{{ value.name }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
+    </ng-template>
   </form>
   <!-- Floating div for actions buttons -->
   <ui-fixed-wrapper>
@@ -291,22 +309,4 @@
       {{ 'common.save' | translate }}
     </ui-button>
   </ui-fixed-wrapper>
-
-  <!-- Value field selection template -->
-  <ng-template #valueFieldTmpl>
-    <div
-      uiFormFieldDirective
-      class="flex-1"
-      *ngIf="!csvLoading && type && valueFields.length > 0"
-    >
-      <label>{{ 'pages.referenceData.valueField' | translate }}</label>
-      <ui-select-menu formControlName="valueField">
-        <ui-select-option
-          *ngFor="let value of valueFields"
-          [value]="value.name"
-          >{{ value.name }}</ui-select-option
-        >
-      </ui-select-menu>
-    </div>
-  </ng-template>
 </ng-container>
