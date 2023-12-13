@@ -26,7 +26,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
   toolbar_mode: 'sliding',
-  contextmenu: 'link image imagetools table',
+  contextmenu: 'link image imagetools table contextfilter',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   help_tabs: [
     'shortcuts', // the default shortcuts tab
@@ -164,6 +164,86 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           ],
         });
       },
+    });
+    // Context filter
+    const iconFilter = createFontAwesomeIcon(
+      {
+        icon: 'filter',
+        color: 'none',
+        opacity: 1,
+        size: 21,
+      },
+      (editor.editorManager as any).DOM.doc
+    );
+
+    editor.ui.registry.addIcon('filter-icon', iconFilter.innerHTML);
+    editor.ui.registry.addMenuItem('contextfilter', {
+      icon: 'filter-icon',
+      text: 'Add filter',
+      onAction: async () => {
+        editor.windowManager.open({
+          title: 'Set context filter',
+          body: {
+            type: 'panel',
+            items: [
+              {
+                type: 'input',
+                name: 'filterField',
+                label: 'Filter field',
+              },
+              {
+                type: 'input',
+                name: 'filterValue',
+                label: 'Filter value',
+                placeholder:
+                  'Fixed value or {{data.}} syntax, e.g. {{data.name}}',
+              },
+            ],
+          },
+          initialData: {
+            filterField: '',
+            filterValue: '',
+          },
+          onChange: (api) => {
+            // validate the data type
+            const data = api.getData();
+            const submitDisabled = !(data.filterField.length > 0);
+            if (submitDisabled) {
+              api.disable('submit');
+            } else {
+              api.enable('submit');
+            }
+          },
+          onSubmit: (api) => {
+            const data = api.getData();
+            const iconButton = (
+              editor.editorManager as any
+            ).DOM.doc.createElement('button') as HTMLButtonElement;
+            iconButton.setAttribute('data-filter-field', data.filterField);
+            iconButton.setAttribute('data-filter-value', data.filterValue);
+            iconButton.innerText = `Filter by ${data.filterField}: ${data.filterValue}`;
+            const set = `${iconButton?.outerHTML}`;
+            editor.insertContent(set);
+            api.close();
+          },
+          buttons: [
+            {
+              text: 'Close',
+              type: 'cancel',
+            },
+            {
+              text: 'Insert',
+              type: 'submit',
+              name: 'submit',
+              primary: true,
+              disabled: true,
+            },
+          ],
+        });
+      },
+    });
+    editor.ui.registry.addContextMenu('contextfilter', {
+      update: () => 'contextfilter',
     });
   },
 };
