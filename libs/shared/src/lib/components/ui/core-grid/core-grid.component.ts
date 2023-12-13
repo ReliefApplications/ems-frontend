@@ -167,6 +167,8 @@ export class CoreGridComponent
   public detailsField?: any;
   /** Data query reference for fetching data. */
   private dataQuery!: QueryRef<QueryResponse>;
+  /** Meta query reference for fetching metadata. */
+  private metaQuery!: any;
 
   // === PAGINATION ===
   /** Number of items per page. */
