@@ -85,7 +85,7 @@ export class GridComponent
   @Input() widget: any;
   /** If inlineEdition is allowed */
   @Input() editable = false;
-  /* If the grid has changes */
+  /** If the grid has changes */
   @Input() hasChanges = false;
   /** Input decorator for fields. */
   @Input() fields: any[] = [];

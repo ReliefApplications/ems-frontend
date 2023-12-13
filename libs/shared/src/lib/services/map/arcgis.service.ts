@@ -37,7 +37,9 @@ export type TreeObject = { label: string; layer: L.Layer };
   providedIn: 'root',
 })
 export class ArcgisService {
+  /** ArcGIS API key */
   private esriApiKey!: string;
+  /** ArcGIS session */
   private session!: ApiKeyManager;
 
   /**

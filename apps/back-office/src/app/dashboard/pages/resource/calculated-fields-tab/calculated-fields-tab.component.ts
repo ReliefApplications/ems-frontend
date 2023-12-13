@@ -24,9 +24,18 @@ export class CalculatedFieldsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Resource
+   */
   public resource!: Resource;
+  /**
+   * Calculated fields
+   */
   public fields: any[] = [];
 
+  /**
+   * Columns to display
+   */
   public displayedColumns: string[] = ['name', 'createdAt', '_actions'];
 
   /**

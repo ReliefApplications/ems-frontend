@@ -45,12 +45,15 @@ export class EditorControlComponent
   extends FormControlComponent
   implements ControlValueAccessor, OnDestroy, AfterViewInit, OnChanges
 {
+  /** Next id */
   static nextId = 0;
 
+  /** TinyMCE editor */
   @ViewChild('editor') editor!: EditorComponent;
+  /** Editor content */
   public editorContent = '';
 
-  /** tinymce editor */
+  /** Tinymce editor configuration */
   @Input() editorConfig!: RawEditorSettings;
 
   /**
@@ -68,7 +71,9 @@ export class EditorControlComponent
     this.stateChanges.next();
   }
 
+  /** State changes */
   public stateChanges = new Subject<void>();
+  /** Id of the component */
   @HostBinding()
   id = `shared-editor-control-${EditorControlComponent.nextId++}`;
 
@@ -89,8 +94,11 @@ export class EditorControlComponent
     this.stateChanges.next();
   }
 
+  /** Placeholder */
   private ePlaceholder = '';
+  /** Focused state */
   public focused = false;
+  /** Touched state */
   public touched = false;
 
   /**
@@ -130,6 +138,7 @@ export class EditorControlComponent
     this.stateChanges.next();
   }
 
+  /** Required state */
   private isRequired = false;
 
   /**
@@ -162,11 +171,14 @@ export class EditorControlComponent
     return (this.ngControl.invalid && this.touched) || false;
   }
 
+  /** Control type */
   public controlType = 'shared-editor-control';
 
+  /** Aria described by */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
+  /** Editor destroy subject */
   private destroy$ = new Subject<void>();
 
   /**
@@ -231,8 +243,14 @@ export class EditorControlComponent
     // this.editor.onInit.subscribe(() => {});
   }
 
+  /** onTouched function shell */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
+  /**
+   * onChange function shell
+   *
+   * @param _ value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   onChange = (_: any) => {};
 

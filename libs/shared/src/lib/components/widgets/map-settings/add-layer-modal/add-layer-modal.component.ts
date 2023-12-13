@@ -32,9 +32,13 @@ import { LayersQueryResponse } from '../../../../models/layer.model';
   styleUrls: ['./add-layer-modal.component.scss'],
 })
 export class AddLayerModalComponent implements OnInit {
-  /** Layer control */
+  /**
+   * Control to select the layer to add
+   */
   public layerControl = new FormControl<string | null>(null);
-  /** Layers query */
+  /**
+   * Query to get layers
+   */
   public layersQuery!: QueryRef<LayersQueryResponse>;
 
   /**
