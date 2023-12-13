@@ -5,6 +5,7 @@ import {
   TemplateRef,
   ViewChild,
   HostListener,
+  Renderer2,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -29,6 +30,7 @@ import {
 import { GET_REFERENCE_DATA } from './graphql/queries';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ContextService } from '../../../services/context/context.service';
 
 /**
  * Text widget component using KendoUI
@@ -84,6 +86,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param translate Angular translate service
    * @param gridService Shared grid service
    * @param referenceDataService Shared reference data service
+   * @param contextService Context service
+   * @param renderer Angular renderer2 service
    */
   constructor(
     private apollo: Apollo,
@@ -93,7 +97,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private gridService: GridService,
-    private referenceDataService: ReferenceDataService
+    private referenceDataService: ReferenceDataService,
+    private contextService: ContextService,
+    private renderer: Renderer2
   ) {
     super();
   }
@@ -148,13 +154,45 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    const content = this.htmlContentComponent.el.nativeElement;
-    const editorTriggers = content.querySelectorAll('.record-editor');
-    editorTriggers.forEach((recordEditor: HTMLElement) => {
-      if (recordEditor.contains(event.target)) {
-        this.openEditRecordModal();
+    let filterButtonIsClicked = !!event.target.dataset.filterField;
+    let currentNode = event.target;
+    if (!filterButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-editor' &&
+        !filterButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        filterButtonIsClicked = !!currentNode.dataset.filterField;
       }
-    });
+    }
+    if (filterButtonIsClicked) {
+      const { filterField, filterValue } = currentNode.dataset;
+      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
+      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
+      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
+      const currentFilters = { ...this.contextService.filter.getValue() };
+      // If current filters contains the field but there is no value set, delete it
+      if (filterField in currentFilters && !cleanFilterValue) {
+        delete currentFilters[filterField];
+      }
+      // Update filter object with existing fields and values
+      const updatedFilters = {
+        ...(currentFilters && { ...currentFilters }),
+        ...(cleanFilterValue && {
+          [filterField]: cleanFilterValue,
+        }),
+      };
+      this.contextService.filter.next(updatedFilters);
+    } else {
+      const content = this.htmlContentComponent.el.nativeElement;
+      const editorTriggers = content.querySelectorAll('.record-editor');
+      editorTriggers.forEach((recordEditor: HTMLElement) => {
+        if (recordEditor.contains(event.target)) {
+          this.openEditRecordModal();
+        }
+      });
+    }
   }
 
   /**
