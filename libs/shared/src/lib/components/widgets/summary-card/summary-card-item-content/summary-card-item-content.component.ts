@@ -75,12 +75,11 @@ export class SummaryCardItemContentComponent
       this.fieldsValue,
       this.styles
     );
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.html,
-      this.fieldsValue,
-      this.fields,
-      this.styles
-    );
+    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, {
+      fields: this.fields,
+      data: this.fieldsValue,
+      styles: this.styles,
+    });
   }
 
   /**
@@ -92,12 +91,11 @@ export class SummaryCardItemContentComponent
       this.fieldsValue,
       this.styles
     );
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.html,
-      this.fieldsValue,
-      this.fields,
-      this.styles
-    );
+    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, {
+      fields: this.fields,
+      data: this.fieldsValue,
+      styles: this.styles,
+    });
   }
 
   /**
