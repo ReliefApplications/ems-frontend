@@ -26,7 +26,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
   toolbar_mode: 'sliding',
-  contextmenu: 'link image imagetools table contextfilter',
+  contextmenu: 'link image imagetools table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   help_tabs: [
     'shortcuts', // the default shortcuts tab
@@ -177,9 +177,9 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
     );
 
     editor.ui.registry.addIcon('filter-icon', iconFilter.innerHTML);
-    editor.ui.registry.addMenuItem('contextfilter', {
+    editor.ui.registry.addButton('contextfilter', {
       icon: 'filter-icon',
-      text: 'Add filter',
+      tooltip: 'Add context filter',
       onAction: async () => {
         editor.windowManager.open({
           title: 'Set context filter',
@@ -202,7 +202,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           },
           initialData: {
             filterField: '',
-            filterValue: '',
+            filterValue: editor.selection.getContent(),
           },
           onChange: (api) => {
             // validate the data type
@@ -216,14 +216,9 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           },
           onSubmit: (api) => {
             const data = api.getData();
-            const iconButton = (
-              editor.editorManager as any
-            ).DOM.doc.createElement('button') as HTMLButtonElement;
-            iconButton.setAttribute('data-filter-field', data.filterField);
-            iconButton.setAttribute('data-filter-value', data.filterValue);
-            iconButton.innerText = `Filter by ${data.filterField}: ${data.filterValue}`;
-            const set = `${iconButton?.outerHTML}`;
-            editor.insertContent(set);
+            const textElement = editor.selection.getNode();
+            textElement.setAttribute('data-filter-field', data.filterField);
+            textElement.setAttribute('data-filter-value', data.filterValue);
             api.close();
           },
           buttons: [
@@ -242,8 +237,11 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
         });
       },
     });
-    editor.ui.registry.addContextMenu('contextfilter', {
-      update: () => 'contextfilter',
+    editor.ui.registry.addContextToolbar('contextfilter', {
+      predicate: () => editor.selection.getContent()?.length > 0,
+      scope: 'node',
+      position: 'selection',
+      items: 'contextfilter',
     });
   },
 };
