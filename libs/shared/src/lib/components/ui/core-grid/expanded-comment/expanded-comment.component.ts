@@ -24,7 +24,7 @@ export class ExpandedCommentComponent {
   });
 
   /**
-   * Constructor of this component
+   * Constructor of the expanded comment component
    *
    * @param dialogRef The reference to the opened dialog
    * @param data The data inputs for the dialog

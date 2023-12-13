@@ -52,7 +52,7 @@ export class InviteUsersComponent extends UnsubscribeComponent {
   }
 
   /**
-   * Constructor of the component
+   * Constructor for the invite users component
    *
    * @param downloadService The download service
    * @param snackBar The snack bar service

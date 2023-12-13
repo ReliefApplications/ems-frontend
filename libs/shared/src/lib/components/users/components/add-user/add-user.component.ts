@@ -58,7 +58,7 @@ export class AddUserComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Constructor for the component
+   * Constructor for the add user component
    *
    * @param fb The form builder service
    * @param dialogRef The Dialog reference service

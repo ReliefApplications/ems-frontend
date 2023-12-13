@@ -6,7 +6,7 @@ declare namespace Intl {
   /** DisplayNames class */
   class DisplayNames {
     /**
-     * Constructor of display names
+     * Constructor of the DisplayNames class
      *
      * @param locales The language to use
      * @param options The options
