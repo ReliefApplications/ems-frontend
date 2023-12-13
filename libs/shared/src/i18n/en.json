@@ -495,7 +495,7 @@
 				"filter": "Returns an array with only those elements that match the condition.",
 				"group": "Group records based on field values and construct personalized accumulators",
 				"groupingRules": "Grouping rules are optional.",
-				"selectedFields": "Only unused fields can removed.",
+				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
 			}
@@ -1820,6 +1820,8 @@
 						}
 					},
 					"dynamic": "Dynamic",
+					"exportable": "Allow export of the cards",
+					"gridMode": "Allow to show as grid",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
 					},
@@ -2051,6 +2053,11 @@
 		},
 		"application": {
 			"description": "Description",
+			"errors": {
+				"style": {
+					"notFound": "Unable to load application's style"
+				}
+			},
 			"id": "Application ID",
 			"new": "New application",
 			"notifications": {

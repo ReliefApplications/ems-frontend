@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.1...v2.2.2) (2023-12-13)
+
+
+### Bug Fixes
+
+* non readable message when failing to load application's style ([06c692a](https://github.com/ReliefApplications/ems-frontend/commit/06c692a39c4475067866bb4eb88147de3d207202))
+
 ## [2.2.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0...v2.2.1) (2023-12-12)
 
 

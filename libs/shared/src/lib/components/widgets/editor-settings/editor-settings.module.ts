@@ -16,6 +16,7 @@ import {
   RadioModule,
   SelectMenuModule,
   SelectOptionModule,
+  SpinnerModule,
   TabsModule,
   ToggleModule,
   TooltipModule,
@@ -56,6 +57,7 @@ import {
     ToggleModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
+    SpinnerModule,
   ],
   exports: [EditorSettingsComponent],
   providers: [

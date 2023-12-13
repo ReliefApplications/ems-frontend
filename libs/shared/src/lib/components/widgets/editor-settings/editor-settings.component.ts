@@ -54,6 +54,8 @@ export class EditorSettingsComponent
   public referenceData: ReferenceData | null = null;
   /** Current layout */
   public layout: Layout | null = null;
+  /** Loading indicator */
+  public loading = true;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -134,6 +136,10 @@ export class EditorSettingsComponent
           this.referenceData = null;
         }
       });
+    if (!resourceID && !referenceDataID) {
+      this.updateFields();
+      this.loading = false;
+    }
   }
 
   /**
@@ -154,7 +160,6 @@ export class EditorSettingsComponent
         this.widget.settings.showDataSourceLink =
           this.widgetFormGroup.value.showDataSourceLink;
       });
-    this.updateFields();
   }
 
   /**
@@ -164,6 +169,7 @@ export class EditorSettingsComponent
    * @param layout selected layout id ( optional )
    */
   private getResource(resource: string, layout?: string | null) {
+    this.loading = true;
     this.apollo
       .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
@@ -172,16 +178,17 @@ export class EditorSettingsComponent
           layout: layout ? [layout] : undefined,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.resource = res.data.resource;
+      .subscribe(({ data }) => {
+        if (data) {
+          this.resource = data.resource;
           if (layout) {
-            this.layout = res.data?.resource.layouts?.edges[0]?.node || null;
+            this.layout = data.resource.layouts?.edges[0]?.node || null;
           } else {
             this.layout = null;
           }
           this.updateFields();
         }
+        this.loading = false;
       });
   }
 
@@ -191,6 +198,7 @@ export class EditorSettingsComponent
    * @param referenceData reference data id
    */
   private getReferenceData(referenceData: string) {
+    this.loading = true;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -203,6 +211,7 @@ export class EditorSettingsComponent
           this.referenceData = data.referenceData;
           this.updateFields();
         }
+        this.loading = false;
       });
   }
 

@@ -1,6 +1,7 @@
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import {
+  ChangeDetectorRef,
   ComponentFactoryResolver,
   Directive,
   EventEmitter,
@@ -40,11 +41,13 @@ export class TabBodyHostDirective
    * @param componentFactoryResolver Angular component factory resolver ( deprecated )
    * @param viewContainerRef Angular view container reference
    * @param _document document
+   * @param cdr ChangeDetectorRef
    */
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     viewContainerRef: ViewContainerRef,
-    @Inject(DOCUMENT) _document: any
+    @Inject(DOCUMENT) _document: any,
+    private cdr: ChangeDetectorRef
   ) {
     super(componentFactoryResolver, viewContainerRef, _document);
   }
@@ -61,6 +64,7 @@ export class TabBodyHostDirective
         if (!this.hasAttached()) {
           this.attach(tab.content);
         }
+        this.cdr.detectChanges();
       });
   }
 

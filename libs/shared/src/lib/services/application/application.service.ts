@@ -1993,7 +1993,11 @@ export class ApplicationService {
         }
       })
       .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
+        console.error(err);
+        this.snackBar.openSnackBar(
+          this.translate.instant('models.application.errors.style.notFound'),
+          { error: true }
+        );
       })
       .finally(() => (this.customStyleEdited = false));
   }
