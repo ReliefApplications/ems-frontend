@@ -1,7 +1,6 @@
 import { FaIconName } from '@oort-front/ui';
 import { Gradient } from '../components/controls/gradient-picker/gradient-picker.component';
 import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
-import { GraphqlNodesResponse } from './graphql-query.model';
 
 /**
  * Layer types for backend
