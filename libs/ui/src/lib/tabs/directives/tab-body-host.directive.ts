@@ -1,6 +1,7 @@
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import {
+  ChangeDetectorRef,
   ComponentFactoryResolver,
   Directive,
   EventEmitter,
@@ -24,10 +25,11 @@ export class TabBodyHostDirective
   extends CdkPortalOutlet
   implements OnInit, OnDestroy
 {
+  /** Subject to emit when the component is destroyed. */
   destroy$: Subject<boolean> = new Subject<boolean>();
-
+  /** The open tab component. */
   private _openedTab?: TabComponent;
-
+  /** Event emitter to get the tab whe its opened. */
   @Input() openedTab!: EventEmitter<TabComponent>;
 
   /**
@@ -37,11 +39,13 @@ export class TabBodyHostDirective
    * @param componentFactoryResolver Angular component factory resolver ( deprecated )
    * @param viewContainerRef Angular view container reference
    * @param _document document
+   * @param cdr ChangeDetectorRef
    */
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     viewContainerRef: ViewContainerRef,
-    @Inject(DOCUMENT) _document: any
+    @Inject(DOCUMENT) _document: any,
+    private cdr: ChangeDetectorRef
   ) {
     super(componentFactoryResolver, viewContainerRef, _document);
   }
@@ -58,6 +62,7 @@ export class TabBodyHostDirective
         if (!this.hasAttached()) {
           this.attach(tab.content);
         }
+        this.cdr.detectChanges();
       });
   }
 

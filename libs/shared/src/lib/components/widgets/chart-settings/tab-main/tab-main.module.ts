@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { TabMainComponent } from './tab-main.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ExpansionPanelModule, SelectMenuModule } from '@oort-front/ui';
+import {
+  DividerModule,
+  ExpansionPanelModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
 import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,7 +18,10 @@ import { GridModule } from '../../../ui/core-grid/grid/grid.module';
 import { ChartModule } from '../../chart/chart.module';
 import { SeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
 import { ButtonModule, FormWrapperModule, TooltipModule } from '@oort-front/ui';
-import { ResourceSelectComponent } from '../../../controls/public-api';
+import {
+  ReferenceDataSelectComponent,
+  ResourceSelectComponent,
+} from '../../../controls/public-api';
 
 /**
  * Main tab of chart settings modal.
@@ -41,6 +48,8 @@ import { ResourceSelectComponent } from '../../../controls/public-api';
     SelectMenuModule,
     TooltipModule,
     ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    DividerModule,
   ],
   exports: [TabMainComponent],
 })

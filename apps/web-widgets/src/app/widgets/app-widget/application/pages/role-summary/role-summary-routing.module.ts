@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { RoleSummaryComponent } from './role-summary.component';
+import { IsNormalizeUrl } from '../../../guards/normalize-url.guard';
 
 /** List of routes of role summary. */
 const routes: Routes = [
   {
     path: '',
     component: RoleSummaryComponent,
+    canActivate: [IsNormalizeUrl],
   },
 ];
 

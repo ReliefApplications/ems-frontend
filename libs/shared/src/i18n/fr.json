@@ -1833,6 +1833,8 @@
 						}
 					},
 					"dynamic": "Dynamique",
+					"exportable": "Autoriser l'export des cartes",
+					"gridMode": "Peut être affiché en grille",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
 					},
@@ -1867,6 +1869,7 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateFormat": "AAAA/MM/JJ ou une expression ({{today}} ou  {{now}})",
 			"dateLabel": "Sélectionnez une date",
 			"endLabel": "Date de fin",
 			"startLabel": "Date de début",

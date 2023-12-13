@@ -49,6 +49,7 @@ import {
 } from '../../../models/notification.model';
 import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
+import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 
 /** Component for the grid widget */
 @Component({
@@ -61,29 +62,41 @@ export class GridWidgetComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  // === TEMPLATE REFERENCE ===
+  /** Template reference */
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
+  /** Reference to main grid */
+  @ViewChild(CoreGridComponent)
+  coreGridComponent?: CoreGridComponent;
+  /** Reference to aggregation grid */
+  @ViewChild(AggregationGridComponent)
+  aggregationGridComponent?: AggregationGridComponent;
+  /** Reference to reference data grid */
+  @ViewChild(ReferenceDataGridComponent)
+  referenceDataGridComponent?: ReferenceDataGridComponent;
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
-  // === DATA ===
+  /** Data */
   @Input() widget: any;
 
-  // === PERMISSIONS ===
+  /** Permissions */
   public canCreateRecords = false;
 
-  // === CACHED CONFIGURATION ===
+  /** Cached configuration */
   public layout: Layout | null = null;
   public layouts: Layout[] = [];
 
-  // === SORT FIELDS SELECT ===
+  /** Sort fields select */
   public sortFields: any[] = [];
 
-  // === AGGREGATION ===
+  /** Aggregation */
   public aggregation: Aggregation | null = null;
   public aggregations: Aggregation[] = [];
 
-  // === SETTINGS ===
+  /** Reference data */
+  public useReferenceData = false;
+
+  /** Settings */
   @Input() settings: any = null;
   @Input() id = '';
   @Input() canUpdate = false;
@@ -93,10 +106,10 @@ export class GridWidgetComponent
     error: boolean;
   } = { error: false };
 
-  // === EMIT STEP CHANGE FOR WORKFLOW ===
+  /** Emit step change for workflow */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
-  // === EMIT EVENT ===
+  /** Emit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
   /**
@@ -114,10 +127,6 @@ export class GridWidgetComponent
   get floatingButtons() {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
-
-  @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
-  @ViewChild(AggregationGridComponent)
-  aggregationGridComponent?: AggregationGridComponent;
 
   /**
    * Heavy constructor for the grid widget component
@@ -153,7 +162,9 @@ export class GridWidgetComponent
   ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
+    let buildSortFields = false;
     if (this.settings.resource) {
+      this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
 
@@ -191,10 +202,7 @@ export class GridWidgetComponent
                 error: true,
               };
             } else {
-              // Build list of available sort fields
-              this.widget.settings.sortFields?.forEach((sortField: any) => {
-                this.sortFields.push(sortField);
-              });
+              buildSortFields = true;
             }
             this.gridSettings = {
               ...this.settings,
@@ -207,7 +215,8 @@ export class GridWidgetComponent
 
       if (aggregations.length > 0) {
         this.aggregationService
-          .getAggregations(this.settings.resource, {
+          .getAggregations({
+            resource: this.settings.resource,
             ids: aggregations,
             first: aggregations.length,
           })
@@ -224,14 +233,20 @@ export class GridWidgetComponent
               };
             }
             this.aggregation = this.aggregations[0] || null;
-
-            // Build list of available sort fields
-            this.widget.settings.sortFields?.forEach((sortField: any) => {
-              this.sortFields.push(sortField);
-            });
+            buildSortFields = true;
           });
         return;
       }
+    } else if (this.settings.referenceData) {
+      buildSortFields = true;
+      this.useReferenceData = true;
+    }
+
+    if (buildSortFields) {
+      // Build list of available sort fields
+      this.widget.settings.sortFields?.forEach((sortField: any) => {
+        this.sortFields.push(sortField);
+      });
     }
   }
 
@@ -251,6 +266,14 @@ export class GridWidgetComponent
     }
     if (this.aggregationGridComponent) {
       this.aggregationGridComponent.onSortChange([
+        {
+          field: e ? e.field : '',
+          dir: e ? e.order : 'asc',
+        },
+      ]);
+    }
+    if (this.referenceDataGridComponent) {
+      this.referenceDataGridComponent.onSortChange([
         {
           field: e ? e.field : '',
           dir: e ? e.order : 'asc',

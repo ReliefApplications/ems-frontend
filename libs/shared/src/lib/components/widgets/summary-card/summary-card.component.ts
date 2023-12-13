@@ -67,8 +67,6 @@ export class SummaryCardComponent
 {
   /** Widget definition */
   @Input() widget: any;
-  /** Can export widget */
-  @Input() export = true;
   /** Widget settings */
   @Input() settings!: SummaryCardFormT['value'];
   /** Should show padding */
@@ -192,6 +190,16 @@ export class SummaryCardComponent
     );
   }
 
+  /** @returns user can change display mode */
+  get canChangeDisplayMode() {
+    return get(this.settings, 'widgetDisplay.gridMode', true);
+  }
+
+  /** @returns is widget exportable ( only cards mode ) */
+  get exportable() {
+    return get(this.settings, 'widgetDisplay.exportable', true);
+  }
+
   /**
    * Get the summary card pdf name
    *
@@ -260,13 +268,7 @@ export class SummaryCardComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.onPage({
-          pageSize: DEFAULT_PAGE_SIZE,
-          skip: 0,
-          previousPageIndex: 0,
-          pageIndex: 0,
-          totalItems: 0,
-        });
+        this.refresh();
       });
   }
 
@@ -573,7 +575,13 @@ export class SummaryCardComponent
    */
   private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
-    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
+    if (
+      !card ||
+      (!card.referenceData &&
+        !card.resource &&
+        (!card.layout || !card.aggregation))
+    )
+      return;
     const settings = {
       template: card.template,
       resource: card.resource,
@@ -597,13 +605,16 @@ export class SummaryCardComponent
       },
       contextFilters: JSON.stringify(this.contextFilters),
     };
-
-    Object.assign(
-      settings,
-      card.aggregation
-        ? { aggregations: card.aggregation }
-        : { layouts: card.layout }
-    );
+    if (card.referenceData) {
+      Object.assign(settings, { referenceData: card.referenceData });
+    } else {
+      Object.assign(
+        settings,
+        card.aggregation
+          ? { aggregations: card.aggregation }
+          : { layouts: card.layout }
+      );
+    }
 
     this.gridSettings = settings;
   }
@@ -686,6 +697,11 @@ export class SummaryCardComponent
         this.sortFields.push(sortField);
       });
     }
+    if (this.gridSettings?.referenceData) {
+      Object.assign(this.gridSettings, {
+        refDataCards: cloneDeep(this.cachedCards),
+      });
+    }
   }
 
   /**
@@ -749,6 +765,19 @@ export class SummaryCardComponent
         this.pageInfo.skip + this.pageInfo.pageSize
       );
     }
+  }
+
+  /**
+   * Refresh view
+   */
+  public refresh() {
+    this.onPage({
+      pageSize: DEFAULT_PAGE_SIZE,
+      skip: 0,
+      previousPageIndex: 0,
+      pageIndex: 0,
+      totalItems: 0,
+    });
   }
 
   /**

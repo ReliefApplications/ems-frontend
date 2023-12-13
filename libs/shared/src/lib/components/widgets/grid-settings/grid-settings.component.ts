@@ -343,8 +343,11 @@ export class GridSettingsComponent
   private onAggregationChange(aggregationId: string): void {
     if (this.resource?.id && aggregationId) {
       this.aggregationService
-        .aggregationDataQuery(this.resource.id, aggregationId || '')
-        .subscribe(({ data }) => {
+        .aggregationDataQuery({
+          resource: this.resource.id,
+          aggregation: aggregationId || '',
+        })
+        .subscribe(({ data }: any) => {
           if (data.recordsAggregation) {
             this.fields = data.recordsAggregation.items[0]
               ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({

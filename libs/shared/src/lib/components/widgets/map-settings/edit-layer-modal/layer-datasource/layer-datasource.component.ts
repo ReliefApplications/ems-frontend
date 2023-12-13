@@ -100,15 +100,18 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
   selectAggregation(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0,
+        hasAggregations:
+          get(this.resource, 'aggregations.totalCount', 0) > 0 ||
+          get(this.referenceData, 'aggregations.totalCount', 0) > 0,
         resource: this.resource,
+        referenceData: this.referenceData,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (typeof value === 'string') {
         this.formGroup.get('aggregation')?.setValue(value);
       } else {
-        this.formGroup.get('aggregation')?.setValue((value as any).id);
+        this.formGroup.get('aggregation')?.setValue((value as any)?.id);
       }
     });
   }
@@ -142,13 +145,17 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
       disableClose: true,
       data: {
         resource: this.resource,
+        referenceData: this.referenceData,
         aggregation: this.aggregation,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.aggregation) {
         this.aggregationService
-          .editAggregation(this.aggregation, value, this.resource?.id)
+          .editAggregation(this.aggregation, value, {
+            resource: this.resource?.id,
+            referenceData: this.referenceData?.id,
+          })
           .subscribe(() => {
             this.formGroup
               .get('aggregation')

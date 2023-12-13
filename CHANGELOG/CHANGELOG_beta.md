@@ -1,3 +1,22 @@
+# [2.3.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.1...v2.3.0-beta.2) (2023-12-11)
+
+
+### Bug Fixes
+
+* put Accept headers in graphql module instead of auth-interceptor ([4ba7456](https://github.com/ReliefApplications/ems-frontend/commit/4ba74563471b2a0c5808e7f0719df595dd383f5d))
+
+
+### Features
+
+* allow reference data to be used in charts ([#2148](https://github.com/ReliefApplications/ems-frontend/issues/2148)) ([6adf1d1](https://github.com/ReliefApplications/ems-frontend/commit/6adf1d1a6e2f88e92a61576f8b7db007be6ff49d)), closes [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346)
+
+# [2.3.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0...v2.3.0-beta.1) (2023-12-09)
+
+
+### Features
+
+* allow text & summary card widgets to use record edition when using resource & layout ([#2134](https://github.com/ReliefApplications/ems-frontend/issues/2134)) ([a0f0ca0](https://github.com/ReliefApplications/ems-frontend/commit/a0f0ca0be44bb0c4e908d8317f08abe835592ff8))
+
 # [2.2.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2023-12-08)
 
 
