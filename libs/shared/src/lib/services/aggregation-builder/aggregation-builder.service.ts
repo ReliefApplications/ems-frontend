@@ -4,6 +4,10 @@ import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/e
 import { BehaviorSubject, Observable } from 'rxjs';
 import { addNewField } from '../../components/query-builder/query-builder-forms';
 import { cloneDeep } from 'lodash';
+import { QueryBuilderService } from '../query-builder/query-builder.service';
+import { Aggregation } from '../../models/aggregation.model';
+import { Resource } from '../../models/resource.model';
+import { ReferenceData } from '../../models/reference-data.model';
 
 /**
  * Shared aggregation service.
@@ -15,6 +19,13 @@ import { cloneDeep } from 'lodash';
 })
 export class AggregationBuilderService {
   private gridSubject = new BehaviorSubject<any>(null);
+
+  /**
+   * Aggregation builder service
+   *
+   * @param queryBuilder shared query builder service
+   */
+  constructor(private queryBuilder: QueryBuilderService) {}
 
   /**
    * Get the data for grid preview as an observable.
@@ -194,5 +205,58 @@ export class AggregationBuilderService {
       outField = { ...outField };
     }
     return outField;
+  }
+
+  /**
+   * Get available series fields from resource or reference data, and aggregation definition
+   *
+   * @param aggregation aggregation definition
+   * @param options options
+   * @param options.resource resource
+   * @param options.referenceData reference data
+   * @returns available series fields
+   */
+  public getAvailableSeriesFields(
+    aggregation: Aggregation,
+    options: {
+      resource?: Resource | null;
+      referenceData?: ReferenceData | null;
+    }
+  ) {
+    const queryName = options.resource
+      ? options.resource.queryName
+      : options.referenceData?.graphQLTypeName;
+    const fields = this.queryBuilder
+      .getFields(queryName as string)
+      .filter(
+        (field: any) =>
+          !(
+            field.name.includes('_id') &&
+            (field.type.name === 'ID' ||
+              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+          )
+      );
+    const selectedFields = aggregation.sourceFields
+      .map((x: string) => {
+        const field = fields.find((y) => x === y.name);
+        if (!field) return null;
+        if (field.type.kind !== 'SCALAR') {
+          Object.assign(field, {
+            fields: this.queryBuilder.deconfineFields(
+              field.type,
+              new Set()
+                .add(
+                  options.resource
+                    ? options.resource.name
+                    : options.referenceData?.name
+                )
+                .add(field.type.ofType?.name)
+            ),
+          });
+        }
+        return field;
+      })
+      .filter((x: any) => x !== null);
+    return this.fieldsAfter(selectedFields, aggregation?.pipeline);
   }
 }
