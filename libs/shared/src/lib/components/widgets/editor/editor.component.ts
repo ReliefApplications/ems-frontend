@@ -65,6 +65,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public formattedHtml: SafeHtml = '';
   /** Formatted style */
   public formattedStyle?: string;
+  /** Loading indicator */
+  public loading = true;
 
   /** Reference to header template */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
@@ -131,6 +133,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       );
     } else if (this.settings.element && this.settings.referenceData) {
       await this.getReferenceData();
+      this.loading = true;
       await this.referenceDataService
         .cacheItems(this.settings.referenceData)
         .then((value) => {
@@ -154,6 +157,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         this.settings.text
       );
     }
+    this.loading = false;
   }
 
   /**
@@ -246,6 +250,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * Get reference data.
    */
   private async getReferenceData() {
+    this.loading = true;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -266,11 +271,13 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
               };
             });
         }
+        this.loading = false;
       });
   }
 
   /** Sets layout */
   private async getLayout(): Promise<void> {
+    this.loading = true;
     const apolloRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_LAYOUT,
@@ -287,12 +294,14 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         this.styles = this.layout?.query.style;
       }
     }
+    this.loading = false;
   }
 
   /**
    * Queries the data.
    */
   private async getRecord() {
+    this.loading = true;
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
@@ -364,6 +373,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       }
     }
+    this.loading = false;
   }
 
   /**

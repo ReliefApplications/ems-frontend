@@ -8,9 +8,11 @@
   >
     <div class="w-full h-fit" (click)="onClick($event)">
       <shared-html-widget-content
+        *ngIf="!loading"
         [html]="formattedHtml"
         [style]="formattedStyle"
       ></shared-html-widget-content>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </div>
   </div>
 </div>
