@@ -46,7 +46,7 @@
           uiMenuItem
           (click)="onPreviewAggregation(index); $event.stopPropagation()"
         >
-          <ng-container *ngIf="loadingAggregation; else previewIconTmpl">
+          <ng-container *ngIf="loadingAggregationRecords; else previewIconTmpl">
             <ui-spinner size="medium"></ui-spinner>
           </ng-container>
           <ng-template #previewIconTmpl>

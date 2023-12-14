@@ -60,7 +60,7 @@ export class TemplateAggregationsComponent
   }
 
   /** Loading state of the aggregation preview */
-  public loadingAggregation = false;
+  public loadingAggregationRecords = false;
 
   /**
    * Template aggregations component.
@@ -148,7 +148,7 @@ export class TemplateAggregationsComponent
    * @param index aggregation index
    */
   public async onPreviewAggregation(index: number) {
-    if (this.loadingAggregation) {
+    if (this.loadingAggregationRecords) {
       return;
     }
     const selectedAggregation = this.aggregations.at(index).value;
@@ -162,7 +162,7 @@ export class TemplateAggregationsComponent
       return;
     }
     // get the aggregation data
-    this.loadingAggregation = true;
+    this.loadingAggregationRecords = true;
     const query$ = this.aggregationService.aggregationDataQuery({
       referenceData: selectedAggregation.referenceData || '',
       resource: selectedAggregation.resource || '',
@@ -177,17 +177,18 @@ export class TemplateAggregationsComponent
       at: selectedAggregation.at
         ? this.contextService.atArgumentValue(selectedAggregation.at)
         : undefined,
+      first: -1,
     });
 
     const { data: aggregationData, errors } = await firstValueFrom(query$);
     if (!aggregationData || errors) {
-      this.loadingAggregation = false;
+      this.loadingAggregationRecords = false;
       if (errors?.length) {
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       }
       return;
     }
-    this.loadingAggregation = false;
+    this.loadingAggregationRecords = false;
     this.openAggregationPayload(aggregationData);
   }
 
