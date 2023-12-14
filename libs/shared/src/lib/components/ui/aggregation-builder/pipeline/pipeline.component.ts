@@ -78,14 +78,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
         this.initialFields,
         pipeline.slice(0, index)
       );
-      if (
-        pipeline[index]?.type === PipelineStage.FILTER ||
-        pipeline[index]?.type === PipelineStage.SORT
-      ) {
-        this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
-          (field: any) => field.type.kind === 'SCALAR'
-        );
-      }
+
       this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
         (field: any) => field.name
       );
