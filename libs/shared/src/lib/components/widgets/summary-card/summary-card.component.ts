@@ -777,6 +777,7 @@ export class SummaryCardComponent
       pageIndex: 0,
       totalItems: 0,
     });
+    this.setupDynamicCards();
   }
 
   /**
