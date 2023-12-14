@@ -2288,7 +2288,7 @@
 		"aggregation": {
 			"preview": {
 				"label": "Aggregation data preview",
-				"missingId": "Cannot load selected aggregation. Id is missing"
+				"missingAggregation": "Cannot load selected aggregation. Aggregation not found"
 			}
 		},
 		"apiConfiguration": {

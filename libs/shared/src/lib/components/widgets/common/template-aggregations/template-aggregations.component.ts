@@ -152,9 +152,11 @@ export class TemplateAggregationsComponent
       return;
     }
     const selectedAggregation = this.aggregations.at(index).value;
-    if (!selectedAggregation.id) {
+    if (!selectedAggregation.aggregation) {
       this.snackBar.openSnackBar(
-        this.translateService.instant('pages.aggregation.preview.missingId'),
+        this.translateService.instant(
+          'pages.aggregation.preview.missingAggregation'
+        ),
         { error: true }
       );
       return;
@@ -164,8 +166,7 @@ export class TemplateAggregationsComponent
     const query$ = this.aggregationService.aggregationDataQuery({
       referenceData: selectedAggregation.referenceData || '',
       resource: selectedAggregation.resource || '',
-      aggregation: selectedAggregation.id || '',
-      mapping: null,
+      aggregation: selectedAggregation.aggregation || '',
       contextFilters: JSON.parse(
         selectedAggregation.contextFilters ||
           `{
@@ -178,11 +179,11 @@ export class TemplateAggregationsComponent
         : undefined,
     });
 
-    const { data: aggregationData, error } = await firstValueFrom(query$);
-    if (!aggregationData || error) {
+    const { data: aggregationData, errors } = await firstValueFrom(query$);
+    if (!aggregationData || errors) {
       this.loadingAggregation = false;
-      if (error) {
-        this.snackBar.openSnackBar(error.message, { error: true });
+      if (errors?.length) {
+        this.snackBar.openSnackBar(errors[0].message, { error: true });
       }
       return;
     }

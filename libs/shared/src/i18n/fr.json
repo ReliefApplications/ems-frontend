@@ -2302,7 +2302,7 @@
 		"aggregation": {
 			"preview": {
 				"label": "Aperçu des données d'agrégation",
-				"missingId": "Impossible de charger l'agrégation sélectionnée. Id est manque"
+				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
 			}
 		},
 		"apiConfiguration": {
