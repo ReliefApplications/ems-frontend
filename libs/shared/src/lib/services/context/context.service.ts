@@ -178,10 +178,10 @@ export class ContextService {
     T extends CompositeFilterDescriptor | FilterDescriptor
   >(f: T): T {
     const filter = cloneDeep(f);
-    if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
-      filter.filters = [];
-      return filter;
-    }
+    // if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
+    //   filter.filters = [];
+    //   return filter;
+    // }
 
     const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
 

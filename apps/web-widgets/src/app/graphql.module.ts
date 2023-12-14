@@ -25,7 +25,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
   const basic = setContext(() => ({
     headers: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'charset=utf-8',
+      Accept: 'application/json; charset=utf-8',
       UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   }));

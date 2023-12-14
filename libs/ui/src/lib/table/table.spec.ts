@@ -56,11 +56,13 @@ class TestingComponent {
   /** Reference to the CellHeaderDirective. */
   @ViewChild(CellHeaderDirective) cellHeaderDirective!: CellHeaderDirective;
 
+  /** Data for table */
   public data: { name: string; lastName: string; count: number }[] = [
     { name: 'name1', lastName: 'lastName1', count: 1 },
     { name: 'name2', lastName: 'lastName2', count: 2 },
     { name: 'name3', lastName: 'lastName3', count: 3 },
   ];
+  /** Displayed columns */
   public displayedColumns: string[] = [
     'title',
     'subscribedRoles',

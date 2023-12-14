@@ -31,7 +31,7 @@ export class ApplicationComponent
   public hideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
-  /** Is loading */
+  /** Loading indicator */
   public loading = true;
 
   /**
@@ -39,7 +39,7 @@ export class ApplicationComponent
    *
    * @param applicationService Shared application service
    * @param route Angular current route
-   * @param router Angular router
+   * @param router Angular router service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -94,7 +94,7 @@ export class ApplicationComponent
           this.title = application.name || '';
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (location.href.endsWith(application?.id || '') || !firstPage) {
+            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
               // If a page is configured
               if (firstPage) {
                 this.router.navigate(
@@ -108,7 +108,9 @@ export class ApplicationComponent
                   { relativeTo: this.route }
                 );
               } else {
-                this.router.navigate(['./'], { relativeTo: this.route });
+                this.router.navigate(['./'], {
+                  relativeTo: this.route,
+                });
               }
             }
           }

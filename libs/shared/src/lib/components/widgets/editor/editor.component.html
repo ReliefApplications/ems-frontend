@@ -6,7 +6,11 @@
     }"
     (click)="onClick($event)"
   >
-    <div class="w-full h-fit" (click)="onClick($event)">
+    <div
+      *ngIf="!loading; else loadingTmpl"
+      class="w-full h-fit"
+      (click)="onClick($event)"
+    >
       <shared-html-widget-content
         [html]="formattedHtml"
         [style]="formattedStyle"
@@ -28,5 +32,11 @@
     >
       {{ 'components.widget.summaryCard.dataSource' | translate }}
     </ui-button>
+  </div>
+</ng-template>
+
+<ng-template #loadingTmpl>
+  <div class="flex h-full">
+    <ui-spinner class="m-auto"></ui-spinner>
   </div>
 </ng-template>

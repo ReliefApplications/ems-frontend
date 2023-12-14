@@ -37,7 +37,7 @@
       </ng-template>
     </ui-tab>
     <!-- Card text preview -->
-    <ui-tab *ngIf="widgetFormGroup && !widgetFormGroup.invalid">
+    <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon icon="preview" [size]="24"></ui-icon>
         <span>{{
@@ -134,6 +134,22 @@
           >
             <ng-container ngProjectAs="label">{{
               'models.widget.display.searchable' | translate
+            }}</ng-container>
+          </ui-toggle>
+          <ui-toggle
+            [formControl]="
+              $any(widgetFormGroup.get('widgetDisplay.exportable'))
+            "
+          >
+            <ng-container ngProjectAs="label">{{
+              'components.widget.settings.summaryCard.exportable' | translate
+            }}</ng-container>
+          </ui-toggle>
+          <ui-toggle
+            [formControl]="$any(widgetFormGroup.get('widgetDisplay.gridMode'))"
+          >
+            <ng-container ngProjectAs="label">{{
+              'components.widget.settings.summaryCard.gridMode' | translate
             }}</ng-container>
           </ui-toggle>
           <div>

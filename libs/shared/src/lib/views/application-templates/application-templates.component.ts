@@ -17,7 +17,9 @@ export class ApplicationTemplatesComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Templates */
   public templates = new Array<any>();
 
   /**

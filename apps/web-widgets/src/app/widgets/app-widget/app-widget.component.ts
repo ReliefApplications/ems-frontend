@@ -17,9 +17,8 @@ import {
 } from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
-import { Router } from '@angular/router';
-import { Location, LocationStrategy } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { Router } from '@angular/router';
 
 /**
  * Application as Web Widget.
@@ -38,10 +37,10 @@ export class AppWidgetComponent
   @Input()
   set id(value: string) {
     // Get the current path
-    const currentPath = this.location.path();
+    const currentPath = this.router.url;
     if (currentPath.includes(value)) {
       // Path includes the id
-      this.router.navigateByUrl(`${currentPath}`);
+      this.router.navigateByUrl(currentPath);
     } else {
       // Else, navigate to homepage of the app
       this.router.navigate([`./${value}`]);
@@ -56,13 +55,25 @@ export class AppWidgetComponent
     this.onToggleFilter(opened);
   }
 
+  /** Navigation path */
   @Input()
   set path(value: string) {
     this.router.navigate([value]);
   }
 
+  /** Pass new value to the filter */
+  @Input()
+  set filter(value: any) {
+    this.contextService.filter.next(value);
+  }
+
+  /** Is filter active */
   @Output()
   filterActive$ = new EventEmitter<boolean>();
+  /** Emit filter value */
+  @Output()
+  filter$ = new EventEmitter<any>();
+  /** Available pages */
   @Output()
   pages = new EventEmitter<any[]>();
 
@@ -72,21 +83,23 @@ export class AppWidgetComponent
    * @param el class related element reference
    * @param injector angular application injector
    * @param contextService Shared context service
+   * @param applicationService Shared application service
+   * @param router Angular router service
+   * @param shadowDomService Shared shadow dom service
    */
   constructor(
     el: ElementRef,
     injector: Injector,
     private contextService: ContextService,
-    private router: Router,
     private applicationService: ApplicationService,
-    private location: Location,
-    private locationStrategy: LocationStrategy,
+    private router: Router,
     private shadowDomService: ShadowDomService
   ) {
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
     this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
       this.filterActive$.emit(!isEmpty(value));
+      this.filter$.emit(value);
     });
     this.applicationService.application$.subscribe(
       (application: Application | null) => {

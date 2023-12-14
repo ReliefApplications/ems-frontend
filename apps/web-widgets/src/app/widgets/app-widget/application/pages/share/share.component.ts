@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import {
@@ -23,7 +23,7 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Share URL access component.
    *
-   * @param router Angular shared router service
+   * @param router Angular router service
    * @param route Angular shared route service
    * @param apollo Apollo client service
    * @param snackBar Shared snackbar service

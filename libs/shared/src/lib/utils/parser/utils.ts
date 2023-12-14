@@ -6,6 +6,8 @@ import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constan
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
+/** Prefix for aggregation keys */
+const AGGREGATION_PREFIX = '{{aggregation.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
 /** Prefix for avatar keys */
@@ -16,34 +18,74 @@ const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp'];
 const PLACEHOLDER_SUFFIX = '}}';
 
 /**
+ * Flattens the fields array, to also include the subfields of objects.
+ *
+ * @param fields Fields to flatten
+ * @param path Current path to the field
+ * @returns The flattened fields array
+ */
+const getFlatFields = (fields: any, path = ''): any => {
+  const flatFields: any = [];
+
+  fields.forEach((field: any) => {
+    flatFields.push({
+      ...field,
+      name: path + field.name,
+    });
+
+    // If an object, also include its subfields as data keys
+    if (field.kind === 'OBJECT') {
+      flatFields.push(...getFlatFields(field.fields, path + field.name + '.'));
+    } else if (field.kind === 'LIST') {
+      flatFields.push(
+        ...getFlatFields(field.fields, path + field.name + '.[0].')
+      );
+    }
+  });
+
+  return flatFields;
+};
+
+/**
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
  *
  * @param html The html text.
- * @param fieldsValue Field value.
- * @param fields Available fields.
- * @param pages list of application pages
- * @param styles Array of layout styles.
+ * @param options options
+ * @param options.data available data
+ * @param options.aggregation available aggregation data
+ * @param options.fields Available fields.
+ * @param options.pages list of application pages
+ * @param options.styles Array of layout styles.
  * @returns The parsed html.
  */
 export const parseHtml = (
   html: string,
-  fieldsValue: any,
-  fields: any,
-  pages: any[],
-  styles?: any[]
+  options: {
+    data?: any;
+    aggregation?: any;
+    fields?: any;
+    pages: any[];
+    styles?: any[];
+  }
 ) => {
-  const htmlWithLinks = replacePages(html, pages);
-  if (fieldsValue) {
-    const htmlWithRecord = replaceRecordFields(
-      htmlWithLinks,
-      fieldsValue,
-      fields,
-      styles
+  let formattedHtml = replacePages(html, options.pages);
+  if (options.data) {
+    formattedHtml = replaceRecordFields(
+      formattedHtml,
+      options.data,
+      getFlatFields(options.fields),
+      options.styles
     );
-    return applyOperations(htmlWithRecord);
+    if (options.aggregation) {
+      formattedHtml = replaceAggregationData(
+        formattedHtml,
+        options.aggregation
+      );
+    }
+    return applyOperations(formattedHtml);
   } else {
-    return applyOperations(htmlWithLinks);
+    return applyOperations(formattedHtml);
   }
 };
 
@@ -113,8 +155,42 @@ const replaceRecordFields = (
   if (fields) {
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
+    // We check for LIST fields and duplicate their only element for each subfield
+    const listFields = fields.filter((field: any) => field.kind === 'LIST');
+    listFields.forEach((field: any) => {
+      const subFields = fields.filter((subField: any) =>
+        subField.name.startsWith(field.name + '.[0]')
+      );
+
+      const length = get(fieldsValue, field.name)?.length ?? 0;
+      // Start from 1 because we already have the first element (the one being used as a template)
+      for (let i = 1; i < length; i++) {
+        subFields.forEach((subField: any) => {
+          const subFieldName = subField.name.replace(
+            `${field.name}.[0]`,
+            `${field.name}.[${i}]`
+          );
+          fields.push({
+            ...subField,
+            name: subFieldName,
+          });
+        });
+      }
+    });
+
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      const toReadableObject = (obj: any): any =>
+        typeof obj === 'object' && obj !== null
+          ? Array.isArray(obj)
+            ? obj.map((o) => toReadableObject(o)).join('<br>') // If array, return mapped elements
+            : Object.keys(obj) // If object, return object keys and values as strings
+                .filter((key) => key !== '__typename')
+                .map((key) => `${key}: ${obj[key]}`)
+                .join(', ')
+          : `${obj}`; // If not an object, return string representation
+
+      const value = toReadableObject(get(fieldsValue, field.name));
+
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       // Inject avatars
@@ -319,18 +395,23 @@ const replaceRecordFields = (
             break;
           }
           default:
+            const formattedValue = applyLayoutFormat(value, field);
             convertedValue = style
-              ? `<span style='${style}'>${applyLayoutFormat(
-                  value,
-                  field
-                )}</span>`
-              : applyLayoutFormat(value, field) || '';
+              ? `<span style='${style}'>${formattedValue}</span>`
+              : isNil(formattedValue)
+              ? ''
+              : formattedValue;
             break;
         }
       }
 
+      const escapeFieldNameForRegex = (fieldName: string): string =>
+        fieldName.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+
       const regex = new RegExp(
-        `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
+        `${DATA_PREFIX}${escapeFieldNameForRegex(
+          field.name
+        )}${PLACEHOLDER_SUFFIX}`,
         'gi'
       );
       formattedHtml = formattedHtml.replace(regex, convertedValue);
@@ -340,10 +421,37 @@ const replaceRecordFields = (
       );
       formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
+
+    const regex = /{{data\.(.*?)}}/g;
+    const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+      // Replace the key with correct value
+      return get(fieldsValue, p1, '');
+    });
+    formattedHtml = replacedHtml;
   }
   // replace all /n, removing it since we don't need because tailwind already styles it
   formattedHtml = formattedHtml.replace(/\n/g, '');
+  return formattedHtml;
+};
 
+/**
+ * Replace aggregation placeholders in template with aggregation data
+ *
+ * @param html html template
+ * @param aggregation aggregation data
+ * @returns formatted html
+ */
+const replaceAggregationData = (html: string, aggregation: any): string => {
+  let formattedHtml = html;
+
+  const regex = /{{aggregation\.(.*?)}}/g;
+  const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+    // Replace the key with correct value
+    return get(aggregation, p1, '');
+  });
+  formattedHtml = replacedHtml;
+  // replace all /n, removing it since we don't need because tailwind already styles it
+  formattedHtml = formattedHtml.replace(/\n/g, '');
   return formattedHtml;
 };
 
@@ -382,8 +490,22 @@ const applyOperations = (html: string): string => {
     `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
     'gm'
   );
-  let parsedHtml = html;
-  let result = regex.exec(html);
+
+  // To identify and remove span with style elements to avoid breaking calc functions
+  const spanRegex = /<span[^>]*>([\s\S]*?)<\/span>/g;
+  const spanElements: string[] = [];
+  // Clean HTML don't have span and styles
+  const cleanHtml = html.replace(spanRegex, (match, spanContent) => {
+    // Save the removed span element
+    spanElements.push(match);
+    // Replace the span element with its content
+    return spanContent;
+  });
+
+  let parsedHtml = cleanHtml;
+  let result = regex.exec(cleanHtml);
+  // Track the index of the saved span elements
+  let spanIndex = 0;
   while (result !== null) {
     // get the function
     const calcFunc = get(calcFunctions, result[1]);
@@ -399,9 +521,20 @@ const applyOperations = (html: string): string => {
       } catch (err: any) {
         resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
       }
-      parsedHtml = parsedHtml.replace(result[0], resultText);
+      if (spanElements.length > spanIndex) {
+        // Retrieve the saved span element
+        const spanElement = spanElements[spanIndex];
+        // Replace the html with the calculated result inside the saved span element with the style
+        parsedHtml = parsedHtml.replace(
+          result[0],
+          spanElement.replace(`'>.*(</span>)`, `'>${resultText}$1`)
+        );
+      } else {
+        parsedHtml = parsedHtml.replace(result[0], resultText);
+      }
+      spanIndex++;
     }
-    result = regex.exec(html);
+    result = regex.exec(cleanHtml);
   }
   return parsedHtml;
 };
@@ -412,11 +545,27 @@ const applyOperations = (html: string): string => {
  * @param fields Array of fields.
  * @returns list of data keys
  */
-export const getDataKeys = (fields: any): { value: string; text: string }[] =>
-  fields.map((field: any) => ({
+export const getDataKeys = (fields: any): { value: string; text: string }[] => {
+  return getFlatFields(fields).map((field: any) => ({
     value: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
     text: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
   }));
+};
+
+/**
+ * Returns an array with the keys for aggregation autocompletion.
+ *
+ * @param aggregations Array of aggregations.
+ * @returns list of aggregation keys
+ */
+export const getAggregationKeys = (
+  aggregations: any[]
+): { value: string; text: string }[] => {
+  return aggregations.map((aggregation: any) => ({
+    value: AGGREGATION_PREFIX + aggregation.id + PLACEHOLDER_SUFFIX,
+    text: AGGREGATION_PREFIX + aggregation.name + PLACEHOLDER_SUFFIX,
+  }));
+};
 
 /**
  * Returns an array with the calc operations keys.
@@ -449,34 +598,31 @@ export const getPageKeys = (
 /**
  * Applies layout field format ignoring html tags
  *
- * @param name Original value of the field
+ * @param value Original value of the field
  * @param field Field information, used to get field name and format
  * @returns Formatted field value
  */
-export const applyLayoutFormat = (
-  name: string | null,
-  field: any
-): string | null => {
+export const applyLayoutFormat = (value: any, field: any): any => {
   // replaces value for label, if it exists
   if (field.options)
-    name = field.options.find((o: any) => o.value === name)?.text || name;
+    value = field.options.find((o: any) => o.value === value)?.text || value;
 
-  if (name && field.layoutFormat && field.layoutFormat.length > 1) {
+  if (value && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(
       `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
       'gi'
     );
-    const value = field.layoutFormat
+    const formattedValue = field.layoutFormat
       .replace(/<(.|\n)*?>/g, '')
-      .replace(regex, name);
-    return applyOperations(value);
+      .replace(regex, value);
+    return applyOperations(formattedValue);
   } else {
-    return name;
+    return value;
   }
 };
 
 /**
- * Loops throught the layout styles and returns the last style that pass the filters
+ * Loops through the layout styles and returns the last style that pass the filters
  *
  * @param layouts Array of layout styles
  * @param key The key of the actual property in the html

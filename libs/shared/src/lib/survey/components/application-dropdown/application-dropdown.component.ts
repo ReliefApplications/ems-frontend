@@ -39,19 +39,31 @@ export class ApplicationDropdownComponent
   extends QuestionAngular<QuestionOwnerApplicationsDropdownModel>
   implements OnInit, OnDestroy
 {
+  /** Selected applications */
   public selectedApplications: Application[] = [];
+  /** Applications Observable */
   public applications$!: Observable<Application[]>;
+  /** Applications */
   private applications = new BehaviorSubject<Application[]>([]);
+  /** Cached applications */
   private cachedApplications: Application[] = [];
+  /** Applications query */
   private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
+  /** Scroll listener */
   private scrollListener!: any;
+  /** Page info */
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
+  /** Loading */
   private loading = true;
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
+  /**
+   * Select menu component
+   */
   @ViewChild(SelectMenuComponent, { static: true })
   selectMenu!: SelectMenuComponent;
 

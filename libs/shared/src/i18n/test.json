@@ -1820,6 +1820,8 @@
 						}
 					},
 					"dynamic": "******",
+					"exportable": "******",
+					"gridMode": "******",
 					"hint": {
 						"dynamic": "******"
 					},
@@ -1854,6 +1856,7 @@
 			"noDataText": "******"
 		},
 		"datepicker": {
+			"dateFormat": "****** {{today}} ****** {{now}} ******",
 			"dateLabel": "******",
 			"endLabel": "******",
 			"startLabel": "******",
@@ -2050,6 +2053,11 @@
 		},
 		"application": {
 			"description": "******",
+			"errors": {
+				"style": {
+					"notFound": "******"
+				}
+			},
 			"id": "******",
 			"new": "******",
 			"notifications": {
