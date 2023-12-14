@@ -129,6 +129,8 @@ export class FormBuilderComponent
    * List of related names
    */
   private relatedNames!: string[];
+  /** Timeout to survey creator */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -195,6 +197,9 @@ export class FormBuilderComponent
   }
 
   override ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     super.ngOnDestroy();
     this.surveyCreator.survey?.dispose();
   }
@@ -304,7 +309,10 @@ export class FormBuilderComponent
     // Scroll to question when added
     this.surveyCreator.onQuestionAdded.add((sender: any, options: any) => {
       const name = options.question.name;
-      setTimeout(() => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      this.timeoutListener = setTimeout(() => {
         const el = this.document.querySelector('[data-name="' + name + '"]');
         el?.scrollIntoView({ behavior: 'smooth' });
       });

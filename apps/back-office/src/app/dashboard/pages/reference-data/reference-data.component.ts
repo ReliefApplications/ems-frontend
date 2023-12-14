@@ -121,6 +121,12 @@ export class ReferenceDataComponent
   public csvLoading = false;
   /** CSV separator */
   public separator = new FormControl(',');
+  /** Timeout to form */
+  private formTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to init editor */
+  private initEditorTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to add an object to the chip list. */
+  private addChipListTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Reference to the field input.
@@ -243,7 +249,10 @@ export class ReferenceDataComponent
     };
 
     // Wait for the form to be initialized before subscribing to changes
-    setTimeout(() => {
+    if (this.formTimeoutListener) {
+      clearTimeout(this.formTimeoutListener);
+    }
+    this.formTimeoutListener = setTimeout(() => {
       form
         .get('type')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -543,7 +552,10 @@ export class ReferenceDataComponent
    */
   add(event: string | any): void {
     // use setTimeout to prevent add input value on focusout
-    setTimeout(
+    if (this.addChipListTimeoutListener) {
+      clearTimeout(this.addChipListTimeoutListener);
+    }
+    this.addChipListTimeoutListener = setTimeout(
       () => {
         const input =
           event.type === 'focusout'
@@ -727,8 +739,11 @@ export class ReferenceDataComponent
   public initEditor(editor: any): void {
     const queryControl = this.queryControl;
     if (!queryControl) return;
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
     if (editor) {
-      setTimeout(() => {
+      this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -819,6 +834,15 @@ export class ReferenceDataComponent
   }
 
   override ngOnDestroy(): void {
+    if (this.addChipListTimeoutListener) {
+      clearTimeout(this.addChipListTimeoutListener);
+    }
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
+    if (this.formTimeoutListener) {
+      clearTimeout(this.formTimeoutListener);
+    }
     super.ngOnDestroy();
     if (this.inlineEditionOutsideClickListener) {
       this.inlineEditionOutsideClickListener();

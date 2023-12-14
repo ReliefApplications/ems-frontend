@@ -4,6 +4,7 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
   Renderer2,
   TemplateRef,
   ViewContainerRef,
@@ -18,7 +19,7 @@ import { OverlayRef, Overlay, ConnectedPosition } from '@angular/cdk/overlay';
 @Directive({
   selector: '[uiMenuTriggerFor]',
 })
-export class MenuTriggerForDirective {
+export class MenuTriggerForDirective implements OnDestroy {
   /** Menu trigger for */
   @Input('uiMenuTriggerFor') public menuPanel!: {
     templateRef: TemplateRef<any>;
@@ -31,6 +32,10 @@ export class MenuTriggerForDirective {
   overlayRef!: OverlayRef;
   /** Menu closing actions subscription */
   menuClosingActionsSubscription!: Subscription;
+  /** Timeout to open menu */
+  private openMenuTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to destroy menu */
+  private destroyMenuTimeoutListener!: NodeJS.Timeout;
 
   /**
    * UI Directive constructor
@@ -112,7 +117,10 @@ export class MenuTriggerForDirective {
     // Attach it to our overlay
     this.overlayRef.attach(templatePortal);
     // We add the needed classes to create the animation on menu display
-    setTimeout(() => {
+    if (this.openMenuTimeoutListener) {
+      clearTimeout(this.openMenuTimeoutListener);
+    }
+    this.openMenuTimeoutListener = setTimeout(() => {
       this.applyMenuDisplayAnimation(true);
     }, 0);
     // Subscribe to all actions that close the menu (outside click, item click, any other overlay detach)
@@ -148,7 +156,10 @@ export class MenuTriggerForDirective {
     // We remove the needed classes to create the animation on menu close
     this.applyMenuDisplayAnimation(false);
     // Detach the previously created overlay for the menu
-    setTimeout(() => {
+    if (this.destroyMenuTimeoutListener) {
+      clearTimeout(this.destroyMenuTimeoutListener);
+    }
+    this.destroyMenuTimeoutListener = setTimeout(() => {
       this.overlayRef.detach();
     }, 100);
   }
@@ -168,6 +179,15 @@ export class MenuTriggerForDirective {
     } else {
       this.renderer.removeClass(menuList, 'translate-y-0');
       this.renderer.removeClass(menuList, 'opacity-100');
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.openMenuTimeoutListener) {
+      clearTimeout(this.openMenuTimeoutListener);
+    }
+    if (this.destroyMenuTimeoutListener) {
+      clearTimeout(this.destroyMenuTimeoutListener);
     }
   }
 }

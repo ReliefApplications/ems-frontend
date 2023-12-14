@@ -5,6 +5,7 @@ import {
   OnInit,
   Input,
   Inject,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,7 +41,7 @@ const DEFAULT_STYLE = '';
 })
 export class CustomWidgetStyleComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Form control for the scss editor */
   public formControl = new FormControl(DEFAULT_STYLE);
@@ -64,6 +65,8 @@ export class CustomWidgetStyleComponent
   @Input() widgetComp: any;
   /** Save function */
   @Input() save!: (widget: any) => void;
+  /** Timeout to init editor */
+  private initEditorTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -82,19 +85,22 @@ export class CustomWidgetStyleComponent
     super();
 
     // Avoids saving until the style is updated
-    this.formControl.valueChanges.subscribe(() => {
-      this.loading = true;
-    });
+    this.formControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loading = true;
+      });
 
     // Updates the style when the value changes
     this.formControl.valueChanges
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value: any) => {
         const scss = `#${this.widgetComp.id} {
         ${value}
       }`;
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
+          .pipe(takeUntil(this.destroy$))
           .subscribe((css) => {
             set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
             this.styleApplied.innerText = css;
@@ -166,8 +172,11 @@ export class CustomWidgetStyleComponent
    * @param editor monaco editor used for scss edition
    */
   public initEditor(editor: any): void {
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
     if (editor) {
-      setTimeout(() => {
+      this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -176,5 +185,12 @@ export class CustomWidgetStyleComponent
           });
       }, 100);
     }
+  }
+
+  override ngOnDestroy(): void {
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
+    super.ngOnDestroy();
   }
 }

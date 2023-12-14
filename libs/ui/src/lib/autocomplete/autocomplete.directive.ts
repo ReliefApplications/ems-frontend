@@ -69,6 +69,10 @@ export class AutocompleteDirective
   private selectOptionListener!: () => void;
   /** Click outside listener */
   private clickOutsideListener!: () => void;
+  /** Timeout to autocomplete close */
+  private closeAutoCompleteTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to autocomplete animation */
+  private AutoCompleteAnimationTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Get the value from the option to set in the input host element
@@ -309,7 +313,10 @@ export class AutocompleteDirective
     // Attach it to our overlay
     this.overlayRef.attach(templatePortal);
     // We add the needed classes to create the animation on autocomplete display
-    setTimeout(() => {
+    if (this.AutoCompleteAnimationTimeoutListener) {
+      clearTimeout(this.AutoCompleteAnimationTimeoutListener);
+    }
+    this.AutoCompleteAnimationTimeoutListener = setTimeout(() => {
       this.applyAutocompleteDisplayAnimation(true);
     }, 0);
     // Subscribe to all actions that close the autocomplete (outside click, item click, any other overlay detach)
@@ -369,7 +376,10 @@ export class AutocompleteDirective
     // We remove the needed classes to create the animation on autocomplete close
     this.applyAutocompleteDisplayAnimation(false);
     // Detach the previously created overlay for the autocomplete
-    setTimeout(() => {
+    if (this.closeAutoCompleteTimeoutListener) {
+      clearTimeout(this.closeAutoCompleteTimeoutListener);
+    }
+    this.closeAutoCompleteTimeoutListener = setTimeout(() => {
       this.overlayRef.detach();
     }, 100);
   }
@@ -405,6 +415,12 @@ export class AutocompleteDirective
   }
 
   ngOnDestroy(): void {
+    if (this.AutoCompleteAnimationTimeoutListener) {
+      clearTimeout(this.AutoCompleteAnimationTimeoutListener);
+    }
+    if (this.closeAutoCompleteTimeoutListener) {
+      clearTimeout(this.closeAutoCompleteTimeoutListener);
+    }
     if (this.inputEventListener) {
       this.inputEventListener();
     }
