@@ -174,15 +174,14 @@ export class AggregationBuilderComponent
           )
           .filter((x: any) => x !== null);
 
-        // Remove duplicates
-        const options = uniqBy(allOptions, 'value');
-
         const meta: Metadata = {
           name: field.name,
           type: field.type,
           automated: false,
           filterable: field.type !== 'object' && field.type !== 'array',
-          options,
+          // Remove duplicates
+          options: uniqBy(allOptions, 'value'),
+          // Set the editor type depending on the field type
           editor:
             field.type === 'boolean'
               ? 'boolean'
@@ -192,6 +191,7 @@ export class AggregationBuilderComponent
           filter: {
             defaultOperator: 'eq',
             operators: ['eq', 'neq'].concat(
+              // Add gt, lt, gte, lte operators for numeric fields
               field.type === 'number' ? ['gt', 'lt', 'gte', 'lte'] : []
             ),
           },
