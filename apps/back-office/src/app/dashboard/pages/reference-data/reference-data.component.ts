@@ -741,10 +741,8 @@ export class ReferenceDataComponent
 
   /** Open payload modal */
   public async onOpenPayload() {
-    const { ReferenceDataPayloadModalComponent } = await import(
-      './reference-data-payload-modal/reference-data-payload-modal.component'
-    );
-    this.dialog.open(ReferenceDataPayloadModalComponent, {
+    const { PayloadModalComponent } = await import('@oort-front/shared');
+    this.dialog.open(PayloadModalComponent, {
       data: {
         payload: this.payload,
       },

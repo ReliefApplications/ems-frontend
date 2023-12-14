@@ -2285,6 +2285,12 @@
 		"administration": {
 			"title": "******"
 		},
+		"aggregation": {
+			"preview": {
+				"label": "******",
+				"missingId": "******"
+			}
+		},
 		"apiConfiguration": {
 			"authentication": "******",
 			"baseUrl": "******",

@@ -2285,6 +2285,12 @@
 		"administration": {
 			"title": "Administration"
 		},
+		"aggregation": {
+			"preview": {
+				"label": "Aggregation data preview",
+				"missingId": "Cannot load selected aggregation. Id is missing"
+			}
+		},
 		"apiConfiguration": {
 			"authentication": "Authentication settings",
 			"baseUrl": "Main endpoint",

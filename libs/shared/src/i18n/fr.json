@@ -2299,6 +2299,12 @@
 		"administration": {
 			"title": "Administration"
 		},
+		"aggregation": {
+			"preview": {
+				"label": "Aperçu des données d'agrégation",
+				"missingId": "Impossible de charger l'agrégation sélectionnée. Id est manque"
+			}
+		},
 		"apiConfiguration": {
 			"authentication": "Paramètres d'authentification",
 			"baseUrl": "Point d'arrivée principal",
