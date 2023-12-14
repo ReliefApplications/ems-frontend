@@ -514,6 +514,59 @@ export class ReferenceDataComponent
         }
       );
     } else {
+      // Maps each field to its type
+      const typePerField = (this.referenceForm.value.fields ?? []).reduce(
+        (acc: any, field: any) => {
+          acc[field.name] = field.type;
+          return acc;
+        },
+        {}
+      );
+
+      // Parsed data is the array with the field types enforced
+      // If a field of an element is not of the expected type, the field is skipped
+      const parsedData: any[] = [];
+      if (this.referenceForm.value.data) {
+        this.referenceForm.value.data.forEach((element: any) => {
+          if (typeof element !== 'object' || element === null) {
+            return;
+          }
+          for (const key in element) {
+            const type = typePerField[key];
+            // If the field has an unknown type, skip it
+            if (!type) {
+              continue;
+            }
+
+            switch (type) {
+              case 'number':
+                const numberValue = parseFloat(element[key]);
+                if (!isNaN(numberValue)) {
+                  element[key] = numberValue;
+                }
+                break;
+              case 'boolean':
+                if (element[key] === 'false' || element[key] === 'true') {
+                  element[key] = element[key] === 'true';
+                }
+                break;
+              case 'array':
+              case 'object':
+                try {
+                  element[key] = JSON.parse(element[key]);
+                } catch (e) {
+                  // If the JSON is invalid, skip it
+                  return;
+                }
+                break;
+              case 'null':
+                element[key] = null;
+                break;
+            }
+          }
+          parsedData.push(element);
+        });
+      }
       Object.assign(
         variables,
         this.referenceForm.value.data !== this.referenceData?.data && {

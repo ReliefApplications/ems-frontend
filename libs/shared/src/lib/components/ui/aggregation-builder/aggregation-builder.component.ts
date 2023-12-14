@@ -9,6 +9,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '../../../models/metadata.model';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { uniqBy } from 'lodash';
 
 /**
  * Main component of Aggregation builder.
@@ -138,6 +139,16 @@ export class AggregationBuilderComponent
    * Get the filter fields needed for the current resource
    */
   private setFilterFields(): void {
+    const updateSelectedFilterFields = () => {
+      // On first load we update the selected filter fields from this function
+      // As the getFilterFields request takes time to complete
+      if (!this.selectedFilterFields.value.length) {
+        const currentFilterFields = this.filterFields.value.filter((mfi) =>
+          this.selectedFields.value.find((si) => si.name === mfi.name)
+        );
+        this.selectedFilterFields.next(currentFilterFields);
+      }
+    };
     if (this.resource) {
       this.queryBuilder
         .getFilterFields({
@@ -145,15 +156,51 @@ export class AggregationBuilderComponent
         })
         .then((filterFields: Metadata[]) => {
           this.filterFields.next(filterFields);
-          // On first load we update the selected filter fields from this function
-          // As the getFilterFields request takes time to complete
-          if (!this.selectedFilterFields.value.length) {
-            const currentFilterFields = filterFields.filter((mfi) =>
-              this.selectedFields.value.find((si) => si.name === mfi.name)
-            );
-            this.selectedFilterFields.next(currentFilterFields);
-          }
+          updateSelectedFilterFields();
         });
+    } else if (this.referenceData) {
+      // We need to build the options for the filter possible values
+      const refDataMeta: Metadata[] = [];
+      (this.referenceData.fields ?? []).forEach((field) => {
+        // For each field, the options are the distinct values of the field across all data items
+        const allOptions: Metadata['options'] = (this.referenceData?.data ?? [])
+          .map((item: any) =>
+            item[field.name]
+              ? {
+                  value: item[field.name],
+                  text: `${item[field.name]}`,
+                }
+              : null
+          )
+          .filter((x: any) => x !== null);
+
+        // Remove duplicates
+        const options = uniqBy(allOptions, 'value');
+
+        const meta: Metadata = {
+          name: field.name,
+          type: field.type,
+          automated: false,
+          filterable: field.type !== 'object' && field.type !== 'array',
+          options,
+          editor:
+            field.type === 'boolean'
+              ? 'boolean'
+              : field.type === 'number'
+              ? 'numeric'
+              : 'select',
+          filter: {
+            defaultOperator: 'eq',
+            operators: ['eq', 'neq'].concat(
+              field.type === 'number' ? ['gt', 'lt', 'gte', 'lte'] : []
+            ),
+          },
+        };
+
+        refDataMeta.push(meta);
+      });
+      this.filterFields.next(refDataMeta);
+      updateSelectedFilterFields();
     }
   }
 
