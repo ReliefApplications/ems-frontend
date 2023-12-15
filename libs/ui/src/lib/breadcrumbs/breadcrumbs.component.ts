@@ -75,6 +75,9 @@ export class BreadcrumbsComponent implements OnChanges, OnDestroy {
   private loadBreadcrumb(): Promise<void> {
     const checkAgain = (resolve: () => void) => {
       if (this.breadcrumbs.every((bc) => bc.key || bc.text)) {
+        if (this.loadBreadcrumbTimeoutListener) {
+          clearTimeout(this.loadBreadcrumbTimeoutListener);
+        }
         resolve();
       } else {
         if (this.loadBreadcrumbTimeoutListener) {

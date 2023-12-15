@@ -429,10 +429,10 @@ export class FormComponent
 
   /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
-    super.ngOnDestroy();
     this.survey?.dispose();
   }
 }

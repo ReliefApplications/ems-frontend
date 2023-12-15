@@ -181,9 +181,9 @@ export class TagboxComponent
   }
 
   override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.addTimeoutListener) {
       clearTimeout(this.addTimeoutListener);
     }
-    super.ngOnDestroy();
   }
 }

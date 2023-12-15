@@ -189,5 +189,8 @@ export class MenuTriggerForDirective implements OnDestroy {
     if (this.destroyMenuTimeoutListener) {
       clearTimeout(this.destroyMenuTimeoutListener);
     }
+    if (this.menuClosingActionsSubscription) {
+      this.menuClosingActionsSubscription.unsubscribe();
+    }
   }
 }

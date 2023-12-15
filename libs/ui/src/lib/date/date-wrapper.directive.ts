@@ -300,8 +300,9 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
     if (this.calendarAnimationTimeoutListener) {
       clearTimeout(this.calendarAnimationTimeoutListener);
     }
-    this.destroy$.next();
-    this.destroy$.complete();
+    if (this.calendarClosingActionsSubscription) {
+      this.calendarClosingActionsSubscription.unsubscribe();
+    }
     if (this.outsideClickListener) {
       this.outsideClickListener();
     }
@@ -310,5 +311,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
         listener();
       }
     });
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

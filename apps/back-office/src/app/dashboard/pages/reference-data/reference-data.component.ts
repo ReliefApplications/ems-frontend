@@ -739,10 +739,10 @@ export class ReferenceDataComponent
   public initEditor(editor: any): void {
     const queryControl = this.queryControl;
     if (!queryControl) return;
-    if (this.initEditorTimeoutListener) {
-      clearTimeout(this.initEditorTimeoutListener);
-    }
     if (editor) {
+      if (this.initEditorTimeoutListener) {
+        clearTimeout(this.initEditorTimeoutListener);
+      }
       this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
@@ -834,6 +834,7 @@ export class ReferenceDataComponent
   }
 
   override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.addChipListTimeoutListener) {
       clearTimeout(this.addChipListTimeoutListener);
     }
@@ -843,7 +844,6 @@ export class ReferenceDataComponent
     if (this.formTimeoutListener) {
       clearTimeout(this.formTimeoutListener);
     }
-    super.ngOnDestroy();
     if (this.inlineEditionOutsideClickListener) {
       this.inlineEditionOutsideClickListener();
     }

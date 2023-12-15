@@ -172,10 +172,10 @@ export class CustomWidgetStyleComponent
    * @param editor monaco editor used for scss edition
    */
   public initEditor(editor: any): void {
-    if (this.initEditorTimeoutListener) {
-      clearTimeout(this.initEditorTimeoutListener);
-    }
     if (editor) {
+      if (this.initEditorTimeoutListener) {
+        clearTimeout(this.initEditorTimeoutListener);
+      }
       this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
@@ -188,9 +188,9 @@ export class CustomWidgetStyleComponent
   }
 
   override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.initEditorTimeoutListener) {
       clearTimeout(this.initEditorTimeoutListener);
     }
-    super.ngOnDestroy();
   }
 }

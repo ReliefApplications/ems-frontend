@@ -45,6 +45,8 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   private clickOutsideListener!: () => void;
   /** Fullscreen listener */
   private fullscreenListener!: () => void;
+  /** Expand change event listener */
+  private expandChangeListener!: () => void;
   /** Whether the toggle was used */
   private toggleUsed = false;
 
@@ -101,13 +103,17 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
         }
       );
       // Subscribe to widget expanded events
-      this.renderer.listen(this.document, 'expandchange', (event) => {
-        if (event.detail.expanded) {
-          this.createOverlay();
-        } else {
-          this.closeOverlay();
+      this.expandChangeListener = this.renderer.listen(
+        this.document,
+        'expandchange',
+        (event) => {
+          if (event.detail.expanded) {
+            this.createOverlay();
+          } else {
+            this.closeOverlay();
+          }
         }
-      });
+      );
     }
   }
 
@@ -193,6 +199,9 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
     }
     if (this.fullscreenListener) {
       this.fullscreenListener();
+    }
+    if (this.expandChangeListener) {
+      this.expandChangeListener();
     }
   }
 }

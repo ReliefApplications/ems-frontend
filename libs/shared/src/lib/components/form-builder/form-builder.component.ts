@@ -197,10 +197,10 @@ export class FormBuilderComponent
   }
 
   override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    super.ngOnDestroy();
     this.surveyCreator.survey?.dispose();
   }
 
