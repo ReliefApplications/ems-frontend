@@ -10,6 +10,9 @@ import { RestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
 
+/** Snackbar duration in ms */
+const SNACKBAR_DURATION = 1000;
+
 /**
  * Shared email service.
  * Used by widgets to send request to the back to send emails.
@@ -129,8 +132,7 @@ export class EmailService {
             'common.notifications.email.sent'
           )),
             (snackBarSpinner.instance.loading = false);
-
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: () => {
           (snackBarSpinner.instance.message = this.translate.instant(
@@ -138,7 +140,7 @@ export class EmailService {
           )),
             (snackBarSpinner.instance.loading = false);
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }
@@ -209,7 +211,7 @@ export class EmailService {
             'common.notifications.email.ready'
           );
           snackBarSpinner.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           const { EmailPreviewModalComponent } = await import(
             '../../components/email-preview-modal/email-preview-modal.component'
           );
@@ -241,8 +243,7 @@ export class EmailService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }

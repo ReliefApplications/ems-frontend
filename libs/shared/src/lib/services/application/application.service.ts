@@ -140,9 +140,11 @@ export class ApplicationService {
   /** Current environment */
   private environment: any;
 
-  /** Application custom style */
+  /** Raw application custom style */
   public rawCustomStyle?: string;
+  /** Application custom style */
   public customStyle?: HTMLStyleElement;
+  /** Custom style edited */
   public customStyleEdited = false;
 
   /** @returns Path to download application users */
@@ -1991,7 +1993,11 @@ export class ApplicationService {
         }
       })
       .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
+        console.error(err);
+        this.snackBar.openSnackBar(
+          this.translate.instant('models.application.errors.style.notFound'),
+          { error: true }
+        );
       })
       .finally(() => (this.customStyleEdited = false));
   }

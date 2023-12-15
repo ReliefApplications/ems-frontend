@@ -7,6 +7,7 @@
 		"add": "Ajouter",
 		"adminField": "Champ administrateur",
 		"aggregation": {
+			"add": "Ajouter une agrégation",
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
 			"one": "Agrégation"
@@ -1861,6 +1862,15 @@
 				},
 				"viewAsCards": "Afficher en cartes",
 				"viewAsGrid": "Afficher en grille"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "Vous pouvez créer des agrégations personnalisées et les injecter dans l'éditeur à l'aide d'espaces réservés {{aggregation.<id>}}.",
+					"template": {
+						"add": "Ajouter une nouvelle agrégation de modèles",
+						"edit": "Modifier l'agrégation de modèles"
+					}
+				}
 			}
 		}
 	},
@@ -2066,6 +2076,11 @@
 		},
 		"application": {
 			"description": "Description",
+			"errors": {
+				"style": {
+					"notFound": "Le style de l'application n'a pas pu être chargé"
+				}
+			},
 			"id": "ID de l'application",
 			"menu": "Menu latéral",
 			"new": "Nouvelle application",
@@ -2293,6 +2308,12 @@
 	"pages": {
 		"administration": {
 			"title": "Administration"
+		},
+		"aggregation": {
+			"preview": {
+				"label": "Aperçu des données d'agrégation",
+				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
+			}
 		},
 		"apiConfiguration": {
 			"authentication": "Paramètres d'authentification",

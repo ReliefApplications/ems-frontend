@@ -61,13 +61,28 @@ export class GeospatialMapComponent
   extends UnsubscribeComponent
   implements OnInit, AfterViewInit
 {
+  /**
+   * Data to display on the map
+   */
   @Input() data?: Feature | FeatureCollection;
+  /**
+   * Geometry type
+   */
   @Input() geometry = 'Point';
+  /**
+   * Fields to display
+   */
   @Input() fields: { value: keyof GeoProperties; label: string }[] = [];
 
+  /**
+   * Form group
+   */
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
   // === MAP ===
+  /**
+   * Map settings
+   */
   public mapSettings: MapConstructorSettings = {
     initialState: {
       viewpoint: {
@@ -93,7 +108,13 @@ export class GeospatialMapComponent
   };
 
   // Layer to edit
+  /**
+   * Selected layer
+   */
   public selectedLayer?: L.Layer;
+  /**
+   * Geoman controls
+   */
   public controls: any = {
     position: 'topright',
     drawText: false,
@@ -107,12 +128,23 @@ export class GeospatialMapComponent
     editMode: false,
   };
 
+  /**
+   * Flag to disable geoman tools
+   */
   private disableGeomanToolsFlag = false;
 
   // output
+  /**
+   * Timeout for the reverse search
+   */
   private timeout: ReturnType<typeof setTimeout> | null = null;
+  /**
+   * Output for the map change
+   */
   @Output() mapChange = new EventEmitter<Feature | FeatureCollection>();
-
+  /**
+   * Map component
+   */
   @ViewChild(MapComponent) mapComponent?: MapComponent;
 
   /**

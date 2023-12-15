@@ -25,14 +25,21 @@ import { Subject, takeUntil } from 'rxjs';
   selector: '[uiDatePicker]',
 })
 export class DatePickerDirective implements OnInit, OnDestroy {
+  /** Datepicker value */
   @Input() uiDatePicker: any = 'calendar_today';
+  /** Datepicker label */
   @Input() label = '';
 
+  /** Click event */
   @Output() clickEvent = new EventEmitter<void>();
 
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** Click event listener */
   private clickEventListener!: any;
+  /** Label element */
   private labelElement!: HTMLLabelElement;
+  /** Input classes */
   private inputClasses = [
     'peer',
     'block',
@@ -48,6 +55,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'text-sm',
   ] as const;
 
+  /** Label classes */
   private labelClasses = [
     'pointer-events-none',
     'absolute',
@@ -65,6 +73,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'items-center',
   ] as const;
 
+  /** Icon classes */
   private iconClasses = [
     'flex',
     'items-center',
@@ -78,6 +87,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     '-translate-y-1/2',
   ] as const;
 
+  /** Div classes */
   private divClasses = [
     'relative',
     'focus-within:ring-2',
@@ -96,6 +106,9 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'py-0.5',
     'text-sm',
   ] as const;
+
+  /** Timeout to dispatch event */
+  private dispatchEventTimeoutListener!: NodeJS.Timeout;
 
   /**
    * UI Date picker directive constructor
@@ -155,7 +168,10 @@ export class DatePickerDirective implements OnInit, OnDestroy {
         this.setValue(this.control.control.value);
         // Trigger input change event to update date picker/ date range element
         const event = new Event('change');
-        setTimeout(() => {
+        if (this.dispatchEventTimeoutListener) {
+          clearTimeout(this.dispatchEventTimeoutListener);
+        }
+        this.dispatchEventTimeoutListener = setTimeout(() => {
           this.el.nativeElement.dispatchEvent(event);
         }, 0);
       }
@@ -253,6 +269,9 @@ export class DatePickerDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.dispatchEventTimeoutListener) {
+      clearTimeout(this.dispatchEventTimeoutListener);
+    }
     if (this.clickEventListener) {
       this.clickEventListener();
     }

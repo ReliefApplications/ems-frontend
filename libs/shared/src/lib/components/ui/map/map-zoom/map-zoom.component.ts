@@ -12,10 +12,15 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, CommonModule],
 })
 export class MapZoomComponent implements OnInit, OnDestroy {
+  /** Maximum zoom level */
   public maxZoom!: number;
+  /** Minimum zoom level */
   public minZoom!: number;
+  /** Map */
   public map: any;
+  /** Current zoom level */
   public currentZoom = 4;
+  /** Event emitter for the map events */
   public mapEvent!: EventEmitter<MapEvent>;
 
   ngOnInit() {

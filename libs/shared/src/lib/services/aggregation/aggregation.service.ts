@@ -110,18 +110,24 @@ export class AggregationService {
    * @param options.referenceData reference data Id
    * @param options.resource Resource Id
    * @param options.aggregation Aggregation definition
+   * @param options.sourceFields aggregation source fields to fetch
+   * @param options.pipeline aggregation pipeline used to build data
    * @param options.mapping aggregation mapping ( category, field, series )
    * @param options.contextFilters context filters, if any
    * @param options.at 'at' argument value, if any
+   * @param options.first number of records to fetch, -1 if all of them
    * @returns Aggregation query
    */
   aggregationDataQuery(options: {
     referenceData?: string;
     resource?: string;
     aggregation: string;
+    sourceFields?: any;
+    pipeline?: any;
     mapping?: any;
     contextFilters?: CompositeFilterDescriptor;
     at?: Date;
+    first?: number;
   }): Observable<
     ApolloQueryResult<
       AggregationDataQueryResponse | ReferenceDataAggregationQueryResponse
@@ -133,9 +139,12 @@ export class AggregationService {
         variables: {
           resource: options.resource,
           aggregation: options.aggregation,
+          sourceFields: options.sourceFields,
+          pipeline: options.pipeline,
           mapping: options.mapping,
           contextFilters: options.contextFilters,
           at: options.at,
+          first: options.first,
         },
       });
     } else {
@@ -144,9 +153,12 @@ export class AggregationService {
         variables: {
           referenceData: options.referenceData,
           aggregation: options.aggregation,
+          sourceFields: options.sourceFields,
+          pipeline: options.pipeline,
           mapping: options.mapping,
           contextFilters: options.contextFilters,
           at: options.at,
+          first: options.first,
         },
       });
     }

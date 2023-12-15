@@ -30,17 +30,25 @@ export class NotificationsComponent
   implements OnInit, OnDestroy
 {
   // === INPUT DATA ===
+  /** Notifications array */
   public notifications: Array<CustomNotification> =
     new Array<CustomNotification>();
+  /** Cached notifications array */
   private cachedNotifications: CustomNotification[] = [];
+  /** Notifications query reference*/
   private notificationsQuery!: QueryRef<ApplicationCustomNotificationsNodesQueryResponse>;
+  /** Application subscription */
   private applicationSubscription?: Subscription;
 
   // === DISPLAYED COLUMNS ===
+  /** List of displayed columns */
   public displayedColumns = ['name', 'status', 'lastExecution', 'actions'];
 
+  /** Loading state */
   public loading = true;
+  /** Updating state */
   public updating = false;
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,

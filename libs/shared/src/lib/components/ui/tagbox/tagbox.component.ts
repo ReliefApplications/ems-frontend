@@ -1,5 +1,12 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, UntypedFormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
@@ -13,7 +20,10 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './tagbox.component.html',
   styleUrls: ['./tagbox.component.scss'],
 })
-export class TagboxComponent extends UnsubscribeComponent implements OnInit {
+export class TagboxComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === CHOICES ===
   /** Observable of choices */
   @Input() public choices$!: Observable<any[]>;
@@ -46,7 +56,11 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
   });
   /** Input visibility status */
   public showInput = false;
-  /** Input control */
+  /** Timeout to add */
+  private addTimeoutListener!: NodeJS.Timeout;
+
+  // === OUTPUT CONTROL ===
+  /** Output control */
   @Input() control!: FormControl;
 
   /**
@@ -137,7 +151,10 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
       );
     }
     this.inputControl.setValue('', { emitEvent: false });
-    setTimeout(() => {
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
+    }
+    this.addTimeoutListener = setTimeout(() => {
       window.requestAnimationFrame(() => this.textInput?.nativeElement.focus());
     }, 10);
   }
@@ -173,5 +190,12 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
           (x) => x[this.valueKey] === choice[this.valueKey]
         )
     );
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
+    }
   }
 }

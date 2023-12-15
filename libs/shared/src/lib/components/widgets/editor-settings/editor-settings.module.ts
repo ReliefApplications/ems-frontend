@@ -29,6 +29,7 @@ import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../controls/public-api';
+import { TemplateAggregationsComponent } from '../common/template-aggregations/template-aggregations.component';
 
 /**
  * Module for the EditorSetting component
@@ -58,6 +59,7 @@ import {
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     SpinnerModule,
+    TemplateAggregationsComponent,
   ],
   exports: [EditorSettingsComponent],
   providers: [
