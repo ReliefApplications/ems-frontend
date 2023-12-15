@@ -56,6 +56,39 @@ export const GET_APPLICATIONS = gql`
   }
 `;
 
+/**
+ * Get Recent applications list
+ */
+export const GET_RECENT_APPLICATIONS = gql`
+  query GetApplications(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    applications(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      edges {
+        node {
+          id
+          name
+          modifiedAt
+          status
+          canSee
+          canUpdate
+          canDelete
+        }
+      }
+    }
+  }
+`;
+
 // === GET ROLES ===
 /** Graphql query for getting roles (of an application or all) */
 export const GET_ROLES = gql`

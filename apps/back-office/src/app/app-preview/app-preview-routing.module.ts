@@ -108,6 +108,12 @@ const routes: Routes = [
             // canActivate: [PermissionGuard]
           },
           {
+            path: 'email-notifications',
+            loadChildren: () =>
+              import('@oort-front/shared').then((m) => m.EmailModule),
+            // canActivate: [PermissionGuard]
+          },
+          {
             path: 'notifications',
             loadChildren: () =>
               import('@oort-front/shared').then(

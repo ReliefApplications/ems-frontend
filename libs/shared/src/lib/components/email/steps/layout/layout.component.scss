@@ -1,0 +1,13 @@
+::ng-deep .tox-tinymce {
+    height: 280px !important;
+}
+.form-error {
+  border: 1px solid red;
+  border-radius: 5px;
+  .ng-select-container {
+      border: transparent !important;
+  }
+}
+::ng-deep .tox {
+  border-radius: 0.375rem !important;
+}

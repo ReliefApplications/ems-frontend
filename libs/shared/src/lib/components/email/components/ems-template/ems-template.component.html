@@ -1,0 +1,68 @@
+<div class="example">
+    <kendo-stepper #stepper
+    [steps]="steps"
+    stepType="full"
+    [(currentStep)]="currentStep"
+    orientation="horizontal"
+    [linear]="emailService.isLinear"
+    (activate)="onStepActivate($event)"
+    > </kendo-stepper>
+    <div>
+      <span class="k-form-separator"></span>
+    </div>
+    <app-create-notification *ngIf="currentStep === 0" (navigateToListScreen)="navigateToListScreen()"></app-create-notification>
+    <app-create-dataset *ngIf="currentStep === 1"></app-create-dataset>
+    <app-select-distribution *ngIf="currentStep === 2"></app-select-distribution>
+    <app-schedule-alert *ngIf="currentStep === 3"></app-schedule-alert>
+    <app-layout [setLayoutValidation]="setLayoutValidation" *ngIf="currentStep === 4"></app-layout>
+    <app-preview *ngIf="currentStep === 5"></app-preview>
+
+    <div class="flex gap-5 mt-4">
+      <button
+        type="button"
+        class="bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+        *ngIf="currentStep !== 0"
+        (click)="prev()"
+      >
+        Back
+      </button>
+      <button
+        type="submit"
+        class="bg-sky-500 hover:bg-sky-400 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+        [ngClass]="disableActionButton ? 'inactive': 'active'"
+        [disabled]="disableActionButton"
+        (click)="next()"
+        *ngIf="currentStep !== 5"
+      >
+        Save and Proceed
+      </button>
+
+      <!-- <button
+        type="submit"
+        class="bg-sky-500 hover:bg-sky-400 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+        (click)="preview()"
+        *ngIf="currentStep === 2"
+      >
+        Preview
+      </button> -->
+
+      <!-- EMAIL NOTIFICATION SAVE -->
+      <button
+      type="submit"
+      class="bg-sky-500 text-white ml-3 px-4 py-2 rounded-md"
+      (click)="submit()"
+      *ngIf="currentStep === 5"
+    >
+      Save
+    </button>
+      <!-- EMAIL NOTIFICATION SAVE AND SEND -->
+      <button
+      type="button"
+      class="bg-sky-500 text-white ml-3 px-4 py-2 rounded-md"
+      (click)="send()"
+      *ngIf="currentStep === 5"
+      >
+      Send email
+    </button>
+    </div>
+  </div>

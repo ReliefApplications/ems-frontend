@@ -1,0 +1,81 @@
+::ng-deep .dataset-preview {
+  border-width: 1px !important;
+  border-color: rgb(228 228 228/ var(--tw-border-opacity)) !important;
+  .bg-blue-600 {
+    background-color: rgb(17 37 91 / var(--tw-bg-opacity)) !important;
+  }
+
+  .border-blue-600 {
+    border-color: rgb(228 228 228/ var(--tw-border-opacity)) !important;
+  }
+
+  .text-blue-600 {
+    color: rgb(0 0 0 / var(--tw-text-opacity)) !important;
+  }
+  td {
+    text-align: left;
+  }
+  th {
+    text-align: left;
+  }
+  th:nth-child(1) {
+    padding-left: 20px;
+  }
+  td:nth-child(1) {
+    padding-left: 20px;
+  }
+  tr:nth-child(even) { background: #f8f8f8 }
+  tr:nth-child(odd) { background: white }
+  .border { border-width: 0px !important ;}
+}
+.w-96 {
+  width: 96%;
+}
+.w-4 {
+  width: 4%;
+  margin: 0 !important;
+}
+.pl-2 {
+  padding-left: 0.5rem;
+}
+.text-style {
+  color: #667085;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.use-existing {
+  font-weight: 500;
+    padding: 10px 0;
+    color: #0369f7;
+    cursor: pointer;
+}
+
+.table-row {
+  cursor: pointer;
+}
+
+.form-error {
+  border: 1px solid red;
+  border-radius: 5px;
+  .ng-select-container {
+      border: transparent !important;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.import {
+  margin-right: 10px;
+}
+
+
+.validation-note {
+  padding: 15px 10px;
+    border: 1px solid #53514d59;
+    background: #ffab0082;
+    margin: 20px 0;
+    border-radius: 5px;
+}

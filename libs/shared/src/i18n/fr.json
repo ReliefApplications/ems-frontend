@@ -78,7 +78,11 @@
 		},
 		"comma": "virgule",
 		"copy": "Copier",
+		"copyright": {
+			"who": "Copyright © World Health Organization 2024."
+		},
 		"create": "Créer",
+		"createdBy": "Créé par",
 		"createdOn": "Date de création",
 		"cronEditor": {
 			"advanced": "Avancé",
@@ -170,6 +174,11 @@
 		"email": {
 			"few": "Emails",
 			"none": "Pas d'email",
+			"notification": {
+				"few": "Notifications par email",
+				"none": "Aucune Notification par email",
+				"one": "Notification par email"
+			},
 			"one": "Email"
 		},
 		"errors": {
@@ -234,14 +243,53 @@
 			"dataNotRecovered": "Échec de la récupération des données",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
+				"banner": {
+					"image": "Bannière Image",
+					"removeTooltip": "Supprimer Bannière Image"
+				},
+				"body": {
+					"title": "Corps"
+				},
+				"dropdown": {
+					"inTheLast": "Select Horodatage from filters...",
+					"selectBlock": "Select a block",
+					"timestamp": "Select a timestamp"
+				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
+					"noSubject": "Veuillez entrer un sujet",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+				},
+				"field": {
+					"filtered": "Select Filtered Field",
+					"noBlocks": "No blocks configured",
+					"selectBlock": "Block Select",
+					"selectPlaceholder": "Select Block Field",
+					"selectTitle": "Champ Select"
+				},
+				"footer": {
+					"logo": "Pied-de-page Logo",
+					"removeTooltip": "Supprimer Pied-de-page Logo",
+					"style": "Pied-de-page Style"
+				},
+				"header": {
+					"logo": "En-tête Logo",
+					"removeTooltip": "Supprimer En-tête Logo",
+					"style": "En-tête Style"
 				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
-				"sent": "E-mail envoyé"
+				"sent": "E-mail envoyé",
+				"style": {
+					"background": "Background Color",
+					"text": "Text Color"
+				},
+				"subject": {
+					"textTitle": "Sujet Text*",
+					"title": "Sujet"
+				},
+				"timestamp": "Horodatage"
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
@@ -962,8 +1010,14 @@
 			}
 		},
 		"queryBuilder": {
+			"apply": "Appliquer le filtre",
+			"block": {
+				"label": "Titre du Bloc",
+				"title": "Bloc"
+			},
 			"dataset": {
-				"select": "Sélectionner un jeu de données"
+				"select": "Sélectionner un jeu de données",
+				"title": "Jeu de données"
 			},
 			"errors": {
 				"field": {
@@ -983,12 +1037,15 @@
 			},
 			"filter": {
 				"and": "Et",
+				"apply": "Appliquer le filtre",
+				"field": "Champ",
 				"logic": "Logique de filtre",
 				"new": "Ajouter un nouveau filtre",
 				"newGroup": "Ajouter un nouveau groupe de filtres",
 				"operator": "Opérateur",
 				"or": "Ou",
-				"title": "Filtre"
+				"title": "Filtre",
+				"value": "Valeur"
 			},
 			"hint": {
 				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
@@ -998,6 +1055,9 @@
 			"pagination": {
 				"first": "Limite",
 				"title": "Pagination"
+			},
+			"preview": {
+				"title": "Aperçu"
 			},
 			"sort": {
 				"ascending": "Croissant",
@@ -1208,6 +1268,18 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"select": {
+			"distribution": {
+				"SelectFromList": "Selecteer uit Lijst",
+				"alertMe": "Alerte moi",
+				"bcc": "Cci",
+				"cc": "Cc",
+				"createFilterLogic": "Créer une logique de filtre",
+				"email": "Email",
+				"label": "Nom de la liste de distribution*",
+				"to": "À"
 			}
 		},
 		"share": {
@@ -1990,6 +2062,7 @@
 			"filterIsNotNullOperator": "Est non-nul",
 			"filterIsNullOperator": "Est nul",
 			"filterIsTrue": "est vrai",
+			"filterIsWithinTheLast": "Est dans le dernier",
 			"filterLtOperator": "Est plus petit que",
 			"filterLteOperator": "Est plus petit que ou égal à",
 			"filterMenuLogicDropDownLabel": "'Logique de filtre sur {columnName}'",
@@ -2102,6 +2175,7 @@
 		"customNotification": {
 			"lastExecution": "Dernière exécution",
 			"schedule": "Fréquence",
+			"select": "Sélectionnez le type de notification",
 			"type": "Type"
 		},
 		"dashboard": {
@@ -2376,7 +2450,10 @@
 				"title": "Attributs"
 			},
 			"settings": {
-				"actions": "Actions"
+				"actions": "Actions",
+				"emailCreated": "Nouvelle notification par e-mail créée",
+				"emailEdited": "Notification par e-mail modifiée avec succès.",
+				"emailSent": "La notification par e-mail a été enregistrée et envoyée avec succès"
 			}
 		},
 		"applications": {

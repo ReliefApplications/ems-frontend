@@ -78,7 +78,11 @@
 		},
 		"comma": "comma",
 		"copy": "Copy",
+		"copyright": {
+			"who": "Copyright © World Health Organization 2024."
+		},
 		"create": "Create",
+		"createdBy": "Created By",
 		"createdOn": "Created on",
 		"cronEditor": {
 			"advanced": "Advanced",
@@ -170,6 +174,11 @@
 		"email": {
 			"few": "Emails",
 			"none": "No email",
+			"notification": {
+				"few": "Email Notifications",
+				"none": "No Email Notification",
+				"one": "Email Notification"
+			},
 			"one": "Email"
 		},
 		"errors": {
@@ -234,14 +243,53 @@
 			"dataNotRecovered": "Failure on data recovery",
 			"dataRecovered": "The data has been recovered",
 			"email": {
+				"banner": {
+					"image": "Banner Image",
+					"removeTooltip": "Remove Banner Image"
+				},
+				"body": {
+					"title": "Body"
+				},
+				"dropdown": {
+					"inTheLast": "Select Timestamp from filters...",
+					"selectBlock": "Select a block",
+					"timestamp": "Select a timestamp"
+				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
+					"noSubject": "Please Enter a Subject",
 					"noTemplate": "Something went wrong during the email sending: no template found"
+				},
+				"field": {
+					"filtered": "Select Filtered Field",
+					"noBlocks": "No blocks configured",
+					"selectBlock": "Block Select",
+					"selectPlaceholder": "Select Block Field",
+					"selectTitle": "Field Select"
+				},
+				"footer": {
+					"logo": "Footer Logo",
+					"removeTooltip": "Remove Footer Logo",
+					"style": "Footer Style"
+				},
+				"header": {
+					"logo": "Header Logo",
+					"removeTooltip": "Remove Header Logo",
+					"style": "Header Style"
 				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
-				"sent": "Email sent"
+				"sent": "Email sent",
+				"style": {
+					"background": "Background Color",
+					"text": "Text Color"
+				},
+				"subject": {
+					"textTitle": "Subject Text*",
+					"title": "Subject*"
+				},
+				"timestamp": "Timestamp"
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
@@ -951,8 +999,14 @@
 			}
 		},
 		"queryBuilder": {
+			"apply": "Apply filter",
+			"block": {
+				"label": "Block Title",
+				"title": "Block"
+			},
 			"dataset": {
-				"select": "Select a dataset"
+				"select": "Select a dataset",
+				"title": "Data set"
 			},
 			"errors": {
 				"field": {
@@ -972,12 +1026,15 @@
 			},
 			"filter": {
 				"and": "And",
+				"apply": "Apply filter",
+				"field": "Field",
 				"logic": "Filter logic",
 				"new": "Add new filter",
 				"newGroup": "Add new filter group",
 				"operator": "Operator",
 				"or": "Or",
-				"title": "Filter"
+				"title": "Filter",
+				"value": "Value"
 			},
 			"hint": {
 				"fields": "Select data points below and drag them to 'selected fields' on the right",
@@ -987,6 +1044,9 @@
 			"pagination": {
 				"first": "Limit",
 				"title": "Pagination"
+			},
+			"preview": {
+				"title": "Preview"
 			},
 			"sort": {
 				"ascending": "Ascending",
@@ -1197,6 +1257,18 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
+			}
+		},
+		"select": {
+			"distribution": {
+				"SelectFromList": "Select from List",
+				"alertMe": "Alert me",
+				"bcc": "bcc",
+				"cc": "cc",
+				"createFilterLogic": "Create Filter Logic",
+				"email": "Email",
+				"label": "Distribution List Name*",
+				"to": "To"
 			}
 		},
 		"share": {
@@ -1977,6 +2049,7 @@
 			"filterIsNotNullOperator": "Is not null",
 			"filterIsNullOperator": "Is null",
 			"filterIsTrue": "is true",
+			"filterIsWithinTheLast": "Is within the last",
 			"filterLtOperator": "Is less than",
 			"filterLteOperator": "Is less than or equal to",
 			"filterMenuLogicDropDownLabel": "'{columnName} Filter Logic'",
@@ -2088,6 +2161,7 @@
 		"customNotification": {
 			"lastExecution": "Last execution",
 			"schedule": "Schedule",
+			"select": "Select Notification type",
 			"type": "Notification type"
 		},
 		"dashboard": {
@@ -2362,7 +2436,10 @@
 				"title": "Attributes"
 			},
 			"settings": {
-				"actions": "Actions"
+				"actions": "Actions",
+				"emailCreated": "New Email Notification Created",
+				"emailEdited": "Email Notification Edited Successfully",
+				"emailSent": "Email Notification has Successfully been Saved and Sent"
 			}
 		},
 		"applications": {

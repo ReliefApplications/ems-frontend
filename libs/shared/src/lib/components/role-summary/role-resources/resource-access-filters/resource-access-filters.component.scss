@@ -12,3 +12,187 @@
   gap: 1em;
   cursor: auto;
 }
+
+:host button > * {
+  pointer-events: none;
+}
+
+:host button {
+  pointer-events: inherit;
+}
+
+.ui-button {
+  &.primary {
+    @apply rounded-md text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;
+  }
+  &.secondary {
+    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+  &.tertiary {
+    @apply rounded-md bg-white text-sm font-medium shadow-sm shadow-gray-300;
+    box-shadow: 0 0 0 1px inset !important;
+  }
+  &.small {
+    @apply px-2.5 py-1.5;
+  }
+  &.medium {
+    @apply px-3 py-2;
+  }
+  &.large {
+    @apply px-3.5 py-2.5;
+  }
+}
+
+.ui-button-icon {
+  &.primary {
+    @apply rounded-full shadow-sm;
+  }
+  &.secondary {
+    @apply rounded-full shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+  &.tertiary {
+    @apply bg-white rounded-full shadow-sm shadow-gray-300;
+    box-shadow: 0 0 0 1px inset !important;
+  }
+  &.small {
+    @apply p-1.5;
+  }
+  &.medium,
+  &.large {
+    @apply p-2.5;
+  }
+}
+
+.button-default {
+  &.primary {
+    @apply text-gray-900;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-gray-50;
+  }
+  &.secondary {
+    @apply bg-gray-900 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-gray-500 focus-visible:outline-gray-600;
+  }
+  &.tertiary {
+    @apply shadow-gray-900 text-gray-900;
+  }
+}
+
+.button-primary {
+  &.primary {
+    @apply text-primary-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-primary-50;
+  }
+  &.secondary {
+    @apply bg-primary-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-primary-500 focus-visible:outline-primary-600;
+  }
+  &.tertiary {
+    @apply shadow-primary-400 text-primary-400;
+  }
+}
+
+.button-success {
+  &.primary {
+    @apply text-green-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-green-50;
+  }
+  &.secondary {
+    @apply bg-green-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-green-500 focus-visible:outline-green-600;
+  }
+  &.tertiary {
+    @apply shadow-green-400 text-green-400;
+  }
+}
+
+.button-danger {
+  &.primary {
+    @apply text-red-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-red-50;
+  }
+  &.secondary {
+    @apply bg-red-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-red-500 focus-visible:outline-red-600;
+  }
+  &.tertiary {
+    @apply shadow-red-400 text-red-400;
+  }
+}
+
+.button-warning {
+  &.primary {
+    @apply text-yellow-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-yellow-50;
+  }
+  &.secondary {
+    @apply bg-yellow-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-yellow-500 focus-visible:outline-yellow-600;
+  }
+  &.tertiary {
+    @apply shadow-yellow-400 text-yellow-400;
+  }
+}
+
+.button-grey {
+  &.primary {
+    @apply text-neutral-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-neutral-200;
+  }
+  &.secondary {
+    @apply bg-neutral-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;
+  }
+  &.tertiary {
+    @apply shadow-neutral-400 text-neutral-400;
+  }
+}
+
+.button-light {
+  &.primary {
+    @apply text-neutral-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-neutral-100 hover:bg-opacity-20;
+  }
+  &.secondary {
+    @apply bg-neutral-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;
+  }
+  &.tertiary {
+    @apply shadow-neutral-400 text-neutral-400;
+  }
+}
+
+button.ui-button:disabled {
+  @apply text-neutral-400 bg-neutral-500 bg-opacity-20;
+}
+
+button.ui-button-icon:disabled {
+  @apply text-neutral-400 bg-opacity-20;
+}

@@ -1,0 +1,291 @@
+.field-list {
+  min-height: 400px;
+  @apply bg-zinc-200 border-zinc-200 border border-solid;
+  @apply overflow-auto max-h-[400px];
+  border-radius: 4px;
+  display: block;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.field-box {
+  padding: 20px 10px;
+  @apply border-b-zinc-200 bg-white border-b border-solid;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 14px;
+  &:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  height: 1.25rem;
+}
+
+.field-box:last-child {
+  border: none;
+}
+
+.clsFilters {
+    align-items: flex-end;
+}
+
+::ng-deep .k-tabstrip > .k-content {
+  padding: 5px 5px 5px 0px !important;
+}
+
+.btnDataSet {
+  border-radius: 8px;
+  border: 1px solid var(--Gray-300, #D0D5DD);
+  background: var(--Base-White, #FFF);
+  /* Shadow/xs */
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  width: fit-content;
+  font-weight: 600;
+  color: #344054;
+}
+
+.form-error {
+  border: 1px solid red;
+  border-radius: 5px;
+  .ng-select-container {
+      border: transparent !important;
+  }
+}
+
+.divScroll {
+  height: 250px !important;
+  overflow: scroll !important;
+}
+
+:host button > * {
+  pointer-events: none;
+}
+
+:host button {
+  pointer-events: inherit;
+}
+
+.ui-button {
+  &.primary {
+    @apply rounded-md text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;
+  }
+  &.secondary {
+    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+  &.tertiary {
+    @apply rounded-md bg-white text-sm font-medium shadow-sm shadow-gray-300;
+    box-shadow: 0 0 0 1px inset !important;
+  }
+  &.small {
+    @apply px-2.5 py-1.5;
+  }
+  &.medium {
+    @apply px-3 py-2;
+  }
+  &.large {
+    @apply px-3.5 py-2.5;
+  }
+}
+
+.ui-button-icon {
+  &.primary {
+    @apply rounded-full shadow-sm;
+  }
+  &.secondary {
+    @apply rounded-full shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+  &.tertiary {
+    @apply bg-white rounded-full shadow-sm shadow-gray-300;
+    box-shadow: 0 0 0 1px inset !important;
+  }
+  &.small {
+    @apply p-1.5;
+  }
+  &.medium,
+  &.large {
+    @apply p-2.5;
+  }
+}
+
+.button-default {
+  &.primary {
+    @apply text-gray-900;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-gray-50;
+  }
+  &.secondary {
+    @apply bg-gray-900 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-gray-500 focus-visible:outline-gray-600;
+  }
+  &.tertiary {
+    @apply shadow-gray-900 text-gray-900;
+  }
+}
+
+.button-primary {
+  &.primary {
+    @apply text-primary-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-primary-50;
+  }
+  &.secondary {
+    @apply bg-primary-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-primary-500 focus-visible:outline-primary-600;
+  }
+  &.tertiary {
+    @apply shadow-primary-400 text-primary-400;
+  }
+}
+
+.button-success {
+  &.primary {
+    @apply text-green-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-green-50;
+  }
+  &.secondary {
+    @apply bg-green-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-green-500 focus-visible:outline-green-600;
+  }
+  &.tertiary {
+    @apply shadow-green-400 text-green-400;
+  }
+}
+
+.button-danger {
+  &.primary {
+    @apply text-red-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-red-50;
+  }
+  &.secondary {
+    @apply bg-red-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-red-500 focus-visible:outline-red-600;
+  }
+  &.tertiary {
+    @apply shadow-red-400 text-red-400;
+  }
+}
+
+.button-warning {
+  &.primary {
+    @apply text-yellow-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-yellow-50;
+  }
+  &.secondary {
+    @apply bg-yellow-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-yellow-500 focus-visible:outline-yellow-600;
+  }
+  &.tertiary {
+    @apply shadow-yellow-400 text-yellow-400;
+  }
+}
+
+.button-grey {
+  &.primary {
+    @apply text-neutral-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-neutral-200;
+  }
+  &.secondary {
+    @apply bg-neutral-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;
+  }
+  &.tertiary {
+    @apply shadow-neutral-400 text-neutral-400;
+  }
+}
+
+.button-light {
+  &.primary {
+    @apply text-neutral-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-neutral-100 hover:bg-opacity-20;
+  }
+  &.secondary {
+    @apply bg-neutral-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;
+  }
+  &.tertiary {
+    @apply shadow-neutral-400 text-neutral-400;
+  }
+}
+
+button.ui-button:disabled {
+  @apply text-neutral-400 bg-neutral-500 bg-opacity-20;
+}
+
+button.ui-button-icon:disabled {
+  @apply text-neutral-400 bg-opacity-20;
+}
+::ng-deep .stepper-center {
+    .ng-select.ng-select-single .ng-select-container {
+    height: 37.6px;
+  }
+
+  .tab-container {
+    ul.k-tabstrip-items {
+      margin-top: 1rem;
+      li {
+        padding: 0px;
+        min-height: 40px;
+      
+        .k-link {
+          padding-block: 0px;
+        }
+      }      
+    }    
+  }  
+}
+::ng-deep .loadingSign {
+  .overflow-hidden {
+    position: absolute;
+    top: 50%;
+    margin-left: 1rem;
+  }
+
+  svg {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+}
+
+.divFields {
+  div:first-child {
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+  }
+}
+.max-limit-note{
+  padding: 15px 10px;
+    border: 1px solid #53514d59;
+    background: #ffab0082;
+    margin: 20px 0;
+    border-radius: 5px;
+}

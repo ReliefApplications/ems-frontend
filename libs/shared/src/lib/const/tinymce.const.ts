@@ -327,3 +327,34 @@ export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
   height: 50,
   content_style: 'p { margin: 0 !important; }',
 };
+
+/**
+ * Configuration for the email layout editor with predefined settings.
+ * This configuration sets up the TinyMCE editor with various plugins,
+ * toolbar options, and other settings tailored for editing email layouts.
+ */
+export const EMAIL_LAYOUT_CONFIG: RawEditorSettings = {
+  suffix: '.min',
+  plugins:
+    'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
+  menubar: false,
+  toolbar:
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link',
+  toolbar_sticky: true,
+  image_advtab: true,
+  importcss_append: true,
+  height: 600,
+  image_caption: true,
+  quickbars_insert_toolbar: 'image quicktable',
+  quickbars_selection_toolbar:
+    'bold italic | quicklink h2 h3 blockquote quicktable',
+  toolbar_mode: 'sliding',
+  contextmenu: 'link image imagetools table',
+  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  file_browser_callback: false, // removes possibility to upload files
+  help_tabs: [
+    'shortcuts', // the default shortcuts tab
+    'keyboardnav', // the default keyboard navigation tab
+  ],
+  convert_urls: false,
+};

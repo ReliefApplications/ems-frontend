@@ -1,0 +1,126 @@
+<form class="" [formGroup]="dataSetFormGroup" (ngSubmit)="onSubmit()">
+  <div class="text-left">
+    <div class="flex gap-5">
+      <div class="mt-4 w-1/3">
+        <label htmlFor="exampleSelect" class="block text-gray-700 text-sm">
+          {{ 'common.title' | translate }}*
+        </label>
+        <input id="block_title" (input)="triggerDuplicateChecker()" type="text" [placeholder]="'common.title' | translate" formControlName="name"
+           class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+           [ngClass]="{'form-error': (!dataSetFormGroup.controls['name'].valid && dataSetFormGroup.controls['name'].touched || isNameDuplicate() )}"
+            />
+           <div *ngIf="isNameDuplicate()" class="text-red-500 text-sm mt-1">
+            Title already exists.
+          </div>
+      </div>
+      <div class="mt-4 w-1/3">
+        <label htmlFor="notification__type" class="block text-gray-700 text-sm mb-1">
+          {{ 'models.customNotification.type' | translate }} </label>
+        <ng-select id="notification__type" name="notification__type" formControlName="notificationType"
+          [items]="notificationTypes" placeholder="{{ 'models.customNotification.select' | translate }}" [readonly]="true">
+          <ng-template disabled selected>
+            <span></span>
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <span>{{ item }}</span>
+          </ng-template>
+        </ng-select>
+      </div>
+    </div>
+    <div class="tab-container" style="width: 100%;">
+      <!-- Block Tabs -->
+      <kendo-tabstrip #kendoStrip formArrayName="dataSets" (tabSelect)="changeTab($event.index)">
+        <ng-container *ngIf="showPreview === false" >
+          <kendo-tabstrip-tab *ngFor="let tab of tabs; let tabIndex = index" [title]="tab.title" [selected]="tab.active">
+            <ng-template kendoTabTitle>
+              <div class="flex gap-5 justify-between items-center">
+                <span>{{ tab.title }}</span>
+                <button class="ui-button-icon primary medium button-danger" (click)="deleteTab(tabIndex, $event)" type="button">
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
+                </button>
+              </div>
+              <button *ngIf="tabIndex === tabs.length-1" class="" type="button" (click)="addTab()">
+                <ui-icon icon="add" variant="primary"></ui-icon>
+              </button>
+              <ng-template [formGroupName]="tabIndex" kendoTabContent>
+                <shared-dataset-filter [query]="datasetsFormArray.controls[tabIndex]" [queryValue]="datasetsFormArray.value" (changeMainTab)="changeTab($event)"
+                  (navigateToPreview)="bindPreviewTbl($event)" [activeTab]="activeTab" [tabs]="tabs"></shared-dataset-filter>
+              </ng-template>
+            </ng-template>
+            <ng-template kendoTabTitle>
+
+            </ng-template>
+          </kendo-tabstrip-tab>
+        </ng-container>
+
+        <!-- Preview Tab -->
+      <kendo-tabstrip-tab *ngIf="showPreview === true" [selected]="showPreview === true" id="previewTab">
+        <ng-template kendoTabTitle>
+          {{ 'common.preview' | translate }}
+        </ng-template>
+
+      <ng-template kendoTabContent>
+        <div style="width: 100%; overflow-x: auto;">
+          <ng-container *ngFor="let previewData of allPreviewData; let preIndex = index">
+            <div class="flex flex-col items-center w-9/10 mx-auto">
+                <label
+                  id="previewLabel"
+                  class="block text-left pl-5 p-2 shadow-none text-sm w-full">
+                  {{ previewData?.tabName }}
+                </label>
+              <table
+              id="tblPreview"
+              *ngIf="previewData?.dataList?.length"
+              class="w-full border-collapse border border-gray-300 shadow-xs"
+            >
+              <thead class="bg-[#00205C] text-white">
+                <tr>
+                  <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
+                    <th
+                      class="text-center p-2"
+                    >
+                      {{ replaceUnderscores(fieldKeyString) | titlecase }}
+                    </th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let data of previewData?.dataList"
+                  class="border-t border-gray-300 bg-white"
+                >
+                  <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
+                    <td
+                      class="p-2 text-center"
+                    >
+                      {{ data[fieldKeyString] }}
+                    </td>
+                  </ng-container>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+          <label class="block text-gray-700 text-sm" *ngIf="previewData?.dataList?.length === 0">
+            no data found
+          </label>
+          <br>
+          </ng-container>
+        </div>
+
+        <button
+          type="button"
+          (click)="showPreview=false"
+          class="bg-sky-600 float-right hover:bg-sky-700 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+        >
+          {{ 'common.back' | translate }}
+        </button>
+      </ng-template>
+
+      </kendo-tabstrip-tab>
+      </kendo-tabstrip>
+      <button *ngIf="tabs.length  === 0" class="add-tab-button" type="button" (click)="addTab()">
+        <ui-icon icon="add" variant="primary"></ui-icon>
+      </button>
+    </div>
+  </div>
+</form>

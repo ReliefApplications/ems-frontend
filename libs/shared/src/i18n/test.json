@@ -78,7 +78,11 @@
 		},
 		"comma": "******",
 		"copy": "******",
+		"copyright": {
+			"who": "******"
+		},
 		"create": "******",
+		"createdBy": "******",
 		"createdOn": "******",
 		"cronEditor": {
 			"advanced": "******",
@@ -170,6 +174,11 @@
 		"email": {
 			"few": "******",
 			"none": "******",
+			"notification": {
+				"few": "******",
+				"none": "******",
+				"one": "******"
+			},
 			"one": "******"
 		},
 		"errors": {
@@ -234,14 +243,53 @@
 			"dataNotRecovered": "******",
 			"dataRecovered": "******",
 			"email": {
+				"banner": {
+					"image": "******",
+					"removeTooltip": "******"
+				},
+				"body": {
+					"title": "******"
+				},
+				"dropdown": {
+					"inTheLast": "******",
+					"selectBlock": "******",
+					"timestamp": "******"
+				},
 				"error": "******",
 				"errors": {
 					"noDistributionList": "******",
+					"noSubject": "******",
 					"noTemplate": "******"
+				},
+				"field": {
+					"filtered": "******",
+					"noBlocks": "******",
+					"selectBlock": "******",
+					"selectPlaceholder": "******",
+					"selectTitle": "******"
+				},
+				"footer": {
+					"logo": "******",
+					"removeTooltip": "******",
+					"style": "******"
+				},
+				"header": {
+					"logo": "******",
+					"removeTooltip": "******",
+					"style": "******"
 				},
 				"processing": "******",
 				"ready": "******",
-				"sent": "******"
+				"sent": "******",
+				"style": {
+					"background": "******",
+					"text": "******"
+				},
+				"subject": {
+					"textTitle": "******",
+					"title": "******"
+				},
+				"timestamp": "******"
 			},
 			"fetchingGroups": "******",
 			"file": {
@@ -951,8 +999,14 @@
 			}
 		},
 		"queryBuilder": {
+			"apply": "******",
+			"block": {
+				"label": "******",
+				"title": "******"
+			},
 			"dataset": {
-				"select": "******"
+				"select": "******",
+				"title": "******"
 			},
 			"errors": {
 				"field": {
@@ -972,12 +1026,15 @@
 			},
 			"filter": {
 				"and": "******",
+				"apply": "******",
+				"field": "******",
 				"logic": "******",
 				"new": "******",
 				"newGroup": "******",
 				"operator": "******",
 				"or": "******",
-				"title": "******"
+				"title": "******",
+				"value": "******"
 			},
 			"hint": {
 				"fields": "******",
@@ -986,6 +1043,9 @@
 			},
 			"pagination": {
 				"first": "******",
+				"title": "******"
+			},
+			"preview": {
 				"title": "******"
 			},
 			"sort": {
@@ -1197,6 +1257,18 @@
 			"update": {
 				"permissions": "******",
 				"title": "******"
+			}
+		},
+		"select": {
+			"distribution": {
+				"SelectFromList": "******",
+				"alertMe": "******",
+				"bcc": "******",
+				"cc": "******",
+				"createFilterLogic": "******",
+				"email": "******",
+				"label": "******",
+				"to": "******"
 			}
 		},
 		"share": {
@@ -1977,6 +2049,7 @@
 			"filterIsNotNullOperator": "******",
 			"filterIsNullOperator": "******",
 			"filterIsTrue": "******",
+			"filterIsWithinTheLast": "******",
 			"filterLtOperator": "******",
 			"filterLteOperator": "******",
 			"filterMenuLogicDropDownLabel": "******",
@@ -2088,6 +2161,7 @@
 		"customNotification": {
 			"lastExecution": "******",
 			"schedule": "******",
+			"select": "******",
 			"type": "******"
 		},
 		"dashboard": {
@@ -2362,7 +2436,10 @@
 				"title": "******"
 			},
 			"settings": {
-				"actions": "******"
+				"actions": "******",
+				"emailCreated": "******",
+				"emailEdited": "******",
+				"emailSent": "******"
 			}
 		},
 		"applications": {

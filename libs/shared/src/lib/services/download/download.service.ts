@@ -174,6 +174,50 @@ export class DownloadService {
   }
 
   /**
+   * to download the Distribution List template for bulk import via excel file
+   */
+  downloadDistributionListTemplate(): void {
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
+    );
+
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+    this.restService
+      .get('/download/templates', { responseType: 'blob', headers })
+      .subscribe(
+        (res) => {
+          const blob = new Blob([res], { type: `text/xlsx;charset=utf-8;` });
+          this.saveFile('template.xlsx', blob);
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+        },
+        () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.error'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+        }
+      );
+  }
+
+  /**
+   * to import the distribution list
+   *
+   * @param file
+   */
+  importDistributionList(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.restService.post('/upload/distributionList', formData);
+  }
+
+  /**
    * Downloads file with users from the server
    *
    * @param type type of the file
