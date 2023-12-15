@@ -45,7 +45,7 @@
           },
           {
             "glob": "**/*",
-            "input": "node_modules/monaco-editor",
+            "input": "node_modules/monaco-editor/min",
             "output": "/assets/monaco/"
           }
         ],
@@ -67,8 +67,8 @@
           "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
         ],
         "scripts": [
-          "node_modules/tinymce/tinymce.js",
-          "node_modules/tinymce/themes/silver/theme.js"
+          "node_modules/tinymce/tinymce.min.js",
+          "node_modules/tinymce/themes/silver/theme.min.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
