@@ -13,6 +13,10 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import {
+  AggregationDataQueryResponse,
+  ReferenceDataAggregationQueryResponse,
+} from '../../../models/aggregation.model';
 
 /**
  * Main component of Aggregation builder.
@@ -304,13 +308,20 @@ export class AggregationBuilderComponent
    *
    * @param aggregationData Aggregation data to display in the preview dialog
    */
-  public async openAggregationPayload(aggregationData: any) {
+  public async openAggregationPayload(
+    aggregationData:
+      | AggregationDataQueryResponse
+      | ReferenceDataAggregationQueryResponse
+  ) {
     const { PayloadModalComponent } = await import(
       '../../payload-modal/payload-modal.component'
     );
     this.dialog.open(PayloadModalComponent, {
       data: {
-        payload: aggregationData,
+        payload:
+          'recordsAggregation' in aggregationData
+            ? aggregationData.recordsAggregation
+            : aggregationData.referenceDataAggregation,
         aggregationPayload: true,
       },
     });

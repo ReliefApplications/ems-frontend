@@ -22,6 +22,10 @@ import {
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { ContextService } from '../../../../services/context/context.service';
 import { EmptyModule } from '../../../ui/empty/empty.module';
+import {
+  AggregationDataQueryResponse,
+  ReferenceDataAggregationQueryResponse,
+} from '../../../../models/aggregation.model';
 
 /**
  * Template aggregations component.
@@ -201,13 +205,20 @@ export class TemplateAggregationsComponent
    *
    * @param aggregationData Aggregation data to display in the preview dialog
    */
-  public async openAggregationPayload(aggregationData: any) {
+  public async openAggregationPayload(
+    aggregationData:
+      | AggregationDataQueryResponse
+      | ReferenceDataAggregationQueryResponse
+  ) {
     const { PayloadModalComponent } = await import(
       '../../../payload-modal/payload-modal.component'
     );
     this.dialog.open(PayloadModalComponent, {
       data: {
-        payload: aggregationData,
+        payload:
+          'recordsAggregation' in aggregationData
+            ? aggregationData.recordsAggregation
+            : aggregationData.referenceDataAggregation,
         aggregationPayload: true,
       },
     });
