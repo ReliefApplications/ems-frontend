@@ -152,13 +152,13 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
       this.selectedChoices = this.selectedChoices.filter(
         (x) => x[this.valueKey] !== choice[this.valueKey]
       );
+      this.setAvailableChoices();
       this.filteredChoices = this.availableChoices.filter(
         (choice) =>
           !this.selectedChoices.find(
             (x) => x[this.valueKey] === choice[this.valueKey]
           )
       );
-      this.setAvailableChoices();
       this.control.setValue(this.selectedChoices.map((x) => x[this.valueKey]));
     }
   }
