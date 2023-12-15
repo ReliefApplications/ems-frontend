@@ -409,9 +409,47 @@ export class DashboardComponent
               this.countryCode.setValue(
                 this.dashboard.page?.geographicContext?.country
               );
-            } else {
+            } else if (this.dashboard.page.geographicContext.region) {
               this.regionCode.setValue(
                 this.dashboard.page?.geographicContext?.region
+              );
+            }
+            // Get related geographic context coordinates
+            const geographicContextCoordinates = this.dashboard.page
+              .geographicContext.country
+              ? this.geographicContextCountries.find(
+                  (country) =>
+                    country.code ===
+                    this.dashboard?.page?.geographicContext?.country
+                )
+              : this.dashboard.page.geographicContext.region
+              ? this.geographicContextRegions.find(
+                  (region) =>
+                    region.code ===
+                    this.dashboard?.page?.geographicContext?.region
+                )
+              : null;
+            if (geographicContextCoordinates) {
+              // Map all map widgets to have as initial state in their coords the selected geographic context
+              this.dashboard.structure = this.dashboard.structure.map(
+                (widget: any) => {
+                  if (widget.id === 'map') {
+                    // Update initial state with the geographic context coordinates if no initial state is set on top of it
+                    if (
+                      !widget.settings.initialState.viewpoint.center.longitude
+                    ) {
+                      widget.settings.initialState.viewpoint.center.longitude =
+                        geographicContextCoordinates.centerlongitude;
+                    }
+                    if (
+                      !widget.settings.initialState.viewpoint.center.latitude
+                    ) {
+                      widget.settings.initialState.viewpoint.center.latitude =
+                        geographicContextCoordinates.centerlatitude;
+                    }
+                  }
+                  return widget;
+                }
               );
             }
           }
