@@ -61,7 +61,6 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
    * @param renderer Renderer2
    * @param document Document
    * @param overlay CDK Overlay
-   * @param cdr ChangeDetectorRef
    */
   constructor(
     public el: ElementRef,

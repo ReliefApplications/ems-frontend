@@ -40,7 +40,6 @@ export class TabBodyHostDirective
    * @param componentFactoryResolver Angular component factory resolver ( deprecated )
    * @param viewContainerRef Angular view container reference
    * @param _document document
-   * @param cdr ChangeDetectorRef
    */
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,

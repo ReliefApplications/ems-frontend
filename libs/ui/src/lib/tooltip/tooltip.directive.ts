@@ -60,7 +60,6 @@ export class TooltipDirective implements OnDestroy {
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host in order to correctly insert tooltips
-   * @param cdr ChangeDetectorRef
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
