@@ -4,6 +4,7 @@ import {
   ElementRef,
   Input,
   OnChanges,
+  OnDestroy,
   Renderer2,
   SimpleChanges,
 } from '@angular/core';
@@ -15,7 +16,9 @@ import { FilterPosition } from '../../enums/dashboard-filters.enum';
 @Directive({
   selector: '[drawerPositioner]',
 })
-export class DrawerPositionerDirective implements OnChanges, AfterContentInit {
+export class DrawerPositionerDirective
+  implements OnChanges, AfterContentInit, OnDestroy
+{
   /** Where is the element going to be positioned */
   @Input() position: FilterPosition = FilterPosition.TOP;
   /** The element width, as the directive host is positioned fixed, we need to set the width manually in order to match the parent element */
@@ -33,6 +36,8 @@ export class DrawerPositionerDirective implements OnChanges, AfterContentInit {
   /** The dashboard survey creator container */
   @Input()
   dashboardSurveyCreatorContainer!: any;
+  /** Timeout to display drawer */
+  private displayDrawerTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Class constructor
@@ -178,7 +183,13 @@ export class DrawerPositionerDirective implements OnChanges, AfterContentInit {
       default:
         break;
     }
-    setTimeout(() => this.displayDrawer(this.opened), 0); //Waiting to acquire the right client size
+    if (this.displayDrawerTimeoutListener) {
+      clearTimeout(this.displayDrawerTimeoutListener);
+    }
+    this.displayDrawerTimeoutListener = setTimeout(
+      () => this.displayDrawer(this.opened),
+      0
+    ); //Waiting to acquire the right client size
   }
 
   /**
@@ -240,6 +251,12 @@ export class DrawerPositionerDirective implements OnChanges, AfterContentInit {
       this.el.nativeElement.style.transform = `translateX(${
         translateToTheRight ? -widthToTranslate : widthToTranslate
       }px)`;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.displayDrawerTimeoutListener) {
+      clearTimeout(this.displayDrawerTimeoutListener);
     }
   }
 }

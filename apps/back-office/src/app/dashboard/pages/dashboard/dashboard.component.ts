@@ -111,7 +111,9 @@ export class DashboardComponent
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
   /** Timeout to scroll to newly added widget */
-  private timeoutListener!: NodeJS.Timeout;
+  private addTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to load grid options */
+  private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
@@ -333,7 +335,10 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          setTimeout(() => {
+          if (this.gridOptionsTimeoutListener) {
+            clearTimeout(this.gridOptionsTimeoutListener);
+          }
+          this.gridOptionsTimeoutListener = setTimeout(() => {
             this.gridOptions = {
               ...this.gridOptions,
               scrollToNewItems: true,
@@ -364,8 +369,11 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
+    }
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
     }
     localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'filterStructure');
@@ -405,11 +413,11 @@ export class DashboardComponent
   onAdd(e: any): void {
     const widget = cloneDeep(e);
     this.widgets.push(widget);
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
     }
     // scroll to the element once it is created
-    this.timeoutListener = setTimeout(() => {
+    this.addTimeoutListener = setTimeout(() => {
       const widgetComponents =
         this.widgetGridComponent.widgetComponents.toArray();
       const target = widgetComponents[widgetComponents.length - 1];
