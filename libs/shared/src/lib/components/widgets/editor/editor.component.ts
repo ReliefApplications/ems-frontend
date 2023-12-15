@@ -184,13 +184,17 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         this.loading = false;
       });
     } else {
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text,
-        {
-          aggregation: this.aggregations,
-        }
-      );
-      this.loading = false;
+      Promise.all([this.getAggregationsData()]).then(() => {
+        this.formattedHtml = this.dataTemplateService.renderHtml(
+          this.settings.text,
+          {
+            data: this.fieldsValue,
+            aggregation: this.aggregations,
+            fields: this.fields,
+          }
+        );
+        this.loading = false;
+      });
     }
   }
 
