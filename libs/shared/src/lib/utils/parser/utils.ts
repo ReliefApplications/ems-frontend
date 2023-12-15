@@ -84,9 +84,9 @@ export const parseHtml = (
       );
     }
 
-    console.log("formattedHtml = ", formattedHtml);
+    console.log('formattedHtml = ', formattedHtml);
     const a = applyOperations(formattedHtml);
-    console.log("a = ", a);
+    console.log('a = ', a);
     return a;
   } else {
     return applyOperations(formattedHtml);
@@ -509,7 +509,7 @@ const applyOperations = (html: string): string => {
   );
   let parsedHtml = modifiedHtml;
   let result = regex.exec(parsedHtml);
-  console.log("result = ", result);
+  console.log('result = ', result);
   while (result !== null) {
     // get the function
     const calcFunc = get(calcFunctions, result[1]);
@@ -519,11 +519,11 @@ const applyOperations = (html: string): string => {
         .split(';')
         .map((arg) => arg.replace(/[\s,]/gm, ''));
       // apply the function
-      console.log("args = ", args);
+      console.log('args = ', args);
       let resultText;
       try {
         resultText = calcFunc.call(...args);
-        console.log("resultText = ", resultText);
+        console.log('resultText = ', resultText);
       } catch (err: any) {
         resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
       }
@@ -531,7 +531,7 @@ const applyOperations = (html: string): string => {
     }
     result = regex.exec(parsedHtml);
   }
-  console.log("parsedHtml = ", parsedHtml);
+  console.log('parsedHtml = ', parsedHtml);
   return parsedHtml;
 };
 
