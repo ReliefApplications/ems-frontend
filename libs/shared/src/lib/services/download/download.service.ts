@@ -110,7 +110,7 @@ export class DownloadService {
             'common.notifications.file.download.ready'
           );
           snackBarSpinner.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(
@@ -118,7 +118,7 @@ export class DownloadService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }
@@ -151,7 +151,7 @@ export class DownloadService {
               'common.notifications.file.download.ongoing'
             );
             snackBarSpinner.instance.loading = false;
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           } else {
             const blob = new Blob([res], { type });
             this.saveFile(fileName, blob);
@@ -159,7 +159,7 @@ export class DownloadService {
               'common.notifications.file.download.ready'
             );
             snackBarSpinner.instance.loading = false;
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           }
         },
         error: () => {
@@ -168,7 +168,7 @@ export class DownloadService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }
@@ -209,7 +209,7 @@ export class DownloadService {
             'common.notifications.file.download.ready'
           );
           snackBarSpinner.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         () => {
           snackBarSpinner.instance.message = this.translate.instant(
@@ -217,7 +217,7 @@ export class DownloadService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         }
       );
   }
@@ -259,8 +259,7 @@ export class DownloadService {
             'common.notifications.file.upload.ready'
           );
           snackBarSpinner.instance.loading = false;
-
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: (err) => {
           console.log(err);
@@ -269,7 +268,7 @@ export class DownloadService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       })
     );
@@ -304,8 +303,7 @@ export class DownloadService {
               'common.notifications.file.upload.ready'
             );
             snackBarRef.instance.loading = false;
-
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             resolve(path);
           } else {
             snackBarRef.instance.message = this.translate.instant(
@@ -313,7 +311,7 @@ export class DownloadService {
             );
             snackBarRef.instance.loading = false;
             snackBarRef.instance.error = true;
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             reject();
           }
         });
