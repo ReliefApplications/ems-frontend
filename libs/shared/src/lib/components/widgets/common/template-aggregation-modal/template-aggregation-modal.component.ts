@@ -1,107 +1,147 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  ButtonModule,
+  DialogModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+  TabsModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ContextualFiltersSettingsComponent } from '../contextual-filters-settings/contextual-filters-settings.component';
+import {
+  ReferenceDataSelectComponent,
+  ResourceSelectComponent,
+} from '../../../controls/public-api';
 import { Apollo } from 'apollo-angular';
 import {
   Resource,
   ResourceQueryResponse,
 } from '../../../../models/resource.model';
-import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
-import { CHART_TYPES } from '../constants';
-import { Aggregation } from '../../../../models/aggregation.model';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../../models/reference-data.model';
-import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
-import { AggregationService } from '../../../../services/aggregation/aggregation.service';
-import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
-import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { Aggregation } from '../../../../models/aggregation.model';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
+import { AggregationService } from '../../../../services/aggregation/aggregation.service';
+import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
+import get from 'lodash/get';
+import { createTemplateAggregationForm } from '../../editor-settings/editor-settings.forms';
+
+/** Dialog data interface */
+interface DialogData {
+  aggregation?: ReturnType<typeof createTemplateAggregationForm>;
+}
 
 /**
- * Main tab of chart settings modal.
+ * Modal to edit or add template aggregation.
+ * Template aggregations are used by editor widget, to inject data from aggregations on resource or reference data.
  */
 @Component({
-  selector: 'shared-tab-main',
-  templateUrl: './tab-main.component.html',
-  styleUrls: ['./tab-main.component.scss'],
+  selector: 'shared-template-aggregation-modal',
+  standalone: true,
+  imports: [
+    CommonModule,
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DialogModule,
+    ButtonModule,
+    TabsModule,
+    ContextualFiltersSettingsComponent,
+    IconModule,
+    TooltipModule,
+    ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    DividerModule,
+    FormWrapperModule,
+    SelectMenuModule,
+  ],
+  templateUrl: './template-aggregation-modal.component.html',
+  styleUrls: ['./template-aggregation-modal.component.scss'],
 })
-export class TabMainComponent extends UnsubscribeComponent implements OnInit {
+export class TemplateAggregationModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Reactive form group */
-  @Input() formGroup!: UntypedFormGroup;
-  /** Selected chart type */
-  @Input() type: any;
-  /** Available chart types */
-  public types = CHART_TYPES;
+  public form!: ReturnType<typeof createTemplateAggregationForm>;
   /** Current resource */
   public resource: Resource | null = null;
   /** Current reference data */
   public referenceData: ReferenceData | null = null;
   /** Current aggregation */
   public aggregation?: Aggregation;
-  /** Available fields */
-  public availableSeriesFields: any[] = [];
 
   /**
-   * Get the selected chart type object
-   *
-   * @returns chart type object
-   */
-  public get selectedChartType() {
-    return (
-      this.types.find(
-        (type) => type.name === this.formGroup.get('chart.type')?.value
-      ) ?? { name: '', icon: null }
-    );
-  }
-
-  /**
-   * Main tab of chart settings modal.
+   * Modal to edit or add template aggregation.
+   * Template aggregations are used by editor widget, to inject data from aggregations on resource or reference data.
    *
    * @param apollo Apollo service
-   * @param dialog Dialog service
-   * @param aggregationBuilder Shared aggregation builder service
    * @param aggregationService Shared aggregation service
+   * @param dialog CDK dialog service
+   * @param data Data passed to dialog
    */
   constructor(
     private apollo: Apollo,
+    private aggregationService: AggregationService,
     private dialog: Dialog,
-    private aggregationBuilder: AggregationBuilderService,
-    private aggregationService: AggregationService
+    @Inject(DIALOG_DATA) public data?: DialogData
   ) {
     super();
+    this.form = createTemplateAggregationForm(data?.aggregation?.value);
   }
 
   ngOnInit(): void {
-    this.formGroup
+    this.form
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          this.formGroup.get('chart.aggregationId')?.setValue(null);
+          this.form.get('aggregation')?.setValue(null);
           this.getResource(value);
         } else {
           this.resource = null;
         }
       });
-    if (this.formGroup.value.resource) {
-      this.getResource(this.formGroup.value.resource);
+    if (this.form.value.resource) {
+      this.getResource(this.form.value.resource);
     }
-    this.formGroup
+    this.form
       .get('referenceData')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          this.formGroup.get('chart.aggregationId')?.setValue(null);
+          this.form.get('aggregation')?.setValue(null);
           this.getReferenceData(value);
         } else {
           this.referenceData = null;
         }
       });
-    if (this.formGroup.value.referenceData) {
-      this.getReferenceData(this.formGroup.value.referenceData);
+    if (this.form.value.referenceData) {
+      this.getReferenceData(this.form.value.referenceData);
     }
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.form.get(formField)?.value) {
+      this.form.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 
   /**
@@ -110,7 +150,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param id resource id
    */
   private getResource(id: string): void {
-    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
+    const aggregationId = this.form.value.aggregation;
     this.apollo
       .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
@@ -124,12 +164,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         this.resource = data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
           this.aggregation = this.resource.aggregations.edges[0].node;
-          this.availableSeriesFields =
-            this.aggregationBuilder.getAvailableSeriesFields(this.aggregation, {
-              resource: this.resource,
-            });
-        } else {
-          this.availableSeriesFields = [];
+          this.form.controls.name.setValue(this.aggregation.name as string);
         }
       });
   }
@@ -140,7 +175,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
-    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
+    const aggregationId = this.form.value.aggregation;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -154,12 +189,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         this.referenceData = data.referenceData;
         if (aggregationId && this.referenceData.aggregations?.edges[0]) {
           this.aggregation = this.referenceData.aggregations.edges[0].node;
-          this.availableSeriesFields =
-            this.aggregationBuilder.getAvailableSeriesFields(this.aggregation, {
-              referenceData: this.referenceData,
-            });
-        } else {
-          this.availableSeriesFields = [];
+          this.form.controls.name.setValue(this.aggregation.name as string);
         }
       });
   }
@@ -185,17 +215,9 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+        this.form.get('aggregation')?.setValue(value.id);
         this.aggregation = value;
-        if (this.aggregation) {
-          this.availableSeriesFields =
-            this.aggregationBuilder.getAvailableSeriesFields(this.aggregation, {
-              referenceData: this.referenceData,
-              resource: this.resource,
-            });
-        } else {
-          this.availableSeriesFields = [];
-        }
+        this.form.controls.name.setValue(this.aggregation?.name as string);
       }
     });
   }
@@ -234,19 +256,5 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           });
       }
     });
-  }
-
-  /**
-   * Reset given form field value if there is a value previously to avoid triggering
-   * not necessary actions
-   *
-   * @param formField Current form field
-   * @param event click event
-   */
-  clearFormField(formField: string, event: Event) {
-    if (this.formGroup.get(formField)?.value) {
-      this.formGroup.get(formField)?.setValue(null);
-    }
-    event.stopPropagation();
   }
 }

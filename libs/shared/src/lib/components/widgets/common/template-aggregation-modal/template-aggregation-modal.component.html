@@ -1,0 +1,141 @@
+<ui-dialog size="fullscreen">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        (data?.aggregation
+          ? 'components.widget.text.aggregations.template.edit'
+          : 'components.widget.text.aggregations.template.add'
+        ) | translate
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <ui-tabs class="grow overflow-x-hidden" [vertical]="true">
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon icon="settings" [size]="24" [uiTooltip]="'text'"></ui-icon>
+          <span>{{ 'common.general' | translate }}</span>
+        </ng-container>
+        <ng-template uiTabContent>
+          <div [formGroup]="form" class="flex flex-col gap-2 flex-wrap">
+            <div class="flex-1 flex-col">
+              <!-- Reference data selection  -->
+              <div
+                uiFormFieldDirective
+                class="flex-1"
+                *ngIf="!form.value.resource"
+              >
+                <label>{{ 'common.referenceData.one' | translate }}</label>
+                <shared-reference-data-select
+                  formControlName="referenceData"
+                  [selectedElements]="[referenceData]"
+                ></shared-reference-data-select>
+                <ui-button
+                  *ngIf="form.value.referenceData"
+                  uiSuffix
+                  size="small"
+                  [isIcon]="true"
+                  (click)="clearFormField('referenceData', $event)"
+                  icon="close"
+                  variant="danger"
+                  [uiTooltip]="'common.remove' | translate"
+                ></ui-button>
+              </div>
+              <ui-divider
+                class="max-w-xs m-auto"
+                [text]="'common.or' | translate"
+                *ngIf="!form.value.resource && !form.value.referenceData"
+              ></ui-divider>
+              <!-- RESOURCE SELECTION  -->
+              <div
+                uiFormFieldDirective
+                class="flex-1"
+                *ngIf="!form.value.referenceData"
+              >
+                <label>{{ 'models.resource.select' | translate }}</label>
+                <shared-resource-select
+                  formControlName="resource"
+                  [selectedElements]="[resource]"
+                ></shared-resource-select>
+                <ui-button
+                  *ngIf="form.value.resource"
+                  uiSuffix
+                  size="small"
+                  [isIcon]="true"
+                  (click)="clearFormField('resource', $event)"
+                  icon="close"
+                  variant="danger"
+                  [uiTooltip]="'common.remove' | translate"
+                ></ui-button>
+              </div>
+            </div>
+            <ng-container *ngIf="resource || referenceData">
+              <ng-container *ngIf="form.value.aggregation">
+                <div *ngIf="aggregation" uiFormFieldDirective>
+                  <label>{{ 'common.aggregation.one' | translate }}</label>
+                  <ui-select-menu [disabled]="true" [value]="aggregation.name">
+                    <ui-select-option [value]="aggregation.name">{{
+                      aggregation.name
+                    }}</ui-select-option>
+                  </ui-select-menu>
+                  <ui-button
+                    uiSuffix
+                    variant="primary"
+                    [isIcon]="true"
+                    icon="edit"
+                    (click)="editAggregation()"
+                    [uiTooltip]="'common.edit' | translate"
+                  ></ui-button>
+                  <ui-button
+                    uiSuffix
+                    variant="danger"
+                    [isIcon]="true"
+                    icon="close"
+                    (click)="form.get('aggregation')?.setValue(null)"
+                    [uiTooltip]="'common.remove' | translate"
+                  ></ui-button>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="!form.value.aggregation">
+                <div class="flex justify-center">
+                  <ui-button
+                    category="tertiary"
+                    variant="primary"
+                    (click)="addAggregation()"
+                    >{{
+                      'components.aggregation.add.title' | translate
+                    }}</ui-button
+                  >
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </ng-template>
+      </ui-tab>
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon icon="filter_list" [size]="24"></ui-icon>
+          <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
+        </ng-container>
+        <ng-template uiTabContent>
+          <shared-contextual-filters-settings
+            [form]="form"
+          ></shared-contextual-filters-settings>
+        </ng-template>
+      </ui-tab>
+    </ui-tabs>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="form.value"
+      [disabled]="!form.valid"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

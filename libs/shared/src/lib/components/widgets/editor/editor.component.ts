@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isNil } from 'lodash';
+import { clone, get, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -31,6 +31,7 @@ import { GET_REFERENCE_DATA } from './graphql/queries';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ContextService } from '../../../services/context/context.service';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Text widget component using KendoUI
@@ -45,7 +46,11 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   @Input() settings: any;
   /** Should show padding */
   @Input() usePadding = true;
-
+  /** Reference to header template */
+  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  /** Reference to html content component */
+  @ViewChild(HtmlWidgetContentComponent)
+  htmlContentComponent!: HtmlWidgetContentComponent;
   /** Layout */
   private layout: any;
   /** Record */
@@ -60,17 +65,14 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   private styles: any[] = [];
   /** Should use whole card styles */
   private wholeCardStyles = false;
-
   /** Formatted html */
   public formattedHtml: SafeHtml = '';
   /** Formatted style */
   public formattedStyle?: string;
-
-  /** Reference to header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
-  /** Reference to html content component */
-  @ViewChild(HtmlWidgetContentComponent)
-  htmlContentComponent!: HtmlWidgetContentComponent;
+  /** Result of aggregations */
+  public aggregationsData: any = {};
+  /** Loading indicator */
+  public loading = true;
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -82,6 +84,11 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     return (
       (this.settings.showDataSourceLink || false) && !this.useReferenceData
     );
+  }
+
+  /** @returns available aggregations */
+  get aggregations() {
+    return this.settings.aggregations || [];
   }
 
   /**
@@ -97,6 +104,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param referenceDataService Shared reference data service
    * @param contextService Context service
    * @param renderer Angular renderer2 service
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,
@@ -108,7 +116,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
     private contextService: ContextService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private aggregationService: AggregationService
   ) {
     super();
   }
@@ -116,44 +125,114 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
     if (this.settings.record && this.settings.resource) {
-      await this.getLayout();
-      await this.getRecord();
-      this.formattedStyle = this.dataTemplateService.renderStyle(
-        this.settings.wholeCardStyles || false,
-        this.fieldsValue,
-        this.styles
-      );
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text,
-        this.fieldsValue,
-        this.fields,
-        this.styles
-      );
-    } else if (this.settings.element && this.settings.referenceData) {
-      await this.getReferenceData();
-      await this.referenceDataService
-        .cacheItems(this.settings.referenceData)
-        .then((value) => {
-          if (value) {
-            const field = this.referenceData?.valueField;
-            const selectedItemKey = String(this.settings.element);
-            if (field) {
-              this.fieldsValue = value.find(
-                (x: any) => String(get(x, field)) === selectedItemKey
-              );
-            }
+      Promise.all([
+        new Promise<void>((resolve) => {
+          this.getLayout()
+            .then(() => this.getRecord().finally(() => resolve()))
+            .catch(() => resolve());
+        }),
+        this.getAggregationsData(),
+      ]).then(() => {
+        this.formattedStyle = this.dataTemplateService.renderStyle(
+          this.settings.wholeCardStyles || false,
+          this.fieldsValue,
+          this.styles
+        );
+        this.formattedHtml = this.dataTemplateService.renderHtml(
+          this.settings.text,
+          {
+            data: this.fieldsValue,
+            aggregation: this.aggregations,
+            fields: this.fields,
+            styles: this.styles,
           }
-        });
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text,
-        this.fieldsValue,
-        this.fields
-      );
+        );
+        this.loading = false;
+      });
+    } else if (this.settings.element && this.settings.referenceData) {
+      Promise.all([
+        new Promise<void>((resolve) => {
+          this.getReferenceData()
+            .then(() => {
+              this.referenceDataService
+                .cacheItems(this.settings.referenceData)
+                .then((value) => {
+                  if (value) {
+                    const field = this.referenceData?.valueField;
+                    const selectedItemKey = String(this.settings.element);
+                    if (field) {
+                      this.fieldsValue = value.find(
+                        (x: any) => String(get(x, field)) === selectedItemKey
+                      );
+                    }
+                  }
+                })
+                .finally(() => resolve());
+            })
+            .catch(() => resolve());
+        }),
+        this.getAggregationsData(),
+      ]).then(() => {
+        this.formattedHtml = this.dataTemplateService.renderHtml(
+          this.settings.text,
+          {
+            data: this.fieldsValue,
+            aggregation: this.aggregations,
+            fields: this.fields,
+          }
+        );
+        this.loading = false;
+      });
     } else {
       this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text
+        this.settings.text,
+        {
+          aggregation: this.aggregations,
+        }
       );
+      this.loading = false;
     }
+  }
+
+  /**
+   * Get all aggregations data
+   *
+   * @returns promise
+   */
+  private getAggregationsData() {
+    const promises: Promise<void>[] = [];
+    this.aggregations.forEach((aggregation: any) => {
+      promises.push(
+        new Promise<void>((resolve) => {
+          firstValueFrom(
+            this.aggregationService.aggregationDataQuery({
+              resource: aggregation.resource,
+              referenceData: aggregation.referenceData,
+              aggregation: aggregation.aggregation,
+              contextFilters: aggregation.contextFilters,
+              at: this.contextService.atArgumentValue(aggregation.at),
+            })
+          )
+            .then(({ data }) => {
+              if (aggregation.resource) {
+                set(
+                  this.aggregations,
+                  aggregation.id,
+                  (data as any).recordsAggregation
+                );
+              } else {
+                set(
+                  this.aggregations,
+                  aggregation.id,
+                  (data as any).referenceDataAggregation
+                );
+              }
+            })
+            .finally(() => resolve());
+        })
+      );
+    });
+    return Promise.all(promises);
   }
 
   /**
@@ -223,20 +302,26 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
         if (value) {
+          this.loading = true;
           // Update the record, based on new configuration
-          this.getRecord().then(() => {
-            this.formattedStyle = this.dataTemplateService.renderStyle(
-              this.settings.wholeCardStyles || false,
-              this.fieldsValue,
-              this.styles
-            );
-            this.formattedHtml = this.dataTemplateService.renderHtml(
-              this.settings.text,
-              this.fieldsValue,
-              this.fields,
-              this.styles
-            );
-          });
+          this.getRecord()
+            .then(() => {
+              this.formattedStyle = this.dataTemplateService.renderStyle(
+                this.settings.wholeCardStyles || false,
+                this.fieldsValue,
+                this.styles
+              );
+              this.formattedHtml = this.dataTemplateService.renderHtml(
+                this.settings.text,
+                {
+                  data: this.fieldsValue,
+                  aggregation: this.aggregations,
+                  fields: this.fields,
+                  styles: this.styles,
+                }
+              );
+            })
+            .finally(() => (this.loading = false));
         }
       });
     }
