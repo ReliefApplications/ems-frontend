@@ -9,7 +9,7 @@ const DATA_PREFIX = '{{data.';
 /** Prefix for aggregation keys */
 const AGGREGATION_PREFIX = '{{aggregation.';
 /** Prefix for calc keys */
-const CALC_PREFIX = '{{calc.';
+const CALC_PREFIX = '{{calc';
 /** Prefix for avatar keys */
 const AVATAR_PREFIX = '{{avatars.';
 /** Allowed image extensions */
@@ -83,7 +83,11 @@ export const parseHtml = (
         options.aggregation
       );
     }
-    return applyOperations(formattedHtml);
+
+    console.log("formattedHtml = ", formattedHtml);
+    const a = applyOperations(formattedHtml);
+    console.log("a = ", a);
+    return a;
   } else {
     return applyOperations(formattedHtml);
   }
@@ -486,26 +490,26 @@ export const getFieldsValue = (record: any) => {
  * @returns The html body with the calculated result of the functions
  */
 const applyOperations = (html: string): string => {
+  // // Define the regex pattern to match content inside {{calc.}} expressions with a nested <span> tag
+  const pattern = new RegExp(
+    `${CALC_PREFIX}\\.(.*?)<span[^>]*>(.*?)</span>(.*?)}}`,
+    'g'
+  );
+  // Use replace method with a callback function to handle all occurrences
+  const modifiedHtml = html.replace(
+    pattern,
+    (_, prefix, capturedContent, suffix) => {
+      return `${prefix}${capturedContent}${suffix}`;
+    }
+  );
+  console.log(modifiedHtml);
   const regex = new RegExp(
     `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
     'gm'
   );
-
-  // To identify and remove span with style elements to avoid breaking calc functions
-  const spanRegex = /<span[^>]*>([\s\S]*?)<\/span>/g;
-  const spanElements: string[] = [];
-  // Clean HTML don't have span and styles
-  const cleanHtml = html.replace(spanRegex, (match, spanContent) => {
-    // Save the removed span element
-    spanElements.push(match);
-    // Replace the span element with its content
-    return spanContent;
-  });
-
-  let parsedHtml = cleanHtml;
-  let result = regex.exec(cleanHtml);
-  // Track the index of the saved span elements
-  let spanIndex = 0;
+  let parsedHtml = modifiedHtml;
+  let result = regex.exec(parsedHtml);
+  console.log("result = ", result);
   while (result !== null) {
     // get the function
     const calcFunc = get(calcFunctions, result[1]);
@@ -515,27 +519,19 @@ const applyOperations = (html: string): string => {
         .split(';')
         .map((arg) => arg.replace(/[\s,]/gm, ''));
       // apply the function
+      console.log("args = ", args);
       let resultText;
       try {
         resultText = calcFunc.call(...args);
+        console.log("resultText = ", resultText);
       } catch (err: any) {
         resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
       }
-      if (spanElements.length > spanIndex) {
-        // Retrieve the saved span element
-        const spanElement = spanElements[spanIndex];
-        // Replace the html with the calculated result inside the saved span element with the style
-        parsedHtml = parsedHtml.replace(
-          result[0],
-          spanElement.replace(`'>.*(</span>)`, `'>${resultText}$1`)
-        );
-      } else {
-        parsedHtml = parsedHtml.replace(result[0], resultText);
-      }
-      spanIndex++;
+      parsedHtml = parsedHtml.replace(result[0], resultText);
     }
-    result = regex.exec(cleanHtml);
+    result = regex.exec(parsedHtml);
   }
+  console.log("parsedHtml = ", parsedHtml);
   return parsedHtml;
 };
 
