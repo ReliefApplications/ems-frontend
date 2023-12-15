@@ -8,6 +8,7 @@ import {
   MenuModule,
   TableModule,
   TooltipModule,
+  AlertModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -16,6 +17,7 @@ import {
   createEditorForm,
   createTemplateAggregationForm,
 } from '../../editor-settings/editor-settings.forms';
+import { EmptyModule } from '../../../ui/empty/empty.module';
 
 /**
  * Template aggregations component.
@@ -34,6 +36,8 @@ import {
     IconModule,
     TooltipModule,
     DividerModule,
+    AlertModule,
+    EmptyModule,
   ],
   templateUrl: './template-aggregations.component.html',
   styleUrls: ['./template-aggregations.component.scss'],
