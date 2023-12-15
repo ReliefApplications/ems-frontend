@@ -1313,6 +1313,15 @@ export class CoreGridComponent
       return;
     }
 
+    const getSubFields = (field: any) => {
+      return field.subFields.flatMap((y: any) => [
+        { name: y.name, title: y.title },
+        ...(y.subFields || []).flatMap((sub: any) => ({
+          name: sub.name,
+          title: sub.title,
+        })),
+      ]);
+    };
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
@@ -1340,12 +1349,7 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields
-              .filter((y: any) => !y.hidden)
-              .map((y: any) => ({
-                name: y.name,
-                title: y.title,
-              })),
+            subFields: getSubFields(x),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1355,10 +1359,7 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields.map((y: any) => ({
-              name: y.name,
-              title: y.title,
-            })),
+            subFields: getSubFields(x),
           })),
       }),
     };
