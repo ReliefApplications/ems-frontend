@@ -49,6 +49,9 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
   ],
 })
 export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
+  /**
+   * List of tabs
+   */
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -77,9 +80,13 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('tabList')
   tabList!: ElementRef<any>;
 
+  /** Previous tabs length */
   previousTabsLength = 0;
+  /** Trigger animation */
   triggerAnimation = false;
+  /** Destroy subject */
   destroy$ = new Subject<void>();
+  /** Reorder subject */
   reorder$ = new Subject<void>();
 
   /**
@@ -130,22 +137,20 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
    * @param tab tab to display
    */
   showContent(tab: TabComponent) {
-    if (tab.index !== this.selectedIndex || !this.tabBodyHost.hasAttached()) {
-      this.selectedIndex = tab.index;
-      this.setSelectedTab();
+    this.selectedIndex = tab.index;
+    this.setSelectedTab();
 
-      // Clean up previous displayed content
-      this.triggerAnimation = false;
+    // Clean up previous displayed content
+    this.triggerAnimation = false;
 
-      // Creates the content element thanks to the hidden html content of the tab component
-      // Timeout so the animation has the time to render (elsewhere it can't cause delete then create is instantaneous)
-      setTimeout(() => {
-        this.triggerAnimation = true;
-        this.openedTab.emit(tab);
-      }, 100);
-      // Emits the current selected index
-      this.selectedIndexChange.emit(this.selectedIndex);
-    }
+    // Creates the content element thanks to the hidden html content of the tab component
+    // Timeout so the animation has the time to render (elsewhere it can't cause delete then create is instantaneous)
+    setTimeout(() => {
+      this.triggerAnimation = true;
+      this.openedTab.emit(tab);
+    }, 100);
+    // Emits the current selected index
+    this.selectedIndexChange.emit(this.selectedIndex);
   }
 
   /**
@@ -172,7 +177,12 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       tab.openTab
         .pipe(takeUntil(this.reorder$), takeUntil(this.destroy$))
         .subscribe(() => {
-          this.showContent(tab);
+          if (
+            tab.index !== this.selectedIndex ||
+            !this.tabBodyHost.hasAttached()
+          ) {
+            this.showContent(tab);
+          }
           this.selectedIndex = index;
         });
     });

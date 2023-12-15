@@ -16,7 +16,6 @@ import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
-// import { ContextService } from '../../../services/context/context.service';
 
 /**
  * Composite filter row.
@@ -30,71 +29,52 @@ export class FilterRowComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges, AfterViewInit
 {
+  /** Filter form group */
   @Input() form!: UntypedFormGroup;
-  @Output() delete = new EventEmitter();
+  /** Available fields */
   @Input() fields: any[] = [];
 
   @Input() canUseContext = false;
   public contextEditorIsActivated = false;
 
+  /** Delete filter event emitter */
+  @Output() delete = new EventEmitter();
+  /** Text field editor template */
+  @ViewChild('textEditor', { static: false }) textEditor!: TemplateRef<any>;
+  /** Boolean field editor template */
+  @ViewChild('booleanEditor', { static: false })
+  booleanEditor!: TemplateRef<any>;
+  /** Select field editor template */
+  @ViewChild('selectEditor', { static: false }) selectEditor!: TemplateRef<any>;
+  /** Numeric field editor template */
+  @ViewChild('numericEditor', { static: false })
+  numericEditor!: TemplateRef<any>;
+  /** Date field editor template */
+  @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
+  @ViewChild('contextEditor', { static: false })
+  contextEditor!: TemplateRef<any>;
+  /** Current field */
   public field?: any;
   /** Template reference to the editor */
   public editor?: TemplateRef<any>;
   /** Should hide editor or not */
   public hideEditor = false;
+  /** Available operators */
+  public operators: any[] = [];
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
     return this.form.get('value') as UntypedFormControl;
   }
 
-  @ViewChild('textEditor', { static: false }) textEditor!: TemplateRef<any>;
-  @ViewChild('booleanEditor', { static: false })
-  booleanEditor!: TemplateRef<any>;
-  @ViewChild('selectEditor', { static: false }) selectEditor!: TemplateRef<any>;
-  @ViewChild('numericEditor', { static: false })
-  numericEditor!: TemplateRef<any>;
-  @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
-  @ViewChild('contextEditor', { static: false })
-  contextEditor!: TemplateRef<any>;
-  // @ViewChild('dashboardFilterEditor', { static: false })
-  // dashboardFilterEditor!: TemplateRef<any>;
-
-  // isFilterEnable = false;
-  // isFilterEditorOnView = false;
-  // availableFilterFields: { name: string; value: string }[] = [];
-
-  public operators: any[] = [];
-
   /**
-   * Constructor of filter row
-   *
-   * @param dashboardService Shared dashboard service
+   * Composite filter row.
    */
-  constructor(
-    private dashboardService: DashboardService // private editorService: SafeEditorService
-  ) {
+  constructor(private dashboardService: DashboardService) {
     super();
   }
 
   ngOnInit(): void {
-    // this.contextService.isFilterEnabled$
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe({
-    //     next: (isFilterEnable: boolean) => {
-    //       this.isFilterEnable = isFilterEnable;
-    //       const availableFilterFields =
-    //         this.contextService.availableFilterFields;
-    //       if (isFilterEnable && availableFilterFields.length) {
-    //         this.availableFilterFields =
-    //           this.contextService.availableFilterFields.map((field) => ({
-    //             name: field.name,
-    //             value: `{{filter.${field.value}}}`,
-    //           }));
-    //       }
-    //     },
-    //   });
-
     this.form
       .get('field')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -107,14 +87,7 @@ export class FilterRowComponent
       .get('operator')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        const operator = this.operators.find((x) => x.value === value);
-        if (operator?.disableValue) {
-          this.form.get('value')?.disable();
-          this.hideEditor = true;
-        } else {
-          this.form.get('value')?.enable();
-          this.hideEditor = false;
-        }
+        this.setHideEditor(value);
       });
   }
 
@@ -179,13 +152,26 @@ export class FilterRowComponent
         this.form
           .get('operator')
           ?.setValue(this.form.value.operator, { emitEvent: false });
-        const operator = this.operators.find(
-          (x) => x.value === this.form.get('operator')?.value
-        );
-        this.hideEditor = operator?.disableValue ?? false;
       }
+      this.setHideEditor(this.form.get('operator')?.value);
       // set operator template
       this.setEditor(this.field);
+    }
+  }
+
+  /**
+   * Set hide editor.
+   *
+   * @param key operator value
+   */
+  private setHideEditor(key: string): void {
+    const operator = this.operators.find((x) => x.value === key);
+    if (operator?.disableValue) {
+      this.form.get('value')?.disable();
+      this.hideEditor = true;
+    } else {
+      this.form.get('value')?.enable();
+      this.hideEditor = false;
     }
   }
 
@@ -210,18 +196,6 @@ export class FilterRowComponent
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
     } else {
-      //   editorSet = true;
-      // } else if (typeof value === 'string' && value.startsWith('{{filter.')) {
-      //   if (this.isFilterEnable) {
-      //     this.editor = this.dashboardFilterEditor;
-      //     this.isFilterEditorOnView = true;
-      //     editorSet = true;
-      //   } else {
-      //     this.form.get('value')?.setValue(null);
-      //     this.isFilterEditorOnView = false;
-      //   }
-      // }
-      // if (!editorSet) {
       switch (field.editor) {
         case 'text': {
           this.editor = this.textEditor;

@@ -28,7 +28,6 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
@@ -44,27 +43,34 @@ export class GridSettingsComponent
   implements OnInit, AfterViewInit
 {
   // === REACTIVE FORM ===
+  /** Form group */
   public formGroup!: UntypedFormGroup;
+  /** Form array for filters */
   public filtersFormArray: any = null;
 
   // === WIDGET ===
-  @Input() tile: any;
+  /** Widget */
+  @Input() widget: any;
 
   // === EMIT THE CHANGES APPLIED ===
+  /** Event emitter for change */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === NOTIFICATIONS ===
+  /** List of channels */
   public channels: Channel[] = [];
 
   // === FLOATING BUTTON ===
+  /** List of fields */
   public fields: any[] = [];
+  /** List of related forms */
   public relatedForms: Form[] = [];
 
   // === DATASET AND TEMPLATES ===
+  /** List of public templates */
   public templates: Form[] = [];
-  private allQueries: any[] = [];
-  public filteredQueries: any[] = [];
+  /** Resource */
   public resource: Resource | null = null;
 
   /** Stores the selected tab */
@@ -101,10 +107,9 @@ export class GridSettingsComponent
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    const tileSettings = this.tile.settings;
-    this.formGroup = extendWidgetForm(
-      createGridWidgetFormGroup(this.tile.id, tileSettings),
-      tileSettings?.widgetDisplay
+    this.formGroup = createGridWidgetFormGroup(
+      this.widget.id,
+      this.widget.settings
     );
 
     this.change.emit(this.formGroup);
@@ -148,7 +153,11 @@ export class GridSettingsComponent
           }
           this.getQueryMetaData();
         } else {
+          this.formGroup?.get('layouts')?.setValue([]);
+          this.formGroup?.get('aggregations')?.setValue([]);
+          this.formGroup?.get('template')?.setValue(null);
           this.fields = [];
+          this.resource = null;
         }
 
         // clear sort fields array
@@ -190,7 +199,7 @@ export class GridSettingsComponent
    * Adds sortFields to the formGroup
    */
   initSortFields(): void {
-    this.tile.settings.sortFields?.forEach((item: any) => {
+    this.widget.settings.sortFields?.forEach((item: any) => {
       const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
@@ -343,8 +352,11 @@ export class GridSettingsComponent
   private onAggregationChange(aggregationId: string): void {
     if (this.resource?.id && aggregationId) {
       this.aggregationService
-        .aggregationDataQuery(this.resource.id, aggregationId || '')
-        .subscribe(({ data }) => {
+        .aggregationDataQuery({
+          resource: this.resource.id,
+          aggregation: aggregationId || '',
+        })
+        .subscribe(({ data }: any) => {
           if (data.recordsAggregation) {
             this.fields = data.recordsAggregation.items[0]
               ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({

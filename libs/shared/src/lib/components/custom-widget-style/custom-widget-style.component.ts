@@ -42,20 +42,28 @@ export class CustomWidgetStyleComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Form control for the scss editor */
   public formControl = new FormControl(DEFAULT_STYLE);
+  /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
+  /** Editor options */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'scss',
     fixedOverflowWidgets: false,
   };
+  /** Style applied to the widget */
   private styleApplied!: HTMLStyleElement;
+  /** Loading state */
   public loading = false;
 
+  /** Initial style */
   private initialStyle = '';
 
+  /** Widget component */
   @Input() widgetComp: any;
-  @Input() save!: (tile: any) => void;
+  /** Save function */
+  @Input() save!: (widget: any) => void;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -82,7 +90,7 @@ export class CustomWidgetStyleComponent
     this.formControl.valueChanges
       .pipe(debounceTime(1000))
       .subscribe((value: any) => {
-        const scss = `#${this.widgetComp.domId} {
+        const scss = `#${this.widgetComp.id} {
         ${value}
       }`;
         this.restService
@@ -102,7 +110,7 @@ export class CustomWidgetStyleComponent
     // Avoids style duplication for the same element
     const widgetStyle = Array.from(
       this.document.querySelectorAll('style')
-    ).filter((style) => style.innerHTML.includes(this.widgetComp.domId))[0];
+    ).filter((style) => style.innerHTML.includes(this.widgetComp.id))[0];
     if (widgetStyle) this.styleApplied = widgetStyle;
     else this.styleApplied = this.document.createElement('style');
 
@@ -144,7 +152,7 @@ export class CustomWidgetStyleComponent
   async onSave(): Promise<void> {
     this.save({
       type: 'data',
-      id: this.widgetComp.widget.id,
+      id: this.widgetComp.id,
       options: this.widgetComp.widget.settings,
     });
 

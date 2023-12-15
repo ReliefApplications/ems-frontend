@@ -20,21 +20,22 @@ import { TranslateService } from '@ngx-translate/core';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { GET_RESOURCE_METADATA } from './graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE_METADATA } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
 
 export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
   Partial<{
+    index: number;
     record: Record;
     metadata: any[];
     layout: Layout;
-    cardAggregationData: any;
+    rawValue: any;
   }>;
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
-import { clone, isNaN } from 'lodash';
+import { clone, cloneDeep, isNaN, isNil } from 'lodash';
 import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
@@ -43,6 +44,8 @@ import { ContextService } from '../../../services/context/context.service';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -62,40 +65,71 @@ export class SummaryCardComponent
   extends UnsubscribeComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** Widget definition */
   @Input() widget: any;
-  @Input() header = true;
-  @Input() export = true;
+  /** Widget settings */
   @Input() settings!: SummaryCardFormT['value'];
+  /** Should show padding */
+  @Input() usePadding = true;
+  /** Reference to header template */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
-
+  /** Reference to summary card grid */
+  @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
+  /** Reference to pdf */
+  @ViewChild('pdf') pdf!: any;
+  /** Reference to grid component, when grid view is activated */
+  @ViewChild(GridWidgetComponent) gridComponent?: GridWidgetComponent;
+  /** Grid settings */
   public gridSettings: any = null;
-
+  /** Current display mode */
   public displayMode: 'cards' | 'grid' = 'cards';
-  // === GRID ===
+  /** Number of cols in the cards grid */
   public colsNumber = MAX_COL_SPAN;
-
+  /** Pagination info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
     skip: 0,
   };
+  /** Loading indicators */
   public loading = true;
-
+  /** Available cards */
   public cards: CardT[] = [];
+  /** Cached cards */
   private cachedCards: CardT[] = [];
+  /** Sorted cards */
   private sortedCachedCards: CardT[] = [];
+  /** Apollo data query */
   private dataQuery!: QueryRef<any>;
+  /** Apollo meta query */
   private metaQuery: any;
-
+  /** Current layout */
   private layout: Layout | null = null;
+  /** Available fields */
   private fields: any[] = [];
+  /** Meta fields */
   private metaFields: any[] = [];
+  /** Available sort fields */
   public sortFields: any[] = [];
+  /** Active context fields */
   private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
     filters: [],
   };
+  /** Search control */
+  public searchControl = new FormControl('');
+  /** Is scrolling */
+  public scrolling = false;
+  /** Observer resize changes */
+  private resizeObserver!: ResizeObserver;
+  /** Used to reset sort options when changing display mode */
+  public sortControl = new FormControl(null);
+  /** Current sort */
+  private sortOptions: {
+    field: string | null;
+    order: string;
+  } = { field: null, order: '' };
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -131,19 +165,40 @@ export class SummaryCardComponent
     };
   }
 
-  public searchControl = new FormControl('');
-  public scrolling = false;
-  private resizeObserver!: ResizeObserver;
+  /** @returns does the card use resource aggregation */
+  get useAggregation() {
+    return !isNil(this.settings.card?.aggregation);
+  }
 
-  // used to reset sort options when changing display mode
-  public sortControl = new FormControl(null);
-  private sortOptions = { field: null, order: '' };
+  /** @returns does the card use resource layout */
+  get useLayout() {
+    return !isNil(this.settings.card?.layout);
+  }
 
-  @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
-  @ViewChild('pdf') pdf!: any;
+  /** @returns does the card use reference data */
+  get useReferenceData() {
+    return !isNil(this.settings.card?.referenceData);
+  }
 
-  /** Reference to grid component, when grid view is activated */
-  @ViewChild(GridWidgetComponent) gridComponent?: GridWidgetComponent;
+  /** @returns should show data source button */
+  get showDataSourceButton() {
+    return (
+      ((this.settings.card?.showDataSourceLink &&
+        this.displayMode === 'cards') ||
+        false) &&
+      !this.useReferenceData
+    );
+  }
+
+  /** @returns user can change display mode */
+  get canChangeDisplayMode() {
+    return get(this.settings, 'widgetDisplay.gridMode', true);
+  }
+
+  /** @returns is widget exportable ( only cards mode ) */
+  get exportable() {
+    return get(this.settings, 'widgetDisplay.exportable', true);
+  }
 
   /**
    * Get the summary card pdf name
@@ -162,7 +217,7 @@ export class SummaryCardComponent
   }
 
   /**
-   * Constructor for summary card component
+   * Summary Card Widget component.
    *
    * @param apollo Apollo service
    * @param dialog Dialog service
@@ -174,6 +229,7 @@ export class SummaryCardComponent
    * @param contextService ContextService
    * @param elementRef Element Ref
    * @param gridService grid service
+   * @param referenceDataService Shared reference data service
    */
   constructor(
     private apollo: Apollo,
@@ -185,7 +241,8 @@ export class SummaryCardComponent
     private aggregationService: AggregationService,
     private contextService: ContextService,
     private elementRef: ElementRef,
-    private gridService: GridService
+    private gridService: GridService,
+    private referenceDataService: ReferenceDataService
   ) {
     super();
   }
@@ -211,13 +268,7 @@ export class SummaryCardComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.onPage({
-          pageSize: DEFAULT_PAGE_SIZE,
-          skip: 0,
-          previousPageIndex: 0,
-          pageIndex: 0,
-          totalItems: 0,
-        });
+        this.refresh();
       });
   }
 
@@ -241,6 +292,11 @@ export class SummaryCardComponent
         }
       );
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 
   /**
@@ -284,8 +340,15 @@ export class SummaryCardComponent
     const card = this.settings.card;
     if (!card) return;
 
-    if (card.aggregation) this.getCardsFromAggregation(card);
-    else if (card.layout) this.createDynamicQueryFromLayout(card);
+    if (card.resource) {
+      if (this.useAggregation) {
+        this.getCardsFromAggregation(card);
+      } else if (this.useLayout) {
+        this.createDynamicQueryFromLayout(card);
+      }
+    } else if (this.useReferenceData) {
+      this.getCardsFromReferenceData(card);
+    }
   }
 
   /**
@@ -294,15 +357,13 @@ export class SummaryCardComponent
    * @param search search value
    */
   private handleSearch(search: string) {
-    // Only need to fetch data if is dynamic and not an aggregation
-    const needRefetch = !this.settings.card?.aggregation;
-    const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
     this.pageInfo.skip = 0;
-
-    if (!needRefetch) {
+    if (this.useAggregation) {
+      // Only need to fetch data if is dynamic and not an aggregation
+      const skippedFields = ['id', 'incrementalId'];
       this.sortedCachedCards = this.cachedCards.filter((card: any) => {
-        const data = clone(card.record || card.cardAggregationData || {});
+        const data = clone(card.record || card.rawValue || {});
         skippedFields.forEach((field) => delete data[field]);
         const recordValues = Object.values(data);
         return recordValues.some(
@@ -317,7 +378,7 @@ export class SummaryCardComponent
       });
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.pageInfo.length = this.sortedCachedCards.length;
-    } else {
+    } else if (this.useLayout) {
       this.loading = true;
       this.dataQuery
         ?.refetch({
@@ -331,6 +392,17 @@ export class SummaryCardComponent
           }),
         })
         .then(this.updateCards.bind(this));
+    } else if (this.useReferenceData) {
+      this.sortedCachedCards = this.cachedCards.filter((card: any) => {
+        return (
+          JSON.stringify(card.rawValue)
+            .replace(/("\w+":)/g, '')
+            .toLowerCase()
+            .indexOf(search.toLowerCase()) !== -1
+        );
+      });
+      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+      this.pageInfo.length = this.sortedCachedCards.length;
     }
   }
 
@@ -359,7 +431,7 @@ export class SummaryCardComponent
       if (!res.data?.recordsAggregation?.items) return;
       newCards = res.data.recordsAggregation.items.map((x: any) => ({
         ...this.settings.card,
-        cardAggregationData: x,
+        rawValue: x,
       }));
     } else {
       return;
@@ -503,7 +575,13 @@ export class SummaryCardComponent
    */
   private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
-    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
+    if (
+      !card ||
+      (!card.referenceData &&
+        !card.resource &&
+        (!card.layout || !card.aggregation))
+    )
+      return;
     const settings = {
       template: card.template,
       resource: card.resource,
@@ -521,23 +599,22 @@ export class SummaryCardComponent
         navigateToPage: get(this.settings, 'actions.navigateToPage', false),
         navigateSettings: {
           pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
-          useRecordId: get(
-            this.settings,
-            'actions.navigateSettings.useRecordId',
-            false
-          ),
+          field: get(this.settings, 'actions.navigateSettings.field', ''),
           title: get(this.settings, 'actions.navigateSettings.title', ''),
         },
       },
       contextFilters: JSON.stringify(this.contextFilters),
     };
-
-    Object.assign(
-      settings,
-      card.aggregation
-        ? { aggregations: card.aggregation }
-        : { layouts: card.layout }
-    );
+    if (card.referenceData) {
+      Object.assign(settings, { referenceData: card.referenceData });
+    } else {
+      Object.assign(
+        settings,
+        card.aggregation
+          ? { aggregations: card.aggregation }
+          : { layouts: card.layout }
+      );
+    }
 
     this.gridSettings = settings;
   }
@@ -550,12 +627,10 @@ export class SummaryCardComponent
   private async getCardsFromAggregation(
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
-    if (!card.aggregation || !card.resource) return;
     this.loading = true;
-
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
-      card.resource,
-      card.aggregation,
+      card.resource as string,
+      card.aggregation as string,
       DEFAULT_PAGE_SIZE,
       0,
       this.contextService.injectDashboardFilterValues(this.contextFilters),
@@ -576,6 +651,60 @@ export class SummaryCardComponent
   }
 
   /**
+   * Get cards from reference data
+   *
+   * @param card card definition
+   */
+  private async getCardsFromReferenceData(
+    card: NonNullable<SummaryCardFormT['value']['card']>
+  ) {
+    this.loading = true;
+    const metaData = await firstValueFrom(
+      this.apollo.query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: card.referenceData,
+        },
+      })
+    );
+    if (metaData.data.referenceData) {
+      const fields = (metaData.data.referenceData.fields || [])
+        .filter((field) => field && typeof field !== 'string')
+        .map((field) => {
+          return {
+            label: field.name,
+            name: field.name,
+            type: field.type,
+          };
+        });
+      this.cachedCards = (
+        (await this.referenceDataService.cacheItems(
+          card.referenceData as string
+        )) || []
+      ).map((x: any, index: number) => ({
+        ...this.settings.card,
+        rawValue: x,
+        index,
+        metadata: fields,
+      }));
+      this.pageInfo.length = this.cachedCards.length;
+      this.sortedCachedCards = cloneDeep(this.cachedCards);
+      this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
+      this.loading = false;
+      // Set sort fields
+      this.sortFields = [];
+      this.widget.settings.sortFields?.forEach((sortField: any) => {
+        this.sortFields.push(sortField);
+      });
+    }
+    if (this.gridSettings?.referenceData) {
+      Object.assign(this.gridSettings, {
+        refDataCards: cloneDeep(this.cachedCards),
+      });
+    }
+  }
+
+  /**
    * Load more items on scroll.
    *
    * @param e scroll event
@@ -586,14 +715,21 @@ export class SummaryCardComponent
       50
     ) {
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
-        this.dataQuery
-          ?.fetchMore({
-            variables: {
-              skip: this.cards.length,
-            },
-          })
-          .then(this.updateCards.bind(this));
-        this.scrolling = true;
+        if (this.useReferenceData) {
+          const start = this.pageInfo.pageIndex * this.pageInfo.pageSize;
+          const end = start + this.pageInfo.pageSize;
+          this.cards.push(...this.sortedCachedCards.slice(start, end));
+          this.scrolling = false;
+        } else {
+          this.dataQuery
+            ?.fetchMore({
+              variables: {
+                skip: this.cards.length,
+              },
+            })
+            .then(this.updateCards.bind(this));
+          this.scrolling = true;
+        }
       }
     }
   }
@@ -623,7 +759,25 @@ export class SummaryCardComponent
           }),
         })
         .then(this.updateCards.bind(this));
+    } else if (this.useReferenceData) {
+      this.cards = this.sortedCachedCards.slice(
+        this.pageInfo.skip,
+        this.pageInfo.skip + this.pageInfo.pageSize
+      );
     }
+  }
+
+  /**
+   * Refresh view
+   */
+  public refresh() {
+    this.onPage({
+      pageSize: DEFAULT_PAGE_SIZE,
+      skip: 0,
+      previousPageIndex: 0,
+      pageIndex: 0,
+      totalItems: 0,
+    });
   }
 
   /**
@@ -649,11 +803,6 @@ export class SummaryCardComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.resizeObserver.disconnect();
-  }
-
   /**
    * Handles sorting on the cards.
    *
@@ -663,26 +812,57 @@ export class SummaryCardComponent
     if (e) {
       this.sortOptions = { field: e.field, order: e.order };
     } else {
-      this.sortOptions = {
-        field: get(this.layout?.query, 'sort.field', null),
-        order: get(this.layout?.query, 'sort.order', ''),
-      };
+      if (this.useLayout) {
+        this.sortOptions = {
+          field: get(this.layout?.query, 'sort.field', null),
+          order: get(this.layout?.query, 'sort.order', ''),
+        };
+      }
     }
     if (this.gridComponent) {
       this.gridComponent.onSort(e);
     } else {
-      if (!this.dataQuery) return;
-      this.dataQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          filter: this.queryFilter,
-          sortField: this.sortOptions.field,
-          sortOrder: this.sortOptions.order,
-          ...(this.settings.at && {
-            at: this.contextService.atArgumentValue(this.settings.at),
-          }),
-        })
-        .then(() => (this.loading = false));
+      if (this.useLayout) {
+        if (!this.dataQuery) return;
+        this.dataQuery
+          .refetch({
+            first: this.pageInfo.pageSize,
+            filter: this.queryFilter,
+            sortField: this.sortOptions.field,
+            sortOrder: this.sortOptions.order,
+            ...(this.settings.at && {
+              at: this.contextService.atArgumentValue(this.settings.at),
+            }),
+          })
+          .then(() => (this.loading = false));
+      } else if (this.useReferenceData) {
+        this.loading = true;
+        this.pageInfo.pageIndex = 0;
+        this.pageInfo.skip = 0;
+        if (e) {
+          const field = `rawValue.${this.sortOptions.field as string}`;
+          if (this.sortOptions.order === 'asc') {
+            this.sortedCachedCards.sort((a, b) => {
+              const fieldA = String(get(a, field) || '');
+              const fieldB = String(get(b, field) || '');
+              return fieldA.localeCompare(fieldB);
+            });
+          } else {
+            this.sortedCachedCards.sort((a, b) => {
+              const fieldA = String(get(a, field) || '');
+              const fieldB = String(get(b, field) || '');
+              return fieldB.localeCompare(fieldA);
+            });
+          }
+          this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+        } else {
+          this.sortedCachedCards.sort(
+            (a, b) => (a.index as number) - (b.index as number)
+          );
+          this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+        }
+        this.loading = false;
+      }
     }
   }
 }

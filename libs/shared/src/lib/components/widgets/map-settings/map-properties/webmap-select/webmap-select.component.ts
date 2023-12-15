@@ -50,18 +50,32 @@ import uniqBy from 'lodash/uniqBy';
 export class WebmapSelectComponent
   implements ControlValueAccessor, OnInit, OnDestroy
 {
+  /** Search control form*/
   public searchControl = new UntypedFormControl('');
 
+  /** Value of the select */
   public value = '';
+  /** Items of the select */
   public items = new BehaviorSubject<any[]>([]);
+  /** Items observable */
   public items$ = this.items.asObservable();
+  /** Start of the search */
   private start = 1;
+  /** Loading state */
   public loading = true;
+  /** Next page */
   private nextPage = true;
+  /** Scroll listener */
   private scrollListener!: any;
 
+  /** Shell function for touch */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onTouched = () => {};
+  /**
+   *  Shell function for change
+   *
+   * @param _ value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChanged = (_: any) => {};
 

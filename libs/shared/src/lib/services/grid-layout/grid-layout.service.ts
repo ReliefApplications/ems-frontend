@@ -33,7 +33,7 @@ const FALLBACK_LAYOUTS: Connection<Layout> = {
 })
 export class GridLayoutService {
   /**
-   * Constructor the GridLayoutService
+   * Constructor for the grid layout service
    *
    * @param apollo The apollo service
    * @param dashboardService The shared dashboard service

@@ -54,17 +54,25 @@ export class CustomStyleComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** Form control */
   public formControl = new FormControl(DEFAULT_STYLE);
+  /** Application id */
   public applicationId?: string;
+  /** Style output */
   @Output() style = new EventEmitter<string>();
+  /** Cancel output */
   @Output() cancel = new EventEmitter();
+  /** Editor options */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'scss',
     fixedOverflowWidgets: false,
   };
+  /** Raw custom style */
   private rawCustomStyle!: string;
+  /** Saved style */
   private savedStyle = '';
+  /** Loading state */
   public loading = false;
 
   /**
@@ -164,7 +172,6 @@ export class CustomStyleComponent
 
   /** Save application custom css styling */
   async onSave(): Promise<void> {
-    // todo(beta): check
     this.loading = true;
     if (!this.applicationId) {
       throw new Error('No application id');
@@ -190,7 +197,6 @@ export class CustomStyleComponent
         type: '',
       })
     );
-    // todo(beta): check
     if (path) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectUpdated', {

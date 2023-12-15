@@ -47,21 +47,51 @@ export class RecordsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Query to get records.
+   */
   private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
+  /**
+   * Data source for records.
+   */
   public dataSource = new Array<Record>();
+  /**
+   * Cached records.
+   */
   private cachedRecords: Record[] = [];
+  /**
+   * Resource.
+   */
   public resource!: Resource;
+  /**
+   * Default columns for records.
+   */
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
+  /**
+   * Columns to display.
+   */
   displayedColumnsRecords: string[] = [];
 
+  /**
+   * Show deleted records.
+   */
   showDeletedRecords = false;
+  /**
+   * Page info.
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: '',
   };
+  /**
+   * Loading state.
+   */
   public loading = true;
+  /**
+   * Upload state.
+   */
   public showUpload = false;
 
   /** @returns True if the records tab is empty */
@@ -312,16 +342,6 @@ export class RecordsTabComponent
   }
 
   /**
-   * Detects changes on the file.
-   *
-   * @param event new file event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
    * Calls rest endpoint to upload new records for the resource.
    *
    * @param file File to upload.
@@ -335,8 +355,8 @@ export class RecordsTabComponent
           this.showUpload = false;
         }
       },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
+      error: () => {
+        // The error message has already been handled in DownloadService
         this.showUpload = false;
       },
     });

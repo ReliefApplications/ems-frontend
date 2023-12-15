@@ -19,6 +19,7 @@ import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { Subscription } from 'rxjs';
 
 /**
  * Application workflow page component.
@@ -30,24 +31,37 @@ import { SnackbarService } from '@oort-front/ui';
 })
 export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /** Loading state */
   public loading = true;
 
   // === WORKFLOW ===
+  /** Workflow id */
   public id = '';
+  /** Application id */
   public applicationId?: string;
+  /** Workflow */
   public workflow?: Workflow;
+  /** Workflow steps */
   public steps: Step[] = [];
 
   // === WORKFLOW EDITION ===
+  /** True if the user can edit the workflow name */
   public canEditName = false;
+  /** True if the workflow name form is active */
   public formActive = false;
+  /** True if the user can update the workflow */
   public canUpdate = false;
 
   // === ACTIVE STEP ===
+  /** Active step index */
   public activeStep = 0;
+  /** Subscription to change step events */
+  private changeStepSubscription!: Subscription;
 
   // === DUP APP SELECTION ===
+  /** True if the application menu is open */
   public showAppMenu = false;
+  /** Application list */
   public applications: Application[] = [];
 
   /**
@@ -276,14 +290,23 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: number) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
+      this.changeStepSubscription = elementRef.changeStep.subscribe(
+        (event: number) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
         }
-      });
+      );
     }
+  }
+
+  /**
+   * Clear subscriptions set from the router-outlet
+   */
+  clearSubscriptions() {
+    this.changeStepSubscription?.unsubscribe();
   }
 
   /**

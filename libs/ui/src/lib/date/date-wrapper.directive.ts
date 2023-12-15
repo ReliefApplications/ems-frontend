@@ -27,16 +27,23 @@ import { DOCUMENT } from '@angular/common';
   selector: '[uiDateWrapper]',
 })
 export class DateWrapperDirective implements AfterContentInit, OnDestroy {
+  /** Date wrapper directive */
   @Input() uiDateWrapper!: DateRangeComponent | DatePickerComponent;
+  /** Date inputs */
   @ContentChildren(DatePickerDirective)
   private dateInputs!: QueryList<DatePickerDirective>;
 
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** Outside click listener */
   private outsideClickListener!: any;
+  /** Date input listeners */
   private dateInputListeners: any[] = [];
-  private document!: Document;
+  /** Overlay reference */
   overlayRef!: OverlayRef;
+  /** Calendar closing actions subscription */
   calendarClosingActionsSubscription!: Subscription;
+  /** Is calendar open */
   isCalendarOpen = false;
 
   /**
@@ -55,7 +62,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private overlay: Overlay,
     private viewContainerRef: ViewContainerRef,
-    @Inject(DOCUMENT) document: Document
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.document = document;
   }
@@ -81,7 +88,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
       this.outsideClickListener();
     }
     this.outsideClickListener = this.renderer.listen(
-      'window',
+      this.document,
       'click',
       (event) => {
         if (

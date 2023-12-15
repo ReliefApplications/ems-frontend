@@ -87,17 +87,23 @@ export class AuthService {
   /** if we have the modal confirmation open on form builder we cannot logout until close modal */
   public canLogout = new BehaviorSubject<boolean>(true);
 
+  /** Boolean for authentication */
   private isAuthenticated = new BehaviorSubject<boolean>(false);
+  /** Boolean for authentication as observable */
   public isAuthenticated$ = this.isAuthenticated.asObservable();
 
+  /** Boolean for loading */
   private isDoneLoading = new ReplaySubject<boolean>();
+  /** Boolean for loading as observable */
   public isDoneLoading$ = this.isDoneLoading.asObservable();
 
+  /** Boolean for protected route activation */
   public canActivateProtectedRoutes$: Observable<boolean> = combineLatest([
     this.isAuthenticated$,
     this.isDoneLoading$,
   ]).pipe(map((values) => values.every((x) => x)));
 
+  /** Current environment */
   private environment: any;
 
   /** @returns module origin */
@@ -139,7 +145,7 @@ export class AuthService {
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        this.oauthService.initImplicitFlow();
+        this.oauthService.initLoginFlow();
       });
     // Redirect to previous path
     this.oauthService.events
@@ -155,7 +161,7 @@ export class AuthService {
           // Which triggers a new token fetch with an invalid(deprecated) code
           // can cause an issue with navigation
           // console.log(e);
-          // this.router.navigateByUrl(this.origin);
+          // this.router.navigateByUrl(this.environment.authConfig.redirectUri);
         }
         localStorage.removeItem('redirectPath');
       });
@@ -217,17 +223,13 @@ export class AuthService {
   public initLoginSequence(): Promise<void> {
     if (!localStorage.getItem('idtoken')) {
       let redirectUri: URL;
+      const pathName = location.href.replace(
+        this.environment.backOfficeUri,
+        '/'
+      );
       if (this.environment.module === 'backoffice') {
-        const pathName = location.href.replace(
-          this.environment.backOfficeUri,
-          '/'
-        );
         redirectUri = new URL(pathName, this.environment.backOfficeUri);
       } else {
-        const pathName = location.href.replace(
-          this.environment.backOfficeUri,
-          '/'
-        );
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
       redirectUri.search = '';

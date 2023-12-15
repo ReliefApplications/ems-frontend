@@ -1,5 +1,5 @@
 <div class="flex flex-row items-center justify-between gap-x-2">
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-2 overflow-hidden">
     <!-- Title -->
     <h2 class="!m-0 truncate">
       {{ title }}
@@ -13,6 +13,7 @@
       [uiMenuTriggerFor]="settingsMenu"
       [uiTooltip]="'common.settings' | translate"
     ></ui-button>
+    <shared-dashboard-filter-icon></shared-dashboard-filter-icon>
   </div>
   <div class="flex flex-row gap-2 items-center" *ngIf="canUpdate">
     <!-- Unlock application edition -->

@@ -41,23 +41,23 @@ const ITEMS_PER_PAGE = 10;
 })
 export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Pull jobs query */
   private pullJobsQuery!: QueryRef<PullJobsNodesQueryResponse>;
+  /** Pull jobs */
   public pullJobs = new Array<PullJob>();
+  /** Cached pull jobs */
   public cachedPullJobs: PullJob[] = [];
 
-  public displayedColumns: string[] = [
-    'name',
-    'status',
-    // 'apiConfiguration',
-    // 'convertTo',
-    'schedule',
-    'actions',
-  ];
+  /** Columns to display */
+  public displayedColumns: string[] = ['name', 'status', 'schedule', 'actions'];
 
   // === SUBSCRIPTIONS ===
+  /** Channels */
   private channels: Channel[] = [];
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,

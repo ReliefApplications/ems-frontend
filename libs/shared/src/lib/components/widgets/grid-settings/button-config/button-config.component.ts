@@ -33,21 +33,30 @@ export class ButtonConfigComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Event emitted when the user clicks on the delete button */
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
+  /** Form group */
   @Input() formGroup!: FormGroup;
+  /** List of fields */
   @Input() fields: any[] = [];
+  /** List of channels */
   @Input() channels: Channel[] = [];
+  /** List of forms */
   @Input() relatedForms: Form[] = [];
 
+  /** List of resources */
   public targetResource?: Resource;
+  /** List of related resources */
   public relatedResources: Resource[] = [];
 
+  /** List of distribution lists */
   @Input() distributionLists: DistributionList[] = [];
+  /** List of templates */
   @Input() templates: Template[] = [];
-  // Indicate is the page is a single dashboard.
+  /** Indicate is the page is a single dashboard.*/
   public isDashboard = false;
 
-  // Indicate if the next step is a Form and so we could potentially pass some data to it.
+  /** Indicate if the next step is a Form and so we could potentially pass some data to it.*/
   public canPassData = false;
 
   /** @returns The list of fields which are of type scalar and not disabled */
@@ -355,9 +364,20 @@ export class ButtonConfigComponent
     this.modificationsArray.push(
       this.fb.group({
         field: ['', Validators.required],
-        value: ['', Validators.required],
+        value: [''],
       })
     );
+  }
+
+  /**
+   * Set the value of a modification to null
+   *
+   * @param index The index of the modification
+   */
+  public setModificationValueToNull(index: number): void {
+    const modifications = this.modificationsArray.value;
+    modifications[index].value = null;
+    this.modificationsArray.setValue(modifications);
   }
 
   /**

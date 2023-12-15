@@ -66,7 +66,7 @@
       >
         <app-upload-menu
           (close)="showUpload = false"
-          (upload)="onFileChange($event)"
+          (upload)="uploadFileData($event)"
           (download)="onDownloadTemplate()"
         ></app-upload-menu>
       </ng-template>
@@ -159,8 +159,9 @@
       </div>
     </div>
     <ui-paginator
-      [disabled]="loadingMore"
+      [disabled]="loadingMore || updating"
       [pageSize]="pageInfo.pageSize"
+      [pageIndex]="pageInfo.pageIndex"
       [totalItems]="pageInfo.length"
       [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
       (pageChange)="onPage($event)"

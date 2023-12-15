@@ -10,7 +10,9 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent {
+  /** Form group */
   @Input() form!: UntypedFormGroup;
+  /** List of fields */
   @Input() fields: any[] = [];
 
   @Input() canUseContext = false;

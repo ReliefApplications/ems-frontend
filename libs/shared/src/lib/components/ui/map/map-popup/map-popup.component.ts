@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DividerModule, TooltipModule } from '@oort-front/ui';
 import { LatLng } from 'leaflet';
+import get from 'lodash/get';
 
 /** Component for a popup that has information on multiple points */
 @Component({
@@ -32,14 +33,22 @@ export class MapPopupComponent
   extends UnsubscribeComponent
   implements AfterContentInit
 {
+  /** Coordinates of the point */
   @Input() coordinates!: LatLng;
+  /** Features */
   @Input() feature: Feature<Geometry>[] = [];
+  /** Template for the popup */
   @Input() template = '';
+  /** Current zoom level */
   @Input() currZoom = 13;
 
+  /** Event emitter for the close event */
   @Output() closePopup: EventEmitter<void> = new EventEmitter<void>();
+  /** Event emitter for the zoom to event */
   @Output() zoomTo: EventEmitter<LatLng> = new EventEmitter<LatLng>();
+  /** Current html */
   public currentHtml: SafeHtml = '';
+  /** Current point */
   public current = new BehaviorSubject<number>(0);
 
   /** @returns current as an observable */
@@ -79,7 +88,7 @@ export class MapPopupComponent
           const key = match.replace(/{{|}}/g, '');
           let value;
           if (!key.includes('coordinates')) {
-            value = properties[key];
+            value = get(properties, key);
           } else {
             value = this.coordinates;
           }

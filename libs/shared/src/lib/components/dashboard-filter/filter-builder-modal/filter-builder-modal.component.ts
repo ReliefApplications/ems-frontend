@@ -13,13 +13,17 @@ import { FormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SnackbarService, TooltipModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
 import 'survey-core/survey.i18n.min.js';
+import {
+  CustomJSONEditorComponent,
+  SurveyCustomJSONEditorPlugin,
+} from '../../form-builder/custom-json-editor/custom-json-editor.component';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -50,7 +54,7 @@ const QUESTION_TYPES = [
   // 'imagepicker',
   'boolean',
   // 'image',
-  // 'html',
+  'html',
   // 'signaturepad',
   // 'expression',
   // 'matrix',
@@ -132,6 +136,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueFalse',
   'valueName',
   'inputType',
+  'html',
 ];
 
 /**
@@ -153,11 +158,14 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     DialogModule,
     AlertModule,
     SurveyCreatorModule,
+    ButtonModule,
+    CustomJSONEditorComponent,
   ],
 })
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
 
   /**
@@ -194,12 +202,14 @@ export class FilterBuilderModalComponent
   private setFormBuilder() {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: true,
+      showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
     };
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
+    new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
     // this.surveyCreator.text = '';
     this.surveyCreator.showToolbox = true;
@@ -221,6 +231,7 @@ export class FilterBuilderModalComponent
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
         opt.canShow = false;
+        console.log(opt);
       }
     });
 

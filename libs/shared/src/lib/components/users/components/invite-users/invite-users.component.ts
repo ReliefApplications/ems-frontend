@@ -27,15 +27,23 @@ interface DialogData {
   styleUrls: ['./invite-users.component.scss'],
 })
 export class InviteUsersComponent extends UnsubscribeComponent {
+  /** Grid data */
   public gridData: GridDataResult = { data: [], total: 0 };
+  /** Form group */
   public formGroup!: ReturnType<typeof this.createFormGroup>;
+  /** File size limit, in MB */
+  public maxFileSize: number;
+  /** Index of the edited row */
   private editedRowIndex = 0;
+  /** Is the edition active */
   private editionActive = false;
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
+  /** Reference to the grid */
   @ViewChild(GridComponent)
   private grid?: GridComponent;
 
+  /** Reference to the file reader */
   @ViewChild('fileReader') fileReader: any;
 
   /** @returns The position attributes available */
@@ -44,7 +52,7 @@ export class InviteUsersComponent extends UnsubscribeComponent {
   }
 
   /**
-   * Constructor of the component
+   * Constructor for the invite users component
    *
    * @param downloadService The download service
    * @param snackBar The snack bar service
@@ -53,6 +61,7 @@ export class InviteUsersComponent extends UnsubscribeComponent {
    * @param dialogRef The reference to a Dialog
    * @param translate The translation service
    * @param data The input data of the component
+   * @param environment environment
    */
   constructor(
     private downloadService: DownloadService,
@@ -61,9 +70,11 @@ export class InviteUsersComponent extends UnsubscribeComponent {
     public dialog: Dialog,
     public dialogRef: DialogRef<InviteUsersComponent>,
     public translate: TranslateService,
-    @Inject(DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData,
+    @Inject('environment') public environment: any
   ) {
     super();
+    this.maxFileSize = environment.maxFileSize;
   }
 
   /**

@@ -10,6 +10,7 @@ import {
   SimpleChanges,
   OnChanges,
   Inject,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { DOCUMENT } from '@angular/common';
@@ -25,18 +26,29 @@ import { DomPortal } from '@angular/cdk/portal';
   exportAs: 'uiSidenavDirective',
 })
 export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
+  /** Whether the sidenav is opened */
   @Input() opened = true;
+  /** Whether the sidenav is to be kept on fullscreen */
   @Input() keepFullscreen = false;
+  /** Whether the sidenav is visible */
   @Input() visible = true;
+  /** Sidenav mode */
   @Input() mode: SidenavTypes = 'side';
+  /** Sidenav position */
   @Input() position: SidenavPositionTypes = 'start';
+  /** Event emitter for opened change */
   @Output() openedChange = new EventEmitter<boolean>();
 
+  /** Click outside listener */
   private clickOutsideListener!: () => void;
+  /** Fullscreen listener */
   private fullscreenListener!: () => void;
+  /** Whether the toggle was used */
   private toggleUsed = false;
 
+  /** Overlay reference */
   private overlayRef?: OverlayRef;
+  /** Dom portal */
   private portal?: DomPortal;
 
   /**
@@ -46,18 +58,20 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
    * @param renderer Renderer2
    * @param document Document
    * @param overlay CDK Overlay
+   * @param cdr ChangeDetectorRef
    */
   constructor(
     public el: ElementRef,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     // Subscribe to click events
     this.clickOutsideListener = this.renderer.listen(
-      window,
+      this.document,
       'click',
       (event) => {
         if (
@@ -141,6 +155,7 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
       });
       this.overlayRef.updatePosition();
     }
+    this.cdr.detectChanges();
   }
 
   /**

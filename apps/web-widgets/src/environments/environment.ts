@@ -29,4 +29,6 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
+  tinymceBaseUrl: '',
+  i18nUrl: '',
 };

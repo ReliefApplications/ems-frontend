@@ -20,6 +20,19 @@
               [uiTooltip]="action.tooltip | translate"
               uiTooltipPosition="right"
             ></ui-icon>
+            <!-- Icon with warning if any -->
+            <ui-icon
+              *ngIf="
+                formGroup.get('actions')?.get(action.name)?.invalid &&
+                action.toolTipWarning
+              "
+              class="ml-1 cursor-help self-center"
+              variant="danger"
+              icon="warning"
+              [size]="18"
+              [uiTooltip]="action.toolTipWarning | translate"
+              uiTooltipPosition="right"
+            ></ui-icon>
           </ng-container>
         </ui-toggle>
       </div>
@@ -31,13 +44,13 @@
       >
         <div uiFormFieldDirective class="w-80">
           <label>{{
-            'components.widget.settings.grid.actions.pageUrlTitle.label'
+            'components.widget.settings.grid.actions.goTo.column.label'
               | translate
           }}</label>
           <input
             formControlName="title"
             [placeholder]="
-              'components.widget.settings.grid.actions.pageUrlTitle.placeholder'
+              'components.widget.settings.grid.actions.goTo.column.placeholder'
                 | translate
             "
           />
@@ -45,14 +58,14 @@
         <div uiFormFieldDirective class="w-80">
           <label>
             {{
-              'components.widget.settings.grid.actions.pageUrl.label'
+              'components.widget.settings.grid.actions.goTo.target.label'
                 | translate
             }}
           </label>
           <ui-select-menu
             formControlName="pageUrl"
             [placeholder]="
-              'components.widget.settings.grid.actions.pageUrl.placeholder'
+              'components.widget.settings.grid.actions.goTo.target.placeholder'
                 | translate
             "
           >
@@ -64,22 +77,39 @@
             </ui-select-option>
           </ui-select-menu>
         </div>
-        <ui-checkbox formControlName="useRecordId">
-          <ng-container ngProjectAs="label">
-            {{
-              'components.widget.settings.grid.actions.useRecordId' | translate
-            }}<ui-icon
-              class="ml-1 cursor-help "
-              variant="grey"
-              icon="info_outline"
-              [size]="18"
-              [uiTooltip]="
-                'components.widget.settings.grid.tooltip.useRecordId'
-                  | translate
-              "
-            ></ui-icon>
-          </ng-container>
-        </ui-checkbox>
+        <div uiFormFieldDirective class="w-80">
+          {{
+            'components.widget.settings.grid.actions.goTo.field.label'
+              | translate
+          }}
+          <ui-select-menu
+            formControlName="field"
+            [placeholder]="
+              'components.widget.settings.grid.actions.goTo.field.placeholder'
+                | translate
+            "
+          >
+            <ng-container *ngFor="let field of fields">
+              <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                {{ field.text || field.name }}
+              </ui-select-option>
+
+              <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                {{ field.text || field.name }}
+                <ui-select-option
+                  *ngFor="let subField of field.fields"
+                  [value]="field.name + '.' + subField.name"
+                >
+                  {{
+                    field.name === '$attribute'
+                      ? subField.text || subField.name
+                      : field.name + ' - ' + (subField.text || subField.name)
+                  }}
+                </ui-select-option>
+              </ui-select-option>
+            </ng-container>
+          </ui-select-menu>
+        </div>
       </div>
     </div>
   </div>

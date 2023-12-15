@@ -46,22 +46,35 @@ export class ApiConfigurationsComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Updating state */
+  public updating = false;
+  /** Query reference */
   private apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
+  /** Columns to display */
   displayedColumns = ['name', 'status', 'authType', 'actions'];
+  /** Data source */
   dataSource = new Array<ApiConfiguration>();
-  filteredDataSources = new Array<ApiConfiguration>();
+  /** Cached data */
   public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === SORTING ===
-  sort?: TableSort;
+  /** Sort object */
+  private sort!: TableSort;
 
   // === FILTERS ===
+  /** Filter object */
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
+  /** Filter form */
   form = this.fb.group({});
+  /** Show filter */
   public showFilters = false;
-  public searchText = '';
-  public statusFilter = '';
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
@@ -102,14 +115,19 @@ export class ApiConfigurationsComponent
         variables: {
           first: ITEMS_PER_PAGE,
           afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.sortDirection && this.sort.active,
+          sortOrder: this.sort?.sortDirection,
         },
       });
 
     this.apiConfigurationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((results) => {
-        this.updateValues(results.data, results.loading);
-      });
+      .subscribe(
+        (results: ApolloQueryResult<ApiConfigurationsQueryResponse>) => {
+          this.updateValues(results.data, results.loading);
+        }
+      );
     // Initializing sort to an empty one
     this.sort = {
       active: '',
@@ -130,25 +148,9 @@ export class ApiConfigurationsComponent
     );
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData;
-      this.filteredDataSources = this.dataSource;
     } else {
       this.fetchApiConfigurations();
     }
-  }
-
-  /**
-   * Frontend filtering.
-   */
-  private filterPredicate(): void {
-    this.filteredDataSources = this.dataSource.filter(
-      (data: any) =>
-        (this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 &&
-            data.name.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.statusFilter.trim().length === 0 ||
-          (this.statusFilter.trim().length > 0 &&
-            data.status.toLowerCase().includes(this.statusFilter.trim())))
-    );
   }
 
   /**
@@ -157,17 +159,8 @@ export class ApiConfigurationsComponent
    * @param event event value of the filter.
    */
   applyFilter(event: any): void {
-    if (event.statusFilter) {
-      this.statusFilter = event.statusFilter;
-    } else {
-      this.statusFilter = '';
-    }
-    if (event.search) {
-      this.searchText = event.search.toLowerCase();
-    } else {
-      this.searchText = '';
-    }
-    this.filterPredicate();
+    this.filter = event;
+    this.fetchApiConfigurations(true);
   }
 
   /**
@@ -269,7 +262,6 @@ export class ApiConfigurationsComponent
                 this.dataSource = this.dataSource.filter(
                   (x) => x.id !== element.id
                 );
-                this.filteredDataSources = this.dataSource;
               } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
@@ -316,7 +308,7 @@ export class ApiConfigurationsComponent
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;
-    this.filterPredicate();
+    this.updating = false;
   }
 
   /**
@@ -336,10 +328,11 @@ export class ApiConfigurationsComponent
    * @param refetch erase previous query results
    */
   private fetchApiConfigurations(refetch?: boolean): void {
-    this.loading = true;
+    this.updating = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };

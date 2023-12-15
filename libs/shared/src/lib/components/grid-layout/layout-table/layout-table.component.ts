@@ -22,13 +22,20 @@ export class LayoutTableComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Resource to display */
   @Input() resource: Resource | null = null;
+  /** Form to display */
   @Input() form: Form | null = null;
+  /** Selected layouts form control */
   @Input() selectedLayouts: UntypedFormControl | null = null;
+  /** Single input boolean control */
   @Input() singleInput = false;
 
+  /** List of layouts */
   layouts: Layout[] = [];
+  /** List of all layouts */
   allLayouts: Layout[] = [];
+  /** List of displayed columns */
   columns: string[] = ['name', 'createdAt', '_actions'];
 
   /**
@@ -116,6 +123,10 @@ export class LayoutTableComponent
       if (value) {
         if (!this.allLayouts.find((x) => x.id === value.id)) {
           this.allLayouts.push(value);
+          this.resource?.layouts?.edges?.push({
+            node: value,
+            cursor: value.id,
+          });
         }
         this.selectedLayouts?.setValue(
           this.selectedLayouts?.value.concat(value.id)

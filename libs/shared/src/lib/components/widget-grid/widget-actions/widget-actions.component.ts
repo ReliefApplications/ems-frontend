@@ -16,17 +16,21 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   styleUrls: ['./widget-actions.component.scss'],
 })
 export class WidgetActionsComponent extends UnsubscribeComponent {
-  // === WIDGET ===
+  /** Current widget */
   @Input() widget: any;
+  /** Widget id */
+  @Input() id!: string;
   /** Can user edit widget */
   @Input() canUpdate = false;
   /** Collapse actions into a single button */
   @Input() collapsed = true;
-
-  // === EMIT ACTION SELECTED ===
+  /** Edit event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
+  /** Expand event emitter */
   @Output() expand: EventEmitter<any> = new EventEmitter();
+  /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
 
   /**
@@ -62,7 +66,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       const dialogRef = this.dialog.open(EditWidgetModalComponent, {
         disableClose: true,
         data: {
-          tile: {
+          widget: {
             ...this.widget,
             settings: this.widget.originalSettings || this.widget.settings,
           },
@@ -71,15 +75,15 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if (res) {
-          this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+          this.edit.emit({ type: 'data', id: this.id, options: res });
         }
       });
     }
     if (action === 'expand') {
-      this.expand.emit({ id: this.widget.id });
+      this.expand.emit({ id: this.id });
     }
     if (action === 'style') {
-      this.style.emit({ widget: this.widget });
+      this.style.emit({ id: this.id, widget: this.widget });
     }
     if (action === 'delete') {
       const dialogRef = this.confirmService.openConfirmModal({
@@ -94,7 +98,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.delete.emit({ id: this.widget.id });
+            this.delete.emit({ id: this.id });
           }
         });
     }

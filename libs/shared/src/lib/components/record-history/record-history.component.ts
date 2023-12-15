@@ -20,7 +20,7 @@ import {
   GET_RECORD_HISTORY_BY_ID,
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
-import isNil from 'lodash/isNil';
+import { startCase, isNil } from 'lodash';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -55,26 +55,41 @@ export class RecordHistoryComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Id of the record */
   @Input() id!: string;
+  /** Function to revert to a version */
   @Input() revert!: (version: Version) => void;
+  /** Template of the record */
   @Input() template?: string;
+  /** Show history header ( need to disable it when in modal mode ) */
+  @Input() showHeader = true;
+  /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
+  /** Record to display */
   public record!: Record;
+  /** Record history */
   public history: RecordHistory = [];
+  /** Filtered history */
   public filterHistory: RecordHistory = [];
+  /** Loading state */
   public loading = true;
+  /** Show more state */
   public showMore = false;
+  /** Displayed columns array */
   public displayedColumns: string[] = ['position'];
+  /** Form group for date filters */
   public filtersDate = new FormGroup({
     startDate: new FormControl(''),
     endDate: new FormControl(''),
   });
+  /** Sorted fields */
   public sortedFields: any[] = [];
+  /** Fields to filter on */
   public filterFields: string[] = [];
 
-  // Refresh content of the history
-  @Input() refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Refresh content of the history */
+  @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -108,8 +123,7 @@ export class RecordHistoryComponent
   }
 
   ngOnInit(): void {
-    // Set subscription to load records
-    this.refresh$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    const setSubscription = () => {
       this.apollo
         .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID_FOR_HISTORY,
@@ -117,6 +131,7 @@ export class RecordHistoryComponent
             id: this.id,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.record = data.record;
           this.sortedFields = this.sortFields(this.getFields());
@@ -130,6 +145,7 @@ export class RecordHistoryComponent
             lang: this.translate.currentLang,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ errors, data }) => {
           if (errors) {
             this.snackBar.openSnackBar(
@@ -147,9 +163,17 @@ export class RecordHistoryComponent
             this.loading = false;
           }
         });
-    });
-    // Send first refresh event to load data
-    this.refresh$.next(true);
+    };
+    if (this.refresh$) {
+      // Set subscription to load records
+      this.refresh$?.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        setSubscription();
+      });
+      // Send first refresh event to load data
+      this.refresh$?.next(true);
+    } else {
+      setSubscription();
+    }
   }
 
   /**
@@ -386,18 +410,23 @@ export class RecordHistoryComponent
   private getFields(): any[] {
     const fields: any[] = [];
     // No form, break the display
-    if (this.record.form) {
+    if (this.record.resource) {
       // Take the fields from the form
-      this.record.form.fields?.map((field: any) => {
+      this.record.resource.fields?.map((field: any) => {
         fields.push(Object.assign({}, field));
       });
-      if (this.record.form.structure) {
+      if (this.record.form && this.record.form.structure) {
         const structure = JSON.parse(this.record.form.structure);
         if (!structure.pages || !structure.pages.length) {
           return [];
         }
         for (const page of structure.pages) {
           this.extractFields(page, fields);
+        }
+      }
+      for (const field of fields) {
+        if (!field.title) {
+          field.title = startCase(field.name);
         }
       }
     }

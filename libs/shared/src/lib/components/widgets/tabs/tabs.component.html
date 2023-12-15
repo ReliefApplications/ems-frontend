@@ -8,7 +8,11 @@
     <ui-tab *ngFor="let tab of settings.tabs">
       <ng-container ngProjectAs="label">{{ tab.label }}</ng-container>
       <ng-template uiTabContent>
-        <shared-tab [structure]="tab.structure"></shared-tab>
+        <shared-tab
+          [structure]="tab.structure"
+          [usePadding]="usePadding"
+          [options]="tab.gridOptions"
+        ></shared-tab>
       </ng-template>
     </ui-tab>
   </ui-tabs>

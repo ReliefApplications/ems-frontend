@@ -11,6 +11,9 @@ export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
         fields
         structure
       }
+      resource {
+        fields
+      }
     }
   }
 `;

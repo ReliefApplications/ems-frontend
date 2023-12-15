@@ -43,7 +43,7 @@
           <div class="w-full" formGroupName="initialState">
             <div class="flex flex-col flex-1" formGroupName="viewpoint">
               <!-- Default zoom -->
-              <label>
+              <label class="flex gap-1 items-center">
                 {{
                   'components.widget.settings.map.properties.zoom' | translate
                 }}
@@ -147,7 +147,9 @@
     </div>
   </form>
   <!-- Map -->
-  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
-    <ng-template #mapContainer></ng-template>
+  <div
+    class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0 rounded overflow-hidden"
+  >
+    <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
   </div>
 </div>

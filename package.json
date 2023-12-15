@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.2.0-beta.5",
+  "version": "2.3.0-beta.2",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -8,7 +8,7 @@
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui",
     "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci",
-    "bundle:widgets": "npx nx build web-widgets --configuration=azure-uat  && node .scripts/build-widgets.js"
+    "bundle:widgets": "npx nx build web-widgets --configuration=azure-dev  && node .scripts/build-widgets.js"
   },
   "private": true,
   "dependencies": {
@@ -65,6 +65,7 @@
     "@storybook/addon-console": "^1.2.3",
     "@tinymce/tinymce-angular": "^7.0.0",
     "@turf/centroid": "^6.5.0",
+    "angular-gridster2": "^15.0.4",
     "angular-oauth2-oidc": "~13.0.1",
     "apollo-angular": "^4.2.0",
     "chart.js": "^4.3.3",
@@ -104,6 +105,7 @@
     "survey-creator-angular": "1.9.104",
     "survey-creator-core": "1.9.104",
     "tinymce": "^5.10.7",
+    "to-json-schema": "^0.2.5",
     "tslib": "^2.3.0",
     "uuid": "^8.3.1",
     "zone.js": "~0.11.4"
@@ -128,9 +130,10 @@
     "@nrwl/storybook": "^15.7.2",
     "@nrwl/workspace": "15.7.2",
     "@schematics/angular": "~15.1.1",
-    "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/release-notes-generator": "^10.0.3",
+    "@semantic-release/npm": "^11.0.1",
+    "@semantic-release/release-notes-generator": "^12.1.0",
     "@storybook/addon-docs": "^7.5.1",
     "@storybook/addon-essentials": "^7.3.2",
     "@storybook/addon-interactions": "^7.4.6",
@@ -152,6 +155,7 @@
     "@types/leaflet.markercluster": "^1.5.1",
     "@types/node": "18.7.1",
     "@types/proj4": "^2.5.2",
+    "@types/to-json-schema": "^0.2.4",
     "@types/uuid": "^9.0.1",
     "@types/ws": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
@@ -177,7 +181,7 @@
     "prettier": "^2.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "semantic-release": "^21.0.7",
+    "semantic-release": "^22.0.8",
     "tailwindcss": "^3.3.3",
     "ts-jest": "28.0.5",
     "ts-node": "10.9.1",
@@ -187,6 +191,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ReliefApplications/oort-frontend.git"
+    "url": "https://github.com/ReliefApplications/ems-frontend.git"
   }
 }

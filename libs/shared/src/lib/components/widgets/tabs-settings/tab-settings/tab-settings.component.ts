@@ -2,12 +2,21 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
+  OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { CustomWidgetStyleModalComponent } from '../custom-widget-style-modal/custom-widget-style-modal.component';
+import { cloneDeep } from 'lodash';
+import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component';
+import { DOCUMENT } from '@angular/common';
+import { GridsterConfig } from 'angular-gridster2';
+import { createTabFormGroup } from '../tabs-settings.form';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { debounceTime, takeUntil } from 'rxjs';
 
 /**
  * Edition of a single tab, in tabs widget
@@ -17,44 +26,74 @@ import { CustomWidgetStyleModalComponent } from '../custom-widget-style-modal/cu
   templateUrl: './tab-settings.component.html',
   styleUrls: ['./tab-settings.component.scss'],
 })
-export class TabSettingsComponent implements OnDestroy {
-  @Input() tabGroup!: FormGroup;
+export class TabSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
+  /** Tab form group */
+  @Input() tabGroup!: ReturnType<typeof createTabFormGroup>;
+  /** Delete tab event emitter */
   @Output() delete = new EventEmitter();
-
+  /** Widget grid reference */
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
+  /** Additional grid configuration */
+  public gridOptions: GridsterConfig = {
+    outerMargin: false,
+  };
+  /** Reference to style dialog, when opened */
   private styleDialog?: DialogRef<any, any>;
+  /** Timeout to scroll to newly added widget */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Edition of a single tab, in tabs widget
    *
    * @param dialog Dialog service
+   * @param document Document
    */
-  constructor(private dialog: Dialog) {}
+  constructor(
+    private dialog: Dialog,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    super();
+  }
 
   /** @returns structure of the widget ( nested widgets ) */
   get structure() {
     return this.tabGroup.get('structure');
   }
 
-  /** @returns get newest widget id from existing ids */
-  get newestId(): number {
-    const widgets = this.structure?.value.slice() || [];
-    return widgets.length === 0
-      ? 0
-      : Math.max(...widgets.map((x: any) => x.id)) + 1;
+  ngOnInit() {
+    this.tabGroup.controls.gridOptions.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.gridOptions = {
+          ...this.gridOptions,
+          ...value,
+        } as GridsterConfig;
+      });
+    this.gridOptions = {
+      ...this.gridOptions,
+      ...this.tabGroup.controls.gridOptions.value,
+    } as GridsterConfig;
+    // To avoid scroll to be called when opening the settings
+    setTimeout(() => {
+      this.gridOptions = {
+        ...this.gridOptions,
+        scrollToNewItems: true,
+      };
+    }, 1000);
   }
 
-  /**
-   * Move widget in the list
-   *
-   * @param e reorder event
-   */
-  onMove(e: any): void {
-    const widgets = this.structure?.value.slice() || [];
-    [widgets[e.oldIndex], widgets[e.newIndex]] = [
-      widgets[e.newIndex],
-      widgets[e.oldIndex],
-    ];
-    this.structure?.setValue(widgets);
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.styleDialog) {
+      this.styleDialog.close();
+    }
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
   }
 
   /**
@@ -64,41 +103,38 @@ export class TabSettingsComponent implements OnDestroy {
    */
   onEdit(e: any) {
     const widgets = this.structure?.value.slice() || [];
-    const index = widgets.findIndex((x: any) => x.ide === e.id);
-    const options = widgets[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: widgets[index].settings.defaultLayout,
-        }
-      : e.options;
-    if (options) {
-      switch (e.type) {
-        case 'display': {
-          this.structure?.setValue(
-            widgets.map((x: any) => {
-              if (x.id === e.id) {
-                x.defaultCols = options.cols;
-                x.defaultRows = options.rows;
+    switch (e.type) {
+      case 'display': {
+        break;
+      }
+      case 'data': {
+        // Find the widget to be edited
+        const widgetComponents =
+          this.widgetGridComponent.widgetComponents.toArray();
+        const targetIndex = widgetComponents.findIndex(
+          (v: any) => v.id === e.id
+        );
+        if (targetIndex > -1) {
+          // Update the configuration
+          const options = widgets[targetIndex]?.settings?.defaultLayout
+            ? {
+                ...e.options,
+                defaultLayout: widgets[targetIndex].settings.defaultLayout,
               }
-              return x;
-            })
-          );
-          break;
+            : e.options;
+          if (options) {
+            // Save configuration
+            widgets[targetIndex] = {
+              ...widgets[targetIndex],
+              settings: options,
+            };
+          }
         }
-        case 'data': {
-          this.structure?.setValue(
-            widgets.map((x: any) => {
-              if (x.id === e.id) {
-                x = { ...x, settings: options };
-              }
-              return x;
-            })
-          );
-          break;
-        }
-        default: {
-          break;
-        }
+        this.structure?.setValue(widgets);
+        break;
+      }
+      default: {
+        break;
       }
     }
   }
@@ -109,8 +145,14 @@ export class TabSettingsComponent implements OnDestroy {
    * @param e deletion event
    */
   onDelete(e: any) {
-    const widgets = this.structure?.value.slice() || [];
-    this.structure?.setValue(widgets.filter((x: any) => x.id !== e.id));
+    const widgetComponents =
+      this.widgetGridComponent.widgetComponents.toArray();
+    const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
+    if (targetIndex > -1) {
+      const widgets = this.structure?.value.slice() || [];
+      widgets.splice(targetIndex, 1);
+      this.structure?.setValue(widgets);
+    }
   }
 
   /**
@@ -139,20 +181,35 @@ export class TabSettingsComponent implements OnDestroy {
    * @param e event
    */
   onAdd(e: any): void {
-    const widget = JSON.parse(JSON.stringify(e));
+    const widget = cloneDeep(e);
     const widgets = this.structure?.value.slice() || [];
-    widget.id = this.newestId;
     this.structure?.setValue([...widgets, widget]);
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     // scroll to the element once it is created
-    // setTimeout(() => {
-    //   const el = document.getElementById(`widget-${widget.id}`);
-    //   el?.scrollIntoView({ behavior: 'smooth' });
-    // });
+    this.timeoutListener = setTimeout(() => {
+      const widgetComponents =
+        this.widgetGridComponent.widgetComponents.toArray();
+      const target = widgetComponents[widgetComponents.length - 1];
+      const el = this.document.getElementById(target.id);
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }, 1000);
   }
 
-  ngOnDestroy() {
-    if (this.styleDialog) {
-      this.styleDialog.close();
-    }
+  /**
+   * Opens a modal dialog for grid settings and updates the widget grid options based on the user's selections.
+   *
+   * @returns A promise that resolves when the modal dialog is closed.
+   */
+  public async onEditGridOptions(): Promise<void> {
+    const { TabGridSettingsModalComponent } = await import(
+      '../tab-grid-settings-modal/tab-grid-settings-modal.component'
+    );
+    this.dialog.open(TabGridSettingsModalComponent, {
+      data: {
+        formGroup: this.tabGroup.get('gridOptions'),
+      },
+    });
   }
 }

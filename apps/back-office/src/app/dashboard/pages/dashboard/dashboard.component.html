@@ -1,5 +1,23 @@
+<shared-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [editable]="true"
+  [isFullScreen]="isFullScreen"
+  [variant]="dashboard?.filter?.variant ?? 'default'"
+  [closable]="dashboard?.filter?.closable ?? false"
+></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+<div
+  [ngClass]="{
+    'py-8 px-6 h-full bg-white overflow-y-auto overflow-x-hidden': isFullScreen
+  }"
+>
+  <shared-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [editable]="true"
+    [isFullScreen]="isFullScreen"
+    [variant]="dashboard?.filter?.variant ?? 'default'"
+    [closable]="dashboard?.filter?.closable ?? false"
+  ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
@@ -13,7 +31,10 @@
   >
     <!-- Dashboard options -->
     <ng-container *ngIf="dashboard">
-      <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <div
+        id="dashboard-header"
+        class="flex flex-wrap items-center justify-between mb-6 gap-4"
+      >
         <!-- Dashboard title -->
         <div class="flex items-center gap-1">
           <shared-editable-text
@@ -42,8 +63,8 @@
             >{{
               (editionActive
                 ? 'components.application.dashboard.enterPreviewMode'
-                : 'components.application.dashboard.enterEditMode')
-                  | translate
+                : 'components.application.dashboard.enterEditMode'
+              ) | translate
             }}</ui-button
           >
         </div>
@@ -97,15 +118,6 @@
           >
           </ui-button>
           <ui-menu #menu>
-            <button uiMenuItem (click)="toggleFiltering()">
-              <ui-icon icon="tune" variant="grey"></ui-icon>
-              {{
-                (showFilter
-                  ? 'models.dashboard.deactivateFiltering'
-                  : 'models.dashboard.activateFiltering'
-                ) | translate
-              }}
-            </button>
             <button uiMenuItem (click)="onAddButtonAction()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.add' | translate }}
@@ -140,6 +152,8 @@
           <ui-graphql-select
             [query]="recordsQuery"
             [formControl]="contextId"
+            [filterable]="true"
+            (searchChange)="onSearchChange($event)"
             path="records"
             valueField="id"
             textField="data.{{ dashboard.page.context.displayField }}"
@@ -176,22 +190,12 @@
   <shared-widget-grid
     [loading]="loading"
     [widgets]="widgets"
+    [options]="gridOptions"
     [canUpdate]="(canUpdate && editionActive) || false"
-    (move)="onMove($event)"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
   ></shared-widget-grid>
-  <shared-dashboard-filter
-    *ngIf="showFilter && isFullScreen"
-    [editable]="true"
-    [isFullScreen]="isFullScreen"
-  ></shared-dashboard-filter>
 </div>
-<shared-dashboard-filter
-  *ngIf="showFilter && !isFullScreen"
-  [editable]="true"
-  [isFullScreen]="isFullScreen"
-></shared-dashboard-filter>

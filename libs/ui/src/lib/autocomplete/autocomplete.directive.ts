@@ -22,8 +22,8 @@ import { OptionComponent } from './components/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DOCUMENT } from '@angular/common';
 import { ScrollStrategies } from './types/scroll-strategies';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * UI Autocomplete directive
@@ -34,25 +34,40 @@ import { ScrollStrategies } from './types/scroll-strategies';
 export class AutocompleteDirective
   implements OnInit, AfterContentInit, OnDestroy
 {
+  /** Autocomplete panel */
   @Input('uiAutocomplete')
   autocompletePanel!: AutocompleteComponent;
 
+  /** Autocomplete display key */
   @Input() autocompleteDisplayKey?: any;
+  /** Autocomplete scroll strategy */
   @Input() scrollStrategy?: ScrollStrategies = 'close';
 
+  /** Opened event */
   @Output() opened: EventEmitter<void> = new EventEmitter();
+  /** Closed event */
   @Output() closed: EventEmitter<void> = new EventEmitter();
+  /** Option selected event */
   @Output() optionSelected: EventEmitter<any> = new EventEmitter();
 
+  /** Overlay reference */
   public overlayRef!: OverlayRef;
 
+  /** Input element */
   private inputElement!: HTMLInputElement;
+  /** Autocomplete value */
   private value!: any;
+  /** Input event listener */
   private inputEventListener!: () => void;
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** NgControl */
   private control!: NgControl;
+  /** Autocomplete closing actions subscription */
   private autocompleteClosingActionsSubscription!: Subscription;
+  /** Select option listener */
   private selectOptionListener!: () => void;
+  /** Click outside listener */
   private clickOutsideListener!: () => void;
 
   /**
@@ -151,7 +166,7 @@ export class AutocompleteDirective
         });
     }
     this.clickOutsideListener = this.renderer.listen(
-      window,
+      this.document,
       'click',
       (event) => {
         if (

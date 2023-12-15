@@ -11,6 +11,11 @@
           *ngIf="survey"
           [survey]="survey"
         ></shared-form-actions>
+        <shared-draft-record
+          [survey]="survey"
+          [formId]="form?.id ?? ''"
+          (loadDraft)="onLoadDraftRecord($event)"
+        ></shared-draft-record>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"
@@ -41,7 +46,7 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
     <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
@@ -66,6 +71,9 @@
         {{ 'common.next' | translate }}
       </ui-button>
     </ng-container>
+    <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
+      'components.form.draftRecords.save' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

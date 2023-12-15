@@ -59,7 +59,9 @@ class mockRenderer2 {
   </form>`,
 })
 class TestingComponent {
+  /** Options array */
   options = new Array(3);
+  /** Form */
   form = new FormGroup({
     formControl: new FormControl(''),
   });

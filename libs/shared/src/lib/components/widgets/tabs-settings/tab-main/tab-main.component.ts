@@ -13,8 +13,9 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
   styleUrls: ['./tab-main.component.scss'],
 })
 export class TabMainComponent {
+  /** Widget form group */
   @Input() formGroup!: FormGroup;
-
+  /** Reference to tab group component */
   @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
 
   /** @returns widget tabs as form array */
@@ -33,6 +34,7 @@ export class TabMainComponent {
         label: 'New tab',
       })
     );
+    this.tabGroup.selectedIndex = this.tabs.length - 1;
     event.stopPropagation();
   }
 
@@ -43,9 +45,7 @@ export class TabMainComponent {
    */
   onDeleteTab(index: number): void {
     this.tabs.removeAt(index);
-    if (this.tabs.length > 0) {
-      this.tabGroup.selectedIndex = 0;
-    }
+    this.tabGroup.selectedIndex = index === 0 ? 0 : index - 1;
   }
 
   /**
@@ -56,24 +56,23 @@ export class TabMainComponent {
   onReorder(event: CdkDragDrop<string[]>): void {
     const previous = event.previousIndex;
     const current = event.currentIndex;
-    if (previous === current) {
-      return;
-    }
-    const previousControl = this.tabs.at(previous);
-    this.tabs.removeAt(previous);
-    this.tabs.insert(current, previousControl);
-    const previousTabIndex = this.tabGroup.selectedIndex || 0;
-    let selectedIndex = 0;
-    if (previous === previousTabIndex) {
-      selectedIndex = current;
-    } else {
-      if (previous > current && current <= previousTabIndex) {
-        selectedIndex = previousTabIndex + 1;
+    if (previous !== current) {
+      const previousControl = this.tabs.at(previous);
+      this.tabs.removeAt(previous);
+      this.tabs.insert(current, previousControl);
+      const previousTabIndex = this.tabGroup.selectedIndex || 0;
+      let selectedIndex = 0;
+      if (previous === previousTabIndex) {
+        selectedIndex = current;
+      } else {
+        if (previous > current && current <= previousTabIndex) {
+          selectedIndex = previousTabIndex + 1;
+        }
+        if (previous < current && current >= previousTabIndex) {
+          selectedIndex = previousTabIndex - 1;
+        }
       }
-      if (previous < current && current >= previousTabIndex) {
-        selectedIndex = previousTabIndex - 1;
-      }
+      this.tabGroup.selectedIndex = selectedIndex;
     }
-    this.tabGroup.tabs.get(selectedIndex)?.openTab.emit();
   }
 }

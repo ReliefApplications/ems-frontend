@@ -27,6 +27,7 @@ import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 
 /**
  * Array containing the different types of questions.
@@ -101,14 +102,32 @@ export class FormBuilderComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges, OnDestroy
 {
+  /**
+   * Form object
+   */
   @Input() form!: Form;
+  /**
+   * Event emitted when the form is saved
+   */
   @Output() save: EventEmitter<any> = new EventEmitter();
+  /**
+   * Event emitted when the form is changed
+   */
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
+  /**
+   * SurveyJS creator model
+   */
   surveyCreator!: SurveyCreatorModel;
+  /**
+   * JSON object of the form
+   */
   public json: any;
 
+  /**
+   * List of related names
+   */
   private relatedNames!: string[];
 
   /**
@@ -188,7 +207,7 @@ export class FormBuilderComponent
   private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: true,
+      showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
@@ -220,6 +239,7 @@ export class FormBuilderComponent
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
+    new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
     this.surveyCreator.toolbox.forceCompact = false;
     this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
@@ -300,6 +320,7 @@ export class FormBuilderComponent
           renderGlobalProperties(this.referenceDataService)
         )
     );
+
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
