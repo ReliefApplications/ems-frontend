@@ -1,6 +1,12 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -60,7 +66,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
 })
-export class EmailPreviewModalComponent {
+export class EmailPreviewModalComponent implements OnDestroy {
   /** Reference to emails input */
   @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
   /** Email form group */ // we want to change that
@@ -75,6 +81,9 @@ export class EmailPreviewModalComponent {
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   /** Tinymce editor configuration */
   public editor: any = EMAIL_EDITOR_CONFIG;
+
+  /** Timeout */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -124,8 +133,11 @@ export class EmailPreviewModalComponent {
    */
   addEmail(event: any): void {
     const control = this.emailForm.get('to');
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     // use setTimeout to prevent add input value on focusout
-    setTimeout(
+    this.timeoutListener = setTimeout(
       () => {
         const value: string =
           event.type === 'focusout'
@@ -167,6 +179,12 @@ export class EmailPreviewModalComponent {
       emails.splice(index, 1);
       this.emailForm.get('to')?.setValue(emails);
       this.emailForm.get('to')?.updateValueAndValidity();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
     }
   }
 }

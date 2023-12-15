@@ -7,6 +7,7 @@
 		"add": "******",
 		"adminField": "******",
 		"aggregation": {
+			"add": "******",
 			"few": "******",
 			"none": "******",
 			"one": "******"
@@ -1848,6 +1849,15 @@
 				},
 				"viewAsCards": "******",
 				"viewAsGrid": "******"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "****** {{aggregation.<id>}} ******",
+					"template": {
+						"add": "******",
+						"edit": "******"
+					}
+				}
 			}
 		}
 	},

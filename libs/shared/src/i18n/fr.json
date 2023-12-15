@@ -7,6 +7,7 @@
 		"add": "Ajouter",
 		"adminField": "Champ administrateur",
 		"aggregation": {
+			"add": "Ajouter une agrégation",
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
 			"one": "Agrégation"
@@ -1861,6 +1862,15 @@
 				},
 				"viewAsCards": "Afficher en cartes",
 				"viewAsGrid": "Afficher en grille"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "Vous pouvez créer des agrégations personnalisées et les injecter dans l'éditeur à l'aide d'espaces réservés {{aggregation.<id>}}.",
+					"template": {
+						"add": "Ajouter une nouvelle agrégation de modèles",
+						"edit": "Modifier l'agrégation de modèles"
+					}
+				}
 			}
 		}
 	},

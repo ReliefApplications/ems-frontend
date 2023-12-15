@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -27,7 +27,10 @@ import { FormBuilder } from '@angular/forms';
   templateUrl: './group-list.component.html',
   styleUrls: ['./group-list.component.scss'],
 })
-export class GroupListComponent extends UnsubscribeComponent implements OnInit {
+export class GroupListComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -41,6 +44,8 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
   public manualCreation = true;
   /** Displayed columns */
   public displayedColumns = ['title', 'usersCount', 'actions'];
+  /** Timeout snackbar */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** Form */
   form = this.fb.group({});
@@ -216,7 +221,13 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
           );
           snackBarSpinner.instance.loading = false;
 
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          if (this.timeoutListener) {
+            clearTimeout(this.timeoutListener);
+          }
+          this.timeoutListener = setTimeout(
+            () => snackBarRef.instance.dismiss(),
+            1000
+          );
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(
@@ -225,7 +236,13 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
 
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          if (this.timeoutListener) {
+            clearTimeout(this.timeoutListener);
+          }
+          this.timeoutListener = setTimeout(
+            () => snackBarRef.instance.dismiss(),
+            1000
+          );
         },
       });
   }
@@ -286,5 +303,12 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
           });
       }
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
   }
 }

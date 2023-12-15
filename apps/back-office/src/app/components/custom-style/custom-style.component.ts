@@ -74,6 +74,8 @@ export class CustomStyleComponent
   private savedStyle = '';
   /** Loading state */
   public loading = false;
+  /** Timeout to init editor */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -100,7 +102,11 @@ export class CustomStyleComponent
     super();
     // Updates the style when the value changes
     this.formControl.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value: any) => {
         const scss = value as string;
         this.restService
@@ -219,7 +225,10 @@ export class CustomStyleComponent
    */
   public initEditor(editor: any): void {
     if (editor) {
-      setTimeout(() => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      this.timeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -233,6 +242,9 @@ export class CustomStyleComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     if (
       this.applicationService.customStyleEdited &&
       this.applicationService.customStyle

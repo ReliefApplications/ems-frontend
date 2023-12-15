@@ -10,6 +10,7 @@ import {
   SpinnerModule,
   TableModule,
   TooltipModule,
+  AlertModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -20,6 +21,7 @@ import {
 } from '../../editor-settings/editor-settings.forms';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { ContextService } from '../../../../services/context/context.service';
+import { EmptyModule } from '../../../ui/empty/empty.module';
 
 /**
  * Template aggregations component.
@@ -39,6 +41,8 @@ import { ContextService } from '../../../../services/context/context.service';
     TooltipModule,
     DividerModule,
     SpinnerModule,
+    AlertModule,
+    EmptyModule,
   ],
   templateUrl: './template-aggregations.component.html',
   styleUrls: ['./template-aggregations.component.scss'],
