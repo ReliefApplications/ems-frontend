@@ -25,7 +25,7 @@ export class DialogComponent implements OnChanges, OnInit {
   };
 
   /**
-   * Constructor for the modal component
+   * Constructor for the dialog modal component
    *
    * @param dialogRef Used to access the dialog properties
    */

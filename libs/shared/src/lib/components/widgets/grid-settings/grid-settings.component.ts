@@ -43,25 +43,34 @@ export class GridSettingsComponent
   implements OnInit, AfterViewInit
 {
   // === REACTIVE FORM ===
+  /** Form group */
   public formGroup!: UntypedFormGroup;
+  /** Form array for filters */
   public filtersFormArray: any = null;
 
   // === WIDGET ===
+  /** Widget */
   @Input() widget: any;
 
   // === EMIT THE CHANGES APPLIED ===
+  /** Event emitter for change */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === NOTIFICATIONS ===
+  /** List of channels */
   public channels: Channel[] = [];
 
   // === FLOATING BUTTON ===
+  /** List of fields */
   public fields: any[] = [];
+  /** List of related forms */
   public relatedForms: Form[] = [];
 
   // === DATASET AND TEMPLATES ===
+  /** List of public templates */
   public templates: Form[] = [];
+  /** Resource */
   public resource: Resource | null = null;
 
   /** Stores the selected tab */
@@ -343,8 +352,11 @@ export class GridSettingsComponent
   private onAggregationChange(aggregationId: string): void {
     if (this.resource?.id && aggregationId) {
       this.aggregationService
-        .aggregationDataQuery(this.resource.id, aggregationId || '')
-        .subscribe(({ data }) => {
+        .aggregationDataQuery({
+          resource: this.resource.id,
+          aggregation: aggregationId || '',
+        })
+        .subscribe(({ data }: any) => {
           if (data.recordsAggregation) {
             this.fields = data.recordsAggregation.items[0]
               ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({

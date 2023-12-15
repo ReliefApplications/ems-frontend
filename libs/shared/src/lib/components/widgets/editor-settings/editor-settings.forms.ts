@@ -2,9 +2,34 @@ import { FormBuilder } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
+import { v4 as uuidv4 } from 'uuid';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
+
+/** Default context filter value. */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
+/**
+ * Create a new template aggregation form
+ *
+ * @param value previous value, if any
+ * @returns form group
+ */
+export const createTemplateAggregationForm = (value: any) => {
+  return fb.group({
+    id: get<string>(value, 'id', uuidv4()),
+    name: get<string>(value, 'name', ''),
+    resource: get<string>(value, 'resource', ''),
+    referenceData: get<string>(value, 'referenceData', ''),
+    aggregation: get<string>(value, 'aggregation', ''),
+    contextFilters: DEFAULT_CONTEXT_FILTER,
+    at: get<string>(value, 'at', ''),
+  });
+};
 
 /**
  * Creates the form for the editor widget settings.
@@ -33,6 +58,11 @@ export const createEditorForm = (id: string, value: any) => {
     // Style
     useStyles: get<boolean>(value, 'useStyles', true),
     wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
+    aggregations: fb.array(
+      get<any[]>(value, 'aggregations', []).map((aggregation: any) =>
+        createTemplateAggregationForm(aggregation)
+      )
+    ),
   });
 
   return extendWidgetForm(form, value.widgetDisplay, {

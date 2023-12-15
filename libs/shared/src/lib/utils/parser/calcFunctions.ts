@@ -38,8 +38,12 @@ const calcFunctions: Record<
     call: (value, precision = '0') => {
       const parsedValue = parseFloat(value);
       const parsedPrecision = parseInt(precision, 10);
-      checkNumberArguments(parsedValue, parsedPrecision);
-      return round(parsedValue, parsedPrecision).toString();
+      try {
+        checkNumberArguments(parsedValue, parsedPrecision);
+        return round(parsedValue, parsedPrecision).toString();
+      } catch {
+        return '0';
+      }
     },
   },
   roundup: {
@@ -54,8 +58,12 @@ const calcFunctions: Record<
     call: (value, precision = '0') => {
       const parsedValue = parseFloat(value);
       const parsedPrecision = parseInt(precision, 10);
-      checkNumberArguments(parsedValue, parsedPrecision);
-      return ceil(parsedValue, parsedPrecision).toString();
+      try {
+        checkNumberArguments(parsedValue, parsedPrecision);
+        return ceil(parsedValue, parsedPrecision).toString();
+      } catch {
+        return '0';
+      }
     },
   },
   rounddown: {
@@ -70,8 +78,12 @@ const calcFunctions: Record<
     call: (value, precision = '0') => {
       const parsedValue = parseFloat(value);
       const parsedPrecision = parseInt(precision, 10);
-      checkNumberArguments(parsedValue, parsedPrecision);
-      return floor(parsedValue, parsedPrecision).toString();
+      try {
+        checkNumberArguments(parsedValue, parsedPrecision);
+        return floor(parsedValue, parsedPrecision).toString();
+      } catch {
+        return '0';
+      }
     },
   },
   percentage: {
@@ -87,8 +99,12 @@ const calcFunctions: Record<
     call: (value, total = '1', precision = '2') => {
       const percent = (parseFloat(value) / parseFloat(total)) * 100;
       const parsedPrecision = parseInt(precision, 10);
-      checkNumberArguments(percent, parsedPrecision);
-      return percent.toFixed(parsedPrecision) + '%';
+      try {
+        checkNumberArguments(percent, parsedPrecision);
+        return percent.toFixed(parsedPrecision) + '%';
+      } catch {
+        return '0';
+      }
     },
   },
   formatDate: {

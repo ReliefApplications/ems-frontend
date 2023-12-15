@@ -42,7 +42,9 @@ import { SidenavTypes } from './types/sidenavs';
   `,
 })
 class TestingComponent {
+  /** Boolean array for sidenav showing. */
   public showSidenav: boolean[] = [];
+  /** Sidenav mode. */
   public mode: SidenavTypes[] = [];
 }
 

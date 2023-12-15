@@ -7,6 +7,7 @@
 		"add": "Add",
 		"adminField": "Admin field",
 		"aggregation": {
+			"add": "Add aggregation",
 			"few": "Aggregations",
 			"none": "No aggregation",
 			"one": "Aggregation"
@@ -495,7 +496,7 @@
 				"filter": "Returns an array with only those elements that match the condition.",
 				"group": "Group records based on field values and construct personalized accumulators",
 				"groupingRules": "Grouping rules are optional.",
-				"selectedFields": "Only unused fields can removed.",
+				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
 			}
@@ -1820,6 +1821,8 @@
 						}
 					},
 					"dynamic": "Dynamic",
+					"exportable": "Allow export of the cards",
+					"gridMode": "Allow to show as grid",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
 					},
@@ -1846,6 +1849,15 @@
 				},
 				"viewAsCards": "View as cards",
 				"viewAsGrid": "View as grid"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "You can build custom aggregations and inject them in the editor using {{aggregation.<id>}} placeholders.",
+					"template": {
+						"add": "Add new template aggregation",
+						"edit": "Edit template aggregation"
+					}
+				}
 			}
 		}
 	},
@@ -1854,6 +1866,7 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateFormat": "YYYY/MM/DD or expression ({{today}} or {{now}})",
 			"dateLabel": "Select a date",
 			"endLabel": "Select a end date",
 			"startLabel": "Select a start date",

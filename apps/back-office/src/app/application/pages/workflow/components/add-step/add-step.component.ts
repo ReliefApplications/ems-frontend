@@ -29,14 +29,18 @@ const ITEMS_PER_PAGE = 10;
 })
 export class AddStepComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /** Content types */
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
+  /** Forms query */
   public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === REACTIVE FORM ===
+  /** Step form */
   public stepForm = this.fb.group({
     type: ['', Validators.required],
     content: [''],
   });
+  /** Current stage */
   public stage = 1;
 
   /**

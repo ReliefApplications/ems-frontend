@@ -7,6 +7,7 @@
 		"add": "Ajouter",
 		"adminField": "Champ administrateur",
 		"aggregation": {
+			"add": "Ajouter une agrégation",
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
 			"one": "Agrégation"
@@ -1833,6 +1834,8 @@
 						}
 					},
 					"dynamic": "Dynamique",
+					"exportable": "Autoriser l'export des cartes",
+					"gridMode": "Peut être affiché en grille",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
 					},
@@ -1859,6 +1862,15 @@
 				},
 				"viewAsCards": "Afficher en cartes",
 				"viewAsGrid": "Afficher en grille"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "Vous pouvez créer des agrégations personnalisées et les injecter dans l'éditeur à l'aide d'espaces réservés {{aggregation.<id>}}.",
+					"template": {
+						"add": "Ajouter une nouvelle agrégation de modèles",
+						"edit": "Modifier l'agrégation de modèles"
+					}
+				}
 			}
 		}
 	},
@@ -1867,6 +1879,7 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateFormat": "AAAA/MM/JJ ou une expression ({{today}} ou  {{now}})",
 			"dateLabel": "Sélectionnez une date",
 			"endLabel": "Date de fin",
 			"startLabel": "Date de début",

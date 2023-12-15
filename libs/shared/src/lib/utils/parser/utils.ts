@@ -6,6 +6,8 @@ import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constan
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
+/** Prefix for aggregation keys */
+const AGGREGATION_PREFIX = '{{aggregation.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
 /** Prefix for avatar keys */
@@ -49,30 +51,41 @@ const getFlatFields = (fields: any, path = ''): any => {
  * and calculate the calc functions.
  *
  * @param html The html text.
- * @param fieldsValue Field value.
- * @param fields Available fields.
- * @param pages list of application pages
- * @param styles Array of layout styles.
+ * @param options options
+ * @param options.data available data
+ * @param options.aggregation available aggregation data
+ * @param options.fields Available fields.
+ * @param options.pages list of application pages
+ * @param options.styles Array of layout styles.
  * @returns The parsed html.
  */
 export const parseHtml = (
   html: string,
-  fieldsValue: any,
-  fields: any,
-  pages: any[],
-  styles?: any[]
+  options: {
+    data?: any;
+    aggregation?: any;
+    fields?: any;
+    pages: any[];
+    styles?: any[];
+  }
 ) => {
-  const htmlWithLinks = replacePages(html, pages);
-  if (fieldsValue) {
-    const htmlWithRecord = replaceRecordFields(
-      htmlWithLinks,
-      fieldsValue,
-      getFlatFields(fields),
-      styles
+  let formattedHtml = replacePages(html, options.pages);
+  if (options.data) {
+    formattedHtml = replaceRecordFields(
+      formattedHtml,
+      options.data,
+      getFlatFields(options.fields),
+      options.styles
     );
-    return applyOperations(htmlWithRecord);
+    if (options.aggregation) {
+      formattedHtml = replaceAggregationData(
+        formattedHtml,
+        options.aggregation
+      );
+    }
+    return applyOperations(formattedHtml);
   } else {
-    return applyOperations(htmlWithLinks);
+    return applyOperations(formattedHtml);
   }
 };
 
@@ -408,7 +421,35 @@ const replaceRecordFields = (
       );
       formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
+
+    const regex = /{{data\.(.*?)}}/g;
+    const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+      // Replace the key with correct value
+      return get(fieldsValue, p1, '');
+    });
+    formattedHtml = replacedHtml;
   }
+  // replace all /n, removing it since we don't need because tailwind already styles it
+  formattedHtml = formattedHtml.replace(/\n/g, '');
+  return formattedHtml;
+};
+
+/**
+ * Replace aggregation placeholders in template with aggregation data
+ *
+ * @param html html template
+ * @param aggregation aggregation data
+ * @returns formatted html
+ */
+const replaceAggregationData = (html: string, aggregation: any): string => {
+  let formattedHtml = html;
+
+  const regex = /{{aggregation\.(.*?)}}/g;
+  const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+    // Replace the key with correct value
+    return get(aggregation, p1, '');
+  });
+  formattedHtml = replacedHtml;
   // replace all /n, removing it since we don't need because tailwind already styles it
   formattedHtml = formattedHtml.replace(/\n/g, '');
   return formattedHtml;
@@ -508,6 +549,21 @@ export const getDataKeys = (fields: any): { value: string; text: string }[] => {
   return getFlatFields(fields).map((field: any) => ({
     value: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
     text: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
+  }));
+};
+
+/**
+ * Returns an array with the keys for aggregation autocompletion.
+ *
+ * @param aggregations Array of aggregations.
+ * @returns list of aggregation keys
+ */
+export const getAggregationKeys = (
+  aggregations: any[]
+): { value: string; text: string }[] => {
+  return aggregations.map((aggregation: any) => ({
+    value: AGGREGATION_PREFIX + aggregation.id + PLACEHOLDER_SUFFIX,
+    text: AGGREGATION_PREFIX + aggregation.name + PLACEHOLDER_SUFFIX,
   }));
 };
 

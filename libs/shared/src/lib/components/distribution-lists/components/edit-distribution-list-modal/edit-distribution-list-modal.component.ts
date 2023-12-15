@@ -62,12 +62,16 @@ export function codesFactory(): () => {
 })
 export class EditDistributionListModalComponent {
   // === REACTIVE FORM ===
+  /** Form */
   public form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     emails: [get(this.data, 'emails', []), Validators.required],
   });
+  /** Separator keys codes */
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  /** Error emails */
   errorEmails = new BehaviorSubject<boolean>(false);
+  /** Error emails messages */
   errorEmailMessages = new BehaviorSubject<string>('');
 
   /** @returns list of emails */
@@ -91,6 +95,7 @@ export class EditDistributionListModalComponent {
     return '';
   }
 
+  /** Emails input */
   @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
 
   /**

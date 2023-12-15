@@ -20,8 +20,11 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class PositionComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Position categories */
   public positionCategories: any[] = [];
+  /** Table columns */
   public displayedColumns = ['title', 'actions'];
 
   /**

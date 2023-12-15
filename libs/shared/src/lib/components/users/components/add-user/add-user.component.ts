@@ -30,6 +30,7 @@ interface DialogData {
   styleUrls: ['./add-user.component.scss'],
 })
 export class AddUserComponent extends UnsubscribeComponent implements OnInit {
+  /** Form for the component */
   form = this.fb.group({
     email: ['', Validators.minLength(1)],
     role: ['', Validators.required],
@@ -44,7 +45,9 @@ export class AddUserComponent extends UnsubscribeComponent implements OnInit {
       ),
     }),
   });
+  /** Filtered users */
   public filteredUsers?: Observable<User[]>;
+  /** Users */
   private users: User[] = [];
 
   /** @returns The position attributes available */
@@ -55,7 +58,7 @@ export class AddUserComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Constructor for the component
+   * Constructor for the add user component
    *
    * @param fb The form builder service
    * @param dialogRef The Dialog reference service

@@ -42,19 +42,27 @@ export class CustomWidgetStyleComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Form control for the scss editor */
   public formControl = new FormControl(DEFAULT_STYLE);
+  /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
+  /** Editor options */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'scss',
     fixedOverflowWidgets: false,
   };
+  /** Style applied to the widget */
   private styleApplied!: HTMLStyleElement;
+  /** Loading state */
   public loading = false;
 
+  /** Initial style */
   private initialStyle = '';
 
+  /** Widget component */
   @Input() widgetComp: any;
+  /** Save function */
   @Input() save!: (widget: any) => void;
 
   /**

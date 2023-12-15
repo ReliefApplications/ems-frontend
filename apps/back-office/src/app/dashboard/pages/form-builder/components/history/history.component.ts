@@ -10,10 +10,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class HistoryComponent {
   // === DATA ===
+  /** Data source */
   @Input() dataSource: any[] = [];
+  /** Displayed columns */
   displayedColumns: string[] = ['id', 'createdAt'];
 
   // === EMIT THE SELECTED FORM VERSION ===
+  /** Open event */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() open: EventEmitter<any> = new EventEmitter();
 

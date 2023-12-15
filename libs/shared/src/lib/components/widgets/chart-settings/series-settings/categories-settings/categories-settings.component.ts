@@ -10,5 +10,6 @@ import { FormArray } from '@angular/forms';
   styleUrls: ['./categories-settings.component.scss'],
 })
 export class CategoriesSettingsComponent {
+  /** Form array */
   @Input() formArray!: FormArray;
 }
