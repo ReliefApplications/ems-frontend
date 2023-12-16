@@ -34,7 +34,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
- * Text widget component using KendoUI
+ * Text widget component using Tinymce.
  */
 @Component({
   selector: 'shared-editor',
@@ -92,7 +92,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Constructor for shared-editor component
+   * Text widget component using Tinymce.
    *
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
