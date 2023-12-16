@@ -10,7 +10,6 @@ import {
   SimpleChanges,
   OnChanges,
   Inject,
-  ChangeDetectorRef,
 } from '@angular/core';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { DOCUMENT } from '@angular/common';
@@ -62,14 +61,12 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
    * @param renderer Renderer2
    * @param document Document
    * @param overlay CDK Overlay
-   * @param cdr ChangeDetectorRef
    */
   constructor(
     public el: ElementRef,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document,
-    private overlay: Overlay,
-    private cdr: ChangeDetectorRef
+    private overlay: Overlay
   ) {}
 
   ngOnInit(): void {
@@ -163,7 +160,6 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
       });
       this.overlayRef.updatePosition();
     }
-    this.cdr.detectChanges();
   }
 
   /**
