@@ -301,6 +301,7 @@ export class FormBuilderComponent implements OnInit {
               localStorage.removeItem(`form:${this.id}`);
               this.hasChanges = false;
               this.authService.canLogout.next(true);
+              window.location.reload();
             }
           },
           error: (err) => {
