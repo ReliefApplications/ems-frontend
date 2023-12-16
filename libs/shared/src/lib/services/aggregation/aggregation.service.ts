@@ -47,7 +47,8 @@ export class AggregationService {
   /**
    * Service for aggregations
    *
-   * @param apollo The apollo service
+   * @param apollo Apollo service
+   * @param contextService Shared context service
    */
   constructor(private apollo: Apollo, private contextService: ContextService) {}
 
