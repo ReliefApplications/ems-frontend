@@ -17,12 +17,18 @@ export const filterReferenceData = (item: any, filter: any) => {
       : results.some(Boolean);
   } else {
     const value = get(item, filter.field);
+    let intValue: number | null;
+    try {
+      intValue = Number(filter.value);
+    } catch {
+      intValue = null;
+    }
     switch (filter.operator) {
       case 'eq':
-        return eq(value, filter.value);
+        return eq(value, String(filter.value)) || eq(value, intValue);
       case 'ne':
       case 'neq':
-        return !eq(value, filter.value);
+        return !(eq(value, String(filter.value)) || eq(value, intValue));
       case 'gt':
         return !isNil(value) && value > filter.value;
       case 'gte':

@@ -25,6 +25,7 @@ import { Connection } from '../../utils/graphql/connection.type';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { ReferenceDataQueryResponse } from '../../models/reference-data.model';
+import { ContextService } from '../context/context.service';
 
 /** Fallback AggregationConnection */
 const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
@@ -48,7 +49,7 @@ export class AggregationService {
    *
    * @param apollo The apollo service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private contextService: ContextService) {}
 
   /**
    * Gets list of aggregation from resourceId
@@ -142,7 +143,11 @@ export class AggregationService {
           sourceFields: options.sourceFields,
           pipeline: options.pipeline,
           mapping: options.mapping,
-          contextFilters: options.contextFilters,
+          contextFilters: options.contextFilters
+            ? this.contextService.injectDashboardFilterValues(
+                options.contextFilters
+              )
+            : {},
           at: options.at,
           first: options.first,
         },
@@ -156,7 +161,11 @@ export class AggregationService {
           sourceFields: options.sourceFields,
           pipeline: options.pipeline,
           mapping: options.mapping,
-          contextFilters: options.contextFilters,
+          contextFilters: options.contextFilters
+            ? this.contextService.injectDashboardFilterValues(
+                options.contextFilters
+              )
+            : {},
           at: options.at,
           first: options.first,
         },
