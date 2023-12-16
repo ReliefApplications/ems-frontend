@@ -44,7 +44,7 @@ export const filterReferenceData = (item: any, filter: any) => {
       case 'doesnotcontain':
         return isNil(value) || !value.includes(filter.value);
       default:
-        return true;
+        return false;
     }
   }
 };

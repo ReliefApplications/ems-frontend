@@ -231,7 +231,6 @@ export class FilterBuilderModalComponent
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
         opt.canShow = false;
-        console.log(opt);
       }
     });
 

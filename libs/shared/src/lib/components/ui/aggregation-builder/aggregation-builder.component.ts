@@ -156,6 +156,16 @@ export class AggregationBuilderComponent
    * Get the filter fields needed for the current resource
    */
   private setFilterFields(): void {
+    const updateSelectedFilterFields = () => {
+      // On first load we update the selected filter fields from this function
+      // As the getFilterFields request takes time to complete
+      if (!this.selectedFilterFields.value.length) {
+        const currentFilterFields = this.filterFields.value.filter((mfi) =>
+          this.selectedFields.value.find((si) => si.name === mfi.name)
+        );
+        this.selectedFilterFields.next(currentFilterFields);
+      }
+    };
     if (this.resource) {
       this.queryBuilder
         .getFilterFields({
@@ -163,15 +173,39 @@ export class AggregationBuilderComponent
         })
         .then((filterFields: Metadata[]) => {
           this.filterFields.next(filterFields);
-          // On first load we update the selected filter fields from this function
-          // As the getFilterFields request takes time to complete
-          if (!this.selectedFilterFields.value.length) {
-            const currentFilterFields = filterFields.filter((mfi) =>
-              this.selectedFields.value.find((si) => si.name === mfi.name)
-            );
-            this.selectedFilterFields.next(currentFilterFields);
-          }
+          updateSelectedFilterFields();
         });
+    } else if (this.referenceData) {
+      const refDataMeta: Metadata[] = [];
+      const getEditor = (field: any) => {
+        switch (field.type) {
+          case 'boolean': {
+            return 'boolean';
+          }
+          case 'number': {
+            return 'numeric';
+          }
+          case 'string': {
+            return 'text';
+          }
+          default: {
+            return '';
+          }
+        }
+      };
+      (this.referenceData.fields ?? []).forEach((field) => {
+        const meta: Metadata = {
+          name: field.graphQLFieldName || field.name,
+          type: field.type,
+          automated: false,
+          filterable: !['object', 'array'].includes(field.type),
+          editor: getEditor(field),
+        };
+
+        refDataMeta.push(meta);
+      });
+      this.filterFields.next(refDataMeta);
+      updateSelectedFilterFields();
     }
   }
 
