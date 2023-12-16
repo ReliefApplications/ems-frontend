@@ -9,7 +9,6 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '../../../models/metadata.model';
 import { ReferenceData } from '../../../models/reference-data.model';
-import { uniqBy } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
@@ -177,42 +176,30 @@ export class AggregationBuilderComponent
           updateSelectedFilterFields();
         });
     } else if (this.referenceData) {
-      // We need to build the options for the filter possible values
       const refDataMeta: Metadata[] = [];
+      const getEditor = (field: any) => {
+        switch (field.type) {
+          case 'boolean': {
+            return 'boolean';
+          }
+          case 'number': {
+            return 'numeric';
+          }
+          case 'string': {
+            return 'text';
+          }
+          default: {
+            return '';
+          }
+        }
+      };
       (this.referenceData.fields ?? []).forEach((field) => {
-        // For each field, the options are the distinct values of the field across all data items
-        const allOptions: Metadata['options'] = (this.referenceData?.data ?? [])
-          .map((item: any) =>
-            item[field.name]
-              ? {
-                  value: item[field.name],
-                  text: `${item[field.name]}`,
-                }
-              : null
-          )
-          .filter((x: any) => x !== null);
-
         const meta: Metadata = {
-          name: field.name,
+          name: field.graphQLFieldName || field.name,
           type: field.type,
           automated: false,
-          filterable: field.type !== 'object' && field.type !== 'array',
-          // Remove duplicates
-          options: uniqBy(allOptions, 'value'),
-          // Set the editor type depending on the field type
-          editor:
-            field.type === 'boolean'
-              ? 'boolean'
-              : field.type === 'number'
-              ? 'numeric'
-              : 'select',
-          filter: {
-            defaultOperator: 'eq',
-            operators: ['eq', 'neq'].concat(
-              // Add gt, lt, gte, lte operators for numeric fields
-              field.type === 'number' ? ['gt', 'lt', 'gte', 'lte'] : []
-            ),
-          },
+          filterable: !['object', 'array'].includes(field.type),
+          editor: getEditor(field),
         };
 
         refDataMeta.push(meta);
