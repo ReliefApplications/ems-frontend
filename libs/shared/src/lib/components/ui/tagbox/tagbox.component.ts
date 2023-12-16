@@ -31,6 +31,8 @@ export class TagboxComponent
   @Input() public displayKey = 'name';
   /** Value key */
   @Input() public valueKey = 'name';
+  /** All the choices */
+  public allChoices: any[] = [];
   /** Available choices */
   public availableChoices: any[] = [];
   /** Selected choices */
@@ -62,7 +64,7 @@ export class TagboxComponent
   @Input() control!: FormControl;
 
   /**
-   * Tagbox constructor
+   * Custom tagbox component to use in the app
    */
   constructor() {
     super();
@@ -84,12 +86,9 @@ export class TagboxComponent
               choices.find((choice) => value === choice[this.valueKey])
             )
             .filter((x: any) => x);
-      this.availableChoices = choices.filter(
-        (choice) =>
-          !this.selectedChoices.some(
-            (x) => x[this.valueKey] === choice[this.valueKey]
-          )
-      );
+      this.allChoices = choices;
+      this.setAvailableChoices();
+
       this.inputControl.valueChanges
         .pipe(startWith(''), takeUntil(this.destroy$))
         .subscribe({
@@ -170,6 +169,7 @@ export class TagboxComponent
       this.selectedChoices = this.selectedChoices.filter(
         (x) => x[this.valueKey] !== choice[this.valueKey]
       );
+      this.setAvailableChoices();
       this.filteredChoices = this.availableChoices.filter(
         (choice) =>
           !this.selectedChoices.find(
@@ -178,6 +178,18 @@ export class TagboxComponent
       );
       this.control.setValue(this.selectedChoices.map((x) => x[this.valueKey]));
     }
+  }
+
+  /**
+   * Get available choices to be selected
+   */
+  setAvailableChoices(): void {
+    this.availableChoices = this.allChoices.filter(
+      (choice) =>
+        !this.selectedChoices.some(
+          (x) => x[this.valueKey] === choice[this.valueKey]
+        )
+    );
   }
 
   override ngOnDestroy(): void {
