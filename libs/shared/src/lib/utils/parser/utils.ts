@@ -70,6 +70,9 @@ export const parseHtml = (
   }
 ) => {
   let formattedHtml = replacePages(html, options.pages);
+  if (options.aggregation) {
+    formattedHtml = replaceAggregationData(formattedHtml, options.aggregation);
+  }
   if (options.data) {
     formattedHtml = replaceRecordFields(
       formattedHtml,
@@ -77,16 +80,8 @@ export const parseHtml = (
       getFlatFields(options.fields),
       options.styles
     );
-    if (options.aggregation) {
-      formattedHtml = replaceAggregationData(
-        formattedHtml,
-        options.aggregation
-      );
-    }
-    return applyOperations(formattedHtml);
-  } else {
-    return applyOperations(formattedHtml);
   }
+  return applyOperations(formattedHtml);
 };
 
 /**

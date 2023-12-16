@@ -1,4 +1,4 @@
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
@@ -25,7 +25,7 @@ export const createTemplateAggregationForm = (value: any) => {
     name: get<string>(value, 'name', ''),
     resource: get<string>(value, 'resource', ''),
     referenceData: get<string>(value, 'referenceData', ''),
-    aggregation: get<string>(value, 'aggregation', ''),
+    aggregation: [get<string>(value, 'aggregation', ''), Validators.required],
     contextFilters: DEFAULT_CONTEXT_FILTER,
     at: get<string>(value, 'at', ''),
   });

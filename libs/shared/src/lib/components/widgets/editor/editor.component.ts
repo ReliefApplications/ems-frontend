@@ -34,7 +34,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
- * Text widget component using KendoUI
+ * Text widget component using Tinymce.
  */
 @Component({
   selector: 'shared-editor',
@@ -92,7 +92,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Constructor for shared-editor component
+   * Text widget component using Tinymce.
    *
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
@@ -184,13 +184,17 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         this.loading = false;
       });
     } else {
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text,
-        {
-          aggregation: this.aggregations,
-        }
-      );
-      this.loading = false;
+      Promise.all([this.getAggregationsData()]).then(() => {
+        this.formattedHtml = this.dataTemplateService.renderHtml(
+          this.settings.text,
+          {
+            data: this.fieldsValue,
+            aggregation: this.aggregations,
+            fields: this.fields,
+          }
+        );
+        this.loading = false;
+      });
     }
   }
 
