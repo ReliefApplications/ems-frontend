@@ -169,7 +169,9 @@ export class MapLayersService {
     return this.apollo
       .query<LayersQueryResponse>({
         query: GET_LAYERS,
-        variables: {},
+        variables: {
+          sortField: 'name',
+        },
       })
       .pipe(
         filter((response) => !!response.data),

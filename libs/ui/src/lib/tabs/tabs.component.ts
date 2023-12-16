@@ -88,6 +88,8 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   destroy$ = new Subject<void>();
   /** Reorder subject */
   reorder$ = new Subject<void>();
+  /** Timeout to show content */
+  private showContentTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Ui Sidenav constructor
@@ -145,7 +147,10 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
 
     // Creates the content element thanks to the hidden html content of the tab component
     // Timeout so the animation has the time to render (elsewhere it can't cause delete then create is instantaneous)
-    setTimeout(() => {
+    if (this.showContentTimeoutListener) {
+      clearTimeout(this.showContentTimeoutListener);
+    }
+    this.showContentTimeoutListener = setTimeout(() => {
       this.triggerAnimation = true;
       this.openedTab.emit(tab);
     }, 100);
@@ -195,6 +200,9 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    if (this.showContentTimeoutListener) {
+      clearTimeout(this.showContentTimeoutListener);
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
