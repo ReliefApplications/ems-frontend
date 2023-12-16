@@ -1,5 +1,12 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, UntypedFormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
@@ -13,7 +20,10 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './tagbox.component.html',
   styleUrls: ['./tagbox.component.scss'],
 })
-export class TagboxComponent extends UnsubscribeComponent implements OnInit {
+export class TagboxComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === CHOICES ===
   /** Observable of choices */
   @Input() public choices$!: Observable<any[]>;
@@ -21,6 +31,8 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
   @Input() public displayKey = 'name';
   /** Value key */
   @Input() public valueKey = 'name';
+  /** All the choices */
+  public allChoices: any[] = [];
   /** Available choices */
   public availableChoices: any[] = [];
   /** Selected choices */
@@ -44,13 +56,15 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
   });
   /** Input visibility status */
   public showInput = false;
+  /** Timeout to add */
+  private addTimeoutListener!: NodeJS.Timeout;
 
   // === OUTPUT CONTROL ===
   /** Output control */
   @Input() control!: FormControl;
 
   /**
-   * Tagbox constructor
+   * Custom tagbox component to use in the app
    */
   constructor() {
     super();
@@ -72,12 +86,9 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
               choices.find((choice) => value === choice[this.valueKey])
             )
             .filter((x: any) => x);
-      this.availableChoices = choices.filter(
-        (choice) =>
-          !this.selectedChoices.some(
-            (x) => x[this.valueKey] === choice[this.valueKey]
-          )
-      );
+      this.allChoices = choices;
+      this.setAvailableChoices();
+
       this.inputControl.valueChanges
         .pipe(startWith(''), takeUntil(this.destroy$))
         .subscribe({
@@ -140,7 +151,10 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
       );
     }
     this.inputControl.setValue('', { emitEvent: false });
-    setTimeout(() => {
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
+    }
+    this.addTimeoutListener = setTimeout(() => {
       window.requestAnimationFrame(() => this.textInput?.nativeElement.focus());
     }, 10);
   }
@@ -155,6 +169,7 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
       this.selectedChoices = this.selectedChoices.filter(
         (x) => x[this.valueKey] !== choice[this.valueKey]
       );
+      this.setAvailableChoices();
       this.filteredChoices = this.availableChoices.filter(
         (choice) =>
           !this.selectedChoices.find(
@@ -162,6 +177,25 @@ export class TagboxComponent extends UnsubscribeComponent implements OnInit {
           )
       );
       this.control.setValue(this.selectedChoices.map((x) => x[this.valueKey]));
+    }
+  }
+
+  /**
+   * Get available choices to be selected
+   */
+  setAvailableChoices(): void {
+    this.availableChoices = this.allChoices.filter(
+      (choice) =>
+        !this.selectedChoices.some(
+          (x) => x[this.valueKey] === choice[this.valueKey]
+        )
+    );
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
     }
   }
 }

@@ -1,13 +1,20 @@
 <ui-dialog size="fullscreen">
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">Aggregation</h3>
+    <h3 class="font-semibold">
+      {{
+        (data?.aggregation
+          ? 'components.widget.text.aggregations.template.edit'
+          : 'components.widget.text.aggregations.template.add'
+        ) | translate
+      }}
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <ui-tabs class="grow overflow-x-hidden" [vertical]="true">
       <ui-tab>
         <ng-container ngProjectAs="label">
-          <ui-icon icon="" [size]="24" [uiTooltip]="'text'"></ui-icon>
-          <span>General</span>
+          <ui-icon icon="settings" [size]="24" [uiTooltip]="'text'"></ui-icon>
+          <span>{{ 'common.general' | translate }}</span>
         </ng-container>
         <ng-template uiTabContent>
           <div [formGroup]="form" class="flex flex-col gap-2 flex-wrap">
