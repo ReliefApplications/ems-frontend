@@ -7,6 +7,7 @@
 		"add": "Add",
 		"adminField": "Admin field",
 		"aggregation": {
+			"add": "Add aggregation",
 			"few": "Aggregations",
 			"none": "No aggregation",
 			"one": "Aggregation"
@@ -1848,6 +1849,15 @@
 				},
 				"viewAsCards": "View as cards",
 				"viewAsGrid": "View as grid"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "You can build custom aggregations and inject them in the editor using {{aggregation.<id>}} placeholders.",
+					"template": {
+						"add": "Add new template aggregation",
+						"edit": "Edit template aggregation"
+					}
+				}
 			}
 		}
 	},
@@ -2284,6 +2294,12 @@
 	"pages": {
 		"administration": {
 			"title": "Administration"
+		},
+		"aggregation": {
+			"preview": {
+				"label": "Aggregation data preview",
+				"missingAggregation": "Cannot load selected aggregation. Aggregation not found"
+			}
 		},
 		"apiConfiguration": {
 			"authentication": "Authentication settings",

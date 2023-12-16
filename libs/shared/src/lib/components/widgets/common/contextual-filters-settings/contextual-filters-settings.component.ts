@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,11 +22,13 @@ import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
   templateUrl: './contextual-filters-settings.component.html',
   styleUrls: ['./contextual-filters-settings.component.scss'],
 })
-export class ContextualFiltersSettingsComponent {
+export class ContextualFiltersSettingsComponent implements OnDestroy {
   /**
    * Form group
    */
   @Input() form!: FormGroup;
+  /** Timeout to init editor */
+  private initEditorTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Editor options
@@ -44,7 +46,10 @@ export class ContextualFiltersSettingsComponent {
    */
   public initEditor(editor: any): void {
     if (editor) {
-      setTimeout(() => {
+      if (this.initEditorTimeoutListener) {
+        clearTimeout(this.initEditorTimeoutListener);
+      }
+      this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -53,6 +58,12 @@ export class ContextualFiltersSettingsComponent {
             control?.markAsPristine();
           });
       }, 100);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
     }
   }
 }

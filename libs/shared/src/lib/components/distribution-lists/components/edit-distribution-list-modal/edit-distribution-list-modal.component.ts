@@ -1,4 +1,10 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import get from 'lodash/get';
@@ -60,7 +66,7 @@ export function codesFactory(): () => {
   templateUrl: './edit-distribution-list-modal.component.html',
   styleUrls: ['./edit-distribution-list-modal.component.scss'],
 })
-export class EditDistributionListModalComponent {
+export class EditDistributionListModalComponent implements OnDestroy {
   // === REACTIVE FORM ===
   /** Form */
   public form = this.fb.group({
@@ -73,6 +79,9 @@ export class EditDistributionListModalComponent {
   errorEmails = new BehaviorSubject<boolean>(false);
   /** Error emails messages */
   errorEmailMessages = new BehaviorSubject<string>('');
+
+  /** Timeout */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -118,8 +127,11 @@ export class EditDistributionListModalComponent {
    */
   addEmail(event: string | any): void {
     const control = this.form.get('emails');
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     // use setTimeout to prevent add input value on focusout
-    setTimeout(
+    this.timeoutListener = setTimeout(
       () => {
         const value: string =
           event.type === 'focusout'
@@ -159,5 +171,11 @@ export class EditDistributionListModalComponent {
       (emailData) => emailData.toLowerCase() !== email.toLowerCase()
     );
     this.form.get('emails')?.setValue(emails);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
   }
 }

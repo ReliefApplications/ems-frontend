@@ -25,6 +25,7 @@ import { Connection } from '../../utils/graphql/connection.type';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { ReferenceDataQueryResponse } from '../../models/reference-data.model';
+import { ContextService } from '../context/context.service';
 
 /** Fallback AggregationConnection */
 const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
@@ -46,9 +47,10 @@ export class AggregationService {
   /**
    * Service for aggregations
    *
-   * @param apollo The apollo service
+   * @param apollo Apollo service
+   * @param contextService Shared context service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private contextService: ContextService) {}
 
   /**
    * Gets list of aggregation from resourceId
@@ -110,18 +112,24 @@ export class AggregationService {
    * @param options.referenceData reference data Id
    * @param options.resource Resource Id
    * @param options.aggregation Aggregation definition
+   * @param options.sourceFields aggregation source fields to fetch
+   * @param options.pipeline aggregation pipeline used to build data
    * @param options.mapping aggregation mapping ( category, field, series )
    * @param options.contextFilters context filters, if any
    * @param options.at 'at' argument value, if any
+   * @param options.first number of records to fetch, -1 if all of them
    * @returns Aggregation query
    */
   aggregationDataQuery(options: {
     referenceData?: string;
     resource?: string;
     aggregation: string;
+    sourceFields?: any;
+    pipeline?: any;
     mapping?: any;
     contextFilters?: CompositeFilterDescriptor;
     at?: Date;
+    first?: number;
   }): Observable<
     ApolloQueryResult<
       AggregationDataQueryResponse | ReferenceDataAggregationQueryResponse
@@ -133,9 +141,16 @@ export class AggregationService {
         variables: {
           resource: options.resource,
           aggregation: options.aggregation,
+          sourceFields: options.sourceFields,
+          pipeline: options.pipeline,
           mapping: options.mapping,
-          contextFilters: options.contextFilters,
+          contextFilters: options.contextFilters
+            ? this.contextService.injectDashboardFilterValues(
+                options.contextFilters
+              )
+            : {},
           at: options.at,
+          first: options.first,
         },
       });
     } else {
@@ -144,9 +159,16 @@ export class AggregationService {
         variables: {
           referenceData: options.referenceData,
           aggregation: options.aggregation,
+          sourceFields: options.sourceFields,
+          pipeline: options.pipeline,
           mapping: options.mapping,
-          contextFilters: options.contextFilters,
+          contextFilters: options.contextFilters
+            ? this.contextService.injectDashboardFilterValues(
+                options.contextFilters
+              )
+            : {},
           at: options.at,
+          first: options.first,
         },
       });
     }

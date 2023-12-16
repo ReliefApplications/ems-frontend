@@ -46,6 +46,7 @@ import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
 import searchFilters from '../../../utils/filter/search-filters';
+import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -394,14 +395,21 @@ export class SummaryCardComponent
         })
         .then(this.updateCards.bind(this));
     } else if (this.useReferenceData) {
-      this.sortedCachedCards = this.cachedCards.filter((card: any) => {
-        return (
-          JSON.stringify(card.rawValue)
-            .replace(/("\w+":)/g, '')
-            .toLowerCase()
-            .indexOf(search.toLowerCase()) !== -1
-        );
-      });
+      const contextFilters = this.contextService.injectDashboardFilterValues(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(
+        this.cachedCards
+          .filter((x) => filterReferenceData(x.rawValue, contextFilters))
+          .filter((card: any) => {
+            return (
+              JSON.stringify(card.rawValue)
+                .replace(/("\w+":)/g, '')
+                .toLowerCase()
+                .indexOf(search.toLowerCase()) !== -1
+            );
+          })
+      );
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.pageInfo.length = this.sortedCachedCards.length;
     }
@@ -689,7 +697,12 @@ export class SummaryCardComponent
         metadata: fields,
       }));
       this.pageInfo.length = this.cachedCards.length;
-      this.sortedCachedCards = cloneDeep(this.cachedCards);
+      const contextFilters = this.contextService.injectDashboardFilterValues(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+        filterReferenceData(x.rawValue, contextFilters)
+      );
       this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
       this.loading = false;
       // Set sort fields
@@ -765,6 +778,7 @@ export class SummaryCardComponent
         this.pageInfo.skip,
         this.pageInfo.skip + this.pageInfo.pageSize
       );
+      this.pageInfo.length = this.sortedCachedCards.length;
     }
   }
 
@@ -772,6 +786,27 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
+    if (this.useReferenceData) {
+      const contextFilters = this.contextService.injectDashboardFilterValues(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(
+        this.cachedCards.filter((x) =>
+          filterReferenceData(x.rawValue, contextFilters)
+        )
+      );
+      if (this.searchControl.value) {
+        this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
+          return (
+            JSON.stringify(card.rawValue)
+              .replace(/("\w+":)/g, '')
+              .toLowerCase()
+              .indexOf((this.searchControl.value as string).toLowerCase()) !==
+            -1
+          );
+        });
+      }
+    }
     this.onPage({
       pageSize: DEFAULT_PAGE_SIZE,
       skip: 0,
