@@ -159,10 +159,7 @@ export class SummaryCardComponent
     }
     return {
       logic: 'and',
-      filters: [
-        filter,
-        this.contextService.injectDashboardFilterValues(this.contextFilters),
-      ],
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
     };
   }
 
@@ -394,7 +391,7 @@ export class SummaryCardComponent
         })
         .then(this.updateCards.bind(this));
     } else if (this.useReferenceData) {
-      const contextFilters = this.contextService.injectDashboardFilterValues(
+      const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );
       this.sortedCachedCards = cloneDeep(
@@ -641,7 +638,7 @@ export class SummaryCardComponent
       card.aggregation as string,
       DEFAULT_PAGE_SIZE,
       0,
-      this.contextService.injectDashboardFilterValues(this.contextFilters),
+      this.contextService.injectContext(this.contextFilters),
       this.widget.settings.at
         ? this.contextService.atArgumentValue(this.widget.settings.at)
         : undefined
@@ -696,13 +693,13 @@ export class SummaryCardComponent
         metadata: fields,
       }));
       this.pageInfo.length = this.cachedCards.length;
-      const contextFilters = this.contextService.injectDashboardFilterValues(
+      const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );
       this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
         filterReferenceData(x.rawValue, contextFilters)
       );
-      this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
+      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.loading = false;
       // Set sort fields
       this.sortFields = [];
@@ -786,7 +783,7 @@ export class SummaryCardComponent
    */
   public refresh() {
     if (this.useReferenceData) {
-      const contextFilters = this.contextService.injectDashboardFilterValues(
+      const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );
       this.sortedCachedCards = cloneDeep(

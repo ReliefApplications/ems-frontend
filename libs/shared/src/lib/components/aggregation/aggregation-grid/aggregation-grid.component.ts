@@ -138,9 +138,7 @@ export class AggregationGridComponent
       this.pageSize,
       this.skip,
       this.contextFilters
-        ? this.contextService.injectDashboardFilterValues(
-            JSON.parse(this.contextFilters)
-          )
+        ? this.contextService.injectContext(JSON.parse(this.contextFilters))
         : undefined,
       this.at ? this.contextService.atArgumentValue(this.at) : undefined
     );

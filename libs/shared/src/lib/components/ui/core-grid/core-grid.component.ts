@@ -261,10 +261,7 @@ export class CoreGridComponent
     }
     return {
       logic: 'and',
-      filters: [
-        filter,
-        this.contextService.injectDashboardFilterValues(this.contextFilters),
-      ],
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
     };
   }
 
