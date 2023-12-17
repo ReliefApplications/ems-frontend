@@ -15,7 +15,6 @@ import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
-import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /**
  * Composite filter row.
@@ -33,10 +32,8 @@ export class FilterRowComponent
   @Input() form!: UntypedFormGroup;
   /** Available fields */
   @Input() fields: any[] = [];
-
+  /** Can use context variables */
   @Input() canUseContext = false;
-  public contextEditorIsActivated = false;
-
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -51,6 +48,7 @@ export class FilterRowComponent
   numericEditor!: TemplateRef<any>;
   /** Date field editor template */
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
+  /** Reference to context editor template */
   @ViewChild('contextEditor', { static: false })
   contextEditor!: TemplateRef<any>;
   /** Current field */
@@ -61,6 +59,8 @@ export class FilterRowComponent
   public hideEditor = false;
   /** Available operators */
   public operators: any[] = [];
+  /** Is context editor used */
+  public contextEditorIsActivated = false;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -70,7 +70,7 @@ export class FilterRowComponent
   /**
    * Composite filter row.
    */
-  constructor(private dashboardService: DashboardService) {
+  constructor() {
     super();
   }
 
