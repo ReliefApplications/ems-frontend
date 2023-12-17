@@ -163,7 +163,7 @@ export class ContextService {
         .filter((f) => {
           // Filter out fields that are not in the available filter field
           // Meaning, their values are still using the {{filter.}} syntax
-          if ('value' in f) {
+          if ('value' in f && !f.field?.toString().startsWith('__FILTER__.')) {
             return !isNil(f.value) && !isEmpty(f.value);
             // const filterName = f.value?.match(regex)?.[0];
             // return !(filterName && !availableFilterFields[filterName]);
