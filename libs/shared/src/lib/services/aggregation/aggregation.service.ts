@@ -151,9 +151,7 @@ export class AggregationService {
           pipeline: options.pipeline,
           mapping: options.mapping,
           contextFilters: options.contextFilters
-            ? this.contextService.injectDashboardFilterValues(
-                options.contextFilters
-              )
+            ? this.contextService.injectContext(options.contextFilters)
             : {},
           at: options.at,
           first: options.first,
@@ -169,9 +167,7 @@ export class AggregationService {
           pipeline: options.pipeline,
           mapping: options.mapping,
           contextFilters: options.contextFilters
-            ? this.contextService.injectDashboardFilterValues(
-                options.contextFilters
-              )
+            ? this.contextService.injectContext(options.contextFilters)
             : {},
           at: options.at,
           first: options.first,
@@ -207,7 +203,6 @@ export class AggregationService {
         first,
         skip,
         contextFilters,
-        context: this.dashboardService.context,
         at,
       },
     });

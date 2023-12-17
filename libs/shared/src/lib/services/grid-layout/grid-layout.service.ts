@@ -12,7 +12,6 @@ import { firstValueFrom } from 'rxjs';
 import { Connection } from '../../utils/graphql/connection.type';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { FormQueryResponse } from '../../models/form.model';
-import { DashboardService } from '../dashboard/dashboard.service';
 
 /** Fallback LayoutConnection */
 const FALLBACK_LAYOUTS: Connection<Layout> = {
@@ -33,15 +32,11 @@ const FALLBACK_LAYOUTS: Connection<Layout> = {
 })
 export class GridLayoutService {
   /**
-   * Constructor for the grid layout service
+   * Shared service to manage grid predefined layouts.
    *
-   * @param apollo The apollo service
-   * @param dashboardService The shared dashboard service
+   * @param apollo Apollo service
    */
-  constructor(
-    private apollo: Apollo,
-    private dashboardService: DashboardService
-  ) {}
+  constructor(private apollo: Apollo) {}
 
   /**
    * Gets list of layouts from source
@@ -80,15 +75,11 @@ export class GridLayoutService {
           if (res2.errors) {
             return FALLBACK_LAYOUTS;
           } else {
-            return this.dashboardService.injectContext(
-              res2.data.form.layouts || FALLBACK_LAYOUTS
-            );
+            return res2.data.form.layouts || FALLBACK_LAYOUTS;
           }
         });
       } else {
-        return this.dashboardService.injectContext(
-          data.resource.layouts || FALLBACK_LAYOUTS
-        );
+        return data.resource.layouts || FALLBACK_LAYOUTS;
       }
     });
   }

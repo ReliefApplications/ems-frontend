@@ -327,13 +327,13 @@ export class DashboardComponent
               ?.filter((x: any) => x !== null)
               .map((widget: any) => {
                 const contextData = this.dashboard?.contextData;
-                this.dashboardService.context = contextData || null;
+                this.contextService.context = contextData || null;
 
                 if (!contextData) return widget;
                 // If tile has context, replace the templates with the values
                 // and keep the original, to be used for the widget settings
                 const settings = widget.settings;
-                widget.settings = this.dashboardService.injectContext(settings);
+                widget.settings = this.contextService.replaceContext(settings);
                 widget.originalSettings = settings;
                 return widget;
               }) || []
@@ -455,7 +455,7 @@ export class DashboardComponent
         const index = widgetComponents.findIndex((v: any) => v.id === e.id);
         if (index > -1) {
           // Update the configuration
-          const options = this.dashboardService.injectContext(
+          const options = this.contextService.replaceContext(
             this.widgets[index]?.settings?.defaultLayout
               ? {
                   ...e.options,
