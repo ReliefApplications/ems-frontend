@@ -200,8 +200,6 @@ export class ContextService {
   public injectContext<T extends CompositeFilterDescriptor | FilterDescriptor>(
     f: T
   ): T {
-    console.log(f);
-    console.log(typeof f);
     const filter = cloneDeep(f);
     // if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
     //   filter.filters = [];
