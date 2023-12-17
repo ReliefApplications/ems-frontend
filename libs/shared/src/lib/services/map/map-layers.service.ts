@@ -386,9 +386,7 @@ export class MapLayersService {
    */
   async getLayerGeoJson(layer: LayerModel) {
     const contextFilters = layer.contextFilters
-      ? this.contextService.injectDashboardFilterValues(
-          JSON.parse(layer.contextFilters)
-        )
+      ? this.contextService.injectContext(JSON.parse(layer.contextFilters))
       : {};
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)

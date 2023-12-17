@@ -2141,7 +2141,12 @@
 					"element": "Élément"
 				},
 				"selectDisplayField": "Sélectionnez le champ d'affichage",
-				"selectOrigin": "Sélectionnez la source de données"
+				"selectOrigin": "Sélectionnez la source de données",
+				"title": "Contexte",
+				"tooltip": {
+					"useContextEditor": "Utiliser l'éditeur de contexte",
+					"useDefaultEditor": "Utiliser l'éditeur par défaut"
+				}
 			},
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
