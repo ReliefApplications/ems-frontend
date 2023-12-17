@@ -107,6 +107,9 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'text-sm',
   ] as const;
 
+  /** Timeout to dispatch event */
+  private dispatchEventTimeoutListener!: NodeJS.Timeout;
+
   /**
    * UI Date picker directive constructor
    *
@@ -165,7 +168,10 @@ export class DatePickerDirective implements OnInit, OnDestroy {
         this.setValue(this.control.control.value);
         // Trigger input change event to update date picker/ date range element
         const event = new Event('change');
-        setTimeout(() => {
+        if (this.dispatchEventTimeoutListener) {
+          clearTimeout(this.dispatchEventTimeoutListener);
+        }
+        this.dispatchEventTimeoutListener = setTimeout(() => {
           this.el.nativeElement.dispatchEvent(event);
         }, 0);
       }
@@ -263,6 +269,9 @@ export class DatePickerDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.dispatchEventTimeoutListener) {
+      clearTimeout(this.dispatchEventTimeoutListener);
+    }
     if (this.clickEventListener) {
       this.clickEventListener();
     }

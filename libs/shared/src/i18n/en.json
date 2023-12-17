@@ -2300,6 +2300,12 @@
 		"administration": {
 			"title": "Administration"
 		},
+		"aggregation": {
+			"preview": {
+				"label": "Aggregation data preview",
+				"missingAggregation": "Cannot load selected aggregation. Aggregation not found"
+			}
+		},
 		"apiConfiguration": {
 			"authentication": "Authentication settings",
 			"baseUrl": "Main endpoint",

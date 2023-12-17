@@ -9,7 +9,6 @@ import {
   Inject,
   OnInit,
   Attribute,
-  ChangeDetectorRef,
 } from '@angular/core';
 import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 import { TooltipEnableBy } from './types/tooltip-enable-by-list';
@@ -61,15 +60,13 @@ export class TooltipDirective implements OnDestroy {
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host in order to correctly insert tooltips
-   * @param cdr ChangeDetectorRef
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Attribute('tooltipEnableBy') public enableBy: TooltipEnableBy,
     public elementRef: ElementRef,
     private renderer: Renderer2,
-    shadowDomService: ShadowDomService,
-    private cdr: ChangeDetectorRef
+    shadowDomService: ShadowDomService
   ) {
     this.currentHost = shadowDomService.isShadowRoot
       ? shadowDomService.currentHost
@@ -109,7 +106,6 @@ export class TooltipDirective implements OnDestroy {
     if (this.currentHost.contains(this.elToolTip)) {
       this.renderer.removeChild(this.currentHost, this.elToolTip);
     }
-    this.cdr.detectChanges();
   }
 
   /**

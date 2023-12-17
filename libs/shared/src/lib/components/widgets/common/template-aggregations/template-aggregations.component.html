@@ -50,6 +50,20 @@
         <ui-menu #menu>
           <button
             uiMenuItem
+            (click)="onPreviewAggregation(index); $event.stopPropagation()"
+          >
+            <ng-container
+              *ngIf="loadingAggregationRecords; else previewIconTmpl"
+            >
+              <ui-spinner size="medium"></ui-spinner>
+            </ng-container>
+            <ng-template #previewIconTmpl>
+              <ui-icon icon="visibility" variant="grey"></ui-icon>
+            </ng-template>
+            {{ 'common.preview' | translate }}
+          </button>
+          <button
+            uiMenuItem
             (click)="onEditAggregation(index); $event.stopPropagation()"
           >
             <ui-icon icon="edit" variant="grey"></ui-icon>
@@ -73,5 +87,7 @@
 
 <!-- Empty indicator -->
 <ng-template #emptyTmpl>
-  <shared-empty [title]="'components.resource.empty.aggregations' | translate"></shared-empty>
+  <shared-empty
+    [title]="'components.resource.empty.aggregations' | translate"
+  ></shared-empty>
 </ng-template>

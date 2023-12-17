@@ -99,11 +99,12 @@ export class EditorSettingsComponent
     // Subscribe to resource changes
     this.widgetFormGroup.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
+      .subscribe((resource) => {
+        this.widget.settings.resource = resource;
+        if (resource) {
           this.widgetFormGroup.controls.referenceData.setValue(null);
           this.widgetFormGroup.controls.showDataSourceLink.enable();
-          this.getResource(value);
+          this.getResource(resource);
         } else {
           this.resource = null;
           this.layout = null;
@@ -112,9 +113,10 @@ export class EditorSettingsComponent
     // Subscribe to layout changes
     this.widgetFormGroup.controls.layout.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value && this.resource) {
-          this.getResource(this.resource.id as string, value);
+      .subscribe((layout) => {
+        this.widget.settings.layout = layout;
+        if (layout && this.resource) {
+          this.getResource(this.resource.id as string, layout);
         } else {
           this.layout = null;
         }
@@ -127,11 +129,12 @@ export class EditorSettingsComponent
     // Subscribe to reference data changes
     this.widgetFormGroup.controls.referenceData.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
+      .subscribe((referenceData) => {
+        this.widget.settings.referenceData = referenceData;
+        if (referenceData) {
           this.widgetFormGroup.controls.resource.setValue(null);
           this.widgetFormGroup.controls.showDataSourceLink.disable();
-          this.getReferenceData(value);
+          this.getReferenceData(referenceData);
         } else {
           this.referenceData = null;
         }
@@ -144,7 +147,8 @@ export class EditorSettingsComponent
     // Refresh when aggregations field changes
     this.widgetFormGroup.controls.aggregations.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe((aggregations) => {
+        this.widget.settings.aggregations = aggregations;
         this.updateFields();
       });
   }
@@ -162,8 +166,6 @@ export class EditorSettingsComponent
         this.widget.settings.text = this.widgetFormGroup.value.text;
         this.widget.settings.record = this.widgetFormGroup.value.record;
         this.widget.settings.title = this.widgetFormGroup.value.title;
-        this.widget.settings.resource = this.widgetFormGroup.value.resource;
-        this.widget.settings.layout = this.widgetFormGroup.value.layout;
         this.widget.settings.showDataSourceLink =
           this.widgetFormGroup.value.showDataSourceLink;
       });
@@ -250,7 +252,7 @@ export class EditorSettingsComponent
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
       ...this.dataTemplateService.getAutoCompleterKeys(
         fields,
-        this.widgetFormGroup.value.aggregations
+        this.widget.settings.aggregations
       ),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
     ]);

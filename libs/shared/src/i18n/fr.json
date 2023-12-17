@@ -2314,6 +2314,12 @@
 		"administration": {
 			"title": "Administration"
 		},
+		"aggregation": {
+			"preview": {
+				"label": "Aperçu des données d'agrégation",
+				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
+			}
+		},
 		"apiConfiguration": {
 			"authentication": "Paramètres d'authentification",
 			"baseUrl": "Point d'arrivée principal",
