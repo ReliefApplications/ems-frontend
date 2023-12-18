@@ -13,7 +13,7 @@
           class="flex-1"
           *ngIf="!formGroup.value.card?.resource"
         >
-          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <label>{{ 'models.referenceData.select' | translate }}</label>
           <shared-reference-data-select
             formControlName="referenceData"
             [selectedElements]="[referenceData]"
