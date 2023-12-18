@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { debounceTime, firstValueFrom, takeUntil } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
@@ -124,6 +124,19 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
 
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
+    this.updateTextWidgetData();
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateTextWidgetData();
+      });
+  }
+
+  /**
+   * Refreshes the data.
+   */
+  private updateTextWidgetData() {
     if (this.settings.record && this.settings.resource) {
       Promise.all([
         new Promise<void>((resolve) => {
@@ -206,7 +219,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   private getAggregationsData() {
     const promises: Promise<void>[] = [];
     this.aggregations.forEach((aggregation: any) => {
-      console.log('CONTEXT FILTERS HERE', aggregation.contextFilters);
       promises.push(
         new Promise<void>((resolve) => {
           firstValueFrom(
