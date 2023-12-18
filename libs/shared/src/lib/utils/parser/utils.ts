@@ -9,7 +9,7 @@ const DATA_PREFIX = '{{data.';
 /** Prefix for aggregation keys */
 const AGGREGATION_PREFIX = '{{aggregation.';
 /** Prefix for calc keys */
-const CALC_PREFIX = '{{calc';
+const CALC_PREFIX = '{{calc.';
 /** Prefix for avatar keys */
 const AVATAR_PREFIX = '{{avatars.';
 /** Allowed image extensions */
@@ -492,18 +492,18 @@ export const getFieldsValue = (record: any) => {
 const applyOperations = (html: string): string => {
   // // Define the regex pattern to match content inside {{calc.}} expressions with a nested <span> tag
   const pattern = new RegExp(
-    `${CALC_PREFIX}\\.(.*?)<span[^>]*>(.*?)</span>(.*?)}}`,
+    `${CALC_PREFIX}(.*?)<span[^>]*>(.*?)</span>(.*?)}}`,
     'g'
   );
   // Use replace method with a callback function to handle all occurrences
   const modifiedHtml = html.replace(
     pattern,
     (_, prefix, capturedContent, suffix) => {
-      return `{{calc.${prefix}${capturedContent}${suffix}}}`;
+      return `${CALC_PREFIX}${prefix}${capturedContent}${suffix}${PLACEHOLDER_SUFFIX}`;
     }
   );
   const regex = new RegExp(
-    `${CALC_PREFIX}\\.(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+    `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
     'gm'
   );
   let parsedHtml = modifiedHtml;
@@ -517,22 +517,20 @@ const applyOperations = (html: string): string => {
         .split(';')
         .map((arg) => arg.replace(/[\s,]/gm, ''));
       // apply the function
-      console.log('args = ', args);
       let resultText;
       try {
         resultText = calcFunc.call(...args);
-        console.log('resultText = ', resultText);
       } catch (err: any) {
         resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
       }
       parsedHtml = parsedHtml.replace(result[0], resultText);
     }
-    console.log(parsedHtml);
-    // const teste = /{{calc\.(\w+)\(([^\)]+)\)}}/gm;
+    const regex = new RegExp(
+      `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+      'gm'
+    );
     result = regex.exec(parsedHtml);
-    console.log('result = ', result);
   }
-  console.log('parsedHtml = ', parsedHtml);
   return parsedHtml;
 };
 
