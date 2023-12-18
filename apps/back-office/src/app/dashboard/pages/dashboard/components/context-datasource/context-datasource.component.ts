@@ -30,6 +30,7 @@ import {
   DialogModule,
   TooltipModule,
   IconModule,
+  DividerModule,
 } from '@oort-front/ui';
 
 /**
@@ -39,11 +40,7 @@ import {
  * @returns the form group
  */
 const createContextDatasourceForm = (data?: PageContextT) => {
-  const origin =
-    data && 'resource' in data ? 'resource' : data ? 'refData' : 'resource';
-
   return new FormGroup({
-    origin: new FormControl<typeof origin>(origin, [Validators.required]),
     resource: new FormControl(
       data && 'resource' in data ? data.resource : null
     ),
@@ -73,6 +70,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     AlertModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
+    DividerModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -109,16 +107,6 @@ export class ContextDatasourceComponent
   }
 
   ngOnInit(): void {
-    // When origin changes, reset the other fields
-    this.form
-      .get('origin')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.form.get('resource')?.setValue(null);
-        this.form.get('refData')?.setValue(null);
-        this.form.get('displayField')?.setValue(null);
-      });
-
     // If the form has a resource, fetch it
     const resourceID = this.form.get('resource')?.value;
     if (resourceID) {
@@ -132,11 +120,12 @@ export class ContextDatasourceComponent
         const displayField = this.form.get('displayField');
         displayField?.setValue(null);
 
-        if (value) displayField?.enable();
-        else displayField?.disable();
         if (value) {
+          this.form.controls.refData.setValue(null);
+          this.refData = null;
+          displayField?.enable();
           this.getResource(value);
-        }
+        } else displayField?.disable();
       });
 
     // If form has a refData, fetch it
@@ -152,11 +141,12 @@ export class ContextDatasourceComponent
         const displayField = this.form.get('displayField');
         displayField?.setValue(null);
 
-        if (value) displayField?.enable();
-        else displayField?.disable();
         if (value) {
+          this.form.controls.resource.setValue(null);
+          this.resource = null;
           this.getReferenceData(value);
-        }
+          displayField?.enable();
+        } else displayField?.disable();
       });
 
     // do the same for ref data
@@ -207,22 +197,18 @@ export class ContextDatasourceComponent
 
   /** Updates the options for the display field select */
   private updateDisplayFieldOptions(): void {
-    const origin = this.form.get('origin')?.value;
-
-    switch (origin) {
-      case 'resource':
-        this.availableFields =
-          this.resource?.fields.map((x: any) => x.name) ?? [];
-        break;
-      case 'refData':
-        // TODO: When frontend changes about referenceData fields are merged,
-        // swap to the commented line to remove any casting
-        // this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
-        this.availableFields =
-          this.refData?.fields?.map((x: any) => x.name) ?? [];
-        break;
-      default:
-        this.availableFields = [];
+    console.log();
+    if (this.resource) {
+      this.availableFields =
+        this.resource?.fields.map((x: any) => x.name) ?? [];
+    } else if (this.refData) {
+      // TODO: When frontend changes about referenceData fields are merged,
+      // swap to the commented line to remove any casting
+      // this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
+      this.availableFields =
+        this.refData?.fields?.map((x: any) => x.name) ?? [];
+    } else {
+      this.availableFields = [];
     }
   }
 
@@ -230,23 +216,33 @@ export class ContextDatasourceComponent
   public onSubmit(): void {
     const formValue = this.form.getRawValue();
 
-    const noResource = !this.resource && formValue.origin === 'resource';
-    const noRefData = !this.refData && formValue.origin === 'refData';
-
-    if (!formValue.displayField || !formValue.origin || noResource || noRefData)
+    if (!formValue.displayField || (!formValue.refData && !formValue.resource))
       return;
 
-    const context: PageContextT =
-      formValue.origin === 'resource'
-        ? {
-            resource: this.resource?.id ?? '',
-            displayField: formValue.displayField ?? '',
-          }
-        : {
-            refData: this.refData?.id ?? '',
-            displayField: formValue.displayField ?? '',
-          };
+    const context: PageContextT = formValue.resource
+      ? {
+          resource: this.resource?.id ?? '',
+          displayField: formValue.displayField ?? '',
+        }
+      : {
+          refData: this.refData?.id ?? '',
+          displayField: formValue.displayField ?? '',
+        };
 
     this.dialogRef.close(context as any);
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.form.get(formField)?.value) {
+      this.form.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }
