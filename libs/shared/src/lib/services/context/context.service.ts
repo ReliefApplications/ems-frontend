@@ -213,17 +213,13 @@ export class ContextService {
     if ('field' in filter && filter.field) {
       // If it's a filter descriptor, replace value ( if string )
       if (filter.value && typeof filter.value === 'string') {
-        console.log(filter.value);
-        console.log(typeof filter.value);
         const filterName = filter.value?.match(filterRegex)?.[0];
         if (filterName) {
           filter.value = get(this.availableFilterFieldsValue, filterName);
-          console.log(filter.value);
         } else {
           const contextName = filter.value?.match(contextRegex)?.[0];
           if (contextName) {
             filter.value = get(this.context, contextName);
-            console.log(filter.value);
           }
         }
       }
