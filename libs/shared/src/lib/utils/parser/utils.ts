@@ -83,10 +83,7 @@ export const parseHtml = (
         options.aggregation
       );
     }
-
-    console.log('formattedHtml = ', formattedHtml);
     const a = applyOperations(formattedHtml);
-    console.log('a = ', a);
     return a;
   } else {
     return applyOperations(formattedHtml);
