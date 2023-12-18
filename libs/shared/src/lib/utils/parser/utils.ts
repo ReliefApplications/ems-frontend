@@ -487,27 +487,24 @@ export const getFieldsValue = (record: any) => {
  * @returns The html body with the calculated result of the functions
  */
 const applyOperations = (html: string): string => {
-  // // Define the regex pattern to match content inside {{calc.}} expressions with a nested <span> tag
-  const pattern = new RegExp(
-    `${CALC_PREFIX}(.*?)<span[^>]*>(.*?)</span>(.*?)${PLACEHOLDER_SUFFIX}`,
-    'g'
-  );
+  // // Define the regex pattern to match all {{calc.
+  const pattern = new RegExp(`${CALC_PREFIX}.*?${PLACEHOLDER_SUFFIX}`, 'g');
   // Use replace method with a callback function to handle all occurrences
-  const modifiedHtml = html.replace(
-    pattern,
-    (fullMatch, prefix, capturedContent, suffix) => {
-      // span regex to match span content inside fullMatch
-      const spanRegex = /<span style='.*?'>(.*?)<\/span>/;
-      const match = spanRegex.exec(fullMatch);
-      if (match && match[0]) {
-        // get the span and its style attributes
-        const spanPart = match[0].split('>')[0] + '>';
-        // return calc inside the span to apply style
-        return `${spanPart}${CALC_PREFIX}${prefix}${capturedContent}${suffix}${PLACEHOLDER_SUFFIX}</span>`;
-      }
-      return `${CALC_PREFIX}${prefix}${capturedContent}${suffix}${PLACEHOLDER_SUFFIX}`;
+  const modifiedHtml = html.replace(pattern, (fullMatch) => {
+    // span regex to match span content inside fullMatch
+    const spanRegex = /<span[^>]*>(.*?)<\/span>/g;
+    const match = spanRegex.exec(fullMatch);
+    // verify if have <span> inside {{calc.
+    if (match && match[0]) {
+      // remove the span and replace for the value inside span
+      const cleanedSpan = fullMatch.replace(spanRegex, match[1]);
+      // get the span and its style attributes
+      const spanPart = match[0].split('>')[0] + '>';
+      // return calc inside the span to apply style
+      return `${spanPart}${cleanedSpan}</span>`;
     }
-  );
+    return fullMatch;
+  });
   const regex = new RegExp(
     `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
     'gm'
