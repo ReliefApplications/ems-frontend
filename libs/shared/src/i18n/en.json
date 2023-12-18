@@ -2214,7 +2214,8 @@
 			"select": "Select a record"
 		},
 		"referenceData": {
-			"add": "Add new reference data"
+			"add": "Add new reference data",
+			"select": "Select a reference data"
 		},
 		"resource": {
 			"create": "Create a Resource",
