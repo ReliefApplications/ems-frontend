@@ -125,7 +125,9 @@ export class ContextDatasourceComponent
           this.refData = null;
           displayField?.enable();
           this.getResource(value);
-        } else displayField?.disable();
+        } else {
+        displayField?.disable();
+        }
       });
 
     // If form has a refData, fetch it
