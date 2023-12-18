@@ -29,8 +29,16 @@ import {
   Resource,
   ResourceQueryResponse,
 } from '../../../../models/resource.model';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../../models/reference-data.model';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE_METADATA } from '../graphql/queries';
+import {
+  GET_REFERENCE_DATA_METADATA,
+  GET_RESOURCE_METADATA,
+} from '../graphql/queries';
+import { Metadata } from '../../../../models/metadata.model';
 
 /** Component for the filters tab of the chart settings */
 @Component({
@@ -63,6 +71,8 @@ export class TabFiltersComponent implements OnInit {
   public tableCols = ['label', 'filter', 'actions'];
   /** The selected resource */
   public resource: Resource | null = null;
+  /** The selected reference data */
+  public referenceData: ReferenceData | null = null;
   /** Filters available to set filters from */
   public filterFields: any[] = [];
   /** Tells us which rows are expanded */
@@ -86,22 +96,60 @@ export class TabFiltersComponent implements OnInit {
     this.expandedRows = new Array(this.formArray.length).fill(false);
 
     const resourceID = this.formGroup.get('resource')?.value;
-
-    if (!resourceID) {
+    const referenceDataID = this.formGroup.get('referenceData')?.value;
+    if (!resourceID && !referenceDataID) {
       return;
     }
-
-    this.apollo
-      .query<ResourceQueryResponse>({
-        query: GET_RESOURCE_METADATA,
-        variables: {
-          id: resourceID,
-        },
-      })
-      .subscribe((res) => {
-        this.resource = res.data.resource;
-        this.filterFields = this.resource?.metadata ?? [];
-      });
+    if (resourceID) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_METADATA,
+          variables: {
+            id: resourceID,
+          },
+        })
+        .subscribe((res) => {
+          this.resource = res.data.resource;
+          this.filterFields = this.resource?.metadata ?? [];
+        });
+    } else if (referenceDataID) {
+      this.apollo
+        .query<ReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA_METADATA,
+          variables: {
+            id: referenceDataID,
+          },
+        })
+        .subscribe((res) => {
+          const getEditor = (field: any) => {
+            switch (field.type) {
+              case 'boolean': {
+                return 'boolean';
+              }
+              case 'number': {
+                return 'numeric';
+              }
+              case 'string': {
+                return 'text';
+              }
+              default: {
+                return '';
+              }
+            }
+          };
+          this.referenceData = res.data.referenceData;
+          this.filterFields = (this.referenceData.fields ?? []).map((field) => {
+            const meta: Metadata = {
+              name: field.name,
+              type: field.type,
+              automated: false,
+              filterable: !['object', 'array'].includes(field.type),
+              editor: getEditor(field),
+            };
+            return meta;
+          });
+        });
+    }
   }
 
   /**
