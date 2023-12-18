@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -9,6 +9,14 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '../../../models/metadata.model';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import {
+  AggregationDataQueryResponse,
+  ReferenceDataAggregationQueryResponse,
+} from '../../../models/aggregation.model';
 
 /**
  * Main component of Aggregation builder.
@@ -55,6 +63,8 @@ export class AggregationBuilderComponent
   private mappingFields = new BehaviorSubject<any[]>([]);
   /** Fields available for mapping as observable */
   public mappingFields$!: Observable<any[]>;
+  /** Aggregation records loading state */
+  public loadingAggregationRecords = false;
 
   /**
    * Getter for the pipeline of the aggregation form
@@ -69,10 +79,18 @@ export class AggregationBuilderComponent
    * Main component of Aggregation builder.
    * Aggregation are used to generate charts.
    *
+   * @param dialog CDK dialog service
+   * @param snackBar UI Snackbar service
+   * @param translateService TranslateService
+   * @param aggregationService Shared Aggregation Service
    * @param queryBuilder Shared query builder service
    * @param aggregationBuilder Shared aggregation builder service
    */
   constructor(
+    private dialog: Dialog,
+    private snackBar: SnackbarService,
+    private translateService: TranslateService,
+    private aggregationService: AggregationService,
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService
   ) {
@@ -138,6 +156,16 @@ export class AggregationBuilderComponent
    * Get the filter fields needed for the current resource
    */
   private setFilterFields(): void {
+    const updateSelectedFilterFields = () => {
+      // On first load we update the selected filter fields from this function
+      // As the getFilterFields request takes time to complete
+      if (!this.selectedFilterFields.value.length) {
+        const currentFilterFields = this.filterFields.value.filter((mfi) =>
+          this.selectedFields.value.find((si) => si.name === mfi.name)
+        );
+        this.selectedFilterFields.next(currentFilterFields);
+      }
+    };
     if (this.resource) {
       this.queryBuilder
         .getFilterFields({
@@ -145,15 +173,39 @@ export class AggregationBuilderComponent
         })
         .then((filterFields: Metadata[]) => {
           this.filterFields.next(filterFields);
-          // On first load we update the selected filter fields from this function
-          // As the getFilterFields request takes time to complete
-          if (!this.selectedFilterFields.value.length) {
-            const currentFilterFields = filterFields.filter((mfi) =>
-              this.selectedFields.value.find((si) => si.name === mfi.name)
-            );
-            this.selectedFilterFields.next(currentFilterFields);
-          }
+          updateSelectedFilterFields();
         });
+    } else if (this.referenceData) {
+      const refDataMeta: Metadata[] = [];
+      const getEditor = (field: any) => {
+        switch (field.type) {
+          case 'boolean': {
+            return 'boolean';
+          }
+          case 'number': {
+            return 'numeric';
+          }
+          case 'string': {
+            return 'text';
+          }
+          default: {
+            return '';
+          }
+        }
+      };
+      (this.referenceData.fields ?? []).forEach((field) => {
+        const meta: Metadata = {
+          name: field.graphQLFieldName || field.name,
+          type: field.type,
+          automated: false,
+          filterable: !['object', 'array'].includes(field.type),
+          editor: getEditor(field),
+        };
+
+        refDataMeta.push(meta);
+      });
+      this.filterFields.next(refDataMeta);
+      updateSelectedFilterFields();
     }
   }
 
@@ -243,5 +295,69 @@ export class AggregationBuilderComponent
       this.metaFields.next([]);
       this.mappingFields.next([]);
     }
+  }
+
+  /**
+   * Preview aggregation, opening dialog with monaco editor to display data.
+   *
+   */
+  public async onPreviewAggregation() {
+    if (this.loadingAggregationRecords) {
+      return;
+    }
+    if (!this.aggregationForm.value.id) {
+      this.snackBar.openSnackBar(
+        this.translateService.instant(
+          'pages.aggregation.preview.missingAggregation'
+        ),
+        { error: true }
+      );
+      return;
+    }
+    // get the aggregation data
+    this.loadingAggregationRecords = true;
+    const query$ = this.aggregationService.aggregationDataQuery({
+      referenceData: this.referenceData?.id || '',
+      resource: this.resource?.id || '',
+      aggregation: this.aggregationForm.value.id || '',
+      sourceFields: this.aggregationForm.value.sourceFields,
+      pipeline: this.aggregationForm.value.pipeline,
+      first: -1,
+    });
+
+    const { data: aggregationData, errors } = await firstValueFrom(query$);
+    if (!aggregationData || errors) {
+      this.loadingAggregationRecords = false;
+      if (errors?.length) {
+        this.snackBar.openSnackBar(errors[0].message, { error: true });
+      }
+      return;
+    }
+    this.loadingAggregationRecords = false;
+    this.openAggregationPayload(aggregationData);
+  }
+
+  /**
+   * Opens a dialog displaying the aggregation data given
+   *
+   * @param aggregationData Aggregation data to display in the preview dialog
+   */
+  public async openAggregationPayload(
+    aggregationData:
+      | AggregationDataQueryResponse
+      | ReferenceDataAggregationQueryResponse
+  ) {
+    const { PayloadModalComponent } = await import(
+      '../../payload-modal/payload-modal.component'
+    );
+    this.dialog.open(PayloadModalComponent, {
+      data: {
+        payload:
+          'recordsAggregation' in aggregationData
+            ? aggregationData.recordsAggregation
+            : aggregationData.referenceDataAggregation,
+        aggregationPayload: true,
+      },
+    });
   }
 }

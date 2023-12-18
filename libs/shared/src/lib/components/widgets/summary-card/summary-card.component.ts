@@ -36,7 +36,6 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, cloneDeep, isNaN, isNil } from 'lodash';
-import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResourceQueryResponse } from '../../../models/resource.model';
@@ -46,6 +45,8 @@ import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
+import searchFilters from '../../../utils/filter/search-filters';
+import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -134,15 +135,16 @@ export class SummaryCardComponent
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
+    const skippedFields = ['id', 'incrementalId'];
     if (this.searchControl.value) {
-      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
-          { logic: 'and', filters: [this.layout?.query.filter] },
           {
             logic: 'or',
-            filters: searchFilters(
+            field: '_globalSearch',
+            operator: 'contains',
+            value: searchFilters(
               this.searchControl.value,
               this.fields,
               skippedFields
@@ -158,10 +160,7 @@ export class SummaryCardComponent
     }
     return {
       logic: 'and',
-      filters: [
-        filter,
-        this.contextService.injectDashboardFilterValues(this.contextFilters),
-      ],
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
     };
   }
 
@@ -393,14 +392,21 @@ export class SummaryCardComponent
         })
         .then(this.updateCards.bind(this));
     } else if (this.useReferenceData) {
-      this.sortedCachedCards = this.cachedCards.filter((card: any) => {
-        return (
-          JSON.stringify(card.rawValue)
-            .replace(/("\w+":)/g, '')
-            .toLowerCase()
-            .indexOf(search.toLowerCase()) !== -1
-        );
-      });
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(
+        this.cachedCards
+          .filter((x) => filterReferenceData(x.rawValue, contextFilters))
+          .filter((card: any) => {
+            return (
+              JSON.stringify(card.rawValue)
+                .replace(/("\w+":)/g, '')
+                .toLowerCase()
+                .indexOf(search.toLowerCase()) !== -1
+            );
+          })
+      );
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.pageInfo.length = this.sortedCachedCards.length;
     }
@@ -633,7 +639,7 @@ export class SummaryCardComponent
       card.aggregation as string,
       DEFAULT_PAGE_SIZE,
       0,
-      this.contextService.injectDashboardFilterValues(this.contextFilters),
+      this.contextService.injectContext(this.contextFilters),
       this.widget.settings.at
         ? this.contextService.atArgumentValue(this.widget.settings.at)
         : undefined
@@ -688,8 +694,13 @@ export class SummaryCardComponent
         metadata: fields,
       }));
       this.pageInfo.length = this.cachedCards.length;
-      this.sortedCachedCards = cloneDeep(this.cachedCards);
-      this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+        filterReferenceData(x.rawValue, contextFilters)
+      );
+      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.loading = false;
       // Set sort fields
       this.sortFields = [];
@@ -764,6 +775,7 @@ export class SummaryCardComponent
         this.pageInfo.skip,
         this.pageInfo.skip + this.pageInfo.pageSize
       );
+      this.pageInfo.length = this.sortedCachedCards.length;
     }
   }
 
@@ -771,6 +783,27 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
+    if (this.useReferenceData) {
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(
+        this.cachedCards.filter((x) =>
+          filterReferenceData(x.rawValue, contextFilters)
+        )
+      );
+      if (this.searchControl.value) {
+        this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
+          return (
+            JSON.stringify(card.rawValue)
+              .replace(/("\w+":)/g, '')
+              .toLowerCase()
+              .indexOf((this.searchControl.value as string).toLowerCase()) !==
+            -1
+          );
+        });
+      }
+    }
     this.onPage({
       pageSize: DEFAULT_PAGE_SIZE,
       skip: 0,

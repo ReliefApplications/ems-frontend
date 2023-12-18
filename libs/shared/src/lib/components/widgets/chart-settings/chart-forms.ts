@@ -4,6 +4,7 @@ import { createMappingForm } from '../../ui/aggregation-builder/aggregation-buil
 import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
+import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -340,18 +341,26 @@ const createFilterForm = (value: any) => {
  * @returns chart widget form group
  */
 export const createChartWidgetForm = (id: any, value: any) => {
-  const form = fb.group({
-    id,
-    title: [get(value, 'title', ''), Validators.required],
-    chart: createChartForm(get(value, 'chart')),
-    resource: [get(value, 'resource', null)],
-    referenceData: [get(value, 'referenceData', null)],
-    contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
-    filters: fb.array(
-      get(value, 'filters', []).map((x: any) => createFilterForm(x))
-    ),
-    at: [get(value, 'at', '')],
-  });
+  const form = fb.group(
+    {
+      id,
+      title: [get(value, 'title', ''), Validators.required],
+      chart: createChartForm(get(value, 'chart')),
+      resource: [get(value, 'resource', null)],
+      referenceData: [get(value, 'referenceData', null)],
+      contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
+      filters: fb.array(
+        get(value, 'filters', []).map((x: any) => createFilterForm(x))
+      ),
+      at: [get(value, 'at', '')],
+    },
+    {
+      validators: mutuallyExclusive({
+        required: true,
+        fields: ['resource', 'referenceData'],
+      }),
+    }
+  );
 
   return extendWidgetForm(form, value?.widgetDisplay);
 };

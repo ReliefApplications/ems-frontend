@@ -6,11 +6,12 @@ import {
   OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { clone, get } from 'lodash';
+import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
@@ -31,6 +32,8 @@ export class FilterRowComponent
   @Input() form!: UntypedFormGroup;
   /** Available fields */
   @Input() fields: any[] = [];
+  /** Can use context variables */
+  @Input() canUseContext = false;
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -45,6 +48,9 @@ export class FilterRowComponent
   numericEditor!: TemplateRef<any>;
   /** Date field editor template */
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
+  /** Reference to context editor template */
+  @ViewChild('contextEditor', { static: false })
+  contextEditor!: TemplateRef<any>;
   /** Current field */
   public field?: any;
   /** Template reference to the editor */
@@ -53,6 +59,8 @@ export class FilterRowComponent
   public hideEditor = false;
   /** Available operators */
   public operators: any[] = [];
+  /** Is context editor used */
+  public contextEditorIsActivated = false;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -90,9 +98,13 @@ export class FilterRowComponent
     }
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     const initialField = this.form.get('field')?.value;
-    if (initialField && this.fields.length > 0) {
+    if (
+      initialField &&
+      this.fields.length > 0 &&
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
+    ) {
       this.setField(initialField);
     }
   }
@@ -169,8 +181,20 @@ export class FilterRowComponent
    * @param field filter field
    */
   private setEditor(field: any) {
+    const value = this.form.get('value')?.value;
+    this.contextEditorIsActivated = false;
+    // let editorSet = false;
+    // const value = this.form.get('value')?.value;
+    // this.isFilterEditorOnView = false;
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
+    } else if (
+      typeof value === 'string' &&
+      value.startsWith('{{context.') &&
+      !this.contextEditorIsActivated
+    ) {
+      this.editor = this.contextEditor;
+      this.contextEditorIsActivated = true;
     } else {
       switch (field.editor) {
         case 'text': {
@@ -199,6 +223,29 @@ export class FilterRowComponent
           this.editor = this.textEditor;
         }
       }
+    }
+  }
+
+  /** Toggles filter editor */
+  // public toggleFilterEditor() {
+  //   this.form.get('value')?.setValue(null);
+  //   if (this.editor === this.dashboardFilterEditor) {
+  //     this.setEditor(this.field);
+  //     this.isFilterEditorOnView = false;
+  //   } else {
+  //     this.editor = this.dashboardFilterEditor;
+  //     this.isFilterEditorOnView = true;
+  //   }
+  // }
+
+  /** Toggles context editor */
+  public toggleContextEditor() {
+    this.form.get('value')?.setValue(null);
+    if (this.editor === this.contextEditor) {
+      this.setEditor(this.field);
+    } else {
+      this.editor = this.contextEditor;
+      this.contextEditorIsActivated = true;
     }
   }
 }

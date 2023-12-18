@@ -117,6 +117,7 @@ export class AggregationBuilderService {
                     ? {
                         ...x,
                         type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                        multiSelect: false,
                       }
                     : x
                 );

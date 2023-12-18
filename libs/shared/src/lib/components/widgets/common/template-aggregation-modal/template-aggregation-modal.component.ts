@@ -104,8 +104,9 @@ export class TemplateAggregationModalComponent
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
+        // As the ui doesn't allow resource to be set to null while resource appears, we can always remove the aggregation
+        this.form.get('aggregation')?.setValue(null);
         if (value) {
-          this.form.get('aggregation')?.setValue(null);
           this.getResource(value);
         } else {
           this.resource = null;
@@ -118,8 +119,9 @@ export class TemplateAggregationModalComponent
       .get('referenceData')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
+        // As the ui doesn't allow ref data to be set to null while resource appears, we can always remove the aggregation
+        this.form.get('aggregation')?.setValue(null);
         if (value) {
-          this.form.get('aggregation')?.setValue(null);
           this.getReferenceData(value);
         } else {
           this.referenceData = null;
