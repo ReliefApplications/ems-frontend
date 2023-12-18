@@ -499,17 +499,15 @@ const applyOperations = (html: string): string => {
   const modifiedHtml = html.replace(
     pattern,
     (_, prefix, capturedContent, suffix) => {
-      return `${prefix}${capturedContent}${suffix}`;
+      return `{{calc.${prefix}${capturedContent}${suffix}}}`;
     }
   );
-  console.log(modifiedHtml);
   const regex = new RegExp(
-    `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+    `${CALC_PREFIX}\\.(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
     'gm'
   );
   let parsedHtml = modifiedHtml;
   let result = regex.exec(parsedHtml);
-  console.log('result = ', result);
   while (result !== null) {
     // get the function
     const calcFunc = get(calcFunctions, result[1]);
@@ -529,7 +527,10 @@ const applyOperations = (html: string): string => {
       }
       parsedHtml = parsedHtml.replace(result[0], resultText);
     }
+    console.log(parsedHtml);
+    // const teste = /{{calc\.(\w+)\(([^\)]+)\)}}/gm;
     result = regex.exec(parsedHtml);
+    console.log('result = ', result);
   }
   console.log('parsedHtml = ', parsedHtml);
   return parsedHtml;
