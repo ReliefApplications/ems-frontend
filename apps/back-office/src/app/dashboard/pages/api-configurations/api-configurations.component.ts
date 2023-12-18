@@ -46,24 +46,35 @@ export class ApiConfigurationsComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Updating state */
   public updating = false;
+  /** Query reference */
   private apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
+  /** Columns to display */
   displayedColumns = ['name', 'status', 'authType', 'actions'];
+  /** Data source */
   dataSource = new Array<ApiConfiguration>();
+  /** Cached data */
   public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === SORTING ===
+  /** Sort object */
   private sort!: TableSort;
 
   // === FILTERS ===
+  /** Filter object */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
+  /** Filter form */
   form = this.fb.group({});
+  /** Show filter */
   public showFilters = false;
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,

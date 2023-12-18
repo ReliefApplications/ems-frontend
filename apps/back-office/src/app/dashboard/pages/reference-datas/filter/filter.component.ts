@@ -21,9 +21,18 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
   `,
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /**
+   * Loading state
+   */
   @Input() loading = false;
+  /**
+   * Event emitter to emit the filter value
+   */
   @Output() filter = new EventEmitter<any>();
 
+  /**
+   * Form group
+   */
   public form = this.fb.group({});
 
   /**

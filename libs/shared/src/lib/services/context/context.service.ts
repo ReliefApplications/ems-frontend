@@ -6,7 +6,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual } from 'lodash';
+import { isNil, isEmpty, get, isEqual, isObject } from 'lodash';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
@@ -112,6 +112,11 @@ export class ContextService {
     return this.filter.getValue();
   }
 
+  /** Current dashboard context */
+  public context: {
+    [key: string]: any;
+  } | null = null;
+
   /**
    * Dashboard context service
    *
@@ -169,43 +174,69 @@ export class ContextService {
   }
 
   /**
-   * Injects current dashboard filter into an object.
+   * Replace {{context}} placeholders in object, with context values
+   *
+   * @param object object with placeholders
+   * @returns object with replaced placeholders
+   */
+  public replaceContext(object: any): any {
+    const context = this.context;
+    if (!context) return object;
+    const regex = /{{context\.(.*?)}}/g;
+    return JSON.parse(
+      JSON.stringify(object).replace(regex, (match) => {
+        const field = match.replace('{{context.', '').replace('}}', '');
+        return get(context, field) || match;
+      })
+    );
+  }
+
+  /**
+   * Injects current context into an object.
    *
    * @param f filter to inject context into
-   * @returns filter with values from dashboard filter
+   * @returns filter with values from context
    */
-  public injectDashboardFilterValues<
-    T extends CompositeFilterDescriptor | FilterDescriptor
-  >(f: T): T {
+  public injectContext<T extends CompositeFilterDescriptor | FilterDescriptor>(
+    f: T
+  ): T {
     const filter = cloneDeep(f);
-    if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
-      filter.filters = [];
-      return filter;
-    }
-
-    const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
+    // if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
+    //   filter.filters = [];
+    //   return filter;
+    // }
+    // Regex to detect {{filter.}} in object
+    const filterRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
+    // Regex to detect {{context.}} in object
+    const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
 
     if ('field' in filter && filter.field) {
       // If it's a filter descriptor, replace value ( if string )
       if (filter.value && typeof filter.value === 'string') {
-        const filterName = filter.value?.match(regex)?.[0];
+        const filterName = filter.value?.match(filterRegex)?.[0];
         if (filterName) {
           filter.value = get(this.availableFilterFieldsValue, filterName);
+        } else {
+          const contextName = filter.value?.match(contextRegex)?.[0];
+          if (contextName) {
+            filter.value = get(this.context, contextName);
+          }
         }
       }
     } else if ('filters' in filter && filter.filters) {
       // If it's a composite filter, replace values in filters
       filter.filters = filter.filters
-        .map((f) => this.injectDashboardFilterValues(f))
+        .map((f) => this.injectContext(f))
         .filter((f) => {
           // Filter out fields that are not in the available filter field
           // Meaning, their values are still using the {{filter.}} syntax
           if ('value' in f) {
-            return !isNil(f.value) && !isEmpty(f.value);
-            // const filterName = f.value?.match(regex)?.[0];
-            // return !(filterName && !availableFilterFields[filterName]);
-          } else return true;
-          // return true;
+            return isObject(f.value)
+              ? !isNil(f.value) && !isEmpty(f.value)
+              : !isNil(f.value);
+          } else {
+            return true;
+          }
         });
     }
     return filter;

@@ -24,7 +24,13 @@ import { IconModule } from '@oort-front/ui';
   `,
 })
 export class ResourceCustomFiltersComponent extends QuestionAngular<QuestionResourceCustomFiltersModel> {
+  /**
+   * Filter example 1
+   */
   filterExample1 = { field: 'name', operator: 'contains', value: 'Laura' };
+  /**
+   * Filter example 2
+   */
   filterExample2 = { field: 'age', operator: '>', value: '{question1}' };
 
   /**

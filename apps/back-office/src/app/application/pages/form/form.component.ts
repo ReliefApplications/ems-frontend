@@ -32,6 +32,7 @@ import { Dialog } from '@angular/cdk/dialog';
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent extends UnsubscribeComponent implements OnInit {
+  /** Form component */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
 

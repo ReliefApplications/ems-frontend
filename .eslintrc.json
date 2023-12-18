@@ -49,6 +49,7 @@
           {
             "exemptEmptyConstructors": false,
             "contexts": [
+              "PropertyDefinition",
               "ExportDefaultDeclaration > ArrowFunctionExpression",
               "TSInterfaceDeclaration",
               "TSEnumDeclaration",

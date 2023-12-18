@@ -10,13 +10,19 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./series-settings.component.css'],
 })
 export class SeriesSettingsComponent implements OnInit, OnChanges {
+  /** Form array */
   @Input() formArray!: FormArray;
+  /** Form group */
   public formGroup?: FormGroup;
 
+  /** Fill types */
   public fillTypes = ['solid', 'gradient'];
+  /** Interpolation types */
   public interpolationTypes = ['linear', 'cubic', 'step'];
+  /** Step interpolation types */
   public stepInterpolationTypes = ['before', 'after', 'middle'];
 
+  /** Selected serie */
   selectedSerie = new FormControl<string | undefined>(undefined);
 
   ngOnInit(): void {
