@@ -47,7 +47,7 @@ export class SelectMenuComponent
 {
   /** Tells if the select menu should allow multi selection */
   @Input() multiselect = false;
-  // Tells if the select menu should be disabled
+  /** Tells if the select menu should be disabled */
   @Input() disabled = false;
   /** Tells if some styles to the current ul element should be applied */
   @Input() isGraphQlSelect = false;
@@ -63,21 +63,25 @@ export class SelectMenuComponent
   /** Default value to be displayed when no option is selected */
   @Input() placeholder = '';
 
-  // Emits when the list is opened
+  /** Emits when the list is opened */
   @Output() opened = new EventEmitter<void>();
-  // Emits when the list is closed
+  /** Emits when the list is closed */
   @Output() closed = new EventEmitter<void>();
-  // Emits the list of the selected options
+  /** Emits the list of the selected options */
   @Output() selectedOption = new EventEmitter<string | string[]>();
 
+  /** List of options */
   @ContentChildren(SelectOptionComponent, { descendants: true })
   optionList!: QueryList<SelectOptionComponent>;
 
+  /** Template reference for the option panel */
   @ViewChild('optionPanel', { static: true }) optionPanel!: TemplateRef<any>;
 
-  /* Search control and loading state */
+  /** Search control */
   public searchControl = new FormControl('', { nonNullable: true });
+  /** Loading state */
   public loading = false;
+  /** Subscription to the search control */
   private searchSubscriptionActive!: Subscription;
 
   /** Array to store the values selected */
@@ -86,17 +90,24 @@ export class SelectMenuComponent
   public listBoxFocused = false;
   /** Text to be displayed in the trigger when some selections are made */
   public displayTrigger = this.placeholder;
-  // Needed property for the components in survey that would use the select-menu component
+  /** Needed property for the components in survey that would use the select-menu component */
   public triggerUIChange$ = new Subject<boolean>();
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** Click outside listener */
   private clickOutsideListener!: () => void;
+  /** Subscription to the closing actions */
   private selectClosingActionsSubscription!: Subscription;
+  /** Overlay reference */
   private overlayRef!: OverlayRef;
+  /** Timeout listener for the animation */
   private applyAnimationTimeoutListener!: NodeJS.Timeout;
+  /** Timeout listener for the closing of the panel */
   private closePanelTimeoutListener!: NodeJS.Timeout;
 
   /** Control access value functions */
   onChange!: (value: any) => void;
+  /** Control access touch functions */
   onTouch!: () => void;
 
   /** @returns if current option list is empty by option number or option display number by search */

@@ -111,7 +111,9 @@ export class DashboardComponent
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
   /** Timeout to scroll to newly added widget */
-  private timeoutListener!: NodeJS.Timeout;
+  private addTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to load grid options */
+  private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
@@ -321,9 +323,20 @@ export class DashboardComponent
 
           this.dashboardService.openDashboard(this.dashboard);
           this.widgets = cloneDeep(
-            this.dashboard.structure
-              ? [...this.dashboard.structure.filter((x: any) => x !== null)]
-              : []
+            data.dashboard.structure
+              ?.filter((x: any) => x !== null)
+              .map((widget: any) => {
+                const contextData = this.dashboard?.contextData;
+                this.contextService.context = contextData || null;
+
+                if (!contextData) return widget;
+                // If tile has context, replace the templates with the values
+                // and keep the original, to be used for the widget settings
+                const settings = widget.settings;
+                widget.settings = this.contextService.replaceContext(settings);
+                widget.originalSettings = settings;
+                return widget;
+              }) || []
           );
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
@@ -333,7 +346,10 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          setTimeout(() => {
+          if (this.gridOptionsTimeoutListener) {
+            clearTimeout(this.gridOptionsTimeoutListener);
+          }
+          this.gridOptionsTimeoutListener = setTimeout(() => {
             this.gridOptions = {
               ...this.gridOptions,
               scrollToNewItems: true,
@@ -364,8 +380,11 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
+    }
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
     }
     localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'filterStructure');
@@ -405,11 +424,11 @@ export class DashboardComponent
   onAdd(e: any): void {
     const widget = cloneDeep(e);
     this.widgets.push(widget);
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
     }
     // scroll to the element once it is created
-    this.timeoutListener = setTimeout(() => {
+    this.addTimeoutListener = setTimeout(() => {
       const widgetComponents =
         this.widgetGridComponent.widgetComponents.toArray();
       const target = widgetComponents[widgetComponents.length - 1];
@@ -433,21 +452,21 @@ export class DashboardComponent
         // Find the widget to be edited
         const widgetComponents =
           this.widgetGridComponent.widgetComponents.toArray();
-        const targetIndex = widgetComponents.findIndex(
-          (v: any) => v.id === e.id
-        );
-        if (targetIndex > -1) {
+        const index = widgetComponents.findIndex((v: any) => v.id === e.id);
+        if (index > -1) {
           // Update the configuration
-          const options = this.widgets[targetIndex]?.settings?.defaultLayout
-            ? {
-                ...e.options,
-                defaultLayout: this.widgets[targetIndex].settings.defaultLayout,
-              }
-            : e.options;
+          const options = this.contextService.replaceContext(
+            this.widgets[index]?.settings?.defaultLayout
+              ? {
+                  ...e.options,
+                  defaultLayout: this.widgets[index].settings.defaultLayout,
+                }
+              : e.options
+          );
           if (options) {
             // Save configuration
-            this.widgets[targetIndex] = {
-              ...this.widgets[targetIndex],
+            this.widgets[index] = {
+              ...this.widgets[index],
               settings: options,
             };
             this.autoSaveChanges();

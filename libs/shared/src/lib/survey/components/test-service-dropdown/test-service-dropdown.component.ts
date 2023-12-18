@@ -41,13 +41,19 @@ export class TestServiceDropdownComponent
   extends QuestionAngular<QuestionTestServiceDropdownModel>
   implements OnInit, OnDestroy
 {
+  /** Resource */
   resource = '';
+  /** Text field */
   textField = '';
 
+  /** Selected record */
   public selectedRecord?: Record;
+  /** Records control */
   public recordsControl!: UntypedFormControl;
+  /** Records query */
   public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
 
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
   /**

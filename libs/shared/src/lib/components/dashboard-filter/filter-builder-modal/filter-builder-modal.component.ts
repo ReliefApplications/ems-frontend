@@ -54,7 +54,7 @@ const QUESTION_TYPES = [
   // 'imagepicker',
   'boolean',
   // 'image',
-  // 'html',
+  'html',
   // 'signaturepad',
   // 'expression',
   // 'matrix',
@@ -136,6 +136,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueFalse',
   'valueName',
   'inputType',
+  'html',
 ];
 
 /**
@@ -164,6 +165,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
 
   /**

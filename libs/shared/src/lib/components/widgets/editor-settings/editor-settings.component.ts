@@ -54,6 +54,8 @@ export class EditorSettingsComponent
   public referenceData: ReferenceData | null = null;
   /** Current layout */
   public layout: Layout | null = null;
+  /** Loading indicator */
+  public loading = true;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -97,11 +99,12 @@ export class EditorSettingsComponent
     // Subscribe to resource changes
     this.widgetFormGroup.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
+      .subscribe((resource) => {
+        this.widget.settings.resource = resource;
+        if (resource) {
           this.widgetFormGroup.controls.referenceData.setValue(null);
           this.widgetFormGroup.controls.showDataSourceLink.enable();
-          this.getResource(value);
+          this.getResource(resource);
         } else {
           this.resource = null;
           this.layout = null;
@@ -110,9 +113,10 @@ export class EditorSettingsComponent
     // Subscribe to layout changes
     this.widgetFormGroup.controls.layout.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value && this.resource) {
-          this.getResource(this.resource.id as string, value);
+      .subscribe((layout) => {
+        this.widget.settings.layout = layout;
+        if (layout && this.resource) {
+          this.getResource(this.resource.id as string, layout);
         } else {
           this.layout = null;
         }
@@ -125,14 +129,27 @@ export class EditorSettingsComponent
     // Subscribe to reference data changes
     this.widgetFormGroup.controls.referenceData.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
+      .subscribe((referenceData) => {
+        this.widget.settings.referenceData = referenceData;
+        if (referenceData) {
           this.widgetFormGroup.controls.resource.setValue(null);
           this.widgetFormGroup.controls.showDataSourceLink.disable();
-          this.getReferenceData(value);
+          this.getReferenceData(referenceData);
         } else {
           this.referenceData = null;
         }
+      });
+    if (!resourceID && !referenceDataID) {
+      this.updateFields();
+      this.loading = false;
+    }
+
+    // Refresh when aggregations field changes
+    this.widgetFormGroup.controls.aggregations.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((aggregations) => {
+        this.widget.settings.aggregations = aggregations;
+        this.updateFields();
       });
   }
 
@@ -149,12 +166,9 @@ export class EditorSettingsComponent
         this.widget.settings.text = this.widgetFormGroup.value.text;
         this.widget.settings.record = this.widgetFormGroup.value.record;
         this.widget.settings.title = this.widgetFormGroup.value.title;
-        this.widget.settings.resource = this.widgetFormGroup.value.resource;
-        this.widget.settings.layout = this.widgetFormGroup.value.layout;
         this.widget.settings.showDataSourceLink =
           this.widgetFormGroup.value.showDataSourceLink;
       });
-    this.updateFields();
   }
 
   /**
@@ -164,6 +178,7 @@ export class EditorSettingsComponent
    * @param layout selected layout id ( optional )
    */
   private getResource(resource: string, layout?: string | null) {
+    this.loading = true;
     this.apollo
       .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
@@ -172,16 +187,17 @@ export class EditorSettingsComponent
           layout: layout ? [layout] : undefined,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.resource = res.data.resource;
+      .subscribe(({ data }) => {
+        if (data) {
+          this.resource = data.resource;
           if (layout) {
-            this.layout = res.data?.resource.layouts?.edges[0]?.node || null;
+            this.layout = data.resource.layouts?.edges[0]?.node || null;
           } else {
             this.layout = null;
           }
           this.updateFields();
         }
+        this.loading = false;
       });
   }
 
@@ -191,6 +207,7 @@ export class EditorSettingsComponent
    * @param referenceData reference data id
    */
   private getReferenceData(referenceData: string) {
+    this.loading = true;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -203,6 +220,7 @@ export class EditorSettingsComponent
           this.referenceData = data.referenceData;
           this.updateFields();
         }
+        this.loading = false;
       });
   }
 
@@ -232,7 +250,10 @@ export class EditorSettingsComponent
     }
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
-      ...this.dataTemplateService.getAutoCompleterKeys(fields),
+      ...this.dataTemplateService.getAutoCompleterKeys(
+        fields,
+        this.widget.settings.aggregations
+      ),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
     ]);
   }

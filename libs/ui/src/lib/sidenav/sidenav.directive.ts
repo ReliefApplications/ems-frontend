@@ -25,18 +25,33 @@ import { DomPortal } from '@angular/cdk/portal';
   exportAs: 'uiSidenavDirective',
 })
 export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
+  /** Whether the sidenav is opened */
   @Input() opened = true;
+  /** Whether the sidenav is to be kept on fullscreen */
   @Input() keepFullscreen = false;
+  /** Whether the sidenav is visible */
   @Input() visible = true;
+  /** Sidenav mode */
   @Input() mode: SidenavTypes = 'side';
+  /** Sidenav position */
   @Input() position: SidenavPositionTypes = 'start';
+  /** Event emitter for opened change */
   @Output() openedChange = new EventEmitter<boolean>();
+  /** Timeout to toggle */
+  private toggleTimeoutListener!: NodeJS.Timeout;
 
+  /** Click outside listener */
   private clickOutsideListener!: () => void;
+  /** Fullscreen listener */
   private fullscreenListener!: () => void;
+  /** Expand change event listener */
+  private expandChangeListener!: () => void;
+  /** Whether the toggle was used */
   private toggleUsed = false;
 
+  /** Overlay reference */
   private overlayRef?: OverlayRef;
+  /** Dom portal */
   private portal?: DomPortal;
 
   /**
@@ -85,13 +100,17 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
         }
       );
       // Subscribe to widget expanded events
-      this.renderer.listen(this.document, 'expandchange', (event) => {
-        if (event.detail.expanded) {
-          this.createOverlay();
-        } else {
-          this.closeOverlay();
+      this.expandChangeListener = this.renderer.listen(
+        this.document,
+        'expandchange',
+        (event) => {
+          if (event.detail.expanded) {
+            this.createOverlay();
+          } else {
+            this.closeOverlay();
+          }
         }
-      });
+      );
     }
   }
 
@@ -157,7 +176,10 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   /** Handles the toggle of the sidenav status */
   public toggle() {
     this.toggleUsed = true;
-    setTimeout(() => {
+    if (this.toggleTimeoutListener) {
+      clearTimeout(this.toggleTimeoutListener);
+    }
+    this.toggleTimeoutListener = setTimeout(() => {
       this.opened = !this.opened;
       this.openedChange.emit(this.opened);
       this.toggleUsed = false;
@@ -165,11 +187,17 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    if (this.toggleTimeoutListener) {
+      clearTimeout(this.toggleTimeoutListener);
+    }
     if (this.clickOutsideListener) {
       this.clickOutsideListener();
     }
     if (this.fullscreenListener) {
       this.fullscreenListener();
+    }
+    if (this.expandChangeListener) {
+      this.expandChangeListener();
     }
   }
 }

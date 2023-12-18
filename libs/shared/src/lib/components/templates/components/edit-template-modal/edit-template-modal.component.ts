@@ -56,6 +56,7 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
 })
 export class EditTemplateModalComponent implements OnInit {
   // === REACTIVE FORM ===
+  /** Reactive form for the template */
   form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     type: [get(this.data, 'type', 'email'), Validators.required],

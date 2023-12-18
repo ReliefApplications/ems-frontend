@@ -47,21 +47,51 @@ export class RecordsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Query to get records.
+   */
   private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
+  /**
+   * Data source for records.
+   */
   public dataSource = new Array<Record>();
+  /**
+   * Cached records.
+   */
   private cachedRecords: Record[] = [];
+  /**
+   * Resource.
+   */
   public resource!: Resource;
+  /**
+   * Default columns for records.
+   */
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
+  /**
+   * Columns to display.
+   */
   displayedColumnsRecords: string[] = [];
 
+  /**
+   * Show deleted records.
+   */
   showDeletedRecords = false;
+  /**
+   * Page info.
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: '',
   };
+  /**
+   * Loading state.
+   */
   public loading = true;
+  /**
+   * Upload state.
+   */
   public showUpload = false;
 
   /** @returns True if the records tab is empty */

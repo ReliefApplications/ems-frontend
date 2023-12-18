@@ -235,6 +235,9 @@ export interface Dashboard {
   canDelete?: boolean;
   page?: Page;
   step?: Step;
+  contextData?: {
+    [key: string]: any;
+  };
   buttons?: {
     text: string;
     href: string;

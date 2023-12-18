@@ -29,6 +29,9 @@ import {
   >`,
 })
 class TestingComponent {
+  /**
+   * Tab content
+   */
   @ViewChild('tabContent', { read: TemplateRef }) tabContent!: TemplateRef<any>;
 }
 describe('TabContentDirective', () => {

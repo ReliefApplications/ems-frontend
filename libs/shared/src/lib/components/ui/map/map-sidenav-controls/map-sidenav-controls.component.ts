@@ -17,8 +17,11 @@ import { MapComponent } from '../map.component';
   styleUrls: ['./map-sidenav-controls.component.scss'],
 })
 export class MapSidenavControlsComponent {
+  /** Layers tree */
   private layersTree!: L.Control.Layers.TreeObject[];
+  /** Basemaps tree */
   private basemaps!: L.Control.Layers.TreeObject[];
+  /** Map component */
   private mapComponent!: MapComponent;
 
   /**

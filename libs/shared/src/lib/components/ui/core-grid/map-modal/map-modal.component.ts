@@ -38,6 +38,7 @@ interface DialogData {
   styleUrls: ['./map-modal.component.scss'],
 })
 export class MapModalComponent implements AfterViewInit {
+  /** Map component */
   @ViewChild(MapComponent) mapComponent?: MapComponent;
 
   /**

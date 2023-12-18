@@ -20,6 +20,7 @@ import { SnackbarService } from '@oort-front/ui';
   providedIn: 'root',
 })
 export class ApplicationNotificationsService {
+  /** Current application */
   public application!: Application;
 
   /**

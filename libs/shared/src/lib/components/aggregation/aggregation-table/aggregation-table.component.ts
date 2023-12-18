@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Layout } from '../../../models/layout.model';
-import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -25,12 +24,16 @@ export class AggregationTableComponent
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
+  /** Aggregation resource */
   @Input() resource: Resource | null = null;
-  @Input() form: Form | null = null;
+  /** Selected aggregations form control */
   @Input() selectedAggregations: UntypedFormControl | null = null;
 
+  /** List of aggregations */
   aggregations: Layout[] = [];
+  /** List of all aggregations */
   allAggregations: Layout[] = [];
+  /** List of displayed columns */
   columns: string[] = ['name', 'createdAt', '_actions'];
 
   /**
@@ -61,20 +64,13 @@ export class AggregationTableComponent
    * Sets the list of all aggregations from resource / form.
    */
   private setAllAggregations(): void {
-    if (this.form) {
-      this.allAggregations = this.form.aggregations
+    if (this.resource) {
+      this.allAggregations = this.resource.aggregations
         ? // eslint-disable-next-line no-unsafe-optional-chaining
-          [...this.form.aggregations.edges?.map((e) => e.node)]
+          [...this.resource.aggregations.edges?.map((e) => e.node)]
         : [];
     } else {
-      if (this.resource) {
-        this.allAggregations = this.resource.aggregations
-          ? // eslint-disable-next-line no-unsafe-optional-chaining
-            [...this.resource.aggregations.edges?.map((e) => e.node)]
-          : [];
-      } else {
-        this.allAggregations = [];
-      }
+      this.allAggregations = [];
     }
   }
 
@@ -101,13 +97,7 @@ export class AggregationTableComponent
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations:
-          get(
-            this.form ? this.form : this.resource,
-            'aggregations.totalCount',
-            0
-          ) > 0, // check if at least one existing aggregation
-        form: this.form,
+        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
       },
     });
@@ -146,7 +136,7 @@ export class AggregationTableComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .editAggregation(aggregation, value, this.resource?.id, this.form?.id)
+          .editAggregation(aggregation, value, { resource: this.resource?.id })
           .subscribe(({ data }: any) => {
             if (data.editAggregation) {
               const layouts = [...this.allAggregations];

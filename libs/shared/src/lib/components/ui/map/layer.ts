@@ -137,54 +137,72 @@ const featureSatisfiesFilter = (
 /** Objects represent a map layer */
 export class Layer implements LayerModel {
   // Services and classes for layer class
+  /** Map popup service */
   private popupService!: MapPopupService;
+  /** Map layer service */
   private layerService!: MapLayersService;
+  /** Map renderer */
   private renderer!: Renderer2;
 
-  // Map layer
+  /** Map layer */
   private layer: L.Layer | null = null;
 
   // Global properties for the layer
+  /** Layer id */
   public id!: string;
+  /** Layer name */
   public name!: string;
+  /** Layer type */
   public type!: LayerType;
 
   // Visibility
+  /** Layer visibility */
   public visibility!: boolean;
+  /** Layer opacity */
   public opacity!: number;
 
   // Layer Definition
+  /** Layer definition */
   public layerDefinition?: LayerDefinition;
 
-  // Popup info
+  /** Popup info */
   public popupInfo: PopupInfo = {
     title: '',
     description: '',
     popupElements: [],
   };
+  /** Created at */
   public createdAt!: Date;
+  /** Updated at */
   public updatedAt!: Date;
 
   // If the layer is a group, the sublayers array has the ids of the layers
+  /** Sublayers */
   public sublayers: string[] = [];
 
+  /** Sublayers */
   public _sublayers: string[] = [];
 
+  /** Sublayers loaded */
   public sublayersLoaded = new BehaviorSubject(false);
 
-  // Layer datasource
+  /** Layer datasource */
   public datasource?: LayerDatasource;
+  /** Layer geojson */
   public geojson: GeoJSON | null = null;
   // private properties: any | null = null;
+  /** Layer filter */
   private filter: LayerFilter | null = null;
   // private styling: any | null = null;
   // private label: LayerLabel | null = null;
 
-  // Layer fields, extracted from geojson
+  /** Layer fields, extracted from geojson */
   private fields: { [key in string]: FieldTypes } = {};
 
   // Declare variables to store the event listeners
+  /** Event listener for zoom event */
   private zoomListener!: L.LeafletEventHandlerFn;
+  /** Array of listeners */
   private listeners: any[] = [];
 
   /**

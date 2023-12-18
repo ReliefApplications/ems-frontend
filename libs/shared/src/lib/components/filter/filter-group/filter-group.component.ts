@@ -18,6 +18,8 @@ export class FilterGroupComponent {
   @Output() delete = new EventEmitter();
   /** Reference to parent filter group, if any */
   @Input() parent: FilterGroupComponent | null = null;
+  /** Can use context variables */
+  @Input() canUseContext = false;
 
   /**
    * Getter for the filters

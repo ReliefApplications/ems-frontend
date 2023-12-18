@@ -44,7 +44,9 @@ export class TabSettingsComponent
   /** Reference to style dialog, when opened */
   private styleDialog?: DialogRef<any, any>;
   /** Timeout to scroll to newly added widget */
-  private timeoutListener!: NodeJS.Timeout;
+  private addWidgetTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to grid options */
+  private gridOptionsTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Edition of a single tab, in tabs widget
@@ -78,7 +80,10 @@ export class TabSettingsComponent
       ...this.tabGroup.controls.gridOptions.value,
     } as GridsterConfig;
     // To avoid scroll to be called when opening the settings
-    setTimeout(() => {
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
+    }
+    this.gridOptionsTimeoutListener = setTimeout(() => {
       this.gridOptions = {
         ...this.gridOptions,
         scrollToNewItems: true,
@@ -91,8 +96,11 @@ export class TabSettingsComponent
     if (this.styleDialog) {
       this.styleDialog.close();
     }
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addWidgetTimeoutListener) {
+      clearTimeout(this.addWidgetTimeoutListener);
+    }
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
     }
   }
 
@@ -184,11 +192,11 @@ export class TabSettingsComponent
     const widget = cloneDeep(e);
     const widgets = this.structure?.value.slice() || [];
     this.structure?.setValue([...widgets, widget]);
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addWidgetTimeoutListener) {
+      clearTimeout(this.addWidgetTimeoutListener);
     }
     // scroll to the element once it is created
-    this.timeoutListener = setTimeout(() => {
+    this.addWidgetTimeoutListener = setTimeout(() => {
       const widgetComponents =
         this.widgetGridComponent.widgetComponents.toArray();
       const target = widgetComponents[widgetComponents.length - 1];

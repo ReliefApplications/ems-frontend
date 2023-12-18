@@ -18,12 +18,17 @@ import { FormWrapperDirective } from '../form-wrapper/form-wrapper.directive';
   selector: '[uiChipListFor]',
 })
 export class ChipInputDirective implements AfterContentInit, OnDestroy {
+  /** Chip list */
   @Input('uiChipListFor') chipList!: any;
+  /** Chip input separator key codes */
   @Input() chipInputSeparatorKeyCodes: number[] = [];
 
+  /** Chip token end event */
   @Output() chipTokenEnd = new EventEmitter<string>();
 
+  /** Input listener */
   private inputListener!: () => void;
+  /** Wrapper div classes */
   private wrapperDivClasses = [
     'border-solid',
     'rounded-md',

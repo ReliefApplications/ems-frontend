@@ -31,15 +31,36 @@ export class LayoutsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Resource
+   */
   public resource!: Resource;
+  /**
+   * Layouts
+   */
   public layouts: Layout[] = [];
+  /**
+   * Loading state
+   */
   public loading = true;
 
+  /**
+   * Columns to display
+   */
   public displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
   // ==== PAGINATION ====
+  /**
+   * Layouts query
+   */
   private layoutsQuery!: QueryRef<ResourceQueryResponse>;
+  /**
+   * Cached layouts
+   */
   private cachedLayouts: Layout[] = [];
+  /**
+   * Page info
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: 10,
