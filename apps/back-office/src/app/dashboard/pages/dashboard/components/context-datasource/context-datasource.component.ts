@@ -197,7 +197,6 @@ export class ContextDatasourceComponent
 
   /** Updates the options for the display field select */
   private updateDisplayFieldOptions(): void {
-    console.log();
     if (this.resource) {
       this.availableFields =
         this.resource?.fields.map((x: any) => x.name) ?? [];
