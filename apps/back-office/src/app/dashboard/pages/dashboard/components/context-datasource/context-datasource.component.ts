@@ -126,7 +126,7 @@ export class ContextDatasourceComponent
           displayField?.enable();
           this.getResource(value);
         } else {
-        displayField?.disable();
+          displayField?.disable();
         }
       });
 
@@ -149,7 +149,7 @@ export class ContextDatasourceComponent
           this.getReferenceData(value);
           displayField?.enable();
         } else {
-        displayField?.disable();
+          displayField?.disable();
         }
       });
 
