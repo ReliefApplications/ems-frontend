@@ -25,10 +25,18 @@ export const filterReferenceData = (item: any, filter: any) => {
     }
     switch (filter.operator) {
       case 'eq':
-        return eq(value, String(filter.value)) || eq(value, intValue);
+        if (typeof filter.value === 'boolean') {
+          return eq(value, String(filter.value)) || eq(value, filter.value);
+        } else {
+          return eq(value, String(filter.value)) || eq(value, intValue);
+        }
       case 'ne':
       case 'neq':
-        return !(eq(value, String(filter.value)) || eq(value, intValue));
+        if (typeof filter.value === 'boolean') {
+          return !(eq(value, String(filter.value)) || eq(value, filter.value));
+        } else {
+          return !(eq(value, String(filter.value)) || eq(value, intValue));
+        }
       case 'gt':
         return !isNil(value) && value > filter.value;
       case 'gte':
