@@ -1,3 +1,10 @@
+# [2.3.0-beta.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.3...v2.3.0-beta.4) (2023-12-18)
+
+
+### Features
+
+* can use context variables in widgets ([#2003](https://github.com/ReliefApplications/ems-frontend/issues/2003)) ([a592082](https://github.com/ReliefApplications/ems-frontend/commit/a5920827436adceaf32d2c86223ea2a2b6cb22dc))
+
 # [2.3.0-beta.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.2...v2.3.0-beta.3) (2023-12-16)
 
 
