@@ -54,7 +54,12 @@
       </ng-template>
     </ui-tab>
     <!-- Available actions -->
-    <ui-tab *ngIf="layout">
+    <ui-tab
+      *ngIf="
+        (resource && layout) ||
+        $any(widgetFormGroup.get('widgetDisplay.gridMode'))?.value
+      "
+    >
       <ng-container ngProjectAs="label">
         <ui-icon
           icon="toggle_on"
