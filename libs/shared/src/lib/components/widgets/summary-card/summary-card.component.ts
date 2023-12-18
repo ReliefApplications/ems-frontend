@@ -36,7 +36,6 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, cloneDeep, isNaN, isNil } from 'lodash';
-import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResourceQueryResponse } from '../../../models/resource.model';
@@ -46,6 +45,7 @@ import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
+import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 
 /** Maximum width of the widget in column units */
@@ -135,15 +135,16 @@ export class SummaryCardComponent
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
+    const skippedFields = ['id', 'incrementalId'];
     if (this.searchControl.value) {
-      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
-          { logic: 'and', filters: [this.layout?.query.filter] },
           {
             logic: 'or',
-            filters: searchFilters(
+            field: '_globalSearch',
+            operator: 'contains',
+            value: searchFilters(
               this.searchControl.value,
               this.fields,
               skippedFields
