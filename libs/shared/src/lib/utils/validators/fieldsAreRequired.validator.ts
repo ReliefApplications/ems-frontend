@@ -21,13 +21,9 @@ export const fieldsAreRequired =
       return null;
     }
     if (formGroup.get(triggerField)?.value) {
-      let isThereAValidValue = false;
-      fieldsToContainValue.forEach((field: string) => {
-        if (formGroup.get(field)?.value) {
-          isThereAValidValue = true;
-          return;
-        }
-      });
+      const isThereAValidValue =
+        fieldsToContainValue.filter((field) => formGroup.get(field)?.value)
+          .length === 1;
       if (!isThereAValidValue) {
         return { fieldsAreRequired: fieldsToContainValue };
       }
