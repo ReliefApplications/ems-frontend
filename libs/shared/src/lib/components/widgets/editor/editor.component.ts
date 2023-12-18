@@ -206,6 +206,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   private getAggregationsData() {
     const promises: Promise<void>[] = [];
     this.aggregations.forEach((aggregation: any) => {
+      console.log('CONTEXT FILTERS HERE', aggregation.contextFilters);
       promises.push(
         new Promise<void>((resolve) => {
           firstValueFrom(
@@ -213,7 +214,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
               resource: aggregation.resource,
               referenceData: aggregation.referenceData,
               aggregation: aggregation.aggregation,
-              contextFilters: aggregation.contextFilters,
+              contextFilters: JSON.parse(aggregation.contextFilters),
               at: this.contextService.atArgumentValue(aggregation.at),
             })
           )
