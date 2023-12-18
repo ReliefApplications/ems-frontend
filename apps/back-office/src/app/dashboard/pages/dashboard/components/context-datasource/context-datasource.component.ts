@@ -148,7 +148,9 @@ export class ContextDatasourceComponent
           this.resource = null;
           this.getReferenceData(value);
           displayField?.enable();
-        } else displayField?.disable();
+        } else {
+        displayField?.disable();
+        }
       });
 
     // do the same for ref data
