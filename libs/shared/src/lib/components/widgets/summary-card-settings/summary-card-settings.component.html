@@ -1,5 +1,9 @@
 <ng-container *ngIf="widgetFormGroup">
-  <ui-tabs [vertical]="true" class="grow">
+  <ui-tabs
+    (selectedIndexChange)="activeSettingsTab = $event"
+    [vertical]="true"
+    class="grow"
+  >
     <!-- GENERAL SETTINGS -->
     <ui-tab>
       <ng-container ngProjectAs="label">
