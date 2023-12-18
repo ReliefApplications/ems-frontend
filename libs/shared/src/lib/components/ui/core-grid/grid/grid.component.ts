@@ -951,27 +951,21 @@ export class GridComponent
       type: string;
       title: string;
     }[] = [];
-    this.fields.forEach((field: any) => {
-      const availableFields = availableColumns.filter((column: any) => {
-        // To correctly size referenceData columns when hiding / show them
-        if (
-          field.meta.type === 'referenceData' &&
-          field.meta[column.field.split(field.name + '.')[1]]
-        ) {
-          return true;
-        } else {
+    this.fields
+      .reduce((acc, field) => acc.concat(field, field.subFields || []), []) // Unnesting reference data to correctly get them
+      .forEach((field: any) => {
+        const availableFields = availableColumns.filter((column: any) => {
           return column.field === field.name;
+        });
+        // should only add items to typesFields if they are available in availableColumns
+        if (availableFields.length > 0) {
+          typesFields.push({
+            field: field.name,
+            type: field.meta.type,
+            title: field.title,
+          });
         }
       });
-      // should only add items to typesFields if they are available in availableColumns
-      if (availableFields.length > 0) {
-        typesFields.push({
-          field: field.name,
-          type: field.meta.type,
-          title: field.title,
-        });
-      }
-    });
     // Get average column width given the active columns and the grid's actual width
     const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
     // Max size of the column is the average * 2
@@ -1086,7 +1080,7 @@ export class GridComponent
     }
 
     entries = Object.entries(activeColumns);
-    const min_percentage = Math.floor(
+    const minPercentage = Math.floor(
       (minCharacterToDisplay / totalCharacterCountColumns) * 100
     );
     let total_percentage = 0;
@@ -1138,9 +1132,9 @@ export class GridComponent
           (activeColumns[columnFieldType.field] * gridTotalWidth) / 100
         );
       } else {
-        // If contains a title, we set the min_percentage
+        // If contains a title, we set the minPercentage
         if (column.title) {
-          column.width = Math.floor((min_percentage * gridTotalWidth) / 100);
+          column.width = Math.floor((minPercentage * gridTotalWidth) / 100);
         }
       }
       // Make sure that every column has a width set
