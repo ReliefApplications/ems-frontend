@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { Subject, debounceTime, firstValueFrom, from, takeUntil } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
@@ -73,6 +73,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public aggregationsData: any = {};
   /** Loading indicator */
   public loading = true;
+  /** Refresh subject, emit a value when refresh needed */
+  refresh$: Subject<boolean> = new Subject<boolean>();
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -124,77 +126,102 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
 
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
+    this.setHtml();
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.refresh$.next(true);
+        this.loading = true;
+        this.setHtml();
+      });
+  }
+
+  /**
+   * Set widget html.
+   */
+  private setHtml() {
     if (this.settings.record && this.settings.resource) {
-      Promise.all([
-        new Promise<void>((resolve) => {
-          this.getLayout()
-            .then(() => this.getRecord().finally(() => resolve()))
-            .catch(() => resolve());
-        }),
-        this.getAggregationsData(),
-      ]).then(() => {
-        this.formattedStyle = this.dataTemplateService.renderStyle(
-          this.settings.wholeCardStyles || false,
-          this.fieldsValue,
-          this.styles
-        );
-        this.formattedHtml = this.dataTemplateService.renderHtml(
-          this.settings.text,
-          {
-            data: this.fieldsValue,
-            aggregation: this.aggregations,
-            fields: this.fields,
-            styles: this.styles,
-          }
-        );
-        this.loading = false;
-      });
+      from(
+        Promise.all([
+          new Promise<void>((resolve) => {
+            this.getLayout()
+              .then(() => this.getRecord().finally(() => resolve()))
+              .catch(() => resolve());
+          }),
+          this.getAggregationsData(),
+        ])
+      )
+        .pipe(takeUntil(this.refresh$))
+        .subscribe(() => {
+          this.formattedStyle = this.dataTemplateService.renderStyle(
+            this.settings.wholeCardStyles || false,
+            this.fieldsValue,
+            this.styles
+          );
+          this.formattedHtml = this.dataTemplateService.renderHtml(
+            this.settings.text,
+            {
+              data: this.fieldsValue,
+              aggregation: this.aggregations,
+              fields: this.fields,
+              styles: this.styles,
+            }
+          );
+          this.loading = false;
+        });
     } else if (this.settings.element && this.settings.referenceData) {
-      Promise.all([
-        new Promise<void>((resolve) => {
-          this.getReferenceData()
-            .then(() => {
-              this.referenceDataService
-                .cacheItems(this.settings.referenceData)
-                .then((value) => {
-                  if (value) {
-                    const field = this.referenceData?.valueField;
-                    const selectedItemKey = String(this.settings.element);
-                    if (field) {
-                      this.fieldsValue = value.find(
-                        (x: any) => String(get(x, field)) === selectedItemKey
-                      );
+      from(
+        Promise.all([
+          new Promise<void>((resolve) => {
+            this.getReferenceData()
+              .then(() => {
+                this.referenceDataService
+                  .cacheItems(this.settings.referenceData)
+                  .then((value) => {
+                    if (value) {
+                      const field = this.referenceData?.valueField;
+                      const selectedItemKey = String(this.settings.element);
+                      if (field) {
+                        this.fieldsValue = value.find(
+                          (x: any) => String(get(x, field)) === selectedItemKey
+                        );
+                      }
                     }
-                  }
-                })
-                .finally(() => resolve());
-            })
-            .catch(() => resolve());
-        }),
-        this.getAggregationsData(),
-      ]).then(() => {
-        this.formattedHtml = this.dataTemplateService.renderHtml(
-          this.settings.text,
-          {
-            data: this.fieldsValue,
-            aggregation: this.aggregations,
-            fields: this.fields,
-          }
-        );
-        this.loading = false;
-      });
+                  })
+                  .finally(() => resolve());
+              })
+              .catch(() => resolve());
+          }),
+          this.getAggregationsData(),
+        ])
+      )
+        .pipe(takeUntil(this.refresh$))
+        .subscribe(() => {
+          this.formattedHtml = this.dataTemplateService.renderHtml(
+            this.settings.text,
+            {
+              data: this.fieldsValue,
+              aggregation: this.aggregations,
+              fields: this.fields,
+            }
+          );
+          this.loading = false;
+        });
     } else {
-      Promise.all([this.getAggregationsData()]).then(() => {
-        this.formattedHtml = this.dataTemplateService.renderHtml(
-          this.settings.text,
-          {
-            data: this.fieldsValue,
-            aggregation: this.aggregations,
-            fields: this.fields,
-          }
-        );
-        this.loading = false;
-      });
+      from(Promise.all([this.getAggregationsData()]))
+        .pipe(takeUntil(this.refresh$))
+        .subscribe(() => {
+          this.formattedHtml = this.dataTemplateService.renderHtml(
+            this.settings.text,
+            {
+              data: this.fieldsValue,
+              aggregation: this.aggregations,
+              fields: this.fields,
+            }
+          );
+          this.loading = false;
+        });
     }
   }
 
