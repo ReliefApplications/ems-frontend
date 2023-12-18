@@ -3,7 +3,7 @@
     <div class="flex-1 flex-col">
       <!-- Reference data selection  -->
       <div uiFormFieldDirective class="flex-1" *ngIf="!form.value.resource">
-        <label>{{ 'common.referenceData.one' | translate }}</label>
+        <label>{{ 'models.referenceData.select' | translate }}</label>
         <shared-reference-data-select
           formControlName="referenceData"
           [selectedElements]="[referenceData]"

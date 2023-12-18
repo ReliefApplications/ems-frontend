@@ -214,7 +214,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
               resource: aggregation.resource,
               referenceData: aggregation.referenceData,
               aggregation: aggregation.aggregation,
-              contextFilters: JSON.parse(aggregation.contextFilters),
+              contextFilters: aggregation.contextFilters
+                ? JSON.parse(aggregation.contextFilters)
+                : {},
               at: this.contextService.atArgumentValue(aggregation.at),
             })
           )
