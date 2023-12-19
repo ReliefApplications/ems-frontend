@@ -329,12 +329,13 @@ export class DashboardComponent
                 const contextData = this.dashboard?.contextData;
                 this.contextService.context = contextData || null;
 
-                if (!contextData) return widget;
+                if (!contextData) {
+                  return widget;
+                }
                 // If tile has context, replace the templates with the values
-                // and keep the original, to be used for the widget settings
-                const settings = widget.settings;
-                widget.settings = this.contextService.replaceContext(settings);
-                widget.originalSettings = settings;
+                widget.settings = this.contextService.replaceContext(
+                  widget.settings
+                );
                 return widget;
               }) || []
           );
