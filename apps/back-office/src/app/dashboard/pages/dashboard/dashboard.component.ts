@@ -323,9 +323,20 @@ export class DashboardComponent
 
           this.dashboardService.openDashboard(this.dashboard);
           this.widgets = cloneDeep(
-            this.dashboard.structure
-              ? [...this.dashboard.structure.filter((x: any) => x !== null)]
-              : []
+            data.dashboard.structure
+              ?.filter((x: any) => x !== null)
+              .map((widget: any) => {
+                const contextData = this.dashboard?.contextData;
+                this.contextService.context = contextData || null;
+
+                if (!contextData) return widget;
+                // If tile has context, replace the templates with the values
+                // and keep the original, to be used for the widget settings
+                const settings = widget.settings;
+                widget.settings = this.contextService.replaceContext(settings);
+                widget.originalSettings = settings;
+                return widget;
+              }) || []
           );
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
@@ -441,21 +452,21 @@ export class DashboardComponent
         // Find the widget to be edited
         const widgetComponents =
           this.widgetGridComponent.widgetComponents.toArray();
-        const targetIndex = widgetComponents.findIndex(
-          (v: any) => v.id === e.id
-        );
-        if (targetIndex > -1) {
+        const index = widgetComponents.findIndex((v: any) => v.id === e.id);
+        if (index > -1) {
           // Update the configuration
-          const options = this.widgets[targetIndex]?.settings?.defaultLayout
-            ? {
-                ...e.options,
-                defaultLayout: this.widgets[targetIndex].settings.defaultLayout,
-              }
-            : e.options;
+          const options = this.contextService.replaceContext(
+            this.widgets[index]?.settings?.defaultLayout
+              ? {
+                  ...e.options,
+                  defaultLayout: this.widgets[index].settings.defaultLayout,
+                }
+              : e.options
+          );
           if (options) {
             // Save configuration
-            this.widgets[targetIndex] = {
-              ...this.widgets[targetIndex],
+            this.widgets[index] = {
+              ...this.widgets[index],
               settings: options,
             };
             this.autoSaveChanges();

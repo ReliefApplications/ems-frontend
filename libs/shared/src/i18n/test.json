@@ -2127,7 +2127,12 @@
 					"element": "******"
 				},
 				"selectDisplayField": "******",
-				"selectOrigin": "******"
+				"selectOrigin": "******",
+				"title": "******",
+				"tooltip": {
+					"useContextEditor": "******",
+					"useDefaultEditor": "******"
+				}
 			},
 			"contextFilter": "******",
 			"dashboardFilter": "******",
@@ -2209,7 +2214,8 @@
 			"select": "******"
 		},
 		"referenceData": {
-			"add": "******"
+			"add": "******",
+			"select": "******"
 		},
 		"resource": {
 			"create": "******",
