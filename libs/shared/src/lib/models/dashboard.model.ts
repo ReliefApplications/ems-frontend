@@ -31,6 +31,8 @@ export type WidgetSettingsType = WidgetSettings<any>;
 
 /**
  * Extended class of all widget settings components
+ *
+ * Implement this class for any widget settings class component that is created
  */
 export abstract class WidgetSettings<T extends (...args: any[]) => any> {
   /** Change event emitted on widget settings form group value change */
