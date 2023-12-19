@@ -332,10 +332,10 @@ export class DashboardComponent
                 if (!contextData) {
                   return widget;
                 }
-                // If tile has context, replace the templates with the values
-                widget.settings = this.contextService.replaceContext(
-                  widget.settings
-                );
+                const { settings, originalSettings } =
+                  this.updateSettingsContextContent(widget.settings);
+                widget.originalSettings = originalSettings;
+                widget.settings = settings;
                 return widget;
               }) || []
           );
@@ -374,6 +374,28 @@ export class DashboardComponent
         this.snackBar.openSnackBar(err.message, { error: true });
         this.router.navigate(['/applications']);
       });
+  }
+
+  /**
+   * If context data exists, returns an object containing context content mapped settings and widget's original settings
+   *
+   * @param settings Widget settings
+   * @returns context content mapped settings and original settings
+   */
+  private updateSettingsContextContent(settings: any): {
+    settings: any;
+    originalSettings?: any;
+  } {
+    if (this.dashboard?.contextData) {
+      // If tile has context, replace the templates with the values
+      // and keep the original, to be used for the widget settings
+      const mappedContextContentSettings =
+        this.contextService.replaceContext(settings);
+      const originalSettings = settings;
+      return { settings: mappedContextContentSettings, originalSettings };
+    }
+    // else return settings as given
+    return { settings };
   }
 
   /**
@@ -455,20 +477,21 @@ export class DashboardComponent
           this.widgetGridComponent.widgetComponents.toArray();
         const index = widgetComponents.findIndex((v: any) => v.id === e.id);
         if (index > -1) {
-          // Update the configuration
-          const options = this.contextService.replaceContext(
-            this.widgets[index]?.settings?.defaultLayout
-              ? {
-                  ...e.options,
-                  defaultLayout: this.widgets[index].settings.defaultLayout,
-                }
-              : e.options
-          );
-          if (options) {
+          const { settings, originalSettings } =
+            this.updateSettingsContextContent(
+              this.widgets[index]?.settings?.defaultLayout
+                ? {
+                    ...e.options,
+                    defaultLayout: this.widgets[index].settings.defaultLayout,
+                  }
+                : e.options
+            );
+          if (settings) {
             // Save configuration
             this.widgets[index] = {
               ...this.widgets[index],
-              settings: options,
+              settings: settings,
+              ...(originalSettings && { originalSettings }),
             };
             this.autoSaveChanges();
           }

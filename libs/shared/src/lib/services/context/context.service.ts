@@ -181,7 +181,9 @@ export class ContextService {
    */
   public replaceContext(object: any): any {
     const context = this.context;
-    if (!context) return object;
+    if (!context) {
+      return object;
+    }
     const regex = /{{context\.(.*?)}}/g;
     return JSON.parse(
       JSON.stringify(object).replace(regex, (match) => {

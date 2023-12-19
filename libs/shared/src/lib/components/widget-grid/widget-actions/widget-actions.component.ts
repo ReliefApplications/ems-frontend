@@ -68,7 +68,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
         data: {
           widget: {
             ...this.widget,
-            settings: this.widget.settings,
+            settings: this.widget.originalSettings || this.widget.settings,
           },
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
