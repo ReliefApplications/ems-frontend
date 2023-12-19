@@ -35,6 +35,10 @@ export class ChartSettingsComponent
     return (this.formGroup?.controls.chart as UntypedFormGroup) || null;
   }
 
+  /** @returns the form for the legend */ public get legendForm(): UntypedFormGroup {
+    return (this.chartForm?.controls.legend as UntypedFormGroup) || null;
+  }
+
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.formGroup = createChartWidgetForm(
@@ -54,6 +58,12 @@ export class ChartSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.type = this.types.find((x) => x.name === value);
+      });
+
+    this.legendForm.controls.position.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.legendForm.controls.visible.patchValue(value !== 'none');
       });
   }
 }
