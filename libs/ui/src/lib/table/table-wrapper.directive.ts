@@ -21,11 +21,18 @@ import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
   selector: '[uiTableWrapper]',
 })
 export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
+  /**
+   * Table sort change event emitter
+   */
   @Output() sortChange = new EventEmitter<TableSort>();
 
+  /**
+   * List of sortable columns
+   */
   @ContentChildren(TableHeaderSortDirective, { descendants: true })
   private sortableColumns!: QueryList<TableHeaderSortDirective>;
 
+  /** Table wrapper classes */
   private tableWrapperClasses = [
     'overflow-x-auto',
     'shadow',
@@ -34,7 +41,9 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     'sm:rounded-lg',
     'bg-gray-100',
   ];
+  /** Table classes */
   private tableClasses = ['min-w-full', 'divide-y', 'divide-gray-300'];
+  /** Table body classes */
   private tbodyClasses = [
     'divide-y',
     'divide-gray-200',
@@ -43,7 +52,9 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     'odd:[&>tr]:bg-white',
   ];
 
+  /** Table wrapper element */
   private tableWrapperElement!: HTMLDivElement;
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
 
   /**

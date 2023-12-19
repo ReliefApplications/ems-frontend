@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class RestService {
+  /** Api url */
   public apiUrl = '';
 
   /**

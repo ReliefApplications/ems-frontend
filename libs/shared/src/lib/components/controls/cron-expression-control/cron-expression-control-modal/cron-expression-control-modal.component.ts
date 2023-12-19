@@ -39,7 +39,9 @@ interface DialogData {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CronExpressionControlModalComponent {
+  /** Cron expression form control */
   public control: FormControl = new FormControl();
+  /** Is current cron valid */
   public cronValid!: boolean;
 
   /**

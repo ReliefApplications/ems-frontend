@@ -54,16 +54,21 @@ interface DialogData {
 })
 export class InviteUsersModalComponent extends UnsubscribeComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
+  /** Form group */
   public formGroup!: ReturnType<typeof this.createFormGroup>;
   /** File size limit, in MB */
   public maxFileSize: number;
+  /** Index of the edited row */
   private editedRowIndex = 0;
+  /** Is the edition active */
   private editionActive = false;
 
   // === TEMPLATE REFERENCE TO KENDO GRID ===
+  /** Reference to the grid */
   @ViewChild(GridComponent)
   private grid?: GridComponent;
 
+  /** Reference to the file reader */
   @ViewChild('fileReader') fileReader: any;
 
   /** @returns The position attributes available */

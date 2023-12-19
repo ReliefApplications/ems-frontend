@@ -42,16 +42,21 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading state */
   @Input() loading = false;
+  /** Roles list */
   @Input() roles: Role[] = [];
+  /** Event emitted when the user clicks on the filter button */
   @Output() filter = new EventEmitter<any>();
   /** Reference to expanded filter template */
   @ViewChild('expandedFilter')
   expandedFilter!: TemplateRef<any>;
 
+  /** Form */
   public form = this.fb.group({
     role: [null],
   });
+  /** Show expanded filter */
   public show = false;
 
   /**

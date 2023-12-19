@@ -36,9 +36,13 @@ const DEFAULT_PAGE_SIZE = 10;
 })
 export class FormsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Updating state */
   public updating = false;
+  /** Forms query */
   private formsQuery!: QueryRef<FormsQueryResponse>;
+  /** Columns to display */
   public displayedColumns = [
     'name',
     'createdAt',
@@ -49,17 +53,22 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     'parentForm',
     'actions',
   ];
+  /** Forms */
   public forms = new Array<Form>();
+  /** Cached forms */
   public cachedForms: Form[] = [];
 
   // === FILTERING ===
+  /** Filter object */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
+  /** Sort object */
   private sort: TableSort = { active: '', sortDirection: '' };
 
   // === PAGINATION ===
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,

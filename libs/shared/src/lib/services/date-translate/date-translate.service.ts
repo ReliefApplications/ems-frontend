@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root',
 })
 export class DateTranslateService {
+  /** Current language */
   private lang: string;
 
   /**

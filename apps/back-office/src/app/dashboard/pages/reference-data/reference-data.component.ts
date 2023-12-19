@@ -67,20 +67,35 @@ export class ReferenceDataComponent
   implements OnInit, OnDestroy
 {
   // === DATA ===
+  /**
+   * Loading state
+   */
   public loading = true;
+  /** Reference data id */
   public id = '';
+  /** Reference data */
   public referenceData?: ReferenceData;
 
   // === FORM ===
+  /** Reference data form */
   public referenceForm!: ReturnType<typeof this.getRefDataForm>;
+  /** Reference data types */
   public referenceTypeChoices = Object.values(referenceDataType);
 
+  // === API ===
+  /** Selected API configuration */
   public selectedApiConfiguration?: ApiConfiguration;
+  /** Api configurations query */
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
+  // === FIELDS ===
+  /** Value fields */
   public valueFields: NonNullable<ReferenceData['fields']> = [];
+  /** Payload */
   public payload: any;
+  /** Loading state for the fields */
   public loadingFields = false;
+  /** Separator keys code */
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   /** Has the fields that's currently being edited, if any */
   public currEditingField: NonNullable<ReferenceData['fields']>[number] | null =
@@ -98,16 +113,36 @@ export class ReferenceDataComponent
   ];
 
   // === CSV ===
+  /** CSV value */
   public csvValue = '';
+  /** New data */
   public newData: any = [];
+  /** CSV loading state */
   public csvLoading = false;
+  /** CSV separator */
   public separator = new FormControl(',');
+  /** Timeout to form */
+  private formTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to init editor */
+  private initEditorTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to add an object to the chip list. */
+  private addChipListTimeoutListener!: NodeJS.Timeout;
 
+  /**
+   * Reference to the field input.
+   */
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
+  /**
+   * Reference to the csv data input.
+   */
   @ViewChild('csvData') csvData?: TextareaComponent;
+  /**
+   * Reference to the kendo grid.
+   */
   @ViewChild(GridComponent) kendoGrid!: GridComponent;
 
   // === MONACO EDITOR ===
+  /** Editor options */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'graphql',
@@ -214,7 +249,10 @@ export class ReferenceDataComponent
     };
 
     // Wait for the form to be initialized before subscribing to changes
-    setTimeout(() => {
+    if (this.formTimeoutListener) {
+      clearTimeout(this.formTimeoutListener);
+    }
+    this.formTimeoutListener = setTimeout(() => {
       form
         .get('type')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -485,6 +523,59 @@ export class ReferenceDataComponent
         }
       );
     } else {
+      // Maps each field to its type
+      const typePerField = (this.referenceForm.value.fields ?? []).reduce(
+        (acc: any, field: any) => {
+          acc[field.name] = field.type;
+          return acc;
+        },
+        {}
+      );
+
+      // Parsed data is the array with the field types enforced
+      // If a field of an element is not of the expected type, the field is skipped
+      const parsedData: any[] = [];
+      if (this.referenceForm.value.data) {
+        this.referenceForm.value.data.forEach((element: any) => {
+          if (typeof element !== 'object' || element === null) {
+            return;
+          }
+          for (const key in element) {
+            const type = typePerField[key];
+            // If the field has an unknown type, skip it
+            if (!type) {
+              continue;
+            }
+
+            switch (type) {
+              case 'number':
+                const numberValue = parseFloat(element[key]);
+                if (!isNaN(numberValue)) {
+                  element[key] = numberValue;
+                }
+                break;
+              case 'boolean':
+                if (element[key] === 'false' || element[key] === 'true') {
+                  element[key] = element[key] === 'true';
+                }
+                break;
+              case 'array':
+              case 'object':
+                try {
+                  element[key] = JSON.parse(element[key]);
+                } catch (e) {
+                  // If the JSON is invalid, skip it
+                  return;
+                }
+                break;
+              case 'null':
+                element[key] = null;
+                break;
+            }
+          }
+          parsedData.push(element);
+        });
+      }
       Object.assign(
         variables,
         this.referenceForm.value.data !== this.referenceData?.data && {
@@ -514,7 +605,10 @@ export class ReferenceDataComponent
    */
   add(event: string | any): void {
     // use setTimeout to prevent add input value on focusout
-    setTimeout(
+    if (this.addChipListTimeoutListener) {
+      clearTimeout(this.addChipListTimeoutListener);
+    }
+    this.addChipListTimeoutListener = setTimeout(
       () => {
         const input =
           event.type === 'focusout'
@@ -699,7 +793,10 @@ export class ReferenceDataComponent
     const queryControl = this.queryControl;
     if (!queryControl) return;
     if (editor) {
-      setTimeout(() => {
+      if (this.initEditorTimeoutListener) {
+        clearTimeout(this.initEditorTimeoutListener);
+      }
+      this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -712,10 +809,8 @@ export class ReferenceDataComponent
 
   /** Open payload modal */
   public async onOpenPayload() {
-    const { ReferenceDataPayloadModalComponent } = await import(
-      './reference-data-payload-modal/reference-data-payload-modal.component'
-    );
-    this.dialog.open(ReferenceDataPayloadModalComponent, {
+    const { PayloadModalComponent } = await import('@oort-front/shared');
+    this.dialog.open(PayloadModalComponent, {
       data: {
         payload: this.payload,
       },
@@ -791,6 +886,15 @@ export class ReferenceDataComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.addChipListTimeoutListener) {
+      clearTimeout(this.addChipListTimeoutListener);
+    }
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
+    if (this.formTimeoutListener) {
+      clearTimeout(this.formTimeoutListener);
+    }
     if (this.inlineEditionOutsideClickListener) {
       this.inlineEditionOutsideClickListener();
     }

@@ -46,16 +46,26 @@ const ITEMS_PER_RELOAD = 10;
 export class GraphQLSelectComponent
   implements OnInit, OnChanges, OnDestroy, ControlValueAccessor
 {
+  /** Static variable for generating unique id */
   static nextId = 0;
 
+  /** Input decorator for valueField */
   @Input() valueField = '';
+  /** Input decorator for textField */
   @Input() textField = '';
+  /** Input decorator for path */
   @Input() path = '';
+  /** Whether it is a survey question or not */
   @Input() isSurveyQuestion = false;
   /** Add type to selectedElements */
   @Input() selectedElements: any[] = [];
+  /** Whether the select is filterable or not */
   @Input() filterable = false;
+  /** Placeholder text for the select */
   @Input() placeholder = '';
+  /**
+   *  Input decorator for aria-label
+   */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
   /** Query reference for getting the available contents */
@@ -113,31 +123,51 @@ export class GraphQLSelectComponent
     this.stateChanges.next();
   }
 
+  /** Event emitter for selection change */
   @Output() selectionChange = new EventEmitter<string | string[] | null>();
+  /** Event emitter for search change */
   @Output() searchChange = new EventEmitter<string>();
 
+  /** Subject that emits when the state changes */
   public stateChanges = new Subject<void>();
+  /** Form control for search */
   public searchControl = new FormControl('', { nonNullable: true });
+  /** Control type */
   public controlType = 'ui-graphql-select';
+  /** Elements */
   public elements = new BehaviorSubject<any[]>([]);
+  /** Elements observable */
   public elements$!: Observable<any[]>;
+  /** Loading status */
   public loading = true;
+  /** Focused status */
   public focused = false;
+  /** Touched status */
   public touched = false;
 
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** Query name */
   private queryName!: string;
+  /** Query change subject */
   private queryChange$ = new Subject<void>();
+  /** Query elements */
   private queryElements: any[] = [];
+  /** Cached elements */
   private cachedElements: any[] = [];
+  /** Page info */
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
+  /** Whether the field is required */
   private isRequired = false;
+  /** Scroll listener */
   private scrollListener!: any;
 
+  /** Select menu component */
   @ViewChild(SelectMenuComponent) elementSelect!: SelectMenuComponent;
+  /** Search input element */
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   /**
@@ -150,6 +180,11 @@ export class GraphQLSelectComponent
     return this.focused || !this.empty;
   }
 
+  /**
+   * Gets the id
+   *
+   * @returns the id
+   */
   @HostBinding()
   id = `ui-graphql-select-${GraphQLSelectComponent.nextId++}`;
 
@@ -251,8 +286,16 @@ export class GraphQLSelectComponent
     this.onTouched = fn;
   }
 
+  /**
+   * Function shell for onTouched
+   */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
+  /**
+   * Function shell for onChange
+   *
+   * @param _ new value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   onChange = (_: any) => {};
 

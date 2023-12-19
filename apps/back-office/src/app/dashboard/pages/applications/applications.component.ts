@@ -44,11 +44,17 @@ export class ApplicationsComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Updating state */
   public updating = false;
+  /** Applications query */
   private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
+  /** Applications */
   public applications = new Array<Application>();
+  /** Cached applications */
   public cachedApplications: Application[] = [];
+  /** Columns to display */
   public displayedColumns = [
     'name',
     'createdAt',
@@ -56,13 +62,17 @@ export class ApplicationsComponent
     'usersCount',
     'actions',
   ];
+  /** New applications */
   public newApplications: Application[] = [];
+  /** Filter */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
+  /** Sort */
   private sort: TableSort = { active: '', sortDirection: '' };
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,

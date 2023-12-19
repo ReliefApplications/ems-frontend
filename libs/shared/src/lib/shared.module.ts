@@ -44,10 +44,12 @@ import { ReferenceDataDropdownModule } from './survey/components/reference-data-
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
+import { PayloadModalComponent } from './components/payload-modal/payload-modal.component';
 
 /** Main module for the shared project */
 @NgModule({
   exports: [
+    PayloadModalComponent,
     LayoutModule,
     AccessModule,
     FormModule,
@@ -103,6 +105,7 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     ListFilterComponent,
     StatusOptionsComponent,
     DashboardFilterIconComponent,
+    PayloadModalComponent,
   ],
 })
 export class Module {}

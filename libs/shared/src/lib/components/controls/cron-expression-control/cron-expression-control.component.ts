@@ -25,11 +25,19 @@ export class CronExpressionControlComponent
   // set value(value: string | undefined | null) {
   //   this.ngControl.control?.setValue(value);
   // }
+  /** The value */
   public value: string | undefined | null;
+  /** Whether the control is disabled */
   public disabled = false;
 
+  /** onTouched function shell */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private onTouched = () => {};
+  /**
+   * onChanged function shell
+   *
+   * @param _ value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChanged = (_: any) => {};
 

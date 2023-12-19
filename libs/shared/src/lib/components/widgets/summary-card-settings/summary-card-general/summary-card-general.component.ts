@@ -180,7 +180,9 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.aggregation) {
         this.aggregationService
-          .editAggregation(this.aggregation, value, this.resource?.id)
+          .editAggregation(this.aggregation, value, {
+            resource: this.resource?.id,
+          })
           .subscribe(() => {
             if (this.formGroup.get('card.aggregation')) {
               this.formGroup
@@ -192,5 +194,19 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
           });
       }
     });
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.formGroup.get(formField)?.value) {
+      this.formGroup.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }
