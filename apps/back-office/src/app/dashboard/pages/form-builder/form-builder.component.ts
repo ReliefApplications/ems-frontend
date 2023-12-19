@@ -7,7 +7,7 @@ import {
   EDIT_FORM_STATUS,
   EDIT_FORM_STRUCTURE,
 } from './graphql/mutations';
-import { GET_SHORT_FORM_BY_ID, GET_QUERY_TYPES } from './graphql/queries';
+import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   AuthService,
@@ -316,45 +316,33 @@ export class FormBuilderComponent implements OnInit {
             // Detach the current set overlay
             overlayRef.detach();
 
-            // Wait for backend connection to be established
-            const checkBackendConnectionWithGetQueryTypes =
-              async (): Promise<boolean> => {
-                let isConnected = true;
+            let connected = false;
 
-                try {
-                  const result = await firstValueFrom(
-                    this.apollo.query({
-                      query: GET_QUERY_TYPES,
-                    })
-                  );
+            // Subscribe to the isDoneLoading$ observable to get the current state of 
+            // the backend connection after reloading the query types
+            await this.queryBuilder.isDoneLoading$.subscribe(
+              async (isDoneLoading) => {
+                connected = isDoneLoading;
+              }
+            );
 
-                  const { data, errors, networkStatus } = result;
-
-                  if (errors || networkStatus !== 7) {
-                    isConnected = false;
-                  } else {
-                    // Set available types in query builder
-                    this.queryBuilder.setAvailableTypes(
-                      (data as any).__schema.types
-                    );
-                  }
-                } catch (err) {
-                  isConnected = false;
-                }
-
-                return isConnected;
-              };
-
-            // Wait for backend connection to be established
+            // Wait for 3 seconds to start reloading the query types
             await new Promise((resolve) => setTimeout(resolve, 3000));
-            const waitForBackendConnection = async () => {
-              while (
-                (await checkBackendConnectionWithGetQueryTypes()) === false
-              ) {
+
+            // Reload the query types
+            this.queryBuilder.reloadQueryTypes.next(null);
+
+            // Set the isDoneLoading to false to wait for the backend connection
+            this.queryBuilder.isDoneLoading.next(false);
+
+            // Wait for backend connection to be established
+            const waitForBackendConnection = async (): Promise<void> => {
+              while (!connected) {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
               }
             };
 
+            // Start waiting for backend connection
             await waitForBackendConnection();
           },
         });
