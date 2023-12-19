@@ -30,7 +30,7 @@ import { isEqual } from 'lodash';
 import { GraphQLError } from 'graphql';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { QueryBuilderService } from 'libs/shared/src/lib/services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@oort-front/shared';
 
 /** Default snackbar config for after request complete  */
 const REQUEST_SNACKBAR_CONF = {
@@ -92,6 +92,7 @@ export class FormBuilderComponent implements OnInit {
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
    * @param overlay Angular overlay service
+   * @param queryBuilder Query builder service
    */
   constructor(
     private apollo: Apollo,
