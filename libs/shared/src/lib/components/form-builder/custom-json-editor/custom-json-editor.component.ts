@@ -14,6 +14,9 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
  * Class used as a plugin to load the custom JSON editor for the survey builder
  */
 export class SurveyCustomJSONEditorPlugin implements ICreatorPlugin {
+  /**
+   * SurveyJS model
+   */
   public model: SurveyCreatorModel;
 
   /**

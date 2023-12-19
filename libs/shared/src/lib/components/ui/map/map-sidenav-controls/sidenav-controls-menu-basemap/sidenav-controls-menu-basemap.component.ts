@@ -14,13 +14,20 @@ import { ButtonModule, RadioModule } from '@oort-front/ui';
   standalone: true,
 })
 export class SidenavControlsMenuBasemapComponent implements OnInit {
+  /** Basemap */
   @Input() basemap!: L.Control.Layers.TreeObject;
+  /** Map component */
   @Input() mapComponent!: MapComponent;
+  /** Map level */
   @Input() level = 0;
+  /** Map */
   map!: L.Map;
+  /** Whether the item is expanded or not */
   expanded = false;
+  /** Whether the item is checked or not */
   checked = false;
 
+  /** Event emitter for change of checkbox */
   @Output() checkedChange = new EventEmitter();
 
   ngOnInit(): void {

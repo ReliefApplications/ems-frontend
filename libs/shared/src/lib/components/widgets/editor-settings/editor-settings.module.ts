@@ -16,6 +16,7 @@ import {
   RadioModule,
   SelectMenuModule,
   SelectOptionModule,
+  SpinnerModule,
   TabsModule,
   ToggleModule,
   TooltipModule,
@@ -28,6 +29,7 @@ import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../controls/public-api';
+import { TemplateAggregationsComponent } from '../common/template-aggregations/template-aggregations.component';
 
 /**
  * Module for the EditorSetting component
@@ -56,6 +58,8 @@ import {
     ToggleModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
+    SpinnerModule,
+    TemplateAggregationsComponent,
   ],
   exports: [EditorSettingsComponent],
   providers: [

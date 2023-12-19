@@ -28,6 +28,9 @@ import { GeoField } from '../geofield.type';
 })
 export class EditGeofieldComponent implements OnInit {
   // === REACTIVE FORM ===
+  /**
+   * Reactive form
+   */
   geoFieldForm!: FormGroup;
 
   /**

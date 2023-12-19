@@ -600,7 +600,13 @@
                 class="textbox-container"
                 [style]="dataItem.style[field.name]"
               >
-                {{ dataItem.text[subField.name] }}
+                <div
+                  class="truncate"
+                  [uiTooltip]="dataItem.text[subField.name]"
+                  tooltipEnableBy="truncate"
+                >
+                  {{ dataItem.text[subField.name] }}
+                </div>
                 <!-- <button
                   kendoButton
                   icon="hyperlink-open-sm"

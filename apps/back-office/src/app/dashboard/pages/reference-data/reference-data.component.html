@@ -98,20 +98,7 @@
           ></ui-icon>
         </div>
         <!-- Value field to be displayed -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-          *ngIf="!csvLoading && type && valueFields.length > 0"
-        >
-          <label>{{ 'pages.referenceData.valueField' | translate }}</label>
-          <ui-select-menu formControlName="valueField">
-            <ui-select-option
-              *ngFor="let value of valueFields"
-              [value]="value.name"
-              >{{ value.name }}</ui-select-option
-            >
-          </ui-select-menu>
-        </div>
+        <ng-container *ngTemplateOutlet="valueFieldTmpl"></ng-container>
       </div>
       <ui-alert class="mb-4">{{
         'pages.referenceData.fields.help' | translate
@@ -239,6 +226,8 @@
           {{ 'pages.referenceData.validateCsv' | translate }}
         </ui-button>
       </div>
+      <!-- Value field to be displayed -->
+      <ng-container *ngTemplateOutlet="valueFieldTmpl"></ng-container>
     </div>
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <!-- For graphql -->
@@ -269,6 +258,24 @@
         ></kendo-grid-column>
       </kendo-grid>
     </div>
+
+    <!-- Value field selection template -->
+    <ng-template #valueFieldTmpl>
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        *ngIf="!csvLoading && type && valueFields.length > 0"
+      >
+        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
+        <ui-select-menu formControlName="valueField">
+          <ui-select-option
+            *ngFor="let value of valueFields"
+            [value]="value.name"
+            >{{ value.name }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
+    </ng-template>
   </form>
   <!-- Floating div for actions buttons -->
   <ui-fixed-wrapper>

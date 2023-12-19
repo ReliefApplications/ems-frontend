@@ -5,6 +5,8 @@ import {
   Input,
   OnInit,
   Output,
+  QueryList,
+  ViewChild,
 } from '@angular/core';
 import {
   Validators,
@@ -23,13 +25,14 @@ import {
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
-import { takeUntil } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs';
 import { Form } from '../../../models/form.model';
 import { createSummaryCardForm } from './summary-card-settings.forms';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
+import { TabComponent, TabsComponent } from '@oort-front/ui';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -66,6 +69,10 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   /** Available resource templates */
   public templates: Form[] = [];
+  /** Settings tab items length before any node add/removal */
+  private previousTabsLength = 0;
+  /** Current active settings tab index */
+  public activeSettingsTab = 0;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -76,6 +83,9 @@ export class SummaryCardSettingsComponent
   get usePaginationControl(): FormControl {
     return this.widgetFormGroup?.get('widgetDisplay.usePagination') as any;
   }
+
+  /** Tabs component associated to summary card settings */
+  @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
 
   /**
    * Summary Card Settings component.
@@ -211,6 +221,32 @@ export class SummaryCardSettingsComponent
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.change.emit(this.widgetFormGroup);
       });
+
+    this.tabsComponent.tabs.changes
+      .pipe(startWith(this.tabsComponent.tabs), takeUntil(this.destroy$))
+      .subscribe((tabs: QueryList<TabComponent>) => {
+        // Update selectedIndex according to the absolute number of tabs added/removed
+        // only if active tab distinct of first one
+        const tabsDifference = Math.abs(tabs.length - this.previousTabsLength);
+        // Would not trigger on first load, only if tab items length changes after tabs are set
+        if (
+          tabsDifference &&
+          this.activeSettingsTab &&
+          this.previousTabsLength
+        ) {
+          if (this.previousTabsLength < tabs.length) {
+            this.activeSettingsTab += tabsDifference;
+          } else if (this.previousTabsLength > tabs.length) {
+            this.activeSettingsTab -= tabsDifference;
+          }
+          // Open tab again with all loaded values
+          this.tabsComponent.tabs
+            .toArray()
+            .at(this.activeSettingsTab)
+            ?.openTab.emit();
+        }
+        this.previousTabsLength = tabs.length;
+      });
   }
 
   /**
@@ -318,10 +354,13 @@ export class SummaryCardSettingsComponent
   private getCustomAggregation(): void {
     if (!this.aggregation || !this.resource?.id) return;
     this.aggregationService
-      .aggregationDataQuery(this.resource.id, this.aggregation.id || '')
-      ?.subscribe((res) => {
-        if (res.data?.recordsAggregation) {
-          this.customAggregation = res.data.recordsAggregation;
+      .aggregationDataQuery({
+        resource: this.resource.id,
+        aggregation: this.aggregation.id || '',
+      })
+      ?.subscribe(({ data }: any) => {
+        if (data.recordsAggregation) {
+          this.customAggregation = data.recordsAggregation;
           // @TODO: Figure out fields' types from aggregation
           this.fields = this.customAggregation.items[0]
             ? Object.keys(this.customAggregation.items[0]).map((f) => ({

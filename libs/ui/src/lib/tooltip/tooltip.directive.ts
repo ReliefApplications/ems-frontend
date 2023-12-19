@@ -31,7 +31,7 @@ export class TooltipDirective implements OnDestroy {
   /** Distance from tooltip and the host element in px ( when possible ) */
   private tooltipSeparation = 5;
 
-  // Default classes to render the tooltip
+  /** Default classes to render the tooltip */
   private tooltipClasses = [
     'opacity-85',
     'transition-opacity',
@@ -47,7 +47,7 @@ export class TooltipDirective implements OnDestroy {
     'z-[9999]',
     'break-words',
   ] as const;
-
+  /** ShadowDomService current host */
   private currentHost!: any;
   /** Position of the tooltip */
   private position!: TooltipPosition;
@@ -212,6 +212,7 @@ export class TooltipDirective implements OnDestroy {
   selector: '[uiTooltipPosition]',
 })
 export class TooltipPositionDirective implements OnInit {
+  /** Tooltip position */
   @Input('uiTooltipPosition') position: TooltipPosition = 'bottom';
 
   /**

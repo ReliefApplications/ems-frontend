@@ -17,12 +17,15 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
   // === INPUT DATA ===
+  /** Templates */
   public templates: Array<any> = new Array<any>();
+  /** Application service */
   @Input() applicationService!: ApplicationService;
 
   // === DISPLAYED COLUMNS ===
+  /** Displayed columns */
   public displayedColumns = ['name', 'type', 'actions'];
-
+  /** Loading state */
   public loading = false;
 
   /**

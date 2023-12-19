@@ -7,6 +7,7 @@
 		"add": "Ajouter",
 		"adminField": "Champ administrateur",
 		"aggregation": {
+			"add": "Ajouter une agrégation",
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
 			"one": "Agrégation"
@@ -1833,6 +1834,8 @@
 						}
 					},
 					"dynamic": "Dynamique",
+					"exportable": "Autoriser l'export des cartes",
+					"gridMode": "Peut être affiché en grille",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
 					},
@@ -1859,6 +1862,15 @@
 				},
 				"viewAsCards": "Afficher en cartes",
 				"viewAsGrid": "Afficher en grille"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "Vous pouvez créer des agrégations personnalisées et les injecter dans l'éditeur à l'aide d'espaces réservés {{aggregation.<id>}}.",
+					"template": {
+						"add": "Ajouter une nouvelle agrégation de modèles",
+						"edit": "Modifier l'agrégation de modèles"
+					}
+				}
 			}
 		}
 	},
@@ -1867,6 +1879,7 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateFormat": "AAAA/MM/JJ ou une expression ({{today}} ou  {{now}})",
 			"dateLabel": "Sélectionnez une date",
 			"endLabel": "Date de fin",
 			"startLabel": "Date de début",
@@ -2063,6 +2076,11 @@
 		},
 		"application": {
 			"description": "Description",
+			"errors": {
+				"style": {
+					"notFound": "Le style de l'application n'a pas pu être chargé"
+				}
+			},
 			"id": "ID de l'application",
 			"menu": "Menu latéral",
 			"new": "Nouvelle application",
@@ -2123,7 +2141,12 @@
 					"element": "Élément"
 				},
 				"selectDisplayField": "Sélectionnez le champ d'affichage",
-				"selectOrigin": "Sélectionnez la source de données"
+				"selectOrigin": "Sélectionnez la source de données",
+				"title": "Contexte",
+				"tooltip": {
+					"useContextEditor": "Utiliser l'éditeur de contexte",
+					"useDefaultEditor": "Utiliser l'éditeur par défaut"
+				}
 			},
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
@@ -2205,7 +2228,8 @@
 			"select": "Sélectionnez un enregistrement"
 		},
 		"referenceData": {
-			"add": "Ajouter une référence de données"
+			"add": "Ajouter une référence de données",
+			"select": "Sélectionnez une référence de données"
 		},
 		"resource": {
 			"create": "Créer une ressource",
@@ -2290,6 +2314,12 @@
 	"pages": {
 		"administration": {
 			"title": "Administration"
+		},
+		"aggregation": {
+			"preview": {
+				"label": "Aperçu des données d'agrégation",
+				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
+			}
 		},
 		"apiConfiguration": {
 			"authentication": "Paramètres d'authentification",

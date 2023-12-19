@@ -40,13 +40,34 @@ import {
   styleUrls: ['./data-presentation-list.component.scss'],
 })
 export class DataPresentationListComponent {
+  /**
+   * Message for the add new item button
+   */
   @Input() addNewItemButtonMessage = '';
+  /**
+   * Message for the empty data list
+   */
   @Input() emptyDataListMessage = '';
+  /**
+   * Loading state
+   */
   @Input() loading = true;
+  /**
+   * Can update state
+   */
   @Input() canUpdate = false;
+  /**
+   * Aggregation or layout data source
+   */
   @Input() dataSource: Array<Aggregation | Layout> = [];
+  /**
+   * Columns to display
+   */
   @Input() displayedColumns: string[] = [];
 
+  /**
+   * Event emitter for the item action
+   */
   @Output() itemAction: EventEmitter<{
     type: 'add' | 'edit' | 'delete';
     item: Aggregation | Layout | null | undefined;
