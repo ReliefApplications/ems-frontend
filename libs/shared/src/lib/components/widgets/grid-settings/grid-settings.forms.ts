@@ -2,6 +2,7 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   ValidationErrors,
   Validators,
 } from '@angular/forms';
@@ -148,7 +149,7 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
               createButtonFormGroup(x)
             )
           : [createButtonFormGroup(null)]
-      ),
+      ) as FormArray<FormControl<typeof createButtonFormGroup>>,
       sortFields: new FormArray([]),
       contextFilters: [
         get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
