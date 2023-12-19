@@ -202,7 +202,6 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
                 );
 
                 this.onSubmit();
-                window.location.reload();
               }
             },
             error: (err) => {
