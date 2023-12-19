@@ -756,6 +756,11 @@
 					}
 				}
 			},
+			"searchExistingRecords": {
+				"matches": "Matches",
+				"noMatches": "No matches found",
+				"openRecordTooltip": "Open record"
+			},
 			"summary": {
 				"cache": {
 					"clear": "Clear cache",

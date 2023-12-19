@@ -19,6 +19,7 @@ import {
   setDateValue,
 } from '../components/utils/create-picker-instance';
 import { TranslateService } from '@ngx-translate/core';
+import { FieldSearchTableComponent } from '../components/field-search-table/field-search-table.component';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -85,6 +86,27 @@ export const init = (
           obj.setPropertyValue('dateMax', value);
           obj.setPropertyValue('max', value);
         },
+      });
+      // @TODO: Only allow for input type "text"
+      serializer.addProperty('text', {
+        name: 'searchSimilarRecords:boolean',
+        category: 'general',
+        visibleIf: (obj: QuestionText) => obj.inputType === 'text',
+      });
+      serializer.addProperty('text', {
+        name: 'searchTableTitle:string',
+        category: 'general',
+        visibleIf: (obj: QuestionText) => obj.searchSimilarRecords,
+      });
+      serializer.addProperty('text', {
+        name: 'searchTableEmpty:string',
+        category: 'general',
+        visibleIf: (obj: QuestionText) => obj.searchSimilarRecords,
+      });
+      serializer.addProperty('text', {
+        name: 'searchTableOpenRecord:string',
+        category: 'general',
+        visibleIf: (obj: QuestionText) => obj.searchSimilarRecords,
       });
       // register the editor for type "date" with kendo date picker
       registerCustomPropertyEditor(
@@ -298,6 +320,17 @@ export const init = (
             }
           });
         }
+      }
+
+      // Adding search table below the input
+      if (question.searchSimilarRecords && question.inputType === 'text') {
+        const table = domService.appendComponentToBody(
+          FieldSearchTableComponent,
+          el.parentElement
+        );
+
+        const tableInstance = table.instance;
+        tableInstance.question = question;
       }
     },
   };

@@ -24,6 +24,10 @@ export const GET_FORM_BY_ID = gql`
         canSee
         canUpdate
       }
+      resource {
+        id
+        name
+      }
     }
   }
 `;

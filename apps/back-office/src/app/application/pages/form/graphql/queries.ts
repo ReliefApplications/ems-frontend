@@ -120,6 +120,10 @@ export const GET_SHORT_FORM_BY_ID = gql`
         canSee
         canUpdate
       }
+      resource {
+        id
+        name
+      }
       canUpdate
     }
   }

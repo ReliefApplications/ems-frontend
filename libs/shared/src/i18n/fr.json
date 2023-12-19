@@ -761,6 +761,11 @@
 					}
 				}
 			},
+			"searchExistingRecords": {
+				"matches": "Résultats",
+				"noMatches": "Aucun résultat",
+				"openRecordTooltip": "Ouvrir l'enregistrement"
+			},
 			"summary": {
 				"cache": {
 					"clear": "Vider le cache",

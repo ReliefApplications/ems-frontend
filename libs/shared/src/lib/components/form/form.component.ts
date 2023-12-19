@@ -121,7 +121,8 @@ export class FormComponent
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
       this.form.metadata,
-      this.record
+      this.record,
+      this.form?.resource
     );
 
     // After the survey is created we add common callback to survey events
