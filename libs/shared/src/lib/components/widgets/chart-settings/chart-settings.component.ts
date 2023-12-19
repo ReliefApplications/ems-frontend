@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -31,12 +30,13 @@ export class ChartSettingsComponent
   public type: any;
 
   /** @returns the form for the chart */
-  public get chartForm(): UntypedFormGroup {
-    return (this.formGroup?.controls.chart as UntypedFormGroup) || null;
+  public get chartForm() {
+    return this.formGroup?.controls.chart;
   }
 
-  /** @returns the form for the legend */ public get legendForm(): UntypedFormGroup {
-    return (this.chartForm?.controls.legend as UntypedFormGroup) || null;
+  /** @returns the form for the legend */
+  public get legendForm() {
+    return this.chartForm?.controls.legend;
   }
 
   /** Build the settings form, using the widget saved parameters. */
