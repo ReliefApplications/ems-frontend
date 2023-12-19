@@ -538,12 +538,26 @@ export class DashboardComponent
 
   /** Save the dashboard changes in the database. */
   private autoSaveChanges(): void {
+    let widgets = this.widgets;
+    // If context data exists we have to clean up widget setting original settings
+    // Which do not have the {{context}} replaced, and delete duplicated original settings property as it's not needed in the DB
+    if (this.dashboard?.contextData) {
+      widgets = [];
+      this.widgets.forEach((widget) => {
+        const contextContentCleanWidget = {
+          ...widget,
+          settings: widget.originalSettings,
+        };
+        delete contextContentCleanWidget.originalSettings;
+        widgets.push(contextContentCleanWidget);
+      });
+    }
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: this.id,
-          structure: this.widgets,
+          structure: widgets,
         },
       })
       .subscribe({
