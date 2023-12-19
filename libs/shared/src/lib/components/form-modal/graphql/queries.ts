@@ -56,6 +56,10 @@ export const GET_RECORD_BY_ID = gql`
           canSee
           canUpdate
         }
+        resource {
+          id
+          name
+        }
       }
     }
   }

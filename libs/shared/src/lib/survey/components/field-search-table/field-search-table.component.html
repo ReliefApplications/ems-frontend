@@ -1,0 +1,48 @@
+<div class="my-4" *ngIf="question.value && !question.isReadOnly && isTouched">
+  <kendo-grid [data]="dataSource" id="search-table" scrollable="none">
+    <kendo-grid-column
+      [title]="
+        question.searchTableTitle ??
+          'components.form.searchExistingRecords.matches' | translate
+      "
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <p [innerHTML]="dataItem.matchedText"></p>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [width]="30">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <button
+          kendoButton
+          class="text-center"
+          icon="hyperlink-open-sm"
+          look="flat"
+          [uiTooltip]="
+            question.searchTableOpenRecord ??
+              'components.form.searchExistingRecords.openRecordTooltip'
+              | translate
+          "
+          (click)="openRecord(dataItem.record)"
+        ></button>
+      </ng-template>
+    </kendo-grid-column>
+
+    <ng-template kendoGridNoRecordsTemplate>
+      <div *ngIf="!loading">
+        {{
+          question.searchTableEmpty ??
+            'components.form.searchExistingRecords.noMatches' | translate
+        }}
+      </div>
+    </ng-template>
+  </kendo-grid>
+  <ui-paginator
+    [disabled]="loading || updating"
+    [pageSize]="pageInfo.pageSize"
+    [pageIndex]="pageInfo.pageIndex"
+    [totalItems]="pageInfo.length"
+    [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
+    (pageChange)="onPage($event)"
+  >
+  </ui-paginator>
+</div>

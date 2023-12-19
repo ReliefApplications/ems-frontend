@@ -1,3 +1,4 @@
+import { ApolloClientOptions } from '@apollo/client';
 import { unionBy } from 'lodash';
 
 /**
@@ -63,4 +64,24 @@ export const updateQueryUniqueValues = <T>(
     response = unionBy(previousDataContent, currentDataContent, refPath as any);
   }
   return response;
+};
+
+/**
+ * Returns values from client cache for the given query
+ *
+ * @param apolloClient ApolloClient config
+ * @param query Query used to fetch content
+ * @param variables Variables used for the Query
+ * @returns Cache values
+ */
+export const getCachedValues = <T>(
+  apolloClient: ApolloClientOptions<any>,
+  query: any,
+  variables: object
+): T => {
+  const cachedValues = apolloClient.cache.readQuery({
+    query,
+    variables,
+  }) as T;
+  return cachedValues as T;
 };

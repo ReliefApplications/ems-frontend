@@ -756,6 +756,11 @@
 					}
 				}
 			},
+			"searchExistingRecords": {
+				"matches": "******",
+				"noMatches": "******",
+				"openRecordTooltip": "******"
+			},
 			"summary": {
 				"cache": {
 					"clear": "******",
