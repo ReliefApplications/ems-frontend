@@ -51,6 +51,8 @@ export const init = (
       );
     },
     onLoaded: (question: any): void => {
+      console.log(question);
+      console.log(component);
       /** Applied filters */
       const filter: CompositeFilterDescriptor = {
         filters: [],
@@ -67,6 +69,7 @@ export const init = (
           },
         })
         .subscribe(({ data }) => {
+          console.log("data = ", data);
           if (data.users.edges.length > 0) {
             const users: any = [];
             for (const user of data.users.edges) {
