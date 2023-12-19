@@ -140,7 +140,7 @@ export class QueryBuilderService {
         query: GET_QUERY_TYPES,
       })
       .subscribe({
-        next: ({ data, errors }) => {
+        next: ({ data }) => {
           this.isDoneLoading.next(true);
           this.availableTypes.next(data.__schema.types);
           this.availableQueries.next(
@@ -153,7 +153,7 @@ export class QueryBuilderService {
             .find((x: any) => x.name === 'User')
             .fields.filter((x: any) => USER_FIELDS.includes(x.name));
         },
-        error: (error) => {
+        error: () => {
           this.isDoneLoading.next(false);
         },
       });

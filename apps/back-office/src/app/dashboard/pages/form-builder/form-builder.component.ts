@@ -21,7 +21,7 @@ import {
 } from '@oort-front/shared';
 
 import { SpinnerComponent } from '@oort-front/ui';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -318,7 +318,7 @@ export class FormBuilderComponent implements OnInit {
 
             let connected = false;
 
-            // Subscribe to the isDoneLoading$ observable to get the current state of 
+            // Subscribe to the isDoneLoading$ observable to get the current state of
             // the backend connection after reloading the query types
             await this.queryBuilder.isDoneLoading$.subscribe(
               async (isDoneLoading) => {
