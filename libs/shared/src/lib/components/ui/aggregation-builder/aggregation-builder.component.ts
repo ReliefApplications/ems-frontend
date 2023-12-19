@@ -17,6 +17,7 @@ import {
   AggregationDataQueryResponse,
   ReferenceDataAggregationQueryResponse,
 } from '../../../models/aggregation.model';
+import { getReferenceMetadata } from '../../../utils/get-reference-metadata';
 
 /**
  * Main component of Aggregation builder.
@@ -176,34 +177,7 @@ export class AggregationBuilderComponent
           updateSelectedFilterFields();
         });
     } else if (this.referenceData) {
-      const refDataMeta: Metadata[] = [];
-      const getEditor = (field: any) => {
-        switch (field.type) {
-          case 'boolean': {
-            return 'boolean';
-          }
-          case 'number': {
-            return 'numeric';
-          }
-          case 'string': {
-            return 'text';
-          }
-          default: {
-            return '';
-          }
-        }
-      };
-      (this.referenceData.fields ?? []).forEach((field) => {
-        const meta: Metadata = {
-          name: field.graphQLFieldName || field.name,
-          type: field.type,
-          automated: false,
-          filterable: !['object', 'array'].includes(field.type),
-          editor: getEditor(field),
-        };
-
-        refDataMeta.push(meta);
-      });
+      const refDataMeta = getReferenceMetadata(this.referenceData);
       this.filterFields.next(refDataMeta);
       updateSelectedFilterFields();
     }

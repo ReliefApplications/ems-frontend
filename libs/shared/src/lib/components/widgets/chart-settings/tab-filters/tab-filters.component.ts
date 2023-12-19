@@ -38,7 +38,7 @@ import {
   GET_REFERENCE_DATA_METADATA,
   GET_RESOURCE_METADATA,
 } from '../graphql/queries';
-import { Metadata } from '../../../../models/metadata.model';
+import { getReferenceMetadata } from '../../../../utils/get-reference-metadata';
 
 /** Component for the filters tab of the chart settings */
 @Component({
@@ -121,33 +121,8 @@ export class TabFiltersComponent implements OnInit {
           },
         })
         .subscribe((res) => {
-          const getEditor = (field: any) => {
-            switch (field.type) {
-              case 'boolean': {
-                return 'boolean';
-              }
-              case 'number': {
-                return 'numeric';
-              }
-              case 'string': {
-                return 'text';
-              }
-              default: {
-                return '';
-              }
-            }
-          };
           this.referenceData = res.data.referenceData;
-          this.filterFields = (this.referenceData.fields ?? []).map((field) => {
-            const meta: Metadata = {
-              name: field.name,
-              type: field.type,
-              automated: false,
-              filterable: !['object', 'array'].includes(field.type),
-              editor: getEditor(field),
-            };
-            return meta;
-          });
+          this.filterFields = getReferenceMetadata(this.referenceData);
         });
     }
   }
