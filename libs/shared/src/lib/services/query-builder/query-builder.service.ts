@@ -142,6 +142,15 @@ export class QueryBuilderService {
   }
 
   /**
+   * Sets available queries.
+   *
+   * @param types Available types.
+   */
+  public setAvailableTypes(types: any[]) {
+    this.availableTypes.next(types);
+  }
+
+  /**
    * Gets list of fields from a type.
    *
    * @param type Corresponding type from availableTypes.

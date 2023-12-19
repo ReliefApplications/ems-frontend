@@ -7,7 +7,7 @@ import {
   EDIT_FORM_STATUS,
   EDIT_FORM_STRUCTURE,
 } from './graphql/mutations';
-import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
+import { GET_SHORT_FORM_BY_ID, GET_QUERY_TYPES } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   AuthService,
@@ -19,8 +19,9 @@ import {
   EditFormMutationResponse,
   SnackbarSpinnerComponent,
 } from '@oort-front/shared';
+
 import { SpinnerComponent } from '@oort-front/ui';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -29,6 +30,7 @@ import { isEqual } from 'lodash';
 import { GraphQLError } from 'graphql';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { QueryBuilderService } from 'libs/shared/src/lib/services/query-builder/query-builder.service';
 
 /** Default snackbar config for after request complete  */
 const REQUEST_SNACKBAR_CONF = {
@@ -101,7 +103,8 @@ export class FormBuilderComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private breadcrumbService: BreadcrumbService,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   /**
@@ -301,7 +304,6 @@ export class FormBuilderComponent implements OnInit {
               localStorage.removeItem(`form:${this.id}`);
               this.hasChanges = false;
               this.authService.canLogout.next(true);
-              window.location.reload();
             }
           },
           error: (err) => {
@@ -309,9 +311,50 @@ export class FormBuilderComponent implements OnInit {
             loadingSnackbarRef.instance.dismiss();
             this.snackBar.openSnackBar(err.message, { error: true });
           },
-          complete: () => {
+          complete: async () => {
             // Detach the current set overlay
             overlayRef.detach();
+
+            // Wait for backend connection to be established
+            const checkBackendConnectionWithGetQueryTypes =
+              async (): Promise<boolean> => {
+                let isConnected = true;
+
+                try {
+                  const result = await firstValueFrom(
+                    this.apollo.query({
+                      query: GET_QUERY_TYPES,
+                    })
+                  );
+
+                  const { data, errors, networkStatus } = result;
+
+                  if (errors || networkStatus !== 7) {
+                    isConnected = false;
+                  } else {
+                    // Set available types in query builder
+                    this.queryBuilder.setAvailableTypes(
+                      (data as any).__schema.types
+                    );
+                  }
+                } catch (err) {
+                  isConnected = false;
+                }
+
+                return isConnected;
+              };
+
+            // Wait for backend connection to be established
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const waitForBackendConnection = async () => {
+              while (
+                (await checkBackendConnectionWithGetQueryTypes()) === false
+              ) {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+              }
+            };
+
+            await waitForBackendConnection();
           },
         });
     }
