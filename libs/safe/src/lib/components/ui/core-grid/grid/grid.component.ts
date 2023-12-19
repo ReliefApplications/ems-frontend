@@ -361,9 +361,9 @@ export class SafeGridComponent
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
-    // format filter before sending
-    this.formatFilter(filter);
     if (!this.loadingRecords) {
+      // format filter timezones before sending
+      this.formatFiltersTimezones(filter);
       this.filter = filter;
       this.filterChange.emit(filter);
     }
@@ -375,11 +375,11 @@ export class SafeGridComponent
    *
    * @param filter Filter value.
    */
-  private formatFilter(filter: any) {
+  private formatFiltersTimezones(filter: any) {
     filter.filters.forEach((subFilter: any) => {
       // if there are sub filters
       if (subFilter.filters) {
-        this.formatFilter(subFilter);
+        this.formatFiltersTimezones(subFilter);
       } else if (subFilter.value instanceof Date) {
         const currentDate = subFilter.value;
         const hoursToAdjustTimezone = Math.floor(
@@ -391,13 +391,8 @@ export class SafeGridComponent
         const dateObj = new Date(currentDate);
         dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
         dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
-        // Convert the modified date back to the original format
-        const modifiedDateString = dateObj
-          .toISOString()
-          .replace('T00:00:00.000Z', '');
-        const modifiedDate = new Date(modifiedDateString);
 
-        subFilter.value = modifiedDate;
+        subFilter.value = dateObj;
       }
     });
   }
