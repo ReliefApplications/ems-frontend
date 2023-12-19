@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  HostBinding,
   Inject,
   Input,
   OnDestroy,
@@ -39,8 +38,6 @@ import {
 import { ShadowDomService, TabComponent, TabsComponent } from '@oort-front/ui';
 import { RestService } from '../../../services/rest/rest.service';
 import { DOCUMENT } from '@angular/common';
-import { v4 as uuidv4 } from 'uuid';
-
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
 /**
@@ -80,9 +77,6 @@ export class SummaryCardSettingsComponent
   private previousTabsLength = 0;
   /** Current active settings tab index */
   public activeSettingsTab = 0;
-  /** Id of the ticket. Visible in the dom */
-  @HostBinding()
-  id = `widget-${uuidv4()}`;
   /**
    *
    */
