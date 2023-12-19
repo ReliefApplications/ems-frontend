@@ -1,8 +1,12 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
+  HostBinding,
+  Inject,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -32,7 +36,10 @@ import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
-import { TabComponent, TabsComponent } from '@oort-front/ui';
+import { ShadowDomService, TabComponent, TabsComponent } from '@oort-front/ui';
+import { RestService } from '../../../services/rest/rest.service';
+import { DOCUMENT } from '@angular/common';
+import { v4 as uuidv4 } from 'uuid';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -46,7 +53,7 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 })
 export class SummaryCardSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, OnDestroy
 {
   /** Widget configuration */
   @Input() widget: any;
@@ -73,6 +80,15 @@ export class SummaryCardSettingsComponent
   private previousTabsLength = 0;
   /** Current active settings tab index */
   public activeSettingsTab = 0;
+  /** Id of the ticket. Visible in the dom */
+  @HostBinding()
+  id = `widget-${uuidv4()}`;
+  /**
+   *
+   */
+  @ViewChild('previewSummaryCard', { read: ElementRef }) previewSummaryCard:
+    | ElementRef
+    | undefined;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -86,6 +102,8 @@ export class SummaryCardSettingsComponent
 
   /** Tabs component associated to summary card settings */
   @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
+  /** Html element containing widget custom style */
+  private customStyle?: HTMLStyleElement;
 
   /**
    * Summary Card Settings component.
@@ -93,11 +111,17 @@ export class SummaryCardSettingsComponent
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
    * @param fb FormBuilder instance
+   * @param restService Shared rest service
+   * @param document Document
+   * @param shadowDomService Shared shadow dom service
    */
   constructor(
     private apollo: Apollo,
     private aggregationService: AggregationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private restService: RestService,
+    @Inject(DOCUMENT) private document: Document,
+    private shadowDomService: ShadowDomService
   ) {
     super();
   }
@@ -106,6 +130,7 @@ export class SummaryCardSettingsComponent
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
+    this.customStyleSummaryCard();
     this.widgetFormGroup = createSummaryCardForm(
       this.widget.id,
       this.widget.settings
@@ -211,6 +236,13 @@ export class SummaryCardSettingsComponent
     this.initSortFields();
   }
 
+  override ngOnDestroy(): void {
+    // Remove the custom style when the component is destroyed
+    if (this.customStyle) {
+      this.customStyle.remove();
+    }
+  }
+
   /**
    * Detect the form changes to emit the new configuration.
    */
@@ -261,6 +293,34 @@ export class SummaryCardSettingsComponent
       });
       (this.widgetFormGroup?.get('sortFields') as any).push(row);
     });
+  }
+
+  /**
+   * Add a new style to the preview card
+   */
+  private customStyleSummaryCard() {
+    // Get style from widget definition
+    const style = get(this.widget, 'settings.widgetDisplay.style') || '';
+    if (style) {
+      const scss = `#previewSummaryCard {
+        ${style}
+      }`;
+      // Compile to css ( we store style as scss )
+      this.restService
+        .post('style/scss-to-css', { scss }, { responseType: 'text' })
+        .subscribe((css) => {
+          this.customStyle = this.document.createElement('style');
+          this.customStyle.appendChild(this.document.createTextNode(css));
+          if (this.shadowDomService.isShadowRoot) {
+            // Add it to shadow root
+            this.shadowDomService.currentHost.appendChild(this.customStyle);
+          } else {
+            // Add to head of document
+            const head = this.document.getElementsByTagName('head')[0];
+            head.appendChild(this.customStyle);
+          }
+        });
+    }
   }
 
   /**
