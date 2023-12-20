@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { distinctUntilChanged, takeUntil } from 'rxjs';
 import { ApplicationService } from '../../services/application/application.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
