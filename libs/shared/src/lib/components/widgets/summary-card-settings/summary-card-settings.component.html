@@ -211,7 +211,7 @@
       <ng-template uiTabContent>
         <shared-sorting-settings
           [fields]="fields"
-          [formArray]="$any(widgetFormGroup.get('sortFields'))"
+          [formArray]="widgetFormGroup.controls.sortFields"
           [formGroup]="widgetFormGroup"
         ></shared-sorting-settings>
       </ng-template>

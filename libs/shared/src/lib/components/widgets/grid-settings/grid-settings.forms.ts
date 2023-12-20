@@ -150,7 +150,7 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
             )
           : [createButtonFormGroup(null)]
       ) as FormArray<FormControl<typeof createButtonFormGroup>>,
-      sortFields: new FormArray([]),
+      sortFields: new FormArray<any>([]),
       contextFilters: [
         get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
       ],
