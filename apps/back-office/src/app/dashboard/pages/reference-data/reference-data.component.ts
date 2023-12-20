@@ -746,6 +746,7 @@ export class ReferenceDataComponent
       variables: {
         id: apiConfID,
       },
+      fetchPolicy: 'network-only',
     });
 
     const { data: apiConfData } = await firstValueFrom(query$);
