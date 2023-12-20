@@ -34,6 +34,12 @@
         "plugin:jsdoc/recommended"
       ],
       "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "checkDynamicDependenciesExceptions": ["@oort-front/shared"]
+          }
+        ],
         "no-case-declarations": 0,
         "@typescript-eslint/no-explicit-any": 0, // todo: set to 1
         "prettier/prettier": 2,
