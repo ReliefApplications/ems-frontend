@@ -95,9 +95,6 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
         );
       }
     }
-    if (this.disabled) {
-      classes.push('text-gray-400');
-    }
     this.resolveTabClasses = classes;
   }
 }

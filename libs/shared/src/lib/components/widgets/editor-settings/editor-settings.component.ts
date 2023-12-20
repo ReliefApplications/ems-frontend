@@ -24,6 +24,7 @@ import {
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
 import { createEditorForm } from './editor-settings.forms';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 // export type EditorFormType = ReturnType<typeof createEditorForm>;
 
@@ -37,15 +38,15 @@ import { createEditorForm } from './editor-settings.forms';
 })
 export class EditorSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, WidgetSettings<typeof createEditorForm>
 {
   /** Widget configuration */
   @Input() widget: any;
   /** Widget form group */
   widgetFormGroup!: ReturnType<typeof createEditorForm>;
   /** Change event emitter */
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<ReturnType<typeof createEditorForm>> =
+    new EventEmitter();
   /** tinymce editor configuration */
   public editor: any = WIDGET_EDITOR_CONFIG;
   /** Current resource */
@@ -77,15 +78,10 @@ export class EditorSettingsComponent
     this.dataTemplateService.setEditorLinkList(this.editor);
   }
 
-  /**
-   * Build the settings form, using the widget saved parameters.
-   */
   ngOnInit(): void {
-    this.widgetFormGroup = createEditorForm(
-      this.widget.id,
-      this.widget.settings
-    );
-    this.change.emit(this.widgetFormGroup);
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
 
     // Initialize the selected resource, layout and record from the form
     const resourceID = this.widgetFormGroup?.get('resource')?.value;
@@ -161,7 +157,7 @@ export class EditorSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
-        this.change.emit(this.widgetFormGroup);
+        this.formChange.emit(this.widgetFormGroup);
         // todo: check if relevant
         this.widget.settings.text = this.widgetFormGroup.value.text;
         this.widget.settings.record = this.widgetFormGroup.value.record;
@@ -256,5 +252,15 @@ export class EditorSettingsComponent
       ),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
     ]);
+  }
+
+  /**
+   * Build the settings form, using the widget saved parameters.
+   */
+  public buildSettingsForm() {
+    this.widgetFormGroup = createEditorForm(
+      this.widget.id,
+      this.widget.settings
+    );
   }
 }

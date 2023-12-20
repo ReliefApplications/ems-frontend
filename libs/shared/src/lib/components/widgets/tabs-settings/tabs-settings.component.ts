@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createTabsWidgetFormGroup } from './tabs-settings.form';
 import get from 'lodash/get';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 /**
  * Settings of tabs widget.
@@ -18,19 +19,33 @@ import { takeUntil } from 'rxjs';
 })
 export class TabsSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, WidgetSettings<typeof extendWidgetForm>
 {
   /** Widget definition */
   @Input() widget: any;
   /** Emit the applied change */
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<ReturnType<typeof extendWidgetForm>> =
+    new EventEmitter();
   /** Widget form group */
-  public widgetForm!: FormGroup;
+  public widgetFormGroup!: ReturnType<typeof extendWidgetForm>;
 
   ngOnInit(): void {
-    // Create form group, and extend it to get display settings ( such as borderless )
-    this.widgetForm = extendWidgetForm(
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
+    this.widgetFormGroup.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.widgetFormGroup.markAsDirty({ onlySelf: true });
+        this.formChange.emit(this.widgetFormGroup);
+      });
+  }
+
+  /**
+   * Create form group, and extend it to get display settings ( such as borderless )
+   */
+  public buildSettingsForm() {
+    this.widgetFormGroup = extendWidgetForm(
       createTabsWidgetFormGroup(this.widget.id, this.widget.settings),
       get(this.widget, 'settings.widgetDisplay'),
       {
@@ -39,12 +54,5 @@ export class TabsSettingsComponent
         ),
       }
     );
-    this.change.emit(this.widgetForm);
-    this.widgetForm.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.widgetForm.markAsDirty({ onlySelf: true });
-        this.change.emit(this.widgetForm);
-      });
   }
 }
