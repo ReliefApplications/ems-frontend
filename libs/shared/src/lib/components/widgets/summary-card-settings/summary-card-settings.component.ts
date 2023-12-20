@@ -33,6 +33,7 @@ import {
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
 import { TabComponent, TabsComponent } from '@oort-front/ui';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -46,13 +47,15 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 })
 export class SummaryCardSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements
+    OnInit,
+    AfterViewInit,
+    WidgetSettings<typeof createSummaryCardForm>
 {
   /** Widget configuration */
   @Input() widget: any;
   /** Emit changes applied to the settings */
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<SummaryCardFormT> = new EventEmitter();
   /** Widget form group */
   public widgetFormGroup!: SummaryCardFormT;
   /** Current reference data */
@@ -102,16 +105,10 @@ export class SummaryCardSettingsComponent
     super();
   }
 
-  /**
-   * Build the settings form, using the widget saved parameters.
-   */
   ngOnInit(): void {
-    this.widgetFormGroup = createSummaryCardForm(
-      this.widget.id,
-      this.widget.settings
-    );
-    this.change.emit(this.widgetFormGroup);
-
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
     // Initialize resource
     const resourceID = this.widgetFormGroup?.get('card.resource')?.value;
     if (resourceID) {
@@ -219,7 +216,7 @@ export class SummaryCardSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
-        this.change.emit(this.widgetFormGroup);
+        this.formChange.emit(this.widgetFormGroup);
       });
 
     this.tabsComponent.tabs.changes
@@ -370,5 +367,15 @@ export class SummaryCardSettingsComponent
             : [];
         }
       });
+  }
+
+  /**
+   * Build the settings form, using the widget saved parameters.
+   */
+  public buildSettingsForm() {
+    this.widgetFormGroup = createSummaryCardForm(
+      this.widget.id,
+      this.widget.settings
+    );
   }
 }

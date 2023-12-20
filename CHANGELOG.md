@@ -1,3 +1,13 @@
+## [2.3.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0...v2.3.1) (2023-12-20)
+
+
+### Bug Fixes
+
+* change visibity when position set to none ([#2200](https://github.com/ReliefApplications/ems-frontend/issues/2200)) ([8ec6933](https://github.com/ReliefApplications/ems-frontend/commit/8ec6933614fdc983de02392bd3b94bb012be5d15))
+* context incorrectly saved in some inherited dashboard templates ([#2202](https://github.com/ReliefApplications/ems-frontend/issues/2202)) ([a30bf10](https://github.com/ReliefApplications/ems-frontend/commit/a30bf10ddffc60f187054737d2b92bffb14c1e39))
+* infinite scroll with ref data not working in summary cards ([eb86688](https://github.com/ReliefApplications/ems-frontend/commit/eb8668867a019babd4601edfbe45f3ac48ccdb8c))
+* predefined filters in charts not applying ([#2193](https://github.com/ReliefApplications/ems-frontend/issues/2193)) ([e68d3c4](https://github.com/ReliefApplications/ems-frontend/commit/e68d3c462da8f582ec85e85db2e02aa05f90af51))
+
 # [2.3.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.2...v2.3.0) (2023-12-18)
 
 

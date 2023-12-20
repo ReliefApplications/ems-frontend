@@ -105,14 +105,13 @@ export class ReferenceDataComponent
   /** Valid json types */
   public validJsonTypes = [
     'string',
+    'integer',
     'number',
     'boolean',
     'object',
     'array',
     'null',
   ];
-
-  // === CSV ===
   /** CSV value */
   public csvValue = '';
   /** New data */

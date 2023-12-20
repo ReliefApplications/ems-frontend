@@ -76,7 +76,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   /** Reference to the TabBodyHostDirective. */
   @ViewChild(TabBodyHostDirective)
   tabBodyHost!: TabBodyHostDirective;
-  /** Refenrece to tab list element */
+  /** Reference to tab list element */
   @ViewChild('tabList')
   tabList!: ElementRef<any>;
 
