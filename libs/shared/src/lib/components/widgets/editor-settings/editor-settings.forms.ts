@@ -28,7 +28,9 @@ export const createTemplateAggregationForm = (value: any) => {
       resource: get<string>(value, 'resource', ''),
       referenceData: get<string>(value, 'referenceData', ''),
       aggregation: [get<string>(value, 'aggregation', ''), Validators.required],
-      contextFilters: DEFAULT_CONTEXT_FILTER,
+      contextFilters: get<string>(value, 'contextFilters', '')
+        ? get<string>(value, 'contextFilters', '')
+        : DEFAULT_CONTEXT_FILTER,
       at: get<string>(value, 'at', ''),
     },
     {

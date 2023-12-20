@@ -5,6 +5,8 @@ import {
   Input,
   OnInit,
   Output,
+  QueryList,
+  ViewChild,
 } from '@angular/core';
 import {
   Validators,
@@ -23,13 +25,15 @@ import {
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
-import { takeUntil } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs';
 import { Form } from '../../../models/form.model';
 import { createSummaryCardForm } from './summary-card-settings.forms';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
+import { TabComponent, TabsComponent } from '@oort-front/ui';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -43,13 +47,15 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 })
 export class SummaryCardSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements
+    OnInit,
+    AfterViewInit,
+    WidgetSettings<typeof createSummaryCardForm>
 {
   /** Widget configuration */
   @Input() widget: any;
   /** Emit changes applied to the settings */
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<SummaryCardFormT> = new EventEmitter();
   /** Widget form group */
   public widgetFormGroup!: SummaryCardFormT;
   /** Current reference data */
@@ -66,6 +72,10 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   /** Available resource templates */
   public templates: Form[] = [];
+  /** Settings tab items length before any node add/removal */
+  private previousTabsLength = 0;
+  /** Current active settings tab index */
+  public activeSettingsTab = 0;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -76,6 +86,9 @@ export class SummaryCardSettingsComponent
   get usePaginationControl(): FormControl {
     return this.widgetFormGroup?.get('widgetDisplay.usePagination') as any;
   }
+
+  /** Tabs component associated to summary card settings */
+  @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
 
   /**
    * Summary Card Settings component.
@@ -92,16 +105,10 @@ export class SummaryCardSettingsComponent
     super();
   }
 
-  /**
-   * Build the settings form, using the widget saved parameters.
-   */
   ngOnInit(): void {
-    this.widgetFormGroup = createSummaryCardForm(
-      this.widget.id,
-      this.widget.settings
-    );
-    this.change.emit(this.widgetFormGroup);
-
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
     // Initialize resource
     const resourceID = this.widgetFormGroup?.get('card.resource')?.value;
     if (resourceID) {
@@ -209,7 +216,33 @@ export class SummaryCardSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
-        this.change.emit(this.widgetFormGroup);
+        this.formChange.emit(this.widgetFormGroup);
+      });
+
+    this.tabsComponent.tabs.changes
+      .pipe(startWith(this.tabsComponent.tabs), takeUntil(this.destroy$))
+      .subscribe((tabs: QueryList<TabComponent>) => {
+        // Update selectedIndex according to the absolute number of tabs added/removed
+        // only if active tab distinct of first one
+        const tabsDifference = Math.abs(tabs.length - this.previousTabsLength);
+        // Would not trigger on first load, only if tab items length changes after tabs are set
+        if (
+          tabsDifference &&
+          this.activeSettingsTab &&
+          this.previousTabsLength
+        ) {
+          if (this.previousTabsLength < tabs.length) {
+            this.activeSettingsTab += tabsDifference;
+          } else if (this.previousTabsLength > tabs.length) {
+            this.activeSettingsTab -= tabsDifference;
+          }
+          // Open tab again with all loaded values
+          this.tabsComponent.tabs
+            .toArray()
+            .at(this.activeSettingsTab)
+            ?.openTab.emit();
+        }
+        this.previousTabsLength = tabs.length;
       });
   }
 
@@ -334,5 +367,15 @@ export class SummaryCardSettingsComponent
             : [];
         }
       });
+  }
+
+  /**
+   * Build the settings form, using the widget saved parameters.
+   */
+  public buildSettingsForm() {
+    this.widgetFormGroup = createSummaryCardForm(
+      this.widget.id,
+      this.widget.settings
+    );
   }
 }

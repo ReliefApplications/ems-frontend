@@ -723,6 +723,7 @@ export const init = (
         CoreGridComponent,
         el.parentElement
       );
+      grid.location.nativeElement.style.maxWidth = `${grid.location.nativeElement.clientWidth}px`; //avoids the grid from getting huge after searching records
       instance = grid.instance;
       setGridInputs(instance, question);
       question.survey?.onValueChanged.add((_: any, options: any) => {

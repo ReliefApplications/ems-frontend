@@ -2214,7 +2214,8 @@
 			"select": "******"
 		},
 		"referenceData": {
-			"add": "******"
+			"add": "******",
+			"select": "******"
 		},
 		"resource": {
 			"create": "******",
