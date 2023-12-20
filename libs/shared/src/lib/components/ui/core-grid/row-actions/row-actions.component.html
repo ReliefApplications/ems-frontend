@@ -2,10 +2,11 @@
   *ngIf="display"
   kendoButton
   class="text-center"
-  icon="more-vertical"
   [look]="'flat'"
   [uiMenuTriggerFor]="menu"
-></button>
+>
+  <kendo-icon name="more-vertical"></kendo-icon>
+</button>
 <ui-menu #menu>
   <button
     *ngIf="actions.update && item.canUpdate"

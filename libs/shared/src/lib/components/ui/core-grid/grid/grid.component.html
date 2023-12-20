@@ -53,8 +53,9 @@
       #anchor
       fillMode="flat"
       (click)="toggleColumnChooser(anchor.element, columnChooser)"
-      icon="columns"
-    ></kendo-button>
+    >
+      <kendo-icon name="columns"></kendo-icon>
+    </kendo-button>
     <ng-template #columnChooser>
       <shared-grid-column-chooser
         [originalColumns]="grid?.columns"
@@ -86,9 +87,9 @@
       *ngIf="filterable"
       [uiTooltip]="'components.widget.grid.filter.toggle' | translate"
       kendoButton
-      icon="eye"
       (click)="onToggleFilter()"
     >
+      <kendo-icon name="eye"></kendo-icon>
       {{
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
@@ -221,11 +222,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
-                icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
-              ></button>
+              >
+                <kendo-icon name="hyperlink-open-sm"></kendo-icon>
+              </button>
             </div>
           </ng-template>
           <!-- DISPLAY ( date / datetime / time ) -->
@@ -277,11 +279,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
-                icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
-              ></button>
+              >
+                <kendo-icon name="hyperlink-open-sm"></kendo-icon>
+              </button>
             </div>
           </ng-template>
           <ng-template
@@ -308,11 +311,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
-                icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
-              ></button>
+              >
+                <kendo-icon name="hyperlink-open-sm"></kendo-icon>
+              </button>
             </div>
           </ng-template>
           <ng-template
@@ -339,11 +343,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
-                icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
-              ></button>
+              >
+                <kendo-icon name="hyperlink-open-sm"></kendo-icon>
+              </button>
             </div>
           </ng-template>
           <!-- DISPLAY ( boolean ) -->
@@ -382,11 +387,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
-                icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
-              ></button>
+              >
+                <kendo-icon name="hyperlink-open-sm"></kendo-icon>
+              </button>
             </div>
           </ng-template>
           <!-- DISPLAY ( color ) -->
@@ -609,11 +615,12 @@
                 </div>
                 <!-- <button
                   kendoButton
-                  icon="hyperlink-open-sm"
                   (click)="openReferenceDataSelector(field)"
                   [look]="'flat'"
                   [uiTooltip]="'common.edit' | translate"
-                ></button> -->
+                >
+                  <kendo-icon name="hyperlink-open-sm"></kendo-icon>
+                </button> -->
               </div>
             </ng-template>
           </kendo-grid-column>
@@ -1018,11 +1025,12 @@
         <button
           class="text-center"
           kendoButton
-          icon="detail-section"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
           [uiTooltip]="'components.widget.grid.actions.detail' | translate"
-        ></button>
+        >
+          <kendo-icon name="detail-section"></kendo-icon>
+        </button>
       </ng-template>
     </kendo-grid-column>
     <!-- Go to page ( navigateToPage action ) -->
@@ -1038,7 +1046,6 @@
         <button
           class="text-center"
           kendoButton
-          icon="hyperlink-open-sm"
           [look]="'flat'"
           (click)="
             action.emit({
@@ -1049,7 +1056,9 @@
             })
           "
           [uiTooltip]="'components.widget.grid.actions.goTo' | translate"
-        ></button>
+        >
+          <kendo-icon name="hyperlink-open-sm"></kendo-icon>
+        </button>
       </ng-template>
     </kendo-grid-column>
     <!-- ROW ACTIONS -->
@@ -1074,30 +1083,33 @@
         <button
           *ngIf="dataItem.validationErrors"
           kendoButton
-          icon="error"
           look="flat"
           class="k-color-error"
           (click)="showErrors(dataItem)"
           [uiTooltip]="
             'components.widget.grid.tooltip.uploadFailed' | translate
           "
-        ></button>
+        >
+          <kendo-icon name="error"></kendo-icon>
+        </button>
         <span
           *ngIf="dataItem.saved === false && !dataItem.validationErrors"
           kendoButton
-          icon="exclamation-circle"
           look="flat"
           class="k-color-warning cursor-default"
           [uiTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
-        ></span>
+        >
+          <kendo-icon name="exclamation-circle"></kendo-icon>
+        </span>
         <span
           *ngIf="dataItem.saved"
           kendoButton
-          icon="check-outline"
           look="flat"
           class="k-color-success cursor-default"
           [uiTooltip]="'components.widget.grid.tooltip.saved' | translate"
-        ></span>
+        >
+          <kendo-icon name="check-outline"></kendo-icon>
+        </span>
       </ng-template>
     </kendo-grid-column>
   </ng-container>

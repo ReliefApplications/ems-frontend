@@ -333,7 +333,7 @@ const replaceRecordFields = (
                   style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
                   ${file.name}
                   >
-                  <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+                  <span class="k-icon k-font-icon ${fileIcon}" style="margin-right: 4px"></span>
                   ${fileName}
                   </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
               }
