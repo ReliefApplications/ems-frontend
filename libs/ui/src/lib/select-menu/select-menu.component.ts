@@ -180,26 +180,7 @@ export class SelectMenuComponent
       .pipe(startWith(this.optionList), takeUntil(this.destroy$))
       .subscribe({
         next: (options: QueryList<SelectOptionComponent>) => {
-          if (this.value) {
-            this.selectedValues.push(
-              this.value instanceof Array ? [...this.value] : this.value
-            );
-          }
-          options.forEach((option) => {
-            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-              next: (isSelected: boolean) => {
-                this.updateSelectedValues(option, isSelected);
-                this.onChangeFunction();
-              },
-            });
-            // Initialize any selected values
-            if (this.selectedValues.includes(option.value)) {
-              option.selected = true;
-            } else {
-              option.selected = false;
-            }
-            this.setDisplayTriggerText();
-          });
+          this.handleOptionsQueryChange(options);
         },
       });
     if (this.control) {
@@ -227,28 +208,37 @@ export class SelectMenuComponent
       .pipe(startWith(this.optionList), takeUntil(this.destroy$))
       .subscribe({
         next: (options: QueryList<SelectOptionComponent>) => {
-          if (this.value) {
-            this.selectedValues.push(
-              this.value instanceof Array ? [...this.value] : this.value
-            );
-          }
-          options.forEach((option) => {
-            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-              next: (isSelected: boolean) => {
-                this.updateSelectedValues(option, isSelected);
-                this.onChangeFunction();
-              },
-            });
-            // Initialize any selected values
-            if (this.selectedValues.includes(option.value)) {
-              option.selected = true;
-            } else {
-              option.selected = false;
-            }
-            this.setDisplayTriggerText();
-          });
+          this.handleOptionsQueryChange(options);
         },
       });
+  }
+
+  /**
+   * Update selected values and all handlers for the given options query list
+   *
+   * @param options Select menu options query list items
+   */
+  private handleOptionsQueryChange(options: QueryList<SelectOptionComponent>) {
+    if (this.value) {
+      this.selectedValues.push(
+        this.value instanceof Array ? [...this.value] : this.value
+      );
+    }
+    options.forEach((option) => {
+      option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
+        next: (isSelected: boolean) => {
+          this.updateSelectedValues(option, isSelected);
+          this.onChangeFunction();
+        },
+      });
+      // Initialize any selected values
+      if (this.selectedValues.includes(option.value)) {
+        option.selected = true;
+      } else {
+        option.selected = false;
+      }
+      this.setDisplayTriggerText();
+    });
   }
 
   /**

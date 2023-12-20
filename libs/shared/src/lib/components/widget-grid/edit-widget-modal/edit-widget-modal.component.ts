@@ -86,7 +86,10 @@ export class EditWidgetModalComponent
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
   ngAfterViewInit(): void {
-    this.settingsContainer.insert(this.componentRef.hostView);
+    // Allows to set the change detector check in the next cycle so it waits until host view is complete loaded
+    Promise.resolve().then(() =>
+      this.settingsContainer.insert(this.componentRef.hostView)
+    );
   }
 
   /**
