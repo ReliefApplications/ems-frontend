@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -31,9 +30,14 @@ export class ChartSettingsComponent
   /** Current chart type */
   public type: any;
 
-  /** @returns the form for the chart */
-  public get chartForm(): UntypedFormGroup {
-    return (this.widgetFormGroup?.controls.chart as UntypedFormGroup) || null;
+  /** @returns Chart form */
+  public get chartForm() {
+    return this.widgetFormGroup?.controls.chart;
+  }
+
+  /** @returns Chart's legend form */
+  public get legendForm() {
+    return this.chartForm?.controls.legend;
   }
 
   ngOnInit(): void {
@@ -53,6 +57,12 @@ export class ChartSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.type = this.types.find((x) => x.name === value);
+      });
+
+    this.legendForm.controls.position.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.legendForm.controls.visible.patchValue(value !== 'none');
       });
   }
 
