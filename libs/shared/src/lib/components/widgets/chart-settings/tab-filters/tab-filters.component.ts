@@ -38,7 +38,7 @@ import {
   GET_REFERENCE_DATA_METADATA,
   GET_RESOURCE_METADATA,
 } from '../graphql/queries';
-import { getReferenceMetadata } from '../../../../utils/get-reference-metadata';
+import { getReferenceMetadata } from '../../../../utils/reference-data-metadata.util';
 
 /** Component for the filters tab of the chart settings */
 @Component({

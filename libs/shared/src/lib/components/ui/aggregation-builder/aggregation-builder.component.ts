@@ -17,7 +17,7 @@ import {
   AggregationDataQueryResponse,
   ReferenceDataAggregationQueryResponse,
 } from '../../../models/aggregation.model';
-import { getReferenceMetadata } from '../../../utils/get-reference-metadata';
+import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
 
 /**
  * Main component of Aggregation builder.

@@ -12,6 +12,7 @@ const getEditor = (field: any) => {
     case 'boolean': {
       return 'boolean';
     }
+    case 'integer':
     case 'number': {
       return 'numeric';
     }
