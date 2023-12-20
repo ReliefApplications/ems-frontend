@@ -41,9 +41,10 @@ export const GET_REFERENCE_DATA = gql`
 
 /** Get API configuration gl query */
 export const GET_API_CONFIGURATION = gql`
-  query GetApiConfiguration($id: ID!) {
-    apiConfiguration(id: $id) {
+  query GetApiConfiguration($id: ID!, $skipCache: Boolean) {
+    apiConfiguration(id: $id, skipCache: $skipCache) {
       id
+      skipCache
       name
       authType
       graphQLEndpoint

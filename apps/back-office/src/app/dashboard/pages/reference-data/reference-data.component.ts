@@ -746,6 +746,7 @@ export class ReferenceDataComponent
       query: GET_API_CONFIGURATION,
       variables: {
         id: apiConfID,
+        skipCache: true,
       },
     });
 
