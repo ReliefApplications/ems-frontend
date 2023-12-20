@@ -694,6 +694,7 @@ export class GridComponent
   public closeEditor(): void {
     if (this.currentEditedItem) {
       if (this.formGroup.dirty) {
+        this.expandActionsColumn();
         this.action.emit({
           action: 'edit',
           item: this.currentEditedItem,
@@ -715,6 +716,7 @@ export class GridComponent
   public onSave(): void {
     // Closes the editor, and saves the value locally
     this.closeEditor();
+    this.collapseActionsColumn();
     this.action.emit({ action: 'save' });
   }
 
@@ -723,6 +725,7 @@ export class GridComponent
    */
   public onCancel(): void {
     this.closeEditor();
+    this.collapseActionsColumn();
     this.action.emit({ action: 'cancel' });
   }
 
@@ -897,6 +900,28 @@ export class GridComponent
       item: dataItem,
       field,
     });
+  }
+
+  /**
+   * Expand the action column so the edit icon fits
+   */
+  expandActionsColumn() {
+    // filter the action column
+    const actionColumn = this.columns.filter(
+      (column) => !column.hidden && !column.title
+    )[0];
+    actionColumn.width = actionColumn.width + 30;
+  }
+
+  /**
+   * Restore the original action column size
+   */
+  collapseActionsColumn() {
+    // filter the action column
+    const actionColumn = this.columns.filter(
+      (column) => !column.hidden && !column.title
+    )[0];
+    actionColumn.width = actionColumn.width - 30;
   }
 
   /**
