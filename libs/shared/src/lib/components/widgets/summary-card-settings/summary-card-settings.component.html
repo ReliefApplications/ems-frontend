@@ -60,11 +60,13 @@
     </ui-tab>
     <!-- Available actions -->
     <ui-tab
-      *ngIf="
-        resource &&
-        layout &&
-        $any(widgetFormGroup.get('widgetDisplay.gridMode'))?.value
-      "
+      [ngClass]="{
+        hidden: !(
+          resource &&
+          layout &&
+          $any(widgetFormGroup.get('widgetDisplay.gridMode'))?.value
+        )
+      }"
     >
       <ng-container ngProjectAs="label">
         <ui-icon
@@ -210,7 +212,7 @@
       <ng-template uiTabContent>
         <shared-sorting-settings
           [fields]="fields"
-          [formArray]="$any(widgetFormGroup.get('sortFields'))"
+          [formArray]="widgetFormGroup.controls.sortFields"
           [formGroup]="widgetFormGroup"
         ></shared-sorting-settings>
       </ng-template>
