@@ -174,15 +174,28 @@ const replaceRecordFields = (
     });
 
     for (const field of fields) {
-      const toReadableObject = (obj: any): any =>
-        typeof obj === 'object' && obj !== null
-          ? Array.isArray(obj)
-            ? obj.map((o) => toReadableObject(o)).join('<br>') // If array, return mapped elements
-            : Object.keys(obj) // If object, return object keys and values as strings
+      const toReadableObject = (obj: any): any => {
+        // If value exists keep checking
+        if (!!obj) {
+          if (typeof obj === 'object') {
+            // If array, return mapped elements
+            if (Array.isArray(obj)) {
+              return obj.map((o) => toReadableObject(o)).join('<br>');
+            } else {
+              // If object, return object keys and values as strings
+              return Object.keys(obj)
                 .filter((key) => key !== '__typename')
                 .map((key) => `${key}: ${obj[key]}`)
-                .join(', ')
-          : `${obj}`; // If not an object, return string representation
+                .join(', ');
+            }
+          } else {
+            // If not an object, return string representation
+            return `${obj}`;
+          }
+        }
+        // Return default undefined/null value if no obj
+        return obj;
+      };
 
       const value = toReadableObject(get(fieldsValue, field.name));
 
