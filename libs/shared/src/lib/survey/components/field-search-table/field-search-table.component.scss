@@ -1,4 +1,4 @@
-::ng-deep ui-paginator {
+:host ::ng-deep ui-paginator {
   kendo-dropdownlist {
     display: none !important;
   }
