@@ -11,11 +11,12 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
-import { takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, takeUntil } from 'rxjs';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   PaginatorModule,
+  SpinnerModule,
   TooltipModule,
   UIPageChangeEvent,
   handleTablePageEvent,
@@ -37,6 +38,7 @@ const ITEMS_PER_PAGE = 5;
     TranslateModule,
     TooltipModule,
     PaginatorModule,
+    SpinnerModule,
   ],
   templateUrl: './field-search-table.component.html',
   styleUrls: ['./field-search-table.component.scss'],
@@ -61,8 +63,6 @@ export class FieldSearchTableComponent
   private recordsQuery?: QueryRef<ResourceRecordsConnectionsQueryResponse>;
   /** If the query is loading */
   public loading = false;
-  /** If the query is updating */
-  public updating = false;
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -70,6 +70,8 @@ export class FieldSearchTableComponent
     endCursor: '',
     length: 0,
   };
+  /** To be able to add debounce time to query */
+  private valueChange = new BehaviorSubject(null);
 
   /** @returns the filter for the query */
   private get filter() {
@@ -134,19 +136,26 @@ export class FieldSearchTableComponent
 
     // Listen to changes on the question value
     this.question.valueChangedCallback = () => {
-      this.isTouched =
-        this.question.value !==
-        (this.question.survey as SurveyModel)?.record?.data?.[
-          this.question.valueName
-        ];
-      if (!this.question.value) {
-        this.cachedRecords = [];
-        this.dataSource = [];
-        return;
-      } else {
-        this.fetchRecordsData(true);
-      }
+      this.valueChange.next(null);
     };
+
+    // Subscribe to value changes with debounce time
+    this.valueChange
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.isTouched =
+          this.question.value !==
+          (this.question.survey as SurveyModel)?.record?.data?.[
+            this.question.valueName
+          ];
+        if (!this.question.value) {
+          this.cachedRecords = [];
+          this.dataSource = [];
+          return;
+        } else {
+          this.fetchRecordsData(true);
+        }
+      });
   }
 
   /**
@@ -176,7 +185,6 @@ export class FieldSearchTableComponent
     }
 
     this.loading = true;
-    this.updating = true;
     const variables = {
       id: this.resource,
       first: this.pageInfo.pageSize,
@@ -231,9 +239,9 @@ export class FieldSearchTableComponent
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       )
-      .map(this.mapRecordToDataSource.bind(this));
+      .map(this.mapRecordToDataSource.bind(this))
+      .filter((x) => x.matchedText.includes('<b>'));
     this.loading = loading;
-    this.updating = false;
   }
 
   /**
@@ -248,7 +256,9 @@ export class FieldSearchTableComponent
       this.cachedRecords
     );
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
-      this.dataSource = cachedData.map(this.mapRecordToDataSource.bind(this));
+      this.dataSource = cachedData
+        .map(this.mapRecordToDataSource.bind(this))
+        .filter((x) => x.matchedText.includes('<b>'));
     } else {
       this.fetchRecordsData();
     }

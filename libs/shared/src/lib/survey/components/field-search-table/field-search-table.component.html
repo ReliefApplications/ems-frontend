@@ -1,4 +1,7 @@
-<div class="my-4" *ngIf="question.value && !question.isReadOnly && isTouched">
+<div
+  class="my-4"
+  *ngIf="question.value && !question.isReadOnly && isTouched && !loading"
+>
   <kendo-grid [data]="dataSource" id="search-table" scrollable="none">
     <kendo-grid-column
       [title]="
@@ -37,7 +40,7 @@
     </ng-template>
   </kendo-grid>
   <ui-paginator
-    [disabled]="loading || updating"
+    [disabled]="loading"
     [pageSize]="pageInfo.pageSize"
     [pageIndex]="pageInfo.pageIndex"
     [totalItems]="pageInfo.length"
@@ -46,3 +49,4 @@
   >
   </ui-paginator>
 </div>
+<ui-spinner *ngIf="loading" class="mx-auto my-3"></ui-spinner>
