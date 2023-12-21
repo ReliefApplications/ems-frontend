@@ -136,6 +136,8 @@ export class CoreGridComponent
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   /** Event emitter for row selection */
@@ -680,9 +682,9 @@ export class CoreGridComponent
             }
           );
           return true;
-        } else {
-          return false;
         }
+        this.inlineEdition.emit();
+        return false;
       });
     } else {
       return Promise.resolve(false);

@@ -123,6 +123,8 @@ export class SummaryCardComponent
   public searchControl = new FormControl('');
   /** Is scrolling */
   public scrolling = false;
+  /** Is refresh card list action */
+  private triggerRefreshCardList = false;
   /** Observer resize changes */
   private resizeObserver!: ResizeObserver;
   /** Used to reset sort options when changing display mode */
@@ -288,6 +290,13 @@ export class SummaryCardComponent
       });
       this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
     }
+    this.bindCardsScrollListener();
+  }
+
+  /**
+   * Bind the scroll event listener to the summary cards container
+   */
+  private bindCardsScrollListener() {
     if (!this.settings.widgetDisplay?.usePagination) {
       if (this.scrollEventListener) {
         this.scrollEventListener();
@@ -318,6 +327,9 @@ export class SummaryCardComponent
       this.sortControl.setValue(null);
       this.onSort(null);
       this.displayMode = value;
+      if (value === 'cards') {
+        setTimeout(() => this.bindCardsScrollListener(), 0);
+      }
     }
   }
 
@@ -344,7 +356,7 @@ export class SummaryCardComponent
   }
 
   /** Gets the query for fetching the dynamic cards records. */
-  private async setupDynamicCards() {
+  async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const card = this.settings.card;
     if (!card) {
@@ -461,7 +473,10 @@ export class SummaryCardComponent
 
     // update card list and scroll behavior according to the card items display
 
-    if (!this.settings.widgetDisplay?.usePagination) {
+    if (
+      !this.settings.widgetDisplay?.usePagination &&
+      !this.triggerRefreshCardList
+    ) {
       this.cards = [...this.cards, ...newCards];
     } else {
       this.cards = newCards;
@@ -479,7 +494,13 @@ export class SummaryCardComponent
       0
     );
     this.scrolling = false;
+    this.triggerRefreshCardList = false;
     this.loading = res.loading;
+  }
+
+  public refreshCardList() {
+    this.triggerRefreshCardList = true;
+    this.dataQuery.refetch();
   }
 
   /**
