@@ -5,7 +5,6 @@ import {
   EventEmitter,
   Input,
   AfterViewInit,
-  Inject,
   OnDestroy,
 } from '@angular/core';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
@@ -26,10 +25,8 @@ import {
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
 import { createEditorForm } from './editor-settings.forms';
-import { RestService } from '../../../services/rest/rest.service';
-import { DOCUMENT } from '@angular/common';
-import { ShadowDomService } from '@oort-front/ui';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { WidgetService } from '../../../services/widget/widget.service';
 
 // export type EditorFormType = ReturnType<typeof createEditorForm>;
 
@@ -75,17 +72,13 @@ export class EditorSettingsComponent
    * @param editorService Editor service used to get main URL and current language
    * @param apollo Apollo service
    * @param dataTemplateService Shared data template service
-   * @param restService Rest service
-   * @param document Document service
-   * @param shadowDomService Shadow dom service
+   * @param widgetService Shared widget service
    */
   constructor(
     private editorService: EditorService,
     private apollo: Apollo,
     private dataTemplateService: DataTemplateService,
-    private restService: RestService,
-    @Inject(DOCUMENT) private document: Document,
-    private shadowDomService: ShadowDomService
+    private widgetService: WidgetService
   ) {
     super();
     // Set the editor base url based on the environment file
@@ -96,7 +89,15 @@ export class EditorSettingsComponent
   }
 
   ngOnInit(): void {
-    this.customStyleSummaryCard();
+    // Initialize style
+    this.widgetService
+      .createCustomStyle('widgetPreview', this.widget)
+      .then((customStyle) => {
+        if (customStyle) {
+          this.customStyle = customStyle;
+        }
+      });
+    // Build settings
     if (!this.widgetFormGroup) {
       this.buildSettingsForm();
     }
@@ -190,34 +191,6 @@ export class EditorSettingsComponent
         this.widget.settings.showDataSourceLink =
           this.widgetFormGroup.value.showDataSourceLink;
       });
-  }
-
-  /**
-   * Add a new style to the preview card
-   */
-  private customStyleSummaryCard() {
-    // Get style from widget definition
-    const style = get(this.widget, 'settings.widgetDisplay.style') || '';
-    if (style) {
-      const scss = `#previewEditor {
-        ${style}
-      }`;
-      // Compile to css ( we store style as scss )
-      this.restService
-        .post('style/scss-to-css', { scss }, { responseType: 'text' })
-        .subscribe((css) => {
-          this.customStyle = this.document.createElement('style');
-          this.customStyle.appendChild(this.document.createTextNode(css));
-          if (this.shadowDomService.isShadowRoot) {
-            // Add it to shadow root
-            this.shadowDomService.currentHost.appendChild(this.customStyle);
-          } else {
-            // Add to head of document
-            const head = this.document.getElementsByTagName('head')[0];
-            head.appendChild(this.customStyle);
-          }
-        });
-    }
   }
 
   /**

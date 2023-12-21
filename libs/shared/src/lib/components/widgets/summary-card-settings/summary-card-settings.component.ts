@@ -1,9 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -35,9 +33,8 @@ import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
-import { ShadowDomService, TabComponent, TabsComponent } from '@oort-front/ui';
-import { RestService } from '../../../services/rest/rest.service';
-import { DOCUMENT } from '@angular/common';
+import { TabComponent, TabsComponent } from '@oort-front/ui';
+import { WidgetService } from '../../../services/widget/widget.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
@@ -82,12 +79,6 @@ export class SummaryCardSettingsComponent
   private previousTabsLength = 0;
   /** Current active settings tab index */
   public activeSettingsTab = 0;
-  /**
-   *
-   */
-  @ViewChild('previewSummaryCard', { read: ElementRef }) previewSummaryCard:
-    | ElementRef
-    | undefined;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -110,23 +101,27 @@ export class SummaryCardSettingsComponent
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
    * @param fb FormBuilder instance
-   * @param restService Shared rest service
-   * @param document Document
-   * @param shadowDomService Shared shadow dom service
+   * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
     private aggregationService: AggregationService,
     private fb: FormBuilder,
-    private restService: RestService,
-    @Inject(DOCUMENT) private document: Document,
-    private shadowDomService: ShadowDomService
+    private widgetService: WidgetService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.customStyleSummaryCard();
+    // Initialize style
+    this.widgetService
+      .createCustomStyle('widgetPreview', this.widget)
+      .then((customStyle) => {
+        if (customStyle) {
+          this.customStyle = customStyle;
+        }
+      });
+    // Build settings
     if (!this.widgetFormGroup) {
       this.buildSettingsForm();
     }
@@ -286,34 +281,6 @@ export class SummaryCardSettingsComponent
       });
       (this.widgetFormGroup?.get('sortFields') as any).push(row);
     });
-  }
-
-  /**
-   * Add a new style to the preview card
-   */
-  private customStyleSummaryCard() {
-    // Get style from widget definition
-    const style = get(this.widget, 'settings.widgetDisplay.style') || '';
-    if (style) {
-      const scss = `#previewSummaryCard {
-        ${style}
-      }`;
-      // Compile to css ( we store style as scss )
-      this.restService
-        .post('style/scss-to-css', { scss }, { responseType: 'text' })
-        .subscribe((css) => {
-          this.customStyle = this.document.createElement('style');
-          this.customStyle.appendChild(this.document.createTextNode(css));
-          if (this.shadowDomService.isShadowRoot) {
-            // Add it to shadow root
-            this.shadowDomService.currentHost.appendChild(this.customStyle);
-          } else {
-            // Add to head of document
-            const head = this.document.getElementsByTagName('head')[0];
-            head.appendChild(this.customStyle);
-          }
-        });
-    }
   }
 
   /**
