@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -33,6 +34,7 @@ import {
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
 import { TabComponent, TabsComponent } from '@oort-front/ui';
+import { WidgetService } from '../../../services/widget/widget.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
@@ -50,6 +52,7 @@ export class SummaryCardSettingsComponent
   implements
     OnInit,
     AfterViewInit,
+    OnDestroy,
     WidgetSettings<typeof createSummaryCardForm>
 {
   /** Widget configuration */
@@ -89,6 +92,8 @@ export class SummaryCardSettingsComponent
 
   /** Tabs component associated to summary card settings */
   @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
+  /** Html element containing widget custom style */
+  private customStyle?: HTMLStyleElement;
 
   /**
    * Summary Card Settings component.
@@ -96,16 +101,27 @@ export class SummaryCardSettingsComponent
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
    * @param fb FormBuilder instance
+   * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
     private aggregationService: AggregationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private widgetService: WidgetService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    // Initialize style
+    this.widgetService
+      .createCustomStyle('widgetPreview', this.widget)
+      .then((customStyle) => {
+        if (customStyle) {
+          this.customStyle = customStyle;
+        }
+      });
+    // Build settings
     if (!this.widgetFormGroup) {
       this.buildSettingsForm();
     }
@@ -206,6 +222,13 @@ export class SummaryCardSettingsComponent
       });
 
     this.initSortFields();
+  }
+
+  override ngOnDestroy(): void {
+    // Remove the custom style when the component is destroyed
+    if (this.customStyle) {
+      this.customStyle.remove();
+    }
   }
 
   /**
