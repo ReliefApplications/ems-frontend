@@ -910,7 +910,9 @@ export class GridComponent
     const actionColumn = this.columns.filter(
       (column) => !column.hidden && !column.title
     )[0];
-    actionColumn.width = actionColumn.width + 30;
+    // default column width 54 + 34 (edit icon)
+    actionColumn.width = 84;
+    this.setColumnsWidth();
   }
 
   /**
@@ -921,7 +923,9 @@ export class GridComponent
     const actionColumn = this.columns.filter(
       (column) => !column.hidden && !column.title
     )[0];
-    actionColumn.width = actionColumn.width - 30;
+    // default column width 54
+    actionColumn.width = 54;
+    this.setColumnsWidth();
   }
 
   /**

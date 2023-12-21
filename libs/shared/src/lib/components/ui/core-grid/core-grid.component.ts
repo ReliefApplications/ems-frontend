@@ -636,6 +636,14 @@ export class CoreGridComponent
       }
       return Promise.all(this.promisedChanges()).then((allRes) => {
         for (const res of allRes) {
+          const hasErrors = allRes.filter((item: any) => {
+            if (item.data.editRecord.validationErrors) {
+              return item.data.editRecord.validationErrors.length;
+            }
+          });
+          if (hasErrors.length > 0) {
+            this.grid?.expandActionsColumn();
+          }
           const resRecord: Record = res.data.editRecord;
           const updatedIndex = this.updatedItems.findIndex(
             (x) => x.id === resRecord.id
