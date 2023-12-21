@@ -2044,7 +2044,10 @@
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
 				"edit": "Modifier l'action du bouton",
-				"href": "Bouton href",
+				"href": {
+					"title": "Bouton href",
+					"tooltip": "L'attribut href spécifie l'URL de destination lorsque le bouton est cliqué. Peut être une URL relative ou absolue."
+				},
 				"one": "Action du bouton",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
 				"text": "Texte du bouton",

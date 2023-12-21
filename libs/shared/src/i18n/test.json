@@ -2037,7 +2037,10 @@
 				"category": "******",
 				"confirmDelete": "******",
 				"edit": "******",
-				"href": "******",
+				"href": {
+					"title": "******",
+					"tooltip": "******"
+				},
 				"one": "******",
 				"openInNewTab": "******",
 				"text": "******",

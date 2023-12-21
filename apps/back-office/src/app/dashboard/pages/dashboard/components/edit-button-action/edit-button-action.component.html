@@ -20,11 +20,22 @@
 
       <!-- href -->
       <div uiFormFieldDirective>
-        <label>{{ 'models.dashboard.buttonActions.href' | translate }}</label>
+        <label
+          >{{ 'models.dashboard.buttonActions.href.title' | translate }}
+        </label>
         <shared-editor-control
           formControlName="href"
           [editorConfig]="hrefEditor"
         ></shared-editor-control>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="
+            'models.dashboard.buttonActions.href.tooltip' | translate
+          "
+        ></ui-icon>
       </div>
 
       <div class="flex gap-2 mb-2">
