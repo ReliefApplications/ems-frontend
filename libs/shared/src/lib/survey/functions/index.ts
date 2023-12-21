@@ -12,7 +12,6 @@ import getField from './getField';
 import elementAt from './elementAt';
 import getWorkflowContext from './getWorkflowContext';
 import summarizeAids from './summarizeAids';
-import searchEnterpriseName from './searchEnterpriseName';
 import push from './push';
 import getComplaintsByType from './getComplaintsByType';
 import getNumberOfMembers from './getNumberOfMembers';
@@ -49,6 +48,5 @@ export const functions = [
 
 /** Generators for each async custom function available  */
 export const asyncFunctions = [
-  { fn: searchEnterpriseName, name: 'searchEnterpriseName' },
   { fn: getComplaintsByType, name: 'getComplaintsByType' },
 ];
