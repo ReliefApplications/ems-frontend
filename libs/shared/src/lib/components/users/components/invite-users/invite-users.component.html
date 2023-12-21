@@ -104,10 +104,11 @@
           <button
             kendoButton
             class="text-center"
-            icon="delete"
             [look]="'flat'"
             (click)="onRemove(idx)"
-          ></button>
+          >
+            <kendo-icon name="delete"></kendo-icon>
+          </button>
         </ng-template>
       </kendo-grid-column>
     </kendo-grid>

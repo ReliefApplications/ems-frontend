@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { IconModule } from '@progress/kendo-angular-icons';
 
 /** Module for invite users component */
 @NgModule({
@@ -29,6 +30,7 @@ import { DialogModule } from '@oort-front/ui';
     DialogModule,
     TextareaModule,
     uiButtonModule,
+    IconModule,
   ],
   exports: [InviteUsersComponent],
 })
