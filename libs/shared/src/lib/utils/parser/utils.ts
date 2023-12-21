@@ -176,7 +176,7 @@ const replaceRecordFields = (
     for (const field of fields) {
       const toReadableObject = (obj: any): any => {
         // If value exists keep checking
-        if (!!obj) {
+        if (obj) {
           if (typeof obj === 'object') {
             // If array, return mapped elements
             if (Array.isArray(obj)) {
