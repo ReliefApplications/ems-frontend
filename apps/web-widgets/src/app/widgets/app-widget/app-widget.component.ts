@@ -17,7 +17,6 @@ import {
 } from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
-import { ShadowDomService } from '@oort-front/ui';
 import { Router } from '@angular/router';
 
 /**
@@ -85,18 +84,15 @@ export class AppWidgetComponent
    * @param contextService Shared context service
    * @param applicationService Shared application service
    * @param router Angular router service
-   * @param shadowDomService Shared shadow dom service
    */
   constructor(
     el: ElementRef,
     injector: Injector,
     private contextService: ContextService,
     private applicationService: ApplicationService,
-    private router: Router,
-    private shadowDomService: ShadowDomService
+    private router: Router
   ) {
     super(el, injector);
-    this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
     this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
       this.filterActive$.emit(!isEmpty(value));
       this.filter$.emit(value);
