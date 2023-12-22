@@ -123,6 +123,8 @@ export class SummaryCardComponent
   public searchControl = new FormControl('');
   /** Is scrolling */
   public scrolling = false;
+  /** Is refresh card list action */
+  private triggerRefreshCardList = false;
   /** Observer resize changes */
   private resizeObserver!: ResizeObserver;
   /** Used to reset sort options when changing display mode */
@@ -134,6 +136,8 @@ export class SummaryCardComponent
   } = { field: null, order: '' };
   /** Summary card grid scroll event listener */
   private scrollEventListener!: any;
+  /** Timeout listener for summary card scroll bind set on view switch */
+  private scrollEventBindTimeout!: NodeJS.Timeout;
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -288,6 +292,13 @@ export class SummaryCardComponent
       });
       this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
     }
+    this.bindCardsScrollListener();
+  }
+
+  /**
+   * Bind the scroll event listener to the summary cards container
+   */
+  private bindCardsScrollListener() {
     if (!this.settings.widgetDisplay?.usePagination) {
       if (this.scrollEventListener) {
         this.scrollEventListener();
@@ -306,6 +317,9 @@ export class SummaryCardComponent
     if (this.scrollEventListener) {
       this.scrollEventListener();
     }
+    if (this.scrollEventBindTimeout) {
+      clearTimeout(this.scrollEventListener);
+    }
   }
 
   /**
@@ -318,6 +332,23 @@ export class SummaryCardComponent
       this.sortControl.setValue(null);
       this.onSort(null);
       this.displayMode = value;
+      if (value === 'cards') {
+        if (this.scrollEventBindTimeout) {
+          clearTimeout(this.scrollEventListener);
+        }
+        // On switching views, summary card element ref is destroyed
+        // and all events attached to it are not working as they are bind to
+        // previous element, therefor we have to set them again
+        this.scrollEventBindTimeout = setTimeout(
+          () => this.bindCardsScrollListener(),
+          0
+        );
+      } else {
+        // Clean previously attached scroll listener as the element ref is destroyed
+        if (this.scrollEventListener) {
+          this.scrollEventListener();
+        }
+      }
     }
   }
 
@@ -461,7 +492,10 @@ export class SummaryCardComponent
 
     // update card list and scroll behavior according to the card items display
 
-    if (!this.settings.widgetDisplay?.usePagination) {
+    if (
+      !this.settings.widgetDisplay?.usePagination &&
+      !this.triggerRefreshCardList
+    ) {
       this.cards = [...this.cards, ...newCards];
     } else {
       this.cards = newCards;
@@ -479,7 +513,13 @@ export class SummaryCardComponent
       0
     );
     this.scrolling = false;
+    this.triggerRefreshCardList = false;
     this.loading = res.loading;
+  }
+
+  public refreshCardList() {
+    this.triggerRefreshCardList = true;
+    this.dataQuery.refetch();
   }
 
   /**
