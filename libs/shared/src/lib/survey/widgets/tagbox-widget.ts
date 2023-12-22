@@ -122,6 +122,7 @@ export const init = (
         });
 
       if (question.jsonObj.name === 'users') {
+        tagboxInstance.virtual.pageSize = 10;
         const filter: CompositeFilterDescriptor = {
           filters: [],
           logic: 'and',
@@ -136,34 +137,35 @@ export const init = (
             },
           });
         tagboxInstance.opened.subscribe(() => {
-          tagboxInstance.optionsList.pageChange
-            .pipe(debounceTime(250))
-            .subscribe((state: any) => {
-              tagboxInstance.loading = true;
-              applicationsQuery
-                .fetchMore({
-                  variables: {
-                    applications: question.data.jsonObj.applications,
-                    first: ITEMS_PER_PAGE,
-                    afterCursor: null,
-                    skip: state.skip,
-                  },
-                })
-                .then((results) => {
-                  const users: any = [tagboxInstance.data];
-                  for (const user of results.data.users.edges) {
-                    if (!users.some((el: any) => el.value === user.node.id)) {
-                      users.push({
-                        value: user.node.id,
-                        text: user.node.username,
-                      });
-                    }
+          tagboxInstance.optionsList.pageChange.subscribe((state: any) => {
+            tagboxInstance.loading = true;
+            applicationsQuery
+              .fetchMore({
+                variables: {
+                  applications: question.data.jsonObj.applications,
+                  first: ITEMS_PER_PAGE,
+                  afterCursor: null,
+                  skip: state.skip,
+                },
+              })
+              .then((results) => {
+                const users: any = [];
+                for (const user of results.data.users.edges) {
+                  if (!users.some((el: any) => el.value === user.node.id)) {
+                    users.push({
+                      value: user.node.id,
+                      text: user.node.username,
+                    });
                   }
-                  console.log(users);
-                  tagboxInstance.data = users;
-                  tagboxInstance.loading = false;
-                });
-            });
+                }
+                // get data
+                const data = tagboxInstance.optionsList.dataService.data;
+                // Starting from the index given by state.skip in the array data,
+                // remove 10 elements, and insert the elements contained in the users array at that position
+                data.splice(state.skip, ITEMS_PER_PAGE, ...users);
+                tagboxInstance.loading = false;
+              });
+          });
         });
       }
       question._propertyValueChangedVirtual = () => {
@@ -215,7 +217,6 @@ export const init = (
     const tagboxInstance: MultiSelectComponent = tagbox.instance;
     tagboxInstance.virtual = {
       itemHeight: 28,
-      pageSize: 10,
     };
     tagboxInstance.valuePrimitive = Boolean(question.isPrimitiveValue);
     tagboxInstance.filterable = true;

@@ -67,15 +67,18 @@ export const init = (
           },
         })
         .subscribe(({ data }) => {
+          console.log(data);
           if (data.users.edges.length > 0) {
-            const users: any = [];
+            let users: any = [];
             for (const user of data.users.edges) {
               if (!users.some((el: any) => el.value === user.node.id)) {
                 users.push({ value: user.node.id, text: user.node.username });
               }
             }
-            users.concat(new Array(data.users.totalCount - 10));
-            console.log(users);
+            // filling with data not yet loaded
+            users = users.concat(
+              new Array(data.users.totalCount - ITEMS_PER_PAGE + 1)
+            );
             question.contentQuestion.choices = users;
           }
         });
