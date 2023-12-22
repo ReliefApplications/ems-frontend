@@ -313,9 +313,10 @@ const replaceRecordFields = (
             break;
           case 'file':
             convertedValue = '';
-            if (isArray(value)) {
-              for (let i = 0; value[i]; ) {
-                const file = value[i];
+            const fileArray = get(fieldsValue, field.name);
+            if (isArray(fileArray)) {
+              for (let i = 0; fileArray[i]; ) {
+                const file = fileArray[i];
                 const fileExt = file.name.split('.').pop();
                 const fileIcon =
                   fileExt && ICON_EXTENSIONS[fileExt]
@@ -338,7 +339,6 @@ const replaceRecordFields = (
                   </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
               }
             }
-
             break;
           case 'owner':
           case 'users':

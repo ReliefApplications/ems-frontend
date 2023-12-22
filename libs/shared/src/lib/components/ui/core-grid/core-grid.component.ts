@@ -136,6 +136,8 @@ export class CoreGridComponent
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   /** Event emitter for row selection */
@@ -662,6 +664,7 @@ export class CoreGridComponent
             item.saved = true;
           }
         }
+        this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
         if (this.updatedItems.length) {
           // show an error message
@@ -680,9 +683,8 @@ export class CoreGridComponent
             }
           );
           return true;
-        } else {
-          return false;
         }
+        return false;
       });
     } else {
       return Promise.resolve(false);

@@ -425,9 +425,39 @@ export class GridComponent
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
     if (!this.loadingRecords) {
+      // format filter timezones before sending
+      this.formatFiltersTimezones(filter);
       this.filter = filter;
       this.filterChange.emit(filter);
     }
+  }
+
+  /**
+   * Format filter before sending.
+   * Adjust date filters to remove timezone.
+   *
+   * @param filter Filter value.
+   */
+  private formatFiltersTimezones(filter: any) {
+    filter.filters.forEach((subFilter: any) => {
+      // if there are sub filters
+      if (subFilter.filters) {
+        this.formatFiltersTimezones(subFilter);
+      } else if (subFilter.value instanceof Date) {
+        const currentDate = subFilter.value;
+        const hoursToAdjustTimezone = Math.floor(
+          (currentDate as Date).getTimezoneOffset() / 60
+        );
+        const minutesToAdjustTimezone =
+          (currentDate as Date).getTimezoneOffset() % 60;
+
+        const dateObj = new Date(currentDate);
+        dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
+        dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
+
+        subFilter.value = dateObj;
+      }
+    });
   }
 
   /**
