@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -33,6 +34,8 @@ import {
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
 import { TabComponent, TabsComponent } from '@oort-front/ui';
+import { WidgetService } from '../../../services/widget/widget.service';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -46,13 +49,16 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 })
 export class SummaryCardSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements
+    OnInit,
+    AfterViewInit,
+    OnDestroy,
+    WidgetSettings<typeof createSummaryCardForm>
 {
   /** Widget configuration */
   @Input() widget: any;
   /** Emit changes applied to the settings */
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<SummaryCardFormT> = new EventEmitter();
   /** Widget form group */
   public widgetFormGroup!: SummaryCardFormT;
   /** Current reference data */
@@ -86,6 +92,8 @@ export class SummaryCardSettingsComponent
 
   /** Tabs component associated to summary card settings */
   @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
+  /** Html element containing widget custom style */
+  private customStyle?: HTMLStyleElement;
 
   /**
    * Summary Card Settings component.
@@ -93,25 +101,30 @@ export class SummaryCardSettingsComponent
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
    * @param fb FormBuilder instance
+   * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
     private aggregationService: AggregationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private widgetService: WidgetService
   ) {
     super();
   }
 
-  /**
-   * Build the settings form, using the widget saved parameters.
-   */
   ngOnInit(): void {
-    this.widgetFormGroup = createSummaryCardForm(
-      this.widget.id,
-      this.widget.settings
-    );
-    this.change.emit(this.widgetFormGroup);
-
+    // Initialize style
+    this.widgetService
+      .createCustomStyle('widgetPreview', this.widget)
+      .then((customStyle) => {
+        if (customStyle) {
+          this.customStyle = customStyle;
+        }
+      });
+    // Build settings
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
     // Initialize resource
     const resourceID = this.widgetFormGroup?.get('card.resource')?.value;
     if (resourceID) {
@@ -211,6 +224,13 @@ export class SummaryCardSettingsComponent
     this.initSortFields();
   }
 
+  override ngOnDestroy(): void {
+    // Remove the custom style when the component is destroyed
+    if (this.customStyle) {
+      this.customStyle.remove();
+    }
+  }
+
   /**
    * Detect the form changes to emit the new configuration.
    */
@@ -219,7 +239,7 @@ export class SummaryCardSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
-        this.change.emit(this.widgetFormGroup);
+        this.formChange.emit(this.widgetFormGroup);
       });
 
     this.tabsComponent.tabs.changes
@@ -370,5 +390,15 @@ export class SummaryCardSettingsComponent
             : [];
         }
       });
+  }
+
+  /**
+   * Build the settings form, using the widget saved parameters.
+   */
+  public buildSettingsForm() {
+    this.widgetFormGroup = createSummaryCardForm(
+      this.widget.id,
+      this.widget.settings
+    );
   }
 }

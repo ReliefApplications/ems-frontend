@@ -10,6 +10,9 @@
   &[selected='false']:not([disabled]) {
     @apply text-gray-500 hover:bg-gray-100 hover:border-gray-500 hover:text-gray-700;
   }
+  &[disabled] {
+    @apply text-gray-400;
+  }
 }
 
 .ui-tab__vertical {
@@ -17,9 +20,12 @@
   &[selected='false']:not([disabled]) {
     @apply hover:text-gray-700 text-gray-500;
   }
+  &[disabled] {
+    @apply text-gray-400;
+  }
 }
 
-// === VARIANTS ===
+/* === VARIANTS === */
 .ui-tab__primary {
   @apply text-primary-400 border-primary-300 focus:ring-primary-600;
 }

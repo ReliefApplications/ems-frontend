@@ -7,7 +7,7 @@
     <ng-template uiTabContent>
       <shared-tab-main
         class="flex flex-col h-full"
-        [formGroup]="widgetForm"
+        [formGroup]="widgetFormGroup"
       ></shared-tab-main>
     </ng-template>
   </ui-tab>
@@ -21,7 +21,7 @@
       <span>{{ 'models.widget.display.title' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-display-settings [formGroup]="widgetForm">
+      <shared-display-settings [formGroup]="widgetFormGroup">
       </shared-display-settings>
     </ng-template>
   </ui-tab>

@@ -146,7 +146,7 @@ export class GraphQLSelectComponent
   public touched = false;
 
   /** Destroy subject */
-  private destroy$ = new Subject<void>();
+  public destroy$ = new Subject<void>();
   /** Query name */
   private queryName!: string;
   /** Query change subject */

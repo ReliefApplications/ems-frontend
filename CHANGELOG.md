@@ -1,3 +1,22 @@
+## [2.3.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.1...v2.3.2) (2023-12-21)
+
+
+### Bug Fixes
+
+* date filters should not use timestamps ([#2203](https://github.com/ReliefApplications/ems-frontend/issues/2203)) ([18c3d98](https://github.com/ReliefApplications/ems-frontend/commit/18c3d98ea00dba4a0ff5dc51dd8bf1df40ff49b0))
+* expansion panels in map unique value renderer not working as expected ([#2215](https://github.com/ReliefApplications/ems-frontend/issues/2215)) ([92016df](https://github.com/ReliefApplications/ems-frontend/commit/92016dfc2066c81ffe2000e2a708114d333c8a84))
+* file question not appearing in text / summary card widgets ([#2216](https://github.com/ReliefApplications/ems-frontend/issues/2216)) ([a534282](https://github.com/ReliefApplications/ems-frontend/commit/a534282bbec46532fb2e9ce9e686576c67748c08))
+
+## [2.3.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0...v2.3.1) (2023-12-20)
+
+
+### Bug Fixes
+
+* change visibity when position set to none ([#2200](https://github.com/ReliefApplications/ems-frontend/issues/2200)) ([8ec6933](https://github.com/ReliefApplications/ems-frontend/commit/8ec6933614fdc983de02392bd3b94bb012be5d15))
+* context incorrectly saved in some inherited dashboard templates ([#2202](https://github.com/ReliefApplications/ems-frontend/issues/2202)) ([a30bf10](https://github.com/ReliefApplications/ems-frontend/commit/a30bf10ddffc60f187054737d2b92bffb14c1e39))
+* infinite scroll with ref data not working in summary cards ([eb86688](https://github.com/ReliefApplications/ems-frontend/commit/eb8668867a019babd4601edfbe45f3ac48ccdb8c))
+* predefined filters in charts not applying ([#2193](https://github.com/ReliefApplications/ems-frontend/issues/2193)) ([e68d3c4](https://github.com/ReliefApplications/ems-frontend/commit/e68d3c462da8f582ec85e85db2e02aa05f90af51))
+
 # [2.3.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.2...v2.3.0) (2023-12-18)
 
 

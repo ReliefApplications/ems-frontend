@@ -1,12 +1,12 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "plugins": ["@nx"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@nrwl/nx/enforce-module-boundaries": [
+        "@nx/enforce-module-boundaries": [
           "error",
           {
             "enforceBuildableLibDependency": true,
@@ -29,14 +29,21 @@
         // "deprecation"
       ],
       "extends": [
-        "plugin:@nrwl/nx/typescript",
+        "plugin:@nx/typescript",
         "prettier",
         "plugin:jsdoc/recommended"
       ],
       "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "checkDynamicDependenciesExceptions": ["@oort-front/shared"]
+          }
+        ],
         "no-case-declarations": 0,
         "@typescript-eslint/no-explicit-any": 0, // todo: set to 1
         "prettier/prettier": 2,
+        "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/naming-convention": [
           1,
           {
@@ -85,7 +92,7 @@
     },
     {
       "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nrwl/nx/javascript"],
+      "extends": ["plugin:@nx/javascript"],
       "rules": {}
     },
     {

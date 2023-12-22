@@ -329,12 +329,13 @@ export class DashboardComponent
                 const contextData = this.dashboard?.contextData;
                 this.contextService.context = contextData || null;
 
-                if (!contextData) return widget;
-                // If tile has context, replace the templates with the values
-                // and keep the original, to be used for the widget settings
-                const settings = widget.settings;
-                widget.settings = this.contextService.replaceContext(settings);
-                widget.originalSettings = settings;
+                if (!contextData) {
+                  return widget;
+                }
+                const { settings, originalSettings } =
+                  this.updateSettingsContextContent(widget.settings);
+                widget.originalSettings = originalSettings;
+                widget.settings = settings;
                 return widget;
               }) || []
           );
@@ -373,6 +374,28 @@ export class DashboardComponent
         this.snackBar.openSnackBar(err.message, { error: true });
         this.router.navigate(['/applications']);
       });
+  }
+
+  /**
+   * If context data exists, returns an object containing context content mapped settings and widget's original settings
+   *
+   * @param settings Widget settings
+   * @returns context content mapped settings and original settings
+   */
+  private updateSettingsContextContent(settings: any): {
+    settings: any;
+    originalSettings?: any;
+  } {
+    if (this.dashboard?.contextData) {
+      // If tile has context, replace the templates with the values
+      // and keep the original, to be used for the widget settings
+      const mappedContextContentSettings =
+        this.contextService.replaceContext(settings);
+      const originalSettings = settings;
+      return { settings: mappedContextContentSettings, originalSettings };
+    }
+    // else return settings as given
+    return { settings };
   }
 
   /**
@@ -454,20 +477,21 @@ export class DashboardComponent
           this.widgetGridComponent.widgetComponents.toArray();
         const index = widgetComponents.findIndex((v: any) => v.id === e.id);
         if (index > -1) {
-          // Update the configuration
-          const options = this.contextService.replaceContext(
-            this.widgets[index]?.settings?.defaultLayout
-              ? {
-                  ...e.options,
-                  defaultLayout: this.widgets[index].settings.defaultLayout,
-                }
-              : e.options
-          );
-          if (options) {
+          const { settings, originalSettings } =
+            this.updateSettingsContextContent(
+              this.widgets[index]?.settings?.defaultLayout
+                ? {
+                    ...e.options,
+                    defaultLayout: this.widgets[index].settings.defaultLayout,
+                  }
+                : e.options
+            );
+          if (settings) {
             // Save configuration
             this.widgets[index] = {
               ...this.widgets[index],
-              settings: options,
+              settings: settings,
+              ...(originalSettings && { originalSettings }),
             };
             this.autoSaveChanges();
           }
@@ -514,12 +538,26 @@ export class DashboardComponent
 
   /** Save the dashboard changes in the database. */
   private autoSaveChanges(): void {
+    let widgets = this.widgets;
+    // If context data exists we have to clean up widget setting original settings
+    // Which do not have the {{context}} replaced, and delete duplicated original settings property as it's not needed in the DB
+    if (this.dashboard?.contextData) {
+      widgets = [];
+      this.widgets.forEach((widget) => {
+        const contextContentCleanWidget = {
+          ...widget,
+          settings: widget.originalSettings,
+        };
+        delete contextContentCleanWidget.originalSettings;
+        widgets.push(contextContentCleanWidget);
+      });
+    }
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: this.id,
-          structure: this.widgets,
+          structure: widgets,
         },
       })
       .subscribe({
