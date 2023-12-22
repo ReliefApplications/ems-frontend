@@ -70,7 +70,7 @@ If you need to add a new component, you should uncomment there the related impor
 /* @import "@progress/kendo-theme-default/scss/editor/_index.scss"; */
 
 /* kendo-angular-icons */
-/* @import "@progress/kendo-theme-default/scss/icons/_index.scss"; */
+@import '@progress/kendo-font-icons/dist/index.css';
 
 /* kendo-angular-indicators */
 @import '@progress/kendo-theme-default/scss/badge/_index.scss';

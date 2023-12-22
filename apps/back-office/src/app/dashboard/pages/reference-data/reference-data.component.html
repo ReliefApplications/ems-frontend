@@ -146,37 +146,41 @@
               <button
                 kendoButton
                 class="text-center"
-                icon="edit"
                 [look]="'flat'"
                 (click)="toggleInlineEditor(dataItem)"
                 [uiTooltip]="'common.edit' | translate"
-              ></button>
+              >
+                <kendo-icon name="edit"></kendo-icon>
+              </button>
               <button
                 kendoButton
                 class="text-center"
-                icon="delete"
                 [look]="'flat'"
                 (click)="onRemoveField(dataItem)"
                 [uiTooltip]="'common.remove' | translate"
-              ></button>
+              >
+                <kendo-icon name="delete"></kendo-icon>
+              </button>
             </div>
             <div [ngClass]="{ hidden: currEditingField !== dataItem }">
               <button
                 kendoButton
                 class="text-center"
-                icon="save"
                 [look]="'flat'"
                 (click)="toggleInlineEditor(null)"
                 [uiTooltip]="'common.save' | translate"
-              ></button>
+              >
+                <kendo-icon name="save"></kendo-icon>
+              </button>
               <button
                 kendoButton
                 class="text-center"
-                icon="cancel"
                 [look]="'flat'"
                 (click)="currEditingField = null"
                 [uiTooltip]="'common.cancel' | translate"
-              ></button>
+              >
+                <kendo-icon name="cancel"></kendo-icon>
+              </button>
             </div>
           </ng-template>
         </kendo-grid-column>
@@ -189,9 +193,9 @@
       <button
         kendoButton
         class="text-center mt-2"
-        icon="add"
         (click)="addField()"
       >
+        <kendo-icon name="add"></kendo-icon>
         {{ 'components.referenceData.fields.add' | translate }}
       </button>
     </div>
