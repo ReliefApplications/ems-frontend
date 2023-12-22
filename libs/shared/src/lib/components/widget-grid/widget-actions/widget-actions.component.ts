@@ -66,7 +66,10 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
       const dialogRef = this.dialog.open(EditWidgetModalComponent, {
         disableClose: true,
         data: {
-          widget: this.widget,
+          widget: {
+            ...this.widget,
+            settings: this.widget.originalSettings || this.widget.settings,
+          },
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });

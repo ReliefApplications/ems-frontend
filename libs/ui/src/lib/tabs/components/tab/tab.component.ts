@@ -24,10 +24,13 @@ import { TabContentDirective } from '../../directives/tab-content.directive';
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent implements AfterContentChecked, AfterContentInit {
+  /** Whether the tab is enabled or not */
   @Input() disabled = false;
+  /** Button reference */
   @ViewChild('button')
   button!: ElementRef;
 
+  /** Output decorator for tab opening */
   @Output() openTab: EventEmitter<void> = new EventEmitter();
 
   /** @returns content portal of the tab */
@@ -35,18 +38,26 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
     return this.contentPortal;
   }
 
+  /** Tab content directive */
   @ContentChild(TabContentDirective, { read: TemplateRef<any> })
   explicitContent?: TemplateRef<any> = undefined;
 
+  /** Template reference */
   @ViewChild(TemplateRef, { static: true })
   implicitContent!: TemplateRef<any>;
 
+  /** Tab variant */
   variant: Variant = 'default';
+  /** Whether the tab is vertical or not */
   vertical = false;
+  /** Whether the tab is selected or not */
   selected = false;
+  /** Tab index */
   index = 0;
+  /** Tab classes */
   resolveTabClasses: string[] = [];
 
+  /** Content portal */
   contentPortal: TemplatePortal | null = null;
 
   /**
@@ -83,9 +94,6 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
               : this.variant)
         );
       }
-    }
-    if (this.disabled) {
-      classes.push('text-gray-400');
     }
     this.resolveTabClasses = classes;
   }

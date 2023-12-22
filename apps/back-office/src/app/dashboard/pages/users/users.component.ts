@@ -20,9 +20,21 @@ import {
 })
 export class UsersComponent implements OnInit {
   // === DATA ===
+  /**
+   * Loading state
+   */
   public loading = true;
+  /**
+   * Users list
+   */
   public users = new Array<User>();
+  /**
+   * Roles list
+   */
   public roles: Role[] = [];
+  /**
+   * Columns to display
+   */
   public displayedColumns = ['name', 'username', 'oid', 'roles', 'actions'];
 
   /**

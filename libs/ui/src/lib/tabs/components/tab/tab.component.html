@@ -1,7 +1,6 @@
 <div>
   <button
     [disabled]="disabled"
-    [attr.selected]="selected"
     [ngClass]="resolveTabClasses"
     class="w-full whitespace-nowrap py-2 text-sm font-medium button-min-width"
     (click)="openTab.emit()"

@@ -10,7 +10,6 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
-import { UntypedFormGroup } from '@angular/forms';
 import {
   MapConstructorSettings,
   MapEvent,
@@ -23,6 +22,7 @@ import { MapComponent } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { UILayoutService } from '@oort-front/ui';
 import { DomPortal } from '@angular/cdk/portal';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 /**
  * Map widget settings editor.
@@ -34,20 +34,24 @@ import { DomPortal } from '@angular/cdk/portal';
 })
 export class MapSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  implements
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    WidgetSettings<typeof extendWidgetForm>
 {
   /** Current widget */
   @Input() widget: any;
   /** Emit widget change */
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<ReturnType<typeof extendWidgetForm>> =
+    new EventEmitter();
   /** Reference to map default container */
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainer!: ViewContainerRef;
   /** Map settings */
   public mapSettings!: MapConstructorSettings;
   /** Current widget form group */
-  public widgetFormGroup!: UntypedFormGroup;
+  public widgetFormGroup!: ReturnType<typeof extendWidgetForm>;
   /** Loaded layers */
   public openedLayers: (LayerModel | undefined)[] = [];
   /** Map dom portal ( this component initializes it ) */
@@ -66,15 +70,10 @@ export class MapSettingsComponent
     super();
   }
 
-  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.widgetFormGroup = extendWidgetForm(
-      createMapWidgetFormGroup(this.widget.id, this.widget.settings),
-      this.widget.settings?.widgetDisplay
-    );
-
-    this.change.emit(this.widgetFormGroup);
-
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
     const defaultMapSettings: MapConstructorSettings = {
       basemap: this.widgetFormGroup.value.basemap,
       initialState: this.widgetFormGroup.get('initialState')?.value,
@@ -117,7 +116,7 @@ export class MapSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
-        this.change.emit(this.widgetFormGroup);
+        this.formChange.emit(this.widgetFormGroup);
       });
     this.widgetFormGroup
       .get('initialState')
@@ -203,6 +202,16 @@ export class MapSettingsComponent
       default:
         break;
     }
+  }
+
+  /**
+   * Build the settings form, using the widget saved parameters
+   */
+  public buildSettingsForm() {
+    this.widgetFormGroup = extendWidgetForm(
+      createMapWidgetFormGroup(this.widget.id, this.widget.settings),
+      this.widget.settings?.widgetDisplay
+    );
   }
 
   override ngOnDestroy(): void {

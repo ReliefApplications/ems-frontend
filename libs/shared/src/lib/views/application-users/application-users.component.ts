@@ -23,9 +23,13 @@ export class ApplicationUsersComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Roles */
   public roles: Role[] = [];
+  /** Position attribute categories */
   public positionAttributeCategories: PositionAttributeCategory[] = [];
+  /** Prefetch subject */
   refetch$: Subject<boolean> = new Subject<boolean>();
+  /** User list component */
   @ViewChild(UserListComponent) userList?: UserListComponent;
 
   /**

@@ -93,6 +93,7 @@ export class ApplicationComponent
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.applicationService.loadApplication(params.id);
+      this.appID = params.id;
     });
     // Get list of available applications
     this.authService.user$

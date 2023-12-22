@@ -1,7 +1,11 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
-      {{ 'pages.referenceData.payload.label' | translate }}
+      {{
+        data.aggregationPayload
+          ? ('pages.aggregation.preview.label' | translate)
+          : ('pages.referenceData.payload.label' | translate)
+      }}
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">

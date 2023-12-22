@@ -21,7 +21,7 @@
   @apply absolute h-full w-full rounded-md;
 }
 
-// === SHORT TOGGLE TYPE DETAILS ===
+/* === SHORT TOGGLE TYPE DETAILS === */
 .short-color {
   @apply bg-gray-200 pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out;
 }
@@ -31,12 +31,12 @@
     border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out;
 }
 
-// === ICONS ===
+/* === ICONS === */
 .icon {
   @apply absolute inset-0 flex h-full w-full items-center justify-center transition-opacity;
 }
 
-// === VARIANTS ===
+/* === VARIANTS === */
 .toggle-default {
   @apply bg-black;
 }

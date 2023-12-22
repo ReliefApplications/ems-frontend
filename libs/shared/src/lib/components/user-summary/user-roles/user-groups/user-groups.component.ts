@@ -17,10 +17,15 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./user-groups.component.scss'],
 })
 export class UserGroupsComponent implements OnInit {
+  /** Groups */
   public groups: Group[] = [];
+  /** User */
   @Input() user!: User;
+  /** Selected groups */
   selectedGroups!: ReturnType<typeof this.createFormControl>;
+  /** Event emitter for the edit event */
   @Output() edit = new EventEmitter();
+  /** Whether the group can be edited or not*/
   @Input() canEdit = false;
 
   /** Setter for the loading state */

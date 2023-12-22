@@ -35,6 +35,7 @@ const DEFAULT_PROPERTIES = [
 
 /** Class used internally by surveyJS, but not exported */
 class XmlParser {
+  /** DOM parser */
   private parser = new DOMParser();
 
   // eslint-disable-next-line jsdoc/require-jsdoc

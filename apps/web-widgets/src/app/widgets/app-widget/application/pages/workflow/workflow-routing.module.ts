@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { WorkflowComponent } from './workflow.component';
+import { IsNormalizeUrl } from '../../../guards/normalize-url.guard';
 
 /** List of routes of workflow page */
 const routes: Routes = [
   {
     path: '',
     component: WorkflowComponent,
+    canActivate: [IsNormalizeUrl],
     children: [
       {
         path: 'dashboard/:id',

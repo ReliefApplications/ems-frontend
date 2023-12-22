@@ -11,5 +11,6 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./tab-pagination.component.scss'],
 })
 export class TabPaginationComponent {
+  /** Form group */
   @Input() form!: UntypedFormGroup;
 }

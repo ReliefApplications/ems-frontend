@@ -26,14 +26,20 @@ import { isNil } from 'lodash';
 export class RadioGroupDirective
   implements AfterContentInit, ControlValueAccessor
 {
+  /** Radio group directive name */
   @Input() uiRadioGroupDirective!: string;
+  /** Radio group components */
   @ContentChildren(RadioComponent) radioComponents!: QueryList<RadioComponent>;
-  // If radio group with no form control is added we want to get radio selection as well
+  /** If radio group with no form control is added we want to get radio selection as well */
   @Output() groupValueChange = new EventEmitter<any>();
+  /** Group value */
   private groupValue: any;
 
+  /** Whether the radio group is disabled or not */
   disabled = false;
+  /** Function to handle touch events. */
   onTouched!: () => void;
+  /** Function to handle value changes. */
   onChanged!: (value: string) => void;
 
   /**

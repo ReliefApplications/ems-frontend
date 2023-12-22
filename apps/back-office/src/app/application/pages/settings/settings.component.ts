@@ -26,8 +26,11 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent extends UnsubscribeComponent implements OnInit {
+  /** Application list */
   public applications = new Array<Application>();
+  /** Application settings form */
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
+  /** Status choices */
   public statusChoices = Object.values(status);
   /** Current application */
   public application?: Application;

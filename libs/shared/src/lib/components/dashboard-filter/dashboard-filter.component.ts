@@ -65,7 +65,7 @@ export class DashboardFilterComponent
   public containerTopOffset!: string;
   /** computed top offset of the parent container (or 0 if fullscreen) */
   public containerLeftOffset!: string;
-  // Filter template
+  /** Filter template */
   public survey: Model = new Model();
   /** Filter template structure */
   public surveyStructure: any = {};

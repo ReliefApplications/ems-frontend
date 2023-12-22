@@ -26,6 +26,7 @@ const DEFAULT_SNACKBAR = {
   providedIn: 'root',
 })
 export class SnackbarService {
+  /** Shadow DOM */
   public shadowDom!: any;
 
   /**

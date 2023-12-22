@@ -1,11 +1,11 @@
 :host {
-  // Host is positioned absolutely with an inset of 0
-  // to take all the available space without interfering in the element flow of the DOM
-  // position: absolute;
-  // Also, in order to position the fixed element to the hosts parent, the element positioning is:
-  // parent(relative) > host/component(absolute) > sidebar(fixed) otherwise the fixed element would position to the DOM viewport
-  // inset: 0;
-  // pointer-events: none;
+  /* Host is positioned absolutely with an inset of 0
+  to take all the available space without interfering in the element flow of the DOM
+  position: absolute;
+  Also, in order to position the fixed element to the hosts parent, the element positioning is:
+  parent(relative) > host/component(absolute) > sidebar(fixed) otherwise the fixed element would position to the DOM viewport
+  inset: 0;
+  pointer-events: none; */
 }
 
 .dashboard-filter-y-axis {

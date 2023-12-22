@@ -44,6 +44,8 @@ export class SnackbarComponent implements OnDestroy {
   public nestedComponent?: ComponentRef<any>;
   /** Timeout to remove snackbar */
   private snackbarRemovalTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to remove snackbar */
+  private durationResolverListener!: NodeJS.Timeout;
 
   /**
    * Function to resolve after a certain duration.
@@ -51,8 +53,15 @@ export class SnackbarComponent implements OnDestroy {
    * @param duration duration in ms
    * @returns Promise
    */
-  durationResolver = (duration: number) =>
-    new Promise((resolve) => setTimeout(resolve, duration));
+  durationResolver = (duration: number) => {
+    if (this.durationResolverListener) {
+      clearTimeout(this.durationResolverListener);
+    }
+    return new Promise((resolve) => {
+      this.durationResolverListener = setTimeout(resolve, duration);
+      return this.durationResolverListener;
+    });
+  };
 
   /**
    * UI Snackbar constructor
@@ -99,6 +108,9 @@ export class SnackbarComponent implements OnDestroy {
    */
   dismiss() {
     this.displaySnackBar = false;
+    if (this.snackbarRemovalTimeoutListener) {
+      clearTimeout(this.snackbarRemovalTimeoutListener);
+    }
     this.snackbarRemovalTimeoutListener = setTimeout(() => {
       this.host.nativeElement.remove();
     }, 300);
@@ -152,6 +164,9 @@ export class SnackbarComponent implements OnDestroy {
   ngOnDestroy(): void {
     if (this.snackbarRemovalTimeoutListener) {
       clearTimeout(this.snackbarRemovalTimeoutListener);
+    }
+    if (this.durationResolverListener) {
+      clearTimeout(this.durationResolverListener);
     }
   }
 }

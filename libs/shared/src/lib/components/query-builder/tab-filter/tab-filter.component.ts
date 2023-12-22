@@ -21,11 +21,15 @@ import {
   styleUrls: ['./tab-filter.component.scss'],
 })
 export class TabFilterComponent implements OnInit {
+  /** Form group */
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
+  /** Query */
   @Input() query: any;
 
+  /** Date editor */
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
 
+  /** List of filter fields */
   public filterFields: Field[] = [];
 
   /**

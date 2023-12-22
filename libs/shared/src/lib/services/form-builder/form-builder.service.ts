@@ -25,7 +25,7 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 })
 export class FormBuilderService {
   /**
-   * Constructor of the service
+   * Constructor of the form builder service
    *
    * @param referenceDataService Reference data service
    * @param translate Translation service

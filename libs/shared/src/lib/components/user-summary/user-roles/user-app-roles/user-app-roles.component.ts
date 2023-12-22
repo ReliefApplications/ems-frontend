@@ -22,10 +22,15 @@ export class UserAppRolesComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Roles */
   public roles: Role[] = [];
+  /** User */
   @Input() user!: User;
+  /** Application */
   @Input() application?: Application;
+  /** Selected roles */
   selectedRoles!: ReturnType<typeof this.createRolesControl>;
+  /** Event emitter for the edit event */
   @Output() edit = new EventEmitter();
 
   /** loading setter */
@@ -37,8 +42,11 @@ export class UserAppRolesComponent
     }
   }
 
+  /** Selected application */
   selectedApplication!: ReturnType<typeof this.createApplicationControl>;
+  /** Applications query */
   public applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
+  /** Page size */
   private readonly PAGE_SIZE = 10;
 
   /**

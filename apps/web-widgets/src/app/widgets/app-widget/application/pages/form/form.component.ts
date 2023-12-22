@@ -142,7 +142,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * Handles the response for the given form query response data and loading state
    *
    * @param {FormQueryResponse} data data retrieved from the form query
-   * @param {boolean} loading loadin state
+   * @param {boolean} loading loading state
    */
   private handleApplicationLoadResponse(
     data: FormQueryResponse,

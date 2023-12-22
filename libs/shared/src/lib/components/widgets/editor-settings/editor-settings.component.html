@@ -18,12 +18,17 @@
               <input formControlName="title" type="string" />
             </div>
           </div>
-          <editor [init]="editor" formControlName="text"></editor>
+          <editor
+            *ngIf="!loading"
+            [init]="editor"
+            formControlName="text"
+          ></editor>
+          <ui-spinner *ngIf="loading"></ui-spinner>
         </form>
       </ng-template>
     </ui-tab>
     <!-- Preview -->
-    <ui-tab *ngIf="widgetFormGroup.value">
+    <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon icon="preview" [size]="24"></ui-icon>
         <span>{{
@@ -33,6 +38,7 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-editor
+          id="widgetPreview"
           #widgetContent
           class="flex-1 h-full w-full"
           [settings]="widget.settings"
@@ -62,6 +68,17 @@
           [resource]="resource"
           [layout]="layout"
         ></shared-record-selection-tab>
+      </ng-template>
+    </ui-tab>
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="list" [size]="24"></ui-icon>
+        <span>{{ 'common.aggregation.few' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-template-aggregations
+          [formGroup]="widgetFormGroup"
+        ></shared-template-aggregations>
       </ng-template>
     </ui-tab>
     <!-- Widget display options -->

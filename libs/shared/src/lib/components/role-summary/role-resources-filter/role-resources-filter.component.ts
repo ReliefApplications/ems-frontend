@@ -12,12 +12,16 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   styleUrls: ['./role-resources-filter.component.scss'],
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /** Event emitter for filter */
   @Output() filter = new EventEmitter<any>();
+  /** Loading status */
   @Input() loading = false;
+  /** Form */
   public form = this.fb.group({
     startDate: [null],
     endDate: [null],
   });
+  /** Show flag */
   public show = false;
 
   /**

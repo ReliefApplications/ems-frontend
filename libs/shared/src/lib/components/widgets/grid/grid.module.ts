@@ -10,6 +10,7 @@ import {
   SelectMenuModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReferenceDataGridModule } from '../../ui/reference-data-grid/reference-data-grid.module';
 
 /** Module for grid widget component */
 @NgModule({
@@ -23,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     FormWrapperModule,
     SelectMenuModule,
     TranslateModule,
+    ReferenceDataGridModule,
   ],
   exports: [GridWidgetComponent],
 })

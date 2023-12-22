@@ -31,24 +31,37 @@ export class AggregationGridComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Grid data */
   public gridData: GridDataResult = { data: [], total: 0 };
+  /** Grid fields */
   public fields: any[] = [];
+  /** Loading state */
   public loading = false;
+  /** Loading settings state */
   public loadingSettings = false;
+  /** Status */
   public status: {
     message?: string;
     error: boolean;
   } = {
     error: false,
   };
+  /** Sort */
   public sort: SortDescriptor[] = [];
+  /** Page size */
   public pageSize = 10;
+  /** Skip */
   public skip = 0;
+  /** Data query */
   private dataQuery!: QueryRef<AggregationDataQueryResponse>;
+  /** Pager settings */
   public pagerSettings = PAGER_SETTINGS;
+  /** Show filter */
   public showFilter = false;
 
+  /** Resource id */
   @Input() resourceId!: string;
+  /** Aggregation */
   @Input() aggregation!: Aggregation;
   /** Context filters to be used with dashboard filters */
   @Input() contextFilters: string | undefined;
@@ -125,9 +138,7 @@ export class AggregationGridComponent
       this.pageSize,
       this.skip,
       this.contextFilters
-        ? this.contextService.injectDashboardFilterValues(
-            JSON.parse(this.contextFilters)
-          )
+        ? this.contextService.injectContext(JSON.parse(this.contextFilters))
         : undefined,
       this.at ? this.contextService.atArgumentValue(this.at) : undefined
     );

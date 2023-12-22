@@ -46,21 +46,33 @@ const REQUEST_SNACKBAR_CONF = {
   styleUrls: ['./form-builder.component.scss'],
 })
 export class FormBuilderComponent implements OnInit {
+  /** Loading state */
   public loading = true;
+  /** Form id */
   public id = '';
+  /** Form */
   public form?: Form;
+  /** Form structure */
   public structure: any;
+  /** Form versions */
   public activeVersions = false;
+  /** Form active version */
   public activeVersion: any;
 
   // === ENUM OF FORM STATUSES ===
+  /** Status control */
   public statusControl = new FormControl<string | undefined>('');
+  /** Status choices */
   public statusChoices = Object.values(status);
 
   // === FORM EDITION ===
+  /** Can edit name */
   public canEditName = false;
+  /** Form active */
   public formActive = false;
+  /** Has changes */
   public hasChanges = false;
+  /** Is step */
   private isStep = false;
   /** Prevent form builder to display multiple modals when exiting. */
   private deactivating = false;

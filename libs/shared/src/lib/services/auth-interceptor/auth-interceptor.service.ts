@@ -46,9 +46,6 @@ export class AuthInterceptorService implements HttpInterceptor {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
-          ...(request.url.includes('/graphql')
-            ? { Accept: 'application/json; charset=utf-8' }
-            : {}),
         },
       });
       // Passing the accesstoken so backend can use it in proxy request involving authorization code flow

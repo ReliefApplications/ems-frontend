@@ -19,7 +19,13 @@ export class RoleSummaryComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Role id
+   */
   public id = '';
+  /**
+   * Application
+   */
   public application!: Application;
 
   /**

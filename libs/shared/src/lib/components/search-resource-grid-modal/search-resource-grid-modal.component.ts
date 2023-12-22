@@ -42,8 +42,11 @@ interface DialogData {
   styleUrls: ['./search-resource-grid-modal.component.scss'],
 })
 export class ResourceGridModalComponent {
+  /** Is the grid multiselect */
   public multiSelect = false;
+  /** Grid settings */
   public gridSettings: GridSettings;
+  /** Selected rows */
   public selectedRows: any[] = [];
 
   /**

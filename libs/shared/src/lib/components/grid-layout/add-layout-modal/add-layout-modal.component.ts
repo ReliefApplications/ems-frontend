@@ -57,14 +57,32 @@ export class AddLayoutModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Form
+   */
   private form?: Form;
+  /**
+   * Resource
+   */
   public resource?: Resource;
+  /**
+   * Has layouts
+   */
   public hasLayouts = false;
+  /**
+   * Next step
+   */
   public nextStep = false;
+  /**
+   * Query ref
+   */
   public queryRef!:
     | QueryRef<ResourceQueryResponse>
     | QueryRef<FormQueryResponse>
     | null;
+  /**
+   * Selected layout control
+   */
   public selectedLayoutControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */

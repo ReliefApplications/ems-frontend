@@ -55,17 +55,22 @@ export class ConvertModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
+  /** Form for conversion */
   convertForm = this.fb.group({
     targetForm: new FormControl<Form | null>(null, Validators.required),
     copyRecord: [true, Validators.required],
   });
 
   // === DATA ===
+  /** Form */
   public form?: Form;
+  /** List of available forms */
   public availableForms: Form[] = [];
+  /** List of ignored fields */
   public ignoredFields: any[] = [];
 
   // === LOAD DATA ===
+  /** Loading state */
   public loading = true;
 
   /**

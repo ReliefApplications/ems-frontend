@@ -21,5 +21,8 @@ import { IconModule, ToggleModule, TooltipModule } from '@oort-front/ui';
   styleUrls: ['./display-settings.component.scss'],
 })
 export class DisplaySettingsComponent {
+  /**
+   * Form group
+   */
   @Input() formGroup!: FormGroup;
 }

@@ -15,8 +15,11 @@ export class EditorService {
   /** environment variable */
   private environment: any;
 
+  /** Editor scroll listener */
   private editorScrollListener!: any;
+  /** Active item scroll listener */
   public activeItemScrollListener!: any;
+  /** Renderer */
   private renderer!: Renderer2;
 
   /**

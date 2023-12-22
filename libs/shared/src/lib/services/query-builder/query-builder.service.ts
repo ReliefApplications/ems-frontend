@@ -130,8 +130,9 @@ export class QueryBuilderService {
         this.isDoneLoading.next(true);
         this.availableTypes.next(data.__schema.types);
         this.availableQueries.next(
-          data.__schema.queryType.fields.filter((x: any) =>
-            x.name.startsWith('all')
+          data.__schema.queryType.fields.filter(
+            (x: any) =>
+              x.name.startsWith('all') || x.name.endsWith(REFERENCE_DATA_END)
           )
         );
         this.userFields = data.__schema.types
@@ -192,11 +193,22 @@ export class QueryBuilderService {
     const query = this.availableQueries
       .getValue()
       .find((x) => x.name === queryName);
-    const typeName = query?.type?.name.replace('Connection', '') || '';
-    const type = this.availableTypes
-      .getValue()
-      .find((x) => x.name === typeName);
-    return type ? this.extractFieldsFromType(type) : [];
+    if (query) {
+      if (queryName.endsWith(REFERENCE_DATA_END)) {
+        const type = this.availableTypes
+          .getValue()
+          .find((x) => x.name === queryName);
+        return type ? this.extractFieldsFromType(type) : [];
+      } else {
+        const typeName = query?.type?.name.replace('Connection', '') || '';
+        const type = this.availableTypes
+          .getValue()
+          .find((x) => x.name === typeName);
+        return type ? this.extractFieldsFromType(type) : [];
+      }
+    } else {
+      return [];
+    }
   }
 
   /**

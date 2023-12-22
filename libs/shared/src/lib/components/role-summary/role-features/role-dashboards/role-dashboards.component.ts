@@ -17,15 +17,23 @@ import { get } from 'lodash';
   styleUrls: ['./role-dashboards.component.scss'],
 })
 export class RoleDashboardsComponent implements OnInit, OnChanges {
+  /** Role */
   @Input() role!: Role;
+  /** Pages array */
   @Input() pages: Page[] = [];
+  /** Search query */
   @Input() search = '';
+  /** Loading status */
   @Input() loading = false;
 
+  /** Event emitter for edit */
   @Output() edit = new EventEmitter();
 
+  /** Displayed columns array */
   public displayedColumns = ['name', 'actions'];
+  /** Accessible pages string */
   public accessiblePages: string[] = [];
+  /** Filtered pages array */
   public filteredPages = this.pages;
 
   ngOnInit(): void {

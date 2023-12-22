@@ -19,7 +19,13 @@ export class UserSummaryComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * User id
+   */
   public id = '';
+  /**
+   * Application
+   */
   public application!: Application;
 
   /**

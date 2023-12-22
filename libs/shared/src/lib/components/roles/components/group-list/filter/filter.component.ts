@@ -12,9 +12,12 @@ import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading state */
   @Input() loading = false;
+  /** Event emitter for filter */
   @Output() filter = new EventEmitter<any>();
 
+  /** Form */
   public form = this.fb.group({});
 
   /**

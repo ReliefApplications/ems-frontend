@@ -52,8 +52,11 @@ export class GeofieldsListboxComponent
   extends QuestionAngular<QuestionGeospatialListboxModel>
   implements OnInit, OnChanges, OnDestroy
 {
+  /** Selected fields */
   selectedFields: { value: keyof GeoProperties; label: string }[] = [];
+  /** Available fields */
   public availableFields = ALL_FIELDS;
+  /** Toolbar settings */
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: [
@@ -66,6 +69,7 @@ export class GeofieldsListboxComponent
     ],
   };
 
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
   /**

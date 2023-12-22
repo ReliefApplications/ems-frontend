@@ -21,12 +21,18 @@ export class RoleChannelsComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Role to display */
   @Input() role!: Role;
+  /** Application to display */
   @Input() application?: Application;
 
+  /** List of channels */
   public channels: Channel[] = [];
+  /** List of applications */
   public applications: any[] = [];
+  /** Form group */
   public form!: ReturnType<typeof this.createFormGroup>;
+  /** Event emitter for edit event */
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */

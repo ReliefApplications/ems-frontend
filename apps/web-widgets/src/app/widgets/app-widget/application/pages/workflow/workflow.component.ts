@@ -39,7 +39,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    * @param apollo Apollo client
    * @param route Angular current route
    * @param snackBar Shared snackbar service
-   * @param router Angular router
+   * @param router Angular router service
    * @param translate Angular translate service
    */
   constructor(
@@ -127,13 +127,15 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: any) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
-        }
-      });
+      elementRef.changeStep
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((event: any) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
+        });
     }
   }
 
@@ -156,7 +158,9 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         });
       }
     } else {
-      this.router.navigate(['./'], { relativeTo: this.route });
+      this.router.navigate(['./'], {
+        relativeTo: this.route,
+      });
     }
   }
 

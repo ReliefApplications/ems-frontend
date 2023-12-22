@@ -55,27 +55,40 @@ export class RecordHistoryComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Id of the record */
   @Input() id!: string;
+  /** Function to revert to a version */
   @Input() revert!: (version: Version) => void;
+  /** Template of the record */
   @Input() template?: string;
   /** Show history header ( need to disable it when in modal mode ) */
   @Input() showHeader = true;
+  /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
+  /** Record to display */
   public record!: Record;
+  /** Record history */
   public history: RecordHistory = [];
+  /** Filtered history */
   public filterHistory: RecordHistory = [];
+  /** Loading state */
   public loading = true;
+  /** Show more state */
   public showMore = false;
+  /** Displayed columns array */
   public displayedColumns: string[] = ['position'];
+  /** Form group for date filters */
   public filtersDate = new FormGroup({
     startDate: new FormControl(''),
     endDate: new FormControl(''),
   });
+  /** Sorted fields */
   public sortedFields: any[] = [];
+  /** Fields to filter on */
   public filterFields: string[] = [];
 
-  // Refresh content of the history
+  /** Refresh content of the history */
   @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
 
   /** @returns filename from current date and record inc. id */

@@ -25,10 +25,22 @@ import { takeUntil } from 'rxjs';
   styleUrls: ['./forms-tab.component.scss'],
 })
 export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
+  /**
+   * Resource
+   */
   private resource!: Resource;
+  /**
+   * Forms
+   */
   public forms: Form[] = [];
+  /**
+   * Loading state
+   */
   public loading = true;
 
+  /**
+   * Columns to display
+   */
   public displayedColumnsForms: string[] = [
     'name',
     'createdAt',

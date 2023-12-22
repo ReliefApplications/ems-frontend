@@ -17,12 +17,19 @@ import { createStyleForm } from '../query-builder-forms';
   styleUrls: ['./tab-style.component.scss'],
 })
 export class TabStyleComponent implements OnInit {
+  /** Form array */
   @Input() form!: UntypedFormArray;
+  /** Form group */
   @Input() editedStyleForm: UntypedFormGroup | null = null;
+  /** List of fields */
   @Input() scalarFields: any[] = [];
+  /** List of meta fields */
   @Input() metaFields: any = {};
+  /** CanDelete permission control */
   @Input() canDelete = false;
+  /** Query */
   @Input() query: any;
+  /** Child template */
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 
@@ -35,7 +42,9 @@ export class TabStyleComponent implements OnInit {
     return this.form.get('style') as UntypedFormArray;
   }
 
+  /** Field form */
   public fieldForm: UntypedFormGroup | null = null;
+  /** List of fields */
   public fields: any[] = [];
 
   /**

@@ -9,7 +9,7 @@
           class="flex-1"
           *ngIf="!formGroup.value.resource"
         >
-          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <label>{{ 'models.referenceData.select' | translate }}</label>
           <shared-reference-data-select
             formControlName="refData"
             [selectedElements]="[referenceData]"
@@ -73,6 +73,11 @@
           *ngIf="!layout && !aggregation"
           [text]="'common.or' | translate"
         ></ui-divider>
+      </div>
+      <div
+        class="flex flex-col gap-8"
+        *ngIf="(resource || referenceData) && !layout && !aggregation"
+      >
         <h2>{{ 'common.aggregation.one' | translate }}</h2>
         <div class="flex justify-center mt-4">
           <ui-button
@@ -82,6 +87,10 @@
             >{{ 'components.aggregation.add.select' | translate }}</ui-button
           >
         </div>
+        <ui-divider
+          *ngIf="referenceData"
+          [text]="'common.or' | translate"
+        ></ui-divider>
       </div>
 
       <!-- Selected layout -->

@@ -21,9 +21,13 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./user-summary.component.scss'],
 })
 export class UserSummaryComponent implements OnInit {
+  /** User id */
   @Input() id = '';
+  /** Application */
   @Input() application?: Application;
+  /** User */
   public user?: User;
+  /** Whether the component is loading or not */
   public loading = true;
 
   /** @returns title of the page */

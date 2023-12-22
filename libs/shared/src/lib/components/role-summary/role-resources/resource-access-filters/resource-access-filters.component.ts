@@ -51,6 +51,7 @@ const BASE_PERMISSIONS = {
   ],
 })
 export class RoleResourceFiltersComponent implements OnInit {
+  /** Map of operators to their translation */
   private opMap: {
     [key: string]: string;
   } = {
@@ -73,24 +74,36 @@ export class RoleResourceFiltersComponent implements OnInit {
     lt: this.translate.instant('kendo.grid.filterLtOperator'),
     lte: this.translate.instant('kendo.grid.filterLteOperator'),
   };
+  /** List of permission types */
   public permissionTypes = Object.values(Permission);
 
+  /** If the resource is disabled */
   @Input() disabled = false;
+  /** Role */
   @Input() role!: string; // Opened role
 
   // === RESOURCE ===
+  /** Resource */
   @Input() resource!: Resource; // Opened resource
+  /** Filter fields */
   public filterFields: any[] = [];
 
   // === EDITION ===
+  /** Initial value */
   private initialValue!: AccessPermissions[];
+  /** Opened filter index */
   public openedFilterIndex: number | null = null;
+  /** Filters form array */
   public filtersFormArray!: UntypedFormArray;
+  /** Opened filter form group */
   public openedFilterFormGroup?: UntypedFormGroup;
+  /** Event emitter for update */
   @Output() update = new EventEmitter();
 
   // === TABLE ELEMENTS ===
+  /** Displayed columns */
   public displayedColumns: string[] = ['filter', 'actions'];
+  /** Filters */
   public filters = new Array<AccessPermissions>();
 
   /**

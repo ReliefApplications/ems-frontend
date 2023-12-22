@@ -31,6 +31,7 @@ export class CellHeaderDirective
     super(columnDef, el);
   }
 
+  /** Cell header classes */
   classes = [
     'capitalize',
     'py-3.5',

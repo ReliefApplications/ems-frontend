@@ -29,8 +29,11 @@ export class ReferenceDataDropdownComponent
   extends QuestionAngular<QuestionReferenceDataDropdownModel>
   implements OnInit, OnDestroy
 {
+  /** Control */
   public control = new FormControl<string | null>(null);
+  /** Selected reference data */
   public selectedReferenceData: ReferenceData | null = null;
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
   /**

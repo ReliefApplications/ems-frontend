@@ -12,7 +12,7 @@ input[type='range'] {
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   input[type='range'] {
     overflow: hidden;
-    // accent-color: theme('colors.primary.500');
+    /* accent-color: theme('colors.primary.500'); */
   }
 
   input[type='range']::-webkit-slider-runnable-track {

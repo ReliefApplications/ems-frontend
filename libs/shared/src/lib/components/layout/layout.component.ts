@@ -42,37 +42,78 @@ export class LayoutComponent
   /** Page title ( name of application ) */
   @Input() title = '';
 
+  /**
+   * List of applications
+   */
   @Input() applications: Application[] = [];
 
+  /**
+   * Current application
+   */
   @Input() route?: ActivatedRoute;
 
+  /**
+   * Header template
+   */
   @Input() header?: TemplateRef<any>;
   /** Should show header */
   @Input() showHeader = true;
 
+  /**
+   * Left sidenav template
+   */
   @Input() leftSidenav?: TemplateRef<any>;
 
+  /**
+   * Right sidenav template
+   */
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
 
+  /**
+   * Content template
+   */
   @ViewChild('nav')
   nav?: any;
-
+  /**
+   * Content template
+   */
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
-
+  /**
+   * Event emitted when the user reorders the applications
+   */
   @Output() reorder: EventEmitter<any> = new EventEmitter();
-
+  /**
+   * Event emitted when the user clicks on the profile button
+   */
   @Input() profileRoute = '/profile';
-
+  /**
+   * Event emitted when the user clicks on the profile button
+   */
   @Input() sideMenu = true;
 
+  /**
+   * Event emitted when the user clicks on the profile button
+   */
   @Input() menuOpened = true;
 
+  /**
+   * Languages available
+   */
   languages: string[] = [];
 
   // === NOTIFICATIONS ===
+  /**
+   * Notifications
+   */
   public notifications: Notification[] = [];
+  /**
+   * Boolean to check if there are more notifications
+   */
   public hasMoreNotifications = false;
+  /**
+   * Boolean to check if notifications are loading
+   */
   public loadingNotifications = false;
 
   /** Account information of logged user */
@@ -82,19 +123,27 @@ export class LayoutComponent
 
   /** Is screen large */
   public largeDevice: boolean;
+  /** Theme */
   public theme: any;
 
+  /** Show sidenav */
   public showSidenav = false;
+  /** Show preferences */
   public showPreferences = false;
 
+  /** Other office */
   public otherOffice = '';
+  /** Environment */
   public environment: any;
+  /** Is in application */
   private inApplication = false;
 
   // === APP SEARCH ===
+  /** Show app search */
   public showAppMenu = false;
 
   // === BREADCRUMB ===
+  /** Breadcrumbs */
   public breadcrumbs: Breadcrumb[] = [];
 
   /**

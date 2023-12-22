@@ -28,9 +28,12 @@ export class ResourceDropdownComponent
   extends QuestionAngular<QuestionResourceDropdownModel>
   implements OnInit
 {
+  /** Selected resource */
   public selectedResource?: Resource;
+  /** Resource control */
   public resourceControl!: UntypedFormControl;
 
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
   /**

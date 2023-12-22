@@ -29,8 +29,12 @@ const DEFAULT_PAGE_SIZE = 10;
   styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent extends UnsubscribeComponent implements OnInit {
+  /**
+   * Whether the users are auto assigned or not
+   */
   @Input() autoAssigned = false;
 
+  /** Columns to display */
   public displayedColumns = [
     'select',
     'name',
@@ -41,15 +45,23 @@ export class UserListComponent extends UnsubscribeComponent implements OnInit {
     'actions',
   ];
 
+  /** Users */
   public users: Array<User> = new Array<User>();
+  /** Cached users */
   public cachedUsers: User[] = [];
+  /** Users query */
   private usersQuery!: QueryRef<ApplicationUsersQueryResponse>;
+  /** Roles */
   @Input() roles: Role[] = [];
+  /** Position attribute categories */
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
 
+  /** Loading state */
   public loading = true;
+  /** Updating state */
   public updating = false;
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -62,6 +74,7 @@ export class UserListComponent extends UnsubscribeComponent implements OnInit {
     return !this.loading && this.users.length === 0;
   }
 
+  /** Selection model for users */
   public selection = new SelectionModel<User>(true, []);
 
   /**

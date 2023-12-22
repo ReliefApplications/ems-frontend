@@ -13,9 +13,13 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./user-back-roles.component.scss'],
 })
 export class UserBackRolesComponent implements OnInit {
+  /** Roles */
   public roles: Role[] = [];
+  /** User */
   @Input() user!: User;
+  /** Selected roles */
   selectedRoles!: ReturnType<typeof this.createFormControl>;
+  /** Event emitter for the edit event */
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */

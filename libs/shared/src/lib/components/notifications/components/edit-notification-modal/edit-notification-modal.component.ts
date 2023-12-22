@@ -76,10 +76,15 @@ export class EditNotificationModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Notification */
   public notification?: CustomNotification;
+  /** Notification form group */
   public formGroup!: ReturnType<typeof this.getNotificationForm>;
+  /** Resources query reference */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  /** Resource */
   public resource?: Resource;
+  /** Layout */
   public layout?: Layout;
 
   /** @returns application templates */

@@ -29,6 +29,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   @Input() public metaFields$!: Observable<any[]>;
   /** Input decorator for filterFields$. */
   @Input() public filterFields$!: Observable<any[]>;
+  /** Array to hold the filter fields. */
   public filterFields: any[] = [];
 
   /** Array to hold the meta fields. */
@@ -82,7 +83,15 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   private updateFieldsPerStage(pipeline: any[]): void {
     for (let index = 0; index < pipeline.length; index++) {
       if (pipeline[index].type === PipelineStage.FILTER) {
-        this.fieldsPerStage[index] = this.filterFields;
+        this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
+          this.initialFields.map((field: any) => ({
+            ...field,
+            ...(this.filterFields.find(
+              (filterField: any) => filterField.name === field.name
+            ) ?? {}),
+          })),
+          pipeline.slice(0, index)
+        );
       } else {
         this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
           this.initialFields,

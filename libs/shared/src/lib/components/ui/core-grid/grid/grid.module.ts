@@ -23,6 +23,7 @@ import { GridToolbarModule } from '../toolbar/toolbar.module';
 import { GridComponent } from './grid.component';
 import { GridFilterModule } from '../filter/filter.module';
 import { GridFilterMenuModule } from '../filter-menu/filter-menu.module';
+import { IconsModule } from '@progress/kendo-angular-icons';
 
 /** Module for the grid component */
 @NgModule({
@@ -40,6 +41,7 @@ import { GridFilterMenuModule } from '../filter-menu/filter-menu.module';
     DateInputsModule,
     DropDownsModule,
     ButtonsModule,
+    IconsModule,
     // === UTILS ===
     ExpandedCommentModule,
     // === FILTER ===

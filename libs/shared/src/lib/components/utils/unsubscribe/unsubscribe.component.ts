@@ -16,6 +16,9 @@ import { Subject } from 'rxjs';
   styleUrls: ['./unsubscribe.component.scss'],
 })
 export class UnsubscribeComponent implements OnDestroy {
+  /**
+   * Subject to destroy
+   */
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   /**

@@ -20,11 +20,16 @@ import { RestService } from '../../../services/rest/rest.service';
   styleUrls: ['./role-details.component.scss'],
 })
 export class RoleDetailsComponent implements OnInit {
+  /** Role to display */
   @Input() role!: Role;
+  /** List of permissions */
   public permissions: Permission[] = [];
+  /** Form group */
   public form!: ReturnType<typeof this.createRoleForm>;
+  /** Event emitter for edit event */
   @Output() edit = new EventEmitter();
 
+  /** Stats of role */
   public roleStats = {
     resources: {
       total: 0,

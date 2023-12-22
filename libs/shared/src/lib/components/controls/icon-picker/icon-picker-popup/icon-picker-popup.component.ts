@@ -29,14 +29,22 @@ export class IconPickerPopupComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Event emitter for close event */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<string> = new EventEmitter();
+  /** Search control */
   public searchControl = new FormControl('');
+  /** Show flag */
   private show = true;
+  /** List of icons */
   @Input() icons!: string[];
+  /** Color of the icons */
   @Input() color!: string;
+  /** Filtered icons */
   private filteredIcons!: BehaviorSubject<FaIconName[]>;
+  /** Filtered icons observable */
   public filteredIcons$!: Observable<FaIconName[]>;
+  /** List of svg icons */
   public svgIcons: any = {};
 
   /** Listen to click event on the document */

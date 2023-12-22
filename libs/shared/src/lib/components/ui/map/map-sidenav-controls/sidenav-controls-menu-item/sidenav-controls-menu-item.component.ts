@@ -21,17 +21,26 @@ import { ButtonModule, CheckboxModule } from '@oort-front/ui';
 })
 export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
   // Declare variables to store the event listeners
+  /** Event listener for the add layer event */
   private addLayerListener!: L.LeafletEventHandlerFn;
+  /** Event listener for the remove layer event */
   private removeLayerListener!: L.LeafletEventHandlerFn;
+  /** Children component */
   @ViewChildren(SidenavControlsMenuItemComponent)
   childrenComponents: QueryList<SidenavControlsMenuItemComponent> =
     new QueryList();
 
+  /** Item */
   @Input() item!: L.Control.Layers.TreeObject;
+  /** Map */
   @Input() map!: L.Map;
+  /** Event emitter for change of checkbox */
   @Output() checkedChange = new EventEmitter();
+  /** Whether the item is expanded or not */
   expanded = false;
+  /** Whether the item is checked or not */
   checked = false;
+  /** Whether the item is indeterminate or not */
   indeterminate = false;
 
   ngOnInit(): void {
@@ -64,6 +73,9 @@ export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
     this.checkedChange.emit();
   }
 
+  /**
+   * Handle checked change event.
+   */
   handleCheckedChange = () => {
     const layers = this.getChildrenLayers();
     this.checked = layers.every((layer) => this.map.hasLayer(layer));

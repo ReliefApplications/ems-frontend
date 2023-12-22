@@ -16,10 +16,15 @@ import random from 'lodash/random';
   selector: '[sharedSkeleton]',
 })
 export class SkeletonDirective implements OnChanges {
+  /** Input decorator for loading */
   @Input('sharedSkeleton') loading = false;
+  /** Input decorator for repeat */
   @Input('sharedSkeletonRepeat') repeat = 1;
+  /** Input decorator for width */
   @Input('sharedSkeletonWidth') width: string | number = '';
+  /** Input decorator for height */
   @Input('sharedSkeletonHeight') height = '';
+  /** Input decorator for shape */
   @Input('sharedSkeletonShape') shape = 'text'; // text / rectangle / circle
 
   /**

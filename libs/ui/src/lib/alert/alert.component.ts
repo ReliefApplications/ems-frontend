@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 import { AlertVariant } from './types/alert-variant';
 import { Variant } from '../types/variant';
@@ -18,7 +19,7 @@ import { Variant } from '../types/variant';
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss'],
 })
-export class AlertComponent {
+export class AlertComponent implements OnDestroy {
   /** Defines the visual theme of the alert component. */
   @Input() variant: AlertVariant = 'default';
   /** Controls whether the alert can be dismissed by the user. */
@@ -30,6 +31,8 @@ export class AlertComponent {
   /** Emits an event when the alert is closed. */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter<Event>();
+  /** Timeout to close */
+  private closeTimeoutListener!: NodeJS.Timeout;
 
   /**
    * UI Alert Component
@@ -40,7 +43,10 @@ export class AlertComponent {
 
   /** Closes the alert and emits an event */
   onClose() {
-    setTimeout(() => {
+    if (this.closeTimeoutListener) {
+      clearTimeout(this.closeTimeoutListener);
+    }
+    this.closeTimeoutListener = setTimeout(() => {
       this.close.emit();
     }, 300);
     this.host.nativeElement.remove();
@@ -130,5 +136,11 @@ export class AlertComponent {
       }
     }
     return classes;
+  }
+
+  ngOnDestroy(): void {
+    if (this.closeTimeoutListener) {
+      clearTimeout(this.closeTimeoutListener);
+    }
   }
 }

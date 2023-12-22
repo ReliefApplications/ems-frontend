@@ -25,11 +25,16 @@ export class FullScreenDirective
   implements OnChanges, OnDestroy, AfterViewInit
 {
   // Banana box binding properties to trigger full screen on the attached element
+  /** Input decorator for full screen mode */
   @Input() isFullScreenMode!: boolean;
+  /** Output decorator for full screen mode */
   @Output() isFullScreenModeChange = new EventEmitter<boolean>();
   // How nested is the element(parentElement) respect the directive's attached element that we want to set to fullscreen mode
+  /** Input decorator for parent element nested number */
   @Input() parentElementNestedNumber = 2;
+  /** Accessor to the nested property of the element */
   private accessorString = '';
+  /** Full screen listener */
   private fullScreenListener!: any;
 
   /**

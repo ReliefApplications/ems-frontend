@@ -91,6 +91,8 @@ export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
+export * from './lib/components/payload-modal/payload-modal.component';
+
 // Export of controls
 export * from './lib/components/controls/public-api';
 export * from './lib/components/applications-archive/public-api';

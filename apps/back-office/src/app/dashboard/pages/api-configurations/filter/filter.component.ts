@@ -37,15 +37,19 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading state */
   @Input() loading = false;
+  /** Roles list */
   @Output() filter = new EventEmitter<any>();
   /** Reference to expanded filter template */
   @ViewChild('expandedFilter')
   expandedFilter!: TemplateRef<any>;
 
+  /** Form */
   public form = this.fb.group({
     status: [''],
   });
+  /** Show expanded filter */
   public show = false;
 
   /**

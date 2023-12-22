@@ -39,7 +39,9 @@ import {
   styleUrls: ['./map-download.component.scss'],
 })
 export class MapDownloadComponent {
+  /** Whether the menu is expanded or not */
   public expanded = false;
+  /** View options */
   public viewOptions = [
     {
       label: this.translate.instant(
@@ -54,6 +56,7 @@ export class MapDownloadComponent {
       value: 'current',
     },
   ];
+  /** Layers options */
   public layersOptions = [
     {
       label: this.translate.instant(
@@ -74,6 +77,7 @@ export class MapDownloadComponent {
       value: 'selected',
     },
   ];
+  /** Layers */
   public layers: { label: string }[] = [
     {
       label: 'layer 1',
@@ -82,7 +86,9 @@ export class MapDownloadComponent {
       label: 'layer 2',
     },
   ];
+  /** Output options */
   public outputOptions = ['csv', 'xlsx', 'geojson', 'png'];
+  /** Form group */
   public formGroup: FormGroup;
 
   /**

@@ -165,6 +165,84 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
         });
       },
     });
+    // Context filter
+    const iconFilter = createFontAwesomeIcon(
+      {
+        icon: 'filter',
+        color: 'none',
+        opacity: 1,
+        size: 21,
+      },
+      (editor.editorManager as any).DOM.doc
+    );
+
+    editor.ui.registry.addIcon('filter-icon', iconFilter.innerHTML);
+    editor.ui.registry.addButton('contextfilter', {
+      icon: 'filter-icon',
+      tooltip: 'Add context filter',
+      onAction: async () => {
+        editor.windowManager.open({
+          title: 'Set context filter',
+          body: {
+            type: 'panel',
+            items: [
+              {
+                type: 'input',
+                name: 'filterField',
+                label: 'Filter field',
+              },
+              {
+                type: 'input',
+                name: 'filterValue',
+                label: 'Filter value',
+                placeholder:
+                  'Fixed value or {{data.}} syntax, e.g. {{data.name}}',
+              },
+            ],
+          },
+          initialData: {
+            filterField: '',
+            filterValue: editor.selection.getContent(),
+          },
+          onChange: (api) => {
+            // validate the data type
+            const data = api.getData();
+            const submitDisabled = !(data.filterField.length > 0);
+            if (submitDisabled) {
+              api.disable('submit');
+            } else {
+              api.enable('submit');
+            }
+          },
+          onSubmit: (api) => {
+            const data = api.getData();
+            const textElement = editor.selection.getNode();
+            textElement.setAttribute('data-filter-field', data.filterField);
+            textElement.setAttribute('data-filter-value', data.filterValue);
+            api.close();
+          },
+          buttons: [
+            {
+              text: 'Close',
+              type: 'cancel',
+            },
+            {
+              text: 'Insert',
+              type: 'submit',
+              name: 'submit',
+              primary: true,
+              disabled: true,
+            },
+          ],
+        });
+      },
+    });
+    editor.ui.registry.addContextToolbar('contextfilter', {
+      predicate: () => editor.selection.getContent()?.length > 0,
+      scope: 'node',
+      position: 'selection',
+      items: 'contextfilter',
+    });
   },
 };
 

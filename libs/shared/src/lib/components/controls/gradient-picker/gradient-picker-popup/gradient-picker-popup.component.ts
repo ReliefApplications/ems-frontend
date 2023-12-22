@@ -115,10 +115,13 @@ const GRADIENTS: Gradient[] = [
   styleUrls: ['./gradient-picker-popup.component.scss'],
 })
 export class GradientPickerPopupComponent {
+  /** Event emitter for close event */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<Gradient> = new EventEmitter();
+  /** Show flag */
   private show = true;
 
+  /** List of gradients */
   public gradients = GRADIENTS;
 
   /** Listen to click event on the document */

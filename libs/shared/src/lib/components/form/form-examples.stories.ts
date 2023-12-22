@@ -26,10 +26,16 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
  * Mocked auth service
  */
 class MockAuthService {
+  /**
+   * Mocked user value
+   */
   userValue = {
     name: 'Mocked',
   };
 
+  /**
+   * Mocked user observable
+   */
   user = new BehaviorSubject({
     name: 'Dummy',
     firstName: 'Dummy',

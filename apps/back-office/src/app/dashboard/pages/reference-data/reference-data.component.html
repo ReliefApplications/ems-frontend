@@ -98,20 +98,7 @@
           ></ui-icon>
         </div>
         <!-- Value field to be displayed -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-          *ngIf="!csvLoading && type && valueFields.length > 0"
-        >
-          <label>{{ 'pages.referenceData.valueField' | translate }}</label>
-          <ui-select-menu formControlName="valueField">
-            <ui-select-option
-              *ngFor="let value of valueFields"
-              [value]="value.name"
-              >{{ value.name }}</ui-select-option
-            >
-          </ui-select-menu>
-        </div>
+        <ng-container *ngTemplateOutlet="valueFieldTmpl"></ng-container>
       </div>
       <ui-alert class="mb-4">{{
         'pages.referenceData.fields.help' | translate
@@ -159,37 +146,41 @@
               <button
                 kendoButton
                 class="text-center"
-                icon="edit"
                 [look]="'flat'"
                 (click)="toggleInlineEditor(dataItem)"
                 [uiTooltip]="'common.edit' | translate"
-              ></button>
+              >
+                <kendo-icon name="edit"></kendo-icon>
+              </button>
               <button
                 kendoButton
                 class="text-center"
-                icon="delete"
                 [look]="'flat'"
                 (click)="onRemoveField(dataItem)"
                 [uiTooltip]="'common.remove' | translate"
-              ></button>
+              >
+                <kendo-icon name="delete"></kendo-icon>
+              </button>
             </div>
             <div [ngClass]="{ hidden: currEditingField !== dataItem }">
               <button
                 kendoButton
                 class="text-center"
-                icon="save"
                 [look]="'flat'"
                 (click)="toggleInlineEditor(null)"
                 [uiTooltip]="'common.save' | translate"
-              ></button>
+              >
+                <kendo-icon name="save"></kendo-icon>
+              </button>
               <button
                 kendoButton
                 class="text-center"
-                icon="cancel"
                 [look]="'flat'"
                 (click)="currEditingField = null"
                 [uiTooltip]="'common.cancel' | translate"
-              ></button>
+              >
+                <kendo-icon name="cancel"></kendo-icon>
+              </button>
             </div>
           </ng-template>
         </kendo-grid-column>
@@ -202,9 +193,9 @@
       <button
         kendoButton
         class="text-center mt-2"
-        icon="add"
         (click)="addField()"
       >
+        <kendo-icon name="add"></kendo-icon>
         {{ 'components.referenceData.fields.add' | translate }}
       </button>
     </div>
@@ -239,6 +230,8 @@
           {{ 'pages.referenceData.validateCsv' | translate }}
         </ui-button>
       </div>
+      <!-- Value field to be displayed -->
+      <ng-container *ngTemplateOutlet="valueFieldTmpl"></ng-container>
     </div>
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <!-- For graphql -->
@@ -269,6 +262,24 @@
         ></kendo-grid-column>
       </kendo-grid>
     </div>
+
+    <!-- Value field selection template -->
+    <ng-template #valueFieldTmpl>
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        *ngIf="!csvLoading && type && valueFields.length > 0"
+      >
+        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
+        <ui-select-menu formControlName="valueField">
+          <ui-select-option
+            *ngFor="let value of valueFields"
+            [value]="value.name"
+            >{{ value.name }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
+    </ng-template>
   </form>
   <!-- Floating div for actions buttons -->
   <ui-fixed-wrapper>

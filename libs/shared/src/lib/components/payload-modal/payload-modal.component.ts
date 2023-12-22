@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -9,13 +9,14 @@ import { ButtonModule } from '@oort-front/ui';
 /** Interface of data passed to dialog */
 interface DialogData {
   payload: any;
+  aggregationPayload?: boolean;
 }
 
 /**
- * Reference data payload modal.
+ * Data payload modal.
  */
 @Component({
-  selector: 'app-reference-data-payload-modal',
+  selector: 'app-payload-modal',
   standalone: true,
   imports: [
     DialogModule,
@@ -25,10 +26,10 @@ interface DialogData {
     CommonModule,
     ButtonModule,
   ],
-  templateUrl: './reference-data-payload-modal.component.html',
-  styleUrls: ['./reference-data-payload-modal.component.scss'],
+  templateUrl: './payload-modal.component.html',
+  styleUrls: ['./payload-modal.component.scss'],
 })
-export class ReferenceDataPayloadModalComponent implements OnInit {
+export class PayloadModalComponent implements OnInit, OnDestroy {
   /** Monaco editor configuration */
   public editorOptions = {
     theme: 'vs-dark',
@@ -37,15 +38,17 @@ export class ReferenceDataPayloadModalComponent implements OnInit {
   };
   /** Form control to see payload */
   public formControl = new FormControl('');
+  /** Timeout listener */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
-   * Reference data payload modal.
+   * Reference data and aggregation payload modal.
    *
    * @param dialogRef Dialog ref
    * @param data Data passed to the modal
    */
   constructor(
-    public dialogRef: DialogRef<ReferenceDataPayloadModalComponent>,
+    public dialogRef: DialogRef<PayloadModalComponent>,
     @Inject(DIALOG_DATA)
     public data: DialogData
   ) {}
@@ -63,7 +66,10 @@ export class ReferenceDataPayloadModalComponent implements OnInit {
    */
   public initEditor(editor: any): void {
     if (editor) {
-      setTimeout(() => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      this.timeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -71,6 +77,12 @@ export class ReferenceDataPayloadModalComponent implements OnInit {
             this.formControl.markAsPristine();
           });
       }, 100);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
     }
   }
 }

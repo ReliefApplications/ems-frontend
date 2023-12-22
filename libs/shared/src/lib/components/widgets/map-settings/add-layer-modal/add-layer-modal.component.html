@@ -15,6 +15,8 @@
           [required]="true"
           [query]="layersQuery"
           [formControl]="layerControl"
+          (searchChange)="onSearchChange($event)"
+          [filterable]="true"
         >
         </ui-graphql-select>
       </div>

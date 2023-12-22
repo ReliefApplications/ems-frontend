@@ -71,6 +71,7 @@ export class TextareaComponent implements ControlValueAccessor {
   minRowsNumber = 2;
   /** Event emitter for value changes. */
   valueChange: EventEmitter<boolean> = new EventEmitter();
+  /** Whether the textarea is disabled. */
   disabled = false;
   /** Function to handle touch events. */
   onTouched!: () => void;

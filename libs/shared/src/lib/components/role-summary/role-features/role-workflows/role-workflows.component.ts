@@ -40,19 +40,31 @@ import { SnackbarService } from '@oort-front/ui';
   ],
 })
 export class RoleWorkflowsComponent implements OnInit, OnChanges {
+  /** Role */
   @Input() role!: Role;
+  /** Pages */
   @Input() pages: Page[] = [];
+  /** Loading status */
   @Input() loading = false;
+  /** Search string */
   @Input() search = '';
 
+  /** Step array */
   public steps: Step[] = [];
+  /** Filtered steps */
   public filteredSteps = this.steps;
+  /** Accessible steps array */
   public accessibleSteps: string[] = [];
+  /** Event emitter for edit */
   @Output() edit = new EventEmitter();
 
+  /** Displayed columns */
   public displayedColumns = ['name', 'actions'];
+  /** Opened workflow id */
   public openedWorkflowId = '';
+  /** Accessible pages array */
   public accessiblePages: string[] = [];
+  /** Filtered pages array */
   public filteredPages = this.pages;
 
   /**

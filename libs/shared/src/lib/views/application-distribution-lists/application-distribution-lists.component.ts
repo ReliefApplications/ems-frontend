@@ -17,7 +17,9 @@ export class ApplicationDistributionListsComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Templates */
   public templates = new Array<any>();
 
   /**

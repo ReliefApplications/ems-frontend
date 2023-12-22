@@ -47,9 +47,13 @@ export class PreferencesModalComponent implements OnInit {
   /** Reactive form */
   public preferencesForm!: ReturnType<typeof this.createPreferencesForm>;
   /** Data */
+  /** List of languages */
   languages: { name: string; value: string }[] = [];
+  /** Current language */
   currLang: string;
+  /** Date formats */
   dateFormats: { name: string | null; value: string }[] = [];
+  /** Current date format */
   currDateFormat: string;
 
   /**

@@ -15,6 +15,7 @@ import { DOCUMENT } from '@angular/common';
 @Injectable()
 export class MapPopupService {
   // There would be an instance of map popup service for each map
+  /** Map instance */
   private map!: L.Map;
 
   /**

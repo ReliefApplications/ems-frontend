@@ -14,7 +14,13 @@ import { SafeHtml } from '@angular/platform-browser';
   // encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class HtmlWidgetContentComponent {
+  /**
+   * HTML to render
+   */
   @Input() html: SafeHtml = '';
+  /**
+   * Custom styles to apply to the HTML
+   */
   @Input() style?: string;
 
   /**

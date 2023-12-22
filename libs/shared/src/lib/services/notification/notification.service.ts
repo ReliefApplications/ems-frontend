@@ -25,6 +25,7 @@ const ITEMS_PER_PAGE = 10;
 export class NotificationService {
   /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
+  /** Cached notifications */
   private cachedNotifications: Notification[] = [];
 
   /** @returns Current notifications as observable */

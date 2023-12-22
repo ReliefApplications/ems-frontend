@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DownloadService } from '../download/download.service';
 import get from 'lodash/get';
 import {
+  getAggregationKeys,
   getCalcKeys,
   getCardStyle,
   getDataKeys,
@@ -49,10 +50,15 @@ export class DataTemplateService {
    * Get auto completer keys
    *
    * @param fields available fields
+   * @param aggregations available aggregations
    * @returns available keys
    */
-  public getAutoCompleterKeys(fields: any[]) {
-    return [...getDataKeys(fields), ...getCalcKeys()];
+  public getAutoCompleterKeys(fields: any[], aggregations?: any[]) {
+    return [
+      ...getDataKeys(fields),
+      ...getAggregationKeys(aggregations || []),
+      ...getCalcKeys(),
+    ];
   }
 
   /**
@@ -71,16 +77,32 @@ export class DataTemplateService {
    * Render HTML from definition
    *
    * @param html html template
-   * @param data content data
-   * @param fields definition of fields
-   * @param styles definition of styles
+   * @param options options
+   * @param options.data content data
+   * @param options.aggregation aggregation data
+   * @param options.fields definition of fields
+   * @param options.styles definition of styles
    * @returns html to render
    */
-  public renderHtml(html: string, data?: any, fields?: any[], styles?: any[]) {
+  public renderHtml(
+    html: string,
+    options: {
+      data?: any;
+      aggregation?: any;
+      fields?: any[];
+      styles?: any[];
+    }
+  ) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     return this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(html, data, fields, this.getPages(application), styles)
+      parseHtml(html, {
+        data: options.data,
+        aggregation: options.aggregation,
+        fields: options.fields,
+        pages: this.getPages(application),
+        styles: options.styles,
+      })
     );
   }
 
@@ -93,7 +115,9 @@ export class DataTemplateService {
   public renderLink(href: string) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
-    return parseHtml(href, null, [], this.getPages(application), []);
+    return parseHtml(href, {
+      pages: this.getPages(application),
+    });
   }
 
   /**

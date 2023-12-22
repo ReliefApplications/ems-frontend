@@ -52,11 +52,24 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
 })
 export class ListFilterComponent implements OnInit, OnDestroy {
+  /**
+   * Input properties
+   */
   @Input() controlKey = 'search';
+  /**
+   * Loading state
+   */
   @Input() loading = false;
+  /**
+   * Show sibling filters
+   */
   @Input() hasSiblingFilters = false;
+  /**
+   * Show filters event emitter
+   */
   @Output() showFilters = new EventEmitter<boolean>();
 
+  /** Parent form container */
   parentFormContainer = inject(ControlContainer);
 
   /**
@@ -68,6 +81,7 @@ export class ListFilterComponent implements OnInit, OnDestroy {
     return this.parentFormContainer?.control as FormGroup;
   }
 
+  /** Show signal */
   showSignal = false;
 
   ngOnInit(): void {

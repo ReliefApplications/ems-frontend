@@ -60,7 +60,7 @@ export class ExpansionPanelComponent implements AfterViewInit, OnDestroy {
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
   /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
-
+  /** Timeout listener for closing the panel. */
   private expansionCloseTimeoutListener!: NodeJS.Timeout;
 
   /**

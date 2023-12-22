@@ -134,9 +134,6 @@ export class WidgetGridComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
-    if (this.gridOptionsTimeoutListener) {
-      clearTimeout(this.gridOptionsTimeoutListener);
-    }
     if (changes['widgets']) {
       this.setLayout();
     }
@@ -149,6 +146,9 @@ export class WidgetGridComponent
         Boolean(changes['canUpdate'].currentValue)
     ) {
       this.setLayout();
+      if (this.gridOptionsTimeoutListener) {
+        clearTimeout(this.gridOptionsTimeoutListener);
+      }
       this.gridOptionsTimeoutListener = setTimeout(() => {
         this.setGridOptions(true);
       }, 0);
@@ -157,6 +157,12 @@ export class WidgetGridComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
+    }
+    if (this.changesSubscription) {
+      this.changesSubscription.unsubscribe();
+    }
   }
 
   /**

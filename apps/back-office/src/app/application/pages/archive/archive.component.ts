@@ -25,10 +25,13 @@ import { GET_APPLICATION_ARCHIVED_PAGES } from './graphql/queries';
 })
 export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Application pages */
   public pages: ArchivePage[] = [];
 
   // === PREVIEWED ROLE ===
+  /** Current previewed role */
   public role = '';
 
   /**

@@ -35,7 +35,9 @@ interface DialogData {
   styleUrls: ['./email-template-modal.component.scss'],
 })
 export class EmailTemplateModalComponent implements OnInit {
+  /** List of templates */
   public templates: any[] = [];
+  /** Form */
   public form = this.fb.group({
     template: [null, Validators.required],
   });

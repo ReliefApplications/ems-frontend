@@ -45,9 +45,12 @@ interface DialogData {
   styleUrls: ['./config-display-grid-fields-modal.component.css'],
 })
 export class ConfigDisplayGridFieldsModalComponent implements OnInit {
+  /** Form for the query */
   public form: UntypedFormGroup = new UntypedFormGroup({});
+  /** Loading state */
   public loading = true;
 
+  /** View container reference */
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
 

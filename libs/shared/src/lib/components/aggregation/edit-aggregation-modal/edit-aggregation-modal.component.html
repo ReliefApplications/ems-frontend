@@ -11,7 +11,7 @@
           <label>{{ 'common.name' | translate }}</label>
           <input formControlName="name" type="string" />
         </div>
-        <div uiFormFieldDirective>
+        <div uiFormFieldDirective *ngIf="resource">
           <label>{{ 'common.resource.one' | translate }}</label>
           <ui-select-menu [value]="resource.name" [disabled]="true">
             <ui-select-option [value]="resource.name" [disabled]="true">
@@ -19,10 +19,19 @@
             </ui-select-option>
           </ui-select-menu>
         </div>
+        <div uiFormFieldDirective *ngIf="referenceData">
+          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <ui-select-menu [value]="referenceData.name" [disabled]="true">
+            <ui-select-option [value]="referenceData.name" [disabled]="true">
+              {{ referenceData.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
       <div class="flex flex-col">
         <shared-aggregation-builder
           [resource]="resource"
+          [referenceData]="referenceData"
           [aggregationForm]="formGroup"
         ></shared-aggregation-builder>
       </div>

@@ -15,16 +15,35 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
+  /**
+   * Application layout
+   */
   @Input() appLayout = false;
+  /**
+   * Permission to add a page
+   */
   @Input() canAddPage = false;
+  /**
+   * Indicates whether the navbar should be displayed vertically or horizontally.
+   */
   @Input() vertical = true;
+  /**
+   * Event emitted when the navbar items are reordered.
+   */
   @Output() reorder: EventEmitter<any> = new EventEmitter();
 
   // === NAVIGATION GROUP ===
+  /**
+   * Navigation groups
+   */
   @Input() navGroups: any[] = [];
+  /**
+   * Navigation group selected
+   */
   @Input() nav: any;
 
   // === DISPLAY ===
+  /** Boolean for portview threshold */
   public largeDevice: boolean;
 
   /**

@@ -34,25 +34,39 @@ export class RecordDropdownComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** Record id */
   @Input() record = '';
+  /** Resource id */
   @Input() resourceId = '';
+  /** Field name */
   @Input() field = '';
+  /** Placeholder */
   @Input() placeholder = this.translate.instant(
     'components.record.dropdown.select'
   );
+  /** Filter */
   @Input() filter: any = {};
+  /** Event emitter for choice event */
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
+  /** Selected record */
   public selectedRecord: Record | null = null;
+  /** Records */
   private records = new BehaviorSubject<Record[]>([]);
+  /** Records observable */
   public records$!: Observable<Record[]>;
+  /** Cached records */
   private cachedRecords: Record[] = [];
+  /** Records query */
   private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
+  /** Page info */
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
+  /** Loading status */
   private loading = true;
+  /** Scroll listener */
   private scrollListener!: any;
 
   /**

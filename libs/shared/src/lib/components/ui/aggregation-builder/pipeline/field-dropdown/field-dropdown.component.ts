@@ -28,14 +28,22 @@ const NESTED_FIELD_NAME_SEPARATOR = '.' as const;
   styleUrls: ['./field-dropdown.component.scss'],
 })
 export class FieldDropdownComponent implements AfterViewInit, OnChanges {
+  /** Field control */
   @Input() fieldControl!: UntypedFormControl;
+  /** Fields */
   @Input() fields: any[] = [];
+  /** Label */
   @Input() label = '';
+  /** Nullable */
   @Input() nullable = false;
 
+  /** Field components */
   @ViewChildren('field') fieldComponents!: QueryList<any>;
+  /** Select menu */
   @ViewChild('menu') selectMenu!: any;
+  /** Whether the current value is unnested */
   private currentValueUnnested = false;
+  /** Expansion tree */
   public expansionTree: ExpansionTree = {};
 
   /** Separator for nested field names */

@@ -28,6 +28,7 @@ export class CellDirective extends CdkCell implements AfterContentInit {
     super(columnDef, elRef);
   }
 
+  /** Cell classes */
   classes = [
     'whitespace-nowrap',
     'h-16',

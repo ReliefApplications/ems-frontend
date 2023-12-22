@@ -15,13 +15,19 @@ import {
   styleUrls: ['./option.component.scss'],
 })
 export class OptionComponent {
+  /** Value of the option. */
   @Input() value!: any;
+  /** Label for the option */
   @Input() label? = '';
+  /** Whether it is a group or not */
   @Input() isGroup = false;
+  /** List of options */
   @ContentChildren(forwardRef(() => OptionComponent))
   options!: QueryList<OptionComponent>;
 
+  /** Whether the option is selected or not */
   selected = false;
+  /** Whether the option is displayed or not */
   display = true;
 
   /**

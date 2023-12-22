@@ -27,3 +27,8 @@ export interface DeleteAggregationMutationResponse {
 export interface AggregationDataQueryResponse {
   recordsAggregation: any | { items: any[]; totalCount: number };
 }
+
+/** Aggregation on reference data query response interface */
+export interface ReferenceDataAggregationQueryResponse {
+  referenceDataAggregation: any | { items: any[]; totalCount: number };
+}

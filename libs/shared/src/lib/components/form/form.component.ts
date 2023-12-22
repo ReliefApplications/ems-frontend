@@ -75,6 +75,8 @@ export class FormComponent
   public lastDraftRecord?: string;
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** Timeout for reset survey */
+  private resetTimeoutListener!: NodeJS.Timeout;
   /** As we save the draft record in the db, the local storage is no longer used */
   /** ID for local storage */
   // private storageId = '';
@@ -211,7 +213,13 @@ export class FormComponent
     this.survey.fromJSON(this.survey.toJSON());
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
-    setTimeout(() => (this.surveyActive = true), 100);
+    if (this.resetTimeoutListener) {
+      clearTimeout(this.resetTimeoutListener);
+    }
+    this.resetTimeoutListener = setTimeout(
+      () => (this.surveyActive = true),
+      100
+    );
   }
 
   /**
@@ -422,6 +430,9 @@ export class FormComponent
   /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.resetTimeoutListener) {
+      clearTimeout(this.resetTimeoutListener);
+    }
     this.survey?.dispose();
   }
 }

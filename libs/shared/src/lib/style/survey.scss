@@ -13,7 +13,7 @@
   color: red;
 }
 
-// === QUESTION CONTENT ===
+/* === QUESTION CONTENT === */
 ::ng-deep .sd-question__content {
   .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
     background-color: transparent;
@@ -23,7 +23,7 @@
     margin: 8px 0 !important;
   }
 
-  // === DATE / TIME INPUTS ===
+  /* === DATE / TIME INPUTS === */
   .k-datepicker,
   .k-timepicker,
   .k-datetimepicker {
@@ -38,7 +38,7 @@
 }
 
 ::ng-deep svd-property-editor {
-  // === DATE / TIME INPUTS ===
+  /* === DATE / TIME INPUTS === */
   .k-datepicker,
   .k-timepicker,
   .k-datetimepicker {
@@ -129,9 +129,9 @@
       w-full
       border-0;
   }
-  // .sd-text {
-  //   @apply text-sm h-10;
-  // }
+  /*.sd-text { 
+     @apply text-sm h-10; 
+   } */
   .k-multiselect {
     .k-clear-value {
       padding-right: 18px !important;
@@ -223,7 +223,7 @@
       max-h-36
       py-1;
   }
-  // dropdown/tagbox item
+  /* dropdown/tagbox item */
   .k-list-item {
     @apply px-2
       w-full
@@ -242,12 +242,12 @@
   }
 
   .sd-root-modern {
-    --sd-base-vertical-padding: 10px !important; //Reduces space between questions
+    --sd-base-vertical-padding: 10px !important; /*Reduces space between questions */
   }
 
-  // File upload file wrapper
+  /* File upload file wrapper */
   .sd-file__wrapper {
-    // File upload choose button
+    /* File upload choose button */
     .sd-file__choose-btn {
       @apply hover:bg-primary-500
         bg-primary-400
@@ -263,7 +263,7 @@
     }
   }
 
-  // Checkbox
+  /* Checkbox */
   .sd-checkbox {
     padding: 12px 0 !important;
 
@@ -284,12 +284,12 @@
       }
     }
   }
-  // Submit button in preview
+  /* Submit button in preview */
   .sd-navigation__complete-btn {
     @apply hover:bg-primary-600;
   }
 
-  // Radio
+  /* Radio */
   .sd-item--checked .sd-item__decorator {
     @apply bg-primary-400;
   }
@@ -297,14 +297,14 @@
     border: solid 1px lightgray !important;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   }
-  // Boolean
+  /* Boolean */
   .sd-boolean {
     @apply bg-gray-200 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2;
   }
 }
 
-// On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible
-// The background white would solve this
+/* On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible
+   The background white would solve this */
 ::ng-deep survey-creator {
   .svc-question__content-actions {
     background-color: white !important;

@@ -66,24 +66,35 @@ export class RoleResourcesComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Role to display */
   @Input() role!: Role; // Opened role
 
   // === TABLE ELEMENTS ===
+  /** Resources query */
   private resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  /** Displayed columns */
   public displayedColumns: string[] = ['name', 'actions'];
+  /** Resources */
   public resources = new Array<TableResourceElement>();
+  /** Cached resources */
   public cachedResources: Resource[] = [];
 
   // === SINGLE ELEMENT ===
+  /** Updating status */
   public updating = false; // Update of resource
+  /** Opened resource */
   public openedResource?: Resource;
 
   // === FILTERING ===
+  /** Filter */
   public filter: any;
+  /** Filter loading */
   public filterLoading = false;
 
   // === PAGINATION ===
+  /** Loading status */
   public loading = true; // First load && pagination
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,

@@ -36,11 +36,15 @@ import { FormBuilder } from '@angular/forms';
 })
 export class UsersComponent extends UnsubscribeComponent implements OnChanges {
   // === INPUT DATA ===
+  /** List of users */
   @Input() users: Array<User> = new Array<User>();
+  /** List of roles */
   @Input() roles: Role[] = [];
+  /** Whether the component is loading */
   @Input() loading = true;
 
   // === DISPLAYED COLUMNS ===
+  /** Columns to display */
   public displayedColumns = [
     'select',
     'name',
@@ -51,11 +55,17 @@ export class UsersComponent extends UnsubscribeComponent implements OnChanges {
   ];
 
   // === FILTERS ===
+  /** Search text */
   private searchText = '';
+  /** Form */
   public form = this.fb.group({});
+  /** Role filter */
   public roleFilter = '';
+  /** Whether to show the filters */
   public showFilters = false;
+  /** Array of filtered users */
   public filteredUsers = new Array<User>();
+  /** Selection */
   selection = new SelectionModel<User>(true, []);
 
   /** Reference to expanded filter template */

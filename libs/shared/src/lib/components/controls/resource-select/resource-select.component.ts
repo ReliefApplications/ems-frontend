@@ -21,6 +21,7 @@ import { Apollo } from 'apollo-angular';
 import { ResourcesQueryResponse } from '../../../models/resource.model';
 import { GET_RESOURCES } from './graphql/queries';
 import { TranslateModule } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -85,7 +86,7 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
     this.valueField = 'id';
     this.textField = 'name';
     this.filterable = true;
-    this.searchChange.subscribe((value) => {
+    this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.onSearchChange(value);
     });
   }

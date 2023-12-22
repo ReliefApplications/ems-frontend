@@ -1,12 +1,14 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Form } from '../../../models/form.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import {
   Resource,
   ResourceQueryResponse,
 } from '../../../models/resource.model';
-import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
+import {
+  GET_REFERENCE_DATA_AGGREGATIONS,
+  GET_RESOURCE_AGGREGATIONS,
+} from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -22,14 +24,15 @@ import {
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
  */
 interface DialogData {
   hasAggregations: boolean;
-  form?: Form;
   resource?: Resource;
+  referenceData?: ReferenceData;
 }
 
 /**
@@ -56,18 +59,21 @@ export class AddAggregationModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  private form?: Form;
-  private resource?: Resource;
-  public hasAggregations = false;
-  public nextStep = false;
-
-  public queryRef!: QueryRef<ResourceQueryResponse>;
-
-  public selectedAggregationControl = new UntypedFormControl('');
-
   /** Reference to graphql select for layout */
   @ViewChild(GraphQLSelectComponent)
   aggregationSelect?: GraphQLSelectComponent;
+  /** Does data source has some aggregations */
+  public hasAggregations = false;
+  /** Should show next step in form */
+  public nextStep = false;
+  /** Apollo query */
+  public queryRef!: QueryRef<ResourceQueryResponse>;
+  /** Control to select aggregation */
+  public selectedAggregationControl = new UntypedFormControl('');
+  /** Current resource */
+  private resource?: Resource;
+  /** Current reference data */
+  private referenceData?: ReferenceData;
 
   /**
    * Modal to add or select an aggregation.
@@ -88,17 +94,26 @@ export class AddAggregationModalComponent
   ) {
     super();
     this.hasAggregations = data.hasAggregations;
-    this.form = data.form;
     this.resource = data.resource;
+    this.referenceData = data.referenceData;
   }
 
   ngOnInit(): void {
-    this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
-      query: GET_RESOURCE_AGGREGATIONS,
-      variables: {
-        resource: this.resource?.id,
-      },
-    });
+    if (this.resource) {
+      this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
+        query: GET_RESOURCE_AGGREGATIONS,
+        variables: {
+          resource: this.resource?.id,
+        },
+      });
+    } else {
+      this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
+        query: GET_REFERENCE_DATA_AGGREGATIONS,
+        variables: {
+          referenceData: this.referenceData?.id,
+        },
+      });
+    }
 
     // emits selected aggregation
     this.selectedAggregationControl.valueChanges.subscribe((value) => {
@@ -123,6 +138,7 @@ export class AddAggregationModalComponent
       disableClose: true,
       data: {
         resource: this.resource,
+        referenceData: this.referenceData,
       },
     });
     dialogRef.closed
@@ -130,7 +146,10 @@ export class AddAggregationModalComponent
       .subscribe((aggregation: any) => {
         if (aggregation) {
           this.aggregationService
-            .addAggregation(aggregation, this.resource?.id, this.form?.id)
+            .addAggregation(aggregation, {
+              resource: this.resource?.id,
+              referenceData: this.referenceData?.id,
+            })
             .subscribe(({ data }) => {
               if (data?.addAggregation) {
                 this.dialogRef.close(data.addAggregation as any);

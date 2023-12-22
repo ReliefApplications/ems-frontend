@@ -18,6 +18,7 @@ export class ShadowDomService {
     return this.shadowRoot || this.document;
   }
 
+  /** Shadow root */
   public shadowRoot?: ShadowRoot;
 
   /**

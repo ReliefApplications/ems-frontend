@@ -9,11 +9,16 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./skeleton-table.component.scss'],
 })
 export class SkeletonTableComponent implements OnInit {
-  @Input() columns: string[] = []; // Array of string with the translation keys
-  @Input() rows = 10; // Numbers of rows for the table
-  @Input() actions = false; // Indicates if action buttons should be rendered
-  @Input() checkbox = false; // Indicates if checkboxes should be rendered
+  /** Array of string with the translation keys */
+  @Input() columns: string[] = [];
+  /** Numbers of rows for the table */
+  @Input() rows = 10;
+  /** Indicates if action buttons should be rendered */
+  @Input() actions = false;
+  /** Indicates if checkboxes should be rendered*/
+  @Input() checkbox = false;
 
+  /** Data source for the table */
   dataSource: any[] = [];
 
   ngOnInit(): void {

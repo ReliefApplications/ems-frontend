@@ -31,8 +31,7 @@ $ui-palette-accent: (
   lighter: rgb($secondary_100),
   darker: rgb($secondary_150),
   200: rgb($secondary_200),
-  // For slide toggle,
-  contrast:
+  contrast: /* For slide toggle, */
     (
       main: white,
       lighter: rgba(black, 0.87),
@@ -42,14 +41,11 @@ $ui-palette-accent: (
 
 $ui-palette-warn: (
   main: #d34444,
-  // 500
-  lighter: #ff766f,
+  /* 500 */ lighter: #ff766f,
   darker: #9b001d,
   50: #fae9e9,
   200: #e9a2a2,
-  // 200
-  // For slide toggle,
-  contrast:
+  /* 200 */ /* For slide toggle */ contrast:
     (
       main: white,
       lighter: rgba(black, 0.87),
@@ -57,14 +53,14 @@ $ui-palette-warn: (
     ),
 );
 
-// === CUSTOM THEME ===
+/* === CUSTOM THEME === */
 @mixin custom-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 }
 
-// === CHIP ===
+/* === CHIP === */
 @mixin chip($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);

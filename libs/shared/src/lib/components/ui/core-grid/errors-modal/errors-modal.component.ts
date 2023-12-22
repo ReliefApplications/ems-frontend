@@ -30,10 +30,11 @@ interface DialogData {
   styleUrls: ['./errors-modal.component.scss'],
 })
 export class ErrorsModalComponent {
+  /** Displayed columns */
   public displayedColumns = ['question', 'errors'];
 
   /**
-   * Constructor of the component
+   * Constructor of the errors modal component
    *
    * @param dialogRef The reference of the dialog
    * @param data The data for the dialog
