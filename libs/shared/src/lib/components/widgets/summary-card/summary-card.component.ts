@@ -136,6 +136,8 @@ export class SummaryCardComponent
   } = { field: null, order: '' };
   /** Summary card grid scroll event listener */
   private scrollEventListener!: any;
+  /** Timeout listener for summary card scroll bind set on view switch */
+  private scrollEventBindTimeout!: NodeJS.Timeout;
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -315,6 +317,9 @@ export class SummaryCardComponent
     if (this.scrollEventListener) {
       this.scrollEventListener();
     }
+    if (this.scrollEventBindTimeout) {
+      clearTimeout(this.scrollEventListener);
+    }
   }
 
   /**
@@ -328,7 +333,21 @@ export class SummaryCardComponent
       this.onSort(null);
       this.displayMode = value;
       if (value === 'cards') {
-        setTimeout(() => this.bindCardsScrollListener(), 0);
+        if (this.scrollEventBindTimeout) {
+          clearTimeout(this.scrollEventListener);
+        }
+        // On switching views, summary card element ref is destroyed
+        // and all events attached to it are not working as they are bind to
+        // previous element, therefor we have to set them again
+        this.scrollEventBindTimeout = setTimeout(
+          () => this.bindCardsScrollListener(),
+          0
+        );
+      } else {
+        // Clean previously attached scroll listener as the element ref is destroyed
+        if (this.scrollEventListener) {
+          this.scrollEventListener();
+        }
       }
     }
   }
@@ -356,7 +375,7 @@ export class SummaryCardComponent
   }
 
   /** Gets the query for fetching the dynamic cards records. */
-  async setupDynamicCards() {
+  private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const card = this.settings.card;
     if (!card) {

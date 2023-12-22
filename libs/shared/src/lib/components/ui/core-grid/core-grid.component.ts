@@ -664,6 +664,7 @@ export class CoreGridComponent
             item.saved = true;
           }
         }
+        this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
         if (this.updatedItems.length) {
           // show an error message
@@ -683,7 +684,6 @@ export class CoreGridComponent
           );
           return true;
         }
-        this.inlineEdition.emit();
         return false;
       });
     } else {
