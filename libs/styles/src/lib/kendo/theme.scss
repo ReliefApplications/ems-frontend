@@ -1,6 +1,6 @@
 @import 'variables.scss';
 
-/* Declaration of Kendo variables */
+// Declaration of Kendo variables
 $kendo-border-radius: 2px;
 $kendo-color-primary: rgb($primary_500);
 $kendo-color-secondary: #f6f6f6;
@@ -34,120 +34,120 @@ This file is for importing theme from Kendo components.
 We don't need all the components in the project so we don't need to import all the components themes.
 If you need to add a new component, you should uncomment there the related import.
 */
-/* kendo-angular-buttons */
+// kendo-angular-buttons
 @import '@progress/kendo-theme-default/scss/button/_index.scss';
-/* @import "@progress/kendo-theme-default/scss/chip/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/fab/_index.scss"; */
+// @import "@progress/kendo-theme-default/scss/chip/_index.scss";
+// @import "@progress/kendo-theme-default/scss/fab/_index.scss";
 
-/* kendo-angular-charts */
-/* @import "@progress/kendo-theme-default/scss/dataviz/_index.scss"; */
+// kendo-angular-charts
+// @import "@progress/kendo-theme-default/scss/dataviz/_index.scss";
 
-/* kendo-angular-conversational-ui */
-/* @import "@progress/kendo-theme-default/scss/chat/_index.scss"; */
+// kendo-angular-conversational-ui
+// @import "@progress/kendo-theme-default/scss/chat/_index.scss";
 
-/* kendo-angular-dateinputs */
+// kendo-angular-dateinputs
 @import '@progress/kendo-theme-default/scss/datetimepicker/_index.scss';
-/* @import "@progress/kendo-theme-default/scss/datetime/_index.scss"; */
+// @import "@progress/kendo-theme-default/scss/datetime/_index.scss";
 
-/* kendo-angular-dialog */
-/* @import "@progress/kendo-theme-default/scss/dialog/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/window/_index.scss"; */
+// kendo-angular-dialog
+// @import "@progress/kendo-theme-default/scss/dialog/_index.scss";
+// @import "@progress/kendo-theme-default/scss/window/_index.scss";
 
-/* kendo-angular-dropdowns */
-/* @import "@progress/kendo-theme-default/scss/autocomplete/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/combobox/_index.scss"; */
+// kendo-angular-dropdowns
+// @import "@progress/kendo-theme-default/scss/autocomplete/_index.scss";
+// @import "@progress/kendo-theme-default/scss/combobox/_index.scss";
 @import '@progress/kendo-theme-default/scss/dropdownlist/_index.scss';
-/* @import "@progress/kendo-theme-default/scss/dropdowntree/_index.scss"; */
+// @import "@progress/kendo-theme-default/scss/dropdowntree/_index.scss";
 @import '@progress/kendo-theme-default/scss/multiselect/_index.scss';
 
-/* kendo-angular-gauges */
-/* @import "@progress/kendo-theme-default/scss/dataviz/_index.scss"; */
+// kendo-angular-gauges
+// @import "@progress/kendo-theme-default/scss/dataviz/_index.scss";
 
-/* kendo-angular-grid */
+// kendo-angular-grid
 @import '@progress/kendo-theme-default/scss/grid/_index.scss';
 
-/* kendo-angular-editor */
-/* @import "@progress/kendo-theme-default/scss/editor/_index.scss"; */
+// kendo-angular-editor
+// @import "@progress/kendo-theme-default/scss/editor/_index.scss";
 
-/* kendo-angular-icons */
-@import '@progress/kendo-font-icons/dist/index.css';
+// kendo-angular-icons
+// @import "@progress/kendo-theme-default/scss/icons/_index.scss";
 
-/* kendo-angular-indicators */
+// kendo-angular-indicators
 @import '@progress/kendo-theme-default/scss/badge/_index.scss';
-/* @import "@progress/kendo-theme-default/scss/loader/_index.scss"; */
+// @import "@progress/kendo-theme-default/scss/loader/_index.scss";
 
-/* kendo-angular-inputs */
-/* @import "@progress/kendo-theme-default/scss/checkbox/_index.scss"; */
+// kendo-angular-inputs
+// @import "@progress/kendo-theme-default/scss/checkbox/_index.scss";
 @import '@progress/kendo-theme-default/scss/colorpicker/_index.scss';
-/* @import "@progress/kendo-theme-default/scss/forms/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/input/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/maskedtextbox/_index.scss"; */
+// @import "@progress/kendo-theme-default/scss/forms/_index.scss";
+// @import "@progress/kendo-theme-default/scss/input/_index.scss";
+// @import "@progress/kendo-theme-default/scss/maskedtextbox/_index.scss";
 @import '@progress/kendo-theme-default/scss/numerictextbox/_index.scss';
-/* @import "@progress/kendo-theme-default/scss/radio/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/slider/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/switch/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/textarea/_index.scss"; */
+// @import "@progress/kendo-theme-default/scss/radio/_index.scss";
+// @import "@progress/kendo-theme-default/scss/slider/_index.scss";
+// @import "@progress/kendo-theme-default/scss/switch/_index.scss";
+// @import "@progress/kendo-theme-default/scss/textarea/_index.scss";
 @import '@progress/kendo-theme-default/scss/textbox/_index.scss';
-/* @import "@progress/kendo-theme-default/scss/validator/_index.scss"; */
+// @import "@progress/kendo-theme-default/scss/validator/_index.scss";
 
-/* kendo-angular-layout */
-/* @import "@progress/kendo-theme-default/scss/avatar/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/card/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/drawer/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/expansion-panel/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/panelbar/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/splitter/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/stepper/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/tabstrip/_index.scss"; */
+// kendo-angular-layout
+// @import "@progress/kendo-theme-default/scss/avatar/_index.scss";
+// @import "@progress/kendo-theme-default/scss/card/_index.scss";
+// @import "@progress/kendo-theme-default/scss/drawer/_index.scss";
+// @import "@progress/kendo-theme-default/scss/expansion-panel/_index.scss";
+// @import "@progress/kendo-theme-default/scss/panelbar/_index.scss";
+// @import "@progress/kendo-theme-default/scss/splitter/_index.scss";
+// @import "@progress/kendo-theme-default/scss/stepper/_index.scss";
+// @import "@progress/kendo-theme-default/scss/tabstrip/_index.scss";
 @import '@progress/kendo-theme-default/scss/tilelayout/_index.scss';
 
-/* kendo-angular-listbox */
+// kendo-angular-listbox
 @import '@progress/kendo-theme-default/scss/listbox/_index.scss';
 
-/* kendo-angular-menu */
-/* @import "@progress/kendo-theme-default/scss/menu/_index.scss"; */
+// kendo-angular-menu
+// @import "@progress/kendo-theme-default/scss/menu/_index.scss";
 
-/* kendo-angular-navigation */
-/* @import "@progress/kendo-theme-default/scss/appbar/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/breadcrumb/_index.scss"; */
-/* @import "@progress/kendo-theme-default/scss/bottom-navigation/_index.scss"; */
+// kendo-angular-navigation
+// @import "@progress/kendo-theme-default/scss/appbar/_index.scss";
+// @import "@progress/kendo-theme-default/scss/breadcrumb/_index.scss";
+// @import "@progress/kendo-theme-default/scss/bottom-navigation/_index.scss";
 
-/* kendo-angular-notification */
-/* @import "@progress/kendo-theme-default/scss/notification/_index.scss"; */
+// kendo-angular-notification
+// @import "@progress/kendo-theme-default/scss/notification/_index.scss";
 
-/* kendo-angular-pager */
-/* @import "@progress/kendo-theme-default/scss/pager/_index.scss"; */
+// kendo-angular-pager
+// @import "@progress/kendo-theme-default/scss/pager/_index.scss";
 
-/* kendo-angular-popup */
+// kendo-angular-popup
 @import '@progress/kendo-theme-default/scss/popup/_index.scss';
 
-/* kendo-angular-progressbar */
-/* @import "@progress/kendo-theme-default/scss/progressbar/_index.scss"; */
+// kendo-angular-progressbar
+// @import "@progress/kendo-theme-default/scss/progressbar/_index.scss";
 
-/* kendo-angular-ripple */
-/* @import "@progress/kendo-theme-default/scss/ripple/_index.scss"; */
+// kendo-angular-ripple
+// @import "@progress/kendo-theme-default/scss/ripple/_index.scss";
 
-/* kendo-angular-scrollview */
-/* @import "@progress/kendo-theme-default/scss/scrollview/_index.scss"; */
+// kendo-angular-scrollview
+// @import "@progress/kendo-theme-default/scss/scrollview/_index.scss";
 
-/* kendo-angular-toolbar */
-/* @import "@progress/kendo-theme-default/scss/toolbar/_index.scss"; */
+// kendo-angular-toolbar
+// @import "@progress/kendo-theme-default/scss/toolbar/_index.scss";
 
-/* kendo-angular-tooltip */
-/* @import "@progress/kendo-theme-default/scss/tooltip/_index.scss"; */
+// kendo-angular-tooltip
+// @import "@progress/kendo-theme-default/scss/tooltip/_index.scss";
 
-/* kendo-angular-treelist */
-/* @import "@progress/kendo-theme-default/scss/treelist/_index.scss"; */
+// kendo-angular-treelist
+// @import "@progress/kendo-theme-default/scss/treelist/_index.scss";
 
-/* kendo-angular-treeview */
+// kendo-angular-treeview
 @import '@progress/kendo-theme-default/scss/treeview/_index.scss';
 
-/* kendo-angular-upload */
-/* @import "@progress/kendo-theme-default/scss/dropzone/_index.scss"; */
+// kendo-angular-upload
+// @import "@progress/kendo-theme-default/scss/dropzone/_index.scss";
 @import '@progress/kendo-theme-default/scss/upload/_index.scss';
 
-/* Import of Kendo themes */
-/* @import '@progress/kendo-theme-default/dist/all.scss'; */
+// Import of Kendo themes
+// @import '@progress/kendo-theme-default/dist/all.scss';
 
 .k-badge-edge {
   z-index: 1;

@@ -4,7 +4,7 @@
   display: block;
 }
 
-/* Non selectable item with the mouth */
+//Non selectable item with the mouth
 .non_selectable {
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -13,7 +13,7 @@
   user-select: none;
 }
 
-/* Text of the trigger goes little on the top-left corner of the button */
+// Text of the trigger goes little on the top-left corner of the button
 .corner_label {
   font-size: 0.5rem !important;
 }

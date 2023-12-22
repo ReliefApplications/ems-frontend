@@ -48,8 +48,8 @@
   overflow: hidden;
 }
 
-/* Even if the fonts are loaded in the document, the class should be explicitly placed inside the shadow dom in order to make the icons work
-   https://github.com/google/material-design-icons/issues/1165#issuecomment-1030705931 */
+// Even if the fonts are loaded in the document, the class should be explicitly placed inside the shadow dom in order to make the icons work
+// https://github.com/google/material-design-icons/issues/1165#issuecomment-1030705931
 i {
   &.material-icons {
     font-family: 'Material Icons';

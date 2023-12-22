@@ -33,7 +33,7 @@ Please set the following param as:
 
 And hit the Run button in the right corner of the parameters screen.
 
-If the developer cannot use the extension, you can use the following command to create the new component: `npx nx generate @nx/angular:component {component_name} --project=ui --no-interactive` where `{component_name}` is the name of the new component.
+If the developer cannot use the extension, you can use the following command to create the new component: `npx nx generate @nrwl/angular:component {component_name} --project=ui --no-interactive` where `{component_name}` is the name of the new component.
 
 ==Important== :warning:
 
@@ -52,7 +52,7 @@ The developer would see some parameters to set when creating this new stories, p
 
 And hit the Run button in the right corner of the parameters screen.
 
-If the developer cannot use the extension, you can use the following command to create the new component: `@nx/angular:stories ui --no-interactive`.
+If the developer cannot use the extension, you can use the following command to create the new component: `@nrwl/angular:stories ui --no-interactive`.
 
 This command would generate all missing stories and keep current ones for the components inside the `lib` folder
 
