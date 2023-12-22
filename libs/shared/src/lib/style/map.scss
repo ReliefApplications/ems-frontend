@@ -1,25 +1,25 @@
-// === Measure plugin ===
+/* === Measure plugin === */
 ::ng-deep .leaflet-control-measure a.start::before {
-  content: "► ";
+  content: '► ';
 }
 
 ::ng-deep .leaflet-control-measure a.finish::before {
-  content: "✔ ";
+  content: '✔ ';
 }
 
 ::ng-deep .leaflet-control-measure a.cancel::before {
-  content: "✖ ";
+  content: '✖ ';
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.zoomto::before {
-  content: "⇱ ";
+  content: '⇱ ';
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.deletemarkup::before {
-  content: "♻ ";
+  content: '♻ ';
 }
 
-// Clustering
+/* Clustering */
 ::ng-deep .leaflet-data-cluster {
   div {
     display: flex;
@@ -28,17 +28,17 @@
     height: 100%;
     border-radius: 50%;
     span {
-      // display: block;
+      /* display: block; */
       position: absolute;
-      // inset: 0;
+      /* inset: 0; */
       margin: auto;
-      // font-weight: 600;
-      // text-align: center;
+      /* font-weight: 600; */
+      /* text-align: center; */
     }
   }
 }
 
-// Popup
+/* Popup */
 ::ng-deep .leaflet-popup-content-wrapper {
   padding: 0;
   overflow: hidden;
