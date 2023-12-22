@@ -517,6 +517,9 @@ export class SummaryCardComponent
     this.loading = res.loading;
   }
 
+  /**
+   * Refetch cards from the view.
+   */
   public refreshCardList() {
     this.triggerRefreshCardList = true;
     this.dataQuery.refetch();
