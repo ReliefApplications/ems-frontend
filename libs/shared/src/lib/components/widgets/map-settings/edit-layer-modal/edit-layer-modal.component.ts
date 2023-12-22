@@ -131,6 +131,11 @@ export class EditLayerModalComponent
   private currentLayer!: L.Layer;
   /** Is current datasource valie */
   public isDatasourceValid = false;
+  public resourceId: any;
+
+  // This property would handle the form change side effects to be triggered once all
+  // layer related updates are done in order to avoid multiple mismatches and duplications between
+  // a property change, layer data retrieval and form update
   /** Map dom portal */
   public mapPortal?: DomPortal;
   /**
@@ -502,15 +507,15 @@ export class EditLayerModalComponent
   getResource(): void {
     this.fields.next([]);
     const formValue = this.form.getRawValue();
-    const resourceID = get(formValue, 'datasource.resource');
-    if (resourceID) {
+    this.resourceId = get(formValue, 'datasource.resource');
+    if (this.resourceId) {
       const layoutID = get(formValue, 'datasource.layout');
       const aggregationID = get(formValue, 'datasource.aggregation');
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {
-            id: resourceID,
+            id: this.resourceId,
             layout: layoutID ? [layoutID] : [],
             aggregation: aggregationID ? [aggregationID] : [],
           },

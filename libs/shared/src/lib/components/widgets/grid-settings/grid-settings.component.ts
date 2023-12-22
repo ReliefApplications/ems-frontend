@@ -63,9 +63,9 @@ export class GridSettingsComponent
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
   public resource: Resource | null = null;
-
   /** Stores the selected tab */
   public selectedTab = 0;
+  public resourceId: any;
 
   /** @returns application templates */
   get appTemplates(): any[] {
@@ -162,6 +162,7 @@ export class GridSettingsComponent
           this.onAggregationChange(value[0]);
         }
       });
+
     // If some aggregations are selected, remove validators on layouts field
     if (this.formGroup.get('aggregations')?.value.length > 0) {
       this.formGroup.controls.layouts.clearValidators();
@@ -180,6 +181,21 @@ export class GridSettingsComponent
     }
 
     this.initSortFields();
+  }
+
+  /**
+   * Set a form group with the given grid settings values
+   *
+   * @param gridSettingsRaw Grid settings
+   * @returns  Form containing grid settings values
+   */
+  convertFromRawToFormGroup(gridSettingsRaw: any): UntypedFormGroup | null {
+    if (!gridSettingsRaw.fields) {
+      return null;
+    }
+    const auxForm = this.fb.group(gridSettingsRaw);
+    auxForm.controls.fields.setValue(gridSettingsRaw.fields);
+    return auxForm;
   }
 
   /**
@@ -276,7 +292,8 @@ export class GridSettingsComponent
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
-    if (this.formGroup.get('resource')?.value) {
+    this.resourceId = this.formGroup.get('resource')?.value;
+    if (this.resourceId) {
       const layoutIds: string[] | undefined =
         this.formGroup?.get('layouts')?.value;
       const aggregationIds: string[] | undefined =
@@ -285,7 +302,7 @@ export class GridSettingsComponent
         .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
-            resource: this.formGroup.get('resource')?.value,
+            resource: this.resourceId,
             layoutIds,
             firstLayouts: layoutIds?.length || 10,
             aggregationIds,

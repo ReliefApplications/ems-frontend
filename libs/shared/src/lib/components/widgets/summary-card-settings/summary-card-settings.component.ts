@@ -30,6 +30,7 @@ import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
+import { GET_GRID_RESOURCE_META } from '../grid-settings/graphql/queries';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -66,6 +67,7 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   /** Available resource templates */
   public templates: Form[] = [];
+  public resourceId: any;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -103,9 +105,9 @@ export class SummaryCardSettingsComponent
     this.change.emit(this.widgetFormGroup);
 
     // Initialize resource
-    const resourceID = this.widgetFormGroup?.get('card.resource')?.value;
-    if (resourceID) {
-      this.getResource(resourceID);
+    this.resourceId = this.widgetFormGroup?.get('card.resource')?.value;
+    if (this.resourceId) {
+      this.getResource(this.resourceId);
     }
     // Subscribe on resource changes
     this.widgetFormGroup.controls.card.controls.resource.valueChanges
@@ -201,9 +203,6 @@ export class SummaryCardSettingsComponent
     this.initSortFields();
   }
 
-  /**
-   * Detect the form changes to emit the new configuration.
-   */
   ngAfterViewInit(): void {
     this.widgetFormGroup?.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -211,6 +210,27 @@ export class SummaryCardSettingsComponent
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.change.emit(this.widgetFormGroup);
       });
+  }
+
+  /**
+   * Detect the form changes to emit the new configuration.
+   */
+  private getTemplates(): void {
+    this.resourceId = this.widgetFormGroup?.get('card.resource')?.value;
+    if (this.resourceId) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_GRID_RESOURCE_META,
+          variables: {
+            resource: this.resourceId,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            this.templates = data.resource.forms || [];
+          }
+        });
+    }
   }
 
   /**

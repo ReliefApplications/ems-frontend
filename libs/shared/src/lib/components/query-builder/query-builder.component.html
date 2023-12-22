@@ -77,7 +77,7 @@
       </div>
     </ng-container>
     <ui-tabs *ngIf="form.getRawValue().name">
-      <ui-tab>
+      <ui-tab  *ngIf="showFields">
         <ng-container ngProjectAs="label">{{
           'components.queryBuilder.fields.title' | translate
         }}</ng-container>
@@ -92,7 +92,7 @@
           ></shared-tab-fields>
         </ng-template>
       </ui-tab>
-      <ui-tab *ngIf="form.get('sort')">
+      <ui-tab *ngIf="showSort && form.get('sort')">
         <ng-container ngProjectAs="label">{{
           (showLimit && form.get('first') !== null
             ? 'components.queryBuilder.sort.limitTitle'

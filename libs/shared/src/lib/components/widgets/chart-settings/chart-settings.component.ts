@@ -29,6 +29,12 @@ export class ChartSettingsComponent
   public types = CHART_TYPES;
   /** Current chart type */
   public type: any;
+  public dataFilter: any;
+
+  // === DISPLAY PREVIEW ===
+  public settings: any;
+  public grid: any;
+  public resourceId: any;
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -55,5 +61,6 @@ export class ChartSettingsComponent
       .subscribe((value) => {
         this.type = this.types.find((x) => x.name === value);
       });
+    this.resourceId = this.formGroup.get('resource')?.value;
   }
 }
