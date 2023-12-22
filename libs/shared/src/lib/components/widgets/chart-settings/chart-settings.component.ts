@@ -56,9 +56,11 @@ export class ChartSettingsComponent
       this.change.emit(this.formGroup);
     });
 
-    this.chartForm.controls.type.valueChanges.subscribe((value) => {
-      this.type = this.types.find((x) => x.name === value);
-    });
+    this.chartForm.controls.type.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.type = this.types.find((x) => x.name === value);
+      });
     this.resourceId = this.formGroup.get('resource')?.value;
   }
 }
