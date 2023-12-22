@@ -1768,6 +1768,7 @@
 						"defaultLabel": "Libellé par défaut",
 						"label": "Libellé",
 						"symbol": "Symbole",
+						"uniqueValue": "Valeurs uniques",
 						"value": "Valeur"
 					},
 					"tooltip": {
