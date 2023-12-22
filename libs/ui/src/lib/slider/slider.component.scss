@@ -1,8 +1,8 @@
 input[type='range'] {
-  /* Disable the navigator appearance of sliders so we can custom it */
+  //Disable the navigator appearance of sliders so we can custom it
   -webkit-appearance: none;
   appearance: none;
-  /* Custom color background */
+  //Custom color background
   background-repeat: no-repeat;
   content: var(--value);
   background-size: calc(
@@ -16,7 +16,7 @@ div input[type='range']::-webkit-slider-thumb {
   height: 15px;
   width: 15px;
   position: relative;
-  /* Forced to use here because I do not know a way to apply class directly in html to the thumb */
+  //Forced to use here because I do not know a way to apply class directly in html to the thumb
   @apply z-50 rounded-full bg-primary-400 hover:cursor-grab active:cursor-grabbing shadow-md transition-colors;
 }
 
@@ -25,11 +25,11 @@ div.min-value input[type='range']::-webkit-slider-thumb {
   height: 15px;
   width: 15px;
   position: relative;
-  /* Forced to use here because I do not know a way to apply class directly in html to the thumb */
+  //Forced to use here because I do not know a way to apply class directly in html to the thumb
   @apply z-50 rounded-full bg-gray-800 hover:cursor-grab active:cursor-grabbing shadow-md transition-colors;
 }
 
-/* The thumb disappears when the component is on focus */
+// The thumb disappears when the component is on focus
 div.relative:focus-within input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 0px;

@@ -5,10 +5,10 @@
 @import 'tailwindcss/utilities';
 
 /* === Tailwindcss === */
-/* Allow to use @apply in not visible by default elements */
+// Allow to use @apply in not visible by default elements
 @layer components {
-  /* === Measure plugin === */
-  /* todo(gis): move somewhere else */
+  // === Measure plugin ===
+  // todo(gis): move somewhere else
   .leaflet-measure-resultpopup a.deletemarkup,
   .leaflet-measure-resultpopup a.zoomto,
   .leaflet-control-measure a.cancel,
@@ -19,7 +19,7 @@
   }
 }
 
-/* Define new colors */
+// Define new colors
 @layer base {
   body {
     font-family: system-ui;
@@ -39,8 +39,8 @@
   h5 {
     @apply text-xs font-medium mb-3;
   }
-  /* Revert all default changes of base layer in this custom class */
-  /* https://tailwindcss.com/docs/preflight */
+  // Revert all default changes of base layer in this custom class
+  // https://tailwindcss.com/docs/preflight
   .no-tailwindcss-base,
   .no-tailwindcss-base *,
   .no-tailwindcss-base > * {

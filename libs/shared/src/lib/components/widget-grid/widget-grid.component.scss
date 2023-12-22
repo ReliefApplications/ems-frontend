@@ -10,7 +10,7 @@
   }
 }
 
-/* Apply same rounded to the grid item preview */
+// Apply same rounded to the grid item preview
 ::ng-deep gridster-item.gridster-item-resizing,
 gridster-item.gridster-item-moving {
   z-index: 2 !important;
@@ -21,7 +21,7 @@ gridster-item.gridster-item-moving {
   @apply bg-gray-500/25;
 }
 
-/* === DASHBOARD WIDGETS=== */
+// === DASHBOARD WIDGETS===
 .floating-widget-choice-wrapper {
   position: fixed;
   bottom: 48px;

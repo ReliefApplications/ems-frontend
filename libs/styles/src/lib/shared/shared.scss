@@ -14,13 +14,13 @@ body {
   margin: 0;
   overflow: hidden;
 
-  /* Firefox scrollbars */
+  // Firefox scrollbars
   scrollbar-width: thin;
   scrollbar-gutter: stable;
   scrollbar-color: #d4d4d9 white;
 }
 
-/* === DIALOGS === */
+// === DIALOGS ===
 .cdk-overlay-container {
   z-index: 1003;
 }
@@ -51,8 +51,8 @@ body {
   }
 }
 
-/* === CDK === */
-/* Drag & Drop */
+// === CDK ===
+// Drag & Drop
 .cdk-drag-preview {
   z-index: 1100 !important;
   @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
@@ -80,7 +80,7 @@ tr.cdk-drag-preview {
   }
 }
 
-/* === SCROLL BARS === */
+// === SCROLL BARS ===
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

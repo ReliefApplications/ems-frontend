@@ -24,25 +24,25 @@ survey-creator {
   --sd-base-vertical-padding: #{10px !important};
 }
 
-/* Checkbox */
+// Checkbox
 ui-checkbox {
   ui-icon {
     vertical-align: text-bottom;
   }
 }
 
-/* === Form builder === */
+// === Form builder ===
 .core-question {
   .sd-question__title {
     @apply text-red-400 #{!important};
   }
 }
 
-/* .multiline-tooltip {
-    white-space: pre-line;
-} */
+// .multiline-tooltip {
+//   white-space: pre-line;
+// }
 
-/* Widgets */
+// Widgets
 .widget-header {
   box-sizing: border-box;
   height: 40px;
@@ -90,14 +90,14 @@ ui-checkbox {
   @apply px-3 #{!important};
 }
 
-/* === TINYMCE === */
+// === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
-/* === LEAFLET === */
-/* todo(beta): move */
+// === LEAFLET ===
+// todo(beta): move
 .map-legend-container {
   max-height: 320px;
   overflow-y: auto;
@@ -146,7 +146,7 @@ ui-checkbox {
     opacity: 0.4;
   }
 }
-/* todo(beta): useless? */
+// todo(beta): useless?
 .custom-marker {
   span {
     display: flex;

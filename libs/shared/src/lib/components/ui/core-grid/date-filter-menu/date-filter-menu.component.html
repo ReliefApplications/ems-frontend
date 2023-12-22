@@ -71,6 +71,7 @@
       <button
         type="button"
         kendoButton
+        icon="refresh"
         [title]="
           (dateModeProperty === 'expression'
             ? 'components.queryBuilder.tooltip.filter.date.usePicker'
@@ -78,9 +79,7 @@
           ) | translate
         "
         (click)="$event.stopPropagation(); setDateModeType(dateMode)"
-      >
-        <kendo-icon name="refresh"></kendo-icon>
-      </button>
+      ></button>
     </div>
   </ng-container>
 </ng-template>
