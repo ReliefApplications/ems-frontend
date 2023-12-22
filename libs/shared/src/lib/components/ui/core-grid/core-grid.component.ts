@@ -32,6 +32,7 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
@@ -49,7 +50,6 @@ import { ApplicationService } from '../../../services/application/application.se
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
-import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -136,6 +136,8 @@ export class CoreGridComponent
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   /** Event emitter for row selection */
@@ -245,7 +247,9 @@ export class CoreGridComponent
           { logic: 'and', filters: gridFilters },
           {
             logic: 'or',
-            filters: searchFilters(
+            field: '_globalSearch',
+            operator: 'contains',
+            value: searchFilters(
               this.search,
               this.fields.map((field) => field.meta),
               skippedFields
@@ -660,6 +664,7 @@ export class CoreGridComponent
             item.saved = true;
           }
         }
+        this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
         if (this.updatedItems.length) {
           // show an error message
@@ -678,9 +683,8 @@ export class CoreGridComponent
             }
           );
           return true;
-        } else {
-          return false;
         }
+        return false;
       });
     } else {
       return Promise.resolve(false);

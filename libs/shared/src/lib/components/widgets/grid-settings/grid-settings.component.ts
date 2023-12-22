@@ -8,7 +8,6 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import {
-  UntypedFormGroup,
   UntypedFormArray,
   Validators,
   FormBuilder,
@@ -29,6 +28,7 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -40,22 +40,25 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
 })
 export class GridSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements
+    OnInit,
+    AfterViewInit,
+    WidgetSettings<typeof createGridWidgetFormGroup>
 {
-  // === REACTIVE FORM ===
-  /** Form group */
-  public formGroup!: UntypedFormGroup;
-  /** Form array for filters */
-  public filtersFormArray: any = null;
-
   // === WIDGET ===
   /** Widget */
   @Input() widget: any;
-
   // === EMIT THE CHANGES APPLIED ===
   /** Event emitter for change */
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
+  @Output() formChange: EventEmitter<
+    ReturnType<typeof createGridWidgetFormGroup>
+  > = new EventEmitter();
+
+  // === REACTIVE FORM ===
+  /** Form group */
+  public widgetFormGroup!: ReturnType<typeof createGridWidgetFormGroup>;
+  /** Form array for filters */
+  public filtersFormArray: any = null;
 
   // === NOTIFICATIONS ===
   /** List of channels */
@@ -105,15 +108,10 @@ export class GridSettingsComponent
     super();
   }
 
-  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.formGroup = createGridWidgetFormGroup(
-      this.widget.id,
-      this.widget.settings
-    );
-
-    this.change.emit(this.formGroup);
-
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
     // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
     //   this.filteredQueries = this.filterQueries(res);
     // });
@@ -122,7 +120,7 @@ export class GridSettingsComponent
     this.getQueryMetaData();
 
     // Subscribe to form resource changes
-    this.formGroup
+    this.widgetFormGroup
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -130,43 +128,48 @@ export class GridSettingsComponent
           // Check if the query changed to clean modifications and fields for email in floating button
           if (value !== this.resource?.id) {
             // this.queryName = name;
-            this.formGroup?.get('layouts')?.setValue([]);
-            this.formGroup?.get('aggregations')?.setValue([]);
-            this.formGroup?.get('template')?.setValue(null);
-            this.formGroup?.get('template')?.enable();
-            const floatingButtons = this.formGroup?.get(
+            this.widgetFormGroup?.get('layouts')?.setValue([]);
+            this.widgetFormGroup?.get('aggregations')?.setValue([]);
+            this.widgetFormGroup?.get('template')?.setValue(null);
+            this.widgetFormGroup?.get('template')?.enable();
+            const floatingButtons = this.widgetFormGroup?.get(
               'floatingButtons'
             ) as UntypedFormArray;
+            let floatingButtonIndex = 0;
             for (const floatingButton of floatingButtons.controls) {
               const modifications = floatingButton.get(
                 'modifications'
               ) as UntypedFormArray;
               modifications.clear();
-              this.formGroup
-                ?.get('floatingButton.modifySelectedRows')
+              (
+                this.widgetFormGroup?.get('floatingButtons') as UntypedFormArray
+              ).controls
+                .at(floatingButtonIndex)
+                ?.get('modifySelectedRows')
                 ?.setValue(false);
               const bodyFields = floatingButton.get(
                 'bodyFields'
               ) as UntypedFormArray;
               bodyFields.clear();
+              floatingButtonIndex++;
             }
           }
           this.getQueryMetaData();
         } else {
-          this.formGroup?.get('layouts')?.setValue([]);
-          this.formGroup?.get('aggregations')?.setValue([]);
-          this.formGroup?.get('template')?.setValue(null);
+          this.widgetFormGroup?.get('layouts')?.setValue([]);
+          this.widgetFormGroup?.get('aggregations')?.setValue([]);
+          this.widgetFormGroup?.get('template')?.setValue(null);
           this.fields = [];
           this.resource = null;
         }
 
         // clear sort fields array
-        const sortFields = this.formGroup?.get('sortFields') as FormArray;
+        const sortFields = this.widgetFormGroup?.get('sortFields') as FormArray;
         sortFields.clear();
       });
 
     // Subscribe to form aggregations changes
-    this.formGroup
+    this.widgetFormGroup
       .get('aggregations')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -176,20 +179,20 @@ export class GridSettingsComponent
         }
       });
     // If some aggregations are selected, remove validators on layouts field
-    if (this.formGroup.get('aggregations')?.value.length > 0) {
-      this.formGroup.controls.layouts.clearValidators();
+    if (this.widgetFormGroup.get('aggregations')?.value.length > 0) {
+      this.widgetFormGroup.controls.layouts.clearValidators();
     }
 
     // Subscribe to form layouts changes
-    this.formGroup
+    this.widgetFormGroup
       .get('layouts')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.updateValueAndValidityByType(value, 'layouts');
       });
     // If some layouts are selected, remove validators on aggregations field
-    if (this.formGroup.get('layouts')?.value.length > 0) {
-      this.formGroup.controls.aggregations.clearValidators();
+    if (this.widgetFormGroup.get('layouts')?.value.length > 0) {
+      this.widgetFormGroup.controls.aggregations.clearValidators();
     }
 
     this.initSortFields();
@@ -205,7 +208,7 @@ export class GridSettingsComponent
         order: [item.order, Validators.required],
         label: [item.label, Validators.required],
       });
-      (this.formGroup?.get('sortFields') as any).push(row);
+      (this.widgetFormGroup?.get('sortFields') as any).push(row);
     });
   }
 
@@ -224,36 +227,38 @@ export class GridSettingsComponent
       // Some type are selected
       if (value.length > 0) {
         // Remove validators on other type fields fields
-        this.formGroup.controls[otherType].clearValidators();
+        this.widgetFormGroup.controls[otherType].clearValidators();
       } else {
         // No type selected
-        if (this.formGroup.controls[otherType].value.length > 0) {
+        if (this.widgetFormGroup.controls[otherType].value.length > 0) {
           // Remove validators on type field if other type are selected
-          this.formGroup.controls[type].clearValidators();
+          this.widgetFormGroup.controls[type].clearValidators();
         } else {
           // Else, reset all validators
-          this.formGroup.controls[type].setValidators([Validators.required]);
-          this.formGroup.controls[otherType].setValidators([
+          this.widgetFormGroup.controls[type].setValidators([
+            Validators.required,
+          ]);
+          this.widgetFormGroup.controls[otherType].setValidators([
             Validators.required,
           ]);
         }
       }
     }
     // Update fields without sending update events to prevent infinite loops
-    this.formGroup.controls[type].updateValueAndValidity({
+    this.widgetFormGroup.controls[type].updateValueAndValidity({
       emitEvent: false,
     });
-    this.formGroup.controls[otherType].updateValueAndValidity({
+    this.widgetFormGroup.controls[otherType].updateValueAndValidity({
       emitEvent: false,
     });
   }
 
   ngAfterViewInit(): void {
-    if (this.formGroup) {
-      this.formGroup.valueChanges
+    if (this.widgetFormGroup) {
+      this.widgetFormGroup.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
-          this.change.emit(this.formGroup);
+          this.formChange.emit(this.widgetFormGroup);
         });
 
       this.applicationService.application$
@@ -289,16 +294,16 @@ export class GridSettingsComponent
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
-    if (this.formGroup.get('resource')?.value) {
+    if (this.widgetFormGroup.get('resource')?.value) {
       const layoutIds: string[] | undefined =
-        this.formGroup?.get('layouts')?.value;
+        this.widgetFormGroup?.get('layouts')?.value;
       const aggregationIds: string[] | undefined =
-        this.formGroup?.get('aggregations')?.value;
+        this.widgetFormGroup?.get('aggregations')?.value;
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
-            resource: this.formGroup.get('resource')?.value,
+            resource: this.widgetFormGroup.get('resource')?.value,
             layoutIds,
             firstLayouts: layoutIds?.length || 10,
             aggregationIds,
@@ -310,9 +315,9 @@ export class GridSettingsComponent
             this.resource = data.resource;
             this.relatedForms = data.resource.relatedForms || [];
             this.templates = data.resource.forms || [];
-            if (this.formGroup.get('aggregations')?.value.length > 0) {
+            if (this.widgetFormGroup.get('aggregations')?.value.length > 0) {
               this.onAggregationChange(
-                this.formGroup.get('aggregations')?.value[0]
+                this.widgetFormGroup.get('aggregations')?.value[0]
               );
             } else {
               this.fields = this.queryBuilder.getFields(
@@ -367,5 +372,15 @@ export class GridSettingsComponent
           }
         });
     }
+  }
+
+  /**
+   * Build the settings form, using the widget saved parameters
+   */
+  public buildSettingsForm() {
+    this.widgetFormGroup = createGridWidgetFormGroup(
+      this.widget.id,
+      this.widget.settings
+    );
   }
 }

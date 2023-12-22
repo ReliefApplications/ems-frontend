@@ -181,7 +181,9 @@ export class ContextService {
    */
   public replaceContext(object: any): any {
     const context = this.context;
-    if (!context) return object;
+    if (!context) {
+      return object;
+    }
     const regex = /{{context\.(.*?)}}/g;
     return JSON.parse(
       JSON.stringify(object).replace(regex, (match) => {
@@ -216,10 +218,11 @@ export class ContextService {
         const filterName = filter.value?.match(filterRegex)?.[0];
         if (filterName) {
           filter.value = get(this.availableFilterFieldsValue, filterName);
-        }
-        const contextName = filter.value?.match(contextRegex)?.[0];
-        if (contextName) {
-          filter.value = get(this.context, contextName);
+        } else {
+          const contextName = filter.value?.match(contextRegex)?.[0];
+          if (contextName) {
+            filter.value = get(this.context, contextName);
+          }
         }
       }
     } else if ('filters' in filter && filter.filters) {

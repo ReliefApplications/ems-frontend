@@ -28,7 +28,7 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       id,
       title: get<string>(configuration, 'title', ''),
       card: createCardForm(get(configuration, 'card', null)),
-      sortFields: new FormArray([]),
+      sortFields: new FormArray<any>([]),
       contextFilters: get<string>(
         configuration,
         'contextFilters',

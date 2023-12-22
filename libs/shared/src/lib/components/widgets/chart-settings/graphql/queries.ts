@@ -90,3 +90,14 @@ export const GET_RESOURCE_METADATA = gql`
     }
   }
 `;
+
+/** Graphql request to get reference data metadata */
+export const GET_REFERENCE_DATA_METADATA = gql`
+  query GetReferenceDataMetadata($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      fields
+    }
+  }
+`;

@@ -1,3 +1,20 @@
+# [2.3.0-beta.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.4...v2.3.0-beta.5) (2023-12-18)
+
+
+### Bug Fixes
+
+*  Make context filter work for text widget with aggregation ([#2191](https://github.com/ReliefApplications/ems-frontend/issues/2191)) ([453b59c](https://github.com/ReliefApplications/ems-frontend/commit/453b59c584e410d25bba5feb0f6b2602f77c5ea1))
+* get correct classes and tooltips for ref data fields in grid widgets ([#2192](https://github.com/ReliefApplications/ems-frontend/issues/2192)) ([c3a961c](https://github.com/ReliefApplications/ems-frontend/commit/c3a961c56165d934fadbe00ed816b7ea3c1e5b5f))
+* grid actions in summary cards settings would appear when not needed  ([#2189](https://github.com/ReliefApplications/ems-frontend/issues/2189)) ([931ec30](https://github.com/ReliefApplications/ems-frontend/commit/931ec308e2a9b003fb98c6c9ce5a661bd7fb5e02))
+* grids in forms could go out of the parent container ([#2186](https://github.com/ReliefApplications/ems-frontend/issues/2186)) ([7dee363](https://github.com/ReliefApplications/ems-frontend/commit/7dee363ed839d14ed59017c1df03becfffc7bf60))
+
+# [2.3.0-beta.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.3...v2.3.0-beta.4) (2023-12-18)
+
+
+### Features
+
+* can use context variables in widgets ([#2003](https://github.com/ReliefApplications/ems-frontend/issues/2003)) ([a592082](https://github.com/ReliefApplications/ems-frontend/commit/a5920827436adceaf32d2c86223ea2a2b6cb22dc))
+
 # [2.3.0-beta.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.2...v2.3.0-beta.3) (2023-12-16)
 
 
