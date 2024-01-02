@@ -186,9 +186,8 @@
 <!-- Modern template -->
 <ng-template #modernTmpl>
   <div
-    modernDrawerPositioner
-    [elementWidth]="containerWidth"
-    [visible]="closable ? opened : true"
+    class="w-full -mt-8 -ml-6 mb-3"
+    [ngClass]="(closable && opened) || !closable ? 'flex' : 'hidden'"
   >
     <div
       id="filter-modern"

@@ -30,7 +30,8 @@ import { UILayoutService } from './layout/layout.service';
 })
 export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   /** A list of SidenavDirective children. */
-  @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
+  @ContentChildren(SidenavDirective)
+  uiSidenavDirective!: QueryList<SidenavDirective>;
   /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
   /** A list of side navigation menus. */
@@ -183,10 +184,13 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   resolveSidenavClasses(index: number): string[] {
     const classes = [];
     if (this.position[index] === 'start') {
-      classes.push("data-[sidenav-show='false']:-translate-x-full");
-      classes.push("data-[sidenav-show='false']:w-0");
       classes.push('z-[1002]');
-      classes.push('w-60');
+      if (this.showSidenav[index]) {
+        classes.push('w-60');
+      } else {
+        classes.push('w-0');
+        classes.push('-translate-x-full');
+      }
       classes.push('border-r');
       classes.push('border-gray-200');
     }
