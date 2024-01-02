@@ -8,6 +8,7 @@ import { settings } from 'survey-core';
  */
 @Component({ template: '' })
 export class ShadowRootExtendedHostComponent implements OnInit {
+  /** UI snackbar service */
   snackBarService: SnackbarService = inject(SnackbarService);
 
   /**

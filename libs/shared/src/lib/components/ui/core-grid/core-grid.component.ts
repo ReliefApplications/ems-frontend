@@ -136,6 +136,8 @@ export class CoreGridComponent
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   /** Event emitter for row selection */
@@ -662,6 +664,7 @@ export class CoreGridComponent
             item.saved = true;
           }
         }
+        this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
         if (this.updatedItems.length) {
           // show an error message
@@ -680,9 +683,8 @@ export class CoreGridComponent
             }
           );
           return true;
-        } else {
-          return false;
         }
+        return false;
       });
     } else {
       return Promise.resolve(false);
@@ -1335,7 +1337,7 @@ export class CoreGridComponent
    * @param e export event
    */
   public onExport(e: any): void {
-    let ids: any[];
+    let ids: any[] = [];
     if (e.records === 'selected') {
       ids = this.selectedRows;
       if (ids.length === 0) {
@@ -1345,21 +1347,25 @@ export class CoreGridComponent
         );
         return;
       }
-    } else {
-      if (this.gridData.data.length > 0) {
-        ids = [this.gridData.data[0].id];
-      } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', {
-          error: true,
-        });
-        return;
-      }
+    } else if (this.gridData.data.length === 0) {
+      this.snackBar.openSnackBar('Export failed: grid is empty.', {
+        error: true,
+      });
+      return;
     }
 
+    const getSubFields = (field: any) => {
+      return field.subFields.flatMap((y: any) => [
+        { name: y.name, title: y.title },
+        ...(y.subFields || []).flatMap((sub: any) => ({
+          name: sub.name,
+          title: sub.title,
+        })),
+      ]);
+    };
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
-      ids,
       filter:
         e.records === 'selected'
           ? {
@@ -1367,6 +1373,7 @@ export class CoreGridComponent
               filters: [{ operator: 'eq', field: 'ids', value: ids }],
             }
           : this.queryFilter,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       query: this.settings.query,
       sortField: this.sortField,
       sortOrder: this.sortOrder,
@@ -1374,6 +1381,7 @@ export class CoreGridComponent
       application: this.applicationService.name,
       fileName: this.fileName,
       email: e.email,
+      resource: this.settings.resource,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
@@ -1382,12 +1390,7 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields
-              .filter((y: any) => !y.hidden)
-              .map((y: any) => ({
-                name: y.name,
-                title: y.title,
-              })),
+            subFields: getSubFields(x),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1397,10 +1400,7 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields.map((y: any) => ({
-              name: y.name,
-              title: y.title,
-            })),
+            subFields: getSubFields(x),
           })),
       }),
     };
