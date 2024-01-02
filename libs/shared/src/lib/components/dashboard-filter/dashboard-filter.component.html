@@ -186,8 +186,9 @@
 <!-- Modern template -->
 <ng-template #modernTmpl>
   <div
-    class="w-full -mt-8 -ml-6 mb-3"
+    class="-mt-8 -ml-6 -mr-6 mb-3"
     [ngClass]="opened || !closable ? 'flex' : 'hidden'"
+    [style.width.px]="containerWidth"
   >
     <div
       id="filter-modern"
