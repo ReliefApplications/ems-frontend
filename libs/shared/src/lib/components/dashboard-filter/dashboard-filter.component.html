@@ -187,7 +187,7 @@
 <ng-template #modernTmpl>
   <div
     class="w-full -mt-8 -ml-6 mb-3"
-    [ngClass]="(closable && opened) || !closable ? 'flex' : 'hidden'"
+    [ngClass]="opened || !closable ? 'flex' : 'hidden'"
   >
     <div
       id="filter-modern"
