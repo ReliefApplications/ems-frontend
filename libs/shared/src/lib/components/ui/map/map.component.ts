@@ -264,6 +264,8 @@ export class MapComponent
       .subscribe(() => {
         this.filterLayers();
       });
+    
+    console.log(this.layers);
   }
 
   override ngOnDestroy(): void {
@@ -507,6 +509,7 @@ export class MapComponent
       if (settings.layers?.length || reset) {
         this.resetLayers();
         if (settings.layers?.length) {
+          console.log(settings.layers);
           promises.push(this.getLayers(settings.layers));
         }
       }
@@ -537,6 +540,7 @@ export class MapComponent
     // We need to fetch new layers
     if (promises.length) {
       Promise.all(promises).then((trees) => {
+        console.log("trees = ", trees);
         this.basemapTree = [];
         this.overlaysTree = [];
         for (const tree of trees) {
