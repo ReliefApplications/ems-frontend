@@ -111,7 +111,9 @@ export class DashboardComponent
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
   /** Timeout to scroll to newly added widget */
-  private timeoutListener!: NodeJS.Timeout;
+  private addTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to load grid options */
+  private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
@@ -321,9 +323,21 @@ export class DashboardComponent
 
           this.dashboardService.openDashboard(this.dashboard);
           this.widgets = cloneDeep(
-            this.dashboard.structure
-              ? [...this.dashboard.structure.filter((x: any) => x !== null)]
-              : []
+            data.dashboard.structure
+              ?.filter((x: any) => x !== null)
+              .map((widget: any) => {
+                const contextData = this.dashboard?.contextData;
+                this.contextService.context = contextData || null;
+
+                if (!contextData) {
+                  return widget;
+                }
+                const { settings, originalSettings } =
+                  this.updateSettingsContextContent(widget.settings);
+                widget.originalSettings = originalSettings;
+                widget.settings = settings;
+                return widget;
+              }) || []
           );
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
@@ -333,7 +347,10 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          setTimeout(() => {
+          if (this.gridOptionsTimeoutListener) {
+            clearTimeout(this.gridOptionsTimeoutListener);
+          }
+          this.gridOptionsTimeoutListener = setTimeout(() => {
             this.gridOptions = {
               ...this.gridOptions,
               scrollToNewItems: true,
@@ -360,12 +377,37 @@ export class DashboardComponent
   }
 
   /**
+   * If context data exists, returns an object containing context content mapped settings and widget's original settings
+   *
+   * @param settings Widget settings
+   * @returns context content mapped settings and original settings
+   */
+  private updateSettingsContextContent(settings: any): {
+    settings: any;
+    originalSettings?: any;
+  } {
+    if (this.dashboard?.contextData) {
+      // If tile has context, replace the templates with the values
+      // and keep the original, to be used for the widget settings
+      const mappedContextContentSettings =
+        this.contextService.replaceContext(settings);
+      const originalSettings = settings;
+      return { settings: mappedContextContentSettings, originalSettings };
+    }
+    // else return settings as given
+    return { settings };
+  }
+
+  /**
    * Leave dashboard
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
+    }
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
     }
     localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'filterStructure');
@@ -405,11 +447,11 @@ export class DashboardComponent
   onAdd(e: any): void {
     const widget = cloneDeep(e);
     this.widgets.push(widget);
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
     }
     // scroll to the element once it is created
-    this.timeoutListener = setTimeout(() => {
+    this.addTimeoutListener = setTimeout(() => {
       const widgetComponents =
         this.widgetGridComponent.widgetComponents.toArray();
       const target = widgetComponents[widgetComponents.length - 1];
@@ -433,22 +475,23 @@ export class DashboardComponent
         // Find the widget to be edited
         const widgetComponents =
           this.widgetGridComponent.widgetComponents.toArray();
-        const targetIndex = widgetComponents.findIndex(
-          (v: any) => v.id === e.id
-        );
-        if (targetIndex > -1) {
-          // Update the configuration
-          const options = this.widgets[targetIndex]?.settings?.defaultLayout
-            ? {
-                ...e.options,
-                defaultLayout: this.widgets[targetIndex].settings.defaultLayout,
-              }
-            : e.options;
-          if (options) {
+        const index = widgetComponents.findIndex((v: any) => v.id === e.id);
+        if (index > -1) {
+          const { settings, originalSettings } =
+            this.updateSettingsContextContent(
+              this.widgets[index]?.settings?.defaultLayout
+                ? {
+                    ...e.options,
+                    defaultLayout: this.widgets[index].settings.defaultLayout,
+                  }
+                : e.options
+            );
+          if (settings) {
             // Save configuration
-            this.widgets[targetIndex] = {
-              ...this.widgets[targetIndex],
-              settings: options,
+            this.widgets[index] = {
+              ...this.widgets[index],
+              settings: settings,
+              ...(originalSettings && { originalSettings }),
             };
             this.autoSaveChanges();
           }
@@ -495,12 +538,26 @@ export class DashboardComponent
 
   /** Save the dashboard changes in the database. */
   private autoSaveChanges(): void {
+    let widgets = this.widgets;
+    // If context data exists we have to clean up widget setting original settings
+    // Which do not have the {{context}} replaced, and delete duplicated original settings property as it's not needed in the DB
+    if (this.dashboard?.contextData) {
+      widgets = [];
+      this.widgets.forEach((widget) => {
+        const contextContentCleanWidget = {
+          ...widget,
+          settings: widget.originalSettings,
+        };
+        delete contextContentCleanWidget.originalSettings;
+        widgets.push(contextContentCleanWidget);
+      });
+    }
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: this.id,
-          structure: this.widgets,
+          structure: widgets,
         },
       })
       .subscribe({

@@ -165,6 +165,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
 
   /**
@@ -230,7 +231,6 @@ export class FilterBuilderModalComponent
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
         opt.canShow = false;
-        console.log(opt);
       }
     });
 

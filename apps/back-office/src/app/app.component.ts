@@ -22,7 +22,7 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
+  /** Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build */
   static declaration = [
     ApplicationDropdownComponent,
     GeofieldsListboxComponent,
@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
   ];
+  /** Application title */
   title = 'back-office';
 
   /**

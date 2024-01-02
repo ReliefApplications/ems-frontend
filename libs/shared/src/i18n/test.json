@@ -7,6 +7,7 @@
 		"add": "******",
 		"adminField": "******",
 		"aggregation": {
+			"add": "******",
 			"few": "******",
 			"none": "******",
 			"one": "******"
@@ -1820,6 +1821,8 @@
 						}
 					},
 					"dynamic": "******",
+					"exportable": "******",
+					"gridMode": "******",
 					"hint": {
 						"dynamic": "******"
 					},
@@ -1846,6 +1849,15 @@
 				},
 				"viewAsCards": "******",
 				"viewAsGrid": "******"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "****** {{aggregation.<id>}} ******",
+					"template": {
+						"add": "******",
+						"edit": "******"
+					}
+				}
 			}
 		}
 	},
@@ -2051,6 +2063,11 @@
 		},
 		"application": {
 			"description": "******",
+			"errors": {
+				"style": {
+					"notFound": "******"
+				}
+			},
 			"id": "******",
 			"new": "******",
 			"notifications": {
@@ -2110,7 +2127,12 @@
 					"element": "******"
 				},
 				"selectDisplayField": "******",
-				"selectOrigin": "******"
+				"selectOrigin": "******",
+				"title": "******",
+				"tooltip": {
+					"useContextEditor": "******",
+					"useDefaultEditor": "******"
+				}
 			},
 			"contextFilter": "******",
 			"dashboardFilter": "******",
@@ -2192,7 +2214,8 @@
 			"select": "******"
 		},
 		"referenceData": {
-			"add": "******"
+			"add": "******",
+			"select": "******"
 		},
 		"resource": {
 			"create": "******",
@@ -2277,6 +2300,12 @@
 	"pages": {
 		"administration": {
 			"title": "******"
+		},
+		"aggregation": {
+			"preview": {
+				"label": "******",
+				"missingAggregation": "******"
+			}
 		},
 		"apiConfiguration": {
 			"authentication": "******",

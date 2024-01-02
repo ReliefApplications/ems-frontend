@@ -29,7 +29,7 @@ export class DateRangeComponent {
     start: null,
     end: null,
   } as unknown as SelectionRange;
-  /* Boolean indicating whether a view change action has occurred. */
+  /** Boolean indicating whether a view change action has occurred */
   viewChangeAction = false;
 
   /**

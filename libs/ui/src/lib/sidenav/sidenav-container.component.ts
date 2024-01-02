@@ -37,6 +37,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
   /** Reference to the content wrapper. */
   @ViewChild('contentWrapper') contentWrapper!: ElementRef;
+  /** Reference to the fixed wrapper actions. */
   @ViewChild('fixedWrapperActions', { read: ViewContainerRef })
   fixedWrapperActions?: ViewContainerRef;
 
@@ -54,6 +55,8 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
   /** Should display fixed wrapper at bottom */
   fixedWrapperActionExist = false;
+  /** Timeout to transitions */
+  private transitionsTimeoutListener!: NodeJS.Timeout;
 
   /** @returns height of element */
   get height() {
@@ -143,7 +146,10 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     });
 
     //Then set the transitions
-    setTimeout(() => {
+    if (this.transitionsTimeoutListener) {
+      clearTimeout(this.transitionsTimeoutListener);
+    }
+    this.transitionsTimeoutListener = setTimeout(() => {
       this.setTransitionForContent();
     }, 0);
   }
@@ -215,6 +221,9 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.transitionsTimeoutListener) {
+      clearTimeout(this.transitionsTimeoutListener);
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

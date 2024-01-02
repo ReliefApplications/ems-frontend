@@ -28,10 +28,14 @@ export class QueryBuilderComponent
   implements OnChanges
 {
   // === QUERY BUILDER ===
+  /** Available queries observable */
   public availableQueries?: Observable<any[]>;
+  /** Available fields */
   public availableFields: any[] = [];
 
+  /** All queries array */
   public allQueries: any[] = [];
+  /** Filtered queries array */
   public filteredQueries: any[] = [];
 
   /**
@@ -46,23 +50,35 @@ export class QueryBuilderComponent
     // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
+  /** Form group */
   @Input() form?: FormGroup;
+  /** CanExpand boolean control */
   @Input() canExpand = true;
+  /** CanSelectDataSet boolean control */
   @Input() canSelectDataSet = true;
+  /** Templates form */
   @Input() templates: Form[] = [];
+  /** Query string */
   @Input() queryName? = '';
+  /** Layout preview data */
   @Input() layoutPreviewData: LayoutPreviewData | null = null;
+  /** Style show boolean control */
   @Input() showStyle = true;
+  /** Filter show boolean control */
   @Input() showFilter = true;
+  /** Sort show boolean control */
   @Input() showSort = true;
   /** Toggles the column width parameter */
   @Input() showColumnWidth = false;
 
   // Tab options
+  /** Show limit option */
   @Input() showLimit = false;
 
   // === FIELD EDITION ===
+  /** Is field boolean control */
   public isField = false;
+  /** Close field event emitter */
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
   /**

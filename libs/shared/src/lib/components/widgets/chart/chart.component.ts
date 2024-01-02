@@ -34,7 +34,7 @@ const DEFAULT_FILE_NAME = 'chart';
  * @returns The joined filters
  */
 const joinFilters = (
-  contextFilters: string | null,
+  contextFilters: CompositeFilterDescriptor,
   predefinedFilter: CompositeFilterDescriptor | null
 ): CompositeFilterDescriptor => {
   const res: CompositeFilterDescriptor = {
@@ -43,7 +43,7 @@ const joinFilters = (
   };
 
   if (contextFilters) {
-    res.filters.push(JSON.parse(contextFilters));
+    res.filters.push(contextFilters);
   }
 
   if (predefinedFilter) {
@@ -94,6 +94,16 @@ export class ChartComponent
   public hasError = false;
   /** Selected predefined filter */
   public selectedFilter: CompositeFilterDescriptor | null = null;
+
+  /** @returns Context filters array */
+  get contextFilters(): CompositeFilterDescriptor {
+    return this.settings.contextFilters
+      ? JSON.parse(this.settings.contextFilters)
+      : {
+          logic: 'and',
+          filters: [],
+        };
+  }
 
   /**
    * Get filename from the date and widget title
@@ -197,7 +207,7 @@ export class ChartComponent
               aggregation: aggregation.id || '',
               mapping: get(this.settings, 'chart.mapping', null),
               contextFilters: joinFilters(
-                this.settings.contextFilters,
+                this.contextFilters,
                 this.selectedFilter
               ),
               at: this.settings.at

@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Renderer2,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
@@ -36,7 +37,6 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, cloneDeep, isNaN, isNil } from 'lodash';
-import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResourceQueryResponse } from '../../../models/resource.model';
@@ -46,6 +46,8 @@ import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
+import searchFilters from '../../../utils/filter/search-filters';
+import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -67,8 +69,6 @@ export class SummaryCardComponent
 {
   /** Widget definition */
   @Input() widget: any;
-  /** Can export widget */
-  @Input() export = true;
   /** Widget settings */
   @Input() settings!: SummaryCardFormT['value'];
   /** Should show padding */
@@ -123,6 +123,8 @@ export class SummaryCardComponent
   public searchControl = new FormControl('');
   /** Is scrolling */
   public scrolling = false;
+  /** Is refresh card list action */
+  private triggerRefreshCardList = false;
   /** Observer resize changes */
   private resizeObserver!: ResizeObserver;
   /** Used to reset sort options when changing display mode */
@@ -132,19 +134,24 @@ export class SummaryCardComponent
     field: string | null;
     order: string;
   } = { field: null, order: '' };
+  /** Summary card grid scroll event listener */
+  private scrollEventListener!: any;
+  /** Timeout listener for summary card scroll bind set on view switch */
+  private scrollEventBindTimeout!: NodeJS.Timeout;
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
+    const skippedFields = ['id', 'incrementalId'];
     if (this.searchControl.value) {
-      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
-          { logic: 'and', filters: [this.layout?.query.filter] },
           {
             logic: 'or',
-            filters: searchFilters(
+            field: '_globalSearch',
+            operator: 'contains',
+            value: searchFilters(
               this.searchControl.value,
               this.fields,
               skippedFields
@@ -160,10 +167,7 @@ export class SummaryCardComponent
     }
     return {
       logic: 'and',
-      filters: [
-        filter,
-        this.contextService.injectDashboardFilterValues(this.contextFilters),
-      ],
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
     };
   }
 
@@ -190,6 +194,16 @@ export class SummaryCardComponent
         false) &&
       !this.useReferenceData
     );
+  }
+
+  /** @returns user can change display mode */
+  get canChangeDisplayMode() {
+    return get(this.settings, 'widgetDisplay.gridMode', true);
+  }
+
+  /** @returns is widget exportable ( only cards mode ) */
+  get exportable() {
+    return get(this.settings, 'widgetDisplay.exportable', true);
   }
 
   /**
@@ -222,6 +236,7 @@ export class SummaryCardComponent
    * @param elementRef Element Ref
    * @param gridService grid service
    * @param referenceDataService Shared reference data service
+   * @param renderer Angular renderer service
    */
   constructor(
     private apollo: Apollo,
@@ -234,7 +249,8 @@ export class SummaryCardComponent
     private contextService: ContextService,
     private elementRef: ElementRef,
     private gridService: GridService,
-    private referenceDataService: ReferenceDataService
+    private referenceDataService: ReferenceDataService,
+    private renderer: Renderer2
   ) {
     super();
   }
@@ -276,12 +292,21 @@ export class SummaryCardComponent
       });
       this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
     }
+    this.bindCardsScrollListener();
+  }
+
+  /**
+   * Bind the scroll event listener to the summary cards container
+   */
+  private bindCardsScrollListener() {
     if (!this.settings.widgetDisplay?.usePagination) {
-      this.summaryCardGrid.nativeElement.addEventListener(
+      if (this.scrollEventListener) {
+        this.scrollEventListener();
+      }
+      this.scrollEventListener = this.renderer.listen(
+        this.summaryCardGrid.nativeElement,
         'scroll',
-        (event: any) => {
-          this.loadOnScroll(event);
-        }
+        (event: any) => this.loadOnScroll(event)
       );
     }
   }
@@ -289,6 +314,12 @@ export class SummaryCardComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.resizeObserver.disconnect();
+    if (this.scrollEventListener) {
+      this.scrollEventListener();
+    }
+    if (this.scrollEventBindTimeout) {
+      clearTimeout(this.scrollEventListener);
+    }
   }
 
   /**
@@ -301,6 +332,23 @@ export class SummaryCardComponent
       this.sortControl.setValue(null);
       this.onSort(null);
       this.displayMode = value;
+      if (value === 'cards') {
+        if (this.scrollEventBindTimeout) {
+          clearTimeout(this.scrollEventListener);
+        }
+        // On switching views, summary card element ref is destroyed
+        // and all events attached to it are not working as they are bind to
+        // previous element, therefor we have to set them again
+        this.scrollEventBindTimeout = setTimeout(
+          () => this.bindCardsScrollListener(),
+          0
+        );
+      } else {
+        // Clean previously attached scroll listener as the element ref is destroyed
+        if (this.scrollEventListener) {
+          this.scrollEventListener();
+        }
+      }
     }
   }
 
@@ -330,7 +378,9 @@ export class SummaryCardComponent
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const card = this.settings.card;
-    if (!card) return;
+    if (!card) {
+      return;
+    }
 
     if (card.resource) {
       if (this.useAggregation) {
@@ -385,14 +435,21 @@ export class SummaryCardComponent
         })
         .then(this.updateCards.bind(this));
     } else if (this.useReferenceData) {
-      this.sortedCachedCards = this.cachedCards.filter((card: any) => {
-        return (
-          JSON.stringify(card.rawValue)
-            .replace(/("\w+":)/g, '')
-            .toLowerCase()
-            .indexOf(search.toLowerCase()) !== -1
-        );
-      });
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(
+        this.cachedCards
+          .filter((x) => filterReferenceData(x.rawValue, contextFilters))
+          .filter((card: any) => {
+            return (
+              JSON.stringify(card.rawValue)
+                .replace(/("\w+":)/g, '')
+                .toLowerCase()
+                .indexOf(search.toLowerCase()) !== -1
+            );
+          })
+      );
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.pageInfo.length = this.sortedCachedCards.length;
     }
@@ -404,13 +461,17 @@ export class SummaryCardComponent
    * @param res Query result
    */
   private updateCards(res: any) {
-    if (!res?.data) return;
+    if (!res?.data) {
+      return;
+    }
     let newCards: any[] = [];
 
     const layoutQueryName = this.layout?.query.name;
     if (this.layout) {
       const edges = res.data?.[layoutQueryName].edges;
-      if (!edges) return;
+      if (!edges) {
+        return;
+      }
 
       newCards = edges.map((e: any) => ({
         ...this.settings.card,
@@ -429,13 +490,15 @@ export class SummaryCardComponent
       return;
     }
 
-    // scrolling enabled
-    if (!this.settings.widgetDisplay?.usePagination && this.scrolling) {
+    // update card list and scroll behavior according to the card items display
+
+    if (
+      !this.settings.widgetDisplay?.usePagination &&
+      !this.triggerRefreshCardList
+    ) {
       this.cards = [...this.cards, ...newCards];
-      this.scrolling = false;
     } else {
       this.cards = newCards;
-
       if (this.displayMode == 'cards') {
         this.summaryCardGrid.nativeElement.scroll({
           top: 0,
@@ -449,8 +512,17 @@ export class SummaryCardComponent
       'totalCount',
       0
     );
-
+    this.scrolling = false;
+    this.triggerRefreshCardList = false;
     this.loading = res.loading;
+  }
+
+  /**
+   * Refetch cards from the view.
+   */
+  public refreshCardList() {
+    this.triggerRefreshCardList = true;
+    this.dataQuery.refetch();
   }
 
   /**
@@ -625,7 +697,7 @@ export class SummaryCardComponent
       card.aggregation as string,
       DEFAULT_PAGE_SIZE,
       0,
-      this.contextService.injectDashboardFilterValues(this.contextFilters),
+      this.contextService.injectContext(this.contextFilters),
       this.widget.settings.at
         ? this.contextService.atArgumentValue(this.widget.settings.at)
         : undefined
@@ -680,8 +752,13 @@ export class SummaryCardComponent
         metadata: fields,
       }));
       this.pageInfo.length = this.cachedCards.length;
-      this.sortedCachedCards = cloneDeep(this.cachedCards);
-      this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+        filterReferenceData(x.rawValue, contextFilters)
+      );
+      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.loading = false;
       // Set sort fields
       this.sortFields = [];
@@ -702,13 +779,14 @@ export class SummaryCardComponent
    * @param e scroll event
    */
   private loadOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
+    /** If scroll is reaching bottom of scrolling height, trigger card load */
+    const isScrollNearBottom =
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50;
+    if (isScrollNearBottom) {
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
+        this.scrolling = true;
         if (this.useReferenceData) {
-          const start = this.pageInfo.pageIndex * this.pageInfo.pageSize;
+          const start = this.cards.length;
           const end = start + this.pageInfo.pageSize;
           this.cards.push(...this.sortedCachedCards.slice(start, end));
           this.scrolling = false;
@@ -720,7 +798,6 @@ export class SummaryCardComponent
               },
             })
             .then(this.updateCards.bind(this));
-          this.scrolling = true;
         }
       }
     }
@@ -756,6 +833,7 @@ export class SummaryCardComponent
         this.pageInfo.skip,
         this.pageInfo.skip + this.pageInfo.pageSize
       );
+      this.pageInfo.length = this.sortedCachedCards.length;
     }
   }
 
@@ -763,6 +841,27 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
+    if (this.useReferenceData) {
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+      this.sortedCachedCards = cloneDeep(
+        this.cachedCards.filter((x) =>
+          filterReferenceData(x.rawValue, contextFilters)
+        )
+      );
+      if (this.searchControl.value) {
+        this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
+          return (
+            JSON.stringify(card.rawValue)
+              .replace(/("\w+":)/g, '')
+              .toLowerCase()
+              .indexOf((this.searchControl.value as string).toLowerCase()) !==
+            -1
+          );
+        });
+      }
+    }
     this.onPage({
       pageSize: DEFAULT_PAGE_SIZE,
       skip: 0,
@@ -815,7 +914,9 @@ export class SummaryCardComponent
       this.gridComponent.onSort(e);
     } else {
       if (this.useLayout) {
-        if (!this.dataQuery) return;
+        if (!this.dataQuery) {
+          return;
+        }
         this.dataQuery
           .refetch({
             first: this.pageInfo.pageSize,

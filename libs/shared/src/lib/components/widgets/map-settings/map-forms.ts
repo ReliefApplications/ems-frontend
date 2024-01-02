@@ -24,6 +24,7 @@ import {
 import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
+import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -135,49 +136,59 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
     );
   };
   const canSeeFields = getCanSeeFields(value);
-  const formGroup = fb.group({
-    resource: [get(value, 'resource', null)],
-    layout: [get(value, 'layout', null)],
-    aggregation: [get(value, 'aggregation', null)],
-    refData: [get(value, 'refData', null)],
-    geoField: [
-      {
-        value: get(value, 'geoField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'latitudeField') ||
-          get(value, 'longitudeField'),
-      },
-    ],
-    adminField: [
-      {
-        value: get(value, 'adminField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'latitudeField') ||
-          get(value, 'longitudeField'),
-      },
-    ],
-    latitudeField: [
-      {
-        value: get(value, 'latitudeField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'geoField') ||
-          get(value, 'type') === 'Polygon',
-      },
-    ],
-    longitudeField: [
-      {
-        value: get(value, 'longitudeField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'geoField') ||
-          get(value, 'type') === 'Polygon',
-      },
-    ],
-    type: [get(value, 'type', 'Point')],
-  });
+  const formGroup = fb.group(
+    {
+      resource: [get(value, 'resource', null)],
+      layout: [get(value, 'layout', null)],
+      aggregation: [get(value, 'aggregation', null)],
+      refData: [get(value, 'refData', null)],
+      geoField: [
+        {
+          value: get(value, 'geoField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'latitudeField') ||
+            get(value, 'longitudeField'),
+        },
+      ],
+      adminField: [
+        {
+          value: get(value, 'adminField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'latitudeField') ||
+            get(value, 'longitudeField'),
+        },
+      ],
+      latitudeField: [
+        {
+          value: get(value, 'latitudeField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'geoField') ||
+            get(value, 'type') === 'Polygon',
+        },
+      ],
+      longitudeField: [
+        {
+          value: get(value, 'longitudeField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'geoField') ||
+            get(value, 'type') === 'Polygon',
+        },
+      ],
+      type: [get(value, 'type', 'Point')],
+    },
+    {
+      validators: [
+        mutuallyExclusive({
+          required: true,
+          fields: ['resource', 'refData'],
+        }),
+      ],
+    }
+  );
   formGroup.valueChanges.subscribe((value) => {
     const canSeeFields = getCanSeeFields(value);
     if (canSeeFields) {

@@ -17,9 +17,18 @@ steps:
 
 - script: |
     npm install
+  displayName: 'npm install'
+
+- script: |
+    npx kendo-ui-license activate
+  displayName: 'Activate Kendo UI License'
+  env:
+    KENDO_UI_LICENSE: $(KENDO_UI_LICENSE)
+
+- script: |
     npx nx run front-office:build:azure-uat
     npx nx run back-office:build:azure-uat
-  displayName: 'npm install and build the apps'
+  displayName: 'build the apps'
 
 - task: ArchiveFiles@2
   inputs:

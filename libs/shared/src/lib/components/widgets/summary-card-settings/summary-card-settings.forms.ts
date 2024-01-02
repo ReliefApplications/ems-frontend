@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import isNil from 'lodash/isNil';
+import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -26,7 +27,7 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       id,
       title: get<string>(configuration, 'title', ''),
       card: createCardForm(get(configuration, 'card', null)),
-      sortFields: new FormArray([]),
+      sortFields: new FormArray<any>([]),
       contextFilters: get<string>(
         configuration,
         'contextFilters',
@@ -55,6 +56,12 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       ),
       usePadding: new FormControl(
         get<boolean>(configuration, 'widgetDisplay.usePadding', true)
+      ),
+      exportable: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.exportable', true)
+      ),
+      gridMode: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.gridMode', true)
       ),
     }
   );
@@ -114,22 +121,59 @@ export const templateRequiredWhenAddRecord = (
  * @returns card as form group
  */
 const createCardForm = (value?: any) => {
-  return fb.group({
-    title: get<string>(value, 'title', 'New Card'),
-    referenceData: get<string | null>(value, 'referenceData', null),
-    resource: get<string | null>(value, 'resource', null),
-    template: get<string | null>(value, 'template', null),
-    layout: get<string | null>(value, 'layout', null),
-    aggregation: get<string | null>(value, 'aggregation', null),
-    html: get<string | null>(value, 'html', null),
-    showDataSourceLink: [
-      {
-        value: get<boolean>(value, 'showDataSourceLink', false),
-        disabled: !isNil(get<string | null>(value, 'referenceData', null)),
-      },
-    ],
-    useStyles: get<boolean>(value, 'useStyles', true),
-    wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
-    usePadding: get<boolean>(value, 'usePadding', true),
+  const formGroup = fb.group(
+    {
+      title: get<string>(value, 'title', 'New Card'),
+      referenceData: get<string | null>(value, 'referenceData', null),
+      resource: get<string | null>(value, 'resource', null),
+      template: get<string | null>(value, 'template', null),
+      layout: get<string | null>(value, 'layout', null),
+      aggregation: get<string | null>(value, 'aggregation', null),
+      html: get<string | null>(value, 'html', null),
+      showDataSourceLink: [
+        {
+          value: get<boolean>(value, 'showDataSourceLink', false),
+          disabled: !isNil(get<string | null>(value, 'referenceData', null)),
+        },
+      ],
+      useStyles: get<boolean>(value, 'useStyles', true),
+      wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
+      usePadding: get<boolean>(value, 'usePadding', true),
+    },
+    {
+      validators: [
+        mutuallyExclusive({
+          required: true,
+          fields: ['resource', 'referenceData'],
+        }),
+      ],
+    }
+  );
+  if (formGroup.value.resource) {
+    formGroup.addValidators(
+      mutuallyExclusive({
+        required: true,
+        fields: ['layout', 'aggregation'],
+      })
+    );
+  }
+  formGroup.controls.resource.valueChanges.subscribe((value) => {
+    if (value) {
+      formGroup.addValidators(
+        mutuallyExclusive({
+          required: true,
+          fields: ['layout', 'aggregation'],
+        })
+      );
+    } else {
+      formGroup.setValidators([
+        mutuallyExclusive({
+          required: true,
+          fields: ['resource', 'referenceData'],
+        }),
+      ]);
+    }
+    formGroup.updateValueAndValidity();
   });
+  return formGroup;
 };

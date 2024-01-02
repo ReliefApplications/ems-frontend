@@ -45,6 +45,7 @@ interface DialogData {
   styleUrls: ['./edit-calculated-field-modal.component.scss'],
 })
 export class EditCalculatedFieldModalComponent implements OnInit {
+  /** Form */
   public form = this.fb.group({
     name: [
       this.data.calculatedField?.name,
@@ -53,8 +54,10 @@ export class EditCalculatedFieldModalComponent implements OnInit {
     expression: [this.data.calculatedField?.expression, Validators.required],
     // TODO: Add display options
   });
+  /** Calculated field */
   public field!: any;
 
+  /** Resource fields */
   public resourceFields: any[] = [];
 
   /** tinymce editor */

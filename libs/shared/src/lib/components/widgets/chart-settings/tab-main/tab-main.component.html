@@ -31,13 +31,13 @@
   <div class="flex-1 flex-col">
     <!-- Reference data selection  -->
     <div uiFormFieldDirective class="flex-1" *ngIf="!formGroup.value.resource">
-      <label>{{ 'common.referenceData.one' | translate }}</label>
+      <label>{{ 'models.referenceData.select' | translate }}</label>
       <shared-reference-data-select
         formControlName="referenceData"
         [selectedElements]="[referenceData]"
       ></shared-reference-data-select>
       <ui-button
-        *ngIf="formGroup.value.resource"
+        *ngIf="formGroup.value.referenceData"
         uiSuffix
         size="small"
         [isIcon]="true"
