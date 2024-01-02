@@ -269,7 +269,7 @@ export class SummaryCardComponent
         distinctUntilChanged(),
         takeUntil(this.destroy$)
       )
-      .subscribe((value) => {
+      .subscribe((value: any) => {
         this.handleSearch(value || '');
       });
 
@@ -733,8 +733,8 @@ export class SummaryCardComponent
     );
     if (metaData.data.referenceData) {
       const fields = (metaData.data.referenceData.fields || [])
-        .filter((field) => field && typeof field !== 'string')
-        .map((field) => {
+        .filter((field: any) => field && typeof field !== 'string')
+        .map((field: any) => {
           return {
             label: field.name,
             name: field.name,
@@ -755,7 +755,7 @@ export class SummaryCardComponent
       const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );
-      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x: any) =>
         filterReferenceData(x.rawValue, contextFilters)
       );
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
