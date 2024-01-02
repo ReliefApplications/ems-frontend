@@ -184,13 +184,10 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   resolveSidenavClasses(index: number): string[] {
     const classes = [];
     if (this.position[index] === 'start') {
+      classes.push("data-[sidenav-show='false']:-translate-x-full");
+      classes.push("data-[sidenav-show='false']:w-0");
       classes.push('z-[1002]');
-      if (this.showSidenav[index]) {
-        classes.push('w-60');
-      } else {
-        classes.push('w-0');
-        classes.push('-translate-x-full');
-      }
+      classes.push('w-60');
       classes.push('border-r');
       classes.push('border-gray-200');
     }
