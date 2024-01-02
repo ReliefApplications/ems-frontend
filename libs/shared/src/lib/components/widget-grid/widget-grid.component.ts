@@ -125,7 +125,7 @@ export class WidgetGridComponent
       .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe(() => {
         this.colsNumber = this.setColsNumber(
-          this._host.nativeElement.innerWidth
+          this._host.nativeElement.clientWidth
         );
         this.setGridOptions();
       });
@@ -225,7 +225,7 @@ export class WidgetGridComponent
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
       setGridSize: true,
-      mobileBreakpoint: 640,
+      mobileBreakpoint: 0,
       disableWindowResize: true,
       keepFixedHeightInMobile: true,
       ...this.options,
