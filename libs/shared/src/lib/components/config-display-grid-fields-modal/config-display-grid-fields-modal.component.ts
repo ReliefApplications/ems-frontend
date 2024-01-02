@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   Inject,
   OnInit,
@@ -16,6 +17,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Interface that describes the structure of the data shown in the dialog
@@ -44,7 +47,10 @@ interface DialogData {
   templateUrl: './config-display-grid-fields-modal.component.html',
   styleUrls: ['./config-display-grid-fields-modal.component.css'],
 })
-export class ConfigDisplayGridFieldsModalComponent implements OnInit {
+export class ConfigDisplayGridFieldsModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Form for the query */
   public form: UntypedFormGroup = new UntypedFormGroup({});
   /** Loading state */
@@ -63,26 +69,36 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
-    private queryBuilder: QueryBuilderService
-  ) {}
+    private queryBuilder: QueryBuilderService,
+    private cdr: ChangeDetectorRef
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.queryBuilder.availableQueries$.subscribe((res) => {
-      if (res.length > 0) {
-        const hasDataForm = this.data.form !== null;
-        const queryName = hasDataForm
-          ? this.data.form.value.name
-          : this.queryBuilder.getQueryNameFromResourceName(
-              this.data.resourceName
-            );
-        this.form = createQueryForm({
-          name: queryName,
-          fields: hasDataForm ? this.data.form.value.fields : [],
-          sort: hasDataForm ? this.data.form.value.sort : {},
-          filter: hasDataForm ? this.data.form.value.filter : {},
-        });
-        this.loading = false;
-      }
-    });
+    this.queryBuilder.availableQueries$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.setUpDialogData(res);
+      });
+  }
+
+  private setUpDialogData(response: any) {
+    if (response.length > 0) {
+      const hasDataForm = this.data.form !== null;
+      const queryName = hasDataForm
+        ? this.data.form.value.name
+        : this.queryBuilder.getQueryNameFromResourceName(
+            this.data.resourceName
+          );
+      this.form = createQueryForm({
+        name: queryName,
+        fields: hasDataForm ? this.data.form.value.fields : [],
+        sort: hasDataForm ? this.data.form.value.sort : {},
+        filter: hasDataForm ? this.data.form.value.filter : {},
+      });
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
   }
 }

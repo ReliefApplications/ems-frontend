@@ -29,12 +29,13 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
       class="flex-col"
       category="secondary"
       (click)="openResourceFieldsModal()"
+      [loading]="loading"
     >
       {{
         'components.formBuilder.propertyGrid.resource.availableGridFields'
           | translate
-      }}</ui-button
-    >
+      }}
+    </ui-button>
   `,
 })
 export class ResourceAvailableFieldsComponent
@@ -43,6 +44,9 @@ export class ResourceAvailableFieldsComponent
 {
   /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
+
+  /** Loading state of resource for opening dialog */
+  public loading = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -68,6 +72,11 @@ export class ResourceAvailableFieldsComponent
    * Open a modal for the selected resource with all the available fields
    */
   openResourceFieldsModal() {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    this.changeDetectorRef.detectChanges();
     this.apollo
       .query<ResourceQueryResponse>({
         query: GET_SHORT_RESOURCE_BY_ID,
@@ -75,35 +84,41 @@ export class ResourceAvailableFieldsComponent
           id: this.model.obj.resource,
         },
       })
-      .subscribe(async ({ data }) => {
-        if (data.resource && data.resource.name) {
-          const nameTrimmed = data.resource.name
-            .replace(/\s/g, '')
-            .toLowerCase();
-          const { ConfigDisplayGridFieldsModalComponent } = await import(
-            '../../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
-          );
-          const dialogRef = this.dialog.open(
-            ConfigDisplayGridFieldsModalComponent,
-            {
-              data: {
-                form: !this.model.obj.gridFieldsSettings
-                  ? null
-                  : this.convertFromRawToFormGroup(
-                      this.model.obj.gridFieldsSettings
-                    ),
-                resourceName: nameTrimmed,
-              },
-            }
-          );
-          dialogRef.closed
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res: any) => {
-              if (res && res.value.fields) {
-                this.model.obj.gridFieldsSettings = res.getRawValue();
+      .subscribe({
+        next: async ({ data }) => {
+          this.loading = false;
+          if (data.resource && data.resource.name) {
+            const nameTrimmed = data.resource.name
+              .replace(/\s/g, '')
+              .toLowerCase();
+            const { ConfigDisplayGridFieldsModalComponent } = await import(
+              '../../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
+            );
+            const dialogRef = this.dialog.open(
+              ConfigDisplayGridFieldsModalComponent,
+              {
+                data: {
+                  form: !this.model.obj.gridFieldsSettings
+                    ? null
+                    : this.convertFromRawToFormGroup(
+                        this.model.obj.gridFieldsSettings
+                      ),
+                  resourceName: nameTrimmed,
+                },
               }
-            });
-        }
+            );
+            dialogRef.componentInstance?.ngOnInit();
+            this.changeDetectorRef.detectChanges();
+            dialogRef.closed
+              .pipe(takeUntil(this.destroy$))
+              .subscribe((res: any) => {
+                if (res && res.value.fields) {
+                  this.model.obj.gridFieldsSettings = res.getRawValue();
+                }
+              });
+          }
+        },
+        error: () => (this.loading = false),
       });
   }
 
