@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  NgZone,
   OnDestroy,
   ViewContainerRef,
 } from '@angular/core';
@@ -29,6 +30,7 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
       class="flex-col"
       category="secondary"
       (click)="openResourceFieldsModal()"
+      [loading]="loading"
     >
       {{
         'components.formBuilder.propertyGrid.resource.availableGridFields'
@@ -44,6 +46,9 @@ export class ResourceAvailableFieldsComponent
   /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
+  /** Loading state of resource for opening dialog */
+  public loading = false;
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
@@ -53,13 +58,15 @@ export class ResourceAvailableFieldsComponent
    * @param {UntypedFormBuilder} fb - Angular - Form builder utilities
    * @param {Dialog} dialog - Angular CDK - This is the Dialog service that is used to handle cdk dialogs
    * @param {Apollo} apollo - Apollo - This is the Apollo service that we'll use to make our GraphQL queries.
+   * @param {NgZone} ngZone - Angular - This is angular injectable service for executing work inside or outside of the Angular zone.
    */
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     viewContainerRef: ViewContainerRef,
     private fb: UntypedFormBuilder,
     private dialog: Dialog,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private ngZone: NgZone
   ) {
     super(changeDetectorRef, viewContainerRef);
   }
@@ -67,7 +74,14 @@ export class ResourceAvailableFieldsComponent
   /**
    * Open a modal for the selected resource with all the available fields
    */
-  openResourceFieldsModal() {
+  async openResourceFieldsModal() {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    const { ConfigDisplayGridFieldsModalComponent } = await import(
+      './config-display-grid-fields-modal/config-display-grid-fields-modal.component'
+    );
     this.apollo
       .query<ResourceQueryResponse>({
         query: GET_SHORT_RESOURCE_BY_ID,
@@ -75,35 +89,39 @@ export class ResourceAvailableFieldsComponent
           id: this.model.obj.resource,
         },
       })
-      .subscribe(async ({ data }) => {
-        if (data.resource && data.resource.name) {
-          const nameTrimmed = data.resource.name
-            .replace(/\s/g, '')
-            .toLowerCase();
-          const { ConfigDisplayGridFieldsModalComponent } = await import(
-            '../../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
-          );
-          const dialogRef = this.dialog.open(
-            ConfigDisplayGridFieldsModalComponent,
-            {
-              data: {
-                form: !this.model.obj.gridFieldsSettings
-                  ? null
-                  : this.convertFromRawToFormGroup(
-                      this.model.obj.gridFieldsSettings
-                    ),
-                resourceName: nameTrimmed,
-              },
-            }
-          );
-          dialogRef.closed
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res: any) => {
-              if (res && res.value.fields) {
-                this.model.obj.gridFieldsSettings = res.getRawValue();
-              }
+      .subscribe({
+        next: ({ data }) => {
+          this.loading = false;
+          if (data.resource && data.resource.name) {
+            const nameTrimmed = data.resource.name
+              .replace(/\s/g, '')
+              .toLowerCase();
+            // Run dialog opening inside the current angular zone in order to keep the change detection correctly synchronized
+            this.ngZone.run(() => {
+              const dialogRef = this.dialog.open(
+                ConfigDisplayGridFieldsModalComponent,
+                {
+                  data: {
+                    form: !this.model.obj.gridFieldsSettings
+                      ? null
+                      : this.convertFromRawToFormGroup(
+                          this.model.obj.gridFieldsSettings
+                        ),
+                    resourceName: nameTrimmed,
+                  },
+                }
+              );
+              dialogRef.closed
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((res: any) => {
+                  if (res && res.value.fields) {
+                    this.model.obj.gridFieldsSettings = res.getRawValue();
+                  }
+                });
             });
-        }
+          }
+        },
+        error: () => (this.loading = false),
       });
   }
 

@@ -6,16 +6,18 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { UntypedFormGroup } from '@angular/forms';
-import { createQueryForm } from '../query-builder/query-builder-forms';
 import { CommonModule } from '@angular/common';
 import { SpinnerModule } from '@oort-front/ui';
-import { QueryBuilderModule } from '../query-builder/query-builder.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { UnsubscribeComponent } from '../../../../components/utils/unsubscribe/unsubscribe.component';
+import { createQueryForm } from '../../../../components/query-builder/query-builder-forms';
+import { QueryBuilderModule } from '../../../../components/query-builder/query-builder.module';
 
 /**
  * Interface that describes the structure of the data shown in the dialog
@@ -26,7 +28,7 @@ interface DialogData {
 }
 
 /**
- * This component is used in the grids to display a modal to configurate the fields in the grid
+ * This component is used in the grids to display a modal to configure the fields in the grid
  */
 @Component({
   standalone: true,
@@ -42,9 +44,11 @@ interface DialogData {
   ],
   selector: 'shared-config-display-grid-fields-modal',
   templateUrl: './config-display-grid-fields-modal.component.html',
-  styleUrls: ['./config-display-grid-fields-modal.component.css'],
 })
-export class ConfigDisplayGridFieldsModalComponent implements OnInit {
+export class ConfigDisplayGridFieldsModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Form for the query */
   public form: UntypedFormGroup = new UntypedFormGroup({});
   /** Loading state */
@@ -64,25 +68,29 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
     private queryBuilder: QueryBuilderService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.queryBuilder.availableQueries$.subscribe((res) => {
-      if (res.length > 0) {
-        const hasDataForm = this.data.form !== null;
-        const queryName = hasDataForm
-          ? this.data.form.value.name
-          : this.queryBuilder.getQueryNameFromResourceName(
-              this.data.resourceName
-            );
-        this.form = createQueryForm({
-          name: queryName,
-          fields: hasDataForm ? this.data.form.value.fields : [],
-          sort: hasDataForm ? this.data.form.value.sort : {},
-          filter: hasDataForm ? this.data.form.value.filter : {},
-        });
-        this.loading = false;
-      }
-    });
+    this.queryBuilder.availableQueries$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res.length > 0) {
+          const hasDataForm = this.data.form !== null;
+          const queryName = hasDataForm
+            ? this.data.form.value.name
+            : this.queryBuilder.getQueryNameFromResourceName(
+                this.data.resourceName
+              );
+          this.form = createQueryForm({
+            name: queryName,
+            fields: hasDataForm ? this.data.form.value.fields : [],
+            sort: hasDataForm ? this.data.form.value.sort : {},
+            filter: hasDataForm ? this.data.form.value.filter : {},
+          });
+          this.loading = false;
+        }
+      });
   }
 }
