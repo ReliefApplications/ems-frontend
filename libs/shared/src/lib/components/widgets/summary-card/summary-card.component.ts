@@ -276,7 +276,9 @@ export class SummaryCardComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.refresh();
+        if (!(this.contextService.lastComponentEmitter === this)) {
+          this.refresh();
+        }
       });
   }
 

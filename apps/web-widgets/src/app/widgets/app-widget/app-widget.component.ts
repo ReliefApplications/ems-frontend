@@ -64,6 +64,7 @@ export class AppWidgetComponent
   /** Pass new value to the filter */
   @Input()
   set filter(value: any) {
+    this.contextService.lastComponentEmitter = null;
     this.contextService.filter.next(value);
   }
 
