@@ -53,6 +53,17 @@ export const init = (environment: any): void => {
     ],
   };
 
+  // When the VisibleIf property is cleared, sets the question to visible
+  serializer.getProperty('question', 'visibleIf').onSettingValue = (
+    question: Question,
+    newValue: string
+  ) => {
+    if (question.visibleIf && !newValue) {
+      question.setPropertyValue('visible', true);
+    }
+    return newValue;
+  };
+
   // Adds property that clears the value when condition is met
   serializer.addProperty('question', {
     name: 'clearIf:condition',
