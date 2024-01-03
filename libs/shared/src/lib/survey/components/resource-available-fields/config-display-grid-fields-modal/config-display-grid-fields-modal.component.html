@@ -9,9 +9,8 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <ng-container *ngIf="!loading; else loadingTmpl">
-      <div class="flex flex-col">
+      <div *ngIf="form.value.name" class="flex flex-col">
         <shared-query-builder
-          *ngIf="form.value.name"
           [form]="$any(form)"
           [canSelectDataSet]="false"
         ></shared-query-builder>
