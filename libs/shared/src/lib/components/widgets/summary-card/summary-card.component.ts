@@ -422,18 +422,16 @@ export class SummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     } else if (this.useLayout) {
       this.loading = true;
-      this.dataQuery
-        ?.refetch({
-          skip: 0,
-          first: this.pageInfo.pageSize,
-          filter: this.queryFilter,
-          sortField: this.sortOptions.field,
-          sortOrder: this.sortOptions.order,
-          ...(this.settings.at && {
-            at: this.contextService.atArgumentValue(this.settings.at),
-          }),
-        })
-        .then(this.updateCards.bind(this));
+      this.dataQuery?.refetch({
+        skip: 0,
+        first: this.pageInfo.pageSize,
+        filter: this.queryFilter,
+        sortField: this.sortOptions.field,
+        sortOrder: this.sortOptions.order,
+        ...(this.settings.at && {
+          at: this.contextService.atArgumentValue(this.settings.at),
+        }),
+      });
     } else if (this.useReferenceData) {
       const contextFilters = this.contextService.injectContext(
         this.contextFilters
@@ -494,7 +492,8 @@ export class SummaryCardComponent
 
     if (
       !this.settings.widgetDisplay?.usePagination &&
-      !this.triggerRefreshCardList
+      !this.triggerRefreshCardList &&
+      !this.loading // avoid conflict with searchbar (data duplication)
     ) {
       this.cards = [...this.cards, ...newCards];
     } else {
@@ -815,19 +814,17 @@ export class SummaryCardComponent
     if (this.dataQuery) {
       this.loading = true;
       const layoutQuery = this.layout?.query;
-      this.dataQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          skip: event.skip,
-          filter: this.queryFilter,
-          sortField: this.sortOptions.field,
-          sortOrder: this.sortOptions.order,
-          styles: layoutQuery?.style || null,
-          ...(this.settings.at && {
-            at: this.contextService.atArgumentValue(this.settings.at),
-          }),
-        })
-        .then(this.updateCards.bind(this));
+      this.dataQuery.refetch({
+        first: this.pageInfo.pageSize,
+        skip: event.skip,
+        filter: this.queryFilter,
+        sortField: this.sortOptions.field,
+        sortOrder: this.sortOptions.order,
+        styles: layoutQuery?.style || null,
+        ...(this.settings.at && {
+          at: this.contextService.atArgumentValue(this.settings.at),
+        }),
+      });
     } else if (this.useReferenceData) {
       this.cards = this.sortedCachedCards.slice(
         this.pageInfo.skip,
@@ -862,6 +859,7 @@ export class SummaryCardComponent
         });
       }
     }
+    this.triggerRefreshCardList = true;
     this.onPage({
       pageSize: DEFAULT_PAGE_SIZE,
       skip: 0,
