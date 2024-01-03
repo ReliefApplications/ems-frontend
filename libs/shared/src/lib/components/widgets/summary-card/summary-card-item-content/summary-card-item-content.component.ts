@@ -134,7 +134,7 @@ export class SummaryCardItemContentComponent
           [filterField]: cleanFilterValue,
         }),
       };
-      this.contextService.lastComponentEmitter = this.parent.parent;
+      this.contextService.lastComponentEmitter = this.parent?.parent;
       this.contextService.filter.next(updatedFilters);
     } else {
       const content = this.htmlContentComponent.el.nativeElement;
