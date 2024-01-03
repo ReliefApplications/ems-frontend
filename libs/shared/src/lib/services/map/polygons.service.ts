@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { set } from 'lodash';
-import { parse } from 'wellknown';
-
-/** Admin 0 available identifiers */
-type Admin0Identifier = 'iso2code' | 'iso3code' | 'id';
+import { RestService } from '../rest/rest.service';
+import { lastValueFrom, catchError, of } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
+import { omitBy, isNil } from 'lodash';
 
 /**
  * Shared polygons service
@@ -13,26 +11,50 @@ type Admin0Identifier = 'iso2code' | 'iso3code' | 'id';
   providedIn: 'root',
 })
 export class PolygonsService {
-  private admin0Polygons: any;
+  /** admin0Polygons */
+  private _admin0Polygons: any = null;
 
-  constructor(private http: HttpClient) {}
-
-  async fetchAdmin0Data(): Promise<void> {
-    this.admin0Polygons = [];
+  /**
+   * get admin0Polygons
+   *
+   * @returns admin0Polygons
+   */
+  get admin0Polygons(): any {
+    return this._admin0Polygons;
   }
 
-  getAdmin0Polygons(identifier: Admin0Identifier = 'iso3code'): any {
-    const mapping = {};
-    for (const country of this.admin0Polygons) {
-      if (country.polygons && country[identifier]) {
-        // Assuming 'set' and 'parse' functions are defined elsewhere
-        set(
-          mapping,
-          country[identifier].toLowerCase(),
-          parse(country.polygons)
-        );
-      }
-    }
-    return mapping;
+  /**
+   * set admin0Polygons
+   *
+   */
+  set admin0Polygons(value: any) {
+    this._admin0Polygons = value;
+  }
+
+  /**
+   * Class constructor
+   *
+   * @param restService RestService
+   */
+  constructor(private restService: RestService) {}
+
+  /**
+   * fetch admin0 polygons
+   *
+   * @param apiUrl api url
+   * @param adminField admin field
+   */
+  async fetchAdmin0Polygons(apiUrl: string, adminField: string) {
+    const params = new HttpParams({
+      fromObject: omitBy(
+        {
+          adminField: adminField,
+        },
+        isNil
+      ),
+    });
+    this.admin0Polygons = await lastValueFrom(
+      this.restService.get(apiUrl, { params }).pipe(catchError(() => of(null)))
+    );
   }
 }

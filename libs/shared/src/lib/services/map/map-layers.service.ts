@@ -32,6 +32,7 @@ import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { PolygonsService } from './polygons.service';
 
 /**
  * Shared map layer service
@@ -48,6 +49,7 @@ export class MapLayersService {
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
+   * @param polygonService Polygon service
    * @param document document
    */
   constructor(
@@ -56,6 +58,7 @@ export class MapLayersService {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
     private contextService: ContextService,
+    private polygonService: PolygonsService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -391,6 +394,20 @@ export class MapLayersService {
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)
       : undefined;
+
+    let adminPolygons = undefined;
+    if (layer.datasource?.adminField) {
+      if (this.polygonService.admin0Polygons) {
+        adminPolygons = this.polygonService.admin0Polygons;
+      } else {
+        await this.polygonService.fetchAdmin0Polygons(
+          `${this.restService.apiUrl}/gis/admin0Polygons`,
+          layer.datasource.adminField
+        );
+        adminPolygons = this.polygonService.admin0Polygons;
+      }
+    }
+
     const params = new HttpParams({
       fromObject: omitBy(
         {
@@ -402,7 +419,10 @@ export class MapLayersService {
         },
         isNil
       ),
-    });
+    }).set('adminPolygons', JSON.stringify(adminPolygons));
+
+    console.log("params = ", params);
+
     return lastValueFrom(
       this.restService
         .get(`${this.restService.apiUrl}/gis/feature`, { params })
