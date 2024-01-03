@@ -311,6 +311,7 @@ export class DashboardFilterComponent
         };
         return acc;
       }, {});
+    this.contextService.lastComponentEmitter = null;
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
       this.quickFilters = displayValues

@@ -131,9 +131,11 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.refresh$.next(true);
-        this.loading = true;
-        this.setHtml();
+        if (!(this.contextService.lastComponentEmitter === this)) {
+          this.refresh$.next(true);
+          this.loading = true;
+          this.setHtml();
+        }
       });
   }
 
@@ -304,6 +306,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           [filterField]: cleanFilterValue,
         }),
       };
+      this.contextService.lastComponentEmitter = this;
       this.contextService.filter.next(updatedFilters);
     } else {
       const content = this.htmlContentComponent.el.nativeElement;
