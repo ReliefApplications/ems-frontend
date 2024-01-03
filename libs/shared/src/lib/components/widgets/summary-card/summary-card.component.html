@@ -57,6 +57,7 @@
         class="flex-1 h-full w-full"
         [settings]="gridSettings"
         [widget]="widget"
+        (inlineEdition)="refreshCardList()"
       ></shared-grid-widget>
     </div>
   </ng-container>

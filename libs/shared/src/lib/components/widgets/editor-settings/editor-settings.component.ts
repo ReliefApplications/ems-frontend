@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { EditorService } from '../../../services/editor/editor.service';
@@ -25,6 +26,7 @@ import {
 } from '../../../models/reference-data.model';
 import { createEditorForm } from './editor-settings.forms';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { WidgetService } from '../../../services/widget/widget.service';
 
 // export type EditorFormType = ReturnType<typeof createEditorForm>;
 
@@ -38,7 +40,11 @@ import { WidgetSettings } from '../../../models/dashboard.model';
 })
 export class EditorSettingsComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit, WidgetSettings<typeof createEditorForm>
+  implements
+    OnInit,
+    AfterViewInit,
+    OnDestroy,
+    WidgetSettings<typeof createEditorForm>
 {
   /** Widget configuration */
   @Input() widget: any;
@@ -57,6 +63,8 @@ export class EditorSettingsComponent
   public layout: Layout | null = null;
   /** Loading indicator */
   public loading = true;
+  /** Html element containing widget custom style */
+  private customStyle?: HTMLStyleElement;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -64,11 +72,13 @@ export class EditorSettingsComponent
    * @param editorService Editor service used to get main URL and current language
    * @param apollo Apollo service
    * @param dataTemplateService Shared data template service
+   * @param widgetService Shared widget service
    */
   constructor(
     private editorService: EditorService,
     private apollo: Apollo,
-    private dataTemplateService: DataTemplateService
+    private dataTemplateService: DataTemplateService,
+    private widgetService: WidgetService
   ) {
     super();
     // Set the editor base url based on the environment file
@@ -79,6 +89,15 @@ export class EditorSettingsComponent
   }
 
   ngOnInit(): void {
+    // Initialize style
+    this.widgetService
+      .createCustomStyle('widgetPreview', this.widget)
+      .then((customStyle) => {
+        if (customStyle) {
+          this.customStyle = customStyle;
+        }
+      });
+    // Build settings
     if (!this.widgetFormGroup) {
       this.buildSettingsForm();
     }
@@ -147,6 +166,13 @@ export class EditorSettingsComponent
         this.widget.settings.aggregations = aggregations;
         this.updateFields();
       });
+  }
+
+  override ngOnDestroy(): void {
+    // Remove the custom style when the component is destroyed
+    if (this.customStyle) {
+      this.customStyle.remove();
+    }
   }
 
   /**

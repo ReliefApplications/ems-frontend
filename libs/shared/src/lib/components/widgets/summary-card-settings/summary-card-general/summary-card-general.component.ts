@@ -143,6 +143,9 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
    * Adds a new aggregation for the resource.
    */
   async addAggregation(): Promise<void> {
+    if (!this.resource) {
+      return;
+    }
     const { AddAggregationModalComponent } = await import(
       '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
     );
