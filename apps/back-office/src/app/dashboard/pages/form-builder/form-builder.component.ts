@@ -19,6 +19,7 @@ import {
   EditFormMutationResponse,
   SnackbarSpinnerComponent,
 } from '@oort-front/shared';
+
 import { SpinnerComponent } from '@oort-front/ui';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -29,6 +30,7 @@ import { isEqual } from 'lodash';
 import { GraphQLError } from 'graphql';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { QueryBuilderService } from '@oort-front/shared';
 
 /** Default snackbar config for after request complete  */
 const REQUEST_SNACKBAR_CONF = {
@@ -90,6 +92,7 @@ export class FormBuilderComponent implements OnInit {
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
    * @param overlay Angular overlay service
+   * @param queryBuilder Query builder service
    */
   constructor(
     private apollo: Apollo,
@@ -101,7 +104,8 @@ export class FormBuilderComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private breadcrumbService: BreadcrumbService,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   /**
@@ -308,9 +312,38 @@ export class FormBuilderComponent implements OnInit {
             loadingSnackbarRef.instance.dismiss();
             this.snackBar.openSnackBar(err.message, { error: true });
           },
-          complete: () => {
+          complete: async () => {
             // Detach the current set overlay
             overlayRef.detach();
+
+            let connected = false;
+
+            // Subscribe to the isDoneLoading$ observable to get the current state of
+            // the backend connection after reloading the query types
+            await this.queryBuilder.isDoneLoading$.subscribe(
+              async (isDoneLoading) => {
+                connected = isDoneLoading;
+              }
+            );
+
+            // Wait for 3 seconds to start reloading the query types
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+
+            // Reload the query types
+            this.queryBuilder.reloadQueryTypes.next(null);
+
+            // Set the isDoneLoading to false to wait for the backend connection
+            this.queryBuilder.isDoneLoading.next(false);
+
+            // Wait for backend connection to be established
+            const waitForBackendConnection = async (): Promise<void> => {
+              while (!connected) {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+              }
+            };
+
+            // Start waiting for backend connection
+            await waitForBackendConnection();
           },
         });
     }

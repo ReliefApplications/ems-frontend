@@ -107,9 +107,12 @@ export class QueryBuilderService {
   }
 
   /** Loading indicator that asserts whether available queries are done loading */
-  private isDoneLoading = new ReplaySubject<boolean>();
+  public isDoneLoading = new ReplaySubject<boolean>();
   /** Loading indicator as observable */
   public isDoneLoading$ = this.isDoneLoading.asObservable();
+
+  /** Reload indicator for query types */
+  public reloadQueryTypes = new BehaviorSubject<any>(null);
 
   /** User fields */
   private userFields = [];
@@ -122,22 +125,37 @@ export class QueryBuilderService {
    */
   constructor(private apollo: Apollo) {
     this.isDoneLoading.next(false);
+    this.fetchTypes();
+    this.reloadQueryTypes.subscribe(() => {
+      this.fetchTypes();
+    });
+  }
+
+  /**
+   * Fetches the types from the schema.
+   */
+  private async fetchTypes() {
     this.apollo
       .query<QueryTypes>({
         query: GET_QUERY_TYPES,
       })
-      .subscribe(({ data }) => {
-        this.isDoneLoading.next(true);
-        this.availableTypes.next(data.__schema.types);
-        this.availableQueries.next(
-          data.__schema.queryType.fields.filter(
-            (x: any) =>
-              x.name.startsWith('all') || x.name.endsWith(REFERENCE_DATA_END)
-          )
-        );
-        this.userFields = data.__schema.types
-          .find((x: any) => x.name === 'User')
-          .fields.filter((x: any) => USER_FIELDS.includes(x.name));
+      .subscribe({
+        next: ({ data }) => {
+          this.isDoneLoading.next(true);
+          this.availableTypes.next(data.__schema.types);
+          this.availableQueries.next(
+            data.__schema.queryType.fields.filter(
+              (x: any) =>
+                x.name.startsWith('all') || x.name.endsWith(REFERENCE_DATA_END)
+            )
+          );
+          this.userFields = data.__schema.types
+            .find((x: any) => x.name === 'User')
+            .fields.filter((x: any) => USER_FIELDS.includes(x.name));
+        },
+        error: () => {
+          this.isDoneLoading.next(false);
+        },
       });
   }
 
