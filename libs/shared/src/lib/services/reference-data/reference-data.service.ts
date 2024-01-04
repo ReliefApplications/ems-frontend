@@ -152,9 +152,13 @@ export class ReferenceDataService {
    * Get the items and the value field of a reference data
    *
    * @param referenceDataID The reference data id
+   * @param includeReferenceDataObj Boolean flag to return or not reference data obj with items
    * @returns The item list and the value field
    */
-  public async cacheItems(referenceDataID: string): Promise<any> {
+  public async cacheItems(
+    referenceDataID: string,
+    includeReferenceDataObj = false
+  ): Promise<any> {
     // Initialization
     let items: any;
     const referenceData = await this.loadReferenceData(referenceDataID);
@@ -213,7 +217,7 @@ export class ReferenceDataService {
         }
       }
     }
-    return items;
+    return includeReferenceDataObj ? { items, referenceData } : items;
   }
 
   /**
