@@ -588,7 +588,8 @@ export const init = (
           false,
           dialog,
           temporaryRecordsForm,
-          document
+          document,
+          ngZone
         );
         actionsButtons.appendChild(searchBtn);
 
