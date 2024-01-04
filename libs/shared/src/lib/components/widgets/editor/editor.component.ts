@@ -124,13 +124,18 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.setHtml();
 
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.refresh$.next(true);
-        this.loading = true;
-        this.setHtml();
-      });
+    const allContextFilters = this.aggregations
+      .map((aggregation: any) => aggregation.contextFilters)
+      .join('');
+    if (this.contextService.filterRegex.test(allContextFilters)) {
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.refresh$.next(true);
+          this.loading = true;
+          this.setHtml();
+        });
+    }
   }
 
   /**

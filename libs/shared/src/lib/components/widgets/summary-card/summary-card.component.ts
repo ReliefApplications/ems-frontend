@@ -272,11 +272,15 @@ export class SummaryCardComponent
         this.handleSearch(value || '');
       });
 
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.refresh();
-      });
+    if (
+      this.contextService.filterRegex.test(this.widget.settings.contextFilters)
+    ) {
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.refresh();
+        });
+    }
   }
 
   ngAfterViewInit(): void {

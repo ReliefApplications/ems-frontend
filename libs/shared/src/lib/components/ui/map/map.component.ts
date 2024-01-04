@@ -225,6 +225,29 @@ export class MapComponent
       });
       //}
     }, 1000);
+  }
+
+  private initFilters() {
+    const allContextFilters = this.layers
+      .map((layer: any) => JSON.stringify(layer.filter))
+      .join('');
+
+    // Listen to dashboard filters changes
+    if (this.contextService.filterRegex.test(allContextFilters)) {
+      this.contextService.filter$
+        .pipe(
+          debounceTime(500),
+          filter(() => {
+            const filters = this.contextService.filter.getValue();
+            return !isEqual(filters, this.appliedDashboardFilters);
+          }),
+          concatMap(() => loadNextFilters()),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          this.filterLayers();
+        });
+    }
 
     /**
      * Keep checking until filters are applied in order to apply next one
@@ -249,21 +272,6 @@ export class MapComponent
       };
       return new Promise(checkAgain);
     };
-
-    // Listen to dashboard filters changes
-    this.contextService.filter$
-      .pipe(
-        debounceTime(500),
-        filter(() => {
-          const filters = this.contextService.filter.getValue();
-          return !isEqual(filters, this.appliedDashboardFilters);
-        }),
-        concatMap(() => loadNextFilters()),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.filterLayers();
-      });
   }
 
   override ngOnDestroy(): void {
@@ -553,6 +561,7 @@ export class MapComponent
             this.layerControlButtons.remove();
           }
         }
+        this.initFilters();
       });
     } else {
       // No update on the layers, we only update the controls
