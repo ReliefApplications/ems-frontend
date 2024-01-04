@@ -77,7 +77,6 @@ export class TabDisplayComponent
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value) => {
         this.chartSettings = value;
-        this.chartSettings.chart.title.font = this.getFont();
       });
   }
 
@@ -151,17 +150,7 @@ export class TabDisplayComponent
   onToggleStyle(controlName: string): void {
     const control = this.chartForm.get(controlName);
     control?.setValue(!control.value);
-    const font = this.getFont();
-    const font_control = this.chartForm.get('title.font');
-    font_control?.setValue(font);
-  }
 
-  /**
-   * Get correct font based on form
-   *
-   * @returns font as a string
-   */
-  getFont(): string {
     let font = '';
     if (this.chartForm.get('title.bold')?.value) {
       font = font + 'bold ';
@@ -174,6 +163,8 @@ export class TabDisplayComponent
     if (this.chartForm.get('title.underline')?.value) {
       font = font + '; text-decoration: underline;';
     }
-    return font;
+
+    const font_control = this.chartForm.get('title.font');
+    font_control?.setValue(font);
   }
 }
