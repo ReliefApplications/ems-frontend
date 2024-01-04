@@ -58,7 +58,6 @@
         class="flex flex-col gap-8"
         *ngIf="resource && !layout && !aggregation"
       >
-        <h2>{{ 'common.layout.one' | translate }}</h2>
         <div class="flex justify-center mt-4">
           <ui-button
             category="tertiary"
@@ -78,7 +77,6 @@
         class="flex flex-col gap-8"
         *ngIf="(resource || referenceData) && !layout && !aggregation"
       >
-        <h2>{{ 'common.aggregation.one' | translate }}</h2>
         <div class="flex justify-center mt-4">
           <ui-button
             category="tertiary"
@@ -145,98 +143,98 @@
         ></ui-button>
       </div>
 
-      <!-- If there is no field -->
+      <!-- Field mapping -->
       <ng-container
         *ngIf="
-          (formGroup.get('latitudeField')?.enabled ||
-            formGroup.get('geoField')?.enabled) &&
-          (fields$ | async)?.length === 0
-        "
-        ><ui-alert variant="warning">{{
-          'pages.referenceData.fields.noFields' | translate
-        }}</ui-alert></ng-container
-      >
-
-      <!-- Fields selection -->
-      <ng-container
-        *ngIf="
-          formGroup.get('geoField')?.enabled && (fields$ | async)?.length! > 0
+          formGroup.get('latitudeField')?.enabled ||
+          formGroup.get('geoField')?.enabled
         "
       >
-        <!-- Geo field -->
-        <div class="flex flex-row justify-between gap-2 flex-wrap">
-          <ng-container
-            *ngTemplateOutlet="
-              fieldSelector;
-              context: {
-                formControlName: 'geoField',
-                title:
-                  'components.widget.settings.map.layers.dataSource.geoField'
-              }
-            "
-          ></ng-container>
-          <div uiFormFieldDirective class="flex-1">
-            <label>{{ 'common.adminField' | translate }}</label>
-            <ui-select-menu formControlName="adminField">
-              <ui-select-option
-                *ngFor="let field of adminFields"
-                [isGroup]="true"
-                >{{ field.name }}
-                <ui-select-option
-                  *ngFor="let subField of field.fields"
-                  [value]="subField.value"
-                >
-                  {{ subField.name }}
-                </ui-select-option>
-              </ui-select-option>
-            </ui-select-menu>
-            <ui-button
-              *ngIf="formGroup.get('adminField')?.value"
-              uiSuffix
-              [isIcon]="true"
-              icon="close"
-              variant="danger"
-              (click)="
-                formGroup.get('adminField')?.setValue(null);
-                $event.stopPropagation()
+        <h3>
+          {{
+            'components.widget.settings.map.layers.dataSource.fieldMapping'
+              | translate
+          }}
+        </h3>
+        <ui-alert
+          *ngIf="(fields$ | async)?.length === 0; else fieldMappingTmpl"
+          variant="warning"
+          >{{ 'pages.referenceData.fields.noFields' | translate }}</ui-alert
+        >
+        <ng-template #fieldMappingTmpl>
+          <!-- Geo field -->
+          <div
+            *ngIf="formGroup.get('geoField')?.enabled"
+            class="flex flex-row justify-between gap-2 flex-wrap"
+          >
+            <ng-container
+              *ngTemplateOutlet="
+                fieldSelector;
+                context: {
+                  formControlName: 'geoField',
+                  title:
+                    'components.widget.settings.map.layers.dataSource.geoField'
+                }
               "
-              [uiTooltip]="'common.remove' | translate"
-            ></ui-button>
+            ></ng-container>
+            <div uiFormFieldDirective class="flex-1">
+              <label>{{ 'common.adminField' | translate }}</label>
+              <ui-select-menu formControlName="adminField">
+                <ui-select-option
+                  *ngFor="let field of adminFields"
+                  [isGroup]="true"
+                  >{{ field.name }}
+                  <ui-select-option
+                    *ngFor="let subField of field.fields"
+                    [value]="subField.value"
+                  >
+                    {{ subField.name }}
+                  </ui-select-option>
+                </ui-select-option>
+              </ui-select-menu>
+              <ui-button
+                *ngIf="formGroup.get('adminField')?.value"
+                uiSuffix
+                [isIcon]="true"
+                icon="close"
+                variant="danger"
+                (click)="
+                  formGroup.get('adminField')?.setValue(null);
+                  $event.stopPropagation()
+                "
+                [uiTooltip]="'common.remove' | translate"
+              ></ui-button>
+            </div>
           </div>
-        </div>
-      </ng-container>
-
-      <ng-container
-        *ngIf="
-          formGroup.get('latitudeField')?.enabled &&
-          (fields$ | async)?.length! > 0
-        "
-      >
-        <!-- Latitude & Longitude fields -->
-        <div class="flex flex-row justify-between gap-2 flex-wrap">
-          <!-- Latitude Field -->
-          <ng-container
-            *ngTemplateOutlet="
-              fieldSelector;
-              context: {
-                formControlName: 'latitudeField',
-                title:
-                  'components.widget.settings.map.layers.dataSource.latitude'
-              }
-            "
-          ></ng-container>
-          <!-- Longitude Field -->
-          <ng-container
-            *ngTemplateOutlet="
-              fieldSelector;
-              context: {
-                formControlName: 'longitudeField',
-                title:
-                  'components.widget.settings.map.layers.dataSource.longitude'
-              }
-            "
-          ></ng-container>
-        </div>
+          <!-- Latitude & Longitude fields -->
+          <div
+            *ngIf="formGroup.get('latitudeField')?.enabled"
+            class="flex flex-row justify-between gap-2 flex-wrap"
+          >
+            <!-- Latitude Field -->
+            <ng-container
+              *ngTemplateOutlet="
+                fieldSelector;
+                context: {
+                  formControlName: 'latitudeField',
+                  title:
+                    'components.widget.settings.map.layers.dataSource.latitude'
+                }
+              "
+            ></ng-container>
+            <!-- Longitude Field -->
+            <ng-container
+              *ngTemplateOutlet="
+                fieldSelector;
+                context: {
+                  formControlName: 'longitudeField',
+                  title:
+                    'components.widget.settings.map.layers.dataSource.longitude'
+                }
+              "
+            ></ng-container>
+          </div>
+        </ng-template>
       </ng-container>
 
       <!-- Layer type -->

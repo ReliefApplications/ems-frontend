@@ -1685,6 +1685,7 @@
 						"createGroup": "Créer un nouveau groupe de couches",
 						"createLayer": "Créer un nouveau calque",
 						"dataSource": {
+							"fieldMapping": "Mapping des Champs",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"

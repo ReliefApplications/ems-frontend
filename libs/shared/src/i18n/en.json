@@ -1672,6 +1672,7 @@
 						"createGroup": "Create a new group layer",
 						"createLayer": "Create a new layer",
 						"dataSource": {
+							"fieldMapping": "Field Mapping",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"
