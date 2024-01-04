@@ -215,7 +215,10 @@
 			"rawJson": "JSON brut"
 		},
 		"label": "Etiquette",
-		"layers": "Couches",
+		"layers": {
+			"few": "Couches",
+			"none": "Pas de couche"
+		},
 		"layout": {
 			"few": "Mises en page",
 			"none": "Aucune mise en page",

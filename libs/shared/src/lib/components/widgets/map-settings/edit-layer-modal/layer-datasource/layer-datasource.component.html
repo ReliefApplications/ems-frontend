@@ -145,6 +145,18 @@
         ></ui-button>
       </div>
 
+      <!-- If there is no field -->
+      <ng-container
+        *ngIf="
+          (formGroup.get('latitudeField')?.enabled ||
+            formGroup.get('geoField')?.enabled) &&
+          (fields$ | async)?.length === 0
+        "
+        ><ui-alert variant="warning">{{
+          'pages.referenceData.fields.noFields' | translate
+        }}</ui-alert></ng-container
+      >
+
       <!-- Fields selection -->
       <ng-container
         *ngIf="

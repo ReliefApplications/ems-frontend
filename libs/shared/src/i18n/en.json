@@ -215,7 +215,10 @@
 			"rawJson": "Raw JSON"
 		},
 		"label": "Label",
-		"layers": "Layers",
+		"layers": {
+			"few": "Layers",
+			"none": "No layer"
+		},
 		"layout": {
 			"few": "Layouts",
 			"none": "No layout",
