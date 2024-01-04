@@ -25,6 +25,7 @@ export const buildSearchButton = (
   document: Document
 ): any => {
   const searchButton = document.createElement('button');
+  searchButton.id = 'resourceSearchButton';
   searchButton.innerText = surveyLocalization.getString(
     'oort:search',
     (question.survey as SurveyModel).locale
@@ -67,7 +68,7 @@ export const buildSearchButton = (
     };
   }
   searchButton.style.display =
-    !question.isReadOnly && question.canSearch ? '' : 'none';
+    !question.isReadOnly && question.canSearch ? 'block' : 'none';
   return searchButton;
 };
 
@@ -238,3 +239,18 @@ export const processNewCreatedRecords = (
   };
   return settings;
 };
+
+/******** SHARED METHODS FOR RESOURCE AND RESOURCES *********/
+
+/**
+ * Build up an element wrapper for questions actions buttons
+ *
+ * @returns Element wrapper containing the actions buttons
+ */
+export function setUpActionsButtonWrapper() {
+  const actionsButtons = document.createElement('div');
+  actionsButtons.id = 'actionsButtons';
+  actionsButtons.style.display = 'flex';
+  actionsButtons.style.marginBottom = '0.5em';
+  return actionsButtons;
+}

@@ -18,6 +18,7 @@ import {
   buildSearchButton,
   buildAddButton,
   processNewCreatedRecords,
+  setUpActionsButtonWrapper,
 } from './utils';
 import get from 'lodash/get';
 import { Question as SharedQuestion, QuestionResource } from '../types';
@@ -564,6 +565,18 @@ export const init = (
     },
     // Display of add button for resource question
     onAfterRender: (question: QuestionResource, el: HTMLElement): void => {
+      const actionsButtons = setUpActionsButtonWrapper();
+      const parentElement = el.querySelector('.sd-question__content');
+      const searchBtn = buildSearchButton(
+        question,
+        question.gridFieldsSettings,
+        false,
+        dialog,
+        temporaryRecordsForm,
+        document
+      );
+      // Hide search button by default
+      searchBtn.style.display = 'none';
       // support the placeholder field
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = get(
@@ -576,22 +589,7 @@ export const init = (
         (question.survey as SurveyModel).mode !== 'display' &&
         question.resource
       ) {
-        el.parentElement?.querySelector('#actionsButtons')?.remove();
-        const actionsButtons = document.createElement('div');
-        actionsButtons.id = 'actionsButtons';
-        actionsButtons.style.display = 'flex';
-        actionsButtons.style.marginBottom = '0.5em';
-
-        const searchBtn = buildSearchButton(
-          question,
-          question.gridFieldsSettings,
-          false,
-          dialog,
-          temporaryRecordsForm,
-          document
-        );
-        actionsButtons.appendChild(searchBtn);
-
+        searchBtn.style.display = 'block';
         const addBtn = buildAddButton(
           question,
           false,
@@ -601,30 +599,18 @@ export const init = (
         );
         actionsButtons.appendChild(addBtn);
 
-        const parentElement = el.querySelector('.sd-question__content');
-        if (parentElement) {
-          parentElement.insertBefore(actionsButtons, parentElement.firstChild);
-        }
-
         // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
-
-        question.registerFunctionOnPropertyValueChanged(
-          'gridFieldsSettings',
-          () => {
-            searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
-          }
-        );
         question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-          searchBtn.style.display = question.canSearch ? '' : 'none';
+          searchBtn.style.display = question.canSearch ? 'block' : 'none';
         });
         question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
           addBtn.style.display =
-            question.addRecord && question.addTemplate ? '' : 'none';
+            question.addRecord && question.addTemplate ? 'block' : 'none';
         });
         question.registerFunctionOnPropertyValueChanged('addRecord', () => {
           addBtn.style.display =
             question.addRecord && question.addTemplate && !question.isReadOnly
-              ? ''
+              ? 'block'
               : 'none';
         });
 
@@ -635,6 +621,15 @@ export const init = (
           addRecordToSurveyContext(options.question, options.value);
         });
       }
+      actionsButtons.appendChild(searchBtn);
+      if (parentElement) {
+        parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+      }
+      question.registerFunctionOnPropertyValueChanged('resource', () => {
+        if (question.resource && question.canSearch) {
+          searchBtn.style.display = 'block';
+        }
+      });
     },
   };
   componentCollectionInstance.add(component);
