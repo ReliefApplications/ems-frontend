@@ -23,11 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import {
-  ReferenceData,
-  ReferenceDataQueryResponse,
-} from '../../../models/reference-data.model';
-import { GET_REFERENCE_DATA } from './graphql/queries';
+import { ReferenceData } from '../../../models/reference-data.model';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ContextService } from '../../../services/context/context.service';
@@ -174,24 +170,31 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       from(
         Promise.all([
           new Promise<void>((resolve) => {
-            this.getReferenceData()
-              .then(() => {
-                this.referenceDataService
-                  .cacheItems(this.settings.referenceData)
-                  .then((value) => {
-                    if (value) {
-                      const field = this.referenceData?.valueField;
-                      const selectedItemKey = String(this.settings.element);
-                      if (field) {
-                        this.fieldsValue = value.find(
-                          (x: any) => String(get(x, field)) === selectedItemKey
-                        );
-                      }
-                    }
-                  })
-                  .finally(() => resolve());
+            this.referenceDataService
+              .cacheItems(this.settings.referenceData, true)
+              .then(({ items, referenceData }) => {
+                this.referenceData = referenceData;
+                this.fields = (referenceData.fields || [])
+                  .filter((field: any) => field && typeof field !== 'string')
+                  .map((field: any) => {
+                    return {
+                      label: field.name,
+                      name: field.name,
+                      type: field.type,
+                    };
+                  });
+                if (items) {
+                  const field = this.referenceData?.valueField;
+                  const selectedItemKey = String(this.settings.element);
+                  if (field) {
+                    this.fieldsValue = items.find(
+                      (x: any) => String(get(x, field)) === selectedItemKey
+                    );
+                  }
+                }
               })
-              .catch(() => resolve());
+              .catch(() => resolve())
+              .finally(() => resolve());
           }),
           this.getAggregationsData(),
         ])
@@ -358,33 +361,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     }
-  }
-
-  /**
-   * Get reference data.
-   */
-  private async getReferenceData() {
-    this.apollo
-      .query<ReferenceDataQueryResponse>({
-        query: GET_REFERENCE_DATA,
-        variables: {
-          id: this.settings.referenceData,
-        },
-      })
-      .subscribe(({ data }) => {
-        if (data.referenceData) {
-          this.referenceData = data.referenceData;
-          this.fields = (data.referenceData.fields || [])
-            .filter((field) => field && typeof field !== 'string')
-            .map((field) => {
-              return {
-                label: field.name,
-                name: field.name,
-                type: field.type,
-              };
-            });
-        }
-      });
   }
 
   /** Sets layout */
