@@ -79,14 +79,13 @@ export class RecordHistoryComponent
   /** Displayed columns array */
   public displayedColumns: string[] = ['position'];
   /** Form group for date filters */
-  public filtersDate = new FormGroup({
+  public filters = new FormGroup({
     startDate: new FormControl(''),
     endDate: new FormControl(''),
+    fields: new FormControl([]),
   });
   /** Sorted fields */
   public sortedFields: any[] = [];
-  /** Fields to filter on */
-  public filterFields: string[] = [];
 
   /** Refresh content of the history */
   @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
@@ -175,13 +174,13 @@ export class RecordHistoryComponent
       setSubscription();
     }
 
-    this.filtersDate.valueChanges.subscribe(() => {
-      const startDate = this.filtersDate.get('startDate')?.value
-        ? new Date(this.filtersDate.get('startDate')?.value as any)
+    this.filters.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const startDate = this.filters.get('startDate')?.value
+        ? new Date(this.filters.get('startDate')?.value as any)
         : undefined;
       if (startDate) startDate.setHours(0, 0, 0, 0);
-      const endDate = this.filtersDate.get('endDate')?.value
-        ? new Date(this.filtersDate.get('endDate')?.value as any)
+      const endDate = this.filters.get('endDate')?.value
+        ? new Date(this.filters.get('endDate')?.value as any)
         : undefined;
       if (endDate) endDate.setHours(23, 59, 59, 99);
       this.filterHistory = this.history.filter((item) => {
@@ -192,6 +191,22 @@ export class RecordHistoryComponent
           (createdAt >= startDate && createdAt <= endDate)
         );
       });
+
+      const fields: any = this.filters.get('fields')?.value;
+      if (fields.length > 0) {
+        this.filterHistory = this.filterHistory
+          .filter(
+            (item) =>
+              !!item.changes.find((change) => fields.includes(change.field))
+          )
+          .map((item) => {
+            const newItem = Object.assign({}, item);
+            newItem.changes = item.changes.filter((change) =>
+              fields.includes(change.field)
+            );
+            return newItem;
+          });
+      }
     });
   }
 
@@ -323,60 +338,9 @@ export class RecordHistoryComponent
    * Clears the date filter, empties it
    */
   clearDateFilter(): void {
-    this.filtersDate.get('startDate')?.setValue('');
-    this.filtersDate.get('endDate')?.setValue('');
+    this.filters.get('startDate')?.setValue('');
+    this.filters.get('endDate')?.setValue('');
     this.filterHistory = this.history;
-  }
-
-  /**
-   * Triggers when the selected date and field filters are changed
-   * and filters the history accordingly
-   *
-   * @param fields selected fields
-   */
-  applyFilter(fields?: any): void {
-    // undefined => function called from date change
-    // empty => 'All fields' selected
-    // other => Field name for filter
-    if (fields) this.filterFields = fields;
-    if (!fields) this.filterFields = [];
-
-    const startDate = this.filtersDate.get('startDate')?.value
-      ? new Date(this.filtersDate.get('startDate')?.value as any)
-      : undefined;
-    if (startDate) startDate.setHours(0, 0, 0, 0);
-    const endDate = this.filtersDate.get('endDate')?.value
-      ? new Date(this.filtersDate.get('endDate')?.value as any)
-      : undefined;
-    if (endDate) endDate.setHours(23, 59, 59, 99);
-
-    // filtering by date
-    this.filterHistory = this.history.filter((item) => {
-      const createdAt = new Date(item.createdAt);
-      return (
-        !startDate ||
-        !endDate ||
-        (createdAt >= startDate && createdAt <= endDate)
-      );
-    });
-
-    // filtering by field
-    if (this.filterFields.length > 0) {
-      this.filterHistory = this.filterHistory
-        .filter(
-          (item) =>
-            !!item.changes.find((change) =>
-              this.filterFields.includes(change.field)
-            )
-        )
-        .map((item) => {
-          const newItem = Object.assign({}, item);
-          newItem.changes = item.changes.filter((change) =>
-            this.filterFields.includes(change.field)
-          );
-          return newItem;
-        });
-    }
   }
 
   /**
@@ -386,17 +350,16 @@ export class RecordHistoryComponent
    */
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}/history`;
+    const fields: any = this.filters.get('fields')?.value;
     const queryString = new URLSearchParams({
       type,
       from: `${new Date(
-        this.filtersDate.get('startDate')?.value as any
+        this.filters.get('startDate')?.value as any
       ).getTime()}`,
-      to: `${new Date(
-        this.filtersDate.get('endDate')?.value as any
-      ).getTime()}`,
+      to: `${new Date(this.filters.get('endDate')?.value as any).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
-      ...(this.filterFields && { fields: this.filterFields.join(',') }),
+      ...(fields && { fields: fields.join(',') }),
     }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,
@@ -481,7 +444,7 @@ export class RecordHistoryComponent
    * Clear date filter
    */
   public clear() {
-    this.filtersDate.get('startDate')?.reset();
-    this.filtersDate.get('endDate')?.reset();
+    this.filters.get('startDate')?.reset();
+    this.filters.get('endDate')?.reset();
   }
 }
