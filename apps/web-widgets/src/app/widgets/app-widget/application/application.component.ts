@@ -79,11 +79,15 @@ export class ApplicationComponent
   private setUpApplicationListeners() {
     // Subscribe to params change
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      if (this.application && params.id !== this.application.id) {
-        this.applicationService.leaveApplication();
+      if (this.application) {
+        if (params.id !== this.application.id) {
+          this.loading = true;
+          this.applicationService.loadApplication(params.id);
+        }
+      } else {
+        this.loading = true;
+        this.applicationService.loadApplication(params.id);
       }
-      this.loading = true;
-      this.applicationService.loadApplication(params.id);
     });
     // Subscribe to application change
     this.applicationService.application$
