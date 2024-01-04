@@ -545,6 +545,12 @@
 					"defaultPosition": "******",
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
+					"gridType": {
+						"fit": "******",
+						"placeholder": "******",
+						"title": "******",
+						"verticalFixed": "******"
+					},
 					"help": {
 						"minCols": "******"
 					},

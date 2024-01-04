@@ -545,6 +545,12 @@
 					"defaultPosition": "Default position for the filter",
 					"fixedRowHeight": "Row height",
 					"gridOptions": "Grid options",
+					"gridType": {
+						"fit": "Fit",
+						"placeholder": "Select a grid type",
+						"title": "Grid type",
+						"verticalFixed": "Vertical fixed"
+					},
 					"help": {
 						"minCols": "Reducing the number of columns may not have a direct impact if the dashboard contains widgets wider than the specified limit."
 					},

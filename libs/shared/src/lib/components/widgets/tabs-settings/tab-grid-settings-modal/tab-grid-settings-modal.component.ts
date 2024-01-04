@@ -13,6 +13,7 @@ import {
   ToggleModule,
   AlertModule,
 } from '@oort-front/ui';
+import { GridType } from 'angular-gridster2';
 
 /**
  * Represents the data passed to the dialog component.
@@ -46,6 +47,8 @@ interface DialogData {
 export class TabGridSettingsModalComponent {
   /** Form group */
   public formGroup!: FormGroup;
+  /** Grid type */
+  public gridType = GridType;
   /** Default grid options */
   public defaultGridOptions = {
     minCols: 8,
@@ -60,5 +63,7 @@ export class TabGridSettingsModalComponent {
    */
   constructor(@Inject(DIALOG_DATA) public data: DialogData) {
     this.formGroup = data.formGroup;
+    console.log(this.formGroup);
+    console.log(this.formGroup.get('gridType')?.value);
   }
 }
