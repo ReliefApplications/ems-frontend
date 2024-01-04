@@ -50,6 +50,8 @@ export class DateFilterMenuComponent
   @Input() public valueField = '';
   /** Filter service */
   @Input() public filterService?: FilterService;
+  /** Field format */
+  @Input() public format = 'dd/MM/yy HH:mm';
 
   /** Form */
   public form!: ReturnType<typeof this.createFormGroup>;
