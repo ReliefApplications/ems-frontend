@@ -869,9 +869,12 @@
 			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
-				"select": "Select a field"
+				"select": "Select fields"
 			},
-			"preview": "Preview and revert"
+			"preview": "Preview and revert",
+			"range": {
+				"clear": "Clear range"
+			}
 		},
 		"icon": {
 			"modal": {

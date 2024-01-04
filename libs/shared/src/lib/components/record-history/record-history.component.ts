@@ -174,6 +174,25 @@ export class RecordHistoryComponent
     } else {
       setSubscription();
     }
+
+    this.filtersDate.valueChanges.subscribe(() => {
+      const startDate = this.filtersDate.get('startDate')?.value
+        ? new Date(this.filtersDate.get('startDate')?.value as any)
+        : undefined;
+      if (startDate) startDate.setHours(0, 0, 0, 0);
+      const endDate = this.filtersDate.get('endDate')?.value
+        ? new Date(this.filtersDate.get('endDate')?.value as any)
+        : undefined;
+      if (endDate) endDate.setHours(23, 59, 59, 99);
+      this.filterHistory = this.history.filter((item) => {
+        const createdAt = new Date(item.createdAt);
+        return (
+          !startDate ||
+          !endDate ||
+          (createdAt >= startDate && createdAt <= endDate)
+        );
+      });
+    });
   }
 
   /**
@@ -456,5 +475,13 @@ export class RecordHistoryComponent
         }
       }
     }
+  }
+
+  /**
+   * Clear date filter
+   */
+  public clear() {
+    this.filtersDate.get('startDate')?.reset();
+    this.filtersDate.get('endDate')?.reset();
   }
 }

@@ -14,7 +14,19 @@
   <!-- FILTER -->
   <div class="clear-both flex flex-col">
     <div uiFormFieldDirective id="date-header">
-      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div class="flex items-center">
+        <label>
+          {{ 'common.input.dateRange' | translate }}
+        </label>
+        <ui-button
+          class="max-sm:!w-auto mb-3"
+          variant="danger"
+          (click)="clear()"
+          *ngIf="filtersDate.get('startDate')?.value || filtersDate.get('endDate')?.value"
+        >
+            {{'components.history.range.clear' | translate}}
+        </ui-button>
+      </div>
       <div
         [formGroup]="filtersDate"
         [uiDateWrapper]="calendar"
@@ -48,8 +60,10 @@
       </ui-select-menu>
       <ui-button
         uiSuffix
+        *ngIf="filterFields.length"
         icon="close"
         [isIcon]="true"
+        variant="danger"
         (click)="applyFilter([]); $event.stopPropagation()"
         [uiTooltip]="'common.close' | translate"
       ></ui-button>
