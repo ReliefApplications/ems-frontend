@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
+  Inject,
   Input,
   NgZone,
   OnChanges,
@@ -22,6 +23,7 @@ import { Dashboard } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Interface for quick filters
@@ -85,6 +87,7 @@ export class DashboardFilterComponent
    * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
    * @param dateTranslate Service used for date formatting
+   * @param document Document
    * @param _host sidenav container host
    */
   constructor(
@@ -94,6 +97,7 @@ export class DashboardFilterComponent
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
+    @Inject(DOCUMENT) private document: Document,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -373,8 +377,7 @@ export class DashboardFilterComponent
         if (this._host.showSidenav[0]) {
           // remove width from left sidenav if opened
           this.containerWidth = `${
-            this._host.el.nativeElement.offsetWidth -
-            this._host.sidenav.get(0).nativeElement.offsetWidth
+            this.document.getElementById('appPageContainer')?.offsetWidth
           }px`;
           this.containerHeight = `${this._host.el.nativeElement.offsetHeight}px`;
           // Add width from left sidenav as left offset
