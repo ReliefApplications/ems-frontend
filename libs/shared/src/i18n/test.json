@@ -215,7 +215,10 @@
 			"rawJson": "******"
 		},
 		"label": "******",
-		"layers": "******",
+		"layers": {
+			"few": "******",
+			"none": "******"
+		},
 		"layout": {
 			"few": "******",
 			"none": "******",
@@ -1669,6 +1672,7 @@
 						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
+							"fieldMapping": "******",
 							"geoField": "******",
 							"latitude": "******",
 							"longitude": "******"
