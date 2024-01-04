@@ -44,6 +44,8 @@ export class DateFilterMenuComponent
 {
   /** Field */
   @Input() public field = '';
+  /** Field format */
+  @Input() public format = 'dd/MM/yy HH:mm';
   /** Filter */
   @Input() public filter: any;
   /** Field value */
