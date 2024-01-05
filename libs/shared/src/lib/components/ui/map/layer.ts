@@ -194,7 +194,7 @@ export class Layer implements LayerModel {
   /** Layer filter */
   private filter: LayerFilter | null = null;
   /** Layer context filters  */
-  public contextFilters: string;
+  public contextFilters!: string;
   // private styling: any | null = null;
   // private label: LayerLabel | null = null;
 
