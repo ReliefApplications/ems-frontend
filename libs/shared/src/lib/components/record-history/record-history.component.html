@@ -21,7 +21,7 @@
         <ui-button
           class="max-sm:!w-auto mb-3"
           variant="danger"
-          (click)="clear()"
+          (click)="clearDateFilters()"
           *ngIf="filters.get('startDate')?.value || filters.get('endDate')?.value"
         >
             {{'components.history.range.clear' | translate}}

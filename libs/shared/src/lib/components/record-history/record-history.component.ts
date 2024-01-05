@@ -289,7 +289,7 @@ export class RecordHistoryComponent
     // base case
     if (typeof object !== 'object') return object;
 
-    // arrys
+    // arrays
     if (Array.isArray(object)) {
       return object.map((elem) => this.toReadableObjectValue(elem));
     }
@@ -332,15 +332,6 @@ export class RecordHistoryComponent
         this.revert(version);
       }
     });
-  }
-
-  /**
-   * Clears the date filter, empties it
-   */
-  clearDateFilter(): void {
-    this.filters.get('startDate')?.setValue('');
-    this.filters.get('endDate')?.setValue('');
-    this.filterHistory = this.history;
   }
 
   /**
@@ -443,7 +434,7 @@ export class RecordHistoryComponent
   /**
    * Clear date filter
    */
-  public clear() {
+  public clearDateFilters() {
     this.filters.get('startDate')?.reset();
     this.filters.get('endDate')?.reset();
   }
