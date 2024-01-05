@@ -17,6 +17,7 @@
   <gridster [options]="gridOptions" class="!w-full">
     <gridster-item
       [item]="widget"
+      class="max-w-full"
       *ngFor="let widget of widgets; let i = index"
     >
       <shared-widget
