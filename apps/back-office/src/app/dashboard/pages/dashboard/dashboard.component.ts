@@ -867,7 +867,7 @@ export class DashboardComponent
     if (includeHeaderFooter) {
       this.removeHeaderAndFooter();
     }
-
+    this.mapStatusService.updateExportingStatus(false);
     return pdfData;
   }
 
@@ -906,8 +906,6 @@ export class DashboardComponent
       );
       saveAs(pdfData, `${this.dashboard?.name}.pdf`);
     });
-
-    this.mapStatusService.updateExportingStatus(false);
   }
 
   /**
