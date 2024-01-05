@@ -84,6 +84,18 @@ export const GET_LAYER_BY_ID = gql`
           }
         }
       }
+      sublayers
+      contextFilters
+      at
+    }
+  }
+`;
+
+// === GET LAYER POPUP INFO BY ID ===
+/** Graphql request for getting layer popup data by its id */
+export const GET_LAYER_POPUP_INFO = gql`
+  query GetLayerPopupInfo($id: ID!) {
+    layer(id: $id) {
       popupInfo {
         title
         description
@@ -100,9 +112,6 @@ export const GET_LAYER_BY_ID = gql`
           fields
         }
       }
-      sublayers
-      contextFilters
-      at
     }
   }
 `;

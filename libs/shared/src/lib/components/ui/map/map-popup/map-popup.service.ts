@@ -3,11 +3,16 @@ import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
-import { takeUntil } from 'rxjs';
+import { lastValueFrom, takeUntil } from 'rxjs';
 import { DomService } from '../../../../services/dom/dom.service';
 import { MapPopupComponent } from './map-popup.component';
-import { PopupInfo } from '../../../../models/layer.model';
+import {
+  LayerPopupInfoQueryResponse,
+  PopupInfo,
+} from '../../../../models/layer.model';
 import { DOCUMENT } from '@angular/common';
+import { Apollo } from 'apollo-angular';
+import { GET_LAYER_POPUP_INFO } from '../../../../services/map/graphql/queries';
 
 /**
  * Shared map control service.
@@ -30,10 +35,12 @@ export class MapPopupService {
    *
    * @param domService DomService
    * @param document document
+   * @param apollo Apollo service
    */
   constructor(
     private domService: DomService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -41,19 +48,28 @@ export class MapPopupService {
    *
    * @param featurePoints Feature points to group in the popup
    * @param coordinates Coordinates
-   * @param popupInfo Popup info
+   * @param layerId Layer id from where retrieve the popup info
    * @param layerToBind Layer where to bind the popup, if not a default one would be created
    */
-  public setPopUp(
+  public async setPopUp(
     featurePoints: Feature<any>[],
     coordinates: L.LatLng,
-    popupInfo: PopupInfo,
+    layerId: string,
+    // popupInfo: PopupInfo,
     layerToBind?: L.Layer
   ) {
+    const { data } = await lastValueFrom(
+      this.apollo.query<LayerPopupInfoQueryResponse>({
+        query: GET_LAYER_POPUP_INFO,
+        variables: {
+          id: layerId,
+        },
+      })
+    );
     if (
       featurePoints.length > 0 &&
-      popupInfo.popupElements &&
-      popupInfo.popupElements.length > 0
+      data.layer.popupInfo.popupElements &&
+      data.layer.popupInfo.popupElements.length > 0
     ) {
       const zoom = this.map.getZoom();
       const radius = 1000 / zoom;
@@ -74,7 +90,7 @@ export class MapPopupService {
       const { instance, popup } = this.setPopupComponentAndContent(
         featurePoints,
         coordinates,
-        popupInfo
+        data.layer.popupInfo
       );
 
       popup.on('remove', () => {

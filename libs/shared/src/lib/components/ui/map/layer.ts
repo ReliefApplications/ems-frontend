@@ -293,7 +293,7 @@ export class Layer implements LayerModel {
       // this.styling = options.styling || [];
       // this.label = options.labels || null;
       this.layerDefinition = get(options, 'layerDefinition');
-      this.popupInfo = get(options, 'popupInfo');
+      // this.popupInfo = get(options, 'popupInfo');
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
@@ -521,8 +521,8 @@ export class Layer implements LayerModel {
               lat: center.geometry.coordinates[1],
               lng: center.geometry.coordinates[0],
             }),
-            this.popupInfo,
-            layer
+            // this.popupInfo,
+            this.id
           );
         };
         const listener = this.renderer.listen(layer, 'click', setPopupListener);
@@ -673,7 +673,8 @@ export class Layer implements LayerModel {
                 this.popupService.setPopUp(
                   matchedPoints,
                   event,
-                  this.popupInfo
+                  this.id
+                  // this.popupInfo
                 );
               }
             };
@@ -774,7 +775,8 @@ export class Layer implements LayerModel {
                   this.popupService.setPopUp(
                     children,
                     event.latlng,
-                    this.popupInfo,
+                    this.id,
+                    // this.popupInfo,
                     event.layer
                   );
                 });

@@ -150,12 +150,18 @@ export interface LayerModel {
   visibility: boolean;
   opacity: number;
   layerDefinition?: LayerDefinition;
-  popupInfo?: PopupInfo;
   datasource?: LayerDatasource;
   createdAt: Date;
   updatedAt: Date;
   contextFilters?: string;
   at?: string;
+}
+
+/**
+ * Backend layer popup info model
+ */
+export interface LayerPopupInfoQueryResponse {
+  layer: { popupInfo: PopupInfo };
 }
 
 /** Model for AddLayerMutationResponse object */
