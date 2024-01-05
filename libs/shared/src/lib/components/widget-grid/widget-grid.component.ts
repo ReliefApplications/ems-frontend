@@ -10,6 +10,7 @@ import {
   QueryList,
   SimpleChanges,
   ViewChildren,
+  ViewChild,
 } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
@@ -86,6 +87,11 @@ export class WidgetGridComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
+  /** Grid type */
+  public gridType = GridType;
+  public widgetGridClientWidth: any = '';
+  public widgetGridClientHeight: any = '';
+  @ViewChild('gridsterComponent', { static: false }) gridsterComponent!: ElementRef;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -133,12 +139,30 @@ export class WidgetGridComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
     if (changes['widgets']) {
       this.setLayout();
     }
     if (changes['options']) {
       this.setGridOptions();
+      if (
+        changes.options.currentValue['gridType'] !==
+        changes.options.previousValue['gridType']
+      ) {
+        // this.widgetGridClientHeight = `max-h-[${document.documentElement.clientHeight}px]`;
+        // this.widgetGridClientWidth = `max-w-[${document.documentElement.clientWidth}px]`;
+        // console.log(this.widgetGridClientHeight);
+        // console.log(this.widgetGridClientWidth);
+        console.log(this.gridsterComponent);
+        const gridsterElement: HTMLElement =
+          this.gridsterComponent.nativeElement;
+        console.log(gridsterElement);
+        gridsterElement.style.maxHeight =
+          document.documentElement.clientHeight.toString();
+        gridsterElement.style.maxWidth =
+          document.documentElement.clientWidth.toString();
+      }
     }
     if (
       changes['canUpdate'] &&
@@ -235,6 +259,9 @@ export class WidgetGridComponent
       this.maxCols,
       (this.gridOptions.maxCols || this.gridOptions.minCols) as number
     );
+    if (this.gridOptions && this.gridOptions.api?.optionsChanged) {
+      this.gridOptions.api.optionsChanged();
+    }
   }
 
   /**

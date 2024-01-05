@@ -14,6 +14,7 @@ import {
   AlertModule,
 } from '@oort-front/ui';
 import { GridType } from 'angular-gridster2';
+import { CommonModule } from '@angular/common';
 
 /**
  * Represents the data passed to the dialog component.
@@ -31,6 +32,7 @@ interface DialogData {
   styleUrls: ['./tab-grid-settings-modal.component.scss'],
   standalone: true,
   imports: [
+    CommonModule,
     TabsModule,
     DialogModule,
     IconModule,
@@ -40,8 +42,8 @@ interface DialogData {
     FormWrapperModule,
     ToggleModule,
     AlertModule,
-    FormsModule,
     ReactiveFormsModule,
+    FormsModule,
   ],
 })
 export class TabGridSettingsModalComponent {
@@ -63,7 +65,5 @@ export class TabGridSettingsModalComponent {
    */
   constructor(@Inject(DIALOG_DATA) public data: DialogData) {
     this.formGroup = data.formGroup;
-    console.log(this.formGroup);
-    console.log(this.formGroup.get('gridType')?.value);
   }
 }

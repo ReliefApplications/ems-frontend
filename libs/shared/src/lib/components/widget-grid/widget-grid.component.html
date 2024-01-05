@@ -14,7 +14,10 @@
     </shared-widget-choice>
   </div>
   <!-- GRID OF WIDGETS -->
-  <gridster [options]="gridOptions" class="!w-full">
+  <gridster
+    #gridsterComponent
+    [options]="gridOptions"
+  >
     <gridster-item
       [item]="widget"
       *ngFor="let widget of widgets; let i = index"
