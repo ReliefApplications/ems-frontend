@@ -272,6 +272,7 @@ export class SummaryCardComponent
         this.handleSearch(value || '');
       });
 
+    // Listen to dashboard filters changes if it is necessary
     if (
       this.contextService.filterRegex.test(this.widget.settings.contextFilters)
     ) {

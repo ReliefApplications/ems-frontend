@@ -227,12 +227,14 @@ export class MapComponent
     }, 1000);
   }
 
+  /** Initialize filters */
   private initFilters() {
+    // Gather all context filters in a single text value
     const allContextFilters = this.layers
-      .map((layer: any) => JSON.stringify(layer.filter))
+      .map((layer: any) => JSON.stringify(layer.contextFilters))
       .join('');
 
-    // Listen to dashboard filters changes
+    // Listen to dashboard filters changes if it is necessary
     if (this.contextService.filterRegex.test(allContextFilters)) {
       this.contextService.filter$
         .pipe(
@@ -561,6 +563,7 @@ export class MapComponent
             this.layerControlButtons.remove();
           }
         }
+        // When layers are created, filters are then initialized
         this.initFilters();
       });
     } else {

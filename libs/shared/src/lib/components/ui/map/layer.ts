@@ -193,6 +193,8 @@ export class Layer implements LayerModel {
   // private properties: any | null = null;
   /** Layer filter */
   private filter: LayerFilter | null = null;
+  /** Layer context filters  */
+  public contextFilters: string;
   // private styling: any | null = null;
   // private label: LayerLabel | null = null;
 
@@ -289,6 +291,7 @@ export class Layer implements LayerModel {
       this.datasource = get(options, 'datasource', null);
       this.geojson = get(options, 'geojson', EMPTY_FEATURE_COLLECTION);
       // this.properties = options.properties || DEFAULT_LAYER_PROPERTIES;
+      this.contextFilters = get(options, 'contextFilters', null);
       this.filter = get(options, 'filter', DEFAULT_LAYER_FILTER);
       // this.styling = options.styling || [];
       // this.label = options.labels || null;

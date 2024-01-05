@@ -361,6 +361,7 @@ export class CoreGridComponent
   ) {
     super();
     this.environment = environment;
+    // Listen to dashboard filters changes if it is necessary
     if (contextService.filterRegex.test(this.settings.contextFilters)) {
       contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))

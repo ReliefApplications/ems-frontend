@@ -110,6 +110,7 @@ export class AggregationGridComponent
   }
 
   ngOnInit(): void {
+    // Listen to dashboard filters changes if it is necessary
     if (this.contextService.filterRegex.test(this.contextFilters as string)) {
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
