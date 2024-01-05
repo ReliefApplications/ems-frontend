@@ -6,16 +6,15 @@ import {
   Observable,
   ReplaySubject,
 } from 'rxjs';
-import {
-  GET_QUERY_META_DATA,
-  GET_QUERY_TYPES,
-  QueryTypesResponse,
-} from './graphql/queries';
+import { GET_QUERY_META_DATA, GET_QUERY_TYPES } from './graphql/queries';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Connection } from '../../utils/public-api';
-import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
+import {
+  QueryMetaDataQueryResponse,
+  QueryTypesResponse,
+} from '../../models/metadata.model';
 
 /** Interface for the variables of a query */
 interface QueryVariables {

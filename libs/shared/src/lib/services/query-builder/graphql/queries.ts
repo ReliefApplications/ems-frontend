@@ -63,10 +63,3 @@ export const GET_QUERY_TYPES = gql`
     }
   }
 `;
-
-export type QueryTypesResponse = {
-  types: {
-    availableQueries: any[];
-    userFields: any[];
-  };
-};
