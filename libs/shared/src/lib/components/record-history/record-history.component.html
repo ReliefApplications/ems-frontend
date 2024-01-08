@@ -1,4 +1,4 @@
-<div class="items-center p-4 border-b">
+<div class="items-center p-4 border-b" [formGroup]="filters">
   <!-- HEADER -->
   <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
     <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
@@ -14,9 +14,20 @@
   <!-- FILTER -->
   <div class="clear-both flex flex-col">
     <div uiFormFieldDirective id="date-header">
-      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div class="flex items-center justify-between">
+        <label>
+          {{ 'common.input.dateRange' | translate }}
+        </label>
+        <ui-button
+          class="max-sm:!w-auto mb-3"
+          variant="danger"
+          (click)="clearDateFilters()"
+          *ngIf="filters.get('startDate')?.value || filters.get('endDate')?.value"
+        >
+            {{'components.history.range.clear' | translate}}
+        </ui-button>
+      </div>
       <div
-        [formGroup]="filtersDate"
         [uiDateWrapper]="calendar"
         class="flex-col"
       >
@@ -36,8 +47,7 @@
     <div uiFormFieldDirective>
       <label>{{ 'components.history.field.select' | translate }}</label>
       <ui-select-menu
-        (selectedOption)="applyFilter($event)"
-        [ngModel]="filterFields"
+        formControlName="fields"
         [multiselect]="true"
       >
         <ui-select-option
@@ -48,9 +58,11 @@
       </ui-select-menu>
       <ui-button
         uiSuffix
+        *ngIf="filters.get('fields')?.value && filters.get('fields')!.value!.length > 0"
+        (click)="filters.get('fields')?.setValue([]); $event.stopPropagation()"
         icon="close"
         [isIcon]="true"
-        (click)="applyFilter([]); $event.stopPropagation()"
+        variant="danger"
         [uiTooltip]="'common.close' | translate"
       ></ui-button>
     </div>
