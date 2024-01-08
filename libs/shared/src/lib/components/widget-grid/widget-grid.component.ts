@@ -115,8 +115,7 @@ export class WidgetGridComponent
   constructor(
     public dialog: Dialog,
     private dashboardService: DashboardService,
-    private _host: ElementRef,
-    private el: ElementRef
+    private _host: ElementRef
   ) {
     super();
   }
@@ -180,7 +179,9 @@ export class WidgetGridComponent
    * Set the available width and height for fit grid type
    */
   public setFitStyleWidth() {
+    // all available space less left sidenav
     this.fitStyle['max-width.px'] = document.documentElement.clientWidth - 300;
+    // all available space less header
     this.fitStyle['max-height.px'] =
       document.documentElement.clientHeight - 200;
     this.fitStyle['min-width.px'] = this.fitStyle['max-width.px'];
