@@ -8,6 +8,8 @@ import {
   UnsubscribeComponent,
   ApiConfigurationsQueryResponse,
   DeleteApiConfigurationMutationResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import {
   ADD_API_CONFIGURATION,
@@ -16,10 +18,6 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   TableSort,
