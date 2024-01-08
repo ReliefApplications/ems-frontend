@@ -24,6 +24,7 @@ const ITEMS_PER_PAGE = 10;
  * @param domService Shared dom service
  * @param customWidgetCollectionInstance CustomWidgetCollection
  * @param document Document
+ * @param apollo Apollo
  */
 export const init = (
   domService: DomService,
@@ -163,7 +164,7 @@ export const init = (
                   tagboxInstance.data = users;
                   tagboxInstance.loading = false;
                 });
-          });
+            });
         });
       }
       question._propertyValueChangedVirtual = () => {
