@@ -67,10 +67,10 @@ export class ApplicationUsersComponent
    * Show a dialog for inviting someone
    */
   async onInvite(): Promise<void> {
-    const { InviteUsersComponent } = await import(
-      '../../components/users/components/invite-users/invite-users.component'
+    const { InviteUsersModalComponent } = await import(
+      '../../components/users/invite-users-modal/invite-users-modal.component'
     );
-    const dialogRef = this.dialog.open(InviteUsersComponent, {
+    const dialogRef = this.dialog.open(InviteUsersModalComponent, {
       data: {
         roles: this.roles,
         users: [],

@@ -7,18 +7,39 @@ import {
   ViewChild,
   TemplateRef,
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { Role } from '../../../models/user.model';
+import {
+  ListFilterComponent,
+  Role,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
 
 /**
  * Filter used by the resources component
  */
 @Component({
+  standalone: true,
   selector: 'app-users-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
+  imports: [
+    CommonModule,
+    FormWrapperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ListFilterComponent,
+    SelectMenuModule,
+    ButtonModule,
+    TranslateModule,
+  ],
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
   /** Loading state */

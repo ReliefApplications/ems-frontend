@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Role, User, UsersQueryResponse } from '../../../../models/user.model';
-import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
+import { Role, User, UsersQueryResponse } from '../../../models/user.model';
+import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
@@ -10,11 +10,11 @@ import {
   startWith,
 } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { GET_USERS } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { GET_USERS } from './graphql/queries';
 
 /** Model for the input  */
 interface DialogData {
@@ -106,6 +106,7 @@ export class AddUserComponent extends UnsubscribeComponent implements OnInit {
    * @returns The filtered list of users
    */
   private filterUsers(value: string): User[] {
+    console.log('filtering');
     const filterValue = value.toLowerCase();
     return this.users
       .filter((x) => x.username?.toLowerCase().indexOf(filterValue) === 0)
