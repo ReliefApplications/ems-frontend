@@ -86,6 +86,8 @@ export class WidgetGridComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
+  /** Fit grid type style */
+  public fitStyle: any = {};
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -108,11 +110,13 @@ export class WidgetGridComponent
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    * @param _host host element ref
+   * @param el Element ref
    */
   constructor(
     public dialog: Dialog,
     private dashboardService: DashboardService,
-    private _host: ElementRef
+    private _host: ElementRef,
+    private el: ElementRef
   ) {
     super();
   }
@@ -128,6 +132,9 @@ export class WidgetGridComponent
           this._host.nativeElement.innerWidth
         );
         this.setGridOptions();
+        if (this.options?.gridType === GridType.Fit) {
+          this.setFitStyleWidth();
+        }
       });
     this.setGridOptions();
   }
@@ -139,6 +146,10 @@ export class WidgetGridComponent
     }
     if (changes['options']) {
       this.setGridOptions();
+      if (this.options?.gridType === GridType.Fit) {
+        // set up the style for fit grid type
+        this.setFitStyleWidth();
+      }
     }
     if (
       changes['canUpdate'] &&
@@ -163,6 +174,17 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Set the available width and height for fit grid type
+   */
+  public setFitStyleWidth() {
+    this.fitStyle['max-width.px'] = document.documentElement.clientWidth - 300;
+    this.fitStyle['max-height.px'] =
+      document.documentElement.clientHeight - 200;
+    this.fitStyle['min-width.px'] = this.fitStyle['max-width.px'];
+    this.fitStyle['min-height.px'] = this.fitStyle['max-height.px'];
   }
 
   /**
@@ -235,6 +257,9 @@ export class WidgetGridComponent
       this.maxCols,
       (this.gridOptions.maxCols || this.gridOptions.minCols) as number
     );
+    if (this.gridOptions && this.gridOptions.api?.optionsChanged) {
+      this.gridOptions.api.optionsChanged();
+    }
   }
 
   /**

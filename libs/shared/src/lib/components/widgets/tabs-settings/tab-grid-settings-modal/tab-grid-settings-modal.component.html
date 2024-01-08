@@ -48,8 +48,34 @@
             'components.application.dashboard.settings.help.minCols' | translate
           }}</ui-alert>
         </div>
-        <!-- Change default size of rows -->
         <div uiFormFieldDirective [outline]="false">
+          <label>{{
+            'components.application.dashboard.settings.gridType.title'
+              | translate
+          }}</label>
+          <ui-select-menu
+            formControlName="gridType"
+            [placeholder]="
+              'components.application.dashboard.settings.gridType.placeholder'
+                | translate
+            "
+          >
+            <ui-select-option [value]="gridType.VerticalFixed">
+              {{
+                'components.application.dashboard.settings.gridType.verticalFixed'
+                  | translate
+              }}
+            </ui-select-option>
+            <ui-select-option [value]="gridType.Fit">
+              {{
+                'components.application.dashboard.settings.gridType.fit'
+                  | translate
+              }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <!-- Change default size of rows -->
+        <div uiFormFieldDirective [outline]="false" *ngIf="formGroup.get('gridType')?.value === gridType.VerticalFixed">
           <label class="flex items-center gap-1">
             {{
               'components.application.dashboard.settings.fixedRowHeight'
