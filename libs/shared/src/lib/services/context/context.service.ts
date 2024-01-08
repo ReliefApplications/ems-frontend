@@ -44,6 +44,8 @@ export class ContextService {
   public filterPosition = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
+  /** Regex used to allow widget refresh */
+  public filterRegex = /{{filter\.[^}]+}}/;
   /** Dashboard object */
   public dashboard?: Dashboard;
   /** Available filter positions */
