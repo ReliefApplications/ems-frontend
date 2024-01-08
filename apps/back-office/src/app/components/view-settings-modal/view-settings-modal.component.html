@@ -194,7 +194,7 @@
               </ui-select-menu>
             </div>
             <!-- Change default size of rows -->
-            <div uiFormFieldDirective [outline]="false" *ngIf="this.dashboard.gridOptions.gridType === gridType.VerticalFixed">
+            <div uiFormFieldDirective [outline]="false" *ngIf="this.dashboard.gridOptions.gridType !== gridType.Fit">
               <label class="flex items-center gap-1">
                 {{
                   'components.application.dashboard.settings.fixedRowHeight'
