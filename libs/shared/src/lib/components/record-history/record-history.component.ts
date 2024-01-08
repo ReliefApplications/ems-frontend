@@ -63,6 +63,8 @@ export class RecordHistoryComponent
   @Input() template?: string;
   /** Show history header ( need to disable it when in modal mode ) */
   @Input() showHeader = true;
+  /** Refresh content of the history */
+  @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
   /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
@@ -87,9 +89,6 @@ export class RecordHistoryComponent
   /** Sorted fields */
   public sortedFields: any[] = [];
 
-  /** Refresh content of the history */
-  @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
-
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
     const today = new Date();
@@ -101,14 +100,14 @@ export class RecordHistoryComponent
   }
 
   /**
-   * Constructor of the record history component
+   * Record history component
    *
-   * @param dialog The Dialog service
-   * @param downloadService The download service
-   * @param translate The translation service
-   * @param dateFormat The dateTranslation service
-   * @param apollo The apollo client
-   * @param snackBar The snackbar service
+   * @param dialog CDK dialog service
+   * @param downloadService Shared download service
+   * @param translate Angular translation service
+   * @param dateFormat DateTranslation service
+   * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
    */
   constructor(
     public dialog: Dialog,
