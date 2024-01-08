@@ -20,19 +20,26 @@ export const GET_ROLES = gql`
 
 /** Graphql query for getting users */
 export const GET_USERS = gql`
-  {
-    users {
-      id
-      username
-      name
-      roles {
-        id
-        title
-        application {
+  query GetUsers($first: Int, $afterCursor: ID, $filter: JSON) {
+    users(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
           id
+          username
+          name
+          roles {
+            id
+            title
+          }
+          oid
         }
+        cursor
       }
-      oid
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;

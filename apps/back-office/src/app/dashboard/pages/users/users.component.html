@@ -2,7 +2,7 @@
   <div class="flex gap-8 justify-between flex-col sm:flex-row">
     <app-users-filter
       #filter
-      (filter)="applyFilter($event)"
+      (filter)="onFilter($event)"
       [loading]="loading"
       [roles]="roles"
     >
@@ -60,7 +60,7 @@
       *ngIf="!loading"
       cdk-table
       uiTableWrapper
-      [dataSource]="filteredUsers"
+      [dataSource]="users"
     >
       <!-- Checkbox Column -->
       <ng-container cdkColumnDef="select">
@@ -170,3 +170,13 @@
     </shared-skeleton-table>
   </div>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.users.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>
