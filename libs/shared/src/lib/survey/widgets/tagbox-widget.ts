@@ -135,23 +135,22 @@ export const init = (
               filter: filter,
             },
           });
-        console.log(applicationsQuery);
         tagboxInstance.opened.subscribe(() => {
           tagboxInstance.optionsList.pageChange
             .pipe(debounceTime(250))
             .subscribe((state: any) => {
-              console.log(state);
               tagboxInstance.loading = true;
               applicationsQuery
                 .fetchMore({
                   variables: {
+                    applications: question.data.jsonObj.applications,
                     first: ITEMS_PER_PAGE,
                     afterCursor: null,
                     skip: state.skip,
                   },
                 })
                 .then((results) => {
-                  const users: any = [];
+                  const users: any = [tagboxInstance.data];
                   for (const user of results.data.users.edges) {
                     if (!users.some((el: any) => el.value === user.node.id)) {
                       users.push({
