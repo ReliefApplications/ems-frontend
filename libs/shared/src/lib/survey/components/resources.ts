@@ -619,7 +619,8 @@ export const init = (
         true,
         dialog,
         temporaryRecordsForm,
-        document
+        document,
+        ngZone
       );
       searchBtn.style.display = 'none';
       if (question.resource) {

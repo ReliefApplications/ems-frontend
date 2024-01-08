@@ -573,7 +573,8 @@ export const init = (
         false,
         dialog,
         temporaryRecordsForm,
-        document
+        document,
+        ngZone
       );
       // Hide search button by default
       searchBtn.style.display = 'none';
