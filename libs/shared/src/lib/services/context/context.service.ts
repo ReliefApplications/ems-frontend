@@ -290,22 +290,9 @@ export class ContextService {
   public initSurvey(): SurveyModel {
     const surveyStructure = this.filterStructure.getValue();
     const survey = this.formBuilderService.createSurvey(surveyStructure);
-
-    survey.onValueChanged.add(function (sender, options) {
-      if (options.name === 'countries') {
-        console.log(options.value);
-        console.log(survey.getQuestionByName('countries'));
-      }
-    });
-
-    console.log(survey);
-    survey.getQuestionByName('countries').defaultValue = {
-      text: 'Spain',
-      value: {
-        name: 'Spain',
-        value: 'ES',
-      },
-    };
+    if (this.filter.getValue()) {
+      survey.data = this.filter.getValue();
+    }
     return survey;
   }
 
