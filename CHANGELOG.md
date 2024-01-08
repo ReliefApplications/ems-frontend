@@ -1,3 +1,37 @@
+## [2.3.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.2...v2.3.3) (2024-01-08)
+
+
+### Bug Fixes
+
+* changing fields in resources question would not reflect in the form builder ([#2247](https://github.com/ReliefApplications/ems-frontend/issues/2247)) ([30b9c09](https://github.com/ReliefApplications/ems-frontend/commit/30b9c09fe93b9ea02658d1f71575f079211b4892))
+* check null values for map popup properties ([#2246](https://github.com/ReliefApplications/ems-frontend/issues/2246)) ([1aadbb6](https://github.com/ReliefApplications/ems-frontend/commit/1aadbb6158d671a0c43ae7b58ffbeed2400dc106))
+* check null values in setEmptyQuestions ([#2248](https://github.com/ReliefApplications/ems-frontend/issues/2248)) ([0303574](https://github.com/ReliefApplications/ems-frontend/commit/03035747769220d94b9fe682e7356da6f79fa2f9))
+* dashboard filter could create some white space issues & not work when collapsing sidenav ([#2228](https://github.com/ReliefApplications/ems-frontend/issues/2228)) ([4164c43](https://github.com/ReliefApplications/ems-frontend/commit/4164c43061a25f67d2e3f6c017a67134f9bd430b))
+* font title not updating in charts when editing ([ab013db](https://github.com/ReliefApplications/ems-frontend/commit/ab013dbdaa466cecfd95611ac53a38a934d37611))
+* incorrect date format in grid filter menu ([5ccaeb6](https://github.com/ReliefApplications/ems-frontend/commit/5ccaeb6914ac00b94fc23d2e4b9aa60047e3cd9a))
+* incorrect display of icon in icon-picker ([498abd3](https://github.com/ReliefApplications/ems-frontend/commit/498abd3b9d3546f373ac9b526e94702076073f20))
+* incorrect width drag / drop unique value renderer ([#2224](https://github.com/ReliefApplications/ems-frontend/issues/2224)) ([87b39ce](https://github.com/ReliefApplications/ems-frontend/commit/87b39ce34d7732be60dec54bdd48a984c0e30f3a))
+* popup to edit fields from resources question not appearing on first click  ([#2231](https://github.com/ReliefApplications/ems-frontend/issues/2231)) ([ea8493b](https://github.com/ReliefApplications/ems-frontend/commit/ea8493bd1f53077dd264b24b0686e3723534e347))
+* prevent widget grid not to resize when available width changes ([#2256](https://github.com/ReliefApplications/ems-frontend/issues/2256)) ([efa55f3](https://github.com/ReliefApplications/ems-frontend/commit/efa55f3e2d500fae8043a8736a27bae099fc9876))
+* restore selected attribute in order to apply tab css content ([#2220](https://github.com/ReliefApplications/ems-frontend/issues/2220)) ([fd800c6](https://github.com/ReliefApplications/ems-frontend/commit/fd800c6724db54cd2f5099930fbdd4ca2afa83d9))
+* summary cards not correctly updating after grid edition ([#2219](https://github.com/ReliefApplications/ems-frontend/issues/2219)) ([0727cca](https://github.com/ReliefApplications/ems-frontend/commit/0727cca5be44def937671561411a3e1f92286a4e))
+* summary cards widgets using reference data would send duplicated queries ([#2238](https://github.com/ReliefApplications/ems-frontend/issues/2238)) ([0e3c08a](https://github.com/ReliefApplications/ems-frontend/commit/0e3c08a19eeb7519651e6ccc86e72feb0775bb4c))
+* web widgets app not correctly reloading if using same id ([ff3f99d](https://github.com/ReliefApplications/ems-frontend/commit/ff3f99d0ea75ba177394edd578e9e2e00afef8ce))
+
+
+### Performance Improvements
+
+* add lint to web widgets app ([#2221](https://github.com/ReliefApplications/ems-frontend/issues/2221)) ([b8969ec](https://github.com/ReliefApplications/ems-frontend/commit/b8969ecc3fa180d16086e9fc10b3e7a9bf5a2b06))
+
+## [2.3.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.1...v2.3.2) (2023-12-21)
+
+
+### Bug Fixes
+
+* date filters should not use timestamps ([#2203](https://github.com/ReliefApplications/ems-frontend/issues/2203)) ([18c3d98](https://github.com/ReliefApplications/ems-frontend/commit/18c3d98ea00dba4a0ff5dc51dd8bf1df40ff49b0))
+* expansion panels in map unique value renderer not working as expected ([#2215](https://github.com/ReliefApplications/ems-frontend/issues/2215)) ([92016df](https://github.com/ReliefApplications/ems-frontend/commit/92016dfc2066c81ffe2000e2a708114d333c8a84))
+* file question not appearing in text / summary card widgets ([#2216](https://github.com/ReliefApplications/ems-frontend/issues/2216)) ([a534282](https://github.com/ReliefApplications/ems-frontend/commit/a534282bbec46532fb2e9ce9e686576c67748c08))
+
 ## [2.3.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0...v2.3.1) (2023-12-20)
 
 

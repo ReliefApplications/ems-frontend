@@ -21,7 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { GET_REFERENCE_DATA, GET_RESOURCE_METADATA } from './graphql/queries';
+import { GET_RESOURCE_METADATA } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
@@ -45,7 +45,6 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 
@@ -273,11 +272,16 @@ export class SummaryCardComponent
         this.handleSearch(value || '');
       });
 
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.refresh();
-      });
+    // Listen to dashboard filters changes if it is necessary
+    if (
+      this.contextService.filterRegex.test(this.widget.settings.contextFilters)
+    ) {
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.refresh();
+        });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -723,33 +727,26 @@ export class SummaryCardComponent
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
     this.loading = true;
-    const metaData = await firstValueFrom(
-      this.apollo.query<ReferenceDataQueryResponse>({
-        query: GET_REFERENCE_DATA,
-        variables: {
-          id: card.referenceData,
-        },
-      })
-    );
-    if (metaData.data.referenceData) {
-      const fields = (metaData.data.referenceData.fields || [])
-        .filter((field) => field && typeof field !== 'string')
-        .map((field) => {
+    if (card.referenceData) {
+      const { items, referenceData } =
+        await this.referenceDataService.cacheItems(
+          card.referenceData as string,
+          true
+        );
+      const metadata = (referenceData?.fields || [])
+        .filter((field: any) => field && typeof field !== 'string')
+        .map((field: any) => {
           return {
             label: field.name,
             name: field.name,
             type: field.type,
           };
         });
-      this.cachedCards = (
-        (await this.referenceDataService.cacheItems(
-          card.referenceData as string
-        )) || []
-      ).map((x: any, index: number) => ({
+      this.cachedCards = (items || []).map((x: any, index: number) => ({
         ...this.settings.card,
         rawValue: x,
         index,
-        metadata: fields,
+        metadata,
       }));
       this.pageInfo.length = this.cachedCards.length;
       const contextFilters = this.contextService.injectContext(
