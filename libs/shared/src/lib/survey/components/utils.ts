@@ -31,7 +31,6 @@ export const buildSearchButton = (
     (question.survey as SurveyModel).locale
   );
   searchButton.className = 'sd-btn !px-3 !py-1';
-  searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
     temporaryRecords.valueChanges.subscribe((res: any) => {
       if (res) {
@@ -251,6 +250,7 @@ export function setUpActionsButtonWrapper() {
   const actionsButtons = document.createElement('div');
   actionsButtons.id = 'actionsButtons';
   actionsButtons.style.display = 'flex';
+  actionsButtons.style.gap = '8px';
   actionsButtons.style.marginBottom = '0.5em';
   return actionsButtons;
 }
