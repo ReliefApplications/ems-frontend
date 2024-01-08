@@ -871,7 +871,10 @@
 				"all": "******",
 				"select": "******"
 			},
-			"preview": "******"
+			"preview": "******",
+			"range": {
+				"clear": "******"
+			}
 		},
 		"icon": {
 			"modal": {
