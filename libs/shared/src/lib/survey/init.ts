@@ -79,7 +79,12 @@ export const initCustomSurvey = (
     defaultItems.forEach((item) => ComponentCollection.Instance.add(item.json));
   }
 
-  TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
+  TagboxWidget.init(
+    domService,
+    CustomWidgetCollection.Instance,
+    document,
+    apollo
+  );
   TextWidget.init(domService, CustomWidgetCollection.Instance, document);
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
 

@@ -69,12 +69,14 @@ export const GET_USERS = gql`
     $afterCursor: ID
     $filter: JSON
     $applications: [ID]
+    $skip: Int
   ) {
     users(
       first: $first
       afterCursor: $afterCursor
       filter: $filter
       applications: $applications
+      skip: $skip
     ) {
       edges {
         node {
