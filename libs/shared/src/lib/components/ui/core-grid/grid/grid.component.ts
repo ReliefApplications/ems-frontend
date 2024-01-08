@@ -130,6 +130,8 @@ export class GridComponent
   @Input() resizable = true;
   /** Resizable status */
   @Input() reorderable = true;
+  /** Uses a fixed height */
+  @Input() fixedHeight = false;
   /** Add permission */
   @Input() canAdd = false;
   /** Selectable status */

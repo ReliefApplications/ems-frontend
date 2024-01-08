@@ -171,6 +171,8 @@ export class CoreGridComponent
   private dataQuery!: QueryRef<QueryResponse>;
   /** Meta query reference for fetching metadata. */
   private metaQuery!: any;
+  /** Uses a fixed height */
+  public fixedHeight = false;
 
   // === PAGINATION ===
   /** Number of items per page. */
