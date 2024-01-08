@@ -152,11 +152,16 @@ export class ChartComponent
   }
 
   ngOnInit(): void {
-    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.series.next([]);
-      this.loadChart();
-      this.getOptions();
-    });
+    // Listen to dashboard filters changes if it is necessary
+    if (this.contextService.filterRegex.test(this.settings.contextFilters)) {
+      this.contextService.filter$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.series.next([]);
+          this.loadChart();
+          this.getOptions();
+        });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

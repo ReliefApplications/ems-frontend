@@ -15,16 +15,29 @@ export interface GridSettings {
     };
     filter?: CompositeFilterDescriptor;
   };
-  actions?: {
-    delete?: boolean;
-    history?: boolean;
-    convert?: boolean;
-    update?: boolean;
-    inlineEdition?: boolean;
-    remove?: boolean;
-  };
+  actions?: GridActions;
   // showDetails?: boolean;
   // showExport?: boolean;
   // showFilters?: boolean;
   defaultLayout?: any;
+}
+
+/** Related grid actions */
+export interface GridActions {
+  update: boolean;
+  delete: boolean;
+  history: boolean;
+  convert: boolean;
+  remove: boolean;
+  add?: boolean;
+  export?: boolean;
+  showDetails?: boolean;
+  navigateToPage?: boolean;
+  navigateSettings?: {
+    field: string;
+    pageUrl: string;
+    title: string;
+  };
+  search?: boolean;
+  inlineEdition?: boolean;
 }

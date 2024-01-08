@@ -21,6 +21,7 @@ import { Apollo } from 'apollo-angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { GET_REFERENCE_DATAS } from './graphql/queries';
 import { ReferenceDatasQueryResponse } from '../../../models/reference-data.model';
+import { takeUntil } from 'rxjs';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -85,7 +86,7 @@ export class ReferenceDataSelectComponent extends GraphQLSelectComponent {
     this.valueField = 'id';
     this.textField = 'name';
     this.filterable = true;
-    this.searchChange.subscribe((value) => {
+    this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.onSearchChange(value);
     });
   }

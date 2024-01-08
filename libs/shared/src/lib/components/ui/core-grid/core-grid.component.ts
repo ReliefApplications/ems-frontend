@@ -39,8 +39,8 @@ import {
   Record,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
-import { GridSettings } from './models/grid-settings.model';
-import { get, isEqual } from 'lodash';
+import { GridActions, GridSettings } from './models/grid-settings.model';
+import { get, isEqual, isNil } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -136,6 +136,8 @@ export class CoreGridComponent
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   /** Event emitter for row selection */
@@ -297,7 +299,7 @@ export class CoreGridComponent
 
   // === ACTIONS ===
   /** Grid actions */
-  public actions = {
+  public actions: GridActions = {
     add: false,
     update: false,
     delete: false,
@@ -316,6 +318,9 @@ export class CoreGridComponent
 
   /** Whether the grid is editable */
   public editable = false;
+
+  /** Whether the grid is searchable */
+  public searchable = true;
 
   /** Current environment */
   private environment: any;
@@ -359,12 +364,14 @@ export class CoreGridComponent
   ) {
     super();
     this.environment = environment;
-
-    contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.dataQuery) this.reloadData();
-      });
+    // Listen to dashboard filters changes if it is necessary
+    if (contextService.filterRegex.test(this.settings.contextFilters)) {
+      contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          if (this.dataQuery) this.reloadData();
+        });
+    }
   }
 
   /**
@@ -409,6 +416,10 @@ export class CoreGridComponent
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
+    if (!isNil(this.settings.actions?.search)) {
+      this.searchable = this.settings.actions?.search;
+    }
+
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
@@ -662,6 +673,7 @@ export class CoreGridComponent
             item.saved = true;
           }
         }
+        this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
         if (this.updatedItems.length) {
           // show an error message
@@ -680,9 +692,8 @@ export class CoreGridComponent
             }
           );
           return true;
-        } else {
-          return false;
         }
+        return false;
       });
     } else {
       return Promise.resolve(false);
@@ -1335,7 +1346,7 @@ export class CoreGridComponent
    * @param e export event
    */
   public onExport(e: any): void {
-    let ids: any[];
+    let ids: any[] = [];
     if (e.records === 'selected') {
       ids = this.selectedRows;
       if (ids.length === 0) {
@@ -1345,21 +1356,25 @@ export class CoreGridComponent
         );
         return;
       }
-    } else {
-      if (this.gridData.data.length > 0) {
-        ids = [this.gridData.data[0].id];
-      } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', {
-          error: true,
-        });
-        return;
-      }
+    } else if (this.gridData.data.length === 0) {
+      this.snackBar.openSnackBar('Export failed: grid is empty.', {
+        error: true,
+      });
+      return;
     }
 
+    const getSubFields = (field: any) => {
+      return field.subFields.flatMap((y: any) => [
+        { name: y.name, title: y.title },
+        ...(y.subFields || []).flatMap((sub: any) => ({
+          name: sub.name,
+          title: sub.title,
+        })),
+      ]);
+    };
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
-      ids,
       filter:
         e.records === 'selected'
           ? {
@@ -1367,6 +1382,7 @@ export class CoreGridComponent
               filters: [{ operator: 'eq', field: 'ids', value: ids }],
             }
           : this.queryFilter,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       query: this.settings.query,
       sortField: this.sortField,
       sortOrder: this.sortOrder,
@@ -1374,6 +1390,7 @@ export class CoreGridComponent
       application: this.applicationService.name,
       fileName: this.fileName,
       email: e.email,
+      resource: this.settings.resource,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
@@ -1382,12 +1399,7 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields
-              .filter((y: any) => !y.hidden)
-              .map((y: any) => ({
-                name: y.name,
-                title: y.title,
-              })),
+            subFields: getSubFields(x),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1397,10 +1409,7 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields.map((y: any) => ({
-              name: y.name,
-              title: y.title,
-            })),
+            subFields: getSubFields(x),
           })),
       }),
     };

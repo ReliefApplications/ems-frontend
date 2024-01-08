@@ -8,12 +8,12 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from './graphql/queries';
+import { GET_QUERY_TYPES } from '../../../../components/widgets/grid/graphql/queries';
 
 describe('ConfigDisplayGridFieldsModalComponent', () => {
   let component: ConfigDisplayGridFieldsModalComponent;

@@ -215,7 +215,10 @@
 			"rawJson": "Raw JSON"
 		},
 		"label": "Label",
-		"layers": "Layers",
+		"layers": {
+			"few": "Layers",
+			"none": "No layer"
+		},
 		"layout": {
 			"few": "Layouts",
 			"none": "No layout",
@@ -866,9 +869,12 @@
 			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
-				"select": "Select a field"
+				"select": "Select fields"
 			},
-			"preview": "Preview and revert"
+			"preview": "Preview and revert",
+			"range": {
+				"clear": "Clear range"
+			}
 		},
 		"icon": {
 			"modal": {
@@ -1669,6 +1675,7 @@
 						"createGroup": "Create a new group layer",
 						"createLayer": "Create a new layer",
 						"dataSource": {
+							"fieldMapping": "Field Mapping",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"

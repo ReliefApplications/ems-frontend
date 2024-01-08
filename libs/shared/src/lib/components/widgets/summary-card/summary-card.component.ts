@@ -21,7 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { GET_REFERENCE_DATA, GET_RESOURCE_METADATA } from './graphql/queries';
+import { GET_RESOURCE_METADATA } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
@@ -45,7 +45,6 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GridWidgetComponent } from '../grid/grid.component';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 
@@ -123,6 +122,8 @@ export class SummaryCardComponent
   public searchControl = new FormControl('');
   /** Is scrolling */
   public scrolling = false;
+  /** Is refresh card list action */
+  private triggerRefreshCardList = false;
   /** Observer resize changes */
   private resizeObserver!: ResizeObserver;
   /** Used to reset sort options when changing display mode */
@@ -134,6 +135,8 @@ export class SummaryCardComponent
   } = { field: null, order: '' };
   /** Summary card grid scroll event listener */
   private scrollEventListener!: any;
+  /** Timeout listener for summary card scroll bind set on view switch */
+  private scrollEventBindTimeout!: NodeJS.Timeout;
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -269,11 +272,16 @@ export class SummaryCardComponent
         this.handleSearch(value || '');
       });
 
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.refresh();
-      });
+    // Listen to dashboard filters changes if it is necessary
+    if (
+      this.contextService.filterRegex.test(this.widget.settings.contextFilters)
+    ) {
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.refresh();
+        });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -288,6 +296,13 @@ export class SummaryCardComponent
       });
       this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
     }
+    this.bindCardsScrollListener();
+  }
+
+  /**
+   * Bind the scroll event listener to the summary cards container
+   */
+  private bindCardsScrollListener() {
     if (!this.settings.widgetDisplay?.usePagination) {
       if (this.scrollEventListener) {
         this.scrollEventListener();
@@ -306,6 +321,9 @@ export class SummaryCardComponent
     if (this.scrollEventListener) {
       this.scrollEventListener();
     }
+    if (this.scrollEventBindTimeout) {
+      clearTimeout(this.scrollEventListener);
+    }
   }
 
   /**
@@ -318,6 +336,23 @@ export class SummaryCardComponent
       this.sortControl.setValue(null);
       this.onSort(null);
       this.displayMode = value;
+      if (value === 'cards') {
+        if (this.scrollEventBindTimeout) {
+          clearTimeout(this.scrollEventListener);
+        }
+        // On switching views, summary card element ref is destroyed
+        // and all events attached to it are not working as they are bind to
+        // previous element, therefor we have to set them again
+        this.scrollEventBindTimeout = setTimeout(
+          () => this.bindCardsScrollListener(),
+          0
+        );
+      } else {
+        // Clean previously attached scroll listener as the element ref is destroyed
+        if (this.scrollEventListener) {
+          this.scrollEventListener();
+        }
+      }
     }
   }
 
@@ -461,7 +496,10 @@ export class SummaryCardComponent
 
     // update card list and scroll behavior according to the card items display
 
-    if (!this.settings.widgetDisplay?.usePagination) {
+    if (
+      !this.settings.widgetDisplay?.usePagination &&
+      !this.triggerRefreshCardList
+    ) {
       this.cards = [...this.cards, ...newCards];
     } else {
       this.cards = newCards;
@@ -479,7 +517,16 @@ export class SummaryCardComponent
       0
     );
     this.scrolling = false;
+    this.triggerRefreshCardList = false;
     this.loading = res.loading;
+  }
+
+  /**
+   * Refetch cards from the view.
+   */
+  public refreshCardList() {
+    this.triggerRefreshCardList = true;
+    this.dataQuery.refetch();
   }
 
   /**
@@ -680,33 +727,26 @@ export class SummaryCardComponent
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
     this.loading = true;
-    const metaData = await firstValueFrom(
-      this.apollo.query<ReferenceDataQueryResponse>({
-        query: GET_REFERENCE_DATA,
-        variables: {
-          id: card.referenceData,
-        },
-      })
-    );
-    if (metaData.data.referenceData) {
-      const fields = (metaData.data.referenceData.fields || [])
-        .filter((field) => field && typeof field !== 'string')
-        .map((field) => {
+    if (card.referenceData) {
+      const { items, referenceData } =
+        await this.referenceDataService.cacheItems(
+          card.referenceData as string,
+          true
+        );
+      const metadata = (referenceData?.fields || [])
+        .filter((field: any) => field && typeof field !== 'string')
+        .map((field: any) => {
           return {
             label: field.name,
             name: field.name,
             type: field.type,
           };
         });
-      this.cachedCards = (
-        (await this.referenceDataService.cacheItems(
-          card.referenceData as string
-        )) || []
-      ).map((x: any, index: number) => ({
+      this.cachedCards = (items || []).map((x: any, index: number) => ({
         ...this.settings.card,
         rawValue: x,
         index,
-        metadata: fields,
+        metadata,
       }));
       this.pageInfo.length = this.cachedCards.length;
       const contextFilters = this.contextService.injectContext(

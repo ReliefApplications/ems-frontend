@@ -54,6 +54,7 @@ import { WidgetComponent } from '../../../widget/widget.component';
 import { DatePipe } from '../../../../pipes/date/date.pipe';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
 import { formatGridRowData } from './utils/grid-data-formatter';
+import { GridActions } from '../models/grid-settings.model';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -107,7 +108,7 @@ export class GridComponent
   /** Input decorator for canUpdate. */
   @Input() canUpdate = false;
   /** Input decorator for actions */
-  @Input() actions = {
+  @Input() actions: GridActions = {
     add: false,
     update: false,
     delete: false,
