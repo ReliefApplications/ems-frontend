@@ -64,12 +64,32 @@ export const GET_SHORT_RESOURCE_BY_ID = gql`
 
 /** Graphql request for getting users (optionnally by a list of application ids) */
 export const GET_USERS = gql`
-  query GetUsers($applications: [ID]) {
-    users(applications: $applications) {
-      id
-      username
-      name
-      oid
+  query GetUsers(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $applications: [ID]
+  ) {
+    users(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      applications: $applications
+    ) {
+      edges {
+        node {
+          id
+          username
+          name
+          oid
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;

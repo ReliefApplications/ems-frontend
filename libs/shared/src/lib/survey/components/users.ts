@@ -3,7 +3,11 @@ import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { GET_USERS } from '../graphql/queries';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { UsersQueryResponse } from '../../models/user.model';
+import { UsersNodeQueryResponse } from '../../models/user.model';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+
+/** Default items per page for pagination. */
+const ITEMS_PER_PAGE = 10;
 
 /**
  * Inits the users component.
@@ -47,19 +51,27 @@ export const init = (
       );
     },
     onLoaded: (question: any): void => {
+      /** Applied filters */
+      const filter: CompositeFilterDescriptor = {
+        filters: [],
+        logic: 'and',
+      };
       apollo
-        .query<UsersQueryResponse>({
+        .query<UsersNodeQueryResponse>({
           query: GET_USERS,
           variables: {
             applications: question.applications,
+            first: ITEMS_PER_PAGE,
+            afterCursor: null,
+            filter: filter,
           },
         })
         .subscribe(({ data }) => {
-          if (data.users) {
+          if (data.users.edges.length > 0) {
             const users: any = [];
-            for (const user of data.users) {
-              if (!users.some((el: any) => el.value === user.id)) {
-                users.push({ value: user.id, text: user.username });
+            for (const user of data.users.edges) {
+              if (!users.some((el: any) => el.value === user.node.id)) {
+                users.push({ value: user.node.id, text: user.node.username });
               }
             }
             question.contentQuestion.choices = users;
