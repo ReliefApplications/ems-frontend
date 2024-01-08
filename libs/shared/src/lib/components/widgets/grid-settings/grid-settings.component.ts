@@ -27,7 +27,6 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
 
 /**
@@ -62,7 +61,7 @@ export class GridSettingsComponent
 
   // === NOTIFICATIONS ===
   /** List of channels */
-  public channels: Channel[] = [];
+  public channels?: Channel[];
 
   // === FLOATING BUTTON ===
   /** List of fields */
@@ -96,14 +95,12 @@ export class GridSettingsComponent
    * @param applicationService The application service
    * @param queryBuilder The query builder service
    * @param fb FormBuilder instance
-   * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,
     private applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
-    private fb: FormBuilder,
-    private aggregationService: AggregationService
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -260,7 +257,14 @@ export class GridSettingsComponent
         .subscribe(() => {
           this.formChange.emit(this.widgetFormGroup);
         });
+    }
+  }
 
+  /**
+   * Load GET_CHANNELS query when data is necessary.
+   */
+  public getChannels(): void {
+    if (this.widgetFormGroup) {
       this.applicationService.application$
         .pipe(takeUntil(this.destroy$))
         .subscribe((application: Application | null) => {
@@ -355,22 +359,17 @@ export class GridSettingsComponent
    * @param aggregationId new aggregation id
    */
   private onAggregationChange(aggregationId: string): void {
-    if (this.resource?.id && aggregationId) {
-      this.aggregationService
-        .aggregationDataQuery({
-          resource: this.resource.id,
-          aggregation: aggregationId || '',
-        })
-        .subscribe(({ data }: any) => {
-          if (data.recordsAggregation) {
-            this.fields = data.recordsAggregation.items[0]
-              ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({
-                  name: f,
-                  editor: 'text',
-                }))
-              : [];
-          }
-        });
+    if (this.resource?.aggregations && aggregationId) {
+      const customAggregation = this.resource?.aggregations.edges.find(
+        (aggregation: any) => aggregation.node.id === aggregationId
+      )?.node.sourceFields;
+      // @TODO: Figure out fields' types from aggregation
+      this.fields = customAggregation
+        ? customAggregation.map((field: string) => ({
+            name: field,
+            editor: 'text',
+          }))
+        : [];
     }
   }
 

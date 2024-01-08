@@ -23,7 +23,6 @@ import {
   Resource,
   ResourceQueryResponse,
 } from '../../../models/resource.model';
-import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { startWith, takeUntil } from 'rxjs';
@@ -69,8 +68,6 @@ export class SummaryCardSettingsComponent
   public layout: Layout | null = null;
   /** Current aggregation */
   public aggregation: Aggregation | null = null;
-  /** Result of custom aggregation data */
-  public customAggregation: any;
   /** Available fields */
   public fields: any[] = [];
   /** Available resource templates */
@@ -99,13 +96,11 @@ export class SummaryCardSettingsComponent
    * Summary Card Settings component.
    *
    * @param apollo Apollo service
-   * @param aggregationService Shared aggregation service
    * @param fb FormBuilder instance
    * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
-    private aggregationService: AggregationService,
     private fb: FormBuilder,
     private widgetService: WidgetService
   ) {
@@ -143,7 +138,6 @@ export class SummaryCardSettingsComponent
         this.widgetFormGroup?.get('card.aggregation')?.setValue(null);
         this.layout = null;
         this.aggregation = null;
-        this.customAggregation = null;
         this.fields = [];
         if (value) {
           this.referenceData = null;
@@ -199,7 +193,6 @@ export class SummaryCardSettingsComponent
           }
         } else {
           this.aggregation = null;
-          this.customAggregation = null;
         }
       });
 
@@ -372,24 +365,17 @@ export class SummaryCardSettingsComponent
    * for the selected resource and aggregation.
    */
   private getCustomAggregation(): void {
-    if (!this.aggregation || !this.resource?.id) return;
-    this.aggregationService
-      .aggregationDataQuery({
-        resource: this.resource.id,
-        aggregation: this.aggregation.id || '',
-      })
-      ?.subscribe(({ data }: any) => {
-        if (data.recordsAggregation) {
-          this.customAggregation = data.recordsAggregation;
-          // @TODO: Figure out fields' types from aggregation
-          this.fields = this.customAggregation.items[0]
-            ? Object.keys(this.customAggregation.items[0]).map((f) => ({
-                name: f,
-                editor: 'text',
-              }))
-            : [];
-        }
-      });
+    if (!this.aggregation || !this.resource?.aggregations) return;
+    const customAggregation = this.resource?.aggregations.edges.find(
+      (aggregation: any) => aggregation.node.id === this.aggregation?.id
+    )?.node.sourceFields;
+    // @TODO: Figure out fields' types from aggregation
+    this.fields = customAggregation
+      ? customAggregation.map((field: string) => ({
+          name: field,
+          editor: 'text',
+        }))
+      : [];
   }
 
   /**
