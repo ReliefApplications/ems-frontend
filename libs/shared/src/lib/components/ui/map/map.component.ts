@@ -65,6 +65,8 @@ import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { HttpClient } from '@angular/common/http';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 
 /** Component for the map widget */
 @Component({
@@ -167,6 +169,10 @@ export class MapComponent
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
+  /** Admin0 layer */
+  private admin0Layer: any;
+  /** Admin1 layer */
+  private admin1Layer: any;
 
   /**
    * Map widget component
@@ -183,6 +189,7 @@ export class MapComponent
    * @param injector Injector containing all needed providers
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference
+   * @param http Angular http client module
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -196,7 +203,8 @@ export class MapComponent
     private platform: Platform,
     public injector: Injector,
     private shadowDomService: ShadowDomService,
-    public el: ElementRef
+    public el: ElementRef,
+    private http: HttpClient
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -302,6 +310,33 @@ export class MapComponent
       });
     });
 
+    this.map.on('click', (event) => {
+      const admin0LayersList = Object.values(this.admin0Layer._layers);
+      // filter country by country clicked
+      const filteredCountry: any = admin0LayersList.find((layer: any) => {
+        if (layer.feature) {
+          if (
+            booleanPointInPolygon(
+              [event.latlng.lng, event.latlng.lat],
+              layer.feature
+            )
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
+      let country = '';
+      if (filteredCountry) {
+        country = filteredCountry.feature.properties.adm0_a3;
+      }
+      if (country) {
+        if (this.admin1Layer) {
+          this.map.removeLayer(this.admin1Layer);
+        }
+        this.initializeAdmin1Layer(country);
+      }
+    });
     // The scroll jump issue only happens on chrome client browser
     // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
     if (this.platform.WEBKIT || this.platform.BLINK) {
@@ -476,7 +511,7 @@ export class MapComponent
    * @param settings.basemap arcgis basemap
    * @param reset reset the layers
    */
-  setupMapLayers(
+  async setupMapLayers(
     settings: {
       layers: string[] | undefined;
       controls: MapControls;
@@ -485,6 +520,8 @@ export class MapComponent
     },
     reset = false
   ) {
+    // add admin0 layer
+    this.initializeAdmin0Layer();
     // Get layers
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
@@ -567,6 +604,141 @@ export class MapComponent
         }
       }
     }
+  }
+
+  /**
+   * Initialize admin0 layer
+   */
+  initializeAdmin0Layer() {
+    this.getAdmin0()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        this.admin0Layer = L.geoJSON(data, {
+          onEachFeature: this.onEachFeature.bind(this),
+        }).addTo(this.map);
+        // set style background and border transparent
+        this.admin0Layer.setStyle({
+          fillColor: 'transparent',
+          color: 'transparent',
+        });
+      });
+  }
+
+  /**
+   * Add border color in hovered countries
+   *
+   * @param feature feature
+   * @param layer layer
+   */
+  private onEachFeature(feature: any, layer: any): void {
+    if (feature) {
+      layer.on({
+        mouseover: this.highlightFeature.bind(this),
+        mouseout: this.resetHighlight.bind(this),
+      });
+    }
+  }
+
+  /**
+   * Highlight a feature hovered
+   *
+   * @param e event
+   */
+  private highlightFeature(e: any): void {
+    const layer = e.target;
+
+    layer.setStyle({
+      weight: 0.6,
+      color: 'black',
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+      layer.bringToFront();
+    }
+  }
+
+  /**
+   * Reset highlight in a feature not hovered
+   *
+   * @param e event
+   */
+  private resetHighlight(e: any): void {
+    const layer = e.target;
+
+    layer.setStyle({
+      color: 'transparent',
+    });
+  }
+
+  /**
+   * Initialize admin1 layer
+   *
+   * @param country country
+   */
+  async initializeAdmin1Layer(country: string) {
+    this.getAdmin1()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        const filteredData = data.features.filter((feature: any) => {
+          return feature.properties['ISO3166-1-Alpha-3'] === country;
+        });
+        this.admin1Layer = L.geoJSON(filteredData, {
+          onEachFeature: this.onEachFeatureAdmin1.bind(this),
+        }).addTo(this.map);
+        // set style background transparent and border as a thinner grey line
+        this.admin1Layer.setStyle({
+          fillColor: 'transparent',
+          color: '#DCDCDC',
+          weight: 2.0,
+        });
+      });
+  }
+
+  /**
+   * Add border color in hovered states
+   *
+   * @param feature feature
+   * @param layer layer
+   */
+  private onEachFeatureAdmin1(feature: any, layer: any): void {
+    if (feature) {
+      layer.on({
+        mouseover: this.highlightFeature.bind(this),
+        mouseout: this.resetHighlightAdmin1.bind(this),
+      });
+    }
+  }
+
+  /**
+   * Reset highlight in a feature not hovered
+   *
+   * @param e event
+   */
+  private resetHighlightAdmin1(e: any): void {
+    const layer = e.target;
+
+    layer.setStyle({
+      color: '#DCDCDC',
+      weight: 2.0,
+    });
+  }
+
+  /**
+   * get admin0 data
+   *
+   * @returns admin0 data
+   */
+  private getAdmin0() {
+    return this.http.get('/assets/admin0.json');
+  }
+
+  /**
+   * get admin1 data
+   *
+   * @returns admin1 data
+   */
+  private getAdmin1() {
+    return this.http.get('/assets/admin1.geojson');
   }
 
   /**
