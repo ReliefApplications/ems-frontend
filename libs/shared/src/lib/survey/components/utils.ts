@@ -27,12 +27,12 @@ export const buildSearchButton = (
   ngZone: NgZone
 ): any => {
   const searchButton = document.createElement('button');
+  searchButton.id = 'resourceSearchButton';
   searchButton.innerText = surveyLocalization.getString(
     'oort:search',
     (question.survey as SurveyModel).locale
   );
   searchButton.className = 'sd-btn !px-3 !py-1';
-  searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
     temporaryRecords.valueChanges.subscribe((res: any) => {
       if (res) {
@@ -71,7 +71,7 @@ export const buildSearchButton = (
     };
   }
   searchButton.style.display =
-    !question.isReadOnly && question.canSearch ? '' : 'none';
+    !question.isReadOnly && question.canSearch ? 'block' : 'none';
   return searchButton;
 };
 
@@ -242,3 +242,19 @@ export const processNewCreatedRecords = (
   };
   return settings;
 };
+
+/******** SHARED METHODS FOR RESOURCE AND RESOURCES *********/
+
+/**
+ * Build up an element wrapper for questions actions buttons
+ *
+ * @returns Element wrapper containing the actions buttons
+ */
+export function setUpActionsButtonWrapper() {
+  const actionsButtons = document.createElement('div');
+  actionsButtons.id = 'actionsButtons';
+  actionsButtons.style.display = 'flex';
+  actionsButtons.style.gap = '8px';
+  actionsButtons.style.marginBottom = '0.5em';
+  return actionsButtons;
+}

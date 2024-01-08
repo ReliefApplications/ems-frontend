@@ -39,8 +39,8 @@ import {
   Record,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
-import { GridSettings } from './models/grid-settings.model';
-import { get, isEqual } from 'lodash';
+import { GridActions, GridSettings } from './models/grid-settings.model';
+import { get, isEqual, isNil } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -299,7 +299,7 @@ export class CoreGridComponent
 
   // === ACTIONS ===
   /** Grid actions */
-  public actions = {
+  public actions: GridActions = {
     add: false,
     update: false,
     delete: false,
@@ -318,6 +318,9 @@ export class CoreGridComponent
 
   /** Whether the grid is editable */
   public editable = false;
+
+  /** Whether the grid is searchable */
+  public searchable = true;
 
   /** Current environment */
   private environment: any;
@@ -411,6 +414,10 @@ export class CoreGridComponent
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
+    if (!isNil(this.settings.actions?.search)) {
+      this.searchable = this.settings.actions?.search;
+    }
+
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))

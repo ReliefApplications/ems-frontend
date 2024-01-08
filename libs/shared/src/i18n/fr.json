@@ -880,9 +880,12 @@
 			"empty": "Aucune activité détectée",
 			"field": {
 				"all": "Tous les champs",
-				"select": "Sélectionner un champ"
+				"select": "Sélectionner les champs"
 			},
-			"preview": "Prévisualiser et revenir"
+			"preview": "Prévisualiser et revenir",
+			"range": {
+				"clear": "Effacer la plage de données"
+			}
 		},
 		"icon": {
 			"modal": {
