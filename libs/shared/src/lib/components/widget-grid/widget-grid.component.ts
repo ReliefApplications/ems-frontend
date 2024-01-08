@@ -10,7 +10,6 @@ import {
   QueryList,
   SimpleChanges,
   ViewChildren,
-  ViewChild,
 } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
@@ -89,9 +88,8 @@ export class WidgetGridComponent
   private changesSubscription?: Subscription;
   /** Grid type */
   public gridType = GridType;
-  public widgetGridClientWidth: any = '';
-  public widgetGridClientHeight: any = '';
-  @ViewChild('gridsterComponent', { static: false }) gridsterComponent!: ElementRef;
+  /** Fit grid type style */
+  public fitStyle: any = {};
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -146,23 +144,14 @@ export class WidgetGridComponent
     }
     if (changes['options']) {
       this.setGridOptions();
-      if (
-        changes.options.currentValue['gridType'] !==
-        changes.options.previousValue['gridType']
-      ) {
-        // this.widgetGridClientHeight = `max-h-[${document.documentElement.clientHeight}px]`;
-        // this.widgetGridClientWidth = `max-w-[${document.documentElement.clientWidth}px]`;
-        // console.log(this.widgetGridClientHeight);
-        // console.log(this.widgetGridClientWidth);
-        console.log(this.gridsterComponent);
-        const gridsterElement: HTMLElement =
-          this.gridsterComponent.nativeElement;
-        console.log(gridsterElement);
-        gridsterElement.style.maxHeight =
-          document.documentElement.clientHeight.toString();
-        gridsterElement.style.maxWidth =
-          document.documentElement.clientWidth.toString();
+      if (changes.options.currentValue['gridType'] === GridType.Fit) {
+        this.fitStyle['max-width.px'] = document.documentElement.clientWidth;
+        this.fitStyle['max-height.px'] =
+          document.documentElement.clientHeight - 200;
+      } else {
+        this.fitStyle = {};
       }
+      console.log(this.fitStyle);
     }
     if (
       changes['canUpdate'] &&
