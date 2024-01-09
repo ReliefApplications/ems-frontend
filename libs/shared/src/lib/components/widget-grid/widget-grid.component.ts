@@ -56,6 +56,8 @@ export class WidgetGridComponent
   @Input() canUpdate = false;
   /** Additional grid configuration */
   @Input() options?: GridsterConfig;
+  /** Is shared tab boolean */
+  @Input() tabSize: any = {};
   /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
   /** Edit event emitter */
@@ -110,7 +112,6 @@ export class WidgetGridComponent
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    * @param _host host element ref
-   * @param el Element ref
    */
   constructor(
     public dialog: Dialog,
@@ -179,11 +180,43 @@ export class WidgetGridComponent
    * Set the available width and height for fit grid type
    */
   public setFitStyleWidth() {
-    // all available space less left sidenav
-    this.fitStyle['max-width.px'] = document.documentElement.clientWidth - 300;
-    // all available space less header
-    this.fitStyle['max-height.px'] =
-      document.documentElement.clientHeight - 200;
+    // check if it's a tab widget grid
+    if (!this.tabSize['width']) {
+      // all available width less margin
+      this.fitStyle['max-width.px'] = document.documentElement.clientWidth - 50;
+      // subtract left navbar
+      const dashboardNavbar =
+        document.documentElement.getElementsByTagName('shared-navbar');
+      if (dashboardNavbar.length) {
+        this.fitStyle['max-width.px'] -= (
+          dashboardNavbar[0] as any
+        ).offsetWidth;
+      }
+      // all available height less margin
+      this.fitStyle['max-height.px'] =
+        document.documentElement.clientHeight - 160;
+      // subtract dashboard filter
+      const dashboardFilter = document.documentElement.getElementsByTagName(
+        'shared-dashboard-filter'
+      );
+      if (dashboardFilter.length) {
+        this.fitStyle['max-height.px'] -= (
+          dashboardFilter[0] as any
+        ).offsetHeight;
+      }
+      // subtract dashboard header
+      const dashboardHeader = document.getElementById('dashboard-header');
+      if (dashboardHeader) {
+        this.fitStyle['max-height.px'] -= dashboardHeader.offsetHeight;
+      }
+    } else {
+      // set width and height adding some space(removing some size)
+      this.fitStyle['max-width.px'] = Math.floor(this.tabSize['width'] * 0.95);
+      this.fitStyle['max-height.px'] = Math.floor(
+        this.tabSize['height'] * 0.95
+      );
+    }
+    // set min width and min height
     this.fitStyle['min-width.px'] = this.fitStyle['max-width.px'];
     this.fitStyle['min-height.px'] = this.fitStyle['max-height.px'];
   }

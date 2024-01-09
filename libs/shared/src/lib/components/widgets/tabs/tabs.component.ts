@@ -8,6 +8,8 @@ import {
   Output,
   TemplateRef,
   ViewChild,
+  ElementRef,
+  OnInit,
 } from '@angular/core';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -15,6 +17,7 @@ import { takeUntil } from 'rxjs';
 import { DomPortal } from '@angular/cdk/portal';
 import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
 import { WidgetComponent } from '../../widget/widget.component';
+import { ResizeObservable } from '../../../utils/rxjs/resize-observable.util';
 
 /**
  * Tabs widget component.
@@ -26,7 +29,7 @@ import { WidgetComponent } from '../../widget/widget.component';
 })
 export class TabsComponent
   extends UnsubscribeComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnInit
 {
   /** Widget settings */
   @Input() settings: any;
@@ -47,6 +50,8 @@ export class TabsComponent
   portal?: DomPortal;
   /** Selected tab index */
   selectedIndex = 0;
+  /** component size */
+  size: any = {};
 
   /**
    * Tabs widget component.
@@ -54,18 +59,40 @@ export class TabsComponent
    * @param widgetComponent parent widget component ( optional )
    * @param dialog Dialog service
    * @param dashboardService Shared dashboard service
+   * @param _host host element ref
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
     private dialog: Dialog,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private _host: ElementRef
   ) {
     super();
+  }
+
+  ngOnInit(): void {
+    new ResizeObservable(this._host.nativeElement)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setTabSize();
+      });
   }
 
   ngAfterViewInit(): void {
     /** Take part of the tab group element to display it in the header template */
     this.portal = new DomPortal(this.tabGroup?.tabList);
+    setTimeout(() => {
+      this.setTabSize();
+    }, 0);
+  }
+
+  /** Set tab size property */
+  private setTabSize() {
+    const tabSize = {
+      width: this._host.nativeElement.offsetWidth,
+      height: this._host.nativeElement.offsetHeight,
+    };
+    this.size = tabSize;
   }
 
   /**
