@@ -54,17 +54,6 @@ export const GET_GRID_RESOURCE_META = gql`
         id
         name
       }
-      relatedForms {
-        id
-        name
-        fields
-        resource {
-          id
-          queryName
-          name
-          fields
-        }
-      }
       layouts(ids: $layoutIds, first: $firstLayouts) {
         edges {
           node {
@@ -96,6 +85,25 @@ export const GET_GRID_RESOURCE_META = gql`
           endCursor
         }
         totalCount
+      }
+    }
+  }
+`;
+
+/** Graphql request for getting the related forms of a resource */
+export const GET_RELATED_FORMS = gql`
+  query GetGridResourceMeta($resource: ID!) {
+    resource(id: $resource) {
+      relatedForms {
+        id
+        name
+        fields
+        resource {
+          id
+          queryName
+          name
+          fields
+        }
       }
     }
   }

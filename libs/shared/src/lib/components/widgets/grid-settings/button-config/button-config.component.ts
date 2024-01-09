@@ -18,6 +18,7 @@ import { DistributionList } from '../../../../models/distribution-list.model';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -41,8 +42,10 @@ export class ButtonConfigComponent
   @Input() fields: any[] = [];
   /** List of channels */
   @Input() channels?: Channel[];
+  /** Observable list of forms */
+  @Input() relatedForms$?: Observable<Form[] | undefined>;
   /** List of forms */
-  @Input() relatedForms: Form[] = [];
+  public relatedForms?: Form[];
 
   /** List of resources */
   public targetResource?: Resource;
@@ -262,8 +265,17 @@ export class ButtonConfigComponent
         this.formGroup?.get('targetFormField')?.updateValueAndValidity();
         this.formGroup?.get('targetFormQuery')?.updateValueAndValidity();
       });
+    // Listen to changes on the relatedForms (due to resource changes) to update relatedResources
+    this.relatedForms$?.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      if (value) {
+        this.setRelatedResources(value);
+      } else {
+        this.relatedResources = [];
+        this.relatedForms = [];
+      }
+    });
 
-    this.setRelatedResources();
+    console.log('on init');
     if (this.formGroup.value.targetResource) {
       this.targetResource = this.relatedResources.find(
         (x) => x.id === this.formGroup.value.targetResource
@@ -319,10 +331,15 @@ export class ButtonConfigComponent
       });
   }
 
-  /** Set list of resources user can attach a record to */
-  private setRelatedResources(): void {
+  /**
+   * Set list of resources user can attach a record to.
+   *
+   * @param  relatedForms related forms list
+   */
+  private setRelatedResources(relatedForms: Form[]): void {
+    this.relatedForms = relatedForms;
     const resources: Resource[] = [];
-    for (const form of this.relatedForms) {
+    for (const form of relatedForms) {
       const resource = resources.find((x) => x.id === form.resource?.id);
       if (resource) {
         resource.forms?.push(form);

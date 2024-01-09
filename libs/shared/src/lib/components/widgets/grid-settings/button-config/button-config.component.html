@@ -50,7 +50,7 @@
       </ui-checkbox>
 
       <!-- Attach record to another resource record -->
-      <ng-container *ngIf="relatedForms.length > 0">
+      <ng-container *ngIf="relatedForms && relatedForms.length > 0">
         <ui-checkbox formControlName="attachToRecord">
           <ng-container ngProjectAs="label">
             {{
@@ -81,7 +81,11 @@
         <!-- Selection of target resource -->
         <div uiFormFieldDirective>
           <label>{{ 'common.resource.one' | translate }}</label>
-          <ui-select-menu formControlName="targetResource">
+          <ui-select-menu
+            formControlName="targetResource"
+            [loading]="!relatedResources"
+            [filterable]="true"
+          >
             <ui-select-option>--</ui-select-option>
             <ui-select-option
               *ngFor="let resource of relatedResources"
@@ -133,7 +137,7 @@
       </div>
 
       <!-- Prefill form with selected records -->
-      <ng-container *ngIf="relatedForms.length > 0">
+      <ng-container *ngIf="relatedForms && relatedForms.length > 0">
         <ui-checkbox formControlName="prefillForm">
           <ng-container ngProjectAs="label">{{
             'components.widget.settings.grid.buttons.callback.prefill'
@@ -146,7 +150,11 @@
           </ui-alert>
           <div uiFormFieldDirective>
             <label>{{ 'models.form.template' | translate }}</label>
-            <ui-select-menu formControlName="prefillTargetForm">
+            <ui-select-menu
+              formControlName="prefillTargetForm"
+              [loading]="!relatedForms"
+              [filterable]="true"
+            >
               <ui-select-option>--</ui-select-option>
               <ui-select-option
                 *ngFor="let form of relatedForms"

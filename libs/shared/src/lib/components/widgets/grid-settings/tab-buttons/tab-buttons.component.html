@@ -60,7 +60,7 @@
       [channels]="channels"
       [templates]="templates"
       [distributionLists]="distributionLists"
-      [relatedForms]="relatedForms"
+      [relatedForms$]="relatedForms$"
       (deleteButton)="deleteButton(i)"
       (loadChannels)="loadChannels.emit()"
     >
