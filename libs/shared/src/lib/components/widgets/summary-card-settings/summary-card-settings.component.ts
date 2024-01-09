@@ -23,6 +23,7 @@ import {
   Resource,
   ResourceQueryResponse,
 } from '../../../models/resource.model';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { startWith, takeUntil } from 'rxjs';
@@ -96,11 +97,13 @@ export class SummaryCardSettingsComponent
    * Summary Card Settings component.
    *
    * @param apollo Apollo service
+   * @param aggregationService Shared aggregation service
    * @param fb FormBuilder instance
    * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
+    private aggregationService: AggregationService,
     private fb: FormBuilder,
     private widgetService: WidgetService
   ) {
@@ -365,17 +368,23 @@ export class SummaryCardSettingsComponent
    * for the selected resource and aggregation.
    */
   private getCustomAggregation(): void {
-    if (!this.aggregation || !this.resource?.aggregations) return;
-    const customAggregation = this.resource?.aggregations.edges.find(
-      (aggregation: any) => aggregation.node.id === this.aggregation?.id
-    )?.node.sourceFields;
-    // @TODO: Figure out fields' types from aggregation
-    this.fields = customAggregation
-      ? customAggregation.map((field: string) => ({
-          name: field,
-          editor: 'text',
-        }))
-      : [];
+    if (!this.aggregation || !this.resource?.id) return;
+    this.aggregationService
+      .aggregationDataQuery({
+        resource: this.resource.id,
+        aggregation: this.aggregation.id || '',
+      })
+      ?.subscribe(({ data }: any) => {
+        if (data.recordsAggregation) {
+          const customAggregation = data.recordsAggregation;
+          this.fields = customAggregation.items[0]
+            ? Object.keys(customAggregation.items[0]).map((f) => ({
+                name: f,
+                editor: 'text',
+              }))
+            : [];
+        }
+      });
   }
 
   /**
