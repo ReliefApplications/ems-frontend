@@ -10,6 +10,7 @@ import { ApplicationService } from '../../services/application/application.servi
 import { UserListComponent } from './components/user-list/user-list.component';
 import { ADD_USERS } from './graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Application users component.
@@ -23,6 +24,8 @@ export class ApplicationUsersComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Loading status */
+  public loading = true;
   /** Roles */
   public roles: Role[] = [];
   /** Position attribute categories */
@@ -31,6 +34,8 @@ export class ApplicationUsersComponent
   refetch$: Subject<boolean> = new Subject<boolean>();
   /** User list component */
   @ViewChild(UserListComponent) userList?: UserListComponent;
+  /** Filter to apply on the users query */
+  public filters: CompositeFilterDescriptor | null = null;
 
   /**
    * Application users component.

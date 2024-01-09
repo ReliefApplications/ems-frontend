@@ -88,7 +88,6 @@ export class UsersFilterComponent
    * @param value Value to be emitted.
    */
   private emitFilter(value: any): void {
-    console.log(value);
     const filters: any[] = [];
     if (value.search) {
       filters.push({
@@ -100,7 +99,11 @@ export class UsersFilterComponent
       });
     }
     if (value.role) {
-      filters.push({ field: 'roles', operator: 'eq', value: value.role });
+      filters.push({
+        field: 'roles',
+        operator: 'contains',
+        value: [value.role],
+      });
     }
     const filter = {
       logic: 'and',
