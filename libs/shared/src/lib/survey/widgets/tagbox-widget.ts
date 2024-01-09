@@ -169,6 +169,9 @@ export const init = (
     tagboxInstance.valueField = 'value';
     tagboxInstance.popupSettings = { appendTo: 'component' };
     tagboxInstance.fillMode = 'none';
+    tagboxInstance.tagMapper = (tags: any[]) => {
+      return tags.length < 2 ? tags : [tags];
+    };
     return tagboxInstance;
   };
   // ⚠ danger ⚠

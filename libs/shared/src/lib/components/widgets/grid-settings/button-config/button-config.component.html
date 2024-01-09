@@ -250,7 +250,12 @@
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
         <div uiFormFieldDirective>
           <label>{{ 'common.channel.one' | translate }}</label>
-          <ui-select-menu formControlName="notificationChannel">
+          <ui-select-menu
+            formControlName="notificationChannel"
+            (opened)="onOpenSelectChannel()"
+            [loading]="!channels"
+            [filterable]="true"
+          >
             <ui-select-option>--</ui-select-option>
             <ui-select-option
               *ngFor="let channel of channels"
