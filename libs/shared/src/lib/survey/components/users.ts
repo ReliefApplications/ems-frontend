@@ -1,23 +1,19 @@
-import { Apollo } from 'apollo-angular';
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
-import { GET_USERS } from '../graphql/queries';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { UsersNodeQueryResponse } from '../../models/user.model';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-
-/** Default items per page for pagination. */
-const ITEMS_PER_PAGE = 10;
+import { QuestionUsers } from '../types';
+import { DomService } from '../../services/dom/dom.service';
+import { UsersDropdownComponent } from './users-dropdown/users-dropdown.component';
 
 /**
  * Inits the users component.
  *
- * @param apollo Apollo client.
  * @param componentCollectionInstance ComponentCollection
+ * @param domService DOM service.
  */
 export const init = (
-  apollo: Apollo,
-  componentCollectionInstance: ComponentCollection
+  componentCollectionInstance: ComponentCollection,
+  domService: DomService
 ): void => {
   // registers icon-users in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
@@ -50,41 +46,38 @@ export const init = (
         CustomPropertyGridComponentTypes.applicationsDropdown
       );
     },
-    onLoaded: (question: any): void => {
-      /** Applied filters */
-      const filter: CompositeFilterDescriptor = {
-        filters: [],
-        logic: 'and',
-      };
-      apollo
-        .query<UsersNodeQueryResponse>({
-          query: GET_USERS,
-          variables: {
-            applications: question.applications,
-            first: ITEMS_PER_PAGE,
-            afterCursor: null,
-            filter: filter,
-          },
-        })
-        .subscribe(({ data }) => {
-          console.log(data);
-          if (data.users.edges.length > 0) {
-            let users: any = [];
-            for (const user of data.users.edges) {
-              if (!users.some((el: any) => el.value === user.node.id)) {
-                users.push({ value: user.node.id, text: user.node.username });
-              }
-            }
-            // filling with data not yet loaded
-            users = users.concat(
-              new Array(data.users.totalCount - ITEMS_PER_PAGE + 1)
-            );
-            question.contentQuestion.choices = users;
-          }
-        });
+    onAfterRender: async (question: QuestionUsers, el: HTMLElement) => {
+      // hides the tagbox element
+      const element =
+        el.getElementsByTagName('kendo-multiselect')[0].parentElement;
+      if (element) {
+        element.style.display = 'none';
+      }
+
+      // Users that are already selected
+      const selectedUserIDs: string[] = Array.isArray(question.value)
+        ? question.value
+        : [];
+
+      // Appends users dropdown to the question html element
+      const userDropdown = domService.appendComponentToBody(
+        UsersDropdownComponent,
+        el
+      );
+
+      const instance: UsersDropdownComponent = userDropdown.instance;
+
+      // Filter by applications
+      instance.applications = question.applications;
+
+      // Initial selection
+      instance.initialSelectionIDs = selectedUserIDs;
+
+      // Updates the question value when the selection changes
+      instance.selectionChange.subscribe((value: string[]) => {
+        question.value = value;
+      });
     },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onAfterRender: (): void => {},
   };
   componentCollectionInstance.add(component);
 };

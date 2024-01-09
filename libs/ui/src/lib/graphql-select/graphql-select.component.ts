@@ -55,6 +55,8 @@ export class GraphQLSelectComponent
   @Input() textField = '';
   /** Input decorator for path */
   @Input() path = '';
+  /** Whether you can select multiple items or not */
+  @Input() multiselect = false;
   /** Whether it is a survey question or not */
   @Input() isSurveyQuestion = false;
   /** Add type to selectedElements */

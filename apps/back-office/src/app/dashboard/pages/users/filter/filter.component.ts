@@ -90,9 +90,11 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
     const filters: any[] = [];
     if (value.search) {
       filters.push({
-        field: 'name',
-        operator: 'contains',
-        value: value.search,
+        logic: 'or',
+        filters: [
+          { field: 'name', operator: 'contains', value: value.search },
+          { field: 'username', operator: 'contains', value: value.search },
+        ],
       });
     }
     if (value.role) {

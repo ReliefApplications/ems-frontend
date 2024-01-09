@@ -9,14 +9,6 @@ import {
 } from 'survey-core';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
-import { Apollo } from 'apollo-angular';
-import { UsersNodeQueryResponse } from '../../models/user.model';
-import { GET_USERS } from '../graphql/queries';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { QueryRef } from 'apollo-angular';
-
-/** Default items per page for pagination. */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Init tagbox question
@@ -24,13 +16,11 @@ const ITEMS_PER_PAGE = 10;
  * @param domService Shared dom service
  * @param customWidgetCollectionInstance CustomWidgetCollection
  * @param document Document
- * @param apollo Apollo
  */
 export const init = (
   domService: DomService,
   customWidgetCollectionInstance: CustomWidgetCollection,
-  document: Document,
-  apollo: Apollo
+  document: Document
 ): void => {
   const iconId = 'icon-tagbox';
 
@@ -121,53 +111,6 @@ export const init = (
           updateChoices(tagboxInstance, question, searchValue);
         });
 
-      if (question.jsonObj.name === 'users') {
-        tagboxInstance.virtual.pageSize = 10;
-        const filter: CompositeFilterDescriptor = {
-          filters: [],
-          logic: 'and',
-        };
-        const applicationsQuery: QueryRef<UsersNodeQueryResponse> =
-          apollo.watchQuery<UsersNodeQueryResponse>({
-            query: GET_USERS,
-            variables: {
-              first: ITEMS_PER_PAGE,
-              afterCursor: null,
-              filter: filter,
-            },
-          });
-        tagboxInstance.opened.subscribe(() => {
-          tagboxInstance.optionsList.pageChange.subscribe((state: any) => {
-            tagboxInstance.loading = true;
-            applicationsQuery
-              .fetchMore({
-                variables: {
-                  applications: question.data.jsonObj.applications,
-                  first: ITEMS_PER_PAGE,
-                  afterCursor: null,
-                  skip: state.skip,
-                },
-              })
-              .then((results) => {
-                const users: any = [];
-                for (const user of results.data.users.edges) {
-                  if (!users.some((el: any) => el.value === user.node.id)) {
-                    users.push({
-                      value: user.node.id,
-                      text: user.node.username,
-                    });
-                  }
-                }
-                // get data
-                const data = tagboxInstance.optionsList.dataService.data;
-                // Starting from the index given by state.skip in the array data,
-                // remove 10 elements, and insert the elements contained in the users array at that position
-                data.splice(state.skip, ITEMS_PER_PAGE, ...users);
-                tagboxInstance.loading = false;
-              });
-          });
-        });
-      }
       question._propertyValueChangedVirtual = () => {
         updateChoices(tagboxInstance, question, currentSearchValue);
       };
