@@ -1,3 +1,13 @@
+## [2.3.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.3...v2.3.4) (2024-01-09)
+
+
+### Bug Fixes
+
+* application preview not working fine ([68829f8](https://github.com/ReliefApplications/ems-frontend/commit/68829f8ef3469ed31d7531a095be720067aaffde))
+* assets from geocoder package not being available when using as web component ([c38009f](https://github.com/ReliefApplications/ems-frontend/commit/c38009f821ef209e0a0f540a86fd0f261123eedb))
+* dashboard filter would not show value when using object values in dropdown fields ([#2239](https://github.com/ReliefApplications/ems-frontend/issues/2239)) ([3f01238](https://github.com/ReliefApplications/ems-frontend/commit/3f01238cfc5cdcbfc241d043b66221dd9f19a2b4))
+* resources grid not appearing well in forms, in some cases ([236aebc](https://github.com/ReliefApplications/ems-frontend/commit/236aebca37f4fe684aadc343b2fb9d604ec35d03))
+
 ## [2.3.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.2...v2.3.3) (2024-01-08)
 
 
