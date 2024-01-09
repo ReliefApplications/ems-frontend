@@ -118,6 +118,7 @@ export class WidgetGridComponent
   }
 
   ngOnInit(): void {
+    this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
     this.availableWidgets = this.dashboardService.availableWidgets;
     this.skeletons = this.getSkeletons();
     this.setLayout();
@@ -125,7 +126,7 @@ export class WidgetGridComponent
       .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe(() => {
         this.colsNumber = this.setColsNumber(
-          this._host.nativeElement.clientWidth
+          this._host.nativeElement.innerWidth
         );
         this.setGridOptions();
       });
@@ -225,7 +226,7 @@ export class WidgetGridComponent
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
       setGridSize: true,
-      mobileBreakpoint: 0,
+      mobileBreakpoint: 640,
       disableWindowResize: true,
       keepFixedHeightInMobile: true,
       ...this.options,
