@@ -31,7 +31,7 @@ export class TabComponent implements AfterViewInit, OnChanges {
   @ViewChild('content', { read: ViewContainerRef })
   content!: ViewContainerRef;
   /** Widget grid component ref */
-  componentRef: any;
+  WidgetGridComponentRef: any;
 
   /** @returns Additional grid configuration */
   get gridOptions(): GridsterConfig {
@@ -42,17 +42,18 @@ export class TabComponent implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    this.componentRef = this.content.createComponent(WidgetGridComponent);
-    this.componentRef.setInput('widgets', this.structure);
-    this.componentRef.setInput('options', this.gridOptions);
-    this.componentRef.setInput('tabSize', this.tabsSize);
+    this.WidgetGridComponentRef =
+      this.content.createComponent(WidgetGridComponent);
+    this.WidgetGridComponentRef.setInput('widgets', this.structure);
+    this.WidgetGridComponentRef.setInput('options', this.gridOptions);
+    this.WidgetGridComponentRef.setInput('tabSize', this.tabsSize);
     /** To use angular hooks */
-    this.componentRef.changeDetectorRef.detectChanges();
+    this.WidgetGridComponentRef.changeDetectorRef.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['tabsSize']) {
-      this.componentRef.setInput('tabSize', this.tabsSize);
+      this.WidgetGridComponentRef.setInput('tabSize', this.tabsSize);
     }
   }
 }
