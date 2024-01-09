@@ -79,12 +79,7 @@ export const initCustomSurvey = (
     defaultItems.forEach((item) => ComponentCollection.Instance.add(item.json));
   }
 
-  TagboxWidget.init(
-    domService,
-    CustomWidgetCollection.Instance,
-    document,
-    apollo
-  );
+  TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
   TextWidget.init(domService, CustomWidgetCollection.Instance, document);
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
 
@@ -126,7 +121,7 @@ export const initCustomSurvey = (
       document
     );
     OwnerComponent.init(apollo, ComponentCollection.Instance);
-    UsersComponent.init(apollo, ComponentCollection.Instance);
+    UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
   }
 
