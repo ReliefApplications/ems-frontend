@@ -45,12 +45,13 @@ export const GET_GRID_RESOURCE_META = gql`
     $firstLayouts: Int
     $aggregationIds: [ID]
     $firstAggregations: Int
+    $formId: ID
   ) {
     resource(id: $resource) {
       id
       name
       queryName
-      forms {
+      form(id: $formId) {
         id
         name
       }
@@ -104,6 +105,18 @@ export const GET_RELATED_FORMS = gql`
           name
           fields
         }
+      }
+    }
+  }
+`;
+
+/** Graphql request for getting the related templates of a resource */
+export const GET_RESOURCE_TEMPLATES = gql`
+  query GetGridResourceMeta($resource: ID!) {
+    resource(id: $resource) {
+      forms {
+        id
+        name
       }
     }
   }

@@ -19,6 +19,7 @@ import {
   GET_CHANNELS,
   GET_GRID_RESOURCE_META,
   GET_RELATED_FORMS,
+  GET_RESOURCE_TEMPLATES,
 } from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
@@ -291,7 +292,7 @@ export class GridSettingsComponent
    * Load GET_CHANNELS query when data is necessary.
    */
   public getChannels(): void {
-    if (this.widgetFormGroup) {
+    if (this.widgetFormGroup.get('resource')?.value) {
       this.applicationService.application$
         .pipe(takeUntil(this.destroy$))
         .subscribe((application: Application | null) => {
@@ -322,6 +323,27 @@ export class GridSettingsComponent
   }
 
   /**
+   * Load GET_RESOURCE_TEMPLATES query when data is necessary.
+   */
+  public getTemplates(): void {
+    if (this.widgetFormGroup.get('resource')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_TEMPLATES,
+          variables: {
+            resource: this.widgetFormGroup.get('resource')?.value,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.templates = data.resource.forms || [];
+          }
+        });
+    }
+  }
+
+  /**
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
@@ -339,6 +361,7 @@ export class GridSettingsComponent
             firstLayouts: layoutIds?.length || 10,
             aggregationIds,
             firstAggregations: aggregationIds?.length || 10,
+            formId: this.widgetFormGroup.get('template')?.value,
           },
         })
         .pipe(takeUntil(this.destroy$))
@@ -346,7 +369,7 @@ export class GridSettingsComponent
           if (data) {
             this.resource = data.resource;
             this.relatedForms.next(undefined);
-            this.templates = data.resource.forms || [];
+            this.templates = data.resource.form ? [data.resource.form] : [];
             if (this.widgetFormGroup.get('aggregations')?.value.length > 0) {
               this.onAggregationChange(
                 this.widgetFormGroup.get('aggregations')?.value[0]
