@@ -9,11 +9,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import {
-  ListFilterComponent,
-  Role,
-  UnsubscribeComponent,
-} from '@oort-front/shared';
+
 import {
   ButtonModule,
   FormWrapperModule,
@@ -21,15 +17,18 @@ import {
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { ListFilterComponent } from '../../list-filter/list-filter.component';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { Role } from '../../../models/user.model';
 
 /**
  * Filter used by the resources component
  */
 @Component({
   standalone: true,
-  selector: 'app-users-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
+  selector: 'shared-users-filter',
+  templateUrl: './users-filter.component.html',
+  styleUrls: ['./users-filter.component.scss'],
   imports: [
     CommonModule,
     FormWrapperModule,
@@ -41,7 +40,10 @@ import { CommonModule } from '@angular/common';
     TranslateModule,
   ],
 })
-export class FilterComponent extends UnsubscribeComponent implements OnInit {
+export class UsersFilterComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Loading state */
   @Input() loading = false;
   /** Roles list */
