@@ -1,12 +1,12 @@
 <div class="mb-8 flex flex-col gap-2">
   <div class="flex gap-8 justify-between flex-col sm:flex-row">
-    <app-users-filter
+    <shared-users-filter
       #filter
       (filter)="onFilter($event)"
       [loading]="loading"
       [roles]="roles"
     >
-    </app-users-filter>
+    </shared-users-filter>
     <!-- Actions -->
     <div class="flex gap-2">
       <!-- Actions when selected items -->
@@ -56,12 +56,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table
-      *ngIf="!loading"
-      cdk-table
-      uiTableWrapper
-      [dataSource]="users"
-    >
+    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="users">
       <!-- Checkbox Column -->
       <ng-container cdkColumnDef="select">
         <th uiCellHeader *cdkHeaderCellDef scope="col">

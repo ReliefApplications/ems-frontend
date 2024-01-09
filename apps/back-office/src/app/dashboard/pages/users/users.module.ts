@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersRoutingModule } from './users-routing.module';
 import { UsersComponent } from './users.component';
-import { FilterComponent } from './filter/filter.component';
 import {
   ButtonModule,
   CheckboxModule,
@@ -13,7 +12,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SkeletonTableModule } from '@oort-front/shared';
+import { SkeletonTableModule, UsersFilterComponent } from '@oort-front/shared';
 
 /** Users page module */
 @NgModule({
@@ -21,7 +20,6 @@ import { SkeletonTableModule } from '@oort-front/shared';
   imports: [
     CommonModule,
     UsersRoutingModule,
-    FilterComponent,
     ButtonModule,
     TranslateModule,
     MenuModule,
@@ -31,6 +29,7 @@ import { SkeletonTableModule } from '@oort-front/shared';
     SkeletonTableModule,
     TooltipModule,
     PaginatorModule,
+    UsersFilterComponent,
   ],
   exports: [UsersComponent],
 })
