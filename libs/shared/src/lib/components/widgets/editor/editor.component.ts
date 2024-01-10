@@ -138,6 +138,24 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.setHtml();
         });
     }
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((elt) => {
+        const htmlElement = document.createElement('div');
+        htmlElement.innerHTML = this.settings.text;
+
+        for (const [key, value] of Object.entries(elt)) {
+          const filteredFields = htmlElement.querySelectorAll(
+            '[data-filter-field="' +
+              key +
+              '"][data-filter-value="' +
+              value +
+              '"]'
+          );
+          console.log(filteredFields);
+        }
+      });
   }
 
   /**
