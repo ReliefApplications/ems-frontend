@@ -16,7 +16,7 @@ import {
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet';
-require("leaflet-markers-canvas");
+require('leaflet-markers-canvas');
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
@@ -68,7 +68,7 @@ import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
-import { createCustomDivIcon, getFontAwesomeIconSvg } from './utils/create-div-icon';
+import { getFontAwesomeIconSvg } from './utils/create-div-icon';
 
 /** Component for the map widget */
 @Component({
@@ -467,25 +467,34 @@ export class MapComponent
     this.document.getElementById('layer-control-button-close')?.click();
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
-    
+
     // Test layer for canvas
     const markersCanvas: any = new L.MarkersCanvas();
-    markersCanvas.addTo(this.map)
-    
-    var svgString = getFontAwesomeIconSvg({size: 23, color: 'rgba(118, 17, 50, 1)', icon: 'city', opacity: 1});
-    var dataURI = 'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(svgString);
+    markersCanvas.addTo(this.map);
 
-    let icon = L.icon({
+    const svgString = getFontAwesomeIconSvg({
+      size: 23,
+      color: 'rgba(118, 17, 50, 1)',
+      icon: 'city',
+      opacity: 1,
+    });
+    const dataURI =
+      'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(svgString);
+
+    const icon = L.icon({
       iconUrl: dataURI,
       iconSize: [20, 20],
       iconAnchor: [0, 0],
-    })
-    let markers = [];
-    for (var i = 0; i < 10000; i++) {
-      var marker: any = L.marker(
-        [Math.floor(Math.random() * (180)) - 90, Math.floor(Math.random() * (360) - 180)],
+    });
+    const markers = [];
+    for (let i = 0; i < 10000; i++) {
+      const marker: any = L.marker(
+        [
+          Math.floor(Math.random() * 180) - 90,
+          Math.floor(Math.random() * 360 - 180),
+        ],
         { icon }
-      )
+      );
       markers.push(marker);
     }
     markersCanvas.addMarkers(markers);

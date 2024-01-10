@@ -28,15 +28,15 @@ const MIN_CLUSTER_SIZE = 20;
 /** Maximum cluster size in pixel */
 const MAX_CLUSTER_SIZE = 100;
 
-
 /**
  * Returns a .svg as a string for a Font Awesome icon
  *
- * @param icon Font Awesome icon name
- * @param size Size of the icon
+ * @param properties Properties of an icon
  * @returns A string with the .svg definition of the icon
  */
-export const getFontAwesomeIconSvg = (properties: MarkerIconOptions): string => {
+export const getFontAwesomeIconSvg = (
+  properties: MarkerIconOptions
+): string => {
   const { icon, size, color, opacity } = properties;
   // create an i element for the icon
   const iconDef = getIconDefinition(icon as IconName);
@@ -47,11 +47,11 @@ export const getFontAwesomeIconSvg = (properties: MarkerIconOptions): string => 
       'line-height': `${size}px`,
       'font-size': `${size}px`,
       color: color,
-      opacity: opacity.toString()
+      opacity: opacity.toString(),
     },
   });
   return i.node[0].outerHTML;
-}
+};
 
 /**
  * Generates an HTML element for an icon
