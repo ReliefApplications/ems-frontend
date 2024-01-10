@@ -6,7 +6,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual, isObject, merge, size } from 'lodash';
+import { isNil, isEmpty, get, isEqual, isObject, merge } from 'lodash';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
@@ -302,7 +302,7 @@ export class ContextService {
       }, {});
 
     // merge filter values with default values
-    if (size(this.filter.getValue()) > 0) {
+    if (!isEmpty(this.filter.getValue())) {
       merge(data, this.filter.getValue());
     }
 
