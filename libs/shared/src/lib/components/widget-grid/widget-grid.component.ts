@@ -122,6 +122,7 @@ export class WidgetGridComponent
   }
 
   ngOnInit(): void {
+    this.sortWidgets();
     this.availableWidgets = this.dashboardService.availableWidgets;
     this.skeletons = this.getSkeletons();
     this.setLayout();
@@ -492,7 +493,15 @@ export class WidgetGridComponent
       .subscribe(() => {
         if (this.canUpdate) {
           this.onEditWidget({ type: 'display' });
+          this.sortWidgets();
         }
       });
+  }
+
+  /**
+   * Sort widgets by their position in the grid
+   */
+  private sortWidgets() {
+    this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
   }
 }

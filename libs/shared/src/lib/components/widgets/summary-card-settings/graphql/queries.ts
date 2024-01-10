@@ -49,7 +49,6 @@ export const GET_REFERENCE_DATA = gql`
     referenceData(id: $id) {
       id
       name
-      type
       fields
     }
   }

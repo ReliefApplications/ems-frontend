@@ -148,9 +148,9 @@ export class GraphQLSelectComponent
   /** Destroy subject */
   public destroy$ = new Subject<void>();
   /** Query name */
-  private queryName!: string;
+  protected queryName!: string;
   /** Query change subject */
-  private queryChange$ = new Subject<void>();
+  protected queryChange$ = new Subject<void>();
   /** Query elements */
   private queryElements: any[] = [];
   /** Cached elements */
@@ -522,7 +522,7 @@ export class GraphQLSelectComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: any, loading: boolean) {
+  protected updateValues(data: any, loading: boolean) {
     const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;
     const elements: any[] = get(data, path).edges
       ? get(data, path).edges.map((x: any) => x.node)
