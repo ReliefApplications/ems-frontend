@@ -242,10 +242,8 @@ export const render = (
             filter
           )
           .then((choices) => {
-            question.choices = [];
-            // this is to avoid that the choices appear on the 'choices' tab
             question.setPropertyValue(
-              'visibleChoices',
+              'choices',
               choices.map((choice) => new ItemValue(choice))
             );
             // manually set the selected option (not done by default)

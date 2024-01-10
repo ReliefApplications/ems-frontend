@@ -329,10 +329,62 @@ export class FormBuilderComponent
         )
     );
 
+    this.initChoicesPanels();
+
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
     this.addAdorners();
+  }
+
+  private initChoicesPanels() {
+    const handleChoicesPanelExpansion = (
+      expandingPanel: any,
+      panels: any,
+      question: any
+    ) => {
+      panels.forEach((panel: any) => {
+        if (panel === expandingPanel && !panel.isExpanded) {
+          panel.expand();
+        } else if (panel !== expandingPanel) {
+          panel.collapse();
+          if (panel.name == 'Choices from Reference data') {
+            question.referenceData = undefined;
+          } else if (panel.name == 'choicesByUrl') {
+            question.choicesByUrl.processedUrl = '';
+          }
+          question.choices = undefined;
+        }
+      });
+    };
+
+    this.surveyCreator.onSelectedElementChanged.add((sender, options) => {
+      const question = options.newSelectedElement;
+      const choicesPanels = sender.propertyGrid
+        .getAllPanels()
+        .filter((panel) => panel.name.toLowerCase().includes('choices'));
+      console.log(question);
+
+      if (choicesPanels.length > 1) {
+        const currentPanelName = question.referenceData
+          ? 'Choices from Reference data'
+          : question.choicesByUrl.processedUrl
+          ? 'choicesByUrl'
+          : 'choices';
+        const panelToExpand = choicesPanels.find(
+          (panel) => panel.name === currentPanelName
+        );
+        handleChoicesPanelExpansion(panelToExpand, choicesPanels, question);
+
+        choicesPanels.forEach((panel: any) => {
+          panel.onPropertyChanged.add((sender: any, options: any) => {
+            if (options.newValue === 'expanded') {
+              handleChoicesPanelExpansion(panel, choicesPanels, question);
+            }
+          });
+        });
+      }
+    });
   }
 
   /**

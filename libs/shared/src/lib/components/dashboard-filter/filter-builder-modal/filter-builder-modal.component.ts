@@ -234,6 +234,12 @@ export class FilterBuilderModalComponent
       }
     });
 
+    // Set content
+    const survey = new SurveyModel(
+      this.data?.surveyStructure || DEFAULT_STRUCTURE
+    );
+    this.surveyCreator.JSON = survey.toJSON();
+
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService) as any
@@ -244,12 +250,6 @@ export class FilterBuilderModalComponent
           renderGlobalProperties(this.referenceDataService)
         )
     );
-
-    // Set content
-    const survey = new SurveyModel(
-      this.data?.surveyStructure || DEFAULT_STRUCTURE
-    );
-    this.surveyCreator.JSON = survey.toJSON();
   }
 
   /**
