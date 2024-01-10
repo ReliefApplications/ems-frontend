@@ -21,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../form-builder/form-builder.service';
 import { ApplicationService } from '../application/application.service';
+import jsonpath from 'jsonpath';
 
 /**
  * Dashboard context service
@@ -213,13 +214,24 @@ export class ContextService {
     const filterRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
     // Regex to detect {{context.}} in object
     const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
-
     if ('field' in filter && filter.field) {
       // If it's a filter descriptor, replace value ( if string )
       if (filter.value && typeof filter.value === 'string') {
         const filterName = filter.value?.match(filterRegex)?.[0];
         if (filterName) {
-          filter.value = get(this.availableFilterFieldsValue, filterName);
+          const firstFilterName = filterName.split('.')[0];
+          const secondFilterName = filterName.split('.')[1];
+          if (
+            firstFilterName in this.availableFilterFieldsValue &&
+            Array.isArray(this.availableFilterFieldsValue[firstFilterName])
+          ) {
+            filter.value = jsonpath.query(
+              this.availableFilterFieldsValue,
+              `$..value.${secondFilterName}`
+            );
+          } else {
+            filter.value = get(this.availableFilterFieldsValue, filterName);
+          }
         } else {
           const contextName = filter.value?.match(contextRegex)?.[0];
           if (contextName) {
