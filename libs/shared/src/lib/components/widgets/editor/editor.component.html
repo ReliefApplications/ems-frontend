@@ -1,21 +1,19 @@
-<div class="h-full flex flex-col">
+<div
+  class="h-full overflow-auto"
+  [ngClass]="{
+    'p-[14px]': usePadding
+  }"
+  (click)="onClick($event)"
+>
   <div
-    class="flex-1 overflow-auto"
-    [ngClass]="{
-      'p-[14px]': usePadding
-    }"
+    *ngIf="!loading; else loadingTmpl"
+    class="w-full h-fit"
     (click)="onClick($event)"
   >
-    <div
-      *ngIf="!loading; else loadingTmpl"
-      class="w-full h-fit"
-      (click)="onClick($event)"
-    >
-      <shared-html-widget-content
-        [html]="formattedHtml"
-        [style]="formattedStyle"
-      ></shared-html-widget-content>
-    </div>
+    <shared-html-widget-content
+      [html]="formattedHtml"
+      [style]="formattedStyle"
+    ></shared-html-widget-content>
   </div>
 </div>
 <ng-template #headerTemplate>
