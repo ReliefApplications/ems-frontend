@@ -42,20 +42,23 @@ export const GET_GRID_RESOURCE_META = gql`
   query GetGridResourceMeta(
     $resource: ID!
     $layoutIds: [ID]
+    $ignoreLayouts: Boolean
     $firstLayouts: Int
     $aggregationIds: [ID]
+    $ignoreAggregations: Boolean
     $firstAggregations: Int
     $formId: ID
+    $ignoreForms: Boolean
   ) {
     resource(id: $resource) {
       id
       name
       queryName
-      form(id: $formId) {
+      forms(id: $formId, ignore: $ignoreForms) {
         id
         name
       }
-      layouts(ids: $layoutIds, first: $firstLayouts) {
+      layouts(ids: $layoutIds, first: $firstLayouts, ignore: $ignoreLayouts) {
         edges {
           node {
             id
@@ -71,7 +74,11 @@ export const GET_GRID_RESOURCE_META = gql`
         }
         totalCount
       }
-      aggregations(ids: $aggregationIds, first: $firstAggregations) {
+      aggregations(
+        ids: $aggregationIds
+        first: $firstAggregations
+        ignore: $ignoreAggregations
+      ) {
         edges {
           node {
             id
@@ -117,6 +124,30 @@ export const GET_RESOURCE_TEMPLATES = gql`
       forms {
         id
         name
+      }
+    }
+  }
+`;
+
+/** Graphql request for getting resource layouts by its id */
+export const GET_RESOURCE_LAYOUTS = gql`
+  query GetGridResourceMeta($resource: ID!) {
+    resource(id: $resource) {
+      layouts {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
     }
   }

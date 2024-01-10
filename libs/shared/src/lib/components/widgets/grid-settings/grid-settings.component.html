@@ -18,7 +18,9 @@
         [formGroup]="widgetFormGroup"
         [resource]="resource"
         [templates]="templates"
+        [loadedLayouts]="loadedLayouts"
         (loadTemplates)="getTemplates()"
+        (loadLayouts)="getLayouts()"
       ></shared-tab-main>
     </ng-template>
   </ui-tab>

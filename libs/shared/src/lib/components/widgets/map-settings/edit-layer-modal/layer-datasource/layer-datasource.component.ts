@@ -84,7 +84,6 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.resource,
-        hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {

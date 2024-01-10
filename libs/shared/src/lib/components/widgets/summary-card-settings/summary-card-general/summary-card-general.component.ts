@@ -1,4 +1,10 @@
-import { Component, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,6 +36,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
+import { Form } from '../../../../models/form.model';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -58,7 +65,10 @@ import { ReferenceData } from '../../../../models/reference-data.model';
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
 })
-export class SummaryCardGeneralComponent extends UnsubscribeComponent {
+export class SummaryCardGeneralComponent
+  extends UnsubscribeComponent
+  implements OnDestroy
+{
   /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
   /** Selected reference data */
@@ -69,6 +79,18 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   @Input() layout: Layout | null = null;
   /** Selected aggregation */
   @Input() aggregation: Aggregation | null = null;
+  /** Available resource templates */
+  @Input() templates?: Form[];
+  /** Emits when the select template is opened for the first time */
+  @Output() loadTemplates = new EventEmitter<void>();
+  /** Saves if the layouts has been fetched */
+  @Input() loadedLayouts = false;
+  /** Emits when complete layout list should be fetched */
+  @Output() loadLayouts = new EventEmitter<void>();
+  /** Saves if the templates has been fetched */
+  public loadedTemplates = false;
+  /** Timeout listener */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Component for the general summary cards tab
@@ -90,24 +112,33 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     if (!this.resource) {
       return;
     }
+    if (!this.loadedLayouts) {
+      this.loadLayouts.emit();
+    }
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
-    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
-      data: {
-        resource: this.resource,
-        hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('card.layout')?.setValue(value);
-        } else {
-          this.formGroup.get('card.layout')?.setValue((value as any).id);
+    const awaitTime = this.loadedLayouts ? 0 : 500;
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    this.timeoutListener = setTimeout(() => {
+      const dialogRef = this.dialog.open(AddLayoutModalComponent, {
+        data: {
+          resource: this.resource,
+          useQueryRef: false,
+        },
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('card.layout')?.setValue(value);
+          } else {
+            this.formGroup.get('card.layout')?.setValue((value as any).id);
+          }
         }
-      }
-    });
+      });
+    }, awaitTime);
   }
 
   /**
@@ -206,10 +237,27 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
    * @param formField Current form field
    * @param event click event
    */
-  clearFormField(formField: string, event: Event) {
+  public clearFormField(formField: string, event: Event) {
     if (this.formGroup.get(formField)?.value) {
       this.formGroup.get(formField)?.setValue(null);
     }
     event.stopPropagation();
+  }
+
+  /**
+   * On open select menu the first time, emits event to load resource templates query.
+   */
+  public onOpenSelectTemplates(): void {
+    if (!this.loadedTemplates) {
+      this.loadTemplates.emit();
+      this.loadedTemplates = true;
+    }
+  }
+
+  override ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    super.ngOnDestroy();
   }
 }

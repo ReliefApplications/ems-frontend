@@ -16,20 +16,23 @@ import {
   FormWrapperModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
+  SelectMenuModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_RESOURCE_LAYOUTS, GET_FORM_LAYOUTS } from './graphql/queries';
+import { get } from 'lodash';
+import { Layout } from '../../../models/layout.model';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
  */
 interface DialogData {
-  hasLayouts: boolean;
   form?: Form;
   resource?: Resource;
+  useQueryRef?: boolean;
 }
 
 /**
@@ -48,6 +51,7 @@ interface DialogData {
     ButtonModule,
     FormWrapperModule,
     TooltipModule,
+    SelectMenuModule,
   ],
   selector: 'shared-add-layout-modal',
   templateUrl: './add-layout-modal.component.html',
@@ -66,10 +70,6 @@ export class AddLayoutModalComponent
    */
   public resource?: Resource;
   /**
-   * Has layouts
-   */
-  public hasLayouts = false;
-  /**
    * Next step
    */
   public nextStep = false;
@@ -84,10 +84,21 @@ export class AddLayoutModalComponent
    * Selected layout control
    */
   public selectedLayoutControl = new UntypedFormControl('');
+  /**
+   * Layouts list when not using graphql-select
+   */
+  public layouts?: Layout[];
 
   /** Reference to graphql select for layout */
   @ViewChild(GraphQLSelectComponent)
   layoutSelect?: GraphQLSelectComponent;
+
+  /** @returns if has layouts */
+  get hasLayouts(): boolean {
+    return (
+      get(this.form ? this.form : this.resource, 'layouts.totalCount', 0) > 0
+    );
+  }
 
   /**
    * Add layout modal component.
@@ -106,32 +117,43 @@ export class AddLayoutModalComponent
     private apollo: Apollo
   ) {
     super();
-    this.hasLayouts = data.hasLayouts;
     this.form = data.form;
     this.resource = data.resource;
   }
 
   ngOnInit() {
-    if (this.resource)
-      this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
-        query: GET_RESOURCE_LAYOUTS,
-        variables: {
-          resource: this.resource?.id,
-        },
-      });
-    else if (this.form)
-      this.queryRef = this.apollo.watchQuery<FormQueryResponse>({
-        query: GET_FORM_LAYOUTS,
-        variables: {
-          form: this.form?.id,
-        },
-      });
+    if (this.data.useQueryRef !== false) {
+      if (this.resource)
+        this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
+          query: GET_RESOURCE_LAYOUTS,
+          variables: {
+            resource: this.resource?.id,
+          },
+        });
+      else if (this.form)
+        this.queryRef = this.apollo.watchQuery<FormQueryResponse>({
+          query: GET_FORM_LAYOUTS,
+          variables: {
+            form: this.form?.id,
+          },
+        });
+    } else {
+      this.layouts = this.resource?.layouts?.edges.map(
+        (edge: any) => edge.node
+      );
+    }
 
     this.selectedLayoutControl.valueChanges.subscribe((value) => {
       if (value) {
-        this.dialogRef.close(
-          this.layoutSelect?.elements.getValue().find((x) => x.id === value)
-        );
+        if (this.data.useQueryRef) {
+          this.dialogRef.close(
+            this.layoutSelect?.elements.getValue().find((x) => x.id === value)
+          );
+        } else {
+          this.dialogRef.close(
+            this.layouts?.find((x) => x.id === value) as any
+          );
+        }
       }
     });
   }

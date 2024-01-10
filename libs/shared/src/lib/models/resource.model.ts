@@ -13,7 +13,6 @@ export interface Resource {
   singleQueryName?: string;
   queryName?: string;
   forms?: Form[];
-  form?: Form;
   relatedForms?: Form[];
   createdAt?: Date;
   records?: Connection<Record>;

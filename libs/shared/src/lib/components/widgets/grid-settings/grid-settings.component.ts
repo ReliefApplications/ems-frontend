@@ -19,6 +19,7 @@ import {
   GET_CHANNELS,
   GET_GRID_RESOURCE_META,
   GET_RELATED_FORMS,
+  GET_RESOURCE_LAYOUTS,
   GET_RESOURCE_TEMPLATES,
 } from './graphql/queries';
 import { Application } from '../../../models/application.model';
@@ -37,6 +38,8 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
 import { WidgetSettings } from '../../../models/dashboard.model';
 import { BehaviorSubject } from 'rxjs';
 import { TabsComponent } from '@oort-front/ui';
+import { Connection } from '../../../utils/graphql/connection.type';
+import { Layout } from '../../../models/layout.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -89,6 +92,9 @@ export class GridSettingsComponent
   public relatedForms = new BehaviorSubject<Form[] | undefined>(undefined);
   /** Related forms as observable */
   public relatedForms$ = this.relatedForms.asObservable();
+
+  /** Saves if the complete layout list has been fetched */
+  public loadedLayouts = false;
 
   /** Tabs component associated to the grid settings */
   @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
@@ -344,6 +350,31 @@ export class GridSettingsComponent
   }
 
   /**
+   * Load GET_RESOURCE_LAYOUTS query when data is necessary.
+   */
+  public getLayouts(): void {
+    if (this.widgetFormGroup.get('resource')?.value && !this.loadedLayouts) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_LAYOUTS,
+          variables: {
+            resource: this.widgetFormGroup.get('resource')?.value,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              layouts: (data.resource.layouts as Connection<Layout>) || [],
+            };
+            this.loadedLayouts = true;
+          }
+        });
+    }
+  }
+
+  /**
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
@@ -352,24 +383,30 @@ export class GridSettingsComponent
         this.widgetFormGroup?.get('layouts')?.value;
       const aggregationIds: string[] | undefined =
         this.widgetFormGroup?.get('aggregations')?.value;
+      const formId: string | undefined =
+        this.widgetFormGroup.get('template')?.value;
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
             resource: this.widgetFormGroup.get('resource')?.value,
             layoutIds,
+            ignoreLayouts: layoutIds?.length ? false : true,
             firstLayouts: layoutIds?.length || 10,
             aggregationIds,
+            ignoreAggregations: aggregationIds?.length ? false : true,
             firstAggregations: aggregationIds?.length || 10,
-            formId: this.widgetFormGroup.get('template')?.value,
+            formId,
+            ignoreForms: formId ? false : true,
           },
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
+          this.loadedLayouts = false;
+          this.relatedForms.next(undefined);
           if (data) {
             this.resource = data.resource;
-            this.relatedForms.next(undefined);
-            this.templates = data.resource.form ? [data.resource.form] : [];
+            this.templates = data.resource.forms ? data.resource.forms : [];
             if (this.widgetFormGroup.get('aggregations')?.value.length > 0) {
               this.onAggregationChange(
                 this.widgetFormGroup.get('aggregations')?.value[0]
@@ -380,7 +417,6 @@ export class GridSettingsComponent
               );
             }
           } else {
-            this.relatedForms.next(undefined);
             this.templates = [];
             this.resource = null;
             this.fields = [];
@@ -391,6 +427,7 @@ export class GridSettingsComponent
       this.templates = [];
       this.resource = null;
       this.fields = [];
+      this.loadedLayouts = false;
     }
   }
 

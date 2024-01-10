@@ -79,6 +79,8 @@
     <shared-layout-table
       [resource]="resource"
       [selectedLayouts]="$any(formGroup).get('layouts')"
+      [loadedLayouts]="loadedLayouts"
+      (loadLayouts)="loadLayouts.emit()"
     ></shared-layout-table>
   </div>
 </div>

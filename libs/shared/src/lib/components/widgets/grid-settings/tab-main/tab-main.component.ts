@@ -18,6 +18,10 @@ export class TabMainComponent {
   @Input() resource: Resource | null = null;
   /** Available resource templates */
   @Input() templates?: Form[];
+  /** Saves if the layouts has been fetched */
+  @Input() loadedLayouts = false;
+  /** Emits when complete layout list should be fetched */
+  @Output() loadLayouts = new EventEmitter<void>();
   /** Emits when the select template is opened for the first time */
   @Output() loadTemplates = new EventEmitter<void>();
   /** Saves if the templates has been fetched */
