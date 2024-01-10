@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isNil, set } from 'lodash';
+import { clone, get, isEqual, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -138,23 +138,28 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.setHtml();
         });
     }
-
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((elt) => {
-        const htmlElement = document.createElement('div');
-        htmlElement.innerHTML = this.settings.text;
-
-        for (const [key, value] of Object.entries(elt)) {
-          const filteredFields = htmlElement.querySelectorAll(
-            '[data-filter-field="' +
-              key +
-              '"][data-filter-value="' +
-              value +
-              '"]'
-          );
-          console.log(filteredFields);
-        }
+      .subscribe((value) => {
+        const toggleActiveFilters = (node: any) => {
+          if (get(node, 'dataset.filterField')) {
+            if (
+              isEqual(
+                get(node, 'dataset.filterValue'),
+                get(value, node.dataset.filterField)
+              )
+            ) {
+              node.dataset.filterActive = true;
+            } else {
+              node.dataset.filterActive = false;
+            }
+          }
+          for (let i = 0; i < node.childNodes.length; i++) {
+            const child = node.childNodes[i];
+            toggleActiveFilters(child);
+          }
+        };
+        toggleActiveFilters(this.htmlContentComponent.el.nativeElement);
       });
   }
 
