@@ -9,17 +9,13 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GraphQLSelectModule, SelectMenuComponent } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../components/utils/unsubscribe/unsubscribe.component';
-import {
-  User,
-  UserQueryResponse,
-  UsersNodeQueryResponse,
-} from '../../../models/user.model';
-import { GET_USERS, GET_USER_BY_ID } from './graphql/queries';
+import { User, UsersNodeQueryResponse } from '../../../models/user.model';
+import { GET_USERS } from './graphql/queries';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 /** Default page size */
 const ITEMS_PER_PAGE = 10;
@@ -45,18 +41,18 @@ export class UsersDropdownComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  /** Form that has selected users */
-  public form = new FormControl<string[]>([]);
   /** Applications to get users from, if any */
   @Input() applications?: string[];
   /** IDs of the initial user selection */
   @Input() initialSelectionIDs: string[] = [];
+  /** Selection change emitter */
+  @Output() selectionChange = new EventEmitter<string[]>();
   /** Initial selection of users */
   public initialSelection: User[] = [];
   /** Users query */
   public query!: QueryRef<UsersNodeQueryResponse>;
-  /** Selection change emitter */
-  @Output() selectionChange = new EventEmitter<string[]>();
+  /** Form control that has selected users */
+  public control = new FormControl<string[]>([]);
 
   /**
    * Select menu component
@@ -84,8 +80,8 @@ export class UsersDropdownComponent
       },
     });
 
-    this.form.valueChanges?.subscribe(() => {
-      this.selectionChange.emit(this.form.value ?? []);
+    this.control.valueChanges?.subscribe(() => {
+      this.selectionChange.emit(this.control.value ?? []);
     });
   }
 
@@ -96,25 +92,31 @@ export class UsersDropdownComponent
     }
 
     // Sets the form value
-    this.form.setValue(this.initialSelectionIDs);
+    this.control.setValue(this.initialSelectionIDs);
 
-    // Not the most efficient way to do this, but it works
-    // Maybe we should add a query to get multiple users by ID
-    const res = this.initialSelectionIDs.map((id) => {
-      return firstValueFrom(
-        this.apollo.query<UserQueryResponse>({
-          query: GET_USER_BY_ID,
-          variables: {
-            id,
+    this.apollo
+      .query<UsersNodeQueryResponse>({
+        query: GET_USERS,
+        variables: {
+          first: this.initialSelectionIDs.length,
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: this.initialSelectionIDs,
+              },
+            ],
           },
-        })
-      );
-    });
-
-    // Array of user objects to be used as initial selection
-    this.initialSelection = (await Promise.all(res)).map(
-      (res) => res?.data?.user
-    );
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        if (data.users) {
+          this.initialSelection = data.users.edges.map((x) => x.node);
+        }
+      });
   }
 
   /**

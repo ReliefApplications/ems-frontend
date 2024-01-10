@@ -33,15 +33,3 @@ export const GET_USERS = gql`
     }
   }
 `;
-
-/** Graphql request for getting user by id */
-export const GET_USER_BY_ID = gql`
-  query GetUserById($id: ID!) {
-    user(id: $id) {
-      id
-      username
-      name
-      oid
-    }
-  }
-`;
