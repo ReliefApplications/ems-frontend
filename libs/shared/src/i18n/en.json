@@ -1762,6 +1762,7 @@
 						"defaultLabel": "Default label",
 						"label": "Label",
 						"symbol": "Symbol",
+						"uniqueValue": "Unique values",
 						"value": "Value"
 					},
 					"tooltip": {
