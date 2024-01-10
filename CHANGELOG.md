@@ -1,3 +1,18 @@
+# [2.4.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.4...v2.4.0) (2024-01-10)
+
+
+### Bug Fixes
+
+* Remove currently useless download option from the map widget. ([#2266](https://github.com/ReliefApplications/ems-frontend/issues/2266)) ([3edd7bb](https://github.com/ReliefApplications/ems-frontend/commit/3edd7bb46030fdd0f592371533159b5ece7ad01a))
+* summary card and text widgets checkbox inconclusive ([#2217](https://github.com/ReliefApplications/ems-frontend/issues/2217)) ([7dd457d](https://github.com/ReliefApplications/ems-frontend/commit/7dd457d7fbf70f4e5e1c79b98b3e38f47fea94e2))
+* widgets would be reordered based on their index when mobile mode activated ([#2229](https://github.com/ReliefApplications/ems-frontend/issues/2229)) ([bcba2c8](https://github.com/ReliefApplications/ems-frontend/commit/bcba2c84a772417be7d9f21c840ee9adef4d46cd))
+
+
+### Features
+
+* allow dashboard filter to have default values ([#2263](https://github.com/ReliefApplications/ems-frontend/issues/2263)) ([b73e747](https://github.com/ReliefApplications/ems-frontend/commit/b73e747c6bb9b7f6f4fc5742c95b989f9e863f8f))
+* use cursor pagination for users ([#2265](https://github.com/ReliefApplications/ems-frontend/issues/2265)) ([f44abde](https://github.com/ReliefApplications/ems-frontend/commit/f44abdeb0e814b3360a582c18f557168383446d5))
+
 ## [2.3.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.3...v2.3.4) (2024-01-09)
 
 
