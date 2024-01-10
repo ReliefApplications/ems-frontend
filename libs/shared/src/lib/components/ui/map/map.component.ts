@@ -601,10 +601,10 @@ export class MapComponent
     //   timeDimensionGeoJSON as GeoJsonObject
     // );
     // Add download button and download menu
-    this.mapControlsService.getDownloadControl(
-      this.map,
-      controls.download ?? true
-    );
+    // this.mapControlsService.getDownloadControl(
+    //  this.map,
+    //  controls.download ?? true
+    // );
     // Add zoom control
     if (!this.zoomControl && !this.map.zoomControl) {
       this.zoomControl = this.mapControlsService.getZoomControl(
