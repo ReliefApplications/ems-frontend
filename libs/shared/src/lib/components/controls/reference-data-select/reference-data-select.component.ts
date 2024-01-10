@@ -76,19 +76,38 @@ export class ReferenceDataSelectComponent extends GraphQLSelectComponent {
     private apollo: Apollo
   ) {
     super(ngControl, elementRef, renderer, changeDetectorRef, shadowDomService);
-    this.query = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
-      query: GET_REFERENCE_DATAS,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
+
     this.valueField = 'id';
     this.textField = 'name';
     this.filterable = true;
     this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.onSearchChange(value);
     });
+  }
+
+  /**
+   * Override GraphQLSelectComponent onOpenSelect to only load query when
+   * select menu is open for the first time.
+   *
+   */
+  public override onOpenSelect(): void {
+    if (!this.query) {
+      this.query = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
+        query: GET_REFERENCE_DATAS,
+        variables: {
+          first: ITEMS_PER_PAGE,
+          sortField: 'name',
+        },
+      });
+
+      this.query.valueChanges
+        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+        .subscribe(({ data, loading }) => {
+          this.queryName = Object.keys(data)[0];
+          this.updateValues(data, loading);
+        });
+    }
+    super.onOpenSelect();
   }
 
   /**
