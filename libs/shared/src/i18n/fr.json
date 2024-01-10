@@ -215,7 +215,10 @@
 			"rawJson": "JSON brut"
 		},
 		"label": "Etiquette",
-		"layers": "Couches",
+		"layers": {
+			"few": "Couches",
+			"none": "Pas de couche"
+		},
 		"layout": {
 			"few": "Mises en page",
 			"none": "Aucune mise en page",
@@ -877,9 +880,12 @@
 			"empty": "Aucune activité détectée",
 			"field": {
 				"all": "Tous les champs",
-				"select": "Sélectionner un champ"
+				"select": "Sélectionner les champs"
 			},
-			"preview": "Prévisualiser et revenir"
+			"preview": "Prévisualiser et revenir",
+			"range": {
+				"clear": "Effacer la plage de données"
+			}
 		},
 		"icon": {
 			"modal": {
@@ -1682,6 +1688,7 @@
 						"createGroup": "Créer un nouveau groupe de couches",
 						"createLayer": "Créer un nouveau calque",
 						"dataSource": {
+							"fieldMapping": "Mapping des Champs",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"
@@ -1768,6 +1775,7 @@
 						"defaultLabel": "Libellé par défaut",
 						"label": "Libellé",
 						"symbol": "Symbole",
+						"uniqueValue": "Valeurs uniques",
 						"value": "Valeur"
 					},
 					"tooltip": {

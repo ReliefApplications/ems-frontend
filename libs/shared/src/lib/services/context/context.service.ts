@@ -6,7 +6,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual, isObject } from 'lodash';
+import { isNil, isEmpty, get, isEqual, isObject, merge } from 'lodash';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
@@ -44,6 +44,8 @@ export class ContextService {
   public filterPosition = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
+  /** Regex used to allow widget refresh */
+  public filterRegex = /{{filter\.[^}]+}}/;
   /** Dashboard object */
   public dashboard?: Dashboard;
   /** Available filter positions */
@@ -290,9 +292,21 @@ export class ContextService {
   public initSurvey(): SurveyModel {
     const surveyStructure = this.filterStructure.getValue();
     const survey = this.formBuilderService.createSurvey(surveyStructure);
-    if (this.filter.getValue()) {
-      survey.data = this.filter.getValue();
+
+    // get questions default value
+    const data = survey
+      .getAllQuestions()
+      .reduce(function (result: any, question: any) {
+        result[question.name] = question.defaultValue;
+        return result;
+      }, {});
+
+    // merge filter values with default values
+    if (!isEmpty(this.filter.getValue())) {
+      merge(data, this.filter.getValue());
     }
+
+    survey.data = data;
     return survey;
   }
 

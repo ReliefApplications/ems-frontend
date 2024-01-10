@@ -94,6 +94,8 @@ export class ChartComponent
   public hasError = false;
   /** Selected predefined filter */
   public selectedFilter: CompositeFilterDescriptor | null = null;
+  /** Aggregation id */
+  private aggregationId?: string;
 
   /** @returns Context filters array */
   get contextFilters(): CompositeFilterDescriptor {
@@ -152,11 +154,16 @@ export class ChartComponent
   }
 
   ngOnInit(): void {
-    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.series.next([]);
-      this.loadChart();
-      this.getOptions();
-    });
+    // Listen to dashboard filters changes if it is necessary
+    if (this.contextService.filterRegex.test(this.settings.contextFilters)) {
+      this.contextService.filter$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.series.next([]);
+          this.loadChart();
+          this.getOptions();
+        });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -182,6 +189,13 @@ export class ChartComponent
     };
 
     if (!isEqual(previousDatasource, currentDatasource)) {
+      const currentAggregationId = get(
+        changes,
+        'settings.currentValue.chart.aggregationId'
+      );
+      this.aggregationId = String(currentAggregationId)
+        ? String(currentAggregationId)
+        : this.aggregationId;
       this.loadChart();
     }
     this.getOptions();
@@ -191,39 +205,21 @@ export class ChartComponent
   private loadChart(): void {
     this.loading = true;
     if (this.settings.resource || this.settings.referenceData) {
-      this.aggregationService
-        .getAggregations({
-          resource: this.settings.resource,
-          referenceData: this.settings.referenceData,
-          ids: [get(this.settings, 'chart.aggregationId', null)],
-          first: 1,
-        })
-        .then((res) => {
-          const aggregation = res.edges[0]?.node || null;
-          if (aggregation) {
-            this.dataQuery = this.aggregationService.aggregationDataQuery({
-              referenceData: this.settings.referenceData,
-              resource: this.settings.resource,
-              aggregation: aggregation.id || '',
-              mapping: get(this.settings, 'chart.mapping', null),
-              contextFilters: joinFilters(
-                this.contextFilters,
-                this.selectedFilter
-              ),
-              at: this.settings.at
-                ? this.contextService.atArgumentValue(this.settings.at)
-                : undefined,
-            });
-            if (this.dataQuery) {
-              this.getData();
-            } else {
-              this.loading = false;
-            }
-          } else {
-            this.loading = false;
-          }
-        })
-        .catch(() => (this.loading = false));
+      this.dataQuery = this.aggregationService.aggregationDataQuery({
+        referenceData: this.settings.referenceData,
+        resource: this.settings.resource,
+        aggregation: this.aggregationId || '',
+        mapping: get(this.settings, 'chart.mapping', null),
+        contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
+        at: this.settings.at
+          ? this.contextService.atArgumentValue(this.settings.at)
+          : undefined,
+      });
+      if (this.dataQuery) {
+        this.getData();
+      } else {
+        this.loading = false;
+      }
     } else {
       this.loading = false;
     }

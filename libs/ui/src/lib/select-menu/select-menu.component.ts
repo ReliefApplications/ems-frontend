@@ -80,7 +80,7 @@ export class SelectMenuComponent
   /** Search control */
   public searchControl = new FormControl('', { nonNullable: true });
   /** Loading state */
-  public loading = false;
+  @Input() public loading = false;
   /** Subscription to the search control */
   private searchSubscriptionActive!: Subscription;
 

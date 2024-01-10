@@ -215,7 +215,10 @@
 			"rawJson": "******"
 		},
 		"label": "******",
-		"layers": "******",
+		"layers": {
+			"few": "******",
+			"none": "******"
+		},
 		"layout": {
 			"few": "******",
 			"none": "******",
@@ -868,7 +871,10 @@
 				"all": "******",
 				"select": "******"
 			},
-			"preview": "******"
+			"preview": "******",
+			"range": {
+				"clear": "******"
+			}
 		},
 		"icon": {
 			"modal": {
@@ -1669,6 +1675,7 @@
 						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
+							"fieldMapping": "******",
 							"geoField": "******",
 							"latitude": "******",
 							"longitude": "******"
@@ -1755,6 +1762,7 @@
 						"defaultLabel": "******",
 						"label": "******",
 						"symbol": "******",
+						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
