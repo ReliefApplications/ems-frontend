@@ -9,16 +9,14 @@ import {
   UnsubscribeComponent,
   FormsQueryResponse,
   ApplicationsApplicationNodesQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GET_ROUTING_KEYS, GET_FORM_NAMES } from '../../graphql/queries';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../../utils/update-queries';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule } from '@oort-front/ui';
