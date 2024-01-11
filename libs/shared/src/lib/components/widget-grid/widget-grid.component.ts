@@ -186,16 +186,19 @@ export class WidgetGridComponent
    * Set the available width and height for fit grid type
    */
   public setFitStyleWidth() {
-    console.log(this.isFullScreen)
+    console.log(this.isFullScreen);
     const parentTag = (this._host as any).nativeElement.parentElement.tagName;
 
     // Tab widget
-    if (parentTag === 'SHARED-TAB') { // Is a grid in a tab widget
-      this.fitStyle['max-height.px'] = this.tabSize['height']; 
-    } else if (parentTag === 'SHARED-TAB-SETTINGS') { // Is a grid in a tab widget settings
-      this.fitStyle['max-height.px'] = document.documentElement.clientHeight - 400;
+    if (parentTag === 'SHARED-TAB') {
+      // Is a grid in a tab widget
+      this.fitStyle['max-height.px'] = this.tabSize['height'];
+    } else if (parentTag === 'SHARED-TAB-SETTINGS') {
+      // Is a grid in a tab widget settings
+      this.fitStyle['max-height.px'] =
+        document.documentElement.clientHeight - 400;
     } else {
-      console.log('no-tab', document.documentElement.clientHeight)
+      console.log('no-tab', document.documentElement.clientHeight);
       // all available height less margin
       this.fitStyle['max-height.px'] =
         document.documentElement.clientHeight - (this.isFullScreen ? 100 : 180);
