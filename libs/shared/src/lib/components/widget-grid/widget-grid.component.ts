@@ -154,7 +154,7 @@ export class WidgetGridComponent
         this.setFitStyleWidth();
       }
     }
-    if (changes['isFullScreen']) {
+    if (changes['isFullScreen'] || changes['tabSize']) {
       this.setFitStyleWidth();
     }
     if (
