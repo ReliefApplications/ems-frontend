@@ -2444,7 +2444,23 @@
 				"title": "Champ"
 			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
-			"path": "Chemin",
+			"pagination": {
+				"cursorPath": "Chemin du curseur",
+				"cursorVariable": "Variable de requête de curseur",
+				"offsetVariable": "Variable de requête de décalage",
+				"pageSizeVariable": "Variable de requête de taille de page",
+				"pageVariable": "Variable de requête de numéro de page",
+				"strategy": "Stratégie de pagination",
+				"totalCountPath": "Chemin du nombre total d'articles",
+				"usePagination": {
+					"hint": "Dépend de la prise en charge de l'API, permet de récupérer des données par page",
+					"text": "Utiliser la pagination"
+				}
+			},
+			"path": {
+				"placeholder": "Entrez un JSONPath valide",
+				"title": "Chemin de données"
+			},
 			"payload": {
 				"label": "Réponse de l'API",
 				"show": "Afficher la réponse de l'API"

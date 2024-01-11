@@ -27,6 +27,7 @@ import {
   ReferenceDataQueryResponse,
   ApiConfigurationQueryResponse,
   EditReferenceDataMutationResponse,
+  paginationStrategy,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { EDIT_REFERENCE_DATA } from './graphql/mutations';
@@ -46,6 +47,7 @@ import { GraphQLError } from 'graphql';
 import { Dialog } from '@angular/cdk/dialog';
 import { DOCUMENT } from '@angular/common';
 import { GridComponent } from '@progress/kendo-angular-grid';
+import { gql } from '@apollo/client';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -81,12 +83,16 @@ export class ReferenceDataComponent
   public referenceForm!: ReturnType<typeof this.getRefDataForm>;
   /** Reference data types */
   public referenceTypeChoices = Object.values(referenceDataType);
+  /** Pagination methods */
+  public paginationStrategies = Object.values(paginationStrategy);
 
   // === API ===
   /** Selected API configuration */
   public selectedApiConfiguration?: ApiConfiguration;
   /** Api configurations query */
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
+  /** List of query variables */
+  public queryVariables: string[] = [];
 
   // === FIELDS ===
   /** Value fields */
@@ -238,6 +244,34 @@ export class ReferenceDataComponent
       query: new FormControl(this.referenceData?.query),
       path: new FormControl(this.referenceData?.path),
       data: new FormControl(this.referenceData?.data),
+      usePagination: new FormControl(!!this.referenceData?.pageInfo?.strategy),
+      paginationInfo: new FormGroup({
+        strategy: new FormControl(this.referenceData?.pageInfo?.strategy),
+        totalCountField: new FormControl(
+          this.referenceData?.pageInfo?.totalCountField
+        ),
+        pageSizeVar: new FormControl(this.referenceData?.pageInfo?.pageSizeVar),
+        cursorVar: new FormControl(
+          this.referenceData?.pageInfo?.strategy === 'cursor'
+            ? this.referenceData?.pageInfo?.cursorVar
+            : null
+        ),
+        cursorField: new FormControl(
+          this.referenceData?.pageInfo?.strategy === 'cursor'
+            ? this.referenceData?.pageInfo?.cursorField
+            : null
+        ),
+        offsetVar: new FormControl(
+          this.referenceData?.pageInfo?.strategy === 'offset'
+            ? this.referenceData?.pageInfo?.offsetVar
+            : null
+        ),
+        pageVar: new FormControl(
+          this.referenceData?.pageInfo?.strategy === 'page'
+            ? this.referenceData?.pageInfo?.pageVar
+            : null
+        ),
+      }),
     });
 
     // Clear valueFields when type, apiConfiguration, path or query changes
@@ -283,6 +317,96 @@ export class ReferenceDataComponent
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe(clearFields);
     }, 100);
+
+    /** Updates the requirement of the cursor field field */
+    const setPaginationValidators = () => {
+      const usePagination = !!form.get('usePagination')?.value;
+      const pageInfo = form.get('paginationInfo');
+      if (!pageInfo) {
+        return;
+      }
+
+      const strategy = pageInfo.get('strategy');
+      const totalCountField = pageInfo.get('totalCountField');
+      const cursorVar = pageInfo.get('cursorVar');
+      const cursorField = pageInfo.get('cursorField');
+      const offsetVar = pageInfo.get('offsetVar');
+      const pageVar = pageInfo.get('pageVar');
+
+      if (!usePagination) {
+        totalCountField?.clearValidators();
+        cursorVar?.clearValidators();
+        cursorField?.clearValidators();
+        offsetVar?.clearValidators();
+        pageVar?.clearValidators();
+        return;
+      }
+
+      // Set common validator to all pagination strategies
+      totalCountField?.setValidators(Validators.required);
+      strategy?.setValidators(Validators.required);
+
+      // Set specific validators to each pagination strategy
+      switch (strategy?.value) {
+        case 'cursor':
+          cursorVar?.setValidators(Validators.required);
+          cursorField?.setValidators(Validators.required);
+          offsetVar?.clearValidators();
+          pageVar?.clearValidators();
+          break;
+        case 'offset':
+          offsetVar?.setValidators(Validators.required);
+          cursorVar?.clearValidators();
+          cursorField?.clearValidators();
+          pageVar?.clearValidators();
+          break;
+        case 'page':
+          pageVar?.setValidators(Validators.required);
+          cursorVar?.clearValidators();
+          cursorField?.clearValidators();
+          offsetVar?.clearValidators();
+          break;
+        default:
+          // Clear all validators
+          cursorVar?.clearValidators();
+          cursorField?.clearValidators();
+          offsetVar?.clearValidators();
+          pageVar?.clearValidators();
+          break;
+      }
+    };
+
+    form
+      .get('paginationInfo')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(setPaginationValidators);
+
+    form
+      .get('usePagination')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(setPaginationValidators);
+
+    // Initialize the pagination validator
+    setPaginationValidators();
+
+    // Subscribe to query changes, and update the query variables
+    form
+      .get('query')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((queryStr) => {
+        try {
+          const query = gql(queryStr ?? '');
+          query.definitions.forEach((definition) => {
+            if (definition.kind === 'OperationDefinition') {
+              this.queryVariables = (definition.variableDefinitions ?? []).map(
+                (variable) => variable.variable.name.value
+              );
+            }
+          });
+        } catch {
+          this.queryVariables = [];
+        }
+      });
 
     return form;
   }
@@ -488,42 +612,72 @@ export class ReferenceDataComponent
    */
   onSave(): void {
     this.loading = true;
+    const formValue = this.referenceForm.value;
     const variables = { id: this.id };
+    const specificStrategyVariables: any = {};
+
+    switch (formValue.paginationInfo?.strategy) {
+      case 'cursor':
+        specificStrategyVariables.cursorVar =
+          formValue.paginationInfo?.cursorVar;
+        specificStrategyVariables.cursorField =
+          formValue.paginationInfo?.cursorField;
+        break;
+      case 'offset':
+        specificStrategyVariables.offsetVar =
+          formValue.paginationInfo?.offsetVar;
+        break;
+      case 'page':
+        specificStrategyVariables.pageVar = formValue.paginationInfo?.pageVar;
+        break;
+    }
+
     Object.assign(
       variables,
-      this.referenceForm.value.name !== this.referenceData?.name && {
-        name: this.referenceForm.value.name,
+      formValue.name !== this.referenceData?.name && {
+        name: formValue.name,
       },
-      this.referenceForm.value.type !== this.referenceData?.type && {
-        type: this.referenceForm.value.type,
+      formValue.type !== this.referenceData?.type && {
+        type: formValue.type,
       },
-      this.referenceForm.value.valueField !==
-        this.referenceData?.valueField && {
-        valueField: this.referenceForm.value.valueField,
+      formValue.valueField !== this.referenceData?.valueField && {
+        valueField: formValue.valueField,
       },
-      this.referenceForm.value.fields !== this.referenceData?.fields && {
-        fields: this.referenceForm.value.fields,
-      }
+      formValue.fields !== this.referenceData?.fields && {
+        fields: formValue.fields,
+      },
+      formValue.usePagination
+        ? {
+            pageInfo: {
+              totalCountField: formValue.paginationInfo?.totalCountField,
+              pageSizeVar: formValue.paginationInfo?.pageSizeVar,
+              strategy: formValue.paginationInfo?.strategy,
+              ...specificStrategyVariables,
+            },
+          }
+        : {
+            pageInfo: undefined,
+          }
     );
     if (
       ['graphql', 'rest'].includes(get(this.referenceForm, 'value.type', ''))
     ) {
       Object.assign(
         variables,
-        this.referenceForm.value.apiConfiguration !==
+        formValue.apiConfiguration !==
           this.referenceData?.apiConfiguration?.id && {
-          apiConfiguration: this.referenceForm.value.apiConfiguration,
+          apiConfiguration: formValue.apiConfiguration,
         },
-        this.referenceForm.value.path !== this.referenceData?.path && {
-          path: this.referenceForm.value.path,
+        formValue.path !== this.referenceData?.path && {
+          path: formValue.path,
         },
-        this.referenceForm.value.query !== this.referenceData?.query && {
-          query: this.referenceForm.value.query,
+        formValue.query !== this.referenceData?.query && {
+          query: formValue.query,
         }
       );
     } else {
       // Maps each field to its type
-      const typePerField = (this.referenceForm.value.fields ?? []).reduce(
+      const typePerField = (formValue.fields ?? []).reduce(
         (acc: any, field: any) => {
           acc[field.name] = field.type;
           return acc;
@@ -534,8 +688,8 @@ export class ReferenceDataComponent
       // Parsed data is the array with the field types enforced
       // If a field of an element is not of the expected type, the field is skipped
       const parsedData: any[] = [];
-      if (this.referenceForm.value.data) {
-        this.referenceForm.value.data.forEach((element: any) => {
+      if (formValue.data) {
+        formValue.data.forEach((element: any) => {
           if (typeof element !== 'object' || element === null) {
             return;
           }
@@ -577,8 +731,8 @@ export class ReferenceDataComponent
       }
       Object.assign(
         variables,
-        this.referenceForm.value.data !== this.referenceData?.data && {
-          data: this.referenceForm.value.data,
+        formValue.data !== this.referenceData?.data && {
+          data: formValue.data,
         }
       );
     }

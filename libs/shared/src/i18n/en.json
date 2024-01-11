@@ -2430,7 +2430,23 @@
 				"title": "Field"
 			},
 			"graphQLFilter": "GraphQL query parameters",
-			"path": "Path",
+			"pagination": {
+				"cursorPath": "Cursor path",
+				"cursorVariable": "Cursor query variable",
+				"offsetVariable": "Offset query variable",
+				"pageSizeVariable": "Page size query variable",
+				"pageVariable": "Page number query variable",
+				"strategy": "Pagination strategy",
+				"totalCountPath": "Total items count path",
+				"usePagination": {
+					"hint": "Depends on API support, allows fetching data by page",
+					"text": "Use pagination"
+				}
+			},
+			"path": {
+				"placeholder": "Enter a valid JSONPath",
+				"title": "Data path"
+			},
 			"payload": {
 				"label": "Payload",
 				"show": "Show payload"
