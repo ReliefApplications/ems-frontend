@@ -13,7 +13,6 @@ import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -85,12 +84,18 @@ export class SummaryCardGeneralComponent
   @Output() loadTemplates = new EventEmitter<void>();
   /** Saves if the layouts has been fetched */
   @Input() loadedLayouts = false;
+  /** Saves if the aggregations has been fetched */
+  @Input() loadedAggregations = false;
   /** Emits when complete layout list should be fetched */
   @Output() loadLayouts = new EventEmitter<void>();
+  /** Emits when complete aggregations list should be fetched */
+  @Output() loadAggregations = new EventEmitter<void>();
   /** Saves if the templates has been fetched */
   public loadedTemplates = false;
-  /** Timeout listener */
-  private timeoutListener!: NodeJS.Timeout;
+  /** Timeout listener for add layout modal opening */
+  private layoutTimeoutListener!: NodeJS.Timeout;
+  /** Timeout listener for add aggregation modal opening */
+  private aggregationTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Component for the general summary cards tab
@@ -119,10 +124,10 @@ export class SummaryCardGeneralComponent
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
     const awaitTime = this.loadedLayouts ? 0 : 500;
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.layoutTimeoutListener) {
+      clearTimeout(this.layoutTimeoutListener);
     }
-    this.timeoutListener = setTimeout(() => {
+    this.layoutTimeoutListener = setTimeout(() => {
       const dialogRef = this.dialog.open(AddLayoutModalComponent, {
         data: {
           resource: this.resource,
@@ -177,24 +182,33 @@ export class SummaryCardGeneralComponent
     if (!this.resource) {
       return;
     }
+    if (!this.loadedAggregations) {
+      this.loadAggregations.emit();
+    }
     const { AddAggregationModalComponent } = await import(
       '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
     );
-    const dialogRef = this.dialog.open(AddAggregationModalComponent, {
-      data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
-        resource: this.resource,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('card.aggregation')?.setValue(value);
-        } else {
-          this.formGroup.get('card.aggregation')?.setValue((value as any).id);
+    const awaitTime = this.loadedLayouts ? 0 : 500;
+    if (this.aggregationTimeoutListener) {
+      clearTimeout(this.aggregationTimeoutListener);
+    }
+    this.aggregationTimeoutListener = setTimeout(() => {
+      const dialogRef = this.dialog.open(AddAggregationModalComponent, {
+        data: {
+          resource: this.resource,
+          useQueryRef: false,
+        },
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('card.aggregation')?.setValue(value);
+          } else {
+            this.formGroup.get('card.aggregation')?.setValue((value as any).id);
+          }
         }
-      }
-    });
+      });
+    }, awaitTime);
   }
 
   /**
@@ -255,8 +269,11 @@ export class SummaryCardGeneralComponent
   }
 
   override ngOnDestroy(): void {
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.layoutTimeoutListener) {
+      clearTimeout(this.layoutTimeoutListener);
+    }
+    if (this.aggregationTimeoutListener) {
+      clearTimeout(this.aggregationTimeoutListener);
     }
     super.ngOnDestroy();
   }

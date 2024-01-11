@@ -19,20 +19,23 @@ import {
   FormWrapperModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
+  SelectMenuModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { get } from 'lodash';
+import { Aggregation } from '../../../models/aggregation.model';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
  */
 interface DialogData {
-  hasAggregations: boolean;
   resource?: Resource;
   referenceData?: ReferenceData;
+  useQueryRef?: boolean;
 }
 
 /**
@@ -50,6 +53,7 @@ interface DialogData {
     ButtonModule,
     FormWrapperModule,
     TooltipModule,
+    SelectMenuModule,
   ],
   selector: 'shared-add-aggregation-modal',
   templateUrl: './add-aggregation-modal.component.html',
@@ -62,18 +66,26 @@ export class AddAggregationModalComponent
   /** Reference to graphql select for layout */
   @ViewChild(GraphQLSelectComponent)
   aggregationSelect?: GraphQLSelectComponent;
-  /** Does data source has some aggregations */
-  public hasAggregations = false;
   /** Should show next step in form */
   public nextStep = false;
   /** Apollo query */
   public queryRef!: QueryRef<ResourceQueryResponse>;
   /** Control to select aggregation */
   public selectedAggregationControl = new UntypedFormControl('');
+  /** Aggregations list when not using graphql-select */
+  public aggregations?: Aggregation[];
   /** Current resource */
   private resource?: Resource;
   /** Current reference data */
   private referenceData?: ReferenceData;
+
+  /** @returns if data source has aggregations */
+  get hasAggregations(): boolean {
+    return (
+      get(this.referenceData, 'aggregations.totalCount', 0) > 0 ||
+      get(this.resource, 'aggregations.totalCount', 0) > 0
+    );
+  }
 
   /**
    * Modal to add or select an aggregation.
@@ -93,36 +105,47 @@ export class AddAggregationModalComponent
     private aggregationService: AggregationService
   ) {
     super();
-    this.hasAggregations = data.hasAggregations;
     this.resource = data.resource;
     this.referenceData = data.referenceData;
   }
 
   ngOnInit(): void {
-    if (this.resource) {
-      this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
-        query: GET_RESOURCE_AGGREGATIONS,
-        variables: {
-          resource: this.resource?.id,
-        },
-      });
+    if (this.data.useQueryRef !== false) {
+      if (this.resource) {
+        this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
+          query: GET_RESOURCE_AGGREGATIONS,
+          variables: {
+            resource: this.resource?.id,
+          },
+        });
+      } else {
+        this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
+          query: GET_REFERENCE_DATA_AGGREGATIONS,
+          variables: {
+            referenceData: this.referenceData?.id,
+          },
+        });
+      }
     } else {
-      this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
-        query: GET_REFERENCE_DATA_AGGREGATIONS,
-        variables: {
-          referenceData: this.referenceData?.id,
-        },
-      });
+      this.aggregations = this.resource?.aggregations?.edges.map(
+        (edge: any) => edge.node
+      );
     }
 
     // emits selected aggregation
     this.selectedAggregationControl.valueChanges.subscribe((value) => {
       if (value) {
-        this.dialogRef.close(
-          this.aggregationSelect?.elements
-            .getValue()
-            .find((x) => x.id === value)
-        );
+        if (this.data.useQueryRef) {
+          this.dialogRef.close(
+            this.aggregationSelect?.elements
+              .getValue()
+              .find((x) => x.id === value)
+          );
+        } else {
+          this.dialogRef.close(
+            this.aggregations?.find((x) => x.id === value) as any
+          );
+        }
       }
     });
   }

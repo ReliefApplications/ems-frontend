@@ -19,6 +19,7 @@ import {
   GET_CHANNELS,
   GET_GRID_RESOURCE_META,
   GET_RELATED_FORMS,
+  GET_RESOURCE_AGGREGATIONS,
   GET_RESOURCE_LAYOUTS,
   GET_RESOURCE_TEMPLATES,
 } from './graphql/queries';
@@ -40,6 +41,7 @@ import { BehaviorSubject } from 'rxjs';
 import { TabsComponent } from '@oort-front/ui';
 import { Connection } from '../../../utils/graphql/connection.type';
 import { Layout } from '../../../models/layout.model';
+import { Aggregation } from '../../../models/aggregation.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -95,6 +97,8 @@ export class GridSettingsComponent
 
   /** Saves if the complete layout list has been fetched */
   public loadedLayouts = false;
+  /** Saves if the layouts has been fetched */
+  public loadedAggregations = false;
 
   /** Tabs component associated to the grid settings */
   @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
@@ -375,6 +379,35 @@ export class GridSettingsComponent
   }
 
   /**
+   * Load GET_RESOURCE_AGGREGATIONS query when data is necessary.
+   */
+  public getAggregations(): void {
+    if (
+      this.widgetFormGroup.get('resource')?.value &&
+      !this.loadedAggregations
+    ) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_AGGREGATIONS,
+          variables: {
+            resource: this.widgetFormGroup.get('resource')?.value,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              aggregations:
+                (data.resource.aggregations as Connection<Aggregation>) || [],
+            };
+            this.loadedAggregations = true;
+          }
+        });
+    }
+  }
+
+  /**
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
@@ -404,6 +437,7 @@ export class GridSettingsComponent
         .subscribe(({ data }) => {
           this.loadedLayouts = false;
           this.relatedForms.next(undefined);
+          this.loadedAggregations = false;
           if (data) {
             this.resource = data.resource;
             this.templates = data.resource.forms ? data.resource.forms : [];
@@ -428,6 +462,7 @@ export class GridSettingsComponent
       this.resource = null;
       this.fields = [];
       this.loadedLayouts = false;
+      this.loadedAggregations = false;
     }
   }
 

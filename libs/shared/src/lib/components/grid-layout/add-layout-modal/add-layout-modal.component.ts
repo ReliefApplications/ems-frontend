@@ -123,20 +123,21 @@ export class AddLayoutModalComponent
 
   ngOnInit() {
     if (this.data.useQueryRef !== false) {
-      if (this.resource)
+      if (this.resource) {
         this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
           query: GET_RESOURCE_LAYOUTS,
           variables: {
             resource: this.resource?.id,
           },
         });
-      else if (this.form)
+      } else if (this.form) {
         this.queryRef = this.apollo.watchQuery<FormQueryResponse>({
           query: GET_FORM_LAYOUTS,
           variables: {
             form: this.form?.id,
           },
         });
+      }
     } else {
       this.layouts = this.resource?.layouts?.edges.map(
         (edge: any) => edge.node

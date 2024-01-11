@@ -1,11 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
@@ -20,7 +26,7 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class AggregationTableComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
@@ -28,13 +34,19 @@ export class AggregationTableComponent
   @Input() resource: Resource | null = null;
   /** Selected aggregations form control */
   @Input() selectedAggregations: UntypedFormControl | null = null;
+  /** Saves if the aggregations has been fetched */
+  @Input() loadedAggregations = false;
+  /** Emits when complete aggregations list should be fetched */
+  @Output() loadAggregations = new EventEmitter<void>();
 
   /** List of aggregations */
-  aggregations: Layout[] = [];
+  public aggregations: Layout[] = [];
   /** List of all aggregations */
-  allAggregations: Layout[] = [];
+  public allAggregations: Layout[] = [];
   /** List of displayed columns */
-  columns: string[] = ['name', 'createdAt', '_actions'];
+  public columns: string[] = ['name', 'createdAt', '_actions'];
+  /** Timeout listener */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Aggregation table component.
@@ -58,6 +70,13 @@ export class AggregationTableComponent
       .subscribe((value) => {
         this.setSelectedAggregations(value);
       });
+  }
+
+  override ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    super.ngOnDestroy();
   }
 
   /**
@@ -92,29 +111,40 @@ export class AggregationTableComponent
    * Adds a new aggregation to the list.
    */
   public async onAdd(): Promise<void> {
+    if (!this.loadedAggregations) {
+      this.loadAggregations.emit();
+    }
     const { AddAggregationModalComponent } = await import(
       '../add-aggregation-modal/add-aggregation-modal.component'
     );
-    const dialogRef = this.dialog.open(AddAggregationModalComponent, {
-      data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
-        resource: this.resource,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (!this.allAggregations.find((x) => x.id === value.id)) {
-          this.allAggregations.push(value);
-          this.resource?.aggregations?.edges?.push({
-            node: value,
-            cursor: value.id,
-          });
-        }
-        this.selectedAggregations?.setValue(
-          this.selectedAggregations?.value.concat(value.id)
-        );
-      }
-    });
+    const awaitTime = this.loadedAggregations ? 0 : 500;
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    this.timeoutListener = setTimeout(() => {
+      const dialogRef = this.dialog.open(AddAggregationModalComponent, {
+        data: {
+          resource: this.resource,
+          useQueryRef: false,
+        },
+      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            if (!this.allAggregations.find((x) => x.id === value.id)) {
+              this.allAggregations.push(value);
+              this.resource?.aggregations?.edges?.push({
+                node: value,
+                cursor: value.id,
+              });
+            }
+            this.selectedAggregations?.setValue(
+              this.selectedAggregations?.value.concat(value.id)
+            );
+          }
+        });
+    }, awaitTime);
   }
 
   /**

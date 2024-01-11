@@ -28,6 +28,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import {
   GET_REFERENCE_DATA,
   GET_RESOURCE,
+  GET_RESOURCE_AGGREGATIONS,
   GET_RESOURCE_LAYOUTS,
   GET_RESOURCE_TEMPLATES,
 } from './graphql/queries';
@@ -81,8 +82,10 @@ export class SummaryCardSettingsComponent
   public templates: Form[] = [];
   /** Current active settings tab index */
   public activeSettingsTab = 0;
-  /** Saves if the complete layout list has been fetched */
+  /** Saves if the complete layouts list has been fetched */
   public loadedLayouts = false;
+  /** Saves if the complete aggregations list has been fetched */
+  public loadedAggregations = false;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -334,13 +337,38 @@ export class SummaryCardSettingsComponent
   }
 
   /**
+   * Load GET_RESOURCE_AGGREGATIONS query when data is necessary.
+   */
+  public getAggregations(): void {
+    if (this.resource?.id && !this.loadedAggregations) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_AGGREGATIONS,
+          variables: {
+            resource: this.resource?.id,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              aggregations:
+                (data.resource.aggregations as Connection<Aggregation>) || [],
+            };
+            this.loadedAggregations = true;
+          }
+        });
+    }
+  }
+
+  /**
    * Get resource by id, doing graphQL query
    *
    * @param id resource id
    */
   private getResource(id: string): void {
     const formValue = this.widgetFormGroup.getRawValue();
-    console.log('formValue', formValue);
     const layoutID = get(formValue, 'card.layout');
     const aggregationID = get(formValue, 'card.aggregation');
     const formId = get(formValue, 'card.template');
@@ -360,6 +388,7 @@ export class SummaryCardSettingsComponent
       })
       .subscribe(({ data, errors }) => {
         this.loadedLayouts = false;
+        this.loadedAggregations = false;
         if (errors) {
           this.widgetFormGroup.get('card.resource')?.patchValue(null);
           this.widgetFormGroup.get('card.layout')?.patchValue(null);

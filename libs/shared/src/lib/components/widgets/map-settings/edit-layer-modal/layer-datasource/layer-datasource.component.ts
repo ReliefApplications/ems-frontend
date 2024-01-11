@@ -6,7 +6,6 @@ import { Aggregation } from '../../../../../models/aggregation.model';
 import { Layout } from '../../../../../models/layout.model';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
-import { get } from 'lodash';
 import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
 import { EditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { GridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
@@ -101,9 +100,6 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
   selectAggregation(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations:
-          get(this.resource, 'aggregations.totalCount', 0) > 0 ||
-          get(this.referenceData, 'aggregations.totalCount', 0) > 0,
         resource: this.resource,
         referenceData: this.referenceData,
       },

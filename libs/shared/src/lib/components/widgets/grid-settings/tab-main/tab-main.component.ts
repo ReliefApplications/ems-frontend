@@ -20,8 +20,12 @@ export class TabMainComponent {
   @Input() templates?: Form[];
   /** Saves if the layouts has been fetched */
   @Input() loadedLayouts = false;
-  /** Emits when complete layout list should be fetched */
+  /** Emits when complete layouts list should be fetched */
   @Output() loadLayouts = new EventEmitter<void>();
+  /** Saves if the aggregations has been fetched */
+  @Input() loadedAggregations = false;
+  /** Emits when complete aggregations list should be fetched */
+  @Output() loadAggregations = new EventEmitter<void>();
   /** Emits when the select template is opened for the first time */
   @Output() loadTemplates = new EventEmitter<void>();
   /** Saves if the templates has been fetched */

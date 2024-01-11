@@ -62,6 +62,8 @@
       [canAdd]="formGroup.get('aggregations')?.value.length === 0"
       [resource]="resource"
       [selectedAggregations]="$any(formGroup).get('aggregations')"
+      [loadedAggregations]="loadedAggregations"
+      (loadAggregations)="loadAggregations.emit()"
     ></shared-aggregation-table>
   </div>
   <ui-divider

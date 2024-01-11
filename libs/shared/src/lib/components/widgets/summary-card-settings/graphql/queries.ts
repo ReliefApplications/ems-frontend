@@ -97,3 +97,23 @@ export const GET_RESOURCE_LAYOUTS = gql`
     }
   }
 `;
+
+/** Graphql request for getting resource aggregations by its id */
+export const GET_RESOURCE_AGGREGATIONS = gql`
+  query GetResource($resource: ID!) {
+    resource(id: $resource) {
+      aggregations {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        totalCount
+      }
+    }
+  }
+`;
