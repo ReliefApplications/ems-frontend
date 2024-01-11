@@ -266,11 +266,13 @@ export class ReferenceDataService {
    *
    * @param referenceData Reference data item
    * @param type Reference data request type
+   * @param pageInfo Page info for pagination
    * @returns processed items by the request type
    */
   private async processItemsByRequestType(
     referenceData: ReferenceData,
-    type: referenceDataType
+    type: referenceDataType,
+    pageInfo: any = {}
   ) {
     let data!: any;
     if (type === referenceDataType.graphql) {
@@ -278,7 +280,8 @@ export class ReferenceDataService {
         this.apiProxy.baseUrl +
         (referenceData.apiConfiguration?.name ?? '') +
         (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
-      const body = { query: this.processQuery(referenceData) };
+      const query = this.processQuery(referenceData);
+      const body = { query, variables: pageInfo };
       data = (await this.apiProxy.buildPostRequest(url, body)) as any;
     } else if (type === referenceDataType.rest) {
       const url =

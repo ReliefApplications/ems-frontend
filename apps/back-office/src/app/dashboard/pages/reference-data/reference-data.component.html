@@ -99,7 +99,7 @@
       <div
         class="flex flex-col gap-2"
         *ngIf="referenceForm.get('usePagination')?.value === true"
-        formGroupName="paginationInfo"
+        formGroupName="pageInfo"
       >
         <div class="flex flex-row gap-2">
           <!-- Dropdown with the list of pagination strategies -->
@@ -121,9 +121,7 @@
           <div
             uiFormFieldDirective
             class="grow"
-            *ngIf="
-              referenceForm.get('paginationInfo.strategy')?.value === 'cursor'
-            "
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'cursor'"
           >
             <label>{{
               'pages.referenceData.pagination.cursorPath' | translate
@@ -146,9 +144,7 @@
           <div
             uiFormFieldDirective
             class="grow"
-            *ngIf="
-              referenceForm.get('paginationInfo.strategy')?.value === 'cursor'
-            "
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'cursor'"
           >
             <label>
               {{ 'pages.referenceData.pagination.cursorVariable' | translate }}
@@ -167,9 +163,7 @@
           <div
             uiFormFieldDirective
             class="grow"
-            *ngIf="
-              referenceForm.get('paginationInfo.strategy')?.value === 'offset'
-            "
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'offset'"
           >
             <label>
               {{ 'pages.referenceData.pagination.offsetVariable' | translate }}
@@ -188,9 +182,7 @@
           <div
             uiFormFieldDirective
             class="grow"
-            *ngIf="
-              referenceForm.get('paginationInfo.strategy')?.value === 'page'
-            "
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'page'"
           >
             <label>
               {{ 'pages.referenceData.pagination.pageVariable' | translate }}

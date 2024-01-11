@@ -11,7 +11,6 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -48,6 +47,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DOCUMENT } from '@angular/common';
 import { GridComponent } from '@progress/kendo-angular-grid';
 import { gql } from '@apollo/client';
+import { createRefDataForm } from './reference-data.form';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -85,6 +85,8 @@ export class ReferenceDataComponent
   public referenceTypeChoices = Object.values(referenceDataType);
   /** Pagination methods */
   public paginationStrategies = Object.values(paginationStrategy);
+  /** Currently selected strategy */
+  private currStrategy?: paginationStrategy | null = null;
 
   // === API ===
   /** Selected API configuration */
@@ -230,61 +232,116 @@ export class ReferenceDataComponent
    * @returns Reference data form group
    */
   private getRefDataForm() {
-    const form = new FormGroup({
-      name: new FormControl(this.referenceData?.name, Validators.required),
-      type: new FormControl(this.referenceData?.type, Validators.required),
-      valueField: new FormControl(
-        this.referenceData?.valueField,
-        Validators.required
-      ),
-      fields: new FormControl(this.referenceData?.fields, Validators.required),
-      apiConfiguration: new FormControl(
-        this.referenceData?.apiConfiguration?.id
-      ),
-      query: new FormControl(this.referenceData?.query),
-      path: new FormControl(this.referenceData?.path),
-      data: new FormControl(this.referenceData?.data),
-      usePagination: new FormControl(!!this.referenceData?.pageInfo?.strategy),
-      paginationInfo: new FormGroup({
-        strategy: new FormControl(this.referenceData?.pageInfo?.strategy),
-        totalCountField: new FormControl(
-          this.referenceData?.pageInfo?.totalCountField
-        ),
-        pageSizeVar: new FormControl(this.referenceData?.pageInfo?.pageSizeVar),
-        cursorVar: new FormControl(
-          this.referenceData?.pageInfo?.strategy === 'cursor'
-            ? this.referenceData?.pageInfo?.cursorVar
-            : null
-        ),
-        cursorField: new FormControl(
-          this.referenceData?.pageInfo?.strategy === 'cursor'
-            ? this.referenceData?.pageInfo?.cursorField
-            : null
-        ),
-        offsetVar: new FormControl(
-          this.referenceData?.pageInfo?.strategy === 'offset'
-            ? this.referenceData?.pageInfo?.offsetVar
-            : null
-        ),
-        pageVar: new FormControl(
-          this.referenceData?.pageInfo?.strategy === 'page'
-            ? this.referenceData?.pageInfo?.pageVar
-            : null
-        ),
-      }),
-    });
+    const { form, controls } = createRefDataForm(this.referenceData);
+
+    /** Updates the requirement of the cursor field field */
+    const setPaginationValidators = () => {
+      // All optional by default
+      controls.strategy.optional();
+      controls.cursorVar.optional();
+      controls.cursorField.optional();
+      controls.offsetVar.optional();
+      controls.pageVar.optional();
+      controls.pageSizeVar.optional();
+      controls.totalCountField.optional();
+
+      const usePagination = !!form.get('usePagination')?.value;
+      if (!usePagination) {
+        return;
+      }
+
+      // Set common validator to all pagination strategies
+      controls.totalCountField.require();
+      controls.strategy.require();
+
+      // Set specific validators to each pagination strategy
+      switch (controls.strategy.getValue()) {
+        case 'cursor':
+          controls.cursorVar.require();
+          controls.cursorField.require();
+          break;
+        case 'offset':
+          controls.offsetVar.require();
+          break;
+        case 'page':
+          controls.pageVar.require();
+          break;
+      }
+    };
+
+    const handleQueryChange = (queryStr: string, resetFields = true) => {
+      // Clear the fields
+      if (resetFields) {
+        clearFields();
+      }
+
+      // Update the query variables
+      try {
+        const query = gql(queryStr ?? '');
+        query.definitions.forEach((definition) => {
+          if (definition.kind === 'OperationDefinition') {
+            this.queryVariables = (definition.variableDefinitions ?? []).map(
+              (variable) => variable.variable.name.value
+            );
+          }
+        });
+
+        // Try to guess the page size variable
+        const pageSizeVar = this.queryVariables.find((x) =>
+          ['pageSize', 'take', 'size'].includes(x)
+        );
+
+        if (pageSizeVar) {
+          controls.pageSizeVar.setValue(pageSizeVar);
+        } else {
+          controls.pageSizeVar.setValue(null);
+        }
+
+        // Try to guess strategy and other pagination variables
+        const offsetVar = this.queryVariables.find((x) =>
+          ['first', 'offset', 'skip'].includes(x)
+        );
+        const pageVar = this.queryVariables.find((x) =>
+          ['page', 'pageNumber'].includes(x)
+        );
+        const cursorVar = this.queryVariables.find((x) =>
+          ['cursor', 'afterCursor'].includes(x)
+        );
+
+        if (offsetVar) {
+          controls.strategy.setValue('offset' as paginationStrategy);
+          controls.offsetVar.setValue(offsetVar);
+        } else if (pageVar) {
+          controls.strategy.setValue('page' as paginationStrategy);
+          controls.pageVar.setValue(pageVar);
+        } else if (cursorVar) {
+          controls.strategy.setValue('cursor' as paginationStrategy);
+          controls.cursorVar.setValue(cursorVar);
+        }
+      } catch {
+        this.queryVariables = [];
+        controls.pageSizeVar.setValue(null);
+        controls.offsetVar.setValue(null);
+        controls.pageVar.setValue(null);
+        controls.cursorVar.setValue(null);
+      } finally {
+        // Update the pagination validators
+        setPaginationValidators();
+      }
+    };
 
     // Clear valueFields when type, apiConfiguration, path or query changes
     const clearFields = () => {
       this.payload = null;
       this.valueFields = [];
-      form.get('fields')?.setValue([]);
+      form.get('fields')?.setValue([], { emitEvent: false });
     };
 
     // Wait for the form to be initialized before subscribing to changes
     if (this.formTimeoutListener) {
       clearTimeout(this.formTimeoutListener);
     }
+
     this.formTimeoutListener = setTimeout(() => {
       form
         .get('type')
@@ -294,17 +351,15 @@ export class ReferenceDataComponent
 
           // Clear the query field if the type is not GraphQL
           if (this.type !== referenceDataType.graphql)
-            form.get('query')?.setValue('');
+            this.queryControl?.setValue('');
 
           // Set the default query if the type is GraphQL
           if (this.type === referenceDataType.graphql)
-            form
-              .get('query')
-              ?.setValue(
-                `# ${this.translateService.instant(
-                  'pages.referenceData.tooltip.graphQLFilter'
-                )}\n\n${DEFAULT_QUERY}`
-              );
+            this.queryControl?.setValue(
+              `# ${this.translateService.instant(
+                'pages.referenceData.tooltip.graphQLFilter'
+              )}\n\n${DEFAULT_QUERY}`
+            );
         });
 
       form
@@ -312,101 +367,34 @@ export class ReferenceDataComponent
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe(clearFields);
 
+      // Subscribe to query changes, and update the query variables and clear fields
+      this.queryControl?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((query) => {
+          if (query) {
+            handleQueryChange(query);
+          }
+        });
+
       form
-        .get('query')
+        .get('pageInfo.strategy')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(clearFields);
+        .subscribe((val) => {
+          const strategy = (val as typeof this.currStrategy) ?? null;
+          if (strategy !== this.currStrategy) {
+            this.currStrategy = strategy;
+            setPaginationValidators();
+          }
+        });
+
+      form
+        .get('usePagination')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(setPaginationValidators);
+
+      // Initialize the query variables
+      handleQueryChange(this.queryControl?.value, false);
     }, 100);
-
-    /** Updates the requirement of the cursor field field */
-    const setPaginationValidators = () => {
-      const usePagination = !!form.get('usePagination')?.value;
-      const pageInfo = form.get('paginationInfo');
-      if (!pageInfo) {
-        return;
-      }
-
-      const strategy = pageInfo.get('strategy');
-      const totalCountField = pageInfo.get('totalCountField');
-      const cursorVar = pageInfo.get('cursorVar');
-      const cursorField = pageInfo.get('cursorField');
-      const offsetVar = pageInfo.get('offsetVar');
-      const pageVar = pageInfo.get('pageVar');
-
-      if (!usePagination) {
-        totalCountField?.clearValidators();
-        cursorVar?.clearValidators();
-        cursorField?.clearValidators();
-        offsetVar?.clearValidators();
-        pageVar?.clearValidators();
-        return;
-      }
-
-      // Set common validator to all pagination strategies
-      totalCountField?.setValidators(Validators.required);
-      strategy?.setValidators(Validators.required);
-
-      // Set specific validators to each pagination strategy
-      switch (strategy?.value) {
-        case 'cursor':
-          cursorVar?.setValidators(Validators.required);
-          cursorField?.setValidators(Validators.required);
-          offsetVar?.clearValidators();
-          pageVar?.clearValidators();
-          break;
-        case 'offset':
-          offsetVar?.setValidators(Validators.required);
-          cursorVar?.clearValidators();
-          cursorField?.clearValidators();
-          pageVar?.clearValidators();
-          break;
-        case 'page':
-          pageVar?.setValidators(Validators.required);
-          cursorVar?.clearValidators();
-          cursorField?.clearValidators();
-          offsetVar?.clearValidators();
-          break;
-        default:
-          // Clear all validators
-          cursorVar?.clearValidators();
-          cursorField?.clearValidators();
-          offsetVar?.clearValidators();
-          pageVar?.clearValidators();
-          break;
-      }
-    };
-
-    form
-      .get('paginationInfo')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(setPaginationValidators);
-
-    form
-      .get('usePagination')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(setPaginationValidators);
-
-    // Initialize the pagination validator
-    setPaginationValidators();
-
-    // Subscribe to query changes, and update the query variables
-    form
-      .get('query')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((queryStr) => {
-        try {
-          const query = gql(queryStr ?? '');
-          query.definitions.forEach((definition) => {
-            if (definition.kind === 'OperationDefinition') {
-              this.queryVariables = (definition.variableDefinitions ?? []).map(
-                (variable) => variable.variable.name.value
-              );
-            }
-          });
-        } catch {
-          this.queryVariables = [];
-        }
-      });
 
     return form;
   }
@@ -530,9 +518,6 @@ export class ReferenceDataComponent
             first: ITEMS_PER_PAGE,
           },
         });
-      // this.apiConfigurationsQuery.valueChanges.subscribe(({ loading }) => {
-      //   this.loading = loading;
-      // });
     } else {
       this.referenceForm.get('apiConfiguration')?.clearValidators();
       this.referenceForm.get('query')?.clearValidators();
@@ -616,19 +601,16 @@ export class ReferenceDataComponent
     const variables = { id: this.id };
     const specificStrategyVariables: any = {};
 
-    switch (formValue.paginationInfo?.strategy) {
+    switch (formValue.pageInfo?.strategy) {
       case 'cursor':
-        specificStrategyVariables.cursorVar =
-          formValue.paginationInfo?.cursorVar;
-        specificStrategyVariables.cursorField =
-          formValue.paginationInfo?.cursorField;
+        specificStrategyVariables.cursorVar = formValue.pageInfo?.cursorVar;
+        specificStrategyVariables.cursorField = formValue.pageInfo?.cursorField;
         break;
       case 'offset':
-        specificStrategyVariables.offsetVar =
-          formValue.paginationInfo?.offsetVar;
+        specificStrategyVariables.offsetVar = formValue.pageInfo?.offsetVar;
         break;
       case 'page':
-        specificStrategyVariables.pageVar = formValue.paginationInfo?.pageVar;
+        specificStrategyVariables.pageVar = formValue.pageInfo?.pageVar;
         break;
     }
 
@@ -649,14 +631,14 @@ export class ReferenceDataComponent
       formValue.usePagination
         ? {
             pageInfo: {
-              totalCountField: formValue.paginationInfo?.totalCountField,
-              pageSizeVar: formValue.paginationInfo?.pageSizeVar,
-              strategy: formValue.paginationInfo?.strategy,
+              totalCountField: formValue.pageInfo?.totalCountField,
+              pageSizeVar: formValue.pageInfo?.pageSizeVar,
+              strategy: formValue.pageInfo?.strategy,
               ...specificStrategyVariables,
             },
           }
         : {
-            pageInfo: undefined,
+            pageInfo: null,
           }
     );
     if (
