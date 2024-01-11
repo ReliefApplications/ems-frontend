@@ -29,6 +29,31 @@ const MIN_CLUSTER_SIZE = 20;
 const MAX_CLUSTER_SIZE = 100;
 
 /**
+ * Returns a .svg as a string for a Font Awesome icon
+ *
+ * @param properties Properties of an icon
+ * @returns A string with the .svg definition of the icon
+ */
+export const getFontAwesomeIconSvg = (
+  properties: MarkerIconOptions
+): string => {
+  const { icon, size, color, opacity } = properties;
+  // create an i element for the icon
+  const iconDef = getIconDefinition(icon as IconName);
+  const i = createIcon(iconDef, {
+    styles: {
+      height: `${size}px`,
+      width: `${size}px`,
+      'line-height': `${size}px`,
+      'font-size': `${size}px`,
+      color: color,
+      opacity: opacity.toString(),
+    },
+  });
+  return i.node[0].outerHTML;
+};
+
+/**
  * Generates an HTML element for an icon
  *
  * @param properties Properties of an icon
