@@ -124,6 +124,14 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.setHtml();
 
+    // Necessary because ViewChild is not initialized immediately
+    setTimeout(() => {
+      this.toggleActiveFilters(
+        this.contextService.filter.getValue(),
+        this.htmlContentComponent.el.nativeElement
+      );
+    }, 100);
+
     // Gather all context filters in a single text value
     const allContextFilters = this.aggregations
       .map((aggregation: any) => aggregation.contextFilters)
@@ -137,27 +145,31 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.loading = true;
           this.setHtml();
         }
-        const toggleActiveFilters = (node: any) => {
-          if (get(node, 'dataset.filterField')) {
-            if (
-              isEqual(
-                get(node, 'dataset.filterValue'),
-                get(value, node.dataset.filterField)
-              )
-            ) {
-              node.dataset.filterActive = true;
-            } else {
-              node.dataset.filterActive = false;
-            }
-          }
-          for (let i = 0; i < node.childNodes.length; i++) {
-            const child = node.childNodes[i];
-            toggleActiveFilters(child);
-          }
-        };
-        toggleActiveFilters(this.htmlContentComponent.el.nativeElement);
+        this.toggleActiveFilters(
+          value,
+          this.htmlContentComponent?.el.nativeElement
+        );
       });
   }
+
+  private toggleActiveFilters = (value: any, node: any) => {
+    if (get(node, 'dataset.filterField')) {
+      if (
+        isEqual(
+          get(node, 'dataset.filterValue'),
+          get(value, node.dataset.filterField)
+        )
+      ) {
+        node.dataset.filterActive = true;
+      } else {
+        node.dataset.filterActive = false;
+      }
+    }
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const child = node.childNodes[i];
+      this.toggleActiveFilters(value, child);
+    }
+  };
 
   /**
    * Set widget html.
