@@ -275,7 +275,6 @@ export class ButtonConfigComponent
       }
     });
 
-    console.log('on init');
     if (this.formGroup.value.targetResource) {
       this.targetResource = this.relatedResources.find(
         (x) => x.id === this.formGroup.value.targetResource
