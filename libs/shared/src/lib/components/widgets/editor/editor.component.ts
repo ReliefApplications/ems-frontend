@@ -152,13 +152,21 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       });
   }
 
-  private toggleActiveFilters = (value: any, node: any) => {
+  /**
+   * Set the elements as active if matching dashboard filter
+   *
+   * @param filterValue value of the current dashboard filter
+   * @param node HTML element
+   */
+  private toggleActiveFilters = (filterValue: any, node: any) => {
     if (get(node, 'dataset.filterField')) {
       if (
         isEqual(
           get(node, 'dataset.filterValue'),
-          get(value, node.dataset.filterField)
-        )
+          get(filterValue, node.dataset.filterField)
+        ) ||
+        (get(node, 'dataset.filterValue') === '' &&
+          isNil(get(filterValue, node.dataset.filterField)))
       ) {
         node.dataset.filterActive = true;
       } else {
@@ -167,7 +175,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     }
     for (let i = 0; i < node.childNodes.length; i++) {
       const child = node.childNodes[i];
-      this.toggleActiveFilters(value, child);
+      this.toggleActiveFilters(filterValue, child);
     }
   };
 
