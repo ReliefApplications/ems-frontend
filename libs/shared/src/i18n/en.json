@@ -807,6 +807,10 @@
 			}
 		},
 		"formBuilder": {
+			"choicesTabAlert": {
+				"confirmationMessage": "The opening of this new tab will erase your current choices.\nAre you sure you want to continue and clear your configuration?",
+				"expandTab": "Tab change"
+			},
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",

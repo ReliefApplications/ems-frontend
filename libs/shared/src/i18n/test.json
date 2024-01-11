@@ -807,6 +807,10 @@
 			}
 		},
 		"formBuilder": {
+			"choicesTabAlert": {
+				"confirmationMessage": "******",
+				"expandTab": "******"
+			},
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"incorrectJSON": "******",

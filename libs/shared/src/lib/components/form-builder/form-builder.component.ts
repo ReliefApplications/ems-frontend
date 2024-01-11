@@ -19,6 +19,7 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import {
   Action,
   PageModel,
+  PanelModel,
   SurveyModel,
   surveyLocalization,
 } from 'survey-core';
@@ -28,6 +29,7 @@ import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
+import { ConfirmService } from '../../services/confirm/confirm.service';
 
 /**
  * Array containing the different types of questions.
@@ -131,6 +133,8 @@ export class FormBuilderComponent
   private relatedNames!: string[];
   /** Timeout to survey creator */
   private timeoutListener!: NodeJS.Timeout;
+  /** Current expanded choices panel */
+  private expandedChoicesPanel: PanelModel | null = null;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -139,6 +143,7 @@ export class FormBuilderComponent
    * @param dialog Angular Dialog service used to display dialog modals
    * @param snackBar Service that will be used to display the snackbar.
    * @param translate Angular translate service
+   * @param confirmService Shared confirm service
    * @param referenceDataService Reference data service
    * @param formHelpersService Shared form helper service.
    * @param document document
@@ -147,6 +152,7 @@ export class FormBuilderComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
+    private confirmService: ConfirmService,
     private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document
@@ -329,6 +335,7 @@ export class FormBuilderComponent
         )
     );
 
+    // open the correct choices panel (tab) and set eventListeners
     this.initChoicesPanels();
 
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
@@ -337,35 +344,50 @@ export class FormBuilderComponent
     this.addAdorners();
   }
 
+  /**
+   * Manage the logic for expanding and collapsing choices panels
+   */
   private initChoicesPanels() {
+    // expand a panel, collapse and clear the others
     const handleChoicesPanelExpansion = (
-      expandingPanel: any,
-      panels: any,
-      question: any
+      panelToExpand: any,
+      panels: PanelModel[],
+      question: Question
     ) => {
+      this.expandedChoicesPanel = panelToExpand;
       panels.forEach((panel: any) => {
-        if (panel === expandingPanel && !panel.isExpanded) {
+        if (panel === panelToExpand) {
           panel.expand();
-        } else if (panel !== expandingPanel) {
+        } else {
           panel.collapse();
+          // clear unused data
           if (panel.name == 'Choices from Reference data') {
             question.referenceData = undefined;
           } else if (panel.name == 'choicesByUrl') {
             question.choicesByUrl.processedUrl = '';
           }
-          question.choices = undefined;
         }
       });
+      question.choices = undefined;
     };
 
+    let choicesPanels: PanelModel[] = [];
+
+    // when a form element is selected
     this.surveyCreator.onSelectedElementChanged.add((sender, options) => {
       const question = options.newSelectedElement;
-      const choicesPanels = sender.propertyGrid
+      // get only choices panels
+      choicesPanels = sender.propertyGrid
         .getAllPanels()
-        .filter((panel) => panel.name.toLowerCase().includes('choices'));
-      console.log(question);
+        .filter((panel) =>
+          panel.name.toLowerCase().includes('choices')
+        ) as PanelModel[];
 
+      // only if more than one panel is loaded
       if (choicesPanels.length > 1) {
+        // find current panel based on question data
+        // the current code looks for the reference data first, then the API, and finally the static data
+        // the panel name follows the same logic
         const currentPanelName = question.referenceData
           ? 'Choices from Reference data'
           : question.choicesByUrl.processedUrl
@@ -374,16 +396,60 @@ export class FormBuilderComponent
         const panelToExpand = choicesPanels.find(
           (panel) => panel.name === currentPanelName
         );
+        // expand the corresponding panel
         handleChoicesPanelExpansion(panelToExpand, choicesPanels, question);
 
-        choicesPanels.forEach((panel: any) => {
+        // add an eventListener for each choices panel
+        choicesPanels.forEach((panel: PanelModel) => {
+          // listen onPropertyChanged because onExpanded does not exist
+          // this makes the logic a lot more complex
           panel.onPropertyChanged.add((sender: any, options: any) => {
-            if (options.newValue === 'expanded') {
-              handleChoicesPanelExpansion(panel, choicesPanels, question);
+            // if you click on a closed panel
+            if (
+              options.newValue === 'expanded' &&
+              this.expandedChoicesPanel != panel
+            ) {
+              // prevent clicked panel from being expanded without confirmation
+              panel.collapse();
+
+              // alert that panel switches will clear current choices
+              const confirmDialogRef = this.confirmService.openConfirmModal({
+                title: this.translate.instant(
+                  'components.formBuilder.choicesTabAlert.expandTab'
+                ),
+                content: this.translate.instant(
+                  'components.formBuilder.choicesTabAlert.confirmationMessage'
+                ),
+                confirmText: this.translate.instant(
+                  'components.confirmModal.confirm'
+                ),
+                confirmVariant: 'danger',
+              });
+              confirmDialogRef.closed
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((confirm: any) => {
+                  if (confirm) {
+                    // if true the new panel is expanded, others are collapsed
+                    handleChoicesPanelExpansion(panel, choicesPanels, question);
+                  }
+                });
+            } else if (
+              options.newValue === 'collapsed' &&
+              this.expandedChoicesPanel == panel
+            ) {
+              // prevent the current panel to be collapsed
+              panel.expand();
             }
           });
         });
       }
+    });
+
+    // remove onPropertyChanged listeners
+    this.surveyCreator.onSelectedElementChanging.add(() => {
+      choicesPanels.forEach((panel: any) => {
+        panel.onPropertyChanged.clear();
+      });
     });
   }
 

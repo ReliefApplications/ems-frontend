@@ -818,6 +818,10 @@
 			}
 		},
 		"formBuilder": {
+			"choicesTabAlert": {
+				"confirmationMessage": "L'ouverture de ce nouvel onglet entraînera la suppression de vos choix actuels.\nVoulez-vous vraiment continuer et effacer votre configuration ?",
+				"expandTab": "Changement d'onglet"
+			},
 			"errors": {
 				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
 				"incorrectJSON": "Le JSON est invalide dans le JSON Editor, les changements n'ont pas été sauvegardés",

@@ -5,14 +5,14 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { PageModel, SurveyModel } from 'survey-core';
+import { PageModel, PanelModel, SurveyModel } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import { SurveyCreatorModule } from 'survey-creator-angular';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { FormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilderModule } from '../../form-builder/form-builder.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
@@ -24,6 +24,9 @@ import {
   CustomJSONEditorComponent,
   SurveyCustomJSONEditorPlugin,
 } from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { takeUntil } from 'rxjs';
+import { ConfirmService } from '../../../services/confirm/confirm.service';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -163,10 +166,13 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   ],
 })
 export class FilterBuilderModalComponent
+  extends UnsubscribeComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
+  /** Current expanded choices panel */
+  private expandedChoicesPanel: PanelModel | null = null;
 
   /**
    * Dialog component to build the filter
@@ -177,6 +183,8 @@ export class FilterBuilderModalComponent
    * @param referenceDataService reference data service
    * @param formHelpersService Shared form helper service.
    * @param snackBar Service that will be used to display the snackbar.
+   * @param confirmService Shared confirm service.
+   * @param translate Service used to get the translations.
    */
   constructor(
     private formService: FormService,
@@ -184,8 +192,12 @@ export class FilterBuilderModalComponent
     @Inject(DIALOG_DATA) public data: DialogData,
     private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
-    private snackBar: SnackbarService
-  ) {}
+    private snackBar: SnackbarService,
+    private translate: TranslateService,
+    private confirmService: ConfirmService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     // Initialize survey creator instance without custom questions
@@ -250,6 +262,9 @@ export class FilterBuilderModalComponent
           renderGlobalProperties(this.referenceDataService)
         )
     );
+
+    // open the correct choices panel (tab) and set eventListeners
+    this.initChoicesPanels();
   }
 
   /**
@@ -271,6 +286,115 @@ export class FilterBuilderModalComponent
   };
 
   /**
+   * Manage the logic for expanding and collapsing choices panels
+   */
+  private initChoicesPanels() {
+    // expand a panel, collapse and clear the others
+    const handleChoicesPanelExpansion = (
+      panelToExpand: any,
+      panels: PanelModel[],
+      question: Question
+    ) => {
+      this.expandedChoicesPanel = panelToExpand;
+      panels.forEach((panel: any) => {
+        if (panel === panelToExpand) {
+          panel.expand();
+        } else {
+          panel.collapse();
+          // clear unused data
+          if (panel.name == 'Choices from Reference data') {
+            question.referenceData = undefined;
+          } else if (panel.name == 'choicesByUrl') {
+            question.choicesByUrl.processedUrl = '';
+          }
+        }
+      });
+      question.choices = undefined;
+    };
+
+    let choicesPanels: PanelModel[] = [];
+
+    // when a form element is selected
+    this.surveyCreator.onSelectedElementChanged.add((sender, options) => {
+      const question = options.newSelectedElement;
+      // get only choices panels
+      choicesPanels = sender.propertyGrid
+        .getAllPanels()
+        .filter((panel) =>
+          panel.name.toLowerCase().includes('choices')
+        ) as PanelModel[];
+
+      // only if more than one panel is loaded
+      if (choicesPanels.length > 1) {
+        // find current panel based on question data
+        // the current code looks for the reference data first, then the API, and finally the static data
+        // the panel name follows the same logic
+        const currentPanelName = question.referenceData
+          ? 'Choices from Reference data'
+          : question.choicesByUrl.processedUrl
+          ? 'choicesByUrl'
+          : 'choices';
+        const panelToExpand = choicesPanels.find(
+          (panel) => panel.name === currentPanelName
+        );
+        // expand the corresponding panel
+        handleChoicesPanelExpansion(panelToExpand, choicesPanels, question);
+
+        // add an eventListener for each choices panel
+        choicesPanels.forEach((panel: PanelModel) => {
+          // listen onPropertyChanged because onExpanded does not exist
+          // this makes the logic a lot more complex
+          panel.onPropertyChanged.add((sender: any, options: any) => {
+            // if you click on a closed panel
+            if (
+              options.newValue === 'expanded' &&
+              this.expandedChoicesPanel != panel
+            ) {
+              // prevent clicked panel from being expanded without confirmation
+              panel.collapse();
+
+              // alert that panel switches will clear current choices
+              const confirmDialogRef = this.confirmService.openConfirmModal({
+                title: this.translate.instant(
+                  'components.formBuilder.choicesTabAlert.expandTab'
+                ),
+                content: this.translate.instant(
+                  'components.formBuilder.choicesTabAlert.confirmationMessage'
+                ),
+                confirmText: this.translate.instant(
+                  'components.confirmModal.confirm'
+                ),
+                confirmVariant: 'danger',
+              });
+              confirmDialogRef.closed
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((confirm: any) => {
+                  if (confirm) {
+                    // if true the new panel is expanded, others are collapsed
+                    handleChoicesPanelExpansion(panel, choicesPanels, question);
+                  }
+                });
+            } else if (
+              options.newValue === 'collapsed' &&
+              this.expandedChoicesPanel == panel
+            ) {
+              // prevent the current panel to be collapsed
+              panel.expand();
+            }
+          });
+        });
+      }
+    });
+
+    // remove onPropertyChanged listeners
+    this.surveyCreator.onSelectedElementChanging.add(() => {
+      choicesPanels.forEach((panel: any) => {
+        panel.onPropertyChanged.clear();
+      });
+    });
+  }
+
+  /**
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    *
    * @returns if the validation is approved and can create the survey
@@ -289,7 +413,8 @@ export class FilterBuilderModalComponent
     return canCreate;
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     //Once we destroy the dashboard filter survey, set the survey creator with the custom questions config
     this.formService.initialize();
   }
