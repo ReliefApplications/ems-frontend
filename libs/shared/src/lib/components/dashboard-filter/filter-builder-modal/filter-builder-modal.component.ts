@@ -172,7 +172,7 @@ export class FilterBuilderModalComponent
   /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
   /** Current expanded choices panel */
-  private expandedChoicesPanel: PanelModel | null = null;
+  private expandedChoicesPanel: PanelModel | undefined = undefined;
 
   /**
    * Dialog component to build the filter
@@ -291,7 +291,7 @@ export class FilterBuilderModalComponent
   private initChoicesPanels() {
     // expand a panel, collapse and clear the others
     const handleChoicesPanelExpansion = (
-      panelToExpand: any,
+      panelToExpand: PanelModel,
       panels: PanelModel[],
       question: Question
     ) => {
@@ -338,7 +338,8 @@ export class FilterBuilderModalComponent
           (panel) => panel.name === currentPanelName
         );
         // expand the corresponding panel
-        handleChoicesPanelExpansion(panelToExpand, choicesPanels, question);
+        this.expandedChoicesPanel = panelToExpand;
+        panelToExpand?.expand();
 
         // add an eventListener for each choices panel
         choicesPanels.forEach((panel: PanelModel) => {

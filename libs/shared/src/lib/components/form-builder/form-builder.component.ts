@@ -134,7 +134,7 @@ export class FormBuilderComponent
   /** Timeout to survey creator */
   private timeoutListener!: NodeJS.Timeout;
   /** Current expanded choices panel */
-  private expandedChoicesPanel: PanelModel | null = null;
+  private expandedChoicesPanel: PanelModel | undefined = undefined;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -350,7 +350,7 @@ export class FormBuilderComponent
   private initChoicesPanels() {
     // expand a panel, collapse and clear the others
     const handleChoicesPanelExpansion = (
-      panelToExpand: any,
+      panelToExpand: PanelModel,
       panels: PanelModel[],
       question: Question
     ) => {
@@ -397,7 +397,8 @@ export class FormBuilderComponent
           (panel) => panel.name === currentPanelName
         );
         // expand the corresponding panel
-        handleChoicesPanelExpansion(panelToExpand, choicesPanels, question);
+        this.expandedChoicesPanel = panelToExpand;
+        panelToExpand?.expand();
 
         // add an eventListener for each choices panel
         choicesPanels.forEach((panel: PanelModel) => {
