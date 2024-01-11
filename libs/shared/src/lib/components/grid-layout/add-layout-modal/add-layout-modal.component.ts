@@ -146,7 +146,7 @@ export class AddLayoutModalComponent
 
     this.selectedLayoutControl.valueChanges.subscribe((value) => {
       if (value) {
-        if (this.data.useQueryRef) {
+        if (this.data.useQueryRef !== false) {
           this.dialogRef.close(
             this.layoutSelect?.elements.getValue().find((x) => x.id === value)
           );

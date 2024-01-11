@@ -10,6 +10,7 @@ export const GET_RESOURCE = gql`
     $ignoreAggregations: Boolean
     $formId: ID
     $ignoreForms: Boolean
+    $ignoreMetadata: Boolean
   ) {
     resource(id: $id) {
       id
@@ -43,7 +44,7 @@ export const GET_RESOURCE = gql`
         }
         totalCount
       }
-      metadata {
+      metadata(ignore: $ignoreMetadata) {
         name
         type
       }

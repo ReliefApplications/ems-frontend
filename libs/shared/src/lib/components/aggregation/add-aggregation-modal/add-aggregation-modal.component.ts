@@ -135,7 +135,7 @@ export class AddAggregationModalComponent
     // emits selected aggregation
     this.selectedAggregationControl.valueChanges.subscribe((value) => {
       if (value) {
-        if (this.data.useQueryRef) {
+        if (this.data.useQueryRef !== false) {
           this.dialogRef.close(
             this.aggregationSelect?.elements
               .getValue()

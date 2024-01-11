@@ -384,6 +384,7 @@ export class SummaryCardSettingsComponent
           ignoreAggregations: aggregationID ? false : true,
           formId,
           ignoreForms: formId ? false : true,
+          ignoreMetadata: layoutID ? false : true,
         },
       })
       .subscribe(({ data, errors }) => {
