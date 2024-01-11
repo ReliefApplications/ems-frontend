@@ -236,6 +236,7 @@ export class SummaryCardSettingsComponent
     if (this.customStyle) {
       this.customStyle.remove();
     }
+    super.ngOnDestroy();
   }
 
   /**

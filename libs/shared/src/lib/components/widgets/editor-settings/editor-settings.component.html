@@ -67,6 +67,8 @@
           [referenceData]="referenceData"
           [resource]="resource"
           [layout]="layout"
+          [loadedLayouts]="loadedLayouts"
+          (loadLayouts)="getLayouts()"
         ></shared-record-selection-tab>
       </ng-template>
     </ui-tab>

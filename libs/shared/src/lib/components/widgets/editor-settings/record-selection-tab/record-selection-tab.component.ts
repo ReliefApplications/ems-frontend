@@ -1,4 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
@@ -17,7 +24,7 @@ import { createEditorForm } from '../editor-settings.forms';
 })
 export class RecordSelectionTabComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Widget form group */
   @Input() form!: ReturnType<typeof createEditorForm>;
@@ -27,10 +34,16 @@ export class RecordSelectionTabComponent
   @Input() resource: Resource | null = null;
   /** Current layout */
   @Input() layout: Layout | null = null;
+  /** Saves if the layouts has been fetched */
+  @Input() loadedLayouts = false;
+  /** Emits when complete layout list should be fetched */
+  @Output() loadLayouts = new EventEmitter<void>();
   /** Current record id */
   public selectedRecordID: string | null = null;
   /** Available reference data elements  */
   public refDataElements: any[] = [];
+  /** Timeout listener for add layout modal opening */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Component for the record selection in the editor widget settings
@@ -80,23 +93,33 @@ export class RecordSelectionTabComponent
     if (!this.resource) {
       return;
     }
+    if (!this.loadedLayouts) {
+      this.loadLayouts.emit();
+    }
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
-    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
-      data: {
-        resource: this.resource,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.form.get('layout')?.setValue(value);
-        } else {
-          this.form.get('layout')?.setValue((value as any).id);
+    const awaitTime = this.loadedLayouts ? 0 : 500;
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    this.timeoutListener = setTimeout(() => {
+      const dialogRef = this.dialog.open(AddLayoutModalComponent, {
+        data: {
+          resource: this.resource,
+          useQueryRef: false,
+        },
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.form.get('layout')?.setValue(value);
+          } else {
+            this.form.get('layout')?.setValue((value as any).id);
+          }
         }
-      }
-    });
+      });
+    }, awaitTime);
   }
 
   /**
@@ -161,5 +184,12 @@ export class RecordSelectionTabComponent
       this.form.get(formField)?.setValue(null);
     }
     event.stopPropagation();
+  }
+
+  override ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    super.ngOnDestroy();
   }
 }

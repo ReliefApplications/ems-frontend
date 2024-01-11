@@ -58,3 +58,23 @@ export const GET_REFERENCE_DATA = gql`
     }
   }
 `;
+
+/** Graphql request for getting resource layouts by its id */
+export const GET_RESOURCE_LAYOUTS = gql`
+  query GetResource($resource: ID!) {
+    resource(id: $resource) {
+      layouts {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        totalCount
+      }
+    }
+  }
+`;
