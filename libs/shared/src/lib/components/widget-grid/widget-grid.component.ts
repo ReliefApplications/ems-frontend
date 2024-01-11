@@ -58,6 +58,8 @@ export class WidgetGridComponent
   @Input() options?: GridsterConfig;
   /** Is shared tab boolean */
   @Input() tabSize: any = {};
+  /** Is full screen */
+  @Input() isFullScreen = false;
   /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
   /** Edit event emitter */
@@ -152,6 +154,9 @@ export class WidgetGridComponent
         this.setFitStyleWidth();
       }
     }
+    if (changes['isFullScreen']) {
+      this.setFitStyleWidth();
+    }
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
@@ -181,21 +186,19 @@ export class WidgetGridComponent
    * Set the available width and height for fit grid type
    */
   public setFitStyleWidth() {
-    // check if it's a tab widget grid
-    if (!this.tabSize['width']) {
-      // all available width less margin
-      this.fitStyle['max-width.px'] = document.documentElement.clientWidth - 50;
-      // subtract left navbar
-      const dashboardNavbar =
-        document.documentElement.getElementsByTagName('shared-navbar');
-      if (dashboardNavbar.length) {
-        this.fitStyle['max-width.px'] -= (
-          dashboardNavbar[0] as any
-        ).offsetWidth;
-      }
+    console.log(this.isFullScreen)
+    const parentTag = (this._host as any).nativeElement.parentElement.tagName;
+
+    // Tab widget
+    if (parentTag === 'SHARED-TAB') { // Is a grid in a tab widget
+      this.fitStyle['max-height.px'] = this.tabSize['height']; 
+    } else if (parentTag === 'SHARED-TAB-SETTINGS') { // Is a grid in a tab widget settings
+      this.fitStyle['max-height.px'] = document.documentElement.clientHeight - 400;
+    } else {
+      console.log('no-tab', document.documentElement.clientHeight)
       // all available height less margin
       this.fitStyle['max-height.px'] =
-        document.documentElement.clientHeight - 160;
+        document.documentElement.clientHeight - (this.isFullScreen ? 100 : 180);
       // subtract dashboard filter
       const dashboardFilter = document.documentElement.getElementsByTagName(
         'shared-dashboard-filter'
@@ -205,21 +208,11 @@ export class WidgetGridComponent
           dashboardFilter[0] as any
         ).offsetHeight;
       }
-      // subtract dashboard header
-      const dashboardHeader = document.getElementById('dashboard-header');
-      if (dashboardHeader) {
-        this.fitStyle['max-height.px'] -= dashboardHeader.offsetHeight;
-      }
-    } else {
-      // set width and height adding some space(removing some size)
-      this.fitStyle['max-width.px'] = Math.floor(this.tabSize['width'] * 0.95);
-      this.fitStyle['max-height.px'] = Math.floor(
-        this.tabSize['height'] * 0.95
-      );
     }
     // set min width and min height
-    this.fitStyle['min-width.px'] = this.fitStyle['max-width.px'];
     this.fitStyle['min-height.px'] = this.fitStyle['max-height.px'];
+
+    console.log(this.fitStyle);
   }
 
   /**
