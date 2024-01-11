@@ -98,6 +98,9 @@ const calcFunctions: Record<string, { signature: string }> = {
   length: {
     signature: 'length( value )',
   },
+  trim : {
+    signature: 'trim( value )',
+  },
   toLong: {
     signature: 'toLong( value )',
   },
