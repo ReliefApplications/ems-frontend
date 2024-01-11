@@ -129,18 +129,14 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       .map((aggregation: any) => aggregation.contextFilters)
       .join('');
     // Listen to dashboard filters changes if it is necessary
-    if (this.contextService.filterRegex.test(allContextFilters)) {
-      this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.refresh$.next(true);
-          this.loading = true;
-          this.setHtml();
-        });
-    }
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
+        if (this.contextService.filterRegex.test(allContextFilters)) {
+          this.refresh$.next(true);
+          this.loading = true;
+          this.setHtml();
+        }
         const toggleActiveFilters = (node: any) => {
           if (get(node, 'dataset.filterField')) {
             if (
