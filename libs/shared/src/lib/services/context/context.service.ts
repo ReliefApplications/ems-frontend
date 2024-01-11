@@ -21,6 +21,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../form-builder/form-builder.service';
 import { ApplicationService } from '../application/application.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RecordQueryResponse } from '../../models/record.model';
+import { GET_RECORD_BY_ID } from './graphql/queries';
 
 /**
  * Dashboard context service
@@ -129,6 +132,7 @@ export class ContextService {
    * @param translate Angular translate service
    * @param formBuilderService Form builder service
    * @param applicationService Shared application service
+   * @param router Angular router
    */
   constructor(
     private dashboardService: DashboardService,
@@ -137,7 +141,8 @@ export class ContextService {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private formBuilderService: FormBuilderService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private router: Router
   ) {
     this.dashboardService.dashboard$.subscribe(
       (dashboard: Dashboard | null) => {
@@ -308,6 +313,106 @@ export class ContextService {
 
     survey.data = data;
     return survey;
+  }
+
+  /**
+   * If context data exists, returns an object containing context content mapped settings and widget's original settings
+   *
+   * @param settings Widget settings
+   * @returns context content mapped settings and original settings
+   */
+  public updateSettingsContextContent(settings: any): {
+    settings: any;
+    originalSettings?: any;
+  } {
+    if (this.dashboard?.contextData) {
+      // If tile has context, replace the templates with the values
+      // and keep the original, to be used for the widget settings
+      const mappedContextContentSettings = this.replaceContext(settings);
+      const originalSettings = settings;
+      return { settings: mappedContextContentSettings, originalSettings };
+    }
+    // else return settings as given
+    return { settings };
+  }
+
+  /**
+   * Handle dashboard context change by simply updating the url.
+   *
+   * @param value id of the element or record
+   * @param contextType type of context element
+   * @param route Angular current page
+   */
+  public onContextChange(
+    value: string | number | undefined | null,
+    contextType: 'record' | 'element' | undefined,
+    route: ActivatedRoute
+  ): void {
+    if (
+      !this.dashboard?.id ||
+      !this.dashboard?.page?.id ||
+      !this.dashboard.page.context ||
+      !contextType
+    )
+      return;
+    if (value) {
+      this.router.navigate(['.'], {
+        relativeTo: route,
+        queryParams: {
+          id: value,
+        },
+      });
+      // const urlArr = this.router.url.split('/');
+      // urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
+      // this.router.navigateByUrl(urlArr.join('/'));
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.dashboard.context.notifications.loadDefault'
+        )
+      );
+      this.router.navigate(['.'], { relativeTo: route });
+      // const urlArr = this.router.url.split('/');
+      // urlArr[urlArr.length - 1] = parentDashboardId;
+      // this.router.navigateByUrl(urlArr.join('/'));
+    }
+  }
+
+  /**
+   * Initializes the dashboard context
+   *
+   * @param callback additional callback
+   */
+  public initContext(callback: any): void {
+    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+    // Checks if the dashboard has context attached to it
+    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
+    const id = this.dashboard.id;
+    const dContext = contentWithContext.find((c) => c.content === id);
+
+    if (!dContext) return;
+
+    if ('element' in dContext) {
+      // Returns context element
+      callback({ element: dContext.element });
+    } else if ('record' in dContext) {
+      // Get record by id
+      this.apollo
+        .query<RecordQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: dContext.record,
+          },
+        })
+        .subscribe((res) => {
+          if (res?.data) {
+            callback({
+              record: dContext.record,
+              recordData: res.data.record,
+            });
+          }
+        });
+    }
   }
 
   /** Saves the dashboard contextual filter using the editDashboard mutation */
