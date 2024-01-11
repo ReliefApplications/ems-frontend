@@ -69,7 +69,6 @@ export class MapPolygonsService {
     }
     const features: any[] = [];
     for (const feature of data.features) {
-      console.log(feature);
       const adminIds = uniq(flattenDeep([get(feature, 'geometry')])).filter(
         (x) => !isObject(x) && !isNil(x)
       );

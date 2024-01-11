@@ -370,7 +370,6 @@ export class FormHelpersService {
    * @param options current survey question options
    */
   public addQuestionTooltips(survey: any, options: any): void {
-    console.log('writing');
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
