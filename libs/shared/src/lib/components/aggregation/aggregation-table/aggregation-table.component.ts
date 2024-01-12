@@ -2,9 +2,10 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnDestroy,
   OnInit,
   Output,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
@@ -26,7 +27,7 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class AggregationTableComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnChanges
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
@@ -45,8 +46,6 @@ export class AggregationTableComponent
   public allAggregations: Layout[] = [];
   /** List of displayed columns */
   public columns: string[] = ['name', 'createdAt', '_actions'];
-  /** Timeout listener */
-  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Aggregation table component.
@@ -72,11 +71,17 @@ export class AggregationTableComponent
       });
   }
 
-  override ngOnDestroy(): void {
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+  ngOnChanges(changes: SimpleChanges): void {
+    const defaultValue = this.selectedAggregations?.value;
+    this.setAllAggregations();
+    this.setSelectedAggregations(defaultValue);
+    if (
+      changes['loadedAggregations'] &&
+      changes['loadedAggregations'].currentValue &&
+      !changes['selectedAggregations']
+    ) {
+      this.openAddModal();
     }
-    super.ngOnDestroy();
   }
 
   /**
@@ -110,41 +115,41 @@ export class AggregationTableComponent
   /**
    * Adds a new aggregation to the list.
    */
-  public async onAdd(): Promise<void> {
+  public onAdd() {
     if (!this.loadedAggregations) {
       this.loadAggregations.emit();
+    } else {
+      this.openAddModal();
     }
+  }
+
+  /**
+   * Opens add aggregation modal
+   */
+  public async openAddModal(): Promise<void> {
     const { AddAggregationModalComponent } = await import(
       '../add-aggregation-modal/add-aggregation-modal.component'
     );
-    const awaitTime = this.loadedAggregations ? 0 : 500;
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
-    }
-    this.timeoutListener = setTimeout(() => {
-      const dialogRef = this.dialog.open(AddAggregationModalComponent, {
-        data: {
-          resource: this.resource,
-          useQueryRef: false,
-        },
-      });
-      dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
-          if (value) {
-            if (!this.allAggregations.find((x) => x.id === value.id)) {
-              this.allAggregations.push(value);
-              this.resource?.aggregations?.edges?.push({
-                node: value,
-                cursor: value.id,
-              });
-            }
-            this.selectedAggregations?.setValue(
-              this.selectedAggregations?.value.concat(value.id)
-            );
-          }
-        });
-    }, awaitTime);
+    const dialogRef = this.dialog.open(AddAggregationModalComponent, {
+      data: {
+        resource: this.resource,
+        useQueryRef: false,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        if (!this.allAggregations.find((x) => x.id === value.id)) {
+          this.allAggregations.push(value);
+          this.resource?.aggregations?.edges?.push({
+            node: value,
+            cursor: value.id,
+          });
+        }
+        this.selectedAggregations?.setValue(
+          this.selectedAggregations?.value.concat(value.id)
+        );
+      }
+    });
   }
 
   /**

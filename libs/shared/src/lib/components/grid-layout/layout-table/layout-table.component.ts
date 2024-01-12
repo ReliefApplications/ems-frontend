@@ -3,9 +3,9 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
@@ -27,7 +27,7 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class LayoutTableComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges, OnDestroy
+  implements OnInit, OnChanges
 {
   /** Resource to display */
   @Input() resource: Resource | null = null;
@@ -48,8 +48,6 @@ export class LayoutTableComponent
   public allLayouts: Layout[] = [];
   /** List of displayed columns */
   public columns: string[] = ['name', 'createdAt', '_actions'];
-  /** Timeout listener */
-  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Constructor of the layout list component
@@ -75,17 +73,13 @@ export class LayoutTableComponent
       });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     const defaultValue = this.selectedLayouts?.value;
     this.setAllLayouts();
     this.setSelectedLayouts(defaultValue);
-  }
-
-  override ngOnDestroy(): void {
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (changes['loadedLayouts'] && changes['loadedLayouts'].currentValue) {
+      this.openAddModal();
     }
-    super.ngOnDestroy();
   }
 
   /**
@@ -126,42 +120,42 @@ export class LayoutTableComponent
   /**
    * Adds a new layout to the list.
    */
-  public async onAdd(): Promise<void> {
+  public onAdd() {
     if (!this.loadedLayouts) {
       this.loadLayouts.emit();
+    } else {
+      this.openAddModal();
     }
+  }
+
+  /**
+   * Opens add layout modal
+   */
+  public async openAddModal(): Promise<void> {
     const { AddLayoutModalComponent } = await import(
       '../add-layout-modal/add-layout-modal.component'
     );
-    const awaitTime = this.loadedLayouts ? 0 : 500;
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
-    }
-    this.timeoutListener = setTimeout(() => {
-      const dialogRef = this.dialog.open(AddLayoutModalComponent, {
-        data: {
-          form: this.form,
-          resource: this.resource,
-          useQueryRef: false,
-        },
-      });
-      dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
-          if (value) {
-            if (!this.allLayouts.find((x) => x.id === value.id)) {
-              this.allLayouts.push(value);
-              this.resource?.layouts?.edges?.push({
-                node: value,
-                cursor: value.id,
-              });
-            }
-            this.selectedLayouts?.setValue(
-              this.selectedLayouts?.value.concat(value.id)
-            );
-          }
-        });
-    }, awaitTime);
+    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
+      data: {
+        form: this.form,
+        resource: this.resource,
+        useQueryRef: false,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        if (!this.allLayouts.find((x) => x.id === value.id)) {
+          this.allLayouts.push(value);
+          this.resource?.layouts?.edges?.push({
+            node: value,
+            cursor: value.id,
+          });
+        }
+        this.selectedLayouts?.setValue(
+          this.selectedLayouts?.value.concat(value.id)
+        );
+      }
+    });
   }
 
   /**

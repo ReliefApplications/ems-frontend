@@ -2,8 +2,9 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnDestroy,
   Output,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -66,7 +67,7 @@ import { Form } from '../../../../models/form.model';
 })
 export class SummaryCardGeneralComponent
   extends UnsubscribeComponent
-  implements OnDestroy
+  implements OnChanges
 {
   /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
@@ -92,10 +93,6 @@ export class SummaryCardGeneralComponent
   @Output() loadAggregations = new EventEmitter<void>();
   /** Saves if the templates has been fetched */
   public loadedTemplates = false;
-  /** Timeout listener for add layout modal opening */
-  private layoutTimeoutListener!: NodeJS.Timeout;
-  /** Timeout listener for add aggregation modal opening */
-  private aggregationTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Component for the general summary cards tab
@@ -112,6 +109,18 @@ export class SummaryCardGeneralComponent
     super();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['loadedAggregations'] &&
+      changes['loadedAggregations'].currentValue
+    ) {
+      this.openAddAggregationModal();
+    }
+    if (changes['loadedLayouts'] && changes['loadedLayouts'].currentValue) {
+      this.openAddLayoutModal();
+    }
+  }
+
   /** Opens modal for layout selection/creation */
   public async addLayout() {
     if (!this.resource) {
@@ -119,31 +128,33 @@ export class SummaryCardGeneralComponent
     }
     if (!this.loadedLayouts) {
       this.loadLayouts.emit();
+    } else {
+      this.openAddLayoutModal();
     }
+  }
+
+  /**
+   * Opens add layout modal
+   */
+  public async openAddLayoutModal(): Promise<void> {
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
-    const awaitTime = this.loadedLayouts ? 0 : 500;
-    if (this.layoutTimeoutListener) {
-      clearTimeout(this.layoutTimeoutListener);
-    }
-    this.layoutTimeoutListener = setTimeout(() => {
-      const dialogRef = this.dialog.open(AddLayoutModalComponent, {
-        data: {
-          resource: this.resource,
-          useQueryRef: false,
-        },
-      });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-        if (value) {
-          if (typeof value === 'string') {
-            this.formGroup.get('card.layout')?.setValue(value);
-          } else {
-            this.formGroup.get('card.layout')?.setValue((value as any).id);
-          }
+    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
+      data: {
+        resource: this.resource,
+        useQueryRef: false,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      if (value) {
+        if (typeof value === 'string') {
+          this.formGroup.get('card.layout')?.setValue(value);
+        } else {
+          this.formGroup.get('card.layout')?.setValue((value as any).id);
         }
-      });
-    }, awaitTime);
+      }
+    });
   }
 
   /**
@@ -184,31 +195,33 @@ export class SummaryCardGeneralComponent
     }
     if (!this.loadedAggregations) {
       this.loadAggregations.emit();
+    } else {
+      this.openAddAggregationModal();
     }
+  }
+
+  /**
+   * Opens add aggregation modal
+   */
+  public async openAddAggregationModal(): Promise<void> {
     const { AddAggregationModalComponent } = await import(
       '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
     );
-    const awaitTime = this.loadedLayouts ? 0 : 500;
-    if (this.aggregationTimeoutListener) {
-      clearTimeout(this.aggregationTimeoutListener);
-    }
-    this.aggregationTimeoutListener = setTimeout(() => {
-      const dialogRef = this.dialog.open(AddAggregationModalComponent, {
-        data: {
-          resource: this.resource,
-          useQueryRef: false,
-        },
-      });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-        if (value) {
-          if (typeof value === 'string') {
-            this.formGroup.get('card.aggregation')?.setValue(value);
-          } else {
-            this.formGroup.get('card.aggregation')?.setValue((value as any).id);
-          }
+    const dialogRef = this.dialog.open(AddAggregationModalComponent, {
+      data: {
+        resource: this.resource,
+        useQueryRef: false,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      if (value) {
+        if (typeof value === 'string') {
+          this.formGroup.get('card.aggregation')?.setValue(value);
+        } else {
+          this.formGroup.get('card.aggregation')?.setValue((value as any).id);
         }
-      });
-    }, awaitTime);
+      }
+    });
   }
 
   /**
@@ -266,15 +279,5 @@ export class SummaryCardGeneralComponent
       this.loadTemplates.emit();
       this.loadedTemplates = true;
     }
-  }
-
-  override ngOnDestroy(): void {
-    if (this.layoutTimeoutListener) {
-      clearTimeout(this.layoutTimeoutListener);
-    }
-    if (this.aggregationTimeoutListener) {
-      clearTimeout(this.aggregationTimeoutListener);
-    }
-    super.ngOnDestroy();
   }
 }
