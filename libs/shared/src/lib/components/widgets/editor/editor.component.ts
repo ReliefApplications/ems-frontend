@@ -160,13 +160,12 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    */
   private toggleActiveFilters = (filterValue: any, node: any) => {
     if (get(node, 'dataset.filterField')) {
+      const value = get(node, 'dataset.filterValue');
+      const filterFieldValue = get(filterValue, node.dataset.filterField);
+      const isNilOrEmpty = (x: any) => isNil(x) || x === '';
       if (
-        isEqual(
-          get(node, 'dataset.filterValue'),
-          get(filterValue, node.dataset.filterField)
-        ) ||
-        (get(node, 'dataset.filterValue') === '' &&
-          isNil(get(filterValue, node.dataset.filterField)))
+        isEqual(value, filterFieldValue) ||
+        (isNilOrEmpty(value) && isNilOrEmpty(filterFieldValue))
       ) {
         node.dataset.filterActive = true;
       } else {
