@@ -70,7 +70,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Loading indicator */
   public loading = true;
   /** Refresh subject, emit a value when refresh needed */
-  refresh$: Subject<boolean> = new Subject<boolean>();
+  public refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Timeout to init active filter */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -124,14 +126,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.setHtml();
 
-    // Necessary because ViewChild is not initialized immediately
-    setTimeout(() => {
-      this.toggleActiveFilters(
-        this.contextService.filter.getValue(),
-        this.htmlContentComponent.el.nativeElement
-      );
-    }, 100);
-
     // Gather all context filters in a single text value
     const allContextFilters = this.aggregations
       .map((aggregation: any) => aggregation.contextFilters)
@@ -182,6 +176,18 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * Set widget html.
    */
   private setHtml() {
+    const callback = () => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      // Necessary because ViewChild is not initialized immediately
+      this.timeoutListener = setTimeout(() => {
+        this.toggleActiveFilters(
+          this.contextService.filter.getValue(),
+          this.htmlContentComponent.el.nativeElement
+        );
+      }, 500);
+    };
     if (this.settings.record && this.settings.resource) {
       from(
         Promise.all([
@@ -210,6 +216,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else if (this.settings.element && this.settings.referenceData) {
       from(
@@ -255,6 +262,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
@@ -269,6 +277,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     }
   }
