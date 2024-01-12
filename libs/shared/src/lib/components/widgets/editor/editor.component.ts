@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isNil, set } from 'lodash';
+import { clone, get, isEqual, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -124,21 +124,60 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.setHtml();
 
+    // Necessary because ViewChild is not initialized immediately
+    setTimeout(() => {
+      this.toggleActiveFilters(
+        this.contextService.filter.getValue(),
+        this.htmlContentComponent.el.nativeElement
+      );
+    }, 100);
+
     // Gather all context filters in a single text value
     const allContextFilters = this.aggregations
       .map((aggregation: any) => aggregation.contextFilters)
       .join('');
     // Listen to dashboard filters changes if it is necessary
-    if (this.contextService.filterRegex.test(allContextFilters)) {
-      this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (this.contextService.filterRegex.test(allContextFilters)) {
           this.refresh$.next(true);
           this.loading = true;
           this.setHtml();
-        });
-    }
+        }
+        this.toggleActiveFilters(
+          value,
+          this.htmlContentComponent?.el.nativeElement
+        );
+      });
   }
+
+  /**
+   * Set the elements as active if matching dashboard filter
+   *
+   * @param filterValue value of the current dashboard filter
+   * @param node HTML element
+   */
+  private toggleActiveFilters = (filterValue: any, node: any) => {
+    if (get(node, 'dataset.filterField')) {
+      if (
+        isEqual(
+          get(node, 'dataset.filterValue'),
+          get(filterValue, node.dataset.filterField)
+        ) ||
+        (get(node, 'dataset.filterValue') === '' &&
+          isNil(get(filterValue, node.dataset.filterField)))
+      ) {
+        node.dataset.filterActive = true;
+      } else {
+        node.dataset.filterActive = false;
+      }
+    }
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const child = node.childNodes[i];
+      this.toggleActiveFilters(filterValue, child);
+    }
+  };
 
   /**
    * Set widget html.
