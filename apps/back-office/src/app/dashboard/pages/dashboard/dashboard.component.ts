@@ -307,20 +307,19 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
+          this.dashboardService.openDashboard(this.dashboard);
           this.gridOptions = {
             ...this.gridOptions,
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
-          this.initContext();
-          this.updateContextOptions();
           this.canUpdate =
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
           this.editionActive = this.canUpdate;
-
-          this.dashboardService.openDashboard(this.dashboard);
+          this.initContext();
+          this.updateContextOptions();
           this.widgets = cloneDeep(
             data.dashboard.structure
               ?.filter((x: any) => x !== null)
@@ -697,7 +696,7 @@ export class DashboardComponent
   }
 
   /** Initializes the dashboard context */
-  private initContext() {
+  private initContext(): void {
     const callback = (contextItem: {
       element?: string;
       record?: string;

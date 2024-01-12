@@ -208,8 +208,8 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
-          this.initContext();
           this.dashboardService.openDashboard(this.dashboard);
+          this.initContext();
           this.widgets = cloneDeep(
             data.dashboard.structure
               ?.filter((x: any) => x !== null)
