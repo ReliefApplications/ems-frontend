@@ -152,15 +152,16 @@ export class ReferenceDataService {
    * Get the items and the value field of a reference data
    *
    * @param referenceDataID The reference data id
-   * @param includeReferenceDataObj Boolean flag to return or not reference data obj with items
+   * @param pageInfo Page info for pagination
    * @returns The item list and the value field
    */
-  public async cacheItems(
-    referenceDataID: string,
-    includeReferenceDataObj = false
-  ): Promise<any> {
+  public async cacheItems(referenceDataID: string, pageInfo: any = {}) {
     // Initialization
-    let items: any;
+    let items: any[] = [];
+    let paginationRes: Awaited<
+      ReturnType<typeof this.processItemsByRequestType>
+    >['pageInfo'] = null;
+
     const referenceData = await this.loadReferenceData(referenceDataID);
     const cacheKey = referenceData.id || '';
     const valueField = referenceData.valueField || 'id';
@@ -169,7 +170,9 @@ export class ReferenceDataService {
 
     // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
     if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
-      items = await this.fetchItems(referenceData);
+      const { items: i, pageInfo: p } = await this.fetchItems(referenceData);
+      items = i;
+      paginationRes = p;
       // Cache items and timestamp
       await localForage.setItem(cacheKey, { items, valueField });
       localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
@@ -178,10 +181,13 @@ export class ReferenceDataService {
       if (referenceData.type === referenceDataType.graphql) {
         const isCached = (await localForage.keys()).includes(cacheKey);
         // Fetch items
-        items = await this.processItemsByRequestType(
+        const { items: i, pageInfo: p } = await this.processItemsByRequestType(
           referenceData,
-          referenceDataType.graphql
+          referenceDataType.graphql,
+          pageInfo
         );
+        items = i;
+        paginationRes = p;
         // Cache items
         if (isCached) {
           const { items: cache } = (await localForage.getItem(
@@ -210,32 +216,40 @@ export class ReferenceDataService {
         // If referenceData has not changed, use cached value for non graphQL.
         items = ((await localForage.getItem(cacheKey)) as CachedItems)?.items;
         if (!items) {
-          items = await this.fetchItems(referenceData);
+          items = (await this.fetchItems(referenceData)).items;
           // Cache items and timestamp
           await localForage.setItem(cacheKey, { items, valueField });
           localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
         }
       }
     }
-    return includeReferenceDataObj ? { items, referenceData } : items;
+    return { items, referenceData, pageInfo: paginationRes };
   }
 
   /**
    * Fetch items from reference data parameters and set cache
    *
    * @param referenceData reference data to query items of
+   * @param pageInfo Page info for pagination
    * @returns list of items
    */
-  public async fetchItems(referenceData: ReferenceData): Promise<any[]> {
+  public async fetchItems(referenceData: ReferenceData, pageInfo: any = {}) {
     const cacheKey = referenceData.id || '';
     // Initialization
-    let items: any;
+    let items: any[];
+    let paginationInfo: Awaited<
+      ReturnType<typeof this.processItemsByRequestType>
+    >['pageInfo'] = null;
+
     switch (referenceData.type) {
       case referenceDataType.graphql: {
-        items = await this.processItemsByRequestType(
+        const { items: i, pageInfo: p } = await this.processItemsByRequestType(
           referenceData,
-          referenceDataType.graphql
+          referenceDataType.graphql,
+          pageInfo
         );
+        items = i;
+        paginationInfo = p;
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())
@@ -243,10 +257,12 @@ export class ReferenceDataService {
         break;
       }
       case referenceDataType.rest: {
-        items = await this.processItemsByRequestType(
-          referenceData,
-          referenceDataType.rest
-        );
+        items = (
+          await this.processItemsByRequestType(
+            referenceData,
+            referenceDataType.rest
+          )
+        ).items;
         break;
       }
       case referenceDataType.static: {
@@ -258,7 +274,7 @@ export class ReferenceDataService {
         break;
       }
     }
-    return items;
+    return { items, pageInfo: paginationInfo };
   }
 
   /**
@@ -290,7 +306,34 @@ export class ReferenceDataService {
         referenceData.query;
       data = await this.apiProxy.promisedRequestWithHeaders(url);
     }
-    return referenceData.path ? jsonpath.query(data, referenceData.path) : data;
+
+    const items = referenceData.path
+      ? jsonpath.query(data, referenceData.path)
+      : data;
+
+    // Build page info
+    if (referenceData.pageInfo?.strategy) {
+      const totalCount =
+        jsonpath.query(data, referenceData.pageInfo.totalCountField)[0] ?? 0;
+      const pageSize = referenceData.pageInfo.pageSizeVar
+        ? jsonpath.query(pageInfo, referenceData.pageInfo.pageSizeVar)[0] ?? 0
+        : items?.length || 0;
+
+      const lastCursor =
+        referenceData.pageInfo?.strategy === 'cursor'
+          ? jsonpath.query(data, referenceData.pageInfo.cursorField)[0]
+          : null;
+
+      return {
+        items,
+        pageInfo: {
+          totalCount,
+          pageSize,
+          lastCursor,
+        },
+      };
+    }
+    return { items, pageInfo: null };
   }
 
   /**
@@ -388,7 +431,7 @@ export class ReferenceDataService {
       type,
     };
 
-    const result = await this.fetchItems(referenceData);
+    const { items: result } = await this.fetchItems(referenceData);
 
     if (result) {
       if (result.length > 0) {

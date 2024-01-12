@@ -47,6 +47,7 @@ import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -92,7 +93,10 @@ export class SummaryCardComponent
     pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
     skip: 0,
+    lastCursor: null as any,
   };
+  /** Reference data datasource */
+  private refData: ReferenceData | null = null;
   /** Loading indicators */
   public loading = true;
   /** Available cards */
@@ -728,11 +732,11 @@ export class SummaryCardComponent
   ) {
     this.loading = true;
     if (card.referenceData) {
-      const { items, referenceData } =
+      const { items, referenceData, pageInfo } =
         await this.referenceDataService.cacheItems(
-          card.referenceData as string,
-          true
+          card.referenceData as string
         );
+      this.refData = referenceData;
       const metadata = (referenceData?.fields || [])
         .filter((field: any) => field && typeof field !== 'string')
         .map((field: any) => {
@@ -742,13 +746,26 @@ export class SummaryCardComponent
             type: field.type,
           };
         });
+
       this.cachedCards = (items || []).map((x: any, index: number) => ({
         ...this.settings.card,
         rawValue: x,
         index,
         metadata,
-      }));
-      this.pageInfo.length = this.cachedCards.length;
+      })) as CardT[];
+
+      this.pageInfo.pageIndex = 0;
+      if (referenceData.pageInfo?.strategy && pageInfo) {
+        // If using pagination, set the page size and total count
+        // according to the response of the first page
+        this.pageInfo.length = pageInfo.totalCount;
+        this.pageInfo.pageSize = pageInfo.pageSize;
+        this.pageInfo.lastCursor = pageInfo.lastCursor;
+      } else {
+        // If not, all the items are already loaded
+        this.pageInfo.length = this.cachedCards.length;
+      }
+
       const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );
@@ -826,6 +843,44 @@ export class SummaryCardComponent
         })
         .then(this.updateCards.bind(this));
     } else if (this.useReferenceData) {
+      const strategy = this.refData?.pageInfo?.strategy;
+      const refData = this.refData;
+      if (strategy && refData?.pageInfo) {
+        // Build the variables for the query based on the pagination strategy
+        const variables: any = Object.assign(
+          {},
+          refData.pageInfo?.pageSizeVar
+            ? { [refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize }
+            : {}
+        );
+
+        // Set the pagination variable according to the strategy
+        if (refData.pageInfo.strategy === 'offset') {
+          variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
+        } else if (refData.pageInfo.strategy === 'cursor') {
+          variables[refData.pageInfo.cursorVar] = this.pageInfo.lastCursor;
+        } else if (refData.pageInfo.strategy === 'page') {
+          variables[refData.pageInfo.pageVar] = event.pageIndex;
+        }
+
+        this.loading = true;
+        this.referenceDataService
+          .cacheItems(this.settings.card?.referenceData as string, variables)
+          .then(({ items, pageInfo }) => {
+            this.pageInfo.pageIndex = event.pageIndex;
+            this.pageInfo.length = pageInfo?.totalCount || 0;
+            this.sortedCachedCards = (items || []).map(
+              (x: any, index: number) => ({
+                ...this.settings.card,
+                rawValue: x,
+                index,
+              })
+            ) as CardT[];
+            this.loading = false;
+          });
+      }
+
+      // If reference data is not paginated, we already have all the data
       this.cards = this.sortedCachedCards.slice(
         this.pageInfo.skip,
         this.pageInfo.skip + this.pageInfo.pageSize
