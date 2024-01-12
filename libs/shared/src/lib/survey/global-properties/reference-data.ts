@@ -242,8 +242,9 @@ export const render = (
             filter
           )
           .then((choices) => {
+            question.choices = [];
             question.setPropertyValue(
-              'choices',
+              'visibleChoices',
               choices.map((choice) => new ItemValue(choice))
             );
             // manually set the selected option (not done by default)

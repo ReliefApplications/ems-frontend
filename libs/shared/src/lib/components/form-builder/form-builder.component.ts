@@ -336,12 +336,19 @@ export class FormBuilderComponent
     );
 
     // open the correct choices panel (tab) and set eventListeners
-    this.initChoicesPanels();
+    // this.initChoicesPanels();
 
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
     this.addAdorners();
+
+    this.surveyCreator.onPropertyGridShowModal.add(
+      (sender: any, options: any) => {
+        options.obj.choices = options.obj.visibleChoices;
+        console.log(options);
+      }
+    );
   }
 
   /**
