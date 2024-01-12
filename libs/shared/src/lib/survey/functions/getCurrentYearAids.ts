@@ -115,7 +115,9 @@ export default (options: GlobalOptions) => {
      * @returns The formatted date
      */
     const format = (date: Date) =>
-      `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+      `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}/${date.getFullYear()}`;
 
     // Return the start and end of the current year, as well as the number of aids in that period
     this.returnResult({
