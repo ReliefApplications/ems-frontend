@@ -16,8 +16,8 @@ export const filterReferenceData = (item: any, filter: any) => {
       ? results.every(Boolean)
       : results.some(Boolean);
   } else {
-    const value = get(item, filter.field.toLowerCase());
-    const regex = new RegExp(filter.value);
+    const value = get(item, filter.field);
+    const regex = new RegExp(filter.value, 'i');
     let intValue: number | null;
     try {
       intValue = Number(filter.value);
@@ -55,13 +55,13 @@ export const filterReferenceData = (item: any, filter: any) => {
       case 'endswith':
         return !isNil(value) && value.endsWith(filter.value);
       case 'contains':
-        return (
-          !isNil(value) && (value.includes(filter.value) || regex.test(value))
-        );
+        if (value == 'France' || value === 'Brazil') {
+          console.log(value);
+          console.log(regex);
+        }
+        return !isNil(value) && regex.test(value);
       case 'doesnotcontain':
-        return (
-          isNil(value) || (!value.includes(filter.value) && !regex.test(value))
-        );
+        return isNil(value) || !regex.test(value);
       default:
         return false;
     }
