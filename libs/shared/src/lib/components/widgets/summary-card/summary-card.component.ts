@@ -732,12 +732,20 @@ export class SummaryCardComponent
   ) {
     this.loading = true;
     if (card.referenceData) {
-      const { items, referenceData, pageInfo } =
-        await this.referenceDataService.cacheItems(
-          card.referenceData as string
-        );
-      this.refData = referenceData;
-      const metadata = (referenceData?.fields || [])
+      this.refData = await this.referenceDataService.loadReferenceData(
+        card.referenceData as string
+      );
+
+      const { items, pageInfo } = await this.referenceDataService.cacheItems(
+        card.referenceData as string,
+        Object.assign(
+          {},
+          this.refData.pageInfo?.pageSizeVar && {
+            [this.refData.pageInfo.pageSizeVar]: DEFAULT_PAGE_SIZE,
+          }
+        )
+      );
+      const metadata = (this.refData?.fields || [])
         .filter((field: any) => field && typeof field !== 'string')
         .map((field: any) => {
           return {
@@ -755,7 +763,7 @@ export class SummaryCardComponent
       })) as CardT[];
 
       this.pageInfo.pageIndex = 0;
-      if (referenceData.pageInfo?.strategy && pageInfo) {
+      if (this.refData.pageInfo?.strategy && pageInfo) {
         // If using pagination, set the page size and total count
         // according to the response of the first page
         this.pageInfo.length = pageInfo.totalCount;
