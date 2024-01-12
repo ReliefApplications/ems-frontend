@@ -54,9 +54,27 @@ export const filterReferenceData = (item: any, filter: any) => {
       case 'endswith':
         return !isNil(value) && value.endsWith(filter.value);
       case 'contains':
-        return !isNil(value) && value.includes(filter.value);
+        if (typeof filter.value === 'string') {
+          const regex = new RegExp(filter.value, 'i');
+          if (typeof value === 'string') {
+            return !isNil(value) && regex.test(value);
+          } else {
+            return !isNil(value) && value.includes(filter.value);
+          }
+        } else {
+          return !isNil(value) && value.includes(filter.value);
+        }
       case 'doesnotcontain':
-        return isNil(value) || !value.includes(filter.value);
+        if (typeof filter.value === 'string') {
+          const regex = new RegExp(filter.value, 'i');
+          if (typeof value === 'string') {
+            return isNil(value) || !regex.test(value);
+          } else {
+            return isNil(value) || !value.includes(filter.value);
+          }
+        } else {
+          return isNil(value) || !value.includes(filter.value);
+        }
       default:
         return false;
     }
