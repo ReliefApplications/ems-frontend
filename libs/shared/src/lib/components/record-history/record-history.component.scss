@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   position: relative;
-  width: 328px;
+  width: var(--width);
 }
 
 .history-user {
@@ -62,4 +62,13 @@ ui-expansion-panel {
   ::ng-deep div {
     margin-left: unset !important;
   }
+}
+
+.resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 10px;
+  cursor: ew-resize; 
 }

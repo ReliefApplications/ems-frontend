@@ -1,5 +1,14 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
@@ -53,7 +62,7 @@ const getValueType = (
 })
 export class RecordHistoryComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   /** Id of the record */
   @Input() id!: string;
@@ -88,6 +97,16 @@ export class RecordHistoryComponent
   });
   /** Sorted fields */
   public sortedFields: any[] = [];
+  /** Resizing state */
+  public resizing = false;
+  /**
+   *
+   */
+  public width = 328;
+  /**
+   *
+   */
+  lastX = 0;
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -108,6 +127,7 @@ export class RecordHistoryComponent
    * @param dateFormat DateTranslation service
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
+   * @param elementRef Angular element ref
    */
   constructor(
     public dialog: Dialog,
@@ -115,7 +135,8 @@ export class RecordHistoryComponent
     private translate: TranslateService,
     private dateFormat: DateTranslateService,
     private apollo: Apollo,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private elementRef: ElementRef
   ) {
     super();
   }
@@ -207,6 +228,46 @@ export class RecordHistoryComponent
           });
       }
     });
+  }
+
+  ngAfterViewInit() {
+    const style = window.getComputedStyle(this.elementRef.nativeElement);
+    this.width = parseInt(style.width, 10);
+  }
+
+  /**
+   * Resizing state
+   *
+   * @param event The mouse event
+   */
+  resizeStart(event: MouseEvent): void {
+    this.resizing = true;
+    this.lastX = event.clientX;
+  }
+
+  /**
+   * Resizing state
+   *
+   * @param event The mouse event
+   */
+  @HostListener('document:mousemove', ['$event'])
+  resizeMove(event: MouseEvent): void {
+    if (!this.resizing) return;
+    this.width -= event.clientX - this.lastX;
+    this.lastX = event.clientX;
+
+    this.elementRef.nativeElement.style.setProperty(
+      '--width',
+      `${this.width}px`
+    );
+  }
+
+  /**
+   * Resizing state
+   */
+  @HostListener('document:mouseup')
+  resizeEnd(): void {
+    this.resizing = false;
   }
 
   /**
