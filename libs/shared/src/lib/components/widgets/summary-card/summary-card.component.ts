@@ -96,7 +96,7 @@ export class SummaryCardComponent
     lastCursor: null as any,
   };
   /** Reference data datasource */
-  private refData: ReferenceData | null = null;
+  public refData: ReferenceData | null = null;
   /** Loading indicators */
   public loading = true;
   /** Available cards */

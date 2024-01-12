@@ -43,6 +43,9 @@
       [pageSize]="pageInfo.pageSize"
       [hideFirstLastButtons]="false"
       [pageSizeOptions]="[10, 25, 50, 100]"
+      [showPageSizes]="
+        refData?.pageInfo?.strategy ? !!refData?.pageInfo?.pageSizeVar : true
+      "
       [totalItems]="pageInfo.length"
       [displayedPageNumbers]="5"
       [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"

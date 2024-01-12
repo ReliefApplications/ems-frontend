@@ -28,6 +28,8 @@ export class PaginatorComponent implements OnChanges {
   @Input() pageSize = 10;
   /** Available page size */
   @Input() pageSizeOptions = [5, 10, 15];
+  /** If should allow user to change page size */
+  @Input() showPageSizes = true;
   /** Allow buttons to go to first & last pages */
   @Input() hideFirstLastButtons = true;
   /** Aria label */

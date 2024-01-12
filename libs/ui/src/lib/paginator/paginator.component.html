@@ -35,6 +35,7 @@
           <!-- Page size -->
           <kendo-datapager-page-sizes
             class="hidden sm:flex text-gray-700"
+            *ngIf="showPageSizes"
             [pageSizes]="pageSizeOptions"
           ></kendo-datapager-page-sizes>
           <!-- Page buttons -->
