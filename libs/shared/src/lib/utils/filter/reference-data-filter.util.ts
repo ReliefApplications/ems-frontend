@@ -14,7 +14,9 @@ export const filterReferenceData = (item: any, filter: any) => {
     );
     return filter.logic === 'and'
       ? results.every(Boolean)
-      : results.some(Boolean);
+      : results.length
+      ? results.some(Boolean)
+      : true;
   } else {
     const value = get(item, filter.field);
     let intValue: number | null;
