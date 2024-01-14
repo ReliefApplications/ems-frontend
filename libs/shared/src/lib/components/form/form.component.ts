@@ -122,7 +122,7 @@ export class FormComponent
       JSON.stringify(structure),
       this.form.metadata,
       this.record,
-      this.form?.resource
+      this.form
     );
 
     // After the survey is created we add common callback to survey events
