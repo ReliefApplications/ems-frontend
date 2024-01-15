@@ -284,7 +284,8 @@ export class SelectMenuComponent
    * @param isDisabled is control disabled
    */
   public setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    // Check if the input is explicitly set, otherwise use the value passed to setDisabledState
+    this.disabled = this.disabled !== undefined ? this.disabled : isDisabled;
   }
 
   /**
