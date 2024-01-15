@@ -100,7 +100,7 @@ export class RecordHistoryComponent
     'originalValue',
     'modifiedValue',
   ];
-
+  /** Translations for chips */
   translations = {
     withValue: this.translate.instant('components.history.changes.withValue'),
     from: this.translate.instant('components.history.changes.from'),
@@ -109,7 +109,7 @@ export class RecordHistoryComponent
     remove: this.translate.instant('components.history.changes.remove'),
     modify: this.translate.instant('components.history.changes.modify'),
   };
-
+  /** Data source for history as a table */
   historyForTable: any[] = [];
 
   /** @returns filename from current date and record inc. id */
@@ -185,6 +185,7 @@ export class RecordHistoryComponent
             this.history.map((elt) => {
               elt.changes.map((change) => {
                 this.historyForTable.push({
+                  id: this.id,
                   displayName: change.displayName,
                   new: change.new ? JSON.parse(change.new) : undefined,
                   old: change.old ? JSON.parse(change.old) : undefined,
