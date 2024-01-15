@@ -335,8 +335,11 @@ export class RecordHistoryComponent
     });
   }
 
+  /**
+   * Switch view from table to default and vice/versa
+   */
   switchView(): void {
-    this.defaultView = true;
+    this.defaultView = !this.defaultView;
   }
 
   /**

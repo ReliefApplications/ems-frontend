@@ -75,7 +75,10 @@
       <button uiMenuItem (click)="onDownload('csv')">.csv</button>
       <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
     </ui-menu>
-    <ui-button (click)="switchView()" [disabled]="defaultView">Switch to default view</ui-button>
+    <ui-button (click)="switchView()"
+      ><div *ngIf="!defaultView">Switch to default view</div>
+      <div *ngIf="defaultView">Switch to table view</div></ui-button
+    >
   </div>
 </div>
 <ng-container *ngIf="!loading; else loadingTmpl">
