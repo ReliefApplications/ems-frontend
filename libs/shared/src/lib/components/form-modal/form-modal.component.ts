@@ -216,7 +216,7 @@ export class FormModalComponent
       this.form?.structure || '',
       this.form?.metadata,
       this.record,
-      this.form?.resource
+      this.form
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(

@@ -19,7 +19,7 @@ import {
   transformSurveyData,
 } from '../form-helper/form-helper.service';
 import { difference } from 'lodash';
-import { Resource } from '../../models/resource.model';
+import { Form } from '../../models/form.model';
 
 /**
  * Gets the payload for the update mutation
@@ -103,22 +103,27 @@ export class FormBuilderService {
    * @param structure form structure
    * @param fields list of fields used to check if the fields should be hidden or disabled
    * @param record record that'll be edited, if any
-   * @param resource resource linked to the survey, if any
+   * @param form form linked to the survey, if any
    * @returns New survey
    */
   createSurvey(
     structure: string,
     fields: Metadata[] = [],
     record?: RecordModel,
-    resource?: Resource
+    form?: Form
   ): SurveyModel {
     settings.useCachingForChoicesRestful = false;
     settings.useCachingForChoicesRestfull = false;
     const survey = new Model(structure);
 
-    // Add resource model to the survey
-    if (resource) {
-      survey.resource = resource;
+    // Add form model to the survey
+    if (form) {
+      survey.form = form;
+
+      // Add resource model to the survey
+      if (form.resource) {
+        survey.resource = survey.form.resource;
+      }
     }
 
     // Add record model to the survey

@@ -224,6 +224,9 @@ export class FormBuilderComponent
       this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
 
+    // Add form model to builder survey
+    this.surveyCreator.survey.form = this.form;
+
     // Manage copying rows/columns between matrixes
     new MatrixManager(this.surveyCreator.survey);
 
