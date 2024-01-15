@@ -1,3 +1,19 @@
+# [2.5.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.4.0...v2.5.0) (2024-01-15)
+
+
+### Bug Fixes
+
+* dashboard context not taken into account in front-office ([#2279](https://github.com/ReliefApplications/ems-frontend/issues/2279)) ([de54c29](https://github.com/ReliefApplications/ems-frontend/commit/de54c29260e49e65178a1152e0a9d7a366de8225))
+* empty filters array always returns false ([#2285](https://github.com/ReliefApplications/ems-frontend/issues/2285)) ([ad4910b](https://github.com/ReliefApplications/ems-frontend/commit/ad4910bf2c64e62ebf4ceb5f4371cc303d6c3d14))
+* grid widget would not correctly listen to context filter changes ([76eca59](https://github.com/ReliefApplications/ems-frontend/commit/76eca59158da0a6620df7cd1aec531b855bd66c9))
+* selected reference data not appearing in form builder. ([#2273](https://github.com/ReliefApplications/ems-frontend/issues/2273)) ([4408ca1](https://github.com/ReliefApplications/ems-frontend/commit/4408ca1cbb1b026dcffc6561fb66538a7fa2a159))
+* tooltip not appearing in design mode of form builder ([0a28711](https://github.com/ReliefApplications/ems-frontend/commit/0a287114cc107630689d058e9abe654fa488eafe))
+
+
+### Features
+
+* add identifier to text widget filter elements when active ([#2271](https://github.com/ReliefApplications/ems-frontend/issues/2271)) ([9d69243](https://github.com/ReliefApplications/ems-frontend/commit/9d6924349eb393f4e9d73f69ba096693f7c41eb4))
+
 # [2.4.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.4...v2.4.0) (2024-01-10)
 
 
