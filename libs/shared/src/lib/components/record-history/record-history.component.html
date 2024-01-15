@@ -22,15 +22,14 @@
           class="max-sm:!w-auto mb-3"
           variant="danger"
           (click)="clearDateFilters()"
-          *ngIf="filters.get('startDate')?.value || filters.get('endDate')?.value"
+          *ngIf="
+            filters.get('startDate')?.value || filters.get('endDate')?.value
+          "
         >
-            {{'components.history.range.clear' | translate}}
+          {{ 'components.history.range.clear' | translate }}
         </ui-button>
       </div>
-      <div
-        [uiDateWrapper]="calendar"
-        class="flex-col"
-      >
+      <div [uiDateWrapper]="calendar" class="flex-col">
         <input
           [uiDatePicker]
           formControlName="startDate"
@@ -46,10 +45,7 @@
     </div>
     <div uiFormFieldDirective>
       <label>{{ 'components.history.field.select' | translate }}</label>
-      <ui-select-menu
-        formControlName="fields"
-        [multiselect]="true"
-      >
+      <ui-select-menu formControlName="fields" [multiselect]="true">
         <ui-select-option
           *ngFor="let field of sortedFields"
           value="{{ field.name }}"
@@ -58,7 +54,10 @@
       </ui-select-menu>
       <ui-button
         uiSuffix
-        *ngIf="filters.get('fields')?.value && filters.get('fields')!.value!.length > 0"
+        *ngIf="
+          filters.get('fields')?.value &&
+          filters.get('fields')!.value!.length > 0
+        "
         (click)="filters.get('fields')?.setValue([]); $event.stopPropagation()"
         icon="close"
         [isIcon]="true"
@@ -68,7 +67,7 @@
     </div>
   </div>
   <!-- ACTIONS -->
-  <div class="flex flex-row justify-start text-end ml-auto">
+  <div class="flex flex-row justify-between text-end ml-auto">
     <ui-button category="secondary" variant="primary" [uiMenuTriggerFor]="menu">
       {{ 'components.history.download' | translate }}
     </ui-button>
@@ -76,12 +75,13 @@
       <button uiMenuItem (click)="onDownload('csv')">.csv</button>
       <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
     </ui-menu>
+    <ui-button (click)="switchView()" [disabled]="defaultView">Switch to default view</ui-button>
   </div>
 </div>
 <ng-container *ngIf="!loading; else loadingTmpl">
   <ng-container *ngIf="filterHistory.length; else emptyTmpl">
     <!-- HISTORY CHANGES -->
-    <div>
+    <div *ngIf="defaultView">
       <ng-container *ngFor="let item of filterHistory; let i = index">
         <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
           <ng-container ngProjectAs="title">

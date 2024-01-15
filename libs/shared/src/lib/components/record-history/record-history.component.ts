@@ -88,6 +88,8 @@ export class RecordHistoryComponent
   });
   /** Sorted fields */
   public sortedFields: any[] = [];
+  /** Switch views */
+  public defaultView = false;
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -331,6 +333,10 @@ export class RecordHistoryComponent
         this.revert(version);
       }
     });
+  }
+
+  switchView(): void {
+    this.defaultView = true;
   }
 
   /**
