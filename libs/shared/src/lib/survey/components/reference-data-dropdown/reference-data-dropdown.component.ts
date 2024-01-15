@@ -73,6 +73,7 @@ export class ReferenceDataDropdownComponent
           this.control.setValue(this.model.obj.referenceData, {
             emitEvent: false,
           });
+          this.changeDetectorRef.detectChanges();
         });
     }
   }

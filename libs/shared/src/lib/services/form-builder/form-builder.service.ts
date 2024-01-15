@@ -25,7 +25,8 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 })
 export class FormBuilderService {
   /**
-   * Constructor of the form builder service
+   * Shared form builder service.
+   * Only used to add on complete expression to the survey.
    *
    * @param referenceDataService Reference data service
    * @param translate Translation service

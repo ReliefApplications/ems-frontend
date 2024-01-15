@@ -14,7 +14,7 @@ import {
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Model, SurveyModel } from 'survey-core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
@@ -110,7 +110,11 @@ export class DashboardFilterComponent
       });
       this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
-
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.survey.data = value;
+      });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
