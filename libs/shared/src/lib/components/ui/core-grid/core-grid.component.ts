@@ -364,14 +364,13 @@ export class CoreGridComponent
   ) {
     super();
     this.environment = environment;
-    // Listen to dashboard filters changes if it is necessary
-    if (contextService.filterRegex.test(this.settings.contextFilters)) {
-      contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
+    contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (contextService.filterRegex.test(this.settings.contextFilters)) {
           if (this.dataQuery) this.reloadData();
-        });
-    }
+        }
+      });
   }
 
   /**

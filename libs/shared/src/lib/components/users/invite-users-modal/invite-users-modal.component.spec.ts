@@ -1,12 +1,11 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
+import { UntypedFormBuilder } from '@angular/forms';
 import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import {
   TranslateModule,
   TranslateService,
@@ -14,24 +13,27 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-import { UsersComponent } from './users.component';
-import { MenuModule } from '@oort-front/ui';
+import { InviteUsersModalComponent } from './invite-users-modal.component';
 
-describe('UsersComponent', () => {
-  let component: UsersComponent;
-  let fixture: ComponentFixture<UsersComponent>;
+describe('InviteUsersModalComponent', () => {
+  let component: InviteUsersModalComponent;
+  let fixture: ComponentFixture<InviteUsersModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: {} },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
+        UntypedFormBuilder,
+        { provide: DialogRef, useValue: {} },
+        {
+          provide: DIALOG_DATA,
+          useValue: {
+            access: { canSee: null, canUpdate: null, canDelete: null },
+          },
+        },
         TranslateService,
       ],
-      declarations: [UsersComponent],
+      declarations: [InviteUsersModalComponent],
       imports: [
         HttpClientModule,
         DialogCdkModule,
@@ -41,13 +43,12 @@ describe('UsersComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        MenuModule,
       ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UsersComponent);
+    fixture = TestBed.createComponent(InviteUsersModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
