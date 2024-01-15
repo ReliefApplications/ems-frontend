@@ -1,0 +1,40 @@
+.shared-app-resizable-box {
+  position: relative; 
+}
+
+.resize-handle-left {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 10px;
+    cursor: ew-resize; 
+  }
+  
+.resize-handle-right {
+position: absolute;
+top: 0;
+bottom: 0;
+right: 0;
+width: 10px;
+cursor: ew-resize; 
+}
+
+.resize-handle-top {
+position: absolute;
+left: 0;
+right: 0;
+top: 0;
+height: 10px;
+cursor: ns-resize; 
+}
+
+.resize-handle-bottom {
+position: absolute;
+left: 0;
+right: 0;
+bottom: 0;
+height: 10px;
+cursor: ns-resize; 
+}
+  

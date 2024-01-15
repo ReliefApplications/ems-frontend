@@ -1,10 +1,8 @@
 import { Dialog } from '@angular/cdk/dialog';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
-  HostListener,
   Input,
   OnInit,
   Output,
@@ -62,7 +60,7 @@ const getValueType = (
 })
 export class RecordHistoryComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   /** Id of the record */
   @Input() id!: string;
@@ -228,46 +226,6 @@ export class RecordHistoryComponent
           });
       }
     });
-  }
-
-  ngAfterViewInit() {
-    const style = window.getComputedStyle(this.elementRef.nativeElement);
-    this.width = parseInt(style.width, 10);
-  }
-
-  /**
-   * Resizing state
-   *
-   * @param event The mouse event
-   */
-  resizeStart(event: MouseEvent): void {
-    this.resizing = true;
-    this.lastX = event.clientX;
-  }
-
-  /**
-   * Resizing state
-   *
-   * @param event The mouse event
-   */
-  @HostListener('document:mousemove', ['$event'])
-  resizeMove(event: MouseEvent): void {
-    if (!this.resizing) return;
-    this.width -= event.clientX - this.lastX;
-    this.lastX = event.clientX;
-
-    this.elementRef.nativeElement.style.setProperty(
-      '--width',
-      `${this.width}px`
-    );
-  }
-
-  /**
-   * Resizing state
-   */
-  @HostListener('document:mouseup')
-  resizeEnd(): void {
-    this.resizing = false;
   }
 
   /**

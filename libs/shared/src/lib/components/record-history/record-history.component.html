@@ -1,5 +1,5 @@
-<div appResizable>
-  <div class="resize-handle" (mousedown)="resizeStart($event)"></div>
+<shared-app-resizable-box>
+  <!--<div class="resize-handle" (mousedown)="resizeStart($event)"></div> -->
   <div class="items-center p-4 border-b" [formGroup]="filters">
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
@@ -150,4 +150,4 @@
       </ng-container>
     </div>
   </ng-template>
-</div>
+</shared-app-resizable-box>
