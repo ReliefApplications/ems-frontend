@@ -252,24 +252,26 @@ export class RecordHistoryComponent
     this.cancel.emit(true);
   }
 
+  /**
+   * Get HTML for type chip
+   *
+   * @param change The field change object
+   * @returns the HTML for the chip
+   */
   getChipFromChange(change: Change) {
     switch (change.type) {
       case 'remove':
       case 'add':
         return `
-          <p>
             <span class="${change.type}-field">
             ${this.translations[change.type]}
             </span>
-          <p>
           `;
       case 'modify':
         return `
-          <p>
             <span class="${change.type}-field">
             ${this.translations[change.type]}
             </span>
-          <p>
           `;
     }
   }
@@ -303,9 +305,7 @@ export class RecordHistoryComponent
       case 'add':
         return `
           <p>
-            <span class="${change.type}-field">
-            ${this.translations[change.type]}
-            </span>
+            ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
             ${this.translations.withValue}
             <b> ${change.type === 'add' ? newVal : oldVal}</b>
@@ -314,9 +314,7 @@ export class RecordHistoryComponent
       case 'modify':
         return `
           <p>
-            <span class="${change.type}-field">
-            ${this.translations[change.type]}
-            </span>
+          ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
             ${this.translations.from}
             <b> ${oldVal}</b>
