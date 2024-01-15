@@ -35,6 +35,8 @@ import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
+import { MapConstructorSettings } from '../../components/ui/map/interfaces/map.interface';
+import * as L from 'leaflet';
 
 /**
  * Shared map layer service
@@ -317,11 +319,15 @@ export class MapLayersService {
    *
    * @param layerIds layer settings saved from the layer editor
    * @param injector Injector containing all needed providers for layer class
+   * @param mapSettings map settings
+   * @param leafletMap leaflet map
    * @returns Observable of LayerSettingsI
    */
   async createLayersFromId(
     layerIds: string,
-    injector: Injector
+    injector: Injector,
+    mapSettings?: MapConstructorSettings,
+    leafletMap?: L.Map
   ): Promise<Layer> {
     const promise: Promise<Layer> = lastValueFrom(
       this.getLayerById(layerIds).pipe(
@@ -330,7 +336,7 @@ export class MapLayersService {
             // Get the current layer + its geojson
             return forkJoin({
               layer: of(layer),
-              geojson: this.getLayerGeoJson(layer),
+              geojson: this.getLayerGeoJson(layer, mapSettings, leafletMap),
             });
           } else {
             return of({
@@ -385,9 +391,15 @@ export class MapLayersService {
    * Get layer geojson from definition
    *
    * @param layer layer model
+   * @param mapSettings map settings
+   * @param leafletMap leaflet map
    * @returns Layer GeoJSON query
    */
-  async getLayerGeoJson(layer: LayerModel) {
+  async getLayerGeoJson(
+    layer: LayerModel,
+    mapSettings?: MapConstructorSettings,
+    leafletMap?: L.Map
+  ) {
     const contextFilters = layer.contextFilters
       ? this.contextService.injectContext(JSON.parse(layer.contextFilters))
       : {};
@@ -416,10 +428,24 @@ export class MapLayersService {
             map((value) => {
               // When using adminField mapping, update the feature so geometry is replaced with according polygons
               if (layer.datasource?.adminField) {
-                return this.mapPolygonsService.assignPolygons(
+                const geojson = this.mapPolygonsService.assignPolygons(
                   value,
                   layer.datasource.adminField as any
                 );
+                if (mapSettings && leafletMap) {
+                  const geographicExtentValue = isNil(
+                    mapSettings?.geographicExtent
+                  )
+                    ? false
+                    : this.getGeographicExtent(
+                        mapSettings?.geographicExtent as string,
+                        mapSettings
+                      );
+                  if (geographicExtentValue) {
+                    this.zoomOnCountry(geojson, mapSettings, leafletMap);
+                  }
+                }
+                return geojson;
               } else {
                 // Else, directly returns the feature layer
                 return value;
@@ -469,4 +495,53 @@ export class MapLayersService {
     }
     return false;
   };
+
+  /**
+   * Fit bounds & zoom on country
+   *
+   * @param geojson polygon geometry
+   * @param mapSettings map settings
+   * @param map leaflet map
+   */
+  private zoomOnCountry(
+    geojson: any,
+    mapSettings: MapConstructorSettings,
+    map: L.Map
+  ): void {
+    // Only admin0 is available so far
+    if (mapSettings.geographicExtentField === 'admin0') {
+      const feature = L.geoJson(geojson);
+      map.flyToBounds(feature.getBounds());
+    }
+  }
+
+  /**
+   * Get the geographic extent value depending on the dashboard filter or dashboard context
+   *
+   * @param geographicExtent geographic extent
+   * @param mapSettings map settings
+   * @returns geographic extent value
+   */
+  private getGeographicExtent(
+    geographicExtent: string,
+    mapSettings: MapConstructorSettings
+  ): string | boolean {
+    const fieldValue = geographicExtent.match(this.contextService.filterRegex);
+    if (fieldValue) {
+      // If geographic extent is in the format {{filter., try to replace it by dashboard filter value, if any
+      const replacedFilter = this.contextService.replaceFilter(mapSettings);
+      return replacedFilter.replaced
+        ? replacedFilter.object.geographicExtent
+        : false;
+    }
+    const contextValue = geographicExtent.match(
+      this.contextService.contextRegex
+    );
+    // If geographic extent is in the format {{context., context dashboard is not set
+    if (contextValue) {
+      return false;
+    }
+    // As the dashboard context value is automatically replaced on dashboard init, return the value directly
+    return geographicExtent;
+  }
 }

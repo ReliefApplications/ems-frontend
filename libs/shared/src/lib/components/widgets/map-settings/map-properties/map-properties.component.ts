@@ -22,6 +22,8 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
   @Input() mapPortal?: DomPortal;
   /** Available base maps */
   public baseMaps = BASEMAPS;
+  /** Available geographic extent fields */
+  public geographicExtentFields = ['admin0', 'region'];
 
   /** @returns the form group for the map controls */
   get controlsFormGroup() {

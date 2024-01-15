@@ -362,6 +362,12 @@ export class MapComponent
     const zoomControl = get(mapSettings, 'zoomControl', false);
     const controls = get(mapSettings, 'controls', DefaultMapControls);
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
+    const geographicExtent = get(mapSettings, 'geographicExtent', undefined);
+    const geographicExtentField = get(
+      mapSettings,
+      'geographicExtentField',
+      'admin0'
+    );
     const layers = get(mapSettings, 'layers', []);
 
     return {
@@ -375,6 +381,8 @@ export class MapComponent
       layers,
       controls,
       arcGisWebMap,
+      geographicExtent,
+      geographicExtentField,
     };
   }
 
@@ -693,7 +701,12 @@ export class MapComponent
         const children = layer.getChildren();
         const childrenPromisse = children.map((Childrenlayer) => {
           return this.mapLayersService
-            .createLayersFromId(Childrenlayer, this.injector)
+            .createLayersFromId(
+              Childrenlayer,
+              this.injector,
+              this.extractSettings(),
+              this.map
+            )
             .then(async (sublayer) => {
               if (sublayer.type === 'GroupLayer') {
                 const layer = await sublayer.getLayer();
@@ -733,7 +746,12 @@ export class MapComponent
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
       const layerPromises = layerIds.map((id) => {
         return this.mapLayersService
-          .createLayersFromId(id, this.injector)
+          .createLayersFromId(
+            id,
+            this.injector,
+            this.extractSettings(),
+            this.map
+          )
           .then((layer) => {
             return parseTreeNode(layer);
           });

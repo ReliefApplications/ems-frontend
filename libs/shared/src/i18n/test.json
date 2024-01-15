@@ -1750,6 +1750,8 @@
 							"timedimension": "******",
 							"title": "******"
 						},
+						"geographicExtent": "******",
+						"geographicExtentField": "******",
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
