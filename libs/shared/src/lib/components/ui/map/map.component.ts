@@ -247,7 +247,15 @@ export class MapComponent
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
-          this.filterLayers();
+          if (
+            this.contextService.filterInWidgetFilter(
+              this.appliedDashboardFilters,
+              this.contextService.filter.getValue(),
+              allContextFilters
+            )
+          ) {
+            this.filterLayers();
+          }
         });
     }
 

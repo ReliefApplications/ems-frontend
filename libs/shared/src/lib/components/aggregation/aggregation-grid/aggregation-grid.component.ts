@@ -58,6 +58,8 @@ export class AggregationGridComponent
   public pagerSettings = PAGER_SETTINGS;
   /** Show filter */
   public showFilter = false;
+  /** Previous context filter value */
+  public previousContextFilter: any = {};
 
   /** Resource id */
   @Input() resourceId!: string;
@@ -114,8 +116,17 @@ export class AggregationGridComponent
     if (this.contextService.filterRegex.test(this.contextFilters as string)) {
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.getAggregationData();
+        .subscribe((contextFilter: any) => {
+          if (
+            this.contextService.filterInWidgetFilter(
+              this.previousContextFilter,
+              contextFilter,
+              this.contextFilters as string
+            )
+          ) {
+            this.getAggregationData();
+          }
+          this.previousContextFilter = contextFilter;
         });
     }
     this.queryBuilder.isDoneLoading$.subscribe((doneLoading) => {

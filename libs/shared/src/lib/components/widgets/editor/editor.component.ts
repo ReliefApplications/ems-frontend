@@ -73,6 +73,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public refresh$: Subject<boolean> = new Subject<boolean>();
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
+  /** Previous context filter value */
+  public previousContextFilter: any = {};
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -134,11 +136,19 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (this.contextService.filterRegex.test(allContextFilters)) {
+        if (
+          this.contextService.filterRegex.test(allContextFilters) &&
+          this.contextService.filterInWidgetFilter(
+            this.previousContextFilter,
+            value,
+            allContextFilters
+          )
+        ) {
           this.refresh$.next(true);
           this.loading = true;
           this.setHtml();
         }
+        this.previousContextFilter = value;
         this.toggleActiveFilters(
           value,
           this.htmlContentComponent?.el.nativeElement

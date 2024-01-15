@@ -468,4 +468,50 @@ export class ContextService {
       );
     }
   }
+
+  /**
+   * Find Difference between two filter objects
+   *
+   * @param obj1 previous filter object
+   * @param obj2 current filter object
+   *
+   * @returns different key
+   */
+  findFilterDifference(obj1: any, obj2: any): any {
+    // Check if both objects are defined
+    if (!obj1 || !obj2) {
+      return null;
+    }
+
+    // Get all unique keys from both objects
+    const keys = Array.from(
+      new Set([...Object.keys(obj1), ...Object.keys(obj2)])
+    );
+
+    // Iterate through keys to find the first difference
+    for (const key of keys) {
+      if (obj1[key] !== obj2[key]) {
+        return key;
+      }
+    }
+
+    // If no difference is found
+    return null;
+  }
+
+  /**
+   * Verify if changed filter is in widget filter
+   *
+   * @param obj1 previous filter object
+   * @param obj2 current filter object
+   * @param contextFilters widget context filter
+   *
+   * @returns different key
+   */
+  filterInWidgetFilter(obj1: any, obj2: any, contextFilters: any): boolean {
+    const fieldFilterChanged = this.findFilterDifference(obj1, obj2);
+    // regex to check if in the contextFilter exists the changed key(filter field)
+    const regex = new RegExp(`{{filter\\.${fieldFilterChanged}[\\s\\S]*}}`);
+    return regex.test(contextFilters);
+  }
 }

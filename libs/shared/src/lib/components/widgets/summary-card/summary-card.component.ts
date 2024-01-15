@@ -137,6 +137,8 @@ export class SummaryCardComponent
   private scrollEventListener!: any;
   /** Timeout listener for summary card scroll bind set on view switch */
   private scrollEventBindTimeout!: NodeJS.Timeout;
+  /** Previous context filter value */
+  public previousContextFilter: any = {};
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -271,15 +273,23 @@ export class SummaryCardComponent
       .subscribe((value) => {
         this.handleSearch(value || '');
       });
-
     // Listen to dashboard filters changes if it is necessary
     if (
       this.contextService.filterRegex.test(this.widget.settings.contextFilters)
     ) {
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.refresh();
+        .subscribe((contextFilter: any) => {
+          if (
+            this.contextService.filterInWidgetFilter(
+              this.previousContextFilter,
+              contextFilter,
+              this.widget.settings.contextFilters
+            )
+          ) {
+            this.refresh();
+          }
+          this.previousContextFilter = contextFilter;
         });
     }
   }

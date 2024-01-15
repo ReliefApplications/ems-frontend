@@ -171,6 +171,8 @@ export class CoreGridComponent
   private dataQuery!: QueryRef<QueryResponse>;
   /** Meta query reference for fetching metadata. */
   private metaQuery!: any;
+  /** Previous context filter value */
+  public previousContextFilter: any = {};
 
   // === PAGINATION ===
   /** Number of items per page. */
@@ -366,9 +368,19 @@ export class CoreGridComponent
     this.environment = environment;
     contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe((contextFilter: any) => {
         if (contextService.filterRegex.test(this.settings.contextFilters)) {
-          if (this.dataQuery) this.reloadData();
+          if (
+            this.dataQuery &&
+            this.contextService.filterInWidgetFilter(
+              this.previousContextFilter,
+              contextFilter,
+              this.widget.settings.contextFilters
+            )
+          ) {
+            this.reloadData();
+          }
+          this.previousContextFilter = contextFilter;
         }
       });
   }

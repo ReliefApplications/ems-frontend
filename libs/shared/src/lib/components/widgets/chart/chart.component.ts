@@ -96,6 +96,8 @@ export class ChartComponent
   public selectedFilter: CompositeFilterDescriptor | null = null;
   /** Aggregation id */
   private aggregationId?: string;
+  /** Previous context filter value */
+  public previousContextFilter: any = {};
 
   /** @returns Context filters array */
   get contextFilters(): CompositeFilterDescriptor {
@@ -158,10 +160,19 @@ export class ChartComponent
     if (this.contextService.filterRegex.test(this.settings.contextFilters)) {
       this.contextService.filter$
         .pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.series.next([]);
-          this.loadChart();
-          this.getOptions();
+        .subscribe((contextFilter: any) => {
+          if (
+            this.contextService.filterInWidgetFilter(
+              this.previousContextFilter,
+              contextFilter,
+              this.settings.contextFilters
+            )
+          ) {
+            this.series.next([]);
+            this.loadChart();
+            this.getOptions();
+          }
+          this.previousContextFilter = contextFilter;
         });
     }
   }
