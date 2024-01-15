@@ -9,6 +9,7 @@ import {
   DateModule as UiDateModule,
   FormWrapperModule,
   TooltipModule,
+  TableModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateModule } from '../../pipes/date/date.module';
@@ -38,6 +39,7 @@ import { FormsModule } from '@angular/forms';
     FormWrapperModule,
     TooltipModule,
     FormsModule,
+    TableModule,
   ],
   exports: [RecordHistoryComponent],
 })

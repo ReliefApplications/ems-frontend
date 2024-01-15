@@ -90,6 +90,16 @@ export class RecordHistoryComponent
   public sortedFields: any[] = [];
   /** Switch views */
   public defaultView = false;
+  /** Table columns */
+  public displayedColumnsHistory: string[] = [
+    'id',
+    'variable',
+    'date',
+    'person',
+    'action',
+    'originalValue',
+    'modifiedValue',
+  ];
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -340,6 +350,7 @@ export class RecordHistoryComponent
    */
   switchView(): void {
     this.defaultView = !this.defaultView;
+    console.log('HERE', this.history);
   }
 
   /**
