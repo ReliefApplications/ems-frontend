@@ -85,7 +85,7 @@
   <ng-container *ngIf="filterHistory.length; else emptyTmpl">
     <!-- HISTORY CHANGES -->
     <div *ngIf="!defaultView" class="overflow-x-auto m-3">
-      <table cdk-table uiTableWrapper [dataSource]="history">
+      <table cdk-table uiTableWrapper [dataSource]="historyForTable">
         <ng-container cdkColumnDef="id">
           <th uiCellHeader *cdkHeaderCellDef scope="col">Signal Id</th>
           <td
@@ -103,7 +103,7 @@
             *cdkCellDef="let element"
             class="!text-gray-900 !font-medium max-w-[30vw]"
           >
-            {{ element.field }}
+            {{ element.displayName }}
           </td>
         </ng-container>
         <ng-container cdkColumnDef="date">
@@ -135,7 +135,9 @@
             uiCell
             *cdkCellDef="let element"
             class="!text-gray-900 !font-medium max-w-[30vw]"
-          ></td>
+          >
+            <div [innerHTML]="getChipFromChange(element)"></div>
+          </td>
         </ng-container>
         <ng-container cdkColumnDef="originalValue">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
@@ -145,7 +147,9 @@
             uiCell
             *cdkCellDef="let element"
             class="!text-gray-900 !font-medium max-w-[30vw]"
-          ></td>
+          >
+          {{ toReadableObjectValue(element.old) }}
+          </td>
         </ng-container>
         <ng-container cdkColumnDef="modifiedValue">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
@@ -155,7 +159,9 @@
             uiCell
             *cdkCellDef="let element"
             class="!text-gray-900 !font-medium max-w-[30vw]"
-          ></td>
+          >
+            {{ toReadableObjectValue(element.new) }}
+          </td>
         </ng-container>
 
         <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsHistory"></tr>

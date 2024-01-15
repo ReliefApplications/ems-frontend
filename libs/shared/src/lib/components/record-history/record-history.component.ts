@@ -101,6 +101,17 @@ export class RecordHistoryComponent
     'modifiedValue',
   ];
 
+  translations = {
+    withValue: this.translate.instant('components.history.changes.withValue'),
+    from: this.translate.instant('components.history.changes.from'),
+    to: this.translate.instant('components.history.changes.to'),
+    add: this.translate.instant('components.history.changes.add'),
+    remove: this.translate.instant('components.history.changes.remove'),
+    modify: this.translate.instant('components.history.changes.modify'),
+  };
+
+  historyForTable: any[] = [];
+
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
     const today = new Date();
@@ -170,6 +181,19 @@ export class RecordHistoryComponent
               (item) => item.changes.length
             );
             this.filterHistory = this.history;
+            this.historyForTable = [];
+            this.history.map((elt) => {
+              elt.changes.map((change) => {
+                this.historyForTable.push({
+                  displayName: change.displayName,
+                  new: change.new ? JSON.parse(change.new) : undefined,
+                  old: change.old ? JSON.parse(change.old) : undefined,
+                  type: change.type,
+                  createdAt: elt.createdAt,
+                  createdBy: elt.createdBy,
+                });
+              });
+            });
             this.loading = false;
           }
         });
@@ -228,6 +252,28 @@ export class RecordHistoryComponent
     this.cancel.emit(true);
   }
 
+  getChipFromChange(change: Change) {
+    switch (change.type) {
+      case 'remove':
+      case 'add':
+        return `
+          <p>
+            <span class="${change.type}-field">
+            ${this.translations[change.type]}
+            </span>
+          <p>
+          `;
+      case 'modify':
+        return `
+          <p>
+            <span class="${change.type}-field">
+            ${this.translations[change.type]}
+            </span>
+          <p>
+          `;
+    }
+  }
+
   /**
    * Gets the HTML element from a change object
    *
@@ -235,15 +281,6 @@ export class RecordHistoryComponent
    * @returns the innerHTML for the listing
    */
   getHTMLFromChange(change: Change) {
-    const translations = {
-      withValue: this.translate.instant('components.history.changes.withValue'),
-      from: this.translate.instant('components.history.changes.from'),
-      to: this.translate.instant('components.history.changes.to'),
-      add: this.translate.instant('components.history.changes.add'),
-      remove: this.translate.instant('components.history.changes.remove'),
-      modify: this.translate.instant('components.history.changes.modify'),
-    };
-
     let oldVal = change.old ? JSON.parse(change.old) : undefined;
     let newVal = change.new ? JSON.parse(change.new) : undefined;
 
@@ -267,10 +304,10 @@ export class RecordHistoryComponent
         return `
           <p>
             <span class="${change.type}-field">
-            ${translations[change.type]}
+            ${this.translations[change.type]}
             </span>
             <b> ${change.displayName} </b>
-            ${translations.withValue}
+            ${this.translations.withValue}
             <b> ${change.type === 'add' ? newVal : oldVal}</b>
           <p>
           `;
@@ -278,12 +315,12 @@ export class RecordHistoryComponent
         return `
           <p>
             <span class="${change.type}-field">
-            ${translations[change.type]}
+            ${this.translations[change.type]}
             </span>
             <b> ${change.displayName} </b>
-            ${translations.from}
+            ${this.translations.from}
             <b> ${oldVal}</b>
-            ${translations.to}
+            ${this.translations.to}
             <b> ${newVal}</b>
           <p>
           `;
@@ -316,7 +353,6 @@ export class RecordHistoryComponent
         );
       });
     }
-
     return res;
   }
 
@@ -350,7 +386,6 @@ export class RecordHistoryComponent
    */
   switchView(): void {
     this.defaultView = !this.defaultView;
-    console.log('HERE', this.history);
   }
 
   /**
