@@ -240,7 +240,6 @@ export class ReferenceDataComponent
       controls.offsetVar.optional();
       controls.pageVar.optional();
       controls.pageSizeVar.optional();
-      controls.totalCountField.optional();
 
       const usePagination = !!form.get('usePagination')?.value;
       if (!usePagination) {
@@ -249,7 +248,6 @@ export class ReferenceDataComponent
       }
 
       // Set common validator to all pagination strategies
-      controls.totalCountField.require();
       controls.strategy.require();
 
       // Set specific validators to each pagination strategy

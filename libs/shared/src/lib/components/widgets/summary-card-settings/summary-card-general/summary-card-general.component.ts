@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -32,6 +32,7 @@ import {
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { gql } from '@apollo/client';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { EmptyModule } from '../../../ui/empty/empty.module';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -57,11 +58,15 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     ReferenceDataSelectComponent,
     DividerModule,
     MonacoEditorModule,
+    EmptyModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
 })
-export class SummaryCardGeneralComponent extends UnsubscribeComponent {
+export class SummaryCardGeneralComponent
+  extends UnsubscribeComponent
+  implements OnChanges
+{
   /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
   /** Selected reference data */
@@ -76,22 +81,46 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   /** Monaco editor configuration, for raw edition */
   public editorOptions = {
     theme: 'vs-dark',
-    language: 'json',
     fixedOverflowWidgets: true,
-    formatOnType: true, //!important
+    lineNumbers: 'off',
+    minimap: { enabled: false },
   };
 
   /** @returns the list of available variables to inject data */
-  get availableQueryVariables(): string[] {
+  public availableQueryVariables: string[] = [];
+
+  /**
+   * Component for the general summary cards tab
+   *
+   * @param dialog Shared dialog service
+   * @param layoutService Shared layout service
+   * @param aggregationService Shared aggregation service
+   */
+  constructor(
+    private dialog: Dialog,
+    private layoutService: GridLayoutService,
+    private aggregationService: AggregationService
+  ) {
+    super();
+  }
+
+  ngOnChanges(): void {
+    this.setAvailableQueryVariables();
+  }
+
+  /** Parses que refData query and gets the available variable names, excluding the pagination ones */
+  private setAvailableQueryVariables(): void {
     if (this.referenceData?.type !== 'graphql') {
-      return [];
+      this.availableQueryVariables = [];
+      return;
     }
 
     try {
       const query = gql(this.referenceData.query ?? '');
       const definition = query.definitions[0];
       if (definition?.kind !== 'OperationDefinition') {
-        return [];
+        this.availableQueryVariables = [];
+        return;
       }
 
       const variableDefinitions = (definition.variableDefinitions ?? []).map(
@@ -121,25 +150,10 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
           .get('card.referenceDataVariableMapping')
           ?.setValue(template);
       }
-      return availableVariables;
+      this.availableQueryVariables = availableVariables;
     } catch (_) {
-      return [];
+      this.availableQueryVariables = [];
     }
-  }
-
-  /**
-   * Component for the general summary cards tab
-   *
-   * @param dialog Shared dialog service
-   * @param layoutService Shared layout service
-   * @param aggregationService Shared aggregation service
-   */
-  constructor(
-    private dialog: Dialog,
-    private layoutService: GridLayoutService,
-    private aggregationService: AggregationService
-  ) {
-    super();
   }
 
   /** Opens modal for layout selection/creation */

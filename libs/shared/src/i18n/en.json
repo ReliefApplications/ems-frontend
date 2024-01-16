@@ -1787,6 +1787,11 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"noVariables": "No variables defined",
+									"title": "GraphQL variable mapping",
+									"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+								},
 								"title": "Layout styles",
 								"use": "Use layout styles",
 								"wholeRow": {

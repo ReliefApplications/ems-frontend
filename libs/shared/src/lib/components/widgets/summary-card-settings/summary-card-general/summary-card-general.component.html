@@ -29,11 +29,38 @@
             [uiTooltip]="'common.remove' | translate"
           ></ui-button>
         </div>
-        <ngx-monaco-editor
-          formControlName="referenceDataVariableMapping"
-          [options]="editorOptions"
-          *ngIf="availableQueryVariables.length > 0"
-        ></ngx-monaco-editor>
+
+        <!-- GraphQL variable mapping -->
+        <div class="flex-1">
+          <span class="flex gap-2 mb-4">
+            <h2 class="mb-0">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.title'
+                  | translate
+              }}
+            </h2>
+            <ui-icon
+              icon="info"
+              variant="grey"
+              [uiTooltip]="
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.tooltip'
+                  | translate
+              "
+            ></ui-icon>
+          </span>
+          <ngx-monaco-editor
+            *ngIf="availableQueryVariables.length > 0"
+            formControlName="referenceDataVariableMapping"
+            [options]="editorOptions"
+          ></ngx-monaco-editor>
+          <shared-empty
+            *ngIf="availableQueryVariables.length === 0"
+            [title]="
+              'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.noVariables'
+                | translate
+            "
+          ></shared-empty>
+        </div>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"

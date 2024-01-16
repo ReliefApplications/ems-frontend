@@ -231,7 +231,7 @@ export class SummaryCardComponent
   }
 
   /** @returns the graphql query variables object */
-  get graphqlVariables(): any {
+  get graphqlVariables() {
     const filters = this.contextService.filter.getValue();
     let mapping = this.settings.card?.referenceDataVariableMapping || '';
 
@@ -244,16 +244,25 @@ export class SummaryCardComponent
     // If there are any still to be replaced, replace them with null
     mapping =
       mapping.match(/{{filter\..*?}}/gim)?.reduce((acc, curr) => {
-        return acc.replace(curr, 'null');
+        return acc.replace(curr, '"__REMOVE__"');
       }, mapping) || mapping;
 
-    return (() => {
+    const obj = (() => {
       try {
         return JSON.parse(mapping);
       } catch (_) {
         return null;
       }
     })();
+
+    // Remove the keys that were not replaced
+    Object.keys(obj).forEach((key) => {
+      if (JSON.stringify(obj[key]).includes('__REMOVE__')) {
+        delete obj[key];
+      }
+    });
+
+    return obj;
   }
 
   /**
@@ -967,15 +976,6 @@ export class SummaryCardComponent
             : {}
         );
 
-        if (this.graphqlVariables !== null) {
-          this.pageInfo.pageIndex = 0;
-          this.pageInfo.skip = 0;
-
-          this.cards = [];
-          this.cachedCards = [];
-          this.sortedCachedCards = [];
-        }
-
         // Set the pagination variable according to the strategy
         if (refData.pageInfo.strategy === 'offset') {
           variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
@@ -989,6 +989,8 @@ export class SummaryCardComponent
           variables[refData.pageInfo.pageVar] = event.pageIndex + 1;
         }
 
+        // Only set loading state if using pagination, not infinite scroll
+        this.loading = !this.scrolling;
         this.referenceDataService
           .cacheItems(refData, {
             ...variables,
@@ -996,6 +998,7 @@ export class SummaryCardComponent
           })
           .then(({ items, pageInfo }) => {
             this.updateReferenceDataCards(items, pageInfo);
+            this.loading = false;
           });
       } else {
         this.cards = this.sortedCachedCards.slice(
@@ -1011,7 +1014,8 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
-    if (this.useReferenceData) {
+    // Only apply logic for reference data with no pagination
+    if (this.useReferenceData && !this.refData?.pageInfo?.strategy) {
       const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );

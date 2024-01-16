@@ -305,12 +305,19 @@ export class ReferenceDataService {
 
     // Build page info
     if (referenceData.pageInfo?.strategy) {
+      // If the api doesn't tell us the total count,
+      // we hide it along with the paginator pages and only update it
+      // again when we get a page smaller than the previous one
+      // indicating that we reached the end of the list
       const totalCount =
-        jsonpath.query(data, referenceData.pageInfo.totalCountField)[0] ??
-        Number.MAX_SAFE_INTEGER;
+        (referenceData.pageInfo.totalCountField
+          ? jsonpath.query(data, referenceData.pageInfo.totalCountField)[0]
+          : null) ?? Number.MAX_SAFE_INTEGER;
+
       const pageSize = referenceData.pageInfo.pageSizeVar
-        ? jsonpath.query(pageInfo, referenceData.pageInfo.pageSizeVar)[0] ?? 0
+        ? pageInfo[referenceData.pageInfo.pageSizeVar] ?? 0
         : items?.length || 0;
+
       let lastCursor = null;
       if (referenceData.pageInfo?.strategy === 'cursor') {
         const cursors = jsonpath.query(
