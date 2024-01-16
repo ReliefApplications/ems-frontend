@@ -29,6 +29,11 @@
             [uiTooltip]="'common.remove' | translate"
           ></ui-button>
         </div>
+        <ngx-monaco-editor
+          formControlName="referenceDataVariableMapping"
+          [options]="editorOptions"
+          *ngIf="availableQueryVariables.length > 0"
+        ></ngx-monaco-editor>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"

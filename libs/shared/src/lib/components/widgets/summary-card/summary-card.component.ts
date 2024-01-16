@@ -230,6 +230,32 @@ export class SummaryCardComponent
     return this.pageInfo.length !== Number.MAX_SAFE_INTEGER;
   }
 
+  /** @returns the graphql query variables object */
+  get graphqlVariables(): any {
+    const filters = this.contextService.filter.getValue();
+    let mapping = this.settings.card?.referenceDataVariableMapping || '';
+
+    Object.keys(filters).forEach((key) => {
+      mapping = mapping
+        ?.split(`{{filter.${key}}}`)
+        .join(JSON.stringify(filters[key]));
+    });
+
+    // If there are any still to be replaced, replace them with null
+    mapping =
+      mapping.match(/{{filter\..*?}}/gim)?.reduce((acc, curr) => {
+        return acc.replace(curr, 'null');
+      }, mapping) || mapping;
+
+    return (() => {
+      try {
+        return JSON.parse(mapping);
+      } catch (_) {
+        return null;
+      }
+    })();
+  }
+
   /**
    * Summary Card Widget component.
    *
@@ -283,7 +309,12 @@ export class SummaryCardComponent
 
     // Listen to dashboard filters changes if it is necessary
     if (
-      this.contextService.filterRegex.test(this.widget.settings.contextFilters)
+      this.contextService.filterRegex.test(
+        this.widget.settings.contextFilters
+      ) ||
+      this.contextService.filterRegex.test(
+        this.widget?.settings?.card?.referenceDataVariableMapping
+      )
     ) {
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
@@ -418,7 +449,7 @@ export class SummaryCardComponent
       const { items, pageInfo } = await this.referenceDataService.cacheItems(
         this.refData,
         Object.assign(
-          {},
+          this.graphqlVariables || {},
           this.refData.pageInfo?.pageSizeVar && {
             [this.refData.pageInfo.pageSizeVar]: DEFAULT_PAGE_SIZE,
           }
@@ -936,6 +967,15 @@ export class SummaryCardComponent
             : {}
         );
 
+        if (this.graphqlVariables !== null) {
+          this.pageInfo.pageIndex = 0;
+          this.pageInfo.skip = 0;
+
+          this.cards = [];
+          this.cachedCards = [];
+          this.sortedCachedCards = [];
+        }
+
         // Set the pagination variable according to the strategy
         if (refData.pageInfo.strategy === 'offset') {
           variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
@@ -950,7 +990,10 @@ export class SummaryCardComponent
         }
 
         this.referenceDataService
-          .cacheItems(refData, variables)
+          .cacheItems(refData, {
+            ...variables,
+            ...(this.graphqlVariables ?? {}),
+          })
           .then(({ items, pageInfo }) => {
             this.updateReferenceDataCards(items, pageInfo);
           });

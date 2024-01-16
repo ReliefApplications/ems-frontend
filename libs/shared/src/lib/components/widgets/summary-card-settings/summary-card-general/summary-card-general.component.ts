@@ -30,6 +30,8 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
+import { gql } from '@apollo/client';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -54,6 +56,7 @@ import { ReferenceData } from '../../../../models/reference-data.model';
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
+    MonacoEditorModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
@@ -69,6 +72,60 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   @Input() layout: Layout | null = null;
   /** Selected aggregation */
   @Input() aggregation: Aggregation | null = null;
+
+  /** Monaco editor configuration, for raw edition */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: true,
+    formatOnType: true, //!important
+  };
+
+  /** @returns the list of available variables to inject data */
+  get availableQueryVariables(): string[] {
+    if (this.referenceData?.type !== 'graphql') {
+      return [];
+    }
+
+    try {
+      const query = gql(this.referenceData.query ?? '');
+      const definition = query.definitions[0];
+      if (definition?.kind !== 'OperationDefinition') {
+        return [];
+      }
+
+      const variableDefinitions = (definition.variableDefinitions ?? []).map(
+        (variable) => variable.variable.name.value
+      );
+
+      const { cursorVar, offsetVar, pageVar, pageSizeVar } =
+        (this.referenceData.pageInfo as any) ?? {};
+
+      // Do not show pagination variables
+      const availableVariables = variableDefinitions.filter(
+        (v) => ![cursorVar, offsetVar, pageVar, pageSizeVar].includes(v)
+      );
+
+      // Checks if the variable mapping is null or empty.
+      if (!this.formGroup.get('card.referenceDataVariableMapping')?.value) {
+        // If so, generate a template with the variables being keys of a json object.
+        const template = JSON.stringify(
+          availableVariables.reduce((acc, curr) => {
+            acc[curr] = null;
+            return acc;
+          }, {} as Record<string, any>),
+          null,
+          2
+        );
+        this.formGroup
+          .get('card.referenceDataVariableMapping')
+          ?.setValue(template);
+      }
+      return availableVariables;
+    } catch (_) {
+      return [];
+    }
+  }
 
   /**
    * Component for the general summary cards tab
