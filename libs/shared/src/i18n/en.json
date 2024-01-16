@@ -336,11 +336,6 @@
 		"preview": "Preview",
 		"previous": "Previous",
 		"publish": "Publish",
-		"pullJob": {
-			"few": "Pull jobs",
-			"none": "No pull job",
-			"one": "Pull job"
-		},
 		"record": {
 			"few": "Records",
 			"none": "No record",
@@ -929,31 +924,16 @@
 			"title": "Preferences"
 		},
 		"pullJob": {
-			"delete": {
-				"confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
-				"title": "Delete pull job"
-			},
 			"modal": {
-				"addMappingField": "add a mapping field",
 				"errors": {
 					"schedule": "Enter a valid cron expression"
 				},
 				"hint": {
-					"path": "Enter the path to extract data from response",
-					"schedule": "Enter the schedule time for this Pull job",
-					"url": "Enter the URL after the host to reach specific data"
+					"schedule": "Enter the schedule time for this Pull job"
 				},
-				"identifier": "Unique identifiers",
-				"mapping": "Mapping",
 				"placeholder": {
-					"path": "Enter path...",
-					"schedule": "Enter schedule time...",
-					"url": "Enter URL..."
-				},
-				"switch": "Switch mode"
-			},
-			"paginator": {
-				"ariaLabel": "Select page of pull jobs"
+					"schedule": "Enter schedule time..."
+				}
 			}
 		},
 		"queryBuilder": {
@@ -2201,12 +2181,7 @@
 			"new": "New position attribute"
 		},
 		"pullJob": {
-			"edit": "Edit pull job",
-			"new": "New pull job",
-			"nextIteration": "Next iteration",
-			"path": "Path",
-			"schedule": "Schedule",
-			"url": "Url"
+			"schedule": "Schedule"
 		},
 		"record": {
 			"convert": "Convert",
@@ -2416,9 +2391,6 @@
 				"updated": "Preferences saved."
 			},
 			"title": "Your profile"
-		},
-		"pullJobs": {
-			"create": "Create a pull job"
 		},
 		"referenceData": {
 			"csv": "CSV input",

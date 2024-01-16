@@ -109,13 +109,6 @@ export class DashboardComponent extends UnsubscribeComponent {
         icon: 'settings_input_composite',
       });
     }
-    if (this.ability.can('read', 'PullJob')) {
-      administrationItems.push({
-        name: this.translate.instant('common.pullJob.few'),
-        path: '/settings/pulljobs',
-        icon: 'cloud_download',
-      });
-    }
     if (administrationItems.length > 0) {
       navGroups.push({
         name: this.translate.instant('pages.administration.title'),

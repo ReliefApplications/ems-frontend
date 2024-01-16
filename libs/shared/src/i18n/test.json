@@ -336,11 +336,6 @@
 		"preview": "******",
 		"previous": "******",
 		"publish": "******",
-		"pullJob": {
-			"few": "******",
-			"none": "******",
-			"one": "******"
-		},
 		"record": {
 			"few": "******",
 			"none": "******",
@@ -929,31 +924,16 @@
 			"title": "******"
 		},
 		"pullJob": {
-			"delete": {
-				"confirmationMessage": "****** {{name}} ******",
-				"title": "******"
-			},
 			"modal": {
-				"addMappingField": "******",
 				"errors": {
 					"schedule": "******"
 				},
 				"hint": {
-					"path": "******",
-					"schedule": "******",
-					"url": "******"
+					"schedule": "******"
 				},
-				"identifier": "******",
-				"mapping": "******",
 				"placeholder": {
-					"path": "******",
-					"schedule": "******",
-					"url": "******"
-				},
-				"switch": "******"
-			},
-			"paginator": {
-				"ariaLabel": "******"
+					"schedule": "******"
+				}
 			}
 		},
 		"queryBuilder": {
@@ -2201,12 +2181,7 @@
 			"new": "******"
 		},
 		"pullJob": {
-			"edit": "******",
-			"new": "******",
-			"nextIteration": "******",
-			"path": "******",
-			"schedule": "******",
-			"url": "******"
+			"schedule": "******"
 		},
 		"record": {
 			"convert": "******",
@@ -2416,9 +2391,6 @@
 				"updated": "******"
 			},
 			"title": "******"
-		},
-		"pullJobs": {
-			"create": "******"
 		},
 		"referenceData": {
 			"csv": "******",
