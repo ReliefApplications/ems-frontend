@@ -184,15 +184,7 @@ export class RecordHistoryComponent
             this.historyForTable = [];
             this.history.map((elt) => {
               elt.changes.map((change) => {
-                this.historyForTable.push({
-                  id: this.id,
-                  displayName: change.displayName,
-                  new: change.new ? JSON.parse(change.new) : undefined,
-                  old: change.old ? JSON.parse(change.old) : undefined,
-                  type: change.type,
-                  createdAt: elt.createdAt,
-                  createdBy: elt.createdBy,
-                });
+                this.setHistoryForTableFromChange(change, elt);
               });
             });
             this.loading = false;
@@ -243,6 +235,12 @@ export class RecordHistoryComponent
             return newItem;
           });
       }
+      this.historyForTable = [];
+      this.filterHistory.map((elt) => {
+        elt.changes.map((change) => {
+          this.setHistoryForTableFromChange(change, elt);
+        });
+      });
     });
   }
 
@@ -251,6 +249,24 @@ export class RecordHistoryComponent
    */
   onCancel(): void {
     this.cancel.emit(true);
+  }
+
+  /**
+   * Push correct values to historyForTable list
+   *
+   * @param change Change to push
+   * @param filterHistoryElement Filter history element (used for createdAt and createdBy)
+   */
+  setHistoryForTableFromChange(change: Change, filterHistoryElement: any) {
+    this.historyForTable.push({
+      id: this.id,
+      displayName: change.displayName,
+      new: change.new ? JSON.parse(change.new) : undefined,
+      old: change.old ? JSON.parse(change.old) : undefined,
+      type: change.type,
+      createdAt: filterHistoryElement.createdAt,
+      createdBy: filterHistoryElement.createdBy,
+    });
   }
 
   /**
