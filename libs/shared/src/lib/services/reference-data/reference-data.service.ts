@@ -15,8 +15,6 @@ import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
 
-/** Local storage key for last modified */
-const LAST_MODIFIED_KEY = '_last_modified';
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
 /** Property for filtering in requests */
@@ -26,6 +24,7 @@ const LAST_UPDATE_CODE = '{{lastUpdate}}';
  */
 interface CachedItems {
   items: any[];
+  pageInfo?: any;
   valueField: string;
 }
 
@@ -151,63 +150,55 @@ export class ReferenceDataService {
   /**
    * Get the items and the value field of a reference data
    *
-   * @param referenceDataID The reference data id
+   * @param referenceData The reference data id or the reference data object
    * @param pageInfo Page info for pagination
    * @returns The item list and the value field
    */
-  public async cacheItems(referenceDataID: string, pageInfo: any = {}) {
+  public async cacheItems(
+    referenceData: string | ReferenceData,
+    pageInfo: any = {}
+  ) {
     // Initialization
     let items: any[] = [];
     let paginationRes: Awaited<
       ReturnType<typeof this.processItemsByRequestType>
     >['pageInfo'] = null;
 
-    const referenceData = await this.loadReferenceData(referenceDataID);
-    const cacheKey = referenceData.id || '';
+    if (typeof referenceData === 'string') {
+      referenceData = await this.loadReferenceData(referenceData);
+    }
+    const cacheKey = `${referenceData.id || ''}-${JSON.stringify(pageInfo)}`;
     const valueField = referenceData.valueField || 'id';
-    const cacheTimestamp = localStorage.getItem(cacheKey + LAST_MODIFIED_KEY);
+    const cacheTimestamp = localStorage.getItem(cacheKey + LAST_REQUEST_KEY);
     const modifiedAt = referenceData.modifiedAt || '';
 
-    // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
-    if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
-      const { items: i, pageInfo: p } = await this.fetchItems(referenceData);
+    const isCached =
+      cacheTimestamp &&
+      cacheTimestamp >= modifiedAt &&
+      (await localForage.keys()).includes(cacheKey);
+
+    // If it isn't cached, fetch items and cache them
+    if (!isCached) {
+      const { items: i, pageInfo: p } = await this.fetchItems(
+        referenceData,
+        pageInfo
+      );
       items = i;
       paginationRes = p;
       // Cache items and timestamp
-      await localForage.setItem(cacheKey, { items, valueField });
-      localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+      await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
+      localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt);
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
-        const isCached = (await localForage.keys()).includes(cacheKey);
-        // Fetch items
-        const { items: i, pageInfo: p } = await this.processItemsByRequestType(
-          referenceData,
-          referenceDataType.graphql,
-          pageInfo
-        );
-        items = i;
-        paginationRes = p;
         // Cache items
-        if (isCached) {
-          const { items: cache } = (await localForage.getItem(
-            cacheKey
-          )) as CachedItems;
-          if (cache && items && items.length) {
-            for (const newItem of items) {
-              const cachedItemIndex = cache.findIndex(
-                (cachedItem) => cachedItem[valueField] === newItem[valueField]
-              );
-              if (cachedItemIndex !== -1) {
-                cache[cachedItemIndex] = newItem;
-              } else {
-                cache.push(newItem);
-              }
-            }
-            items = cache || [];
-          }
-        }
-        await localForage.setItem(cacheKey, { items, valueField });
+        const { items: cache, pageInfo: p } = (await localForage.getItem(
+          cacheKey
+        )) as CachedItems;
+        items = cache || [];
+        paginationRes = p;
+
+        await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())
@@ -219,10 +210,11 @@ export class ReferenceDataService {
           items = (await this.fetchItems(referenceData)).items;
           // Cache items and timestamp
           await localForage.setItem(cacheKey, { items, valueField });
-          localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+          localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt);
         }
       }
     }
+
     return { items, referenceData, pageInfo: paginationRes };
   }
 
@@ -314,15 +306,22 @@ export class ReferenceDataService {
     // Build page info
     if (referenceData.pageInfo?.strategy) {
       const totalCount =
-        jsonpath.query(data, referenceData.pageInfo.totalCountField)[0] ?? 0;
+        jsonpath.query(data, referenceData.pageInfo.totalCountField)[0] ??
+        Number.MAX_SAFE_INTEGER;
       const pageSize = referenceData.pageInfo.pageSizeVar
         ? jsonpath.query(pageInfo, referenceData.pageInfo.pageSizeVar)[0] ?? 0
         : items?.length || 0;
-
-      const lastCursor =
-        referenceData.pageInfo?.strategy === 'cursor'
-          ? jsonpath.query(data, referenceData.pageInfo.cursorField)[0]
-          : null;
+      let lastCursor = null;
+      if (referenceData.pageInfo?.strategy === 'cursor') {
+        const cursors = jsonpath.query(
+          data,
+          referenceData.pageInfo.cursorField
+        );
+        items.forEach((item: any) => {
+          item.__CURSOR__ = cursors.shift();
+        });
+        lastCursor = items[items.length - 1].__CURSOR__;
+      }
 
       return {
         items,

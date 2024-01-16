@@ -85,8 +85,6 @@ export class ReferenceDataComponent
   public referenceTypeChoices = Object.values(referenceDataType);
   /** Pagination methods */
   public paginationStrategies = Object.values(paginationStrategy);
-  /** Currently selected strategy */
-  private currStrategy?: paginationStrategy | null = null;
 
   // === API ===
   /** Selected API configuration */
@@ -237,7 +235,6 @@ export class ReferenceDataComponent
     /** Updates the requirement of the cursor field field */
     const setPaginationValidators = () => {
       // All optional by default
-      controls.strategy.optional();
       controls.cursorVar.optional();
       controls.cursorField.optional();
       controls.offsetVar.optional();
@@ -247,6 +244,7 @@ export class ReferenceDataComponent
 
       const usePagination = !!form.get('usePagination')?.value;
       if (!usePagination) {
+        controls.strategy.optional();
         return;
       }
 
@@ -379,12 +377,8 @@ export class ReferenceDataComponent
       form
         .get('pageInfo.strategy')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe((val) => {
-          const strategy = (val as typeof this.currStrategy) ?? null;
-          if (strategy !== this.currStrategy) {
-            this.currStrategy = strategy;
-            setPaginationValidators();
-          }
+        .subscribe(() => {
+          setPaginationValidators();
         });
 
       form

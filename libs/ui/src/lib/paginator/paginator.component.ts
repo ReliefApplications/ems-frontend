@@ -24,6 +24,8 @@ export class PaginatorComponent implements OnChanges {
   @Input() disabled = false;
   /** Number of items */
   @Input() totalItems = 0;
+  /** Show total items */
+  @Input() showTotalItems = true;
   /** Current page size */
   @Input() pageSize = 10;
   /** Available page size */

@@ -225,6 +225,11 @@ export class SummaryCardComponent
     } ${formatDate}.pdf`;
   }
 
+  /** @returns whether or not we know how many items there are in total */
+  get totalItemsKnown(): boolean {
+    return this.pageInfo.length !== Number.MAX_SAFE_INTEGER;
+  }
+
   /**
    * Summary Card Widget component.
    *
@@ -397,7 +402,30 @@ export class SummaryCardComponent
         this.createDynamicQueryFromLayout(card);
       }
     } else if (this.useReferenceData) {
-      this.getCardsFromReferenceData(card);
+      this.refData = await this.referenceDataService.loadReferenceData(
+        card.referenceData as string
+      );
+
+      if (
+        this.refData?.pageInfo?.strategy &&
+        !this.refData?.pageInfo?.pageSizeVar
+      ) {
+        // In this case we don't know the page size, so we set it to zero and then
+        // we update it when we get the first page and set the total count to the number of items
+        this.pageInfo.pageSize = 0;
+      }
+
+      const { items, pageInfo } = await this.referenceDataService.cacheItems(
+        this.refData,
+        Object.assign(
+          {},
+          this.refData.pageInfo?.pageSizeVar && {
+            [this.refData.pageInfo.pageSizeVar]: DEFAULT_PAGE_SIZE,
+          }
+        )
+      );
+
+      this.updateReferenceDataCards(items, pageInfo);
     }
   }
 
@@ -441,7 +469,7 @@ export class SummaryCardComponent
             at: this.contextService.atArgumentValue(this.settings.at),
           }),
         })
-        .then(this.updateCards.bind(this));
+        .then(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData) {
       const contextFilters = this.contextService.injectContext(
         this.contextFilters
@@ -468,7 +496,7 @@ export class SummaryCardComponent
    *
    * @param res Query result
    */
-  private updateCards(res: any) {
+  private updateRecordCards(res: any) {
     if (!res?.data) {
       return;
     }
@@ -523,6 +551,113 @@ export class SummaryCardComponent
     this.scrolling = false;
     this.triggerRefreshCardList = false;
     this.loading = res.loading;
+  }
+
+  /**
+   * Update the cards from fetched reference data
+   *
+   * @param items Reference data items
+   * @param pageInfo Reference data pagination info response
+   */
+  private async updateReferenceDataCards(
+    items: any[],
+    pageInfo: Awaited<
+      ReturnType<typeof this.referenceDataService.cacheItems>
+    >['pageInfo']
+  ) {
+    if (!this.refData) {
+      return;
+    }
+
+    // Fields metadata to be stored in the cards
+    const metadata = (this.refData?.fields || [])
+      .filter((field: any) => field && typeof field !== 'string')
+      .map((field: any) => {
+        return {
+          label: field.name,
+          name: field.name,
+          type: field.type,
+        };
+      });
+
+    if (
+      this.cachedCards.length <=
+      this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize)
+    ) {
+      // Number of empty cards to add to the cached cards
+      const emptyCardsToAdd =
+        this.pageInfo.pageIndex *
+          (this.pageInfo.pageSize || pageInfo?.pageSize) -
+        this.cachedCards.length;
+
+      // Add empty cards to the cached cards
+      this.cachedCards.push(
+        ...Array.from({ length: emptyCardsToAdd }, () => ({}))
+      );
+    }
+
+    // Add the new items to the cached cards in the correct position
+    this.cachedCards.splice(
+      this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize),
+      items.length,
+      ...((items || []).map((x: any, index: number) => ({
+        ...this.settings.card,
+        rawValue: x,
+        index,
+        metadata,
+      })) as CardT[])
+    );
+
+    const contextFilters = this.contextService.injectContext(
+      this.contextFilters
+    );
+
+    this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+      filterReferenceData(x.rawValue, contextFilters)
+    );
+
+    const strategy = this.refData?.pageInfo?.strategy;
+
+    const isPaginated = !!strategy && !!pageInfo;
+    if (isPaginated) {
+      // If using pagination, set the page size and total count
+      // according to the response of the first page
+      this.pageInfo.length = pageInfo.totalCount;
+      this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
+      this.pageInfo.lastCursor = pageInfo.lastCursor;
+    } else {
+      // If not, all the items are already loaded
+      this.pageInfo.length = this.cachedCards.length;
+    }
+
+    // Set sort fields
+    this.sortFields = [];
+    this.widget.settings.sortFields?.forEach((sortField: any) => {
+      this.sortFields.push(sortField);
+    });
+
+    if (this.gridSettings?.referenceData) {
+      Object.assign(this.gridSettings, {
+        refDataCards: cloneDeep(this.cachedCards),
+      });
+    }
+
+    // If using infinite scroll, just add the new items to the cards list
+    if (!this.settings.widgetDisplay?.usePagination) {
+      this.cards = this.sortedCachedCards;
+    } else {
+      this.cards = this.sortedCachedCards.slice(
+        this.pageInfo.skip,
+        this.pageInfo.skip + this.pageInfo.pageSize
+      );
+    }
+
+    if (!isPaginated) {
+      this.pageInfo.length = this.sortedCachedCards.length;
+    }
+
+    this.scrolling = false;
+    this.loading = false;
   }
 
   /**
@@ -600,7 +735,7 @@ export class SummaryCardComponent
             });
             this.dataQuery.valueChanges
               .pipe(takeUntil(this.destroy$))
-              .subscribe(this.updateCards.bind(this));
+              .subscribe(this.updateRecordCards.bind(this));
           }
           // Build meta query to add information to fields
           this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
@@ -713,86 +848,13 @@ export class SummaryCardComponent
 
     this.dataQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(this.updateCards.bind(this));
+      .subscribe(this.updateRecordCards.bind(this));
 
     // Set sort fields
     this.sortFields = [];
     this.widget.settings.sortFields?.forEach((sortField: any) => {
       this.sortFields.push(sortField);
     });
-  }
-
-  /**
-   * Get cards from reference data
-   *
-   * @param card card definition
-   */
-  private async getCardsFromReferenceData(
-    card: NonNullable<SummaryCardFormT['value']['card']>
-  ) {
-    this.loading = true;
-    if (card.referenceData) {
-      this.refData = await this.referenceDataService.loadReferenceData(
-        card.referenceData as string
-      );
-
-      const { items, pageInfo } = await this.referenceDataService.cacheItems(
-        card.referenceData as string,
-        Object.assign(
-          {},
-          this.refData.pageInfo?.pageSizeVar && {
-            [this.refData.pageInfo.pageSizeVar]: DEFAULT_PAGE_SIZE,
-          }
-        )
-      );
-      const metadata = (this.refData?.fields || [])
-        .filter((field: any) => field && typeof field !== 'string')
-        .map((field: any) => {
-          return {
-            label: field.name,
-            name: field.name,
-            type: field.type,
-          };
-        });
-
-      this.cachedCards = (items || []).map((x: any, index: number) => ({
-        ...this.settings.card,
-        rawValue: x,
-        index,
-        metadata,
-      })) as CardT[];
-
-      this.pageInfo.pageIndex = 0;
-      if (this.refData.pageInfo?.strategy && pageInfo) {
-        // If using pagination, set the page size and total count
-        // according to the response of the first page
-        this.pageInfo.length = pageInfo.totalCount;
-        this.pageInfo.pageSize = pageInfo.pageSize;
-        this.pageInfo.lastCursor = pageInfo.lastCursor;
-      } else {
-        // If not, all the items are already loaded
-        this.pageInfo.length = this.cachedCards.length;
-      }
-
-      const contextFilters = this.contextService.injectContext(
-        this.contextFilters
-      );
-      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
-        filterReferenceData(x.rawValue, contextFilters)
-      );
-      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
-      this.loading = false;
-      // Set sort fields
-      this.sortFields = [];
-      this.widget.settings.sortFields?.forEach((sortField: any) => {
-        this.sortFields.push(sortField);
-      });
-    }
-    if (this.gridSettings?.referenceData) {
-      Object.assign(this.gridSettings, {
-        refDataCards: cloneDeep(this.cachedCards),
-      });
-    }
   }
 
   /**
@@ -808,10 +870,20 @@ export class SummaryCardComponent
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
         this.scrolling = true;
         if (this.useReferenceData) {
-          const start = this.cards.length;
-          const end = start + this.pageInfo.pageSize;
-          this.cards.push(...this.sortedCachedCards.slice(start, end));
-          this.scrolling = false;
+          if (!this.refData?.pageInfo?.strategy) {
+            const start = this.cards.length;
+            const end = start + this.pageInfo.pageSize;
+            this.cards.push(...this.sortedCachedCards.slice(start, end));
+            this.scrolling = false;
+          } else {
+            this.onPage({
+              pageSize: this.pageInfo.pageSize,
+              skip: this.pageInfo.skip + this.pageInfo.pageSize,
+              previousPageIndex: this.pageInfo.pageIndex,
+              pageIndex: this.pageInfo.pageIndex + 1,
+              totalItems: this.pageInfo.length,
+            });
+          }
         } else {
           this.dataQuery
             ?.fetchMore({
@@ -819,7 +891,7 @@ export class SummaryCardComponent
                 skip: this.cards.length,
               },
             })
-            .then(this.updateCards.bind(this));
+            .then(this.updateRecordCards.bind(this));
         }
       }
     }
@@ -833,6 +905,7 @@ export class SummaryCardComponent
   public onPage(event: UIPageChangeEvent): void {
     this.pageInfo.pageSize = event.pageSize;
     this.pageInfo.skip = event.skip;
+    this.pageInfo.pageIndex = event.pageIndex;
 
     if (this.dataQuery) {
       this.loading = true;
@@ -849,10 +922,11 @@ export class SummaryCardComponent
             at: this.contextService.atArgumentValue(this.settings.at),
           }),
         })
-        .then(this.updateCards.bind(this));
+        .then(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData) {
       const strategy = this.refData?.pageInfo?.strategy;
       const refData = this.refData;
+      // If using pagination, fetch the next page
       if (strategy && refData?.pageInfo) {
         // Build the variables for the query based on the pagination strategy
         const variables: any = Object.assign(
@@ -866,34 +940,27 @@ export class SummaryCardComponent
         if (refData.pageInfo.strategy === 'offset') {
           variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
         } else if (refData.pageInfo.strategy === 'cursor') {
-          variables[refData.pageInfo.cursorVar] = this.pageInfo.lastCursor;
+          // Get the cursor at the index of skip
+          variables[refData.pageInfo.cursorVar] =
+            this.sortedCachedCards[
+              this.pageInfo.skip - 1
+            ]?.rawValue?.__CURSOR__;
         } else if (refData.pageInfo.strategy === 'page') {
-          variables[refData.pageInfo.pageVar] = event.pageIndex;
+          variables[refData.pageInfo.pageVar] = event.pageIndex + 1;
         }
 
-        this.loading = true;
         this.referenceDataService
-          .cacheItems(this.settings.card?.referenceData as string, variables)
+          .cacheItems(refData, variables)
           .then(({ items, pageInfo }) => {
-            this.pageInfo.pageIndex = event.pageIndex;
-            this.pageInfo.length = pageInfo?.totalCount || 0;
-            this.sortedCachedCards = (items || []).map(
-              (x: any, index: number) => ({
-                ...this.settings.card,
-                rawValue: x,
-                index,
-              })
-            ) as CardT[];
-            this.loading = false;
+            this.updateReferenceDataCards(items, pageInfo);
           });
+      } else {
+        this.cards = this.sortedCachedCards.slice(
+          this.pageInfo.skip,
+          this.pageInfo.skip + this.pageInfo.pageSize
+        );
+        this.pageInfo.length = this.sortedCachedCards.length;
       }
-
-      // If reference data is not paginated, we already have all the data
-      this.cards = this.sortedCachedCards.slice(
-        this.pageInfo.skip,
-        this.pageInfo.skip + this.pageInfo.pageSize
-      );
-      this.pageInfo.length = this.sortedCachedCards.length;
     }
   }
 

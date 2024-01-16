@@ -79,7 +79,7 @@
       <!-- Boolean for use pagination -->
       <ui-toggle
         formControlName="usePagination"
-        *ngIf="type !== 'static'"
+        *ngIf="type === 'graphql'"
         class="mb-4"
       >
         <ng-container ngProjectAs="label">
