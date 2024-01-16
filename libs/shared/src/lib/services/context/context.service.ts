@@ -228,6 +228,7 @@ export class ContextService {
           const secondFilterName = filterName.split('.')[1];
           if (
             firstFilterName in this.availableFilterFieldsValue &&
+            secondFilterName &&
             Array.isArray(this.availableFilterFieldsValue[firstFilterName])
           ) {
             filter.value = jsonpath.query(
