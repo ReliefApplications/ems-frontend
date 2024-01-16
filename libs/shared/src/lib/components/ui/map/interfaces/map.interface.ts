@@ -27,8 +27,8 @@ export interface MapConstructorSettings {
   pmIgnore?: boolean;
   controls: MapControls;
   arcGisWebMap?: string;
-  geographicExtent?: string;
-  geographicExtentField?: string;
+  geographicExtentValue?: string;
+  countryField?: string;
 }
 
 /** Available leaflet event types. */

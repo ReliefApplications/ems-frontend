@@ -1763,8 +1763,8 @@
 							"timedimension": "Dimension temporelle",
 							"title": "Contrôles de la carte"
 						},
-						"geographicExtent": "Utiliser l'étendue géographique",
-						"geographicExtentField": "Champ d'étendue géographique",
+						"countryField": "Champ Pays",
+						"geographicExtentValue": "Utiliser l'étendue géographique",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",

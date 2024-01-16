@@ -139,17 +139,17 @@
           <div class="flex flex-wrap gap-2 mt-2">
             <!-- Fit & zoom on country polygon -->
             <div uiFormFieldDirective class="flex-1">
-              <label>{{ 'components.widget.settings.map.properties.geographicExtent' | translate }}</label>
-              <input formControlName="geographicExtent" type="string" />
+              <label>{{ 'components.widget.settings.map.properties.geographicExtentValue' | translate }}</label>
+              <input formControlName="geographicExtentValue" type="string" />
             </div>
             <ui-divider></ui-divider>
             <!-- Geographic extent field ("admin0" (by default) and region) -->
             <div uiFormFieldDirective class="flex-1">
               <label>{{
-                'components.widget.settings.map.properties.geographicExtentField' | translate
+                'components.widget.settings.map.properties.countryField' | translate
               }}</label>
-              <ui-select-menu formControlName="geographicExtentField" [disabled]="true">
-                <ui-select-option *ngFor="let field of geographicExtentFields" [value]="field">
+              <ui-select-menu formControlName="countryField" [disabled]="true">
+                <ui-select-option *ngFor="let field of countryFields" [value]="field">
                   {{ field }}
                 </ui-select-option>
               </ui-select-menu>

@@ -1750,8 +1750,8 @@
 							"timedimension": "Time dimension",
 							"title": "Visible Map Controls"
 						},
-						"geographicExtent": "Use geographic extent",
-						"geographicExtentField": "Geographic extent field",
+						"countryField": "Country field",
+						"geographicExtentValue": "Use geographic extent",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
