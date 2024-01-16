@@ -865,6 +865,15 @@
 				"to": "to",
 				"withValue": "with value"
 			},
+			"columns": {
+				"action": "Action taken",
+				"date": "Date of modification",
+				"modifiedValue": "Modified variable value",
+				"originalValue": "Original variable value",
+				"person": "Who modified",
+				"signalId": "Signal Id",
+				"variable": "Variable modified"
+			},
 			"download": "Download history",
 			"empty": "No activity detected",
 			"field": {
@@ -874,6 +883,10 @@
 			"preview": "Preview and revert",
 			"range": {
 				"clear": "Clear range"
+			},
+			"view": {
+				"defaultView": "Switch to default view",
+				"tableView": "Switch to table view"
 			}
 		},
 		"icon": {

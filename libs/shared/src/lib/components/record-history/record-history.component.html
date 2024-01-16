@@ -76,8 +76,8 @@
       <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
     </ui-menu>
     <ui-button (click)="switchView()"
-      ><div *ngIf="!defaultView">Switch to default view</div>
-      <div *ngIf="defaultView">Switch to table view</div></ui-button
+      ><div *ngIf="!defaultView">{{ 'components.history.view.defaultView' | translate }}</div>
+      <div *ngIf="defaultView">{{ 'components.history.view.tableView' | translate }}</div></ui-button
     >
   </div>
 </div>
@@ -87,7 +87,7 @@
     <div *ngIf="!defaultView" class="overflow-x-auto m-3">
       <table cdk-table uiTableWrapper [dataSource]="historyForTable">
         <ng-container cdkColumnDef="id">
-          <th uiCellHeader *cdkHeaderCellDef scope="col">Signal Id</th>
+          <th uiCellHeader *cdkHeaderCellDef scope="col">{{ 'components.history.columns.signalId' | translate }}</th>
           <td
             uiCell
             *cdkCellDef="let element"
@@ -97,7 +97,7 @@
           </td>
         </ng-container>
         <ng-container cdkColumnDef="variable">
-          <th uiCellHeader *cdkHeaderCellDef scope="col">Variable modified</th>
+          <th uiCellHeader *cdkHeaderCellDef scope="col">{{ 'components.history.columns.variable' | translate }}</th>
           <td
             uiCell
             *cdkCellDef="let element"
@@ -108,7 +108,7 @@
         </ng-container>
         <ng-container cdkColumnDef="date">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
-            Date of modification
+            {{ 'components.history.columns.date' | translate }}
           </th>
           <td
             uiCell
@@ -120,7 +120,7 @@
           </td>
         </ng-container>
         <ng-container cdkColumnDef="person">
-          <th uiCellHeader *cdkHeaderCellDef scope="col">Who modified</th>
+          <th uiCellHeader *cdkHeaderCellDef scope="col">{{ 'components.history.columns.person' | translate }}</th>
           <td
             uiCell
             *cdkCellDef="let element"
@@ -130,7 +130,7 @@
           </td>
         </ng-container>
         <ng-container cdkColumnDef="action">
-          <th uiCellHeader *cdkHeaderCellDef scope="col">Action taken</th>
+          <th uiCellHeader *cdkHeaderCellDef scope="col">{{ 'components.history.columns.action' | translate }}</th>
           <td
             uiCell
             *cdkCellDef="let element"
@@ -141,7 +141,7 @@
         </ng-container>
         <ng-container cdkColumnDef="originalValue">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
-            Original variable value
+            {{ 'components.history.columns.originalValue' | translate }}
           </th>
           <td
             uiCell
@@ -153,7 +153,7 @@
         </ng-container>
         <ng-container cdkColumnDef="modifiedValue">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
-            Modified variable value
+            {{ 'components.history.columns.modifiedValue' | translate }}
           </th>
           <td
             uiCell
