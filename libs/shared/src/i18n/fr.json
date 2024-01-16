@@ -895,10 +895,7 @@
 			"range": {
 				"clear": "Effacer la plage de données"
 			},
-			"view": {
-				"defaultView": "Voir vue par défault",
-				"tableView": "Voir vue en table"
-			}
+			"useTableMode": "Afficher en table"
 		},
 		"icon": {
 			"modal": {

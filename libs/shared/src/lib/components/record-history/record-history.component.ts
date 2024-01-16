@@ -88,8 +88,6 @@ export class RecordHistoryComponent
   });
   /** Sorted fields */
   public sortedFields: any[] = [];
-  /** Switch views */
-  public defaultView = false;
   /** Table columns */
   public displayedColumnsHistory: string[] = [
     'id',
@@ -111,6 +109,8 @@ export class RecordHistoryComponent
   };
   /** Data source for history as a table */
   historyForTable: any[] = [];
+  /** Should view as table */
+  viewAsTable = new FormControl(true);
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -394,13 +394,6 @@ export class RecordHistoryComponent
         this.revert(version);
       }
     });
-  }
-
-  /**
-   * Switch view from table to default and vice/versa
-   */
-  switchView(): void {
-    this.defaultView = !this.defaultView;
   }
 
   /**

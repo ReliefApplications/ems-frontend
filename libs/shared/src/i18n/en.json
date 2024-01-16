@@ -884,10 +884,7 @@
 			"range": {
 				"clear": "Clear range"
 			},
-			"view": {
-				"defaultView": "Switch to default view",
-				"tableView": "Switch to table view"
-			}
+			"useTableMode": "Use table mode"
 		},
 		"icon": {
 			"modal": {

@@ -884,10 +884,7 @@
 			"range": {
 				"clear": "******"
 			},
-			"view": {
-				"defaultView": "******",
-				"tableView": "******"
-			}
+			"useTableMode": "******"
 		},
 		"icon": {
 			"modal": {
