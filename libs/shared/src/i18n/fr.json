@@ -876,6 +876,15 @@
 				"to": "à",
 				"withValue": "avec valeur"
 			},
+			"columns": {
+				"action": "Type d'action",
+				"date": "Date de modification",
+				"modifiedValue": "Valeur modifiée de la variable",
+				"originalValue": "Valeur originelle de la variable",
+				"person": "Modification effectuée par",
+				"signalId": "Id du record",
+				"variable": "Variable modifiée"
+			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",
 			"field": {
@@ -885,7 +894,8 @@
 			"preview": "Prévisualiser et revenir",
 			"range": {
 				"clear": "Effacer la plage de données"
-			}
+			},
+			"useTableMode": "Afficher en table"
 		},
 		"icon": {
 			"modal": {
