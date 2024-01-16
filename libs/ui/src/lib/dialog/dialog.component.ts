@@ -16,6 +16,8 @@ export class DialogComponent implements OnChanges, OnInit {
   @Input() closable = false;
   /** Should display padding around dialog */
   @Input() padding = true;
+  /** Boolean indicating whether the dialog is resizable. */
+  @Input() resizable = false;
   /** Size of the dialog: small - medium - big - fullscreen */
   @Input() size!: DialogSize;
 

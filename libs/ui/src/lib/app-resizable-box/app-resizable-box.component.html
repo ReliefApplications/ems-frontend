@@ -1,0 +1,10 @@
+<div *ngIf="enable" class="resize-handle-left" (mousedown)="setDirection('left'); resizeStart($event)"></div>
+<div *ngIf="enable" class="resize-handle-right" (mousedown)="setDirection('right'); resizeStart($event)"></div>
+<div *ngIf="enable" class="resize-handle-top" (mousedown)="setDirection('top'); resizeStart($event)"></div>
+<div *ngIf="enable" class="resize-handle-bottom" (mousedown)="setDirection('bottom'); resizeStart($event)"></div>
+<div *ngIf="enable" class="resize-handle-top-left" (mousedown)="setDirection('top-left'); resizeStart($event)"></div>
+<div *ngIf="enable" class="resize-handle-top-right" (mousedown)="setDirection('top-right'); resizeStart($event)"></div>
+<div *ngIf="enable" class="resize-handle-bottom-left" (mousedown)="setDirection('bottom-left'); resizeStart($event)"></div>
+<div *ngIf="enable" class="resize-handle-bottom-right" (mousedown)="setDirection('bottom-right'); resizeStart($event)"></div>
+
+<ng-content></ng-content>

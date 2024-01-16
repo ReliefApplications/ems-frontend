@@ -21,6 +21,9 @@ interface DialogData {
  */
 @Component({
   standalone: true,
+  selector: 'shared-history-modal',
+  templateUrl: './record-history-modal.component.html',
+  styleUrls: ['./record-history-modal.component.scss'],
   imports: [
     CommonModule,
     RecordHistoryModule,
@@ -28,9 +31,6 @@ interface DialogData {
     ButtonModule,
     TranslateModule,
   ],
-  selector: 'shared-history-modal',
-  templateUrl: './record-history-modal.component.html',
-  styleUrls: ['./record-history-modal.component.scss'],
 })
 export class RecordHistoryModalComponent {
   /**
