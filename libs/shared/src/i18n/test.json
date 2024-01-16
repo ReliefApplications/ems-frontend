@@ -865,6 +865,15 @@
 				"to": "******",
 				"withValue": "******"
 			},
+			"columns": {
+				"action": "******",
+				"date": "******",
+				"modifiedValue": "******",
+				"originalValue": "******",
+				"person": "******",
+				"signalId": "******",
+				"variable": "******"
+			},
 			"download": "******",
 			"empty": "******",
 			"field": {
@@ -874,7 +883,8 @@
 			"preview": "******",
 			"range": {
 				"clear": "******"
-			}
+			},
+			"useTableMode": "******"
 		},
 		"icon": {
 			"modal": {

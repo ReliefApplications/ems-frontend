@@ -73,8 +73,22 @@ export class ReferenceDataDropdownComponent
           this.control.setValue(this.model.obj.referenceData, {
             emitEvent: false,
           });
+          this.changeDetectorRef.detectChanges();
         });
     }
+  }
+
+  /**
+   * Reset control value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param event click event
+   */
+  clearFormField(event: Event) {
+    if (this.control.value) {
+      this.control.setValue(null);
+    }
+    event.stopPropagation();
   }
 
   override ngOnDestroy(): void {
