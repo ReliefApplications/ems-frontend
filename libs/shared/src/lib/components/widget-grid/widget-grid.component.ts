@@ -135,6 +135,10 @@ export class WidgetGridComponent
           this._host.nativeElement.innerWidth
         );
         this.setGridOptions();
+      });
+    new ResizeObservable(this._host.nativeElement.parentElement)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
         if (this.options?.gridType === GridType.Fit) {
           this.setFitStyleWidth();
         }
@@ -186,8 +190,9 @@ export class WidgetGridComponent
    * Set the available width and height for fit grid type
    */
   public setFitStyleWidth() {
-    console.log(this.isFullScreen);
-    const parentTag = (this._host as any).nativeElement.parentElement.tagName;
+    console.log(this.isFullScreen, this._host.nativeElement.parentElement);
+    const parentElement = this._host.nativeElement.parentElement;
+    const parentTag = parentElement.tagName;
 
     // Tab widget
     if (parentTag === 'SHARED-TAB') {
@@ -201,7 +206,7 @@ export class WidgetGridComponent
       console.log('no-tab', document.documentElement.clientHeight);
       // all available height less margin
       this.fitStyle['max-height.px'] =
-        document.documentElement.clientHeight - (this.isFullScreen ? 100 : 180);
+        parentElement.clientHeight + (this.isFullScreen ? 10 : -70);
       // subtract dashboard filter
       const dashboardFilter = document.documentElement.getElementsByTagName(
         'shared-dashboard-filter'

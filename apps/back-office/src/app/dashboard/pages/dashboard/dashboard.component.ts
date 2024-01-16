@@ -111,6 +111,7 @@ export class DashboardComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Is edition active */
   @HostBinding('class.edit-mode-dashboard')
+  @HostBinding('class.h-full')
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};

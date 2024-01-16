@@ -18,7 +18,6 @@
     <gridster-item
       [item]="widget"
       *ngFor="let widget of widgets; let i = index"
-      [ngStyle]="gridOptions.gridType === 'fit' ? {'max-width.px': fitStyle['max-width.px']} : {}"
     >
       <shared-widget
         #widgetElement
