@@ -1760,6 +1760,8 @@
 							"timedimension": "Time dimension",
 							"title": "Visible Map Controls"
 						},
+						"geographicExtent": "Geographic extent",
+						"geographicExtentValue": "Geographic extent value",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
@@ -1786,7 +1788,8 @@
 							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
 							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
-						}
+						},
+						"geographicExtent": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
 					}
 				},
 				"style": {

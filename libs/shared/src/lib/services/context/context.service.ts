@@ -49,6 +49,8 @@ export class ContextService {
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
   public filterRegex = /{{filter\.[^}]+}}/;
+  /** Context regex */
+  public contextRegex = /{{context\.(.*?)}}/g;
   /** Dashboard object */
   public dashboard?: Dashboard;
   /** Available filter positions */
@@ -191,13 +193,34 @@ export class ContextService {
     if (!context) {
       return object;
     }
-    const regex = /{{context\.(.*?)}}/g;
     return JSON.parse(
-      JSON.stringify(object).replace(regex, (match) => {
+      JSON.stringify(object).replace(this.contextRegex, (match) => {
         const field = match.replace('{{context.', '').replace('}}', '');
         return get(context, field) || match;
       })
     );
+  }
+
+  /**
+   * Replace {{filter}} placeholders in object, with filter values
+   *
+   * @param object object with placeholders
+   * @returns object with replaced placeholders
+   */
+  public replaceFilter(object: any): { object: any; replaced: boolean } {
+    const filter = this.availableFilterFieldsValue;
+    if (isEmpty(filter)) {
+      return { object, replaced: false };
+    }
+    return {
+      object: JSON.parse(
+        JSON.stringify(object).replace(this.filterRegex, (match) => {
+          const field = match.replace('{{filter.', '').replace('}}', '');
+          return get(filter, field) || match;
+        })
+      ),
+      replaced: true,
+    };
   }
 
   /**
