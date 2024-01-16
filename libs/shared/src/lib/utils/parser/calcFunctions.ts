@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { ceil, floor, round } from 'lodash';
 
 /**
@@ -104,6 +105,26 @@ const calcFunctions: Record<
       } catch {
         return '0';
       }
+    },
+  },
+  formatDate: {
+    signature: 'formatDate( value ; format)',
+    /**
+     * Format a date
+     *
+     * @param value The date to format
+     * @param format The format to use (optional, default to 'mediumDate')
+     * @param locale The locale to use (optional, default to the user browser locale)
+     * @param timezone The timezone to use (optional, default to the user browser timezone)
+     * @returns The formatted date
+     */
+    call: (
+      value,
+      format = 'mediumDate',
+      locale = Intl.DateTimeFormat().resolvedOptions().locale, // could also be navigator.language
+      timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    ) => {
+      return formatDate(value, format, locale, timezone);
     },
   },
 };
