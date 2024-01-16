@@ -6,7 +6,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual, isObject, merge } from 'lodash';
+import { isNil, isEmpty, get, isEqual, isObject, merge, forEach } from 'lodash';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
@@ -325,7 +325,9 @@ export class ContextService {
     const data = survey
       .getAllQuestions()
       .reduce(function (result: any, question: any) {
-        result[question.name] = question.defaultValue;
+        if (question.defaultValue !== undefined) {
+          result[question.name] = question.defaultValue;
+        }
         return result;
       }, {});
 
@@ -333,8 +335,10 @@ export class ContextService {
     if (!isEmpty(this.filter.getValue())) {
       merge(data, this.filter.getValue());
     }
-
-    survey.data = data;
+    // set each question value manually otherwise the defaultValueExpression is not loaded
+    forEach(data, (value, key) => {
+      survey.getQuestionByName(key).value = value;
+    });
     return survey;
   }
 
