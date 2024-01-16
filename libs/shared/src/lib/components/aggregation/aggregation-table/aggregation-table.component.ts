@@ -1,11 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
@@ -20,7 +27,7 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class AggregationTableComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
@@ -28,13 +35,17 @@ export class AggregationTableComponent
   @Input() resource: Resource | null = null;
   /** Selected aggregations form control */
   @Input() selectedAggregations: UntypedFormControl | null = null;
+  /** Saves if the aggregations has been fetched */
+  @Input() loadedAggregations = false;
+  /** Emits when complete aggregations list should be fetched */
+  @Output() loadAggregations = new EventEmitter<void>();
 
   /** List of aggregations */
-  aggregations: Layout[] = [];
+  public aggregations: Layout[] = [];
   /** List of all aggregations */
-  allAggregations: Layout[] = [];
+  public allAggregations: Layout[] = [];
   /** List of displayed columns */
-  columns: string[] = ['name', 'createdAt', '_actions'];
+  public columns: string[] = ['name', 'createdAt', '_actions'];
 
   /**
    * Aggregation table component.
@@ -58,6 +69,19 @@ export class AggregationTableComponent
       .subscribe((value) => {
         this.setSelectedAggregations(value);
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const defaultValue = this.selectedAggregations?.value;
+    this.setAllAggregations();
+    this.setSelectedAggregations(defaultValue);
+    if (
+      changes['loadedAggregations'] &&
+      changes['loadedAggregations'].currentValue &&
+      !changes['selectedAggregations']
+    ) {
+      this.openAddModal();
+    }
   }
 
   /**
@@ -91,14 +115,25 @@ export class AggregationTableComponent
   /**
    * Adds a new aggregation to the list.
    */
-  public async onAdd(): Promise<void> {
+  public onAdd() {
+    if (!this.loadedAggregations) {
+      this.loadAggregations.emit();
+    } else {
+      this.openAddModal();
+    }
+  }
+
+  /**
+   * Opens add aggregation modal
+   */
+  public async openAddModal(): Promise<void> {
     const { AddAggregationModalComponent } = await import(
       '../add-aggregation-modal/add-aggregation-modal.component'
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
+        useQueryRef: false,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

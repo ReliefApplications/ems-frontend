@@ -11,6 +11,7 @@ import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { TabsComponent } from '@oort-front/ui';
+import { Observable } from 'rxjs';
 
 /**
  * Buttons tab of grid widget configuration modal.
@@ -26,7 +27,7 @@ export class TabButtonsComponent {
   /** List of fields */
   @Input() fields: any[] = [];
   /** List of forms */
-  @Input() relatedForms: Form[] = [];
+  @Input() relatedForms$?: Observable<Form[] | undefined>;
   /** List of channels */
   @Input() channels?: Channel[];
   /** List of templates */
@@ -76,7 +77,7 @@ export class TabButtonsComponent {
    *
    * @param event cdk drag and drop event.
    */
-  onReorder(event: CdkDragDrop<string[]>): void {
+  public onReorder(event: CdkDragDrop<string[]>): void {
     const reorderedButtons = this.buttons.value;
     moveItemInArray(reorderedButtons, event.previousIndex, event.currentIndex);
     this.buttons.setValue(reorderedButtons);

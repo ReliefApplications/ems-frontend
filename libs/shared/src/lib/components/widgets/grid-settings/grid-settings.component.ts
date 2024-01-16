@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
+  ViewChild,
 } from '@angular/core';
 import {
   UntypedFormArray,
@@ -14,7 +15,14 @@ import {
   FormArray,
 } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { GET_CHANNELS, GET_GRID_RESOURCE_META } from './graphql/queries';
+import {
+  GET_CHANNELS,
+  GET_GRID_RESOURCE_META,
+  GET_RELATED_FORMS,
+  GET_RESOURCE_AGGREGATIONS,
+  GET_RESOURCE_LAYOUTS,
+  GET_RESOURCE_TEMPLATES,
+} from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { ApplicationService } from '../../../services/application/application.service';
@@ -29,6 +37,11 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { BehaviorSubject } from 'rxjs';
+import { TabsComponent } from '@oort-front/ui';
+import { Connection } from '../../../utils/graphql/connection.type';
+import { Layout } from '../../../models/layout.model';
+import { Aggregation } from '../../../models/aggregation.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -67,8 +80,6 @@ export class GridSettingsComponent
   // === FLOATING BUTTON ===
   /** List of fields */
   public fields: any[] = [];
-  /** List of related forms */
-  public relatedForms: Form[] = [];
 
   // === DATASET AND TEMPLATES ===
   /** List of public templates */
@@ -78,6 +89,19 @@ export class GridSettingsComponent
 
   /** Stores the selected tab */
   public selectedTab = 0;
+
+  /** List of related forms */
+  public relatedForms = new BehaviorSubject<Form[] | undefined>(undefined);
+  /** Related forms as observable */
+  public relatedForms$ = this.relatedForms.asObservable();
+
+  /** Saves if the complete layout list has been fetched */
+  public loadedLayouts = false;
+  /** Saves if the layouts has been fetched */
+  public loadedAggregations = false;
+
+  /** Tabs component associated to the grid settings */
+  @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
 
   /** @returns application templates */
   get appTemplates(): any[] {
@@ -261,13 +285,24 @@ export class GridSettingsComponent
           this.formChange.emit(this.widgetFormGroup);
         });
     }
+
+    // Listen to when the "Quick action buttons" tab is opened
+    // to fetch the resource related form (if necessary)
+    this.tabsComponent.tabs
+      .toArray()
+      .at(2)
+      ?.openTab.subscribe(() => {
+        if (this.resource?.id && !this.relatedForms.getValue()) {
+          this.getRelatedForms(this.resource?.id);
+        }
+      });
   }
 
   /**
    * Load GET_CHANNELS query when data is necessary.
    */
   public getChannels(): void {
-    if (this.widgetFormGroup) {
+    if (this.widgetFormGroup.get('resource')?.value) {
       this.applicationService.application$
         .pipe(takeUntil(this.destroy$))
         .subscribe((application: Application | null) => {
@@ -298,6 +333,81 @@ export class GridSettingsComponent
   }
 
   /**
+   * Load GET_RESOURCE_TEMPLATES query when data is necessary.
+   */
+  public getTemplates(): void {
+    if (this.widgetFormGroup.get('resource')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_TEMPLATES,
+          variables: {
+            resource: this.widgetFormGroup.get('resource')?.value,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.templates = data.resource.forms || [];
+          }
+        });
+    }
+  }
+
+  /**
+   * Load GET_RESOURCE_LAYOUTS query when data is necessary.
+   */
+  public getLayouts(): void {
+    if (this.widgetFormGroup.get('resource')?.value && !this.loadedLayouts) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_LAYOUTS,
+          variables: {
+            resource: this.widgetFormGroup.get('resource')?.value,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              layouts: (data.resource.layouts as Connection<Layout>) || [],
+            };
+            this.loadedLayouts = true;
+          }
+        });
+    }
+  }
+
+  /**
+   * Load GET_RESOURCE_AGGREGATIONS query when data is necessary.
+   */
+  public getAggregations(): void {
+    if (
+      this.widgetFormGroup.get('resource')?.value &&
+      !this.loadedAggregations
+    ) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_AGGREGATIONS,
+          variables: {
+            resource: this.widgetFormGroup.get('resource')?.value,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              aggregations:
+                (data.resource.aggregations as Connection<Aggregation>) || [],
+            };
+            this.loadedAggregations = true;
+          }
+        });
+    }
+  }
+
+  /**
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
@@ -306,22 +416,31 @@ export class GridSettingsComponent
         this.widgetFormGroup?.get('layouts')?.value;
       const aggregationIds: string[] | undefined =
         this.widgetFormGroup?.get('aggregations')?.value;
+      const formId: string | undefined =
+        this.widgetFormGroup.get('template')?.value;
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
             resource: this.widgetFormGroup.get('resource')?.value,
             layoutIds,
+            ignoreLayouts: layoutIds?.length ? false : true,
             firstLayouts: layoutIds?.length || 10,
             aggregationIds,
+            ignoreAggregations: aggregationIds?.length ? false : true,
             firstAggregations: aggregationIds?.length || 10,
+            formId,
+            ignoreForms: formId ? false : true,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
+          this.loadedLayouts = false;
+          this.relatedForms.next(undefined);
+          this.loadedAggregations = false;
           if (data) {
             this.resource = data.resource;
-            this.relatedForms = data.resource.relatedForms || [];
-            this.templates = data.resource.forms || [];
+            this.templates = data.resource.forms ? data.resource.forms : [];
             if (this.widgetFormGroup.get('aggregations')?.value.length > 0) {
               this.onAggregationChange(
                 this.widgetFormGroup.get('aggregations')?.value[0]
@@ -332,27 +451,19 @@ export class GridSettingsComponent
               );
             }
           } else {
-            this.relatedForms = [];
             this.templates = [];
             this.resource = null;
             this.fields = [];
           }
         });
     } else {
-      this.relatedForms = [];
+      this.relatedForms.next(undefined);
       this.templates = [];
       this.resource = null;
       this.fields = [];
+      this.loadedLayouts = false;
+      this.loadedAggregations = false;
     }
-  }
-
-  /**
-   *  Handles the a tab change event
-   *
-   * @param event Event triggered on tab switch
-   */
-  handleTabChange(event: number): void {
-    this.selectedTab = event;
   }
 
   /**
@@ -368,6 +479,7 @@ export class GridSettingsComponent
           resource: this.resource.id,
           aggregation: aggregationId || '',
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }: any) => {
           if (data.recordsAggregation) {
             this.fields = data.recordsAggregation.items[0]
@@ -389,5 +501,28 @@ export class GridSettingsComponent
       this.widget.id,
       this.widget.settings
     );
+  }
+
+  /**
+   * Get list of forms related to a resource.
+   *
+   * @param resourceId resource id
+   */
+  public getRelatedForms(resourceId: string): void {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RELATED_FORMS,
+        variables: {
+          resource: resourceId,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        if (data) {
+          this.relatedForms.next(data.resource.relatedForms || []);
+        } else {
+          this.relatedForms.next([]);
+        }
+      });
   }
 }

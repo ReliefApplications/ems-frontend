@@ -21,6 +21,12 @@
           [resource]="resource"
           [layout]="layout"
           [aggregation]="aggregation"
+          [templates]="templates"
+          [loadedLayouts]="loadedLayouts"
+          [loadedAggregations]="loadedAggregations"
+          (loadLayouts)="getLayouts()"
+          (loadAggregations)="getAggregations()"
+          (loadTemplates)="getTemplates()"
         ></shared-summary-card-general>
       </ng-template>
     </ui-tab>

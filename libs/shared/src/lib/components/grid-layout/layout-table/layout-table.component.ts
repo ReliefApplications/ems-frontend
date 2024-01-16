@@ -1,10 +1,17 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import get from 'lodash/get';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -30,13 +37,17 @@ export class LayoutTableComponent
   @Input() selectedLayouts: UntypedFormControl | null = null;
   /** Single input boolean control */
   @Input() singleInput = false;
+  /** Saves if the layouts has been fetched */
+  @Input() loadedLayouts = false;
+  /** Emits when complete layout list should be fetched */
+  @Output() loadLayouts = new EventEmitter<void>();
 
   /** List of layouts */
-  layouts: Layout[] = [];
+  public layouts: Layout[] = [];
   /** List of all layouts */
-  allLayouts: Layout[] = [];
+  public allLayouts: Layout[] = [];
   /** List of displayed columns */
-  columns: string[] = ['name', 'createdAt', '_actions'];
+  public columns: string[] = ['name', 'createdAt', '_actions'];
 
   /**
    * Constructor of the layout list component
@@ -62,10 +73,13 @@ export class LayoutTableComponent
       });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     const defaultValue = this.selectedLayouts?.value;
     this.setAllLayouts();
     this.setSelectedLayouts(defaultValue);
+    if (changes['loadedLayouts'] && changes['loadedLayouts'].currentValue) {
+      this.openAddModal();
+    }
   }
 
   /**
@@ -97,7 +111,7 @@ export class LayoutTableComponent
   private setSelectedLayouts(value: string[]): void {
     this.layouts =
       this.allLayouts
-        .filter((x) => x.id && value.includes(x.id))
+        .filter((x) => x.id && value?.includes(x.id))
         .sort(
           (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
         ) || [];
@@ -106,17 +120,26 @@ export class LayoutTableComponent
   /**
    * Adds a new layout to the list.
    */
-  public async onAdd(): Promise<void> {
+  public onAdd() {
+    if (!this.loadedLayouts) {
+      this.loadLayouts.emit();
+    } else {
+      this.openAddModal();
+    }
+  }
+
+  /**
+   * Opens add layout modal
+   */
+  public async openAddModal(): Promise<void> {
     const { AddLayoutModalComponent } = await import(
       '../add-layout-modal/add-layout-modal.component'
     );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
-        hasLayouts:
-          get(this.form ? this.form : this.resource, 'layouts.totalCount', 0) >
-          0, // check if at least one existing layout
         form: this.form,
         resource: this.resource,
+        useQueryRef: false,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

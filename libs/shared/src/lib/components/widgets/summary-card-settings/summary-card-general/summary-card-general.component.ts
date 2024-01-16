@@ -1,4 +1,11 @@
-import { Component, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -7,7 +14,6 @@ import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -30,6 +36,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
+import { Form } from '../../../../models/form.model';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -58,7 +65,10 @@ import { ReferenceData } from '../../../../models/reference-data.model';
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
 })
-export class SummaryCardGeneralComponent extends UnsubscribeComponent {
+export class SummaryCardGeneralComponent
+  extends UnsubscribeComponent
+  implements OnChanges
+{
   /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
   /** Selected reference data */
@@ -69,6 +79,20 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   @Input() layout: Layout | null = null;
   /** Selected aggregation */
   @Input() aggregation: Aggregation | null = null;
+  /** Available resource templates */
+  @Input() templates?: Form[];
+  /** Emits when the select template is opened for the first time */
+  @Output() loadTemplates = new EventEmitter<void>();
+  /** Saves if the layouts has been fetched */
+  @Input() loadedLayouts = false;
+  /** Saves if the aggregations has been fetched */
+  @Input() loadedAggregations = false;
+  /** Emits when complete layout list should be fetched */
+  @Output() loadLayouts = new EventEmitter<void>();
+  /** Emits when complete aggregations list should be fetched */
+  @Output() loadAggregations = new EventEmitter<void>();
+  /** Saves if the templates has been fetched */
+  public loadedTemplates = false;
 
   /**
    * Component for the general summary cards tab
@@ -85,18 +109,41 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     super();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['loadedAggregations'] &&
+      changes['loadedAggregations'].currentValue
+    ) {
+      this.openAddAggregationModal();
+    }
+    if (changes['loadedLayouts'] && changes['loadedLayouts'].currentValue) {
+      this.openAddLayoutModal();
+    }
+  }
+
   /** Opens modal for layout selection/creation */
   public async addLayout() {
     if (!this.resource) {
       return;
     }
+    if (!this.loadedLayouts) {
+      this.loadLayouts.emit();
+    } else {
+      this.openAddLayoutModal();
+    }
+  }
+
+  /**
+   * Opens add layout modal
+   */
+  public async openAddLayoutModal(): Promise<void> {
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.resource,
-        hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
+        useQueryRef: false,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -146,13 +193,24 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     if (!this.resource) {
       return;
     }
+    if (!this.loadedAggregations) {
+      this.loadAggregations.emit();
+    } else {
+      this.openAddAggregationModal();
+    }
+  }
+
+  /**
+   * Opens add aggregation modal
+   */
+  public async openAddAggregationModal(): Promise<void> {
     const { AddAggregationModalComponent } = await import(
       '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
+        useQueryRef: false,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -206,10 +264,20 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
    * @param formField Current form field
    * @param event click event
    */
-  clearFormField(formField: string, event: Event) {
+  public clearFormField(formField: string, event: Event) {
     if (this.formGroup.get(formField)?.value) {
       this.formGroup.get(formField)?.setValue(null);
     }
     event.stopPropagation();
+  }
+
+  /**
+   * On open select menu the first time, emits event to load resource templates query.
+   */
+  public onOpenSelectTemplates(): void {
+    if (!this.loadedTemplates) {
+      this.loadTemplates.emit();
+      this.loadedTemplates = true;
+    }
   }
 }

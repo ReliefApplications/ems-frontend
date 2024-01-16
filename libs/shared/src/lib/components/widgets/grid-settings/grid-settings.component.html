@@ -1,7 +1,7 @@
 <ui-tabs
   class="grow"
   [vertical]="true"
-  (selectedIndexChange)="handleTabChange($event)"
+  (selectedIndexChange)="selectedTab = $event"
 >
   <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
   <ui-tab>
@@ -18,6 +18,11 @@
         [formGroup]="widgetFormGroup"
         [resource]="resource"
         [templates]="templates"
+        [loadedLayouts]="loadedLayouts"
+        [loadedAggregations]="loadedAggregations"
+        (loadTemplates)="getTemplates()"
+        (loadLayouts)="getLayouts()"
+        (loadAggregations)="getAggregations()"
       ></shared-tab-main>
     </ng-template>
   </ui-tab>
@@ -79,7 +84,7 @@
         [fields]="fields"
         [templates]="appTemplates"
         [distributionLists]="distributionLists"
-        [relatedForms]="relatedForms"
+        [relatedForms$]="relatedForms$"
         [channels]="channels"
         (loadChannels)="getChannels()"
       ></shared-tab-buttons>

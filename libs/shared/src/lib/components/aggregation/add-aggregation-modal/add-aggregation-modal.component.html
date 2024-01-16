@@ -40,6 +40,19 @@
       </div>
       <div uiFormFieldDirective class="w-full">
         <label>{{ 'components.aggregation.add.select' | translate }}</label>
+
+        <ui-select-menu
+          *ngIf="data.useQueryRef === false"
+          [formControl]="selectedAggregationControl"
+        >
+          <ui-select-option
+            *ngFor="let aggregation of aggregations"
+            [value]="aggregation.id"
+          >
+            {{ aggregation.name }}
+          </ui-select-option>
+        </ui-select-menu>
+
         <ui-graphql-select
           *ngIf="queryRef"
           valueField="id"

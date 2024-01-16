@@ -64,10 +64,15 @@
       <!-- TEMPLATE SELECTION -->
       <div uiFormFieldDirective class="flex-1" *ngIf="resource">
         <label>{{ 'models.form.template' | translate }}</label>
-        <ui-select-menu formControlName="template">
+        <ui-select-menu
+          formControlName="template"
+          (opened)="onOpenSelectTemplates()"
+          [loading]="!templates"
+          [filterable]="true"
+        >
           <ui-select-option>-</ui-select-option>
           <ui-select-option
-            *ngFor="let template of resource.forms || []"
+            *ngFor="let template of templates"
             [value]="template.id"
           >
             {{ template.name }}

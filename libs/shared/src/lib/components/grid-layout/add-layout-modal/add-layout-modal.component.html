@@ -50,6 +50,19 @@
         <label>{{
           'components.widget.settings.grid.layouts.select' | translate
         }}</label>
+
+        <ui-select-menu
+          *ngIf="data.useQueryRef === false"
+          [formControl]="selectedLayoutControl"
+        >
+          <ui-select-option
+            *ngFor="let layout of layouts"
+            [value]="layout.id"
+          >
+            {{ layout.name }}
+          </ui-select-option>
+        </ui-select-menu>
+
         <ui-graphql-select
           *ngIf="queryRef"
           valueField="id"

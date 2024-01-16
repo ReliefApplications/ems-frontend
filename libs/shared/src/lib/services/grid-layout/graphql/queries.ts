@@ -17,11 +17,6 @@ export const GET_GRID_RESOURCE_META = gql`
         id
         name
       }
-      relatedForms {
-        id
-        name
-        fields
-      }
       layouts(first: $first, afterCursor: $afterCursor, ids: $ids) {
         edges {
           node {

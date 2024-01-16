@@ -25,7 +25,13 @@ import {
 } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
+import {
+  GET_REFERENCE_DATA,
+  GET_RESOURCE,
+  GET_RESOURCE_AGGREGATIONS,
+  GET_RESOURCE_LAYOUTS,
+  GET_RESOURCE_TEMPLATES,
+} from './graphql/queries';
 import { startWith, takeUntil } from 'rxjs';
 import { Form } from '../../../models/form.model';
 import { createSummaryCardForm } from './summary-card-settings.forms';
@@ -36,6 +42,7 @@ import {
 import { TabComponent, TabsComponent } from '@oort-front/ui';
 import { WidgetService } from '../../../services/widget/widget.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { Connection } from '../../../utils/graphql/connection.type';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -73,10 +80,12 @@ export class SummaryCardSettingsComponent
   public fields: any[] = [];
   /** Available resource templates */
   public templates: Form[] = [];
-  /** Settings tab items length before any node add/removal */
-  private previousTabsLength = 0;
   /** Current active settings tab index */
   public activeSettingsTab = 0;
+  /** Saves if the complete layouts list has been fetched */
+  public loadedLayouts = false;
+  /** Saves if the complete aggregations list has been fetched */
+  public loadedAggregations = false;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -92,6 +101,8 @@ export class SummaryCardSettingsComponent
   @ViewChild(TabsComponent) tabsComponent!: TabsComponent;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
+  /** Settings tab items length before any node add/removal */
+  private previousTabsLength = 0;
 
   /**
    * Summary Card Settings component.
@@ -225,6 +236,7 @@ export class SummaryCardSettingsComponent
     if (this.customStyle) {
       this.customStyle.remove();
     }
+    super.ngOnDestroy();
   }
 
   /**
@@ -280,6 +292,78 @@ export class SummaryCardSettingsComponent
   }
 
   /**
+   * Load GET_RESOURCE_TEMPLATES query when data is necessary.
+   */
+  getTemplates(): void {
+    if (this.resource?.id) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_TEMPLATES,
+          variables: {
+            resource: this.resource.id,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.templates = data.resource.forms || [];
+          }
+        });
+    }
+  }
+
+  /**
+   * Load GET_RESOURCE_LAYOUTS query when data is necessary.
+   */
+  public getLayouts(): void {
+    if (this.resource?.id && !this.loadedLayouts) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_LAYOUTS,
+          variables: {
+            resource: this.resource?.id,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              layouts: (data.resource.layouts as Connection<Layout>) || [],
+            };
+            this.loadedLayouts = true;
+          }
+        });
+    }
+  }
+
+  /**
+   * Load GET_RESOURCE_AGGREGATIONS query when data is necessary.
+   */
+  public getAggregations(): void {
+    if (this.resource?.id && !this.loadedAggregations) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_AGGREGATIONS,
+          variables: {
+            resource: this.resource?.id,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              aggregations:
+                (data.resource.aggregations as Connection<Aggregation>) || [],
+            };
+            this.loadedAggregations = true;
+          }
+        });
+    }
+  }
+
+  /**
    * Get resource by id, doing graphQL query
    *
    * @param id resource id
@@ -288,6 +372,7 @@ export class SummaryCardSettingsComponent
     const formValue = this.widgetFormGroup.getRawValue();
     const layoutID = get(formValue, 'card.layout');
     const aggregationID = get(formValue, 'card.aggregation');
+    const formId = get(formValue, 'card.template');
     this.fields = [];
     this.apollo
       .query<ResourceQueryResponse>({
@@ -295,10 +380,17 @@ export class SummaryCardSettingsComponent
         variables: {
           id,
           layout: layoutID ? [layoutID] : undefined,
+          ignoreLayouts: layoutID ? false : true,
           aggregation: aggregationID ? [aggregationID] : undefined,
+          ignoreAggregations: aggregationID ? false : true,
+          formId,
+          ignoreForms: formId ? false : true,
+          ignoreMetadata: layoutID ? false : true,
         },
       })
       .subscribe(({ data, errors }) => {
+        this.loadedLayouts = false;
+        this.loadedAggregations = false;
         if (errors) {
           this.widgetFormGroup.get('card.resource')?.patchValue(null);
           this.widgetFormGroup.get('card.layout')?.patchValue(null);
@@ -306,8 +398,10 @@ export class SummaryCardSettingsComponent
           this.resource = null;
           this.layout = null;
           this.aggregation = null;
+          this.templates = [];
         } else {
           this.resource = data.resource;
+          this.templates = data.resource.forms ? data.resource.forms : [];
           if (layoutID) {
             this.layout = data?.resource.layouts?.edges[0]?.node || null;
             // extract data keys from metadata

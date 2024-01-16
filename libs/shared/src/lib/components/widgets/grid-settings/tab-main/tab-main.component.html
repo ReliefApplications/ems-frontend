@@ -27,7 +27,12 @@
     <!-- Template selection -->
     <div *ngIf="resource" uiFormFieldDirective class="flex-1">
       <label>{{ 'models.form.template' | translate }}</label>
-      <ui-select-menu formControlName="template">
+      <ui-select-menu
+        formControlName="template"
+        (opened)="onOpenSelectTemplates()"
+        [loading]="!templates"
+        [filterable]="true"
+      >
         <ui-select-option>-</ui-select-option>
         <ui-select-option
           *ngFor="let template of templates"
@@ -57,6 +62,8 @@
       [canAdd]="formGroup.get('aggregations')?.value.length === 0"
       [resource]="resource"
       [selectedAggregations]="$any(formGroup).get('aggregations')"
+      [loadedAggregations]="loadedAggregations"
+      (loadAggregations)="loadAggregations.emit()"
     ></shared-aggregation-table>
   </div>
   <ui-divider
@@ -74,6 +81,8 @@
     <shared-layout-table
       [resource]="resource"
       [selectedLayouts]="$any(formGroup).get('layouts')"
+      [loadedLayouts]="loadedLayouts"
+      (loadLayouts)="loadLayouts.emit()"
     ></shared-layout-table>
   </div>
 </div>

@@ -15,7 +15,11 @@ import {
 } from '../../../models/resource.model';
 import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
-import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
+import {
+  GET_REFERENCE_DATA,
+  GET_RESOURCE,
+  GET_RESOURCE_LAYOUTS,
+} from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { takeUntil } from 'rxjs';
@@ -27,6 +31,7 @@ import {
 import { createEditorForm } from './editor-settings.forms';
 import { WidgetSettings } from '../../../models/dashboard.model';
 import { WidgetService } from '../../../services/widget/widget.service';
+import { Connection } from '../../../utils/graphql/connection.type';
 
 // export type EditorFormType = ReturnType<typeof createEditorForm>;
 
@@ -65,6 +70,8 @@ export class EditorSettingsComponent
   public loading = true;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
+  /** Saves if the complete layouts list has been fetched */
+  public loadedLayouts = false;
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -131,7 +138,12 @@ export class EditorSettingsComponent
       .subscribe((layout) => {
         this.widget.settings.layout = layout;
         if (layout && this.resource) {
-          this.getResource(this.resource.id as string, layout);
+          this.layout = this.resource.layouts?.edges.find(
+            (edge: any) => edge.node.id === layout
+          )?.node as Layout;
+          if (!this.layout) {
+            this.getResource(this.resource.id as string, layout);
+          }
         } else {
           this.layout = null;
         }
@@ -173,6 +185,7 @@ export class EditorSettingsComponent
     if (this.customStyle) {
       this.customStyle.remove();
     }
+    super.ngOnDestroy();
   }
 
   /**
@@ -194,6 +207,31 @@ export class EditorSettingsComponent
   }
 
   /**
+   * Load GET_RESOURCE_LAYOUTS query when data is necessary.
+   */
+  public getLayouts(): void {
+    if (this.resource?.id && !this.loadedLayouts) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_LAYOUTS,
+          variables: {
+            resource: this.resource?.id,
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = {
+              ...this.resource,
+              layouts: (data.resource.layouts as Connection<Layout>) || [],
+            };
+            this.loadedLayouts = true;
+          }
+        });
+    }
+  }
+
+  /**
    * Get resource for widget configuration
    *
    * @param resource selected resource id
@@ -210,6 +248,7 @@ export class EditorSettingsComponent
         },
       })
       .subscribe(({ data }) => {
+        this.loadedLayouts = layout ? false : true;
         if (data) {
           this.resource = data.resource;
           if (layout) {

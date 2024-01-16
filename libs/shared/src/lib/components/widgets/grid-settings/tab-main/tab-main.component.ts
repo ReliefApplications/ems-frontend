@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
@@ -17,7 +17,19 @@ export class TabMainComponent {
   /** Selected resource */
   @Input() resource: Resource | null = null;
   /** Available resource templates */
-  @Input() templates: Form[] = [];
+  @Input() templates?: Form[];
+  /** Saves if the layouts has been fetched */
+  @Input() loadedLayouts = false;
+  /** Emits when complete layouts list should be fetched */
+  @Output() loadLayouts = new EventEmitter<void>();
+  /** Saves if the aggregations has been fetched */
+  @Input() loadedAggregations = false;
+  /** Emits when complete aggregations list should be fetched */
+  @Output() loadAggregations = new EventEmitter<void>();
+  /** Emits when the select template is opened for the first time */
+  @Output() loadTemplates = new EventEmitter<void>();
+  /** Saves if the templates has been fetched */
+  public loadedTemplates = false;
 
   /**
    * Reset given form field value if there is a value previously to avoid triggering
@@ -31,5 +43,15 @@ export class TabMainComponent {
       this.formGroup.get(formField)?.setValue(null);
     }
     event.stopPropagation();
+  }
+
+  /**
+   * On open select menu the first time, emits event to load resource templates query.
+   */
+  public onOpenSelectTemplates(): void {
+    if (!this.loadedTemplates) {
+      this.loadTemplates.emit();
+      this.loadedTemplates = true;
+    }
   }
 }

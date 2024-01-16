@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
@@ -28,6 +27,10 @@ export class RecordSelectionTabComponent
   @Input() resource: Resource | null = null;
   /** Current layout */
   @Input() layout: Layout | null = null;
+  /** Saves if the layouts has been fetched */
+  @Input() loadedLayouts = false;
+  /** Emits when complete layout list should be fetched */
+  @Output() loadLayouts = new EventEmitter<void>();
   /** Current record id */
   public selectedRecordID: string | null = null;
   /** Available reference data elements  */
@@ -80,14 +83,22 @@ export class RecordSelectionTabComponent
   public async addLayout() {
     if (!this.resource) {
       return;
+    } else {
+      this.openAddLayoutModal();
     }
+  }
+
+  /**
+   * Opens add layout modal
+   */
+  public async openAddLayoutModal(): Promise<void> {
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.resource,
-        hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
+        useQueryRef: false,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {

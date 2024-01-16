@@ -14,7 +14,6 @@ import {
 } from '../../../../models/reference-data.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
-import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
@@ -173,12 +172,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations:
-          get(
-            this.resource ? this.resource : this.referenceData,
-            'aggregations.totalCount',
-            0
-          ) > 0, // check if at least one existing aggregation
         resource: this.resource,
         referenceData: this.referenceData,
       },

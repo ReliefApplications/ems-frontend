@@ -32,7 +32,6 @@ import { Aggregation } from '../../../../models/aggregation.model';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
-import get from 'lodash/get';
 import { createTemplateAggregationForm } from '../../editor-settings/editor-settings.forms';
 
 /** Dialog data interface */
@@ -205,12 +204,6 @@ export class TemplateAggregationModalComponent
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations:
-          get(
-            this.resource ? this.resource : this.referenceData,
-            'aggregations.totalCount',
-            0
-          ) > 0, // check if at least one existing aggregation
         resource: this.resource,
         referenceData: this.referenceData,
       },
