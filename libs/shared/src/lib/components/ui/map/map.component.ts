@@ -281,11 +281,9 @@ export class MapComponent
     // To zoom on getGeographicExtentValue, if necessary
     const settings = this.extractSettings();
     const geographicExtentValue = settings.geographicExtentValue;
-    const countryField = settings.countryField;
+    const geographicExtent = settings.geographicExtent;
 
     // Check if has initial getGeographicExtentValue to zoom on country
-    this.zoomOn(countryField as string);
-
     const fieldValue = geographicExtentValue?.match(
       this.contextService.filterRegex
     );
@@ -294,7 +292,7 @@ export class MapComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
-          this.zoomOn(countryField as string);
+          this.zoomOn(geographicExtent as string);
         });
     }
   }
@@ -390,7 +388,7 @@ export class MapComponent
       'geographicExtentValue',
       undefined
     );
-    const countryField = get(mapSettings, 'countryField', 'admin0');
+    const geographicExtent = get(mapSettings, 'geographicExtent', 'admin0');
     const layers = get(mapSettings, 'layers', []);
 
     return {
@@ -405,7 +403,7 @@ export class MapComponent
       controls,
       arcGisWebMap,
       geographicExtentValue,
-      countryField,
+      geographicExtent,
     };
   }
 
@@ -426,6 +424,7 @@ export class MapComponent
       arcGisWebMap,
       layers,
       controls,
+      geographicExtent,
     } = this.extractSettings();
 
     if (initMap) {
@@ -466,6 +465,8 @@ export class MapComponent
 
       // Set the needed map instance for it's popup service instance
       this.mapPopupService.setMap = this.map;
+
+      this.zoomOn(geographicExtent as string);
     } else {
       // If value changes for the map we would change in order to not trigger map events unnecessarily
       if (this.map.getMaxZoom() !== maxZoom) {
@@ -1196,14 +1197,14 @@ export class MapComponent
   /**
    * If geographicExtentValue exists, calls mapPolygonsService to zoom on it
    *
-   * @param  countryField country field
+   * @param  geographicExtent geographic extent (admin0)
    */
-  private zoomOn(countryField: string): void {
+  private zoomOn(geographicExtent: string): void {
     const geographicExtentValue = this.getGeographicExtentValue();
     if (geographicExtentValue) {
       this.mapPolygonsService.zoomOn(
         geographicExtentValue,
-        countryField,
+        geographicExtent,
         this.map
       );
     }

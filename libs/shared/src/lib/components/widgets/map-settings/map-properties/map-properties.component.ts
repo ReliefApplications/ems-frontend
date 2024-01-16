@@ -23,7 +23,7 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
   /** Available base maps */
   public baseMaps = BASEMAPS;
   /** Available geographic extent fields */
-  public countryFields = ['admin0', 'region'];
+  public geographicExtents = ['admin0'];
 
   /** @returns the form group for the map controls */
   get controlsFormGroup() {

@@ -48,7 +48,7 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   controls: DefaultMapControls,
   arcGisWebMap: null,
   geographicExtentValue: null,
-  countryField: 'admin0',
+  geographicExtent: 'admin0',
 };
 
 /** Default gradient for heatmap */
@@ -553,7 +553,9 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
     geographicExtentValue: [
       get(value, 'geographicExtentValue', DEFAULT_MAP.geographicExtentValue),
     ],
-    countryField: [get(value, 'countryField', DEFAULT_MAP.countryField)],
+    geographicExtent: [
+      get(value, 'geographicExtent', DEFAULT_MAP.geographicExtent),
+    ],
     // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
     layers: [get(value, 'layers', [])] as string[],

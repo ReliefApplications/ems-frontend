@@ -165,11 +165,11 @@ export class MapSettingsComponent
         } as MapConstructorSettings)
       );
     this.widgetFormGroup
-      .get('countryField')
+      .get('geographicExtent')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
-          countryField: value,
+          geographicExtent: value,
         } as MapConstructorSettings)
       );
   }

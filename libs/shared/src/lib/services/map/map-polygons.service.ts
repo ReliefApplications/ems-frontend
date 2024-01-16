@@ -115,16 +115,16 @@ export class MapPolygonsService {
    * Fit bounds & zoom on country
    *
    * @param geographicExtentValue geographic extent value
-   * @param countryField country field
+   * @param geographicExtent geographic extent (admin0)
    * @param map leaflet map
    */
   public zoomOn(
     geographicExtentValue: string,
-    countryField: string,
+    geographicExtent: string,
     map: L.Map
   ): void {
     // Only admin0 is available so far
-    if (countryField === 'admin0') {
+    if (geographicExtent === 'admin0') {
       this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
         const admin0 = this.admin0s.find(
           (data) =>
@@ -133,7 +133,15 @@ export class MapPolygonsService {
             data.name === geographicExtentValue
         );
         if (admin0) {
-          map.setView([admin0.centerlatitude, admin0.centerlongitude], 3);
+          const layer = L.geoJSON({
+            type: 'Feature',
+            geometry: admin0.polygons,
+            properties: {},
+          } as any);
+          // Timeout seems to be needed for first load of the map.
+          setTimeout(() => {
+            map.fitBounds(layer.getBounds());
+          }, 500);
         }
       });
     }

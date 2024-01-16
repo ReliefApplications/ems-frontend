@@ -1760,7 +1760,7 @@
 							"timedimension": "******",
 							"title": "******"
 						},
-						"countryField": "******",
+						"geographicExtent": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
@@ -1788,7 +1788,8 @@
 							"latitude": "******",
 							"longitude": "******",
 							"zoom": "******"
-						}
+						},
+						"geographicExtent": "****** {{context}} ****** {{filter}} ******"
 					}
 				},
 				"style": {
