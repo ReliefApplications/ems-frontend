@@ -3,7 +3,8 @@ import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 
 /**
- *
+ * Resizable box component.
+ * Resizable box are UI that provide the possibility to resize an element.
  */
 @Component({
   standalone: true,
@@ -28,12 +29,12 @@ export class AppResizableBoxComponent implements OnInit, OnDestroy {
   /** direction of the resize */
   private direction = '';
   /**  Mouse move subscription*/
-  private mouseMoveSubscription: Subscription | undefined;
+  private mouseMoveSubscription?: Subscription;
   /** Mouse up subscription */
-  private mouseUpSubscription: Subscription | undefined;
+  private mouseUpSubscription?: Subscription;
 
   /**
-   * Constructor
+   * Constructor for the resizable box component
    *
    * @param elementRef element reference
    */
