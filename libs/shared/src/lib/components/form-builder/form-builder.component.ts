@@ -193,6 +193,9 @@ export class FormBuilderComponent
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.referenceDataService) as any
       );
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
+      );
     }
   }
 
@@ -321,6 +324,9 @@ export class FormBuilderComponent
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService) as any
+    );
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips as any
     );
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, options: any) =>
