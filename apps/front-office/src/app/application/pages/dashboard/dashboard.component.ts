@@ -164,6 +164,46 @@ export class DashboardComponent
                     () => (this.loading = false)
                   );
                 } else {
+                  this.dashboardService
+                    .getDashboardWithContext(
+                      this.dashboard?.page?.id as string,
+                      type, // type of context
+                      queryId // id of the context
+                    )
+                    .then(({ data }) => {
+                      if (!data?.dashboardWithContext?.dashboard.id) return;
+                      this.snackBar.openSnackBar('getting what you want');
+                      // load the contextual dashboard
+                      this.dashboard = {
+                        ...data.dashboardWithContext.dashboard,
+                        contextData: data.dashboardWithContext.contextData,
+                      };
+                      console.log(this.dashboard);
+                      this.dashboardService.openDashboard(this.dashboard);
+                      this.initContext();
+                      this.widgets = cloneDeep(
+                        this.dashboard.structure
+                          ?.filter((x: any) => x !== null)
+                          .map((widget: any) => {
+                            const contextData = this.dashboard?.contextData;
+                            this.contextService.context = contextData || null;
+
+                            if (!contextData) {
+                              return widget;
+                            }
+                            const { settings, originalSettings } =
+                              this.contextService.updateSettingsContextContent(
+                                widget.settings
+                              );
+                            widget = {
+                              ...widget,
+                              originalSettings,
+                              settings,
+                            };
+                            return widget;
+                          }) || []
+                      );
+                    });
                   // Will use current template
                   this.loading = false;
                   return;

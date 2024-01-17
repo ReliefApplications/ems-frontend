@@ -298,3 +298,11 @@ export interface DashboardsQueryResponse {
 export interface CreateDashboardWithContextMutationResponse {
   addDashboardWithContext: Pick<Dashboard, 'id' | 'structure' | 'page'>;
 }
+
+/** Model for getting a dashboard with context query response */
+export interface GetDashboardWithContextMutationResponse {
+  dashboardWithContext: {
+    dashboard: Pick<Dashboard, 'id' | 'structure' | 'page'>;
+    contextData: any;
+  };
+}
