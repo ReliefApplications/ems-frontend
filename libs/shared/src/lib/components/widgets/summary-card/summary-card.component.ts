@@ -415,6 +415,7 @@ export class SummaryCardComponent
       return;
     }
 
+    // Resource configuration
     if (card.resource) {
       if (this.useAggregation) {
         this.getCardsFromAggregation(card);
@@ -422,6 +423,7 @@ export class SummaryCardComponent
         this.createDynamicQueryFromLayout(card);
       }
     } else if (this.useReferenceData) {
+      // Using reference data
       this.refData = await this.referenceDataService.loadReferenceData(
         card.referenceData as string
       );
@@ -600,20 +602,24 @@ export class SummaryCardComponent
         };
       });
 
-    if (
-      this.cachedCards.length <=
-      this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize)
-    ) {
-      // Number of empty cards to add to the cached cards
-      const emptyCardsToAdd =
-        this.pageInfo.pageIndex *
-          (this.pageInfo.pageSize || pageInfo?.pageSize) -
-        this.cachedCards.length;
+    // Does not apply to infinite scrolling
+    if (this.settings.widgetDisplay?.usePagination) {
+      // Add empty blocks if we go from page 2 to page 4 for example
+      if (
+        this.cachedCards.length <=
+        this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize)
+      ) {
+        // Number of empty cards to add to the cached cards
+        const emptyCardsToAdd =
+          this.pageInfo.pageIndex *
+            (this.pageInfo.pageSize || pageInfo?.pageSize) -
+          this.cachedCards.length;
 
-      // Add empty cards to the cached cards
-      this.cachedCards.push(
-        ...Array.from({ length: emptyCardsToAdd }, () => ({}))
-      );
+        // Add empty cards to the cached cards
+        this.cachedCards.push(
+          ...Array.from({ length: emptyCardsToAdd }, () => ({}))
+        );
+      }
     }
 
     // Add the new items to the cached cards in the correct position
@@ -645,6 +651,9 @@ export class SummaryCardComponent
       this.pageInfo.length = pageInfo.totalCount;
       this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
       this.pageInfo.lastCursor = pageInfo.lastCursor;
+      if (this.pageInfo.pageSize > items.length) {
+        this.pageInfo.length = this.cards.length;
+      }
     } else {
       // If not, all the items are already loaded
       this.pageInfo.length = this.cachedCards.length;
@@ -664,7 +673,11 @@ export class SummaryCardComponent
 
     // If using infinite scroll, just add the new items to the cards list
     if (!this.settings.widgetDisplay?.usePagination) {
-      this.cards = this.sortedCachedCards;
+      if (isPaginated) {
+        this.cards = this.sortedCachedCards;
+      } else {
+        this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+      }
     } else {
       this.cards = this.sortedCachedCards.slice(
         this.pageInfo.skip,
@@ -888,6 +901,7 @@ export class SummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50;
     if (isScrollNearBottom) {
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
+        this.cards.length;
         this.scrolling = true;
         if (this.useReferenceData) {
           if (!this.refData?.pageInfo?.strategy) {
@@ -995,25 +1009,35 @@ export class SummaryCardComponent
    */
   public refresh() {
     // Only apply logic for reference data with no pagination
-    if (this.useReferenceData && !this.refData?.pageInfo?.strategy) {
-      const contextFilters = this.contextService.injectContext(
-        this.contextFilters
-      );
-      this.sortedCachedCards = cloneDeep(
-        this.cachedCards.filter((x) =>
-          filterReferenceData(x.rawValue, contextFilters)
-        )
-      );
-      if (this.searchControl.value) {
-        this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
-          return (
-            JSON.stringify(card.rawValue)
-              .replace(/("\w+":)/g, '')
-              .toLowerCase()
-              .indexOf((this.searchControl.value as string).toLowerCase()) !==
-            -1
+    if (this.useReferenceData) {
+      if (!this.refData?.pageInfo?.strategy) {
+        const contextFilters = this.contextService.injectContext(
+          this.contextFilters
+        );
+        this.sortedCachedCards = cloneDeep(
+          this.cachedCards.filter((x) =>
+            filterReferenceData(x.rawValue, contextFilters)
+          )
+        );
+        if (this.searchControl.value) {
+          this.sortedCachedCards = this.sortedCachedCards.filter(
+            (card: any) => {
+              return (
+                JSON.stringify(card.rawValue)
+                  .replace(/("\w+":)/g, '')
+                  .toLowerCase()
+                  .indexOf(
+                    (this.searchControl.value as string).toLowerCase()
+                  ) !== -1
+              );
+            }
           );
-        });
+        }
+      } else {
+        // Remove previous cached data
+        this.cards = [];
+        this.sortedCachedCards = [];
+        this.cachedCards = [];
       }
     }
     this.onPage({
