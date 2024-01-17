@@ -6,7 +6,16 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual, isObject, forEach, set } from 'lodash';
+import {
+  isNil,
+  isEmpty,
+  get,
+  isEqual,
+  isObject,
+  forEach,
+  set,
+  has,
+} from 'lodash';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
@@ -50,7 +59,7 @@ export class ContextService {
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /{{filter\.[^}]+}}/;
+  public filterRegex = /{{filter\.(.*?)}}/g;
   /** Context regex */
   public contextRegex = /{{context\.(.*?)}}/g;
   /** Dashboard object */
@@ -228,6 +237,28 @@ export class ContextService {
       ),
       replaced: true,
     };
+  }
+
+  /**
+   * Remove placeholders from object
+   *
+   * @param obj object to clean
+   */
+  public removeEmptyPlaceholders(obj: any) {
+    for (const key in obj) {
+      if (has(obj, key)) {
+        if (typeof obj[key] === 'object') {
+          // Recursively call the function for nested objects
+          this.removeEmptyPlaceholders(obj[key]);
+        } else if (
+          typeof obj[key] === 'string' &&
+          obj[key].startsWith('{{') &&
+          obj[key].endsWith('}}')
+        ) {
+          delete obj[key];
+        }
+      }
+    }
   }
 
   /**
