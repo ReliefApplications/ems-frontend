@@ -6,7 +6,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual, isObject, merge, forEach } from 'lodash';
+import { isNil, isEmpty, get, isEqual, isObject, forEach, set } from 'lodash';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
@@ -45,10 +45,14 @@ export class ContextService {
   public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<any>(null);
+  /** To keep the history of previous dashboard filter values */
+  public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
   public filterRegex = /{{filter\.[^}]+}}/;
+  /** Context regex */
+  public contextRegex = /{{context\.(.*?)}}/g;
   /** Dashboard object */
   public dashboard?: Dashboard;
   /** Available filter positions */
@@ -92,6 +96,11 @@ export class ContextService {
   /** @returns filterPosition value as observable */
   get filterPosition$() {
     return this.filterPosition.asObservable();
+  }
+
+  /** @returns filterValues value as observable */
+  get filterValues$() {
+    return this.filterValues.asObservable();
   }
 
   /** @returns filterOpened value as observable */
@@ -191,13 +200,34 @@ export class ContextService {
     if (!context) {
       return object;
     }
-    const regex = /{{context\.(.*?)}}/g;
     return JSON.parse(
-      JSON.stringify(object).replace(regex, (match) => {
+      JSON.stringify(object).replace(this.contextRegex, (match) => {
         const field = match.replace('{{context.', '').replace('}}', '');
         return get(context, field) || match;
       })
     );
+  }
+
+  /**
+   * Replace {{filter}} placeholders in object, with filter values
+   *
+   * @param object object with placeholders
+   * @returns object with replaced placeholders
+   */
+  public replaceFilter(object: any): { object: any; replaced: boolean } {
+    const filter = this.availableFilterFieldsValue;
+    if (isEmpty(filter)) {
+      return { object, replaced: false };
+    }
+    return {
+      object: JSON.parse(
+        JSON.stringify(object).replace(this.filterRegex, (match) => {
+          const field = match.replace('{{filter.', '').replace('}}', '');
+          return get(filter, field) || match;
+        })
+      ),
+      replaced: true,
+    };
   }
 
   /**
@@ -298,24 +328,22 @@ export class ContextService {
     const surveyStructure = this.filterStructure.getValue();
     const survey = this.formBuilderService.createSurvey(surveyStructure);
 
-    // get questions default value
-    const data = survey
-      .getAllQuestions()
-      .reduce(function (result: any, question: any) {
-        if (question.defaultValue !== undefined) {
-          result[question.name] = question.defaultValue;
-        }
-        return result;
-      }, {});
-
-    // merge filter values with default values
-    if (!isEmpty(this.filter.getValue())) {
-      merge(data, this.filter.getValue());
-    }
     // set each question value manually otherwise the defaultValueExpression is not loaded
-    forEach(data, (value, key) => {
-      survey.getQuestionByName(key).value = value;
+    forEach(this.filterValues.getValue(), (value, key) => {
+      if (survey.getQuestionByName(key)) {
+        survey.getQuestionByName(key).value = value;
+      }
     });
+
+    // prevent the default value from being applied when a question has been intentionally cleared
+    const handleValueChanged = (sender: any, options: any) => {
+      const history = this.filterValues.getValue() ?? {};
+      set(history, options.name, options.value);
+      this.filterValues.next(history);
+    };
+
+    survey.onValueChanged.add(handleValueChanged);
+
     return survey;
   }
 
