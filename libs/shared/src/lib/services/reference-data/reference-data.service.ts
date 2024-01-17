@@ -182,7 +182,6 @@ export class ReferenceDataService {
         referenceData,
         variables
       );
-      console.log('ici :', i);
       items = i;
       paginationRes = p;
       // Cache items and timestamp
