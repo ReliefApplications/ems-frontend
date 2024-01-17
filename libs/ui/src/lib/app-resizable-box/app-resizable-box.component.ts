@@ -13,6 +13,8 @@ import { Subscription, fromEvent } from 'rxjs';
 export class AppResizableBoxComponent implements OnInit, OnDestroy {
   /** control if the resize is enable*/
   @Input() enable = true;
+  /** boolean to indicate if it's inside dialog */
+  @Input() dialog = false;
   /** is resizing  */
   private resizing = false;
   /** last value of x */
@@ -29,6 +31,10 @@ export class AppResizableBoxComponent implements OnInit, OnDestroy {
   private mouseMoveSubscription?: Subscription;
   /** Mouse up subscription */
   private mouseUpSubscription?: Subscription;
+  /** minimum width */
+  private minWidth = 0;
+  /** minimum height */
+  private minHeight = 0;
 
   /**
    * Constructor for the resizable box component
@@ -79,7 +85,10 @@ export class AppResizableBoxComponent implements OnInit, OnDestroy {
     this.lastY = event.clientY;
     this.width = this.elementRef.nativeElement.clientWidth;
     this.height = this.elementRef.nativeElement.clientHeight;
-    this.elementRef.nativeElement.classList.add('noselect');
+    this.elementRef.nativeElement.classList.add('no-select');
+    // set min height and width based on current size
+    this.minHeight = this.elementRef.nativeElement.offsetHeight;
+    this.minWidth = this.elementRef.nativeElement.offsetWidth;
   }
 
   /**
@@ -100,19 +109,41 @@ export class AppResizableBoxComponent implements OnInit, OnDestroy {
     if (!this.resizing) return;
     event.stopPropagation();
     event.preventDefault();
+    const dashboardNavbar =
+      document.documentElement.getElementsByTagName('shared-navbar');
+    let dashboardNavbarWidth = 0;
+    if (dashboardNavbar[0] && !this.dialog) {
+      dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
+    }
+    // set the max width as 80% of the screen size
+    const maxWidth = Math.max(
+      Math.round(
+        (document.documentElement.clientWidth - dashboardNavbarWidth) * 0.8
+      ),
+      this.minWidth
+    );
+    // set the max height as 80% of the screen size
+    const maxHeight = Math.max(
+      Math.round(document.documentElement.clientHeight * 0.8),
+      this.minHeight
+    );
+    let newWidth: number;
+    let newHeight: number;
     if (
       this.direction === 'left' ||
       this.direction === 'top-left' ||
       this.direction === 'bottom-left'
     ) {
-      const newWidth = this.width + (this.lastX - event.clientX);
+      newWidth = this.width + (this.lastX - event.clientX);
+      newWidth = Math.max(this.minWidth, Math.min(newWidth, maxWidth));
       this.elementRef.nativeElement.style.width = `${newWidth}px`;
     } else if (
       this.direction === 'right' ||
       this.direction === 'top-right' ||
       this.direction === 'bottom-right'
     ) {
-      const newWidth = this.width + (event.clientX - this.lastX);
+      newWidth = this.width + (event.clientX - this.lastX);
+      newWidth = Math.max(this.minWidth, Math.min(newWidth, maxWidth));
       this.elementRef.nativeElement.style.width = `${newWidth}px`;
     }
     if (
@@ -120,14 +151,16 @@ export class AppResizableBoxComponent implements OnInit, OnDestroy {
       this.direction === 'top-left' ||
       this.direction === 'top-right'
     ) {
-      const newHeight = this.height + (this.lastY - event.clientY);
+      newHeight = this.height + (this.lastY - event.clientY);
+      newHeight = Math.max(this.minHeight, Math.min(newHeight, maxHeight));
       this.elementRef.nativeElement.style.height = `${newHeight}px`;
     } else if (
       this.direction === 'bottom' ||
       this.direction === 'bottom-left' ||
       this.direction === 'bottom-right'
     ) {
-      const newHeight = this.height + (event.clientY - this.lastY);
+      newHeight = this.height + (event.clientY - this.lastY);
+      newHeight = Math.max(this.minHeight, Math.min(newHeight, maxHeight));
       this.elementRef.nativeElement.style.height = `${newHeight}px`;
     }
   }
@@ -137,6 +170,6 @@ export class AppResizableBoxComponent implements OnInit, OnDestroy {
    */
   resizeEnd(): void {
     this.resizing = false;
-    this.elementRef.nativeElement.classList.remove('noselect');
+    this.elementRef.nativeElement.classList.remove('no-select');
   }
 }

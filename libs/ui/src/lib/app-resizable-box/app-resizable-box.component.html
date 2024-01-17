@@ -1,10 +1,10 @@
-<div *ngIf="enable" class="resize-handle-left" (mousedown)="setDirection('left'); resizeStart($event)"></div>
-<div *ngIf="enable" class="resize-handle-right" (mousedown)="setDirection('right'); resizeStart($event)"></div>
-<div *ngIf="enable" class="resize-handle-top" (mousedown)="setDirection('top'); resizeStart($event)"></div>
-<div *ngIf="enable" class="resize-handle-bottom" (mousedown)="setDirection('bottom'); resizeStart($event)"></div>
-<div *ngIf="enable" class="resize-handle-top-left" (mousedown)="setDirection('top-left'); resizeStart($event)"></div>
-<div *ngIf="enable" class="resize-handle-top-right" (mousedown)="setDirection('top-right'); resizeStart($event)"></div>
-<div *ngIf="enable" class="resize-handle-bottom-left" (mousedown)="setDirection('bottom-left'); resizeStart($event)"></div>
-<div *ngIf="enable" class="resize-handle-bottom-right" (mousedown)="setDirection('bottom-right'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute top-0 bottom-0 left-0 w-4 cursor-ew-resize" (mousedown)="setDirection('left'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute top-0 bottom-0 right-0 w-4 cursor-ew-resize" (mousedown)="setDirection('right'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute left-0 right-0 top-0 h-4 cursor-ns-resize" (mousedown)="setDirection('top'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute left-0 right-0 bottom-0 h-4 cursor-ns-resize" (mousedown)="setDirection('bottom'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute top-0 left-0 w-4 h-4 cursor-nwse-resize" (mousedown)="setDirection('top-left'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute top-0 right-0 w-4 h-4 cursor-nwse-resize" (mousedown)="setDirection('top-right'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute bottom-0 left-0 w-4 h-4 cursor-nwse-resize" (mousedown)="setDirection('bottom-left'); resizeStart($event)"></div>
+<div *ngIf="enable" class="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize" (mousedown)="setDirection('bottom-right'); resizeStart($event)"></div>
 
 <ng-content></ng-content>
