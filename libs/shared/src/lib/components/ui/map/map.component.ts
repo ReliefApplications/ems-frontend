@@ -256,6 +256,7 @@ export class MapComponent
           ) {
             this.filterLayers();
           }
+          this.appliedDashboardFilters = this.contextService.filter.getValue();
         });
     }
 
