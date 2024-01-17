@@ -168,6 +168,8 @@ export class MapComponent
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
+  /** If should get back to default zoom & bounds after removing country filter */
+  private removeFilterZoom = false;
 
   /**
    * Map widget component
@@ -291,8 +293,19 @@ export class MapComponent
       // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.zoomOn(geographicExtent as string);
+        .subscribe((filter) => {
+          // Check if filter changes has geographicExtentValue
+          const filterField = geographicExtentValue?.match(
+            this.contextService.filterValueRegex
+          )?.[0];
+          const fieldOnFilter = filterField && filterField in filter;
+          // Only set zoom on country if geographicExtentValue changed in the filter
+          if (fieldOnFilter) {
+            this.zoomOn(geographicExtent as string);
+          } else if (this.removeFilterZoom) {
+            // If geographicExtentValue filter unselected, set default zoom
+            this.setDefaultZoom();
+          }
         });
     }
   }
@@ -1175,9 +1188,11 @@ export class MapComponent
       if (fieldValue) {
         // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
         const replacedFilter = this.contextService.replaceFilter(mapSettings);
-        return replacedFilter.replaced
-          ? replacedFilter.object.geographicExtentValue
-          : false;
+        return replacedFilter.geographicExtentValue?.match(
+          this.contextService.filterRegex
+        )
+          ? false
+          : replacedFilter.geographicExtentValue;
       }
       const contextValue = geographicExtentValue?.match(
         this.contextService.contextRegex
@@ -1202,11 +1217,24 @@ export class MapComponent
   private zoomOn(geographicExtent: string): void {
     const geographicExtentValue = this.getGeographicExtentValue();
     if (geographicExtentValue) {
+      this.removeFilterZoom = true;
       this.mapPolygonsService.zoomOn(
         geographicExtentValue,
         geographicExtent,
         this.map
       );
+    } else if (this.removeFilterZoom) {
+      this.setDefaultZoom();
     }
+  }
+
+  /**
+   * Set the default center and zoom level
+   */
+  private setDefaultZoom(): void {
+    this.removeFilterZoom = false;
+    const { center, zoom } = this.extractSettings().initialState.viewpoint;
+    this.currentZoom = zoom;
+    this.map.setView([center.latitude, center.longitude], zoom);
   }
 }
