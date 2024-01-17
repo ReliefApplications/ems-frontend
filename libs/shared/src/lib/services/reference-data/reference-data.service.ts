@@ -150,12 +150,12 @@ export class ReferenceDataService {
    * Get the items and the value field of a reference data
    *
    * @param referenceData The reference data id or the reference data object
-   * @param pageInfo Page info for pagination
+   * @param variables Graphql variables ( optional )
    * @returns The item list and the value field
    */
   public async cacheItems(
     referenceData: string | ReferenceData,
-    pageInfo: any = {}
+    variables: any = {}
   ) {
     // Initialization
     let items: any[] = [];
@@ -166,7 +166,7 @@ export class ReferenceDataService {
     if (typeof referenceData === 'string') {
       referenceData = await this.loadReferenceData(referenceData);
     }
-    const cacheKey = `${referenceData.id || ''}-${JSON.stringify(pageInfo)}`;
+    const cacheKey = `${referenceData.id || ''}-${JSON.stringify(variables)}`;
     const valueField = referenceData.valueField || 'id';
     const cacheTimestamp = localStorage.getItem(cacheKey + LAST_REQUEST_KEY);
     const modifiedAt = referenceData.modifiedAt || '';
@@ -180,7 +180,7 @@ export class ReferenceDataService {
     if (!isCached) {
       const { items: i, pageInfo: p } = await this.fetchItems(
         referenceData,
-        pageInfo
+        variables
       );
       console.log('ici :', i);
       items = i;
@@ -222,10 +222,10 @@ export class ReferenceDataService {
    * Fetch items from reference data parameters and set cache
    *
    * @param referenceData reference data to query items of
-   * @param pageInfo Page info for pagination
+   * @param variables Graphql variables (optional)
    * @returns list of items
    */
-  public async fetchItems(referenceData: ReferenceData, pageInfo: any = {}) {
+  public async fetchItems(referenceData: ReferenceData, variables: any = {}) {
     const cacheKey = referenceData.id || '';
     // Initialization
     let items: any[];
@@ -238,7 +238,7 @@ export class ReferenceDataService {
         const { items: i, pageInfo: p } = await this.processItemsByRequestType(
           referenceData,
           referenceDataType.graphql,
-          pageInfo
+          variables
         );
         items = i;
         paginationInfo = p;
@@ -274,13 +274,13 @@ export class ReferenceDataService {
    *
    * @param referenceData Reference data item
    * @param type Reference data request type
-   * @param pageInfo Page info for pagination
+   * @param variables Graphql variables (optional)
    * @returns processed items by the request type
    */
   private async processItemsByRequestType(
     referenceData: ReferenceData,
     type: referenceDataType,
-    pageInfo: any = {}
+    variables: any = {}
   ) {
     let data!: any;
     if (type === referenceDataType.graphql) {
@@ -289,7 +289,7 @@ export class ReferenceDataService {
         (referenceData.apiConfiguration?.name ?? '') +
         (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
       const query = this.processQuery(referenceData);
-      const body = { query, variables: pageInfo };
+      const body = { query, variables };
       data = (await this.apiProxy.buildPostRequest(url, body)) as any;
     } else if (type === referenceDataType.rest) {
       const url =
@@ -315,7 +315,7 @@ export class ReferenceDataService {
           : null) ?? Number.MAX_SAFE_INTEGER;
 
       const pageSize = referenceData.pageInfo.pageSizeVar
-        ? pageInfo[referenceData.pageInfo.pageSizeVar] ?? 0
+        ? variables[referenceData.pageInfo.pageSizeVar] ?? 0
         : items?.length || 0;
 
       let lastCursor = null;

@@ -59,7 +59,7 @@ export class ContextService {
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /{{filter\.[^}]+}}/;
+  public filterRegex = /{{filter\.(.*?)}}/g;
   /** Context regex */
   public contextRegex = /{{context\.(.*?)}}/g;
   /** Dashboard object */
@@ -239,6 +239,11 @@ export class ContextService {
     };
   }
 
+  /**
+   * Remove placeholders from object
+   *
+   * @param obj object to clean
+   */
   public removeEmptyPlaceholders(obj: any) {
     for (const key in obj) {
       if (has(obj, key)) {

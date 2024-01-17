@@ -248,7 +248,6 @@ export class ReferenceDataComponent
     };
 
     const handleQueryChange = (queryStr: string, resetFields = true) => {
-      console.log('ici');
       // Clear the fields
       if (resetFields) {
         clearFields();
@@ -257,7 +256,6 @@ export class ReferenceDataComponent
       // Update the query variables
       try {
         const query = gql(queryStr ?? '');
-        console.log(query);
         query.definitions.forEach((definition) => {
           if (definition.kind === 'OperationDefinition') {
             this.queryVariables = (definition.variableDefinitions ?? []).map(
