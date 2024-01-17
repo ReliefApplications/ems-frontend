@@ -194,9 +194,9 @@ export class WidgetGridComponent
       // Is a grid in a tab widget
       this.fitStyle['max-height.px'] = this.tabSize['height'];
     } else if (parentTag === 'SHARED-TAB-SETTINGS') {
+      console.log(this._host);
       // Is a grid in a tab widget settings
-      this.fitStyle['max-height.px'] =
-        document.documentElement.clientHeight - 400;
+      this.fitStyle['max-height.px'] = this._host.nativeElement.offsetHeight;
     } else {
       console.log('no-tab', document.documentElement.clientHeight);
       // all available height less margin

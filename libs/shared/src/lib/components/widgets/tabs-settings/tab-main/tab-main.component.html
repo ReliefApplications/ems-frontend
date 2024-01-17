@@ -44,6 +44,7 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-settings
+        class="h-full flex flex-col"
         [tabGroup]="$any(tab)"
         (delete)="onDeleteTab(i)"
       ></shared-tab-settings>
