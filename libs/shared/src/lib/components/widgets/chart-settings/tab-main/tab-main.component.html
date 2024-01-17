@@ -102,6 +102,18 @@
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
+      <!-- GraphQL variable mapping for reference data graphql-->
+      <div
+        class="flex-1"
+        *ngIf="referenceData && referenceData.type === 'graphql'"
+      >
+        <shared-graphql-variables-mapping
+          [referenceData]="referenceData"
+          [control]="
+            $any(formGroup.get('referenceDataVariableMapping'))
+          "
+        ></shared-graphql-variables-mapping>
+      </div>
       <!-- Series Mapping -->
       <h3 class="mb-1">{{ 'components.mapping.title' | translate }}</h3>
       <shared-series-mapping
