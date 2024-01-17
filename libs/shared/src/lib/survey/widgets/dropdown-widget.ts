@@ -2,7 +2,7 @@ import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
-import { isArray, isObject } from 'lodash';
+import { has, isArray, isEqual, isObject } from 'lodash';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
 
@@ -77,7 +77,22 @@ export const init = (
         question._propertyValueChangedVirtual
       );
       question.registerFunctionOnPropertyValueChanged('value', () => {
-        dropdownInstance.value = question.value;
+        // We need this line for resource select
+        if (question.isPrimitiveValue) {
+          dropdownInstance.value = question.value;
+        } else {
+          if (question.visibleChoices.length > 0) {
+            if (has(question.value, 'text') && has(question.value, 'value')) {
+              dropdownInstance.value = question.visibleChoices.find((choice) =>
+                isEqual(choice.value, question.value.value)
+              );
+            } else {
+              dropdownInstance.value = question.visibleChoices.find((choice) =>
+                isEqual(choice.value, question.value)
+              );
+            }
+          }
+        }
       });
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',

@@ -30,6 +30,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
+import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables-mapping/graphql-variables-mapping.component';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -54,6 +55,7 @@ import { ReferenceData } from '../../../../models/reference-data.model';
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
+    GraphqlVariablesMappingComponent,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
