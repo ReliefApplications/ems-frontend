@@ -10,6 +10,7 @@ import {
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
+import { isEqual } from 'lodash';
 
 /**
  * Check if a question is of select type
@@ -247,6 +248,16 @@ export const render = (
               'visibleChoices',
               choices.map((choice) => new ItemValue(choice))
             );
+            // manually set the selected option (not done by default)
+            // only affects dropdown questions (only one option selected) with reference data and non primitive values
+            if (
+              !question.isPrimitiveValue &&
+              question.getType() == 'dropdown'
+            ) {
+              question.value = choices.find((choice) =>
+                isEqual(choice.value, question.value)
+              );
+            }
           });
       } else {
         question.choices = [];

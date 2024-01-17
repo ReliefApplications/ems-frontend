@@ -1,19 +1,19 @@
-import { Apollo } from 'apollo-angular';
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
-import { GET_USERS } from '../graphql/queries';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { UsersQueryResponse } from '../../models/user.model';
+import { QuestionUsers } from '../types';
+import { DomService } from '../../services/dom/dom.service';
+import { UsersDropdownComponent } from './users-dropdown/users-dropdown.component';
 
 /**
  * Inits the users component.
  *
- * @param apollo Apollo client.
  * @param componentCollectionInstance ComponentCollection
+ * @param domService DOM service.
  */
 export const init = (
-  apollo: Apollo,
-  componentCollectionInstance: ComponentCollection
+  componentCollectionInstance: ComponentCollection,
+  domService: DomService
 ): void => {
   // registers icon-users in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
@@ -46,28 +46,38 @@ export const init = (
         CustomPropertyGridComponentTypes.applicationsDropdown
       );
     },
-    onLoaded: (question: any): void => {
-      apollo
-        .query<UsersQueryResponse>({
-          query: GET_USERS,
-          variables: {
-            applications: question.applications,
-          },
-        })
-        .subscribe(({ data }) => {
-          if (data.users) {
-            const users: any = [];
-            for (const user of data.users) {
-              if (!users.some((el: any) => el.value === user.id)) {
-                users.push({ value: user.id, text: user.username });
-              }
-            }
-            question.contentQuestion.choices = users;
-          }
-        });
+    onAfterRender: async (question: QuestionUsers, el: HTMLElement) => {
+      // hides the tagbox element
+      const element =
+        el.getElementsByTagName('kendo-multiselect')[0].parentElement;
+      if (element) {
+        element.style.display = 'none';
+      }
+
+      // Users that are already selected
+      const selectedUserIDs: string[] = Array.isArray(question.value)
+        ? question.value
+        : [];
+
+      // Appends users dropdown to the question html element
+      const userDropdown = domService.appendComponentToBody(
+        UsersDropdownComponent,
+        el
+      );
+
+      const instance: UsersDropdownComponent = userDropdown.instance;
+
+      // Filter by applications
+      instance.applications = question.applications;
+
+      // Initial selection
+      instance.initialSelectionIDs = selectedUserIDs;
+
+      // Updates the question value when the selection changes
+      instance.selectionChange.subscribe((value: string[]) => {
+        question.value = value;
+      });
     },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onAfterRender: (): void => {},
   };
   componentCollectionInstance.add(component);
 };

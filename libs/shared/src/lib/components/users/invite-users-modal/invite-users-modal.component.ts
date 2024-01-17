@@ -1,32 +1,58 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
-import { Role, User } from '../../../../models/user.model';
-import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
+import { Role } from '../../../models/user.model';
+import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
-import { DownloadService } from '../../../../services/download/download.service';
+import { DownloadService } from '../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { CommonModule } from '@angular/common';
+import { GridModule, GroupModule } from '@progress/kendo-angular-grid';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
+import { AddUserModule } from '../add-user/add-user.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { UploadsModule } from '@progress/kendo-angular-upload';
+import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /** Model fot the input data */
 interface DialogData {
   roles: Role[];
-  users: User[];
   positionAttributeCategories?: PositionAttributeCategory[];
   uploadPath: string;
   downloadPath: string;
 }
 
-/** Component for inviting users */
+/** Invite users modal component */
 @Component({
-  selector: 'shared-invite-users',
-  templateUrl: './invite-users.component.html',
-  styleUrls: ['./invite-users.component.scss'],
+  standalone: true,
+  selector: 'shared-invite-users-modal',
+  templateUrl: './invite-users-modal.component.html',
+  styleUrls: ['./invite-users-modal.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    GridModule,
+    GroupModule,
+    DropDownsModule,
+    ButtonModule,
+    ButtonsModule,
+    AddUserModule,
+    TranslateModule,
+    UploadsModule,
+    DialogModule,
+    TextareaModule,
+    uiButtonModule,
+  ],
 })
-export class InviteUsersComponent extends UnsubscribeComponent {
+export class InviteUsersModalComponent extends UnsubscribeComponent {
   /** Grid data */
   public gridData: GridDataResult = { data: [], total: 0 };
   /** Form group */
@@ -38,7 +64,6 @@ export class InviteUsersComponent extends UnsubscribeComponent {
   /** Is the edition active */
   private editionActive = false;
 
-  // === TEMPLATE REFERENCE TO KENDO GRID ===
   /** Reference to the grid */
   @ViewChild(GridComponent)
   private grid?: GridComponent;
@@ -52,15 +77,15 @@ export class InviteUsersComponent extends UnsubscribeComponent {
   }
 
   /**
-   * Constructor for the invite users component
+   * Invite users modal component
    *
-   * @param downloadService The download service
-   * @param snackBar The snack bar service
-   * @param fb The form builder service
-   * @param dialog The Dialog service
-   * @param dialogRef The reference to a Dialog
-   * @param translate The translation service
-   * @param data The input data of the component
+   * @param downloadService Shared download service
+   * @param snackBar Shared snack bar service
+   * @param fb Angular form builder service
+   * @param dialog CDK Dialog service
+   * @param dialogRef Dialog reference
+   * @param translate Angular translation service
+   * @param data Passed data
    * @param environment environment
    */
   constructor(
@@ -68,7 +93,7 @@ export class InviteUsersComponent extends UnsubscribeComponent {
     private snackBar: SnackbarService,
     private fb: FormBuilder,
     public dialog: Dialog,
-    public dialogRef: DialogRef<InviteUsersComponent>,
+    public dialogRef: DialogRef<InviteUsersModalComponent>,
     public translate: TranslateService,
     @Inject(DIALOG_DATA) public data: DialogData,
     @Inject('environment') public environment: any
@@ -81,14 +106,10 @@ export class InviteUsersComponent extends UnsubscribeComponent {
    * Opens a modal to invite a new user.
    */
   async onAdd(): Promise<void> {
-    const invitedUsers = this.gridData.data.map((x) => x.email);
     const { AddUserComponent } = await import('../add-user/add-user.component');
     const dialogRef = this.dialog.open(AddUserComponent, {
       data: {
         roles: this.data.roles,
-        users: this.data.users.filter(
-          (x) => !invitedUsers.includes(x.username)
-        ),
         ...(this.data.positionAttributeCategories && {
           positionAttributeCategories: this.data.positionAttributeCategories,
         }),
