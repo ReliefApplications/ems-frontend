@@ -93,12 +93,11 @@ export class ReferenceDataService {
       a[displayField] > b[displayField] ? 1 : -1;
 
     // get items
-    const stored = (await localForage.getItem(referenceDataID)) as CachedItems;
-    const items_ = stored?.items || [];
-    const valueField = stored?.valueField || '';
+    const { items, referenceData } = await this.cacheItems(referenceDataID);
+    const valueField = referenceData?.valueField || '';
 
     // sort items by displayField
-    const items = items_.sort(sortByDisplayField);
+    items.sort(sortByDisplayField);
     const foreignIsMultiselect = Array.isArray(filter?.foreignValue);
     // if we ask to filter and there is a value in foreign field
     if (

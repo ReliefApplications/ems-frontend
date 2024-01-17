@@ -242,6 +242,8 @@ export const render = (
             filter
           )
           .then((choices) => {
+            console.log('ici');
+            console.log(choices);
             question.choices = [];
             // this is to avoid that the choices appear on the 'choices' tab
             question.setPropertyValue(
