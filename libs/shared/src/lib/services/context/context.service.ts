@@ -488,15 +488,8 @@ export class ContextService {
       new Set([...Object.keys(obj1), ...Object.keys(obj2)])
     );
 
-    // Iterate through keys to find the first difference
-    for (const key of keys) {
-      if (obj1[key] !== obj2[key]) {
-        return key;
-      }
-    }
-
-    // If no difference is found
-    return null;
+    // Return key where modifications happened
+    return keys.find((key) => obj1[key] !== obj2[key]);
   }
 
   /**
