@@ -68,33 +68,30 @@ export class ReferenceDataComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === DATA ===
-  /**
-   * Loading state
-   */
+  /** Reference to the field input.*/
+  @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
+  /** Reference to the csv data input. */
+  @ViewChild('csvData') csvData?: TextareaComponent;
+  /** Reference to the kendo grid. */
+  @ViewChild(GridComponent) kendoGrid!: GridComponent;
+  /** Loading state */
   public loading = true;
   /** Reference data id */
   public id = '';
   /** Reference data */
   public referenceData?: ReferenceData;
-
-  // === FORM ===
   /** Reference data form */
   public referenceForm!: ReturnType<typeof this.getRefDataForm>;
   /** Reference data types */
   public referenceTypeChoices = Object.values(referenceDataType);
   /** Pagination methods */
   public paginationStrategies = Object.values(paginationStrategy);
-
-  // === API ===
   /** Selected API configuration */
   public selectedApiConfiguration?: ApiConfiguration;
   /** Api configurations query */
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
   /** List of query variables */
   public queryVariables: string[] = [];
-
-  // === FIELDS ===
   /** Value fields */
   public valueFields: NonNullable<ReferenceData['fields']> = [];
   /** Payload */
@@ -126,34 +123,19 @@ export class ReferenceDataComponent
   public csvLoading = false;
   /** CSV separator */
   public separator = new FormControl(',');
+  /** Editor options */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'graphql',
+    formatOnPaste: true,
+    fixedOverflowWidgets: true,
+  };
   /** Timeout to form */
   private formTimeoutListener!: NodeJS.Timeout;
   /** Timeout to init editor */
   private initEditorTimeoutListener!: NodeJS.Timeout;
   /** Timeout to add an object to the chip list. */
   private addChipListTimeoutListener!: NodeJS.Timeout;
-
-  /**
-   * Reference to the field input.
-   */
-  @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
-  /**
-   * Reference to the csv data input.
-   */
-  @ViewChild('csvData') csvData?: TextareaComponent;
-  /**
-   * Reference to the kendo grid.
-   */
-  @ViewChild(GridComponent) kendoGrid!: GridComponent;
-
-  // === MONACO EDITOR ===
-  /** Editor options */
-  public editorOptions = {
-    theme: 'vs-dark',
-    language: 'graphql',
-    formatOnPaste: true,
-  };
-
   /** Outside click listener for inline edition */
   private inlineEditionOutsideClickListener!: any;
 
@@ -266,6 +248,7 @@ export class ReferenceDataComponent
     };
 
     const handleQueryChange = (queryStr: string, resetFields = true) => {
+      console.log('ici');
       // Clear the fields
       if (resetFields) {
         clearFields();
@@ -274,6 +257,7 @@ export class ReferenceDataComponent
       // Update the query variables
       try {
         const query = gql(queryStr ?? '');
+        console.log(query);
         query.definitions.forEach((definition) => {
           if (definition.kind === 'OperationDefinition') {
             this.queryVariables = (definition.variableDefinitions ?? []).map(
@@ -281,39 +265,6 @@ export class ReferenceDataComponent
             );
           }
         });
-
-        // Try to guess the page size variable
-        const pageSizeVar = this.queryVariables.find((x) =>
-          ['pageSize', 'take', 'size'].includes(x)
-        );
-
-        if (pageSizeVar) {
-          controls.pageSizeVar.setValue(pageSizeVar);
-        } else {
-          controls.pageSizeVar.setValue(null);
-        }
-
-        // Try to guess strategy and other pagination variables
-        const offsetVar = this.queryVariables.find((x) =>
-          ['first', 'offset', 'skip'].includes(x)
-        );
-        const pageVar = this.queryVariables.find((x) =>
-          ['page', 'pageNumber'].includes(x)
-        );
-        const cursorVar = this.queryVariables.find((x) =>
-          ['cursor', 'afterCursor'].includes(x)
-        );
-
-        if (offsetVar) {
-          controls.strategy.setValue('offset' as paginationStrategy);
-          controls.offsetVar.setValue(offsetVar);
-        } else if (pageVar) {
-          controls.strategy.setValue('page' as paginationStrategy);
-          controls.pageVar.setValue(pageVar);
-        } else if (cursorVar) {
-          controls.strategy.setValue('cursor' as paginationStrategy);
-          controls.cursorVar.setValue(cursorVar);
-        }
       } catch {
         this.queryVariables = [];
         controls.pageSizeVar.setValue(null);

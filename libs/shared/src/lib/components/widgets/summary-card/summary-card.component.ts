@@ -977,6 +977,7 @@ export class SummaryCardComponent
             ...(this.graphqlVariables ?? {}),
           })
           .then(({ items, pageInfo }) => {
+            console.log(items);
             this.updateReferenceDataCards(items, pageInfo);
             this.loading = false;
           });
