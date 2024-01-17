@@ -232,37 +232,17 @@ export class SummaryCardComponent
 
   /** @returns the graphql query variables object */
   get graphqlVariables() {
-    const filters = this.contextService.filter.getValue();
-    let mapping = this.settings.card?.referenceDataVariableMapping || '';
-
-    Object.keys(filters).forEach((key) => {
-      mapping = mapping
-        ?.split(`{{filter.${key}}}`)
-        .join(JSON.stringify(filters[key]));
-    });
-
-    // If there are any still to be replaced, replace them with null
-    mapping =
-      mapping.match(/{{filter\..*?}}/gim)?.reduce((acc, curr) => {
-        return acc.replace(curr, '"__REMOVE__"');
-      }, mapping) || mapping;
-
-    const obj = (() => {
-      try {
-        return JSON.parse(mapping);
-      } catch (_) {
-        return null;
-      }
-    })();
-
-    // Remove the keys that were not replaced
-    Object.keys(obj).forEach((key) => {
-      if (JSON.stringify(obj[key]).includes('__REMOVE__')) {
-        delete obj[key];
-      }
-    });
-
-    return obj;
+    try {
+      let mapping = JSON.parse(
+        this.settings.card?.referenceDataVariableMapping || ''
+      );
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping).object;
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
+    } catch {
+      return null;
+    }
   }
 
   /**

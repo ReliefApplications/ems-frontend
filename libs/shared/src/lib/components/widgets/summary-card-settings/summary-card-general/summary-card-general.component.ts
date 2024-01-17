@@ -81,6 +81,7 @@ export class SummaryCardGeneralComponent
   /** Monaco editor configuration, for raw edition */
   public editorOptions = {
     theme: 'vs-dark',
+    language: 'json',
     fixedOverflowWidgets: true,
     lineNumbers: 'off',
     minimap: { enabled: false },
