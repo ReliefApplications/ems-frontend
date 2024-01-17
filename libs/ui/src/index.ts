@@ -41,6 +41,7 @@ export * from './lib/graphql-select/graphql-select.component';
 export * from './lib/error-message/error-message.module';
 export * from './lib/fixed-wrapper/fixed-wrapper.module';
 export * from './lib/cron-editor/cron-editor.module';
+export * from './lib/app-resizable-box/app-resizable-box.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';

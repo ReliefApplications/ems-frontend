@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 
@@ -7,9 +6,7 @@ import { Subscription, fromEvent } from 'rxjs';
  * Resizable box are UI that provide the possibility to resize an element.
  */
 @Component({
-  standalone: true,
   selector: 'ui-app-resizable-box',
-  imports: [CommonModule],
   templateUrl: './app-resizable-box.component.html',
   styleUrls: ['./app-resizable-box.component.scss'],
 })

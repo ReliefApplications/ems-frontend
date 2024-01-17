@@ -16,7 +16,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-import { AppResizableBoxComponent } from '@oort-front/ui';
+import { AppResizableBoxModule } from '@oort-front/ui';
 
 /**
  * RecordHistoryModule is a class used to manage all the modules and components
@@ -39,7 +39,7 @@ import { AppResizableBoxComponent } from '@oort-front/ui';
     FormWrapperModule,
     TooltipModule,
     FormsModule,
-    AppResizableBoxComponent,
+    AppResizableBoxModule,
   ],
   exports: [RecordHistoryComponent],
 })

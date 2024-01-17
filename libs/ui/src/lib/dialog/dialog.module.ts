@@ -6,7 +6,7 @@ import { DialogCloseDirective } from './dialog-close.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '../tooltip/tooltip.module';
 import { ButtonModule } from '../button/button.module';
-import { AppResizableBoxComponent } from '../app-resizable-box/app-resizable-box.component';
+import { AppResizableBoxModule } from '../app-resizable-box/app-resizable-box.module';
 
 /**
  * UI Dialog Module
@@ -19,7 +19,7 @@ import { AppResizableBoxComponent } from '../app-resizable-box/app-resizable-box
     TranslateModule,
     ButtonModule,
     TooltipModule,
-    AppResizableBoxComponent,
+    AppResizableBoxModule,
   ],
   exports: [DialogComponent, DialogCloseDirective, TranslateModule],
 })
