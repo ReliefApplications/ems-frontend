@@ -72,10 +72,6 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
         (v) => ![cursorVar, offsetVar, pageVar, pageSizeVar].includes(v)
       );
 
-      console.log(availableVariables);
-
-      console.log(this.control);
-
       // Checks if the variable mapping is null or empty.
       if (!this.control.value) {
         // If so, generate a template with the variables being keys of a json object.
