@@ -324,42 +324,52 @@ export class DashboardFilterComponent
       this.quickFilters = displayValues
         .filter((question) => !!question.value)
         .map((question) => {
+          // To check if the value used is primitive
+          const isPrimitive =
+            isValuePrimitiveKeys[
+              question.name as keyof typeof isValuePrimitiveKeys
+            ];
           let mappedQuestion;
-          if (question.value instanceof Array && question.value.length > 2) {
-            mappedQuestion = {
-              label: question.title + ` (${question.value.length})`,
-              tooltip: question.displayValue,
-            };
-          } else {
-            // To check if the value used is primitive
-            const isPrimitive =
-              isValuePrimitiveKeys[
-                question.name as keyof typeof isValuePrimitiveKeys
-              ];
-            // If the value used is not primitive, use the text label to display selection in the filter
-            if (!isPrimitive) {
-              // Check if value is a date to format it with the date pipe
-              const checkValue = this.isDate(
-                question.name as string,
-                question.displayValue.text
-              );
-              mappedQuestion = {
-                label: checkValue.isDate
-                  ? checkValue.formattedValue
-                  : question.displayValue.text,
+          if (question.value instanceof Array) {
+            if (question.value.length > 2) {
+              return {
+                label: question.title + ` (${question.value.length})`,
+                tooltip: question.displayValue,
               };
             } else {
-              // else for primitive values, the selected display value
-              const checkValue = this.isDate(
-                question.name as string,
-                question.displayValue
-              );
-              mappedQuestion = {
-                label: checkValue.isDate
-                  ? checkValue.formattedValue
-                  : question.displayValue,
-              };
+              if (!isPrimitive) {
+                // Tagbox question
+                return {
+                  label: question.value.map((x) => x.text),
+                };
+              }
             }
+          }
+          // If the value used is not primitive, use the text label to display selection in the filter
+          if (!isPrimitive) {
+            // Check if value is a date to format it with the date pipe
+            const checkValue = this.isDate(
+              question.name as string,
+              question.displayValue.text
+            );
+            mappedQuestion = {
+              label: checkValue.isDate
+                ? checkValue.formattedValue
+                : question.displayValue.text
+                ? question.displayValue.text
+                : question.displayValue,
+            };
+          } else {
+            // else for primitive values, the selected display value
+            const checkValue = this.isDate(
+              question.name as string,
+              question.displayValue
+            );
+            mappedQuestion = {
+              label: checkValue.isDate
+                ? checkValue.formattedValue
+                : question.displayValue,
+            };
           }
           return mappedQuestion;
         });
