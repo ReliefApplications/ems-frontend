@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,9 +30,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
-import { gql } from '@apollo/client';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { EmptyModule } from '../../../ui/empty/empty.module';
+import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables-mapping/graphql-variables-mapping.component';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -57,16 +55,12 @@ import { EmptyModule } from '../../../ui/empty/empty.module';
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
-    MonacoEditorModule,
-    EmptyModule,
+    GraphqlVariablesMappingComponent,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
 })
-export class SummaryCardGeneralComponent
-  extends UnsubscribeComponent
-  implements OnChanges
-{
+export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
   /** Selected reference data */
@@ -77,18 +71,6 @@ export class SummaryCardGeneralComponent
   @Input() layout: Layout | null = null;
   /** Selected aggregation */
   @Input() aggregation: Aggregation | null = null;
-
-  /** Monaco editor configuration, for raw edition */
-  public editorOptions = {
-    theme: 'vs-dark',
-    language: 'json',
-    fixedOverflowWidgets: true,
-    lineNumbers: 'off',
-    minimap: { enabled: false },
-  };
-
-  /** @returns the list of available variables to inject data */
-  public availableQueryVariables: string[] = [];
 
   /**
    * Component for the general summary cards tab
@@ -103,58 +85,6 @@ export class SummaryCardGeneralComponent
     private aggregationService: AggregationService
   ) {
     super();
-  }
-
-  ngOnChanges(): void {
-    this.setAvailableQueryVariables();
-  }
-
-  /** Parses que refData query and gets the available variable names, excluding the pagination ones */
-  private setAvailableQueryVariables(): void {
-    if (this.referenceData?.type !== 'graphql') {
-      this.availableQueryVariables = [];
-      return;
-    }
-
-    try {
-      const query = gql(this.referenceData.query ?? '');
-      const definition = query.definitions[0];
-      if (definition?.kind !== 'OperationDefinition') {
-        this.availableQueryVariables = [];
-        return;
-      }
-
-      const variableDefinitions = (definition.variableDefinitions ?? []).map(
-        (variable) => variable.variable.name.value
-      );
-
-      const { cursorVar, offsetVar, pageVar, pageSizeVar } =
-        (this.referenceData.pageInfo as any) ?? {};
-
-      // Do not show pagination variables
-      const availableVariables = variableDefinitions.filter(
-        (v) => ![cursorVar, offsetVar, pageVar, pageSizeVar].includes(v)
-      );
-
-      // Checks if the variable mapping is null or empty.
-      if (!this.formGroup.get('card.referenceDataVariableMapping')?.value) {
-        // If so, generate a template with the variables being keys of a json object.
-        const template = JSON.stringify(
-          availableVariables.reduce((acc, curr) => {
-            acc[curr] = null;
-            return acc;
-          }, {} as Record<string, any>),
-          null,
-          2
-        );
-        this.formGroup
-          .get('card.referenceDataVariableMapping')
-          ?.setValue(template);
-      }
-      this.availableQueryVariables = availableVariables;
-    } catch (_) {
-      this.availableQueryVariables = [];
-    }
   }
 
   /** Opens modal for layout selection/creation */

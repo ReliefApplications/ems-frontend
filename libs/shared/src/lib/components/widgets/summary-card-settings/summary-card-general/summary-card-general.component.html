@@ -31,35 +31,16 @@
         </div>
 
         <!-- GraphQL variable mapping -->
-        <div class="flex-1">
-          <span class="flex gap-2 mb-4">
-            <h2 class="mb-0">
-              {{
-                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.title'
-                  | translate
-              }}
-            </h2>
-            <ui-icon
-              icon="info"
-              variant="grey"
-              [uiTooltip]="
-                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.tooltip'
-                  | translate
-              "
-            ></ui-icon>
-          </span>
-          <ngx-monaco-editor
-            *ngIf="availableQueryVariables.length > 0"
-            formControlName="referenceDataVariableMapping"
-            [options]="editorOptions"
-          ></ngx-monaco-editor>
-          <shared-empty
-            *ngIf="availableQueryVariables.length === 0"
-            [title]="
-              'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.noVariables'
-                | translate
+        <div
+          class="flex-1"
+          *ngIf="referenceData && referenceData.type === 'graphql'"
+        >
+          <shared-graphql-variables-mapping
+            [referenceData]="referenceData"
+            [control]="
+              formGroup.controls.card.controls.referenceDataVariableMapping
             "
-          ></shared-empty>
+          ></shared-graphql-variables-mapping>
         </div>
         <ui-divider
           class="max-w-xs m-auto"
