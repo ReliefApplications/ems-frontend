@@ -236,10 +236,9 @@ export class SummaryCardComponent
       let mapping = JSON.parse(
         this.settings.card?.referenceDataVariableMapping || ''
       );
-      mapping = this.replaceMapping(mapping);
-      console.log(mapping);
       mapping = this.contextService.replaceContext(mapping);
       mapping = this.contextService.replaceFilter(mapping);
+      mapping = this.replaceMapping(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
       console.log(mapping);
       return mapping;
@@ -249,7 +248,7 @@ export class SummaryCardComponent
   }
 
   /**
-   * Replace {{widget}} placeholders in object, with context values
+   * Replace {{widget}} placeholders in object, with search value.
    *
    * @param object object with placeholders
    * @returns object with replaced placeholders
