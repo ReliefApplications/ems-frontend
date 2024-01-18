@@ -115,8 +115,8 @@ export class DashboardComponent
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
-  /** Grid height, initially a big number to prevent scroll bar flickering */
-  public gridHeight = 1000;
+  /** Grid height */
+  public gridHeight = 0;
 
   /** @returns type of context element */
   get contextType() {
@@ -298,7 +298,7 @@ export class DashboardComponent
 
       if (lastWidget) {
         const rowsUsed = lastWidget.y + lastWidget.rows;
-        this.gridHeight = rowsUsed * fixedRowHeight + (rowsUsed - 1) * margin;
+        this.gridHeight = rowsUsed * fixedRowHeight + rowsUsed * margin;
       }
     } else {
       this.gridHeight = 0;

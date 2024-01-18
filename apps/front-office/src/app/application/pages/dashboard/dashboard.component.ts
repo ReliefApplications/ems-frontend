@@ -73,7 +73,7 @@ export class DashboardComponent
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
   /** Grid height, initially a big number to prevent scroll bar flickering */
-  public gridHeight = 1000;
+  public gridHeight = 0;
 
   /** @returns type of context element */
   get contextType() {
@@ -201,11 +201,9 @@ export class DashboardComponent
 
       if (lastWidget) {
         const rowsUsed = lastWidget.y + lastWidget.rows;
-        this.gridHeight = rowsUsed * fixedRowHeight + (rowsUsed - 1) * margin;
+        this.gridHeight = rowsUsed * fixedRowHeight + rowsUsed * margin;
       }
-      console.log('here1');
     } else {
-      console.log('here');
       this.gridHeight = 0;
     }
   }
@@ -243,10 +241,6 @@ export class DashboardComponent
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
-          console.log(this.gridOptions);
-          this.gridOptions.gridType = 'fit';
-          // this.gridOptions.gridType = 'verticalFixed';
-          this.updateGridHeight();
           this.dashboardService.openDashboard(this.dashboard);
           this.initContext();
           this.widgets = cloneDeep(
@@ -271,6 +265,7 @@ export class DashboardComponent
                 return widget;
               }) || []
           );
+          this.updateGridHeight();
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);

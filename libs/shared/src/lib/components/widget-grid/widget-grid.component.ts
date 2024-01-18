@@ -150,9 +150,6 @@ export class WidgetGridComponent
         // set up the style for fit grid type
       }
     }
-    if (changes['isFullScreen'] || changes['tabSize']) {
-      this.setFitStyleWidth();
-    }
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==

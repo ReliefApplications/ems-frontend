@@ -1,5 +1,11 @@
 :host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  @apply flex flex-col h-full;
+
+  ::ng-deep ui-tabs {
+    @apply flex flex-col backdrop:grow;
+
+    #tab-group-wrapper {
+      @apply grow;
+    }
+  }
 }
