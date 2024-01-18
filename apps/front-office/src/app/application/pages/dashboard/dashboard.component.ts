@@ -171,38 +171,17 @@ export class DashboardComponent
                       queryId // id of the context
                     )
                     .then(({ data }) => {
-                      if (!data?.dashboardWithContext?.dashboard.id) return;
-                      this.snackBar.openSnackBar('getting what you want');
+                      if (!data?.dashboardWithContext?.dashboard?.id) {
+                        return;
+                      }
                       // load the contextual dashboard
                       this.dashboard = {
                         ...data.dashboardWithContext.dashboard,
                         contextData: data.dashboardWithContext.contextData,
                       };
-                      console.log(this.dashboard);
                       this.dashboardService.openDashboard(this.dashboard);
                       this.initContext();
-                      this.widgets = cloneDeep(
-                        this.dashboard.structure
-                          ?.filter((x: any) => x !== null)
-                          .map((widget: any) => {
-                            const contextData = this.dashboard?.contextData;
-                            this.contextService.context = contextData || null;
-
-                            if (!contextData) {
-                              return widget;
-                            }
-                            const { settings, originalSettings } =
-                              this.contextService.updateSettingsContextContent(
-                                widget.settings
-                              );
-                            widget = {
-                              ...widget,
-                              originalSettings,
-                              settings,
-                            };
-                            return widget;
-                          }) || []
-                      );
+                      this.widgets = this.setWidgets();
                     });
                   // Will use current template
                   this.loading = false;
@@ -218,6 +197,36 @@ export class DashboardComponent
           }
         }
       });
+  }
+
+  /**
+   * Sets up the widgets from the dashboard structure
+   *
+   * @returns the widgets list
+   */
+  private setWidgets() {
+    if (!this.dashboard) {
+      return;
+    }
+    return cloneDeep(
+      this.dashboard.structure
+        ?.filter((x: any) => x !== null)
+        .map((widget: any) => {
+          const contextData = this.dashboard?.contextData;
+          this.contextService.context = contextData || null;
+          if (!contextData) {
+            return widget;
+          }
+          const { settings, originalSettings } =
+            this.contextService.updateSettingsContextContent(widget.settings);
+          widget = {
+            ...widget,
+            originalSettings,
+            settings,
+          };
+          return widget;
+        }) || []
+    );
   }
 
   /**
@@ -250,28 +259,7 @@ export class DashboardComponent
           this.dashboard = data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
           this.initContext();
-          this.widgets = cloneDeep(
-            data.dashboard.structure
-              ?.filter((x: any) => x !== null)
-              .map((widget: any) => {
-                const contextData = this.dashboard?.contextData;
-                this.contextService.context = contextData || null;
-
-                if (!contextData) {
-                  return widget;
-                }
-                const { settings, originalSettings } =
-                  this.contextService.updateSettingsContextContent(
-                    widget.settings
-                  );
-                widget = {
-                  ...widget,
-                  originalSettings,
-                  settings,
-                };
-                return widget;
-              }) || []
-          );
+          this.widgets = this.setWidgets();
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
