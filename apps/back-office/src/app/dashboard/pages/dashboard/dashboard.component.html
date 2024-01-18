@@ -10,6 +10,7 @@
   [ngClass]="{
     'py-8 px-6 h-full bg-white overflow-y-auto overflow-x-hidden': isFullScreen
   }"
+  class="flex flex-col !h-full"
 >
   <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"
@@ -20,7 +21,7 @@
   ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen
-    [(isFullScreenMode)]="isFullScreen"
+    [isFullScreenMode]="isFullScreen"
     *sharedSkeleton="
       loading;
       repeat: 1;
@@ -197,5 +198,6 @@
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
+    [ngStyle]="{ 'min-height.px': gridHeight }"
   ></shared-widget-grid>
 </div>

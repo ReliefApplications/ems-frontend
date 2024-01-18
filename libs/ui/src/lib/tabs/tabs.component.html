@@ -2,8 +2,8 @@
      not in the body while not interfering with the list of tabs -->
 <div
   #tabGroupWrapper
-  class="overflow-x-hidden"
-  [ngClass]="{ flex: vertical }"
+  class="overflow-x-hidden flex"
+  [ngClass]="{ 'flex-col': !vertical }"
   id="tab-group-wrapper"
 >
   <!-- List of tabs -->

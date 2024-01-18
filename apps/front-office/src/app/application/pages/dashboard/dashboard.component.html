@@ -5,7 +5,10 @@
   [closable]="closable"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{ 'py-8 px-6 h-full bg-white overflow-auto': isFullScreen }">
+<div
+  [ngClass]="{ 'py-8 px-6 h-full bg-white overflow-auto': isFullScreen }"
+  class="grow flex flex-col"
+>
   <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [isFullScreen]="isFullScreen"
@@ -60,5 +63,6 @@
     [widgets]="widgets"
     [options]="dashboard?.gridOptions"
     (changeStep)="changeStep.emit($event)"
+    [ngStyle]="{ 'min-height.px': gridHeight }"
   ></shared-widget-grid>
 </div>

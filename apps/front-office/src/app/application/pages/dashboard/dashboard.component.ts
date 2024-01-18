@@ -29,6 +29,7 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 import { cloneDeep } from 'lodash';
+import { GridsterConfig } from 'angular-gridster2';
 
 /**
  * Dashboard page.
@@ -68,6 +69,10 @@ export class DashboardComponent
   // === BUTTON ACTIONS ===
   /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
+  /** Additional grid configuration */
+  public gridOptions: GridsterConfig = {};
+  /** Grid height, initially a big number to prevent scroll bar flickering */
+  public gridHeight = 1000;
 
   /** @returns type of context element */
   get contextType() {
@@ -179,6 +184,31 @@ export class DashboardComponent
       });
   }
 
+  /** Updates the grid height */
+  private updateGridHeight() {
+    const { gridType, fixedRowHeight, margin } = this.gridOptions;
+
+    // The height of the grid for vertical fixed is calculated based
+    // on the widgets, and other grid options
+    if (gridType === 'verticalFixed' && fixedRowHeight && margin) {
+      let lastWidget = this.widgets[0];
+      this.widgets.forEach((widget) => {
+        if (widget.y > lastWidget.y) {
+          lastWidget = widget;
+        }
+      });
+
+      if (lastWidget) {
+        const rowsUsed = lastWidget.y + lastWidget.rows;
+        this.gridHeight = rowsUsed * fixedRowHeight + (rowsUsed - 1) * margin;
+      }
+      console.log('here1');
+    } else {
+      console.log('here');
+      this.gridHeight = 0;
+    }
+  }
+
   /**
    * Init the dashboard
    *
@@ -207,6 +237,15 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+            scrollToNewItems: false,
+          };
+          console.log(this.gridOptions);
+          this.gridOptions.gridType = 'fit';
+          // this.gridOptions.gridType = 'verticalFixed';
+          this.updateGridHeight();
           this.dashboardService.openDashboard(this.dashboard);
           this.widgets = cloneDeep(
             data.dashboard.structure ? data.dashboard.structure : []

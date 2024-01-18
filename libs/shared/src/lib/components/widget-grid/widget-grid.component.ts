@@ -133,9 +133,6 @@ export class WidgetGridComponent
           this._host.nativeElement.innerWidth
         );
         this.setGridOptions();
-        if (this.options?.gridType === GridType.Fit) {
-          this.setFitStyleWidth();
-        }
       });
     this.setGridOptions();
   }
@@ -149,7 +146,6 @@ export class WidgetGridComponent
       this.setGridOptions();
       if (this.options?.gridType === GridType.Fit) {
         // set up the style for fit grid type
-        this.setFitStyleWidth();
       }
     }
     if (
@@ -175,51 +171,6 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
-  }
-
-  /**
-   * Set the available width and height for fit grid type
-   */
-  public setFitStyleWidth() {
-    // check if it's a tab widget grid
-    if (!this.tabSize['width']) {
-      // all available width less margin
-      this.fitStyle['max-width.px'] = document.documentElement.clientWidth - 50;
-      // subtract left navbar
-      const dashboardNavbar =
-        document.documentElement.getElementsByTagName('shared-navbar');
-      if (dashboardNavbar.length) {
-        this.fitStyle['max-width.px'] -= (
-          dashboardNavbar[0] as any
-        ).offsetWidth;
-      }
-      // all available height less margin
-      this.fitStyle['max-height.px'] =
-        document.documentElement.clientHeight - 160;
-      // subtract dashboard filter
-      const dashboardFilter = document.documentElement.getElementsByTagName(
-        'shared-dashboard-filter'
-      );
-      if (dashboardFilter.length) {
-        this.fitStyle['max-height.px'] -= (
-          dashboardFilter[0] as any
-        ).offsetHeight;
-      }
-      // subtract dashboard header
-      const dashboardHeader = document.getElementById('dashboard-header');
-      if (dashboardHeader) {
-        this.fitStyle['max-height.px'] -= dashboardHeader.offsetHeight;
-      }
-    } else {
-      // set width and height adding some space(removing some size)
-      this.fitStyle['max-width.px'] = Math.floor(this.tabSize['width'] * 0.95);
-      this.fitStyle['max-height.px'] = Math.floor(
-        this.tabSize['height'] * 0.95
-      );
-    }
-    // set min width and min height
-    this.fitStyle['min-width.px'] = this.fitStyle['max-width.px'];
-    this.fitStyle['min-height.px'] = this.fitStyle['max-height.px'];
   }
 
   /**
@@ -281,7 +232,7 @@ export class WidgetGridComponent
       disablePushOnResize: false,
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
-      setGridSize: true,
+      setGridSize: false,
       mobileBreakpoint: 640,
       disableWindowResize: true,
       keepFixedHeightInMobile: true,

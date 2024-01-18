@@ -119,6 +119,8 @@ export class DashboardComponent
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
+  /** Grid height, initially a big number to prevent scroll bar flickering */
+  public gridHeight = 1000;
 
   /** @returns type of context element */
   get contextType() {
@@ -280,6 +282,29 @@ export class DashboardComponent
       });
   }
 
+  /** Updates the grid height */
+  private updateGridHeight() {
+    const { gridType, fixedRowHeight, margin } = this.gridOptions;
+
+    // The height of the grid for vertical fixed is calculated based
+    // on the widgets, and other grid options
+    if (gridType === 'verticalFixed' && fixedRowHeight && margin) {
+      let lastWidget = this.widgets[0];
+      this.widgets.forEach((widget) => {
+        if (widget.y > lastWidget.y) {
+          lastWidget = widget;
+        }
+      });
+
+      if (lastWidget) {
+        const rowsUsed = lastWidget.y + lastWidget.rows;
+        this.gridHeight = rowsUsed * fixedRowHeight + (rowsUsed - 1) * margin;
+      }
+    } else {
+      this.gridHeight = 0;
+    }
+  }
+
   /**
    * Init the dashboard
    *
@@ -313,6 +338,7 @@ export class DashboardComponent
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
+          this.updateGridHeight();
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
@@ -339,6 +365,7 @@ export class DashboardComponent
                 return widget;
               }) || []
           );
+
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
@@ -355,6 +382,7 @@ export class DashboardComponent
               ...this.gridOptions,
               scrollToNewItems: true,
             };
+            this.updateGridHeight();
           }, 1000);
         } else {
           this.contextService.isFilterEnabled.next(false);
@@ -866,6 +894,7 @@ export class DashboardComponent
             ...this.gridOptions,
             ...this.dashboard?.gridOptions,
           };
+          this.updateGridHeight();
 
           if (updates.filter) {
             this.showFilter = updates.filter.show;

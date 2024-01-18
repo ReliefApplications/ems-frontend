@@ -4,8 +4,6 @@ import {
   Input,
   ViewChild,
   ViewContainerRef,
-  OnChanges,
-  SimpleChanges,
 } from '@angular/core';
 import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component';
 import { GridsterConfig } from 'angular-gridster2';
@@ -18,7 +16,7 @@ import { GridsterConfig } from 'angular-gridster2';
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
 })
-export class TabComponent implements AfterViewInit, OnChanges {
+export class TabComponent implements AfterViewInit {
   /** Structure of the tab ( list of widgets ) */
   @Input() structure: any;
   /** Should show padding */
@@ -42,18 +40,10 @@ export class TabComponent implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    this.WidgetGridComponentRef =
-      this.content.createComponent(WidgetGridComponent);
-    this.WidgetGridComponentRef.setInput('widgets', this.structure);
-    this.WidgetGridComponentRef.setInput('options', this.gridOptions);
-    this.WidgetGridComponentRef.setInput('tabSize', this.tabsSize);
+    const componentRef = this.content.createComponent(WidgetGridComponent);
+    componentRef.setInput('widgets', this.structure);
+    componentRef.setInput('options', this.gridOptions);
     /** To use angular hooks */
-    this.WidgetGridComponentRef.changeDetectorRef.detectChanges();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['tabsSize']) {
-      this.WidgetGridComponentRef.setInput('tabSize', this.tabsSize);
-    }
+    componentRef.changeDetectorRef.detectChanges();
   }
 }

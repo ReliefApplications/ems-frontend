@@ -14,11 +14,10 @@
     </shared-widget-choice>
   </div>
   <!-- GRID OF WIDGETS -->
-  <gridster [options]="gridOptions" class="!w-full" [ngStyle]="gridOptions.gridType === 'fit' ? fitStyle : {}">
+  <gridster [options]="gridOptions" class="!w-full !h-full">
     <gridster-item
       [item]="widget"
       *ngFor="let widget of widgets; let i = index"
-      [ngStyle]="gridOptions.gridType === 'fit' ? {'max-width.px': fitStyle['max-width.px']} : {}"
     >
       <shared-widget
         #widgetElement
