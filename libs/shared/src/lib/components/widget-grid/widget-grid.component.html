@@ -1,3 +1,4 @@
+<div [style]="this.gridSize" [ngClass]="{'absolute' : gridOptions.gridType === 'fit'}">
 <ng-container *ngIf="!loading; else emptyTemplate">
   <!-- NEW WIDGETS -->
   <div
@@ -14,7 +15,7 @@
     </shared-widget-choice>
   </div>
   <!-- GRID OF WIDGETS -->
-  <gridster [options]="gridOptions" class="!w-full" [ngStyle]="gridOptions.gridType === 'fit' ? fitStyle : {}">
+  <gridster [options]="gridOptions" class="!w-full !h-full">
     <gridster-item
       [item]="widget"
       *ngFor="let widget of widgets; let i = index"
@@ -75,3 +76,4 @@
     </gridster-item>
   </gridster>
 </ng-template>
+</div>

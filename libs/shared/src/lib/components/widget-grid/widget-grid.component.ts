@@ -93,6 +93,14 @@ export class WidgetGridComponent
   /** Fit grid type style */
   public fitStyle: any = {};
 
+  get gridSize(): any {
+    const nativeElement = (this._host as any).nativeElement;
+    return {
+      height: nativeElement.offsetHeight + 'px',
+      width: nativeElement.offsetWidth + 'px'
+    }
+  }
+
   /**
    * Indicate if the widget grid can be deactivated or not.
    *
@@ -135,9 +143,6 @@ export class WidgetGridComponent
           this._host.nativeElement.innerWidth
         );
         this.setGridOptions();
-        if (this.options?.gridType === GridType.Fit) {
-          this.setFitStyleWidth();
-        }
       });
     this.setGridOptions();
   }
@@ -149,13 +154,6 @@ export class WidgetGridComponent
     }
     if (changes['options']) {
       this.setGridOptions();
-      if (this.options?.gridType === GridType.Fit) {
-        // set up the style for fit grid type
-        this.setFitStyleWidth();
-      }
-    }
-    if (changes['isFullScreen'] || changes['tabSize']) {
-      this.setFitStyleWidth();
     }
     if (
       changes['canUpdate'] &&
@@ -180,42 +178,6 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
-  }
-
-  /**
-   * Set the available width and height for fit grid type
-   */
-  public setFitStyleWidth() {
-    console.log(this.isFullScreen);
-    const parentTag = (this._host as any).nativeElement.parentElement.tagName;
-
-    // Tab widget
-    if (parentTag === 'SHARED-TAB') {
-      // Is a grid in a tab widget
-      this.fitStyle['max-height.px'] = this.tabSize['height'];
-    } else if (parentTag === 'SHARED-TAB-SETTINGS') {
-      console.log(this._host);
-      // Is a grid in a tab widget settings
-      this.fitStyle['max-height.px'] = this._host.nativeElement.offsetHeight;
-    } else {
-      console.log('no-tab', document.documentElement.clientHeight);
-      // all available height less margin
-      this.fitStyle['max-height.px'] =
-        document.documentElement.clientHeight - (this.isFullScreen ? 100 : 180);
-      // subtract dashboard filter
-      const dashboardFilter = document.documentElement.getElementsByTagName(
-        'shared-dashboard-filter'
-      );
-      if (dashboardFilter.length) {
-        this.fitStyle['max-height.px'] -= (
-          dashboardFilter[0] as any
-        ).offsetHeight;
-      }
-    }
-    // set min width and min height
-    this.fitStyle['min-height.px'] = this.fitStyle['max-height.px'];
-
-    console.log(this.fitStyle);
   }
 
   /**
@@ -299,6 +261,7 @@ export class WidgetGridComponent
    * @param e widget to edit.
    */
   onEditWidget(e: any): void {
+    console.log('ayo edition')
     this.edit.emit(e);
   }
 
@@ -317,6 +280,7 @@ export class WidgetGridComponent
    * @param e widget to style.
    */
   onStyleWidget(e: any): void {
+    console.log('ayo')
     this.style.emit({
       id: e.id,
       widget: e.widget,
