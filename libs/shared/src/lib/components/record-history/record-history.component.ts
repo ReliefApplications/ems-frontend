@@ -69,7 +69,7 @@ export class RecordHistoryComponent
   @Output() cancel = new EventEmitter();
 
   /** Record to display */
-  public record!: Record;
+  public record!: Record | null;
   /** Record history */
   public history: RecordHistory = [];
   /** Filtered history */
@@ -259,7 +259,6 @@ export class RecordHistoryComponent
    */
   setHistoryForTableFromChange(change: Change, filterHistoryElement: any) {
     this.historyForTable.push({
-      id: this.id,
       displayName: change.displayName,
       new: change.new ? JSON.parse(change.new) : undefined,
       old: change.old ? JSON.parse(change.old) : undefined,
@@ -445,7 +444,7 @@ export class RecordHistoryComponent
   private getFields(): any[] {
     const fields: any[] = [];
     // No form, break the display
-    if (this.record.resource) {
+    if (this.record?.resource) {
       // Take the fields from the form
       this.record.resource.fields?.map((field: any) => {
         fields.push(Object.assign({}, field));
