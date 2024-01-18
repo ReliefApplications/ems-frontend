@@ -93,12 +93,15 @@ export class WidgetGridComponent
   /** Fit grid type style */
   public fitStyle: any = {};
 
+  /**
+   * Gets the parent size for 'fit' type grids
+   */
   get gridSize(): any {
     const nativeElement = (this._host as any).nativeElement;
     return {
       height: nativeElement.offsetHeight + 'px',
-      width: nativeElement.offsetWidth + 'px'
-    }
+      width: nativeElement.offsetWidth + 'px',
+    };
   }
 
   /**
@@ -261,7 +264,7 @@ export class WidgetGridComponent
    * @param e widget to edit.
    */
   onEditWidget(e: any): void {
-    console.log('ayo edition')
+    console.log('ayo edition');
     this.edit.emit(e);
   }
 
@@ -280,7 +283,7 @@ export class WidgetGridComponent
    * @param e widget to style.
    */
   onStyleWidget(e: any): void {
-    console.log('ayo')
+    console.log('ayo');
     this.style.emit({
       id: e.id,
       widget: e.widget,
