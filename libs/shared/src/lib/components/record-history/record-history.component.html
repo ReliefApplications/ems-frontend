@@ -1,10 +1,4 @@
-<div
-  class="max-w-[100vw] min-w-96"
-  [ngClass]="{
-    'w-96': !viewAsTable.value,
-    'w-[48rem]': viewAsTable.value
-  }"
->
+<div class="max-w-[100vw] min-w-96">
   <div class="items-center p-4 border-b" [formGroup]="filters">
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
@@ -249,7 +243,7 @@
             "
             [innerHTML]="getHTMLFromChange(value)"
           ></div>
-          <div class="text-center mb-3">
+          <div class="text-center my-3">
             <ui-button
               variant="primary"
               *ngIf="!showMore && item.changes.length > 4"
