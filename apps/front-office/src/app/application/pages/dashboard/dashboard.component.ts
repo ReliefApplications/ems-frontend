@@ -22,6 +22,7 @@ import {
   ButtonActionT,
   ContextService,
   DashboardQueryResponse,
+  Record,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -247,8 +248,28 @@ export class DashboardComponent
           // this.gridOptions.gridType = 'verticalFixed';
           this.updateGridHeight();
           this.dashboardService.openDashboard(this.dashboard);
+          this.initContext();
           this.widgets = cloneDeep(
-            data.dashboard.structure ? data.dashboard.structure : []
+            data.dashboard.structure
+              ?.filter((x: any) => x !== null)
+              .map((widget: any) => {
+                const contextData = this.dashboard?.contextData;
+                this.contextService.context = contextData || null;
+
+                if (!contextData) {
+                  return widget;
+                }
+                const { settings, originalSettings } =
+                  this.contextService.updateSettingsContextContent(
+                    widget.settings
+                  );
+                widget = {
+                  ...widget,
+                  originalSettings,
+                  settings,
+                };
+                return widget;
+              }) || []
           );
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
@@ -306,5 +327,21 @@ export class DashboardComponent
       );
     }
     return true;
+  }
+
+  /** Initializes the dashboard context */
+  private initContext() {
+    const callback = (contextItem: {
+      element?: string;
+      record?: string;
+      recordData?: Record;
+    }) => {
+      this.contextService.onContextChange(
+        'element' in contextItem ? contextItem.element : contextItem.record,
+        this.contextType,
+        this.route
+      );
+    };
+    this.contextService.initContext(callback);
   }
 }

@@ -366,10 +366,10 @@ export class FormHelpersService {
   /**
    * Add tooltip to the survey question if exists
    *
-   * @param _ Default value of afterRenderQuestion callback
+   * @param survey current survey
    * @param options current survey question options
    */
-  public addQuestionTooltips(_: any, options: any): void {
+  public addQuestionTooltips(survey: any, options: any): void {
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
@@ -378,7 +378,10 @@ export class FormHelpersService {
       '.sd-question__title'
     );
     if (titleElement) {
-      titleElement.querySelectorAll('.sv-string-viewer').forEach((el: any) => {
+      const selector = survey.isDesignMode
+        ? '.svc-string-editor'
+        : '.sv-string-viewer';
+      titleElement.querySelectorAll(selector).forEach((el: any) => {
         const tooltip = document.createElement('span');
         tooltip.title = options.question.tooltip;
         tooltip.innerHTML = '?';

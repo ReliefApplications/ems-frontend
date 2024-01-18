@@ -58,6 +58,8 @@ export class WidgetGridComponent
   @Input() options?: GridsterConfig;
   /** Is shared tab boolean */
   @Input() tabSize: any = {};
+  /** Is full screen */
+  @Input() isFullScreen = false;
   /** Delete event emitter */
   @Output() delete: EventEmitter<any> = new EventEmitter();
   /** Edit event emitter */
@@ -147,6 +149,9 @@ export class WidgetGridComponent
       if (this.options?.gridType === GridType.Fit) {
         // set up the style for fit grid type
       }
+    }
+    if (changes['isFullScreen'] || changes['tabSize']) {
+      this.setFitStyleWidth();
     }
     if (
       changes['canUpdate'] &&

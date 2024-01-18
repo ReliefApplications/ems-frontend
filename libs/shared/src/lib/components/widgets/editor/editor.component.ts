@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isNil, set } from 'lodash';
+import { clone, get, isEqual, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -70,7 +70,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Loading indicator */
   public loading = true;
   /** Refresh subject, emit a value when refresh needed */
-  refresh$: Subject<boolean> = new Subject<boolean>();
+  public refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Timeout to init active filter */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -129,21 +131,63 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       .map((aggregation: any) => aggregation.contextFilters)
       .join('');
     // Listen to dashboard filters changes if it is necessary
-    if (this.contextService.filterRegex.test(allContextFilters)) {
-      this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (this.contextService.filterRegex.test(allContextFilters)) {
           this.refresh$.next(true);
           this.loading = true;
           this.setHtml();
-        });
-    }
+        }
+        this.toggleActiveFilters(
+          value,
+          this.htmlContentComponent?.el.nativeElement
+        );
+      });
   }
+
+  /**
+   * Set the elements as active if matching dashboard filter
+   *
+   * @param filterValue value of the current dashboard filter
+   * @param node HTML element
+   */
+  private toggleActiveFilters = (filterValue: any, node: any) => {
+    if (get(node, 'dataset.filterField')) {
+      const value = get(node, 'dataset.filterValue');
+      const filterFieldValue = get(filterValue, node.dataset.filterField);
+      const isNilOrEmpty = (x: any) => isNil(x) || x === '';
+      if (
+        isEqual(value, filterFieldValue) ||
+        (isNilOrEmpty(value) && isNilOrEmpty(filterFieldValue))
+      ) {
+        node.dataset.filterActive = true;
+      } else {
+        node.dataset.filterActive = false;
+      }
+    }
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const child = node.childNodes[i];
+      this.toggleActiveFilters(filterValue, child);
+    }
+  };
 
   /**
    * Set widget html.
    */
   private setHtml() {
+    const callback = () => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      // Necessary because ViewChild is not initialized immediately
+      this.timeoutListener = setTimeout(() => {
+        this.toggleActiveFilters(
+          this.contextService.filter.getValue(),
+          this.htmlContentComponent.el.nativeElement
+        );
+      }, 500);
+    };
     if (this.settings.record && this.settings.resource) {
       from(
         Promise.all([
@@ -172,6 +216,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else if (this.settings.element && this.settings.referenceData) {
       from(
@@ -217,6 +262,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
@@ -231,6 +277,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     }
   }

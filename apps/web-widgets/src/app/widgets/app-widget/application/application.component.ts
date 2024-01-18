@@ -116,6 +116,26 @@ export class ApplicationComponent
                   relativeTo: this.route,
                 });
               }
+            } else {
+              if (!this.router.url.includes(application?.id || '')) {
+                // If a page is configured
+                if (firstPage) {
+                  this.router.navigate(
+                    [
+                      `./${firstPage.type}/${
+                        firstPage.type === ContentType.form
+                          ? firstPage.id
+                          : firstPage.content
+                      }`,
+                    ],
+                    { relativeTo: this.route }
+                  );
+                } else {
+                  this.router.navigate(['./'], {
+                    relativeTo: this.route,
+                  });
+                }
+              }
             }
           }
           this.application = application;

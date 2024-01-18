@@ -62,6 +62,7 @@
     [loading]="loading"
     [widgets]="widgets"
     [options]="dashboard?.gridOptions"
+    [isFullScreen]="isFullScreen"
     (changeStep)="changeStep.emit($event)"
     [ngStyle]="{ 'min-height.px': gridHeight }"
   ></shared-widget-grid>
