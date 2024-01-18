@@ -122,6 +122,7 @@ export class AggregationService {
    * @param options.pipeline aggregation pipeline used to build data
    * @param options.mapping aggregation mapping ( category, field, series )
    * @param options.contextFilters context filters, if any
+   * @param options.variables Graphql variables ( optional )
    * @param options.at 'at' argument value, if any
    * @param options.first number of records to fetch, -1 if all of them
    * @returns Aggregation query
@@ -134,6 +135,7 @@ export class AggregationService {
     pipeline?: any;
     mapping?: any;
     contextFilters?: CompositeFilterDescriptor;
+    variables?: any;
     at?: Date;
     first?: number;
   }): Observable<
@@ -169,6 +171,7 @@ export class AggregationService {
           contextFilters: options.contextFilters
             ? this.contextService.injectContext(options.contextFilters)
             : {},
+          variables: options.variables,
           at: options.at,
           first: options.first,
         },
