@@ -271,8 +271,8 @@ export class FormWrapperDirective
   }
 
   ngAfterContentInit() {
-    // Manage form control status changes
     if (this.control) {
+      // Manage form control status changes
       this.control.control.statusChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -291,9 +291,27 @@ export class FormWrapperDirective
                 this.removeInvalidState();
               }
             }
+            // Required state
+            const isRequired = this.control?.control?.hasValidator(
+              Validators.required
+            );
+            const labelHasRequired =
+              this.currentLabelElement?.textContent?.endsWith(' *');
+
+            if (isRequired && !labelHasRequired) {
+              this.renderer.appendChild(
+                this.currentLabelElement,
+                this.renderer.createText(' *')
+              );
+            } else if (!isRequired && labelHasRequired) {
+              // remove the ' *' from the innerText
+              this.currentLabelElement.innerText =
+                this.currentLabelElement.innerText.replace(' *', '');
+            }
           },
         });
     }
+
     // Get inner input and label elements
     this.currentInputElement =
       this.elementRef.nativeElement.querySelector('input');

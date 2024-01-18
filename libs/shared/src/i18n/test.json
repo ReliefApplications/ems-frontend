@@ -1800,6 +1800,11 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"noVariables": "******",
+									"title": "******",
+									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+								},
 								"title": "******",
 								"use": "******",
 								"wholeRow": {
@@ -2443,7 +2448,23 @@
 				"title": "******"
 			},
 			"graphQLFilter": "******",
-			"path": "******",
+			"pagination": {
+				"cursorPath": "******",
+				"cursorVariable": "******",
+				"offsetVariable": "******",
+				"pageSizeVariable": "******",
+				"pageVariable": "******",
+				"strategy": "******",
+				"totalCountPath": "******",
+				"usePagination": {
+					"hint": "******",
+					"text": "******"
+				}
+			},
+			"path": {
+				"placeholder": "******",
+				"title": "******"
+			},
 			"payload": {
 				"label": "******",
 				"show": "******"
