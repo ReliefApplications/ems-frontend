@@ -236,13 +236,32 @@ export class SummaryCardComponent
       let mapping = JSON.parse(
         this.settings.card?.referenceDataVariableMapping || ''
       );
+      mapping = this.replaceMapping(mapping);
+      console.log(mapping);
       mapping = this.contextService.replaceContext(mapping);
       mapping = this.contextService.replaceFilter(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
+      console.log(mapping);
       return mapping;
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Replace {{widget}} placeholders in object, with context values
+   *
+   * @param object object with placeholders
+   * @returns object with replaced placeholders
+   */
+  public replaceMapping(object: any): any {
+    const search = this.searchControl.value;
+    if (!search) {
+      return object;
+    }
+    return JSON.parse(
+      JSON.stringify(object).replace(/{{widget.search}}/g, search)
+    );
   }
 
   /**
@@ -293,7 +312,15 @@ export class SummaryCardComponent
         takeUntil(this.destroy$)
       )
       .subscribe((value) => {
-        this.handleSearch(value || '');
+        if (this.graphqlVariables) {
+          this.onPage({
+            pageSize: this.pageInfo.pageSize,
+            skip: this.pageInfo.skip + this.pageInfo.pageSize,
+            previousPageIndex: this.pageInfo.pageIndex,
+            pageIndex: this.pageInfo.pageIndex + 1,
+            totalItems: this.pageInfo.length,
+          });
+        } else this.handleSearch(value || '');
       });
 
     // Listen to dashboard filters changes if it is necessary
