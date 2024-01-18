@@ -255,6 +255,15 @@ export class DashboardFilterComponent
       });
   }
 
+  /** Clear dashboard filter fields */
+  public clearFields() {
+    // TO DO: this doesn't work for kendo pickers such as tagbox as date
+    this.survey.clear();
+    //this.onValueChange();
+    //this.survey.render();
+    //this.changeDetectorRef.detectChanges();
+  }
+
   /**
    * Handle filter update mutation response depending of mutation type, for filter structure or position
    *

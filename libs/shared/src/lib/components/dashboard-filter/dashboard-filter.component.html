@@ -113,6 +113,17 @@
             "
           >
           </ui-button>
+          <!-- Clear fields -->
+          <ui-button
+            variant="light"
+            [isIcon]="true"
+            icon="backspace"
+            (click)="clearFields()"
+            [uiTooltip]="
+              'components.application.dashboard.clearFields' | translate
+            "
+          >
+          </ui-button>
         </div>
         <!-- Quick filter -->
         <div
