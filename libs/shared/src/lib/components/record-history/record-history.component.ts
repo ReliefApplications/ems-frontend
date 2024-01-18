@@ -88,6 +88,29 @@ export class RecordHistoryComponent
   });
   /** Sorted fields */
   public sortedFields: any[] = [];
+  /** Table columns */
+  public displayedColumnsHistory: string[] = [
+    'id',
+    'variable',
+    'date',
+    'person',
+    'action',
+    'originalValue',
+    'modifiedValue',
+  ];
+  /** Translations for chips */
+  translations = {
+    withValue: this.translate.instant('components.history.changes.withValue'),
+    from: this.translate.instant('components.history.changes.from'),
+    to: this.translate.instant('components.history.changes.to'),
+    add: this.translate.instant('components.history.changes.add'),
+    remove: this.translate.instant('components.history.changes.remove'),
+    modify: this.translate.instant('components.history.changes.modify'),
+  };
+  /** Data source for history as a table */
+  historyForTable: any[] = [];
+  /** Should view as table */
+  viewAsTable = new FormControl(true);
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -158,6 +181,12 @@ export class RecordHistoryComponent
               (item) => item.changes.length
             );
             this.filterHistory = this.history;
+            this.historyForTable = [];
+            this.history.map((elt) => {
+              elt.changes.map((change) => {
+                this.setHistoryForTableFromChange(change, elt);
+              });
+            });
             this.loading = false;
           }
         });
@@ -206,6 +235,12 @@ export class RecordHistoryComponent
             return newItem;
           });
       }
+      this.historyForTable = [];
+      this.filterHistory.map((elt) => {
+        elt.changes.map((change) => {
+          this.setHistoryForTableFromChange(change, elt);
+        });
+      });
     });
   }
 
@@ -217,21 +252,54 @@ export class RecordHistoryComponent
   }
 
   /**
+   * Push correct values to historyForTable list
+   *
+   * @param change Change to push
+   * @param filterHistoryElement Filter history element (used for createdAt and createdBy)
+   */
+  setHistoryForTableFromChange(change: Change, filterHistoryElement: any) {
+    this.historyForTable.push({
+      id: this.id,
+      displayName: change.displayName,
+      new: change.new ? JSON.parse(change.new) : undefined,
+      old: change.old ? JSON.parse(change.old) : undefined,
+      type: change.type,
+      createdAt: filterHistoryElement.createdAt,
+      createdBy: filterHistoryElement.createdBy,
+    });
+  }
+
+  /**
+   * Get HTML for type chip
+   *
+   * @param change The field change object
+   * @returns the HTML for the chip
+   */
+  getChipFromChange(change: Change) {
+    switch (change.type) {
+      case 'remove':
+      case 'add':
+        return `
+            <span class="${change.type}-field">
+            ${this.translations[change.type]}
+            </span>
+          `;
+      case 'modify':
+        return `
+            <span class="${change.type}-field">
+            ${this.translations[change.type]}
+            </span>
+          `;
+    }
+  }
+
+  /**
    * Gets the HTML element from a change object
    *
    * @param change The field change object
    * @returns the innerHTML for the listing
    */
   getHTMLFromChange(change: Change) {
-    const translations = {
-      withValue: this.translate.instant('components.history.changes.withValue'),
-      from: this.translate.instant('components.history.changes.from'),
-      to: this.translate.instant('components.history.changes.to'),
-      add: this.translate.instant('components.history.changes.add'),
-      remove: this.translate.instant('components.history.changes.remove'),
-      modify: this.translate.instant('components.history.changes.modify'),
-    };
-
     let oldVal = change.old ? JSON.parse(change.old) : undefined;
     let newVal = change.new ? JSON.parse(change.new) : undefined;
 
@@ -254,24 +322,20 @@ export class RecordHistoryComponent
       case 'add':
         return `
           <p>
-            <span class="${change.type}-field">
-            ${translations[change.type]}
-            </span>
+            ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
-            ${translations.withValue}
+            ${this.translations.withValue}
             <b> ${change.type === 'add' ? newVal : oldVal}</b>
           <p>
           `;
       case 'modify':
         return `
           <p>
-            <span class="${change.type}-field">
-            ${translations[change.type]}
-            </span>
+          ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
-            ${translations.from}
+            ${this.translations.from}
             <b> ${oldVal}</b>
-            ${translations.to}
+            ${this.translations.to}
             <b> ${newVal}</b>
           <p>
           `;
@@ -304,7 +368,6 @@ export class RecordHistoryComponent
         );
       });
     }
-
     return res;
   }
 

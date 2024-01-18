@@ -688,7 +688,7 @@ export class DashboardComponent
     if ('refData' in context) {
       this.refDataService.loadReferenceData(context.refData).then((refData) => {
         this.refDataValueField = refData.valueField || '';
-        this.refDataService.fetchItems(refData).then((items) => {
+        this.refDataService.fetchItems(refData).then(({ items }) => {
           this.refDataElements = items;
         });
       });

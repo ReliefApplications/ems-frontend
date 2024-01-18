@@ -63,6 +63,7 @@ import {
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
+import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 
@@ -167,6 +168,8 @@ export class MapComponent
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
+  /** Current geographic extent value */
+  private geographicExtentValue: any;
 
   /**
    * Map widget component
@@ -182,7 +185,8 @@ export class MapComponent
    * @param platform Platform
    * @param injector Injector containing all needed providers
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
-   * @param el Element reference
+   * @param el Element reference,
+   * @param mapPolygonsService Shared map polygons service
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -196,7 +200,8 @@ export class MapComponent
     private platform: Platform,
     public injector: Injector,
     private shadowDomService: ShadowDomService,
-    public el: ElementRef
+    public el: ElementRef,
+    private mapPolygonsService: MapPolygonsService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -234,7 +239,7 @@ export class MapComponent
       .map((layer: any) => JSON.stringify(layer.contextFilters))
       .join('');
 
-    // Listen to dashboard filters changes if it is necessary
+    // Listen to dashboard filters changes to apply layers filter, if it is necessary
     if (this.contextService.filterRegex.test(allContextFilters)) {
       this.contextService.filter$
         .pipe(
@@ -283,6 +288,24 @@ export class MapComponent
       };
       return new Promise(checkAgain);
     };
+
+    // To zoom on getGeographicExtentValue, if necessary
+    const settings = this.extractSettings();
+    const geographicExtentValue = settings.geographicExtentValue;
+    const geographicExtent = settings.geographicExtent;
+
+    // Check if has initial getGeographicExtentValue to zoom on country
+    const fieldValue = geographicExtentValue?.match(
+      this.contextService.filterRegex
+    );
+    if (fieldValue) {
+      // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.zoomOn(geographicExtent as string);
+        });
+    }
   }
 
   override ngOnDestroy(): void {
@@ -371,6 +394,12 @@ export class MapComponent
     const zoomControl = get(mapSettings, 'zoomControl', false);
     const controls = get(mapSettings, 'controls', DefaultMapControls);
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
+    const geographicExtentValue = get(
+      mapSettings,
+      'geographicExtentValue',
+      undefined
+    );
+    const geographicExtent = get(mapSettings, 'geographicExtent', 'admin0');
     const layers = get(mapSettings, 'layers', []);
 
     return {
@@ -384,6 +413,8 @@ export class MapComponent
       layers,
       controls,
       arcGisWebMap,
+      geographicExtentValue,
+      geographicExtent,
     };
   }
 
@@ -404,6 +435,7 @@ export class MapComponent
       arcGisWebMap,
       layers,
       controls,
+      geographicExtent,
     } = this.extractSettings();
 
     if (initMap) {
@@ -444,6 +476,8 @@ export class MapComponent
 
       // Set the needed map instance for it's popup service instance
       this.mapPopupService.setMap = this.map;
+
+      this.zoomOn(geographicExtent as string);
     } else {
       // If value changes for the map we would change in order to not trigger map events unnecessarily
       if (this.map.getMaxZoom() !== maxZoom) {
@@ -1135,5 +1169,71 @@ export class MapComponent
       this.lastUpdateControl?.remove();
       this.lastUpdateControl = undefined;
     }
+  }
+
+  /**
+   * Get the geographic extent value depending on the dashboard filter or dashboard context
+   *
+   * @returns geographic extent value
+   */
+  private getGeographicExtentValue(): string | false {
+    const mapSettings = this.extractSettings();
+    const geographicExtentValue = mapSettings.geographicExtentValue;
+    if (geographicExtentValue) {
+      const fieldValue = geographicExtentValue?.match(
+        this.contextService.filterRegex
+      );
+      if (fieldValue) {
+        // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
+        const replacedFilter = this.contextService.replaceFilter(mapSettings);
+        return replacedFilter.geographicExtentValue?.match(
+          this.contextService.filterRegex
+        )
+          ? false
+          : replacedFilter.geographicExtentValue;
+      }
+      const contextValue = geographicExtentValue?.match(
+        this.contextService.contextRegex
+      );
+      // If geographic extent is dynamic and in the format {{context., context dashboard is not set
+      if (contextValue) {
+        return false;
+      }
+      // As the dashboard context value is automatically replaced on dashboard init,
+      // and the geographicExtentValue can also be static, return the value directly
+      return geographicExtentValue as string;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * If geographicExtentValue exists, calls mapPolygonsService to zoom on it
+   *
+   * @param  geographicExtent geographic extent (admin0)
+   */
+  private zoomOn(geographicExtent: string): void {
+    const geographicExtentValue = this.getGeographicExtentValue();
+    if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
+      this.geographicExtentValue = geographicExtentValue;
+      if (geographicExtentValue) {
+        this.mapPolygonsService.zoomOn(
+          geographicExtentValue,
+          geographicExtent,
+          this.map
+        );
+      } else {
+        this.setDefaultZoom();
+      }
+    }
+  }
+
+  /**
+   * Set the default center and zoom level
+   */
+  private setDefaultZoom(): void {
+    const { center, zoom } = this.extractSettings().initialState.viewpoint;
+    this.currentZoom = zoom;
+    this.map.setView([center.latitude, center.longitude], zoom);
   }
 }
