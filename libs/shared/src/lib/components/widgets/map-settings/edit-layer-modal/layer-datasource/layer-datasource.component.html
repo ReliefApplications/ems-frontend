@@ -91,6 +91,19 @@
         ></ui-divider>
       </div>
 
+      <!-- GraphQL variable mapping for reference data graphql-->
+      <div
+        class="flex-1"
+        *ngIf="referenceData && referenceData.type === 'graphql'"
+      >
+        <shared-graphql-variables-mapping
+          [referenceData]="referenceData"
+          [control]="
+            $any(formGroup.get('referenceDataVariableMapping'))
+          "
+        ></shared-graphql-variables-mapping>
+      </div>
+
       <!-- Selected layout -->
       <div uiFormFieldDirective *ngIf="layout">
         <label>{{ 'common.layout.one' | translate }}</label>

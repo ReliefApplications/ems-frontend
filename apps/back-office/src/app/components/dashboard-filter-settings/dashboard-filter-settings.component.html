@@ -9,18 +9,14 @@
           | translate
       "
     >
-      <ui-select-option value="modern">
-        {{
-          'models.dashboard.filterVariant.variantsOptions.variant_modern'
-            | translate
-        }}
-      </ui-select-option>
-      <ui-select-option value="default">
-        {{
-          'models.dashboard.filterVariant.variantsOptions.variant_default'
-            | translate
-        }}
-      </ui-select-option>
+      <ui-select-option
+        *ngFor="let variant of ['modern', 'default']"
+        [value]="variant"
+      >
+        <ng-container
+          *ngTemplateOutlet="variantTmpl; context: { $implicit: variant }"
+        ></ng-container
+      ></ui-select-option>
     </ui-select-menu>
   </div>
   <!-- Filter structure (survey) -->
@@ -70,6 +66,13 @@
     ></ui-icon>
   </div>
 </form>
+
+<ng-template #variantTmpl let-variant>
+  {{
+    'models.dashboard.filterVariant.variantsOptions.variant_' + variant
+      | translate
+  }}
+</ng-template>
 
 <ng-template #positionTmpl let-position>
   <div class="flex items-center gap-1">

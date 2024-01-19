@@ -394,11 +394,25 @@ export class MapLayersService {
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)
       : undefined;
+    const graphQLVariables = () => {
+      try {
+        let mapping = JSON.parse(
+          layer.datasource?.referenceDataVariableMapping || ''
+        );
+        mapping = this.contextService.replaceContext(mapping);
+        mapping = this.contextService.replaceFilter(mapping);
+        this.contextService.removeEmptyPlaceholders(mapping);
+        return mapping || {};
+      } catch {
+        return {};
+      }
+    };
     const params = new HttpParams({
       fromObject: omitBy(
         {
           ...layer.datasource,
           contextFilters: JSON.stringify(contextFilters),
+          graphQLVariables: JSON.stringify(graphQLVariables()),
           ...(at && {
             at: at.toString(),
           }),
