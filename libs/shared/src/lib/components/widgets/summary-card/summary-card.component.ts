@@ -634,14 +634,6 @@ export class SummaryCardComponent
       })) as CardT[])
     );
 
-    const contextFilters = this.contextService.injectContext(
-      this.contextFilters
-    );
-
-    this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
-      filterReferenceData(x.rawValue, contextFilters)
-    );
-
     const strategy = this.refData?.pageInfo?.strategy;
 
     const isPaginated = !!strategy && !!pageInfo;
@@ -655,6 +647,27 @@ export class SummaryCardComponent
         this.pageInfo.length = this.cards.length;
       }
     } else {
+      // Client side filtering
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+
+      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+        filterReferenceData(x.rawValue, contextFilters)
+      );
+
+      if (this.searchControl.value) {
+        this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
+          return (
+            JSON.stringify(card.rawValue)
+              .replace(/("\w+":)/g, '')
+              .toLowerCase()
+              .indexOf((this.searchControl.value as string).toLowerCase()) !==
+            -1
+          );
+        });
+      }
+
       // If not, all the items are already loaded
       this.pageInfo.length = this.cachedCards.length;
     }
@@ -1003,38 +1016,6 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
-    // // Only apply logic for reference data with no pagination
-    // if (this.useReferenceData) {
-    //   if (!this.refData?.pageInfo?.strategy) {
-    //     const contextFilters = this.contextService.injectContext(
-    //       this.contextFilters
-    //     );
-    //     this.sortedCachedCards = cloneDeep(
-    //       this.cachedCards.filter((x) =>
-    //         filterReferenceData(x.rawValue, contextFilters)
-    //       )
-    //     );
-    //     if (this.searchControl.value) {
-    //       this.sortedCachedCards = this.sortedCachedCards.filter(
-    //         (card: any) => {
-    //           return (
-    //             JSON.stringify(card.rawValue)
-    //               .replace(/("\w+":)/g, '')
-    //               .toLowerCase()
-    //               .indexOf(
-    //                 (this.searchControl.value as string).toLowerCase()
-    //               ) !== -1
-    //           );
-    //         }
-    //       );
-    //     }
-    //   } else {
-    //     // Remove previous cached data
-    //     this.cards = [];
-    //     this.sortedCachedCards = [];
-    //     this.cachedCards = [];
-    //   }
-    // }
     this.cards = [];
     this.sortedCachedCards = [];
     this.cachedCards = [];
