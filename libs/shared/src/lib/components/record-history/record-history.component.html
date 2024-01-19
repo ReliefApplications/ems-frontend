@@ -1,5 +1,9 @@
-<div class="max-w-[100vw] min-w-96">
-  <div class="items-center p-4 border-b" [formGroup]="filters">
+<div
+  [ngClass]="{
+    'w-screen lg:w-[80vw] p-6': showHeader
+  }"
+>
+  <div class="items-center border-b pb-4" [formGroup]="filters">
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
       <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
@@ -243,7 +247,7 @@
             "
             [innerHTML]="getHTMLFromChange(value)"
           ></div>
-          <div class="text-center my-3">
+          <div class="text-center mt-4 mb-3">
             <ui-button
               variant="primary"
               *ngIf="!showMore && item.changes.length > 4"
