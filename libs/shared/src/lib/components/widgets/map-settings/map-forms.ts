@@ -144,6 +144,11 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
       layout: [get(value, 'layout', null)],
       aggregation: [get(value, 'aggregation', null)],
       refData: [get(value, 'refData', null)],
+      referenceDataVariableMapping: get<string | null>(
+        value,
+        'referenceDataVariableMapping',
+        null
+      ),
       geoField: [
         {
           value: get(value, 'geoField', null),
