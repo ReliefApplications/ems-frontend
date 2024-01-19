@@ -291,10 +291,12 @@ export class ContextService {
             secondFilterName &&
             Array.isArray(this.availableFilterFieldsValue[firstFilterName])
           ) {
-            filter.value = jsonpath.query(
-              this.availableFilterFieldsValue,
-              `$..value.${secondFilterName}`
+            const flattenObj = this.flattenAndGroupFilters(
+              this.availableFilterFieldsValue[firstFilterName]
             );
+            const filterJson: any = {};
+            filterJson[firstFilterName] = flattenObj;
+            filter.value = get(filterJson, filterName);
           } else {
             filter.value = get(this.availableFilterFieldsValue, filterName);
           }
@@ -322,6 +324,44 @@ export class ContextService {
         });
     }
     return filter;
+  }
+
+  /**
+   * Method to flatten and group no-primitive filters
+   * @param objects filters
+   * @returns flattened and grouped filters
+   */
+  private flattenAndGroupFilters(objects: any) {
+    const flattenObject = (obj: any, parentKey = '') => {
+      let result: any = {};
+      for (const key in obj) {
+        const newKey = parentKey ? `${parentKey}.${key}` : key;
+
+        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+          result = { ...result, ...flattenObject(obj[key], newKey) };
+        } else {
+          result[newKey] = obj[key];
+        }
+      }
+
+      return result;
+    };
+    const groupByKeys = (objects: any) => {
+      const grouped: any = {};
+      objects.forEach((obj: any) => {
+        for (const key in obj) {
+          if (!grouped[key]) {
+            grouped[key] = [];
+          }
+          grouped[key].push(obj[key]);
+        }
+      });
+
+      return grouped;
+    };
+    const flattened = objects.map((obj: any) => flattenObject(obj.value));
+    const grouped = groupByKeys(flattened);
+    return grouped;
   }
 
   /**
