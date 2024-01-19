@@ -186,13 +186,17 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @returns the graphql query variables object
    */
   private graphqlVariables(aggregation: any) {
+    console.log('get variables');
     try {
       let mapping = JSON.parse(aggregation.referenceDataVariableMapping || '');
+      console.log(mapping);
       mapping = this.contextService.replaceContext(mapping);
-      mapping = this.contextService.replaceFilter(mapping).object;
+      mapping = this.contextService.replaceFilter(mapping);
+      console.log(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
       return mapping;
     } catch {
+      console.log('error');
       return null;
     }
   }
