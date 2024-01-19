@@ -1,11 +1,9 @@
 <div
-  class="max-w-[100vw] min-w-96"
   [ngClass]="{
-    'w-96': !viewAsTable.value,
-    'w-[48rem]': viewAsTable.value
+    'w-screen lg:w-[80vw] p-6': showHeader
   }"
 >
-  <div class="items-center p-4 border-b" [formGroup]="filters">
+  <div class="items-center border-b pb-4" [formGroup]="filters">
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
       <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
@@ -92,7 +90,9 @@
         <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
       </ui-menu>
       <ui-toggle [formControl]="viewAsTable">
-        <ng-container ngProjectAs="label"> {{ 'components.history.useTableMode' | translate }} </ng-container>
+        <ng-container ngProjectAs="label">
+          {{ 'components.history.useTableMode' | translate }}
+        </ng-container>
       </ui-toggle>
     </div>
   </div>
@@ -134,14 +134,14 @@
     <table cdk-table uiTableWrapper [dataSource]="historyForTable">
       <ng-container cdkColumnDef="id">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
-          {{ 'components.history.columns.signalId' | translate }}
+          {{ 'common.id' | translate }}
         </th>
         <td
           uiCell
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          {{ element.id }}
+          {{ record?.incrementalId }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="variable">
@@ -247,7 +247,7 @@
             "
             [innerHTML]="getHTMLFromChange(value)"
           ></div>
-          <div class="text-center mb-3">
+          <div class="text-center mt-4 mb-3">
             <ui-button
               variant="primary"
               *ngIf="!showMore && item.changes.length > 4"

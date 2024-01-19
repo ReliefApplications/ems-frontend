@@ -61,6 +61,8 @@ export class ContextService {
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
   public filterRegex = /{{filter\.(.*?)}}/g;
+  /** Regex to detect the value of {{filter.}} in object */
+  public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
   public contextRegex = /{{context\.(.*?)}}/g;
   /** Dashboard object */
@@ -224,20 +226,17 @@ export class ContextService {
    * @param object object with placeholders
    * @returns object with replaced placeholders
    */
-  public replaceFilter(object: any): { object: any; replaced: boolean } {
+  public replaceFilter(object: any): any {
     const filter = this.availableFilterFieldsValue;
     if (isEmpty(filter)) {
-      return { object, replaced: false };
+      return object;
     }
-    return {
-      object: JSON.parse(
-        JSON.stringify(object).replace(this.filterRegex, (match) => {
-          const field = match.replace('{{filter.', '').replace('}}', '');
-          return get(filter, field) || match;
-        })
-      ),
-      replaced: true,
-    };
+    return JSON.parse(
+      JSON.stringify(object).replace(this.filterRegex, (match) => {
+        const field = match.replace('{{filter.', '').replace('}}', '');
+        return get(filter, field) || match;
+      })
+    );
   }
 
   /**
@@ -277,7 +276,7 @@ export class ContextService {
     //   return filter;
     // }
     // Regex to detect {{filter.}} in object
-    const filterRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
+    const filterRegex = this.filterValueRegex;
     // Regex to detect {{context.}} in object
     const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
     if ('field' in filter && filter.field) {

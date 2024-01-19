@@ -237,7 +237,7 @@ export class SummaryCardComponent
         this.settings.card?.referenceDataVariableMapping || ''
       );
       mapping = this.contextService.replaceContext(mapping);
-      mapping = this.contextService.replaceFilter(mapping).object;
+      mapping = this.contextService.replaceFilter(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
       return mapping;
     } catch {
