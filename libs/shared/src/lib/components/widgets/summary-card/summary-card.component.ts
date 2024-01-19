@@ -442,7 +442,7 @@ export class SummaryCardComponent
         Object.assign(
           this.graphqlVariables || {},
           this.refData.pageInfo?.pageSizeVar && {
-            [this.refData.pageInfo.pageSizeVar]: DEFAULT_PAGE_SIZE,
+            [this.refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize,
           }
         )
       );
@@ -754,7 +754,7 @@ export class SummaryCardComponent
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
-                first: DEFAULT_PAGE_SIZE,
+                first: this.pageInfo.pageSize,
                 filter: this.queryFilter,
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
@@ -871,7 +871,7 @@ export class SummaryCardComponent
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource as string,
       card.aggregation as string,
-      DEFAULT_PAGE_SIZE,
+      this.pageInfo.pageSize,
       0,
       this.contextService.injectContext(this.contextFilters),
       this.widget.settings.at
@@ -957,19 +957,20 @@ export class SummaryCardComponent
           }),
         })
         .then(this.updateRecordCards.bind(this));
-    } else if (this.useReferenceData) {
+    } else if (this.useReferenceData && this.refData) {
       const strategy = this.refData?.pageInfo?.strategy;
       const refData = this.refData;
+
+      // Build the variables for the query based on the pagination strategy
+      const variables: any = Object.assign(
+        {},
+        refData?.pageInfo?.pageSizeVar
+          ? { [refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize }
+          : {}
+      );
+
       // If using pagination, fetch the next page
       if (strategy && refData?.pageInfo) {
-        // Build the variables for the query based on the pagination strategy
-        const variables: any = Object.assign(
-          {},
-          refData.pageInfo?.pageSizeVar
-            ? { [refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize }
-            : {}
-        );
-
         // Set the pagination variable according to the strategy
         if (refData.pageInfo.strategy === 'offset') {
           variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
@@ -982,25 +983,19 @@ export class SummaryCardComponent
         } else if (refData.pageInfo.strategy === 'page') {
           variables[refData.pageInfo.pageVar] = event.pageIndex + 1;
         }
-
-        // Only set loading state if using pagination, not infinite scroll
-        this.loading = !this.scrolling;
-        this.referenceDataService
-          .cacheItems(refData, {
-            ...variables,
-            ...(this.graphqlVariables ?? {}),
-          })
-          .then(({ items, pageInfo }) => {
-            this.updateReferenceDataCards(items, pageInfo);
-            this.loading = false;
-          });
-      } else {
-        this.cards = this.sortedCachedCards.slice(
-          this.pageInfo.skip,
-          this.pageInfo.skip + this.pageInfo.pageSize
-        );
-        this.pageInfo.length = this.sortedCachedCards.length;
       }
+
+      // Only set loading state if using pagination, not infinite scroll
+      this.loading = !this.scrolling;
+      this.referenceDataService
+        .cacheItems(refData, {
+          ...variables,
+          ...(this.graphqlVariables ?? {}),
+        })
+        .then(({ items, pageInfo }) => {
+          this.updateReferenceDataCards(items, pageInfo);
+          this.loading = false;
+        });
     }
   }
 
@@ -1008,40 +1003,44 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
-    // Only apply logic for reference data with no pagination
-    if (this.useReferenceData) {
-      if (!this.refData?.pageInfo?.strategy) {
-        const contextFilters = this.contextService.injectContext(
-          this.contextFilters
-        );
-        this.sortedCachedCards = cloneDeep(
-          this.cachedCards.filter((x) =>
-            filterReferenceData(x.rawValue, contextFilters)
-          )
-        );
-        if (this.searchControl.value) {
-          this.sortedCachedCards = this.sortedCachedCards.filter(
-            (card: any) => {
-              return (
-                JSON.stringify(card.rawValue)
-                  .replace(/("\w+":)/g, '')
-                  .toLowerCase()
-                  .indexOf(
-                    (this.searchControl.value as string).toLowerCase()
-                  ) !== -1
-              );
-            }
-          );
-        }
-      } else {
-        // Remove previous cached data
-        this.cards = [];
-        this.sortedCachedCards = [];
-        this.cachedCards = [];
-      }
-    }
+    // // Only apply logic for reference data with no pagination
+    // if (this.useReferenceData) {
+    //   if (!this.refData?.pageInfo?.strategy) {
+    //     const contextFilters = this.contextService.injectContext(
+    //       this.contextFilters
+    //     );
+    //     this.sortedCachedCards = cloneDeep(
+    //       this.cachedCards.filter((x) =>
+    //         filterReferenceData(x.rawValue, contextFilters)
+    //       )
+    //     );
+    //     if (this.searchControl.value) {
+    //       this.sortedCachedCards = this.sortedCachedCards.filter(
+    //         (card: any) => {
+    //           return (
+    //             JSON.stringify(card.rawValue)
+    //               .replace(/("\w+":)/g, '')
+    //               .toLowerCase()
+    //               .indexOf(
+    //                 (this.searchControl.value as string).toLowerCase()
+    //               ) !== -1
+    //           );
+    //         }
+    //       );
+    //     }
+    //   } else {
+    //     // Remove previous cached data
+    //     this.cards = [];
+    //     this.sortedCachedCards = [];
+    //     this.cachedCards = [];
+    //   }
+    // }
+    this.cards = [];
+    this.sortedCachedCards = [];
+    this.cachedCards = [];
+
     this.onPage({
-      pageSize: DEFAULT_PAGE_SIZE,
+      pageSize: this.pageInfo.pageSize,
       skip: 0,
       previousPageIndex: 0,
       pageIndex: 0,
