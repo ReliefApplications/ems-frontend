@@ -130,11 +130,18 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     const allContextFilters = this.aggregations
       .map((aggregation: any) => aggregation.contextFilters)
       .join('');
+    const allGraphQLVariables = this.aggregations
+      .map((aggregation: any) => aggregation.referenceDataVariableMapping)
+      .join('');
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (this.contextService.filterRegex.test(allContextFilters)) {
+        if (
+          this.contextService.filterRegex.test(
+            allContextFilters + allGraphQLVariables
+          )
+        ) {
           this.refresh$.next(true);
           this.loading = true;
           this.setHtml();
@@ -171,6 +178,25 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       this.toggleActiveFilters(filterValue, child);
     }
   };
+
+  /**
+   * Gets graphQLVariables from target aggregation
+   *
+   * @param aggregation aggregation we need the mapping variables from
+   * @returns the graphql query variables object
+   */
+  private graphQLVariables(aggregation: any) {
+    try {
+      let mapping = JSON.parse(aggregation.referenceDataVariableMapping || '');
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
+    } catch {
+      console.log('error');
+      return null;
+    }
+  }
 
   /**
    * Set widget html.
@@ -300,6 +326,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
               contextFilters: aggregation.contextFilters
                 ? JSON.parse(aggregation.contextFilters)
                 : {},
+              graphQLVariables: this.graphQLVariables(aggregation),
               at: this.contextService.atArgumentValue(aggregation.at),
             })
           )
