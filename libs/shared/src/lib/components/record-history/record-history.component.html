@@ -92,7 +92,9 @@
         <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
       </ui-menu>
       <ui-toggle [formControl]="viewAsTable">
-        <ng-container ngProjectAs="label"> {{ 'components.history.useTableMode' | translate }} </ng-container>
+        <ng-container ngProjectAs="label">
+          {{ 'components.history.useTableMode' | translate }}
+        </ng-container>
       </ui-toggle>
     </div>
   </div>
@@ -134,14 +136,14 @@
     <table cdk-table uiTableWrapper [dataSource]="historyForTable">
       <ng-container cdkColumnDef="id">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
-          {{ 'components.history.columns.signalId' | translate }}
+          {{ 'common.id' | translate }}
         </th>
         <td
           uiCell
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          {{ element.id }}
+          {{ record?.incrementalId }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="variable">
