@@ -29,7 +29,6 @@ import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
-import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard page.
@@ -135,81 +134,17 @@ export class DashboardComponent
         /** Extract query id to load template */
         const queryId = this.route.snapshot.queryParamMap.get('id');
         if (id) {
-          if (queryId) {
-            // Try to load template
-            this.loadDashboard(id).then(() => {
-              const templates = this.dashboard?.page?.contentWithContext;
-              const type = this.contextType;
-              if (type) {
-                // Find template from parent's templates, based on query params id
-                const template = templates?.find((d) => {
-                  // If templates use reference data
-                  if (type === 'element')
-                    return (
-                      'element' in d &&
-                      d.element.toString().trim() === queryId.trim()
-                    );
-                  // If templates use resource
-                  else if (type === 'record')
-                    return (
-                      'record' in d &&
-                      d.record.toString().trim() === queryId.trim()
-                    );
-                  return false;
-                });
-
-                if (template) {
-                  // Load template, it will erase current dashboard
-                  this.loadDashboard(template.content).then(
-                    () => (this.loading = false)
-                  );
-                } else {
-                  this.dashboardService
-                    .getDashboardWithContext(
-                      this.dashboard?.page?.id as string,
-                      type, // type of context
-                      queryId // id of the context
-                    )
-                    .then(({ data }) => {
-                      if (!data?.dashboardWithContext?.dashboard?.id) {
-                        return;
-                      }
-                      // load the contextual dashboard
-                      this.dashboard = {
-                        ...data.dashboardWithContext.dashboard,
-                        contextData: data.dashboardWithContext.contextData,
-                      };
-                      this.dashboardService.openDashboard(this.dashboard);
-                      this.initContext();
-                      this.widgets = this.setWidgets();
-                    });
-                  // Will use current template
-                  this.loading = false;
-                  return;
-                }
-              } else {
-                this.loading = false;
-              }
-            });
-          } else {
-            // Don't use template, and directly load the dashboard from router's params
-            this.loadDashboard(id).then(() => (this.loading = false));
-          }
+          this.loadDashboard(id, queryId?.trim()).then(
+            () => (this.loading = false)
+          );
         }
       });
   }
 
-  /**
-   * Sets up the widgets from the dashboard structure
-   *
-   * @returns the widgets list
-   */
+  /** Sets up the widgets from the dashboard structure */
   private setWidgets() {
-    if (!this.dashboard) {
-      return;
-    }
-    return cloneDeep(
-      this.dashboard.structure
+    this.widgets =
+      this.dashboard?.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
@@ -225,17 +160,17 @@ export class DashboardComponent
             settings,
           };
           return widget;
-        }) || []
-    );
+        }) || [];
   }
 
   /**
    * Init the dashboard
    *
    * @param id Dashboard id
+   * @param contextId Context id (id of the element or the record)
    * @returns Promise
    */
-  private async loadDashboard(id: string) {
+  private async loadDashboard(id: string, contextId?: string | number) {
     // don't init the dashboard if the id is the same
     if (this.dashboard?.id === id) {
       return;
@@ -251,6 +186,7 @@ export class DashboardComponent
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id,
+          contextEl: contextId || null,
         },
       })
     )
@@ -259,7 +195,7 @@ export class DashboardComponent
           this.dashboard = data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
           this.initContext();
-          this.widgets = this.setWidgets();
+          this.setWidgets();
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);

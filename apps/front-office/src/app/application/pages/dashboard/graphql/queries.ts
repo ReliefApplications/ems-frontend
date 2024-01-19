@@ -4,8 +4,8 @@ import { gql } from 'apollo-angular';
  * Dashboard query.
  */
 export const GET_DASHBOARD_BY_ID = gql`
-  query GetDashboardById($id: ID!) {
-    dashboard(id: $id) {
+  query GetDashboardById($id: ID!, $contextEl: JSON) {
+    dashboard(id: $id, contextEl: $contextEl) {
       id
       name
       createdAt

@@ -2,10 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import {
-  CreateDashboardWithContextMutationResponse,
   Dashboard,
   EditDashboardMutationResponse,
-  GetDashboardWithContextMutationResponse,
   WIDGET_TYPES,
 } from '../../models/dashboard.model';
 import {
@@ -14,14 +12,9 @@ import {
 } from '../../models/page.model';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
-import {
-  EDIT_DASHBOARD,
-  UPDATE_PAGE_CONTEXT,
-  CREATE_DASHBOARD_WITH_CONTEXT,
-} from './graphql/mutations';
+import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
-import { GET_DASHBOARD_WITH_CONTEXT } from './graphql/queries';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -154,54 +147,6 @@ export class DashboardService {
     });
 
     return res;
-  }
-
-  /**
-   * Duplicates a dashboard and adds context to it.
-   *
-   * @param page Page to copy content from
-   * @param context The type of context to be added to the dashboard
-   * @param id The id of the context to be added to the dashboard
-   * @returns The newly created dashboard
-   */
-  public createDashboardWithContext(
-    page: string,
-    context: 'element' | 'record',
-    id: string | number
-  ) {
-    return firstValueFrom(
-      this.apollo.mutate<CreateDashboardWithContextMutationResponse>({
-        mutation: CREATE_DASHBOARD_WITH_CONTEXT,
-        variables: {
-          page,
-          [context]: id,
-        },
-      })
-    );
-  }
-
-  /**
-   * Duplicates a dashboard and adds context to it without writing changes inside of the database.
-   *
-   * @param page Page to copy content from
-   * @param context The type of context to be added to the dashboard
-   * @param id The id of the context to be added to the dashboard
-   * @returns The newly temporary dashboard
-   */
-  public getDashboardWithContext(
-    page: string,
-    context: 'element' | 'record',
-    id: string | number
-  ) {
-    return firstValueFrom(
-      this.apollo.query<GetDashboardWithContextMutationResponse>({
-        query: GET_DASHBOARD_WITH_CONTEXT,
-        variables: {
-          page,
-          [context]: id,
-        },
-      })
-    );
   }
 
   /**
