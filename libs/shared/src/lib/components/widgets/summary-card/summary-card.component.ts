@@ -259,15 +259,9 @@ export class SummaryCardComponent
       return object;
     }
     return JSON.parse(
-      JSON.stringify(object, (key, value) => {
-        if (key === '{{widget.sortField}}') {
-          return sort.field;
-        }
-        if (key === '{{widget.sortOrder}}') {
-          return sort.order;
-        }
-        return value;
-      })
+      JSON.stringify(object)
+        .replace(/{{widget.sortField}}/g, sort.field)
+        .replace(/{{widget.sortOrder}}/g, sort.order)
     );
   }
 
