@@ -180,19 +180,16 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   };
 
   /**
-   * Gets graphqlVariables from target aggregation
+   * Gets graphQLVariables from target aggregation
    *
    * @param aggregation aggregation we need the mapping variables from
    * @returns the graphql query variables object
    */
-  private graphqlVariables(aggregation: any) {
-    console.log('get variables');
+  private graphQLVariables(aggregation: any) {
     try {
       let mapping = JSON.parse(aggregation.referenceDataVariableMapping || '');
-      console.log(mapping);
       mapping = this.contextService.replaceContext(mapping);
       mapping = this.contextService.replaceFilter(mapping);
-      console.log(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
       return mapping;
     } catch {
@@ -329,7 +326,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
               contextFilters: aggregation.contextFilters
                 ? JSON.parse(aggregation.contextFilters)
                 : {},
-              graphQLVariables: this.graphqlVariables(aggregation),
+              graphQLVariables: this.graphQLVariables(aggregation),
               at: this.contextService.atArgumentValue(aggregation.at),
             })
           )
