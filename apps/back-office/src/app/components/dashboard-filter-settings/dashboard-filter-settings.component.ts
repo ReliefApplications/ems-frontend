@@ -110,6 +110,7 @@ export class DashboardFilterSettingsComponent
    * @returns Form group
    */
   private createSettingsForm() {
+    console.log(get(this.dashboard, 'filter.variant', 'modern'));
     return this.fb.group({
       show: get(this.dashboard, 'filter.show', false),
       variant: get(this.dashboard, 'filter.variant', 'modern'),
