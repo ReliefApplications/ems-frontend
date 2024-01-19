@@ -108,7 +108,7 @@ export class ChartComponent
   }
 
   /** @returns the graphql query variables object */
-  get graphqlVariables() {
+  get graphQLVariables() {
     try {
       let mapping = JSON.parse(
         this.settings.referenceDataVariableMapping || ''
@@ -170,20 +170,18 @@ export class ChartComponent
 
   ngOnInit(): void {
     // Listen to dashboard filters changes if it is necessary
-    if (
-      this.contextService.filterRegex.test(this.settings.contextFilters) ||
-      this.contextService.filterRegex.test(
-        this.settings.referenceDataVariableMapping
-      )
-    ) {
-      this.contextService.filter$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.series.next([]);
-          this.loadChart();
-          this.getOptions();
-        });
-    }
+    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (
+        this.contextService.filterRegex.test(this.settings.contextFilters) ||
+        this.contextService.filterRegex.test(
+          this.settings.referenceDataVariableMapping
+        )
+      ) {
+        this.series.next([]);
+        this.loadChart();
+        this.getOptions();
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -222,7 +220,7 @@ export class ChartComponent
   }
 
   /** Loads chart */
-  private async loadChart(): Promise<void> {
+  private loadChart(): void {
     this.loading = true;
     if (this.settings.resource || this.settings.referenceData) {
       this.dataQuery = this.aggregationService.aggregationDataQuery({
@@ -231,7 +229,7 @@ export class ChartComponent
         aggregation: this.aggregationId || '',
         mapping: get(this.settings, 'chart.mapping', null),
         contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
-        variables: { ...(this.graphqlVariables ?? {}) },
+        graphQLVariables: this.graphQLVariables,
         at: this.settings.at
           ? this.contextService.atArgumentValue(this.settings.at)
           : undefined,

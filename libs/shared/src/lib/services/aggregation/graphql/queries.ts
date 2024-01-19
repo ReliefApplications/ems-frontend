@@ -96,7 +96,7 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
     $first: Int
     $skip: Int
     $contextFilters: JSON
-    $variables: JSON
+    $graphQLVariables: JSON
     $at: Date
     $sortOrder: String
     $sortField: String
@@ -110,7 +110,7 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
       first: $first
       skip: $skip
       contextFilters: $contextFilters
-      variables: $variables
+      graphQLVariables: $graphQLVariables
       at: $at
       sortOrder: $sortOrder
       sortField: $sortField
