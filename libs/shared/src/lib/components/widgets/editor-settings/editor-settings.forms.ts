@@ -32,6 +32,9 @@ export const createTemplateAggregationForm = (value: any) => {
         ? get<string>(value, 'contextFilters', '')
         : DEFAULT_CONTEXT_FILTER,
       at: get<string>(value, 'at', ''),
+      referenceDataVariableMapping: [
+        get(value, 'referenceDataVariableMapping', null),
+      ],
     },
     {
       validators: [

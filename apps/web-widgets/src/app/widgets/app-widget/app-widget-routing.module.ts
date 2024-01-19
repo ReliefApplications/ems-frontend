@@ -1,6 +1,12 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {
+  PreloadAllModules,
+  RouteReuseStrategy,
+  RouterModule,
+  Routes,
+} from '@angular/router';
 import { IsNormalizeUrl } from './guards/normalize-url.guard';
+import { AppRouteReuseStrategy } from './route-reuse-strategy';
 
 /**
  * List of top level routes of the Front-Office.
@@ -35,5 +41,11 @@ const routes: Routes = [
     }),
   ],
   exports: [RouterModule],
+  providers: [
+    {
+      provide: RouteReuseStrategy,
+      useClass: AppRouteReuseStrategy,
+    },
+  ],
 })
 export class ApplicationWidgetRoutingModule {}

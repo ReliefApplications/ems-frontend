@@ -871,7 +871,6 @@
 				"modifiedValue": "Modified variable value",
 				"originalValue": "Original variable value",
 				"person": "Who modified",
-				"signalId": "Signal Id",
 				"variable": "Variable modified"
 			},
 			"download": "Download history",
