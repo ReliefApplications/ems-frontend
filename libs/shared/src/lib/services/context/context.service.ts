@@ -33,7 +33,6 @@ import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordQueryResponse } from '../../models/record.model';
 import { GET_RECORD_BY_ID } from './graphql/queries';
-import jsonpath from 'jsonpath';
 
 /**
  * Dashboard context service
@@ -328,6 +327,7 @@ export class ContextService {
 
   /**
    * Method to flatten and group no-primitive filters
+   *
    * @param objects filters
    * @returns flattened and grouped filters
    */
