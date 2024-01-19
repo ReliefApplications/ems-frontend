@@ -238,13 +238,37 @@ export class SummaryCardComponent
       );
       mapping = this.contextService.replaceContext(mapping);
       mapping = this.contextService.replaceFilter(mapping);
-      mapping = this.replaceMapping(mapping);
+      mapping = this.replaceSearch(mapping);
+      mapping = this.replaceOnSort(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
-      console.log(mapping);
       return mapping;
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Replace {{widget}} placeholders in object, with sort value.
+   *
+   * @param object object with placeholders
+   * @returns object with replaced placeholders
+   */
+  private replaceOnSort(object: any): any {
+    const sort = this.sortOptions;
+    if (!sort || !sort.field || !sort.order) {
+      return object;
+    }
+    return JSON.parse(
+      JSON.stringify(object, (key, value) => {
+        if (key === '{{widget.sortField}}') {
+          return sort.field;
+        }
+        if (key === '{{widget.sortOrder}}') {
+          return sort.order;
+        }
+        return value;
+      })
+    );
   }
 
   /**
@@ -253,7 +277,7 @@ export class SummaryCardComponent
    * @param object object with placeholders
    * @returns object with replaced placeholders
    */
-  public replaceMapping(object: any): any {
+  private replaceSearch(object: any): any {
     const search = this.searchControl.value;
     if (!search) {
       return object;
@@ -311,14 +335,11 @@ export class SummaryCardComponent
         takeUntil(this.destroy$)
       )
       .subscribe((value) => {
-        if (this.graphqlVariables) {
-          this.onPage({
-            pageSize: this.pageInfo.pageSize,
-            skip: this.pageInfo.skip + this.pageInfo.pageSize,
-            previousPageIndex: this.pageInfo.pageIndex,
-            pageIndex: this.pageInfo.pageIndex + 1,
-            totalItems: this.pageInfo.length,
-          });
+        if (
+          this.graphqlVariables &&
+          this.settings.widgetDisplay?.usePagination
+        ) {
+          this.refresh();
         } else this.handleSearch(value || '');
       });
 
@@ -1008,7 +1029,6 @@ export class SummaryCardComponent
         } else if (refData.pageInfo.strategy === 'page') {
           variables[refData.pageInfo.pageVar] = event.pageIndex + 1;
         }
-
         // Only set loading state if using pagination, not infinite scroll
         this.loading = !this.scrolling;
         this.referenceDataService
@@ -1114,7 +1134,9 @@ export class SummaryCardComponent
         };
       }
     }
-    if (this.gridComponent) {
+    if (this.graphqlVariables && this.settings.widgetDisplay?.usePagination) {
+      this.refresh();
+    } else if (this.gridComponent) {
       this.gridComponent.onSort(e);
     } else {
       if (this.useLayout) {
