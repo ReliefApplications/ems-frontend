@@ -164,29 +164,6 @@ export class ContextService {
     private applicationService: ApplicationService,
     private router: Router
   ) {
-    this.dashboardService.dashboard$.subscribe(
-      (dashboard: Dashboard | null) => {
-        if (dashboard) {
-          if (this.dashboard?.id !== dashboard.id) {
-            this.dashboard = dashboard;
-          }
-          this.filterStructure.next(dashboard.filter?.structure);
-          localForage.getItem(this.positionKey).then((position) => {
-            if (position) {
-              this.filterPosition.next(position);
-            } else {
-              this.filterPosition.next(
-                dashboard.filter?.position ?? FilterPosition.BOTTOM
-              );
-            }
-          });
-        } else {
-          this.filterStructure.next(null);
-          this.filterPosition.next(null);
-          this.dashboard = undefined;
-        }
-      }
-    );
     this.filterPosition$.subscribe((position: any) => {
       if (position && this.dashboard?.id) {
         localForage.setItem(this.positionKey, position);
@@ -198,6 +175,35 @@ export class ContextService {
         this.filter.next({});
       }
     });
+  }
+
+  /**
+   * Sets the filter to match the one of the dashboard
+   *
+   * @param dashboard dashboard to get filter from
+   */
+  public setFilter(dashboard?: Dashboard) {
+    {
+      if (dashboard) {
+        if (this.dashboard?.id !== dashboard.id) {
+          this.dashboard = dashboard;
+        }
+        this.filterStructure.next(dashboard.filter?.structure);
+        localForage.getItem(this.positionKey).then((position) => {
+          if (position) {
+            this.filterPosition.next(position);
+          } else {
+            this.filterPosition.next(
+              dashboard.filter?.position ?? FilterPosition.BOTTOM
+            );
+          }
+        });
+      } else {
+        this.filterStructure.next(null);
+        this.filterPosition.next(null);
+        this.dashboard = undefined;
+      }
+    }
   }
 
   /**

@@ -19,7 +19,6 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { Dashboard } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
@@ -55,8 +54,6 @@ export class DashboardFilterComponent
   @Input() closable = true;
   /** Current position of filter */
   public position!: FilterPosition;
-  /** Dashboard the filter belongs to */
-  public dashboard?: Dashboard;
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
@@ -119,13 +116,6 @@ export class DashboardFilterComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.opened = value;
-      });
-    this.dashboardService.dashboard$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((dashboard: Dashboard | null) => {
-        if (dashboard) {
-          this.dashboard = dashboard;
-        }
       });
     this.contextService.filterStructure$
       .pipe(takeUntil(this.destroy$))
