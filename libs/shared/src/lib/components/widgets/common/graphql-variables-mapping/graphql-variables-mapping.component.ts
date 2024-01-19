@@ -54,7 +54,7 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
 
     try {
       const query = gql(this.referenceData.query ?? '');
-      const definition = query.definitions[0];
+      const definition = query.definitions?.[0];
       if (definition?.kind !== 'OperationDefinition') {
         this.availableQueryVariables = [];
         return;
@@ -87,6 +87,7 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
       }
       this.availableQueryVariables = availableVariables;
     } catch (_) {
+      console.error('Error while building available graphql variables', _);
       this.availableQueryVariables = [];
     }
   }

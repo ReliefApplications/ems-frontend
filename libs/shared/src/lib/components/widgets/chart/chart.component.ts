@@ -107,6 +107,21 @@ export class ChartComponent
         };
   }
 
+  /** @returns the graphql query variables object */
+  get graphQLVariables() {
+    try {
+      let mapping = JSON.parse(
+        this.settings.referenceDataVariableMapping || ''
+      );
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
+    } catch {
+      return null;
+    }
+  }
+
   /**
    * Get filename from the date and widget title
    *
@@ -155,15 +170,18 @@ export class ChartComponent
 
   ngOnInit(): void {
     // Listen to dashboard filters changes if it is necessary
-    if (this.contextService.filterRegex.test(this.settings.contextFilters)) {
-      this.contextService.filter$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.series.next([]);
-          this.loadChart();
-          this.getOptions();
-        });
-    }
+    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (
+        this.contextService.filterRegex.test(this.settings.contextFilters) ||
+        this.contextService.filterRegex.test(
+          this.settings.referenceDataVariableMapping
+        )
+      ) {
+        this.series.next([]);
+        this.loadChart();
+        this.getOptions();
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -211,6 +229,7 @@ export class ChartComponent
         aggregation: this.aggregationId || '',
         mapping: get(this.settings, 'chart.mapping', null),
         contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
+        graphQLVariables: this.graphQLVariables,
         at: this.settings.at
           ? this.contextService.atArgumentValue(this.settings.at)
           : undefined,
