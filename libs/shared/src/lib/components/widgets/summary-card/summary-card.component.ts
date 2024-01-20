@@ -308,6 +308,7 @@ export class SummaryCardComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
+          console.log('refresh');
           this.refresh();
         });
     }
@@ -509,6 +510,7 @@ export class SummaryCardComponent
           })
       );
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+      console.log(this.cards);
       this.pageInfo.length = this.sortedCachedCards.length;
     }
   }
@@ -651,6 +653,8 @@ export class SummaryCardComponent
       const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );
+
+      console.log(contextFilters);
 
       this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
         filterReferenceData(x.rawValue, contextFilters)
@@ -1019,6 +1023,14 @@ export class SummaryCardComponent
     this.cards = [];
     this.sortedCachedCards = [];
     this.cachedCards = [];
+
+    if (this.summaryCardGrid) {
+      this.summaryCardGrid.nativeElement.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
 
     this.onPage({
       pageSize: this.pageInfo.pageSize,

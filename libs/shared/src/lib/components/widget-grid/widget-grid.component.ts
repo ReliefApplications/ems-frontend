@@ -231,8 +231,6 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
-    console.log(this.gridOptions.gridType);
-    console.log(this.options);
     // Set maxCols at the end, based on widgets & existing max
     this.gridOptions.maxCols = Math.max(
       this.maxCols,
