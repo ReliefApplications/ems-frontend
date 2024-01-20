@@ -380,6 +380,10 @@ export class ViewSettingsModalComponent
       const updates = { gridOptions };
       this.onUpdate.emit(updates);
     };
-    this.dashboardService.editGridOptions(gridOptions, callback);
+    this.dashboardService.editGridOptions(
+      this.dashboard?.id,
+      gridOptions,
+      callback
+    );
   }
 }

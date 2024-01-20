@@ -164,29 +164,6 @@ export class ContextService {
     private applicationService: ApplicationService,
     private router: Router
   ) {
-    this.dashboardService.dashboard$.subscribe(
-      (dashboard: Dashboard | null) => {
-        if (dashboard) {
-          if (this.dashboard?.id !== dashboard.id) {
-            this.dashboard = dashboard;
-          }
-          this.filterStructure.next(dashboard.filter?.structure);
-          localForage.getItem(this.positionKey).then((position) => {
-            if (position) {
-              this.filterPosition.next(position);
-            } else {
-              this.filterPosition.next(
-                dashboard.filter?.position ?? FilterPosition.BOTTOM
-              );
-            }
-          });
-        } else {
-          this.filterStructure.next(null);
-          this.filterPosition.next(null);
-          this.dashboard = undefined;
-        }
-      }
-    );
     this.filterPosition$.subscribe((position: any) => {
       if (position && this.dashboard?.id) {
         localForage.setItem(this.positionKey, position);
@@ -198,6 +175,35 @@ export class ContextService {
         this.filter.next({});
       }
     });
+  }
+
+  /**
+   * Sets the filter to match the one of the dashboard
+   *
+   * @param dashboard dashboard to get filter from
+   */
+  public setFilter(dashboard?: Dashboard) {
+    {
+      if (dashboard) {
+        if (this.dashboard?.id !== dashboard.id) {
+          this.dashboard = dashboard;
+        }
+        this.filterStructure.next(dashboard.filter?.structure);
+        localForage.getItem(this.positionKey).then((position) => {
+          if (position) {
+            this.filterPosition.next(position);
+          } else {
+            this.filterPosition.next(
+              dashboard.filter?.position ?? FilterPosition.BOTTOM
+            );
+          }
+        });
+      } else {
+        this.filterStructure.next(null);
+        this.filterPosition.next(null);
+        this.dashboard = undefined;
+      }
+    }
   }
 
   /**
@@ -443,13 +449,14 @@ export class ContextService {
   /**
    * Initializes the dashboard context
    *
+   * @param dashboard Current dashboard
    * @param callback additional callback
    */
-  public initContext(callback: any): void {
-    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+  public initContext(dashboard: Dashboard, callback: any): void {
+    if (!dashboard?.page?.context || !dashboard?.id) return;
     // Checks if the dashboard has context attached to it
-    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
-    const id = this.dashboard.id;
+    const contentWithContext = dashboard?.page?.contentWithContext || [];
+    const id = dashboard.id;
     const dContext = contentWithContext.find((c) => c.content === id);
 
     if (!dContext) return;
