@@ -238,6 +238,7 @@ export class SummaryCardComponent
       );
       mapping = this.contextService.replaceContext(mapping);
       mapping = this.contextService.replaceFilter(mapping);
+      mapping = this.replaceWidgetVariables(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
       return mapping;
     } catch {
@@ -308,7 +309,6 @@ export class SummaryCardComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
-          console.log('refresh');
           this.refresh();
         });
     }
@@ -494,24 +494,27 @@ export class SummaryCardComponent
         })
         .then(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData) {
-      const contextFilters = this.contextService.injectContext(
-        this.contextFilters
-      );
-      this.sortedCachedCards = cloneDeep(
-        this.cachedCards
-          .filter((x) => filterReferenceData(x.rawValue, contextFilters))
-          .filter((card: any) => {
-            return (
-              JSON.stringify(card.rawValue)
-                .replace(/("\w+":)/g, '')
-                .toLowerCase()
-                .indexOf(search.toLowerCase()) !== -1
-            );
-          })
-      );
-      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
-      console.log(this.cards);
-      this.pageInfo.length = this.sortedCachedCards.length;
+      if (this.refData?.pageInfo?.strategy) {
+        this.refresh();
+      } else {
+        const contextFilters = this.contextService.injectContext(
+          this.contextFilters
+        );
+        this.sortedCachedCards = cloneDeep(
+          this.cachedCards
+            .filter((x) => filterReferenceData(x.rawValue, contextFilters))
+            .filter((card: any) => {
+              return (
+                JSON.stringify(card.rawValue)
+                  .replace(/("\w+":)/g, '')
+                  .toLowerCase()
+                  .indexOf(search.toLowerCase()) !== -1
+              );
+            })
+        );
+        this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+        this.pageInfo.length = this.sortedCachedCards.length;
+      }
     }
   }
 
@@ -648,13 +651,12 @@ export class SummaryCardComponent
       if (this.pageInfo.pageSize > items.length) {
         this.pageInfo.length = this.cards.length;
       }
+      this.sortedCachedCards = cloneDeep(this.cachedCards);
     } else {
       // Client side filtering
       const contextFilters = this.contextService.injectContext(
         this.contextFilters
       );
-
-      console.log(contextFilters);
 
       this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
         filterReferenceData(x.rawValue, contextFilters)
@@ -1099,33 +1101,70 @@ export class SummaryCardComponent
           })
           .then(() => (this.loading = false));
       } else if (this.useReferenceData) {
-        this.loading = true;
-        this.pageInfo.pageIndex = 0;
-        this.pageInfo.skip = 0;
-        if (e) {
-          const field = `rawValue.${this.sortOptions.field as string}`;
-          if (this.sortOptions.order === 'asc') {
-            this.sortedCachedCards.sort((a, b) => {
-              const fieldA = String(get(a, field) || '');
-              const fieldB = String(get(b, field) || '');
-              return fieldA.localeCompare(fieldB);
-            });
-          } else {
-            this.sortedCachedCards.sort((a, b) => {
-              const fieldA = String(get(a, field) || '');
-              const fieldB = String(get(b, field) || '');
-              return fieldB.localeCompare(fieldA);
-            });
-          }
-          this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+        if (this.refData?.pageInfo?.strategy) {
+          this.refresh();
         } else {
-          this.sortedCachedCards.sort(
-            (a, b) => (a.index as number) - (b.index as number)
-          );
-          this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+          this.loading = true;
+          this.pageInfo.pageIndex = 0;
+          this.pageInfo.skip = 0;
+          if (e) {
+            const field = `rawValue.${this.sortOptions.field as string}`;
+            if (this.sortOptions.order === 'asc') {
+              this.sortedCachedCards.sort((a, b) => {
+                const fieldA = String(get(a, field) || '');
+                const fieldB = String(get(b, field) || '');
+                return fieldA.localeCompare(fieldB);
+              });
+            } else {
+              this.sortedCachedCards.sort((a, b) => {
+                const fieldA = String(get(a, field) || '');
+                const fieldB = String(get(b, field) || '');
+                return fieldB.localeCompare(fieldA);
+              });
+            }
+            this.cards = this.sortedCachedCards.slice(
+              0,
+              this.pageInfo.pageSize
+            );
+          } else {
+            this.sortedCachedCards.sort(
+              (a, b) => (a.index as number) - (b.index as number)
+            );
+            this.cards = this.sortedCachedCards.slice(
+              0,
+              this.pageInfo.pageSize
+            );
+          }
+          this.loading = false;
         }
-        this.loading = false;
       }
     }
+  }
+
+  /**
+   * Replace widget variables in mapping
+   *
+   * @param object mapping
+   * @returns updated mapping
+   */
+  private replaceWidgetVariables(object: any): any {
+    // Replace sort options
+    const sort = this.sortOptions;
+    if (sort && sort.field && sort.order) {
+      object = JSON.parse(
+        JSON.stringify(object)
+          .replace(/{{widget.sortField}}/g, sort.field)
+          .replace(/{{widget.sortOrder}}/g, sort.order)
+      );
+    }
+
+    // Replace search
+    const search = this.searchControl.value;
+    if (search) {
+      object = JSON.parse(
+        JSON.stringify(object).replace(/{{widget.search}}/g, search)
+      );
+    }
+    return object;
   }
 }
