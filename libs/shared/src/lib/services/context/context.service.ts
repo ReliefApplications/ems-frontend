@@ -449,13 +449,14 @@ export class ContextService {
   /**
    * Initializes the dashboard context
    *
+   * @param dashboard Current dashboard
    * @param callback additional callback
    */
-  public initContext(callback: any): void {
-    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+  public initContext(dashboard: Dashboard, callback: any): void {
+    if (!dashboard?.page?.context || !dashboard?.id) return;
     // Checks if the dashboard has context attached to it
-    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
-    const id = this.dashboard.id;
+    const contentWithContext = dashboard?.page?.contentWithContext || [];
+    const id = dashboard.id;
     const dContext = contentWithContext.find((c) => c.content === id);
 
     if (!dContext) return;

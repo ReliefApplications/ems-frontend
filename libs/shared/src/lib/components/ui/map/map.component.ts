@@ -262,7 +262,6 @@ export class MapComponent
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
-          console.log('should refresh');
           this.filterLayers();
         });
     }

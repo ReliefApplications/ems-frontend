@@ -710,11 +710,13 @@ export class DashboardComponent
 
   /** Initializes the dashboard context */
   private initContext(): void {
+    console.log('init context');
     const callback = (contextItem: {
       element?: string;
       record?: string;
       recordData?: Record;
     }) => {
+      console.log(contextItem);
       if ('element' in contextItem) {
         this.contextId.setValue(contextItem.element as string, {
           emitEvent: false,
@@ -726,7 +728,7 @@ export class DashboardComponent
         });
       }
     };
-    this.contextService.initContext(callback);
+    this.contextService.initContext(this.dashboard as Dashboard, callback);
   }
 
   /**
