@@ -9,6 +9,7 @@
       <ng-container ngProjectAs="label">{{ tab.label }}</ng-container>
       <ng-template uiTabContent>
         <shared-tab
+          class="flex h-full w-full"
           [structure]="tab.structure"
           [usePadding]="usePadding"
           [options]="tab.gridOptions"

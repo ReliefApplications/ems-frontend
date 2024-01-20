@@ -545,6 +545,12 @@
 					"defaultPosition": "Position par défaut du filtre",
 					"fixedRowHeight": "Hauteur de ligne fixe",
 					"gridOptions": "Options de grille",
+					"gridType": {
+						"fit": "Ajuster",
+						"placeholder": "Sélectionnez un type de grille",
+						"title": "Type de grille",
+						"verticalFixed": "Vertical fixe"
+					},
 					"help": {
 						"minCols": "Réduire le nombre de colonnes peut ne pas avoir un impact direct si les widgets dépassent la limite spécifiée en largeur."
 					},
