@@ -1,6 +1,11 @@
 :host ::ng-deep {
   #tab-group-wrapper {
     height: 100%;
+    display: flex;
+  }
+
+  #tab-body-host {
+    width: 100%;
   }
 
   /** Override tab list to make it sticky so content is scrollable **/

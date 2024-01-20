@@ -40,7 +40,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -309,7 +309,7 @@ export class DashboardComponent
           this.dashboard = data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
           this.gridOptions = {
-            ...this.gridOptions,
+            ...omit(this.gridOptions, 'gridType'), // Prevent issue when gridType was not set
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
