@@ -231,6 +231,8 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
+    console.log(this.gridOptions.gridType);
+    console.log(this.options);
     // Set maxCols at the end, based on widgets & existing max
     this.gridOptions.maxCols = Math.max(
       this.maxCols,
@@ -418,7 +420,7 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
-    this.widgets.forEach((widget) => {
+    this.widgets.forEach((widget: GridsterItem) => {
       widget.cols = widget.cols ?? widget.defaultCols;
       widget.rows = widget.rows ?? widget.defaultRows;
       widget.minItemRows = widget.minItemRows ?? widget.minRow;

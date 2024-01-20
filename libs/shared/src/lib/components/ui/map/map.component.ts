@@ -238,9 +238,19 @@ export class MapComponent
     const allContextFilters = this.layers
       .map((layer: any) => JSON.stringify(layer.contextFilters))
       .join('');
+    const allGraphQLVariables = this.layers
+      .map(
+        (layer: any) =>
+          get(layer, 'datasource.referenceDataVariableMapping') || ''
+      )
+      .join('');
 
     // Listen to dashboard filters changes to apply layers filter, if it is necessary
-    if (this.contextService.filterRegex.test(allContextFilters)) {
+    if (
+      this.contextService.filterRegex.test(
+        allContextFilters + allGraphQLVariables
+      )
+    ) {
       this.contextService.filter$
         .pipe(
           debounceTime(500),
