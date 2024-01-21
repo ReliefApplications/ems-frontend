@@ -20,6 +20,7 @@ import getLoadedRecord from './getLoadedRecord';
 import getListByProp from './getListByProp';
 import filter from './filter';
 import sum from './sum';
+import getCurrentYearAids from './getCurrentYearAids';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -49,4 +50,5 @@ export const functions = [
 /** Generators for each async custom function available  */
 export const asyncFunctions = [
   { fn: getComplaintsByType, name: 'getComplaintsByType' },
+  { fn: getCurrentYearAids, name: 'getCurrentYearAids' },
 ];
