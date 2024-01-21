@@ -208,7 +208,6 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
           this.initContext();
           this.widgets = cloneDeep(
             data.dashboard.structure
@@ -258,14 +257,6 @@ export class DashboardComponent
   }
 
   /**
-   * Removes all subscriptions of the component.
-   */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.dashboardService.closeDashboard();
-  }
-
-  /**
    * Show modal confirmation before leave the page if has changes on form
    *
    * @returns boolean of observable of boolean
@@ -303,6 +294,6 @@ export class DashboardComponent
         this.route
       );
     };
-    this.contextService.initContext(callback);
+    this.contextService.initContext(this.dashboard as Dashboard, callback);
   }
 }
