@@ -255,6 +255,12 @@ export class DashboardFilterComponent
       });
   }
 
+  /** Clear dashboard filter values */
+  public clearFields() {
+    this.survey.clear();
+    this.onValueChange();
+  }
+
   /**
    * Handle filter update mutation response depending of mutation type, for filter structure or position
    *

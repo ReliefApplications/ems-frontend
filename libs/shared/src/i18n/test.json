@@ -525,6 +525,7 @@
 			},
 			"customStyling": "******",
 			"dashboard": {
+				"clearFields": "******",
 				"editFilter": "******",
 				"empty": "******",
 				"filter": {

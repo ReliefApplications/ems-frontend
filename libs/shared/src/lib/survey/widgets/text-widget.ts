@@ -175,6 +175,21 @@ export const init = (
                 question.value = null;
               }
             });
+
+            // On change, we update the value of the select
+            question.valueChangedCallback = () => {
+              if (question.value !== pickerInstance.value?.toISOString()) {
+                try {
+                  pickerInstance.writeValue(
+                    (question.value ? new Date(question.value) : null) as any
+                  );
+                } catch {
+                  // There's no other way of programmatically clearing the date picker
+                  // besides setting the value to null, which throws an error
+                }
+              }
+            };
+
             if (question.value) {
               // Init the question with the date in the correct format
               pickerInstance.writeValue(

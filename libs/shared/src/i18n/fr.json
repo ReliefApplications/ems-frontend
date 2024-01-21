@@ -525,6 +525,7 @@
 			},
 			"customStyling": "Style personnalisé",
 			"dashboard": {
+				"clearFields": "Supprimer les champs",
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
 				"filter": {

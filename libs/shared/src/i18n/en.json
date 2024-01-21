@@ -525,6 +525,7 @@
 			},
 			"customStyling": "Custom Styling",
 			"dashboard": {
+				"clearFields": "Clear fields",
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
 				"filter": {
