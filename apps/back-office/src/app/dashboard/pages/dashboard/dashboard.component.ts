@@ -229,7 +229,7 @@ export class DashboardComponent
    */
   private async loadDashboard(id: string, contextID?: string | number) {
     // don't init the dashboard if the id is the same
-    if (this.dashboard?.id === id) {
+    if (this.dashboard?.id === id && this.contextId.value === contextID) {
       return;
     }
 
