@@ -109,8 +109,8 @@ export class DashboardFilterComponent
     }
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.survey.data = value;
+      .subscribe(({ current }) => {
+        this.survey.data = current;
       });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))

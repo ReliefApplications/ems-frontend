@@ -58,6 +58,7 @@
 <ng-template #aggregationGridTemplate>
   <shared-aggregation-grid
     *ngIf="aggregation"
+    [widget]="widget"
     [resourceId]="settings.resource"
     [aggregation]="aggregation"
     [contextFilters]="widget.settings.contextFilters"

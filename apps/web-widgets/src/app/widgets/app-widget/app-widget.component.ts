@@ -106,10 +106,12 @@ export class AppWidgetComponent
   ) {
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
-    this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
-      this.filterActive$.emit(!isEmpty(value));
-      this.filter$.emit(value);
-    });
+    this.contextService.filter$
+      .pipe(debounceTime(500))
+      .subscribe(({ current }) => {
+        this.filterActive$.emit(!isEmpty(current));
+        this.filter$.emit(current);
+      });
     this.applicationService.application$.subscribe(
       (application: Application | null) => {
         if (application) {

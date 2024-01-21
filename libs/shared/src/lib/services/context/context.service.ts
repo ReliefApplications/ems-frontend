@@ -87,7 +87,7 @@ export class ContextService {
 
   /** @returns filter value as observable */
   get filter$() {
-    return this.filter.asObservable().pipe(
+    return this.filter.pipe(
       pairwise(),
       // We only emit a filter value if filter value changes and we send back the actual(curr) value
       filter(
@@ -95,7 +95,10 @@ export class ContextService {
           !isEqual(prev, curr)
       ),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      map(([prev, curr]: [Record<string, any>, Record<string, any>]) => curr)
+      map(([prev, curr]: [Record<string, any>, Record<string, any>]) => ({
+        previous: prev,
+        current: curr,
+      }))
     );
   }
 
@@ -229,10 +232,13 @@ export class ContextService {
    * Replace {{filter}} placeholders in object, with filter values
    *
    * @param object object with placeholders
+   * @param filter filter value
    * @returns object with replaced placeholders
    */
-  public replaceFilter(object: any): any {
-    const filter = this.availableFilterFieldsValue;
+  public replaceFilter(
+    object: any,
+    filter = this.availableFilterFieldsValue
+  ): any {
     if (isEmpty(filter)) {
       return object;
     }
@@ -535,6 +541,19 @@ export class ContextService {
           value: data?.editDashboard.name ?? '',
         })
       );
+    }
+  }
+
+  shouldRefresh(widget: any, previous: any, current: any) {
+    if (
+      !isEqual(
+        this.replaceFilter(widget, previous),
+        this.replaceFilter(widget, current)
+      )
+    ) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

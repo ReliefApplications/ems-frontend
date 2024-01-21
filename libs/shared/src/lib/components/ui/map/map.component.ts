@@ -154,8 +154,6 @@ export class MapComponent
   private arcGisWebMap: any;
   /** Layer control buttons */
   private layerControlButtons: any;
-  /** Applied dashboard filters */
-  private appliedDashboardFilters: Record<string, any>;
   /** Current layer ids */
   private layerIds: string[] = [];
   /** Resize observer on map container */
@@ -206,7 +204,6 @@ export class MapComponent
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
-    this.appliedDashboardFilters = this.contextService.filter.getValue();
   }
 
   /** Once template is ready, build the map. */
@@ -254,10 +251,9 @@ export class MapComponent
       this.contextService.filter$
         .pipe(
           debounceTime(500),
-          filter(() => {
-            const filters = this.contextService.filter.getValue();
-            return !isEqual(filters, this.appliedDashboardFilters);
-          }),
+          filter(({ previous, current }) =>
+            this.contextService.shouldRefresh(this.layers, previous, current)
+          ),
           concatMap(() => loadNextFilters()),
           takeUntil(this.destroy$)
         )
@@ -1069,9 +1065,7 @@ export class MapComponent
   /** Set the new layers based on the filter value */
   private async filterLayers() {
     this.document.getElementById('layer-control-button-close')?.click();
-    const filters = this.contextService.filter.getValue();
     this.refreshingLayers.next(false);
-    this.appliedDashboardFilters = filters;
     const { layers: layersToGet, controls } = this.extractSettings();
 
     const shouldDisplayStatuses: Record<string, boolean> = {};
