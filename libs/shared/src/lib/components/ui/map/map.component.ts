@@ -168,6 +168,8 @@ export class MapComponent
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
+  /** Current geographic extent value */
+  private geographicExtentValue: any;
 
   /**
    * Map widget component
@@ -236,9 +238,19 @@ export class MapComponent
     const allContextFilters = this.layers
       .map((layer: any) => JSON.stringify(layer.contextFilters))
       .join('');
+    const allGraphQLVariables = this.layers
+      .map(
+        (layer: any) =>
+          get(layer, 'datasource.referenceDataVariableMapping') || ''
+      )
+      .join('');
 
     // Listen to dashboard filters changes to apply layers filter, if it is necessary
-    if (this.contextService.filterRegex.test(allContextFilters)) {
+    if (
+      this.contextService.filterRegex.test(
+        allContextFilters + allGraphQLVariables
+      )
+    ) {
       this.contextService.filter$
         .pipe(
           debounceTime(500),
@@ -1175,9 +1187,11 @@ export class MapComponent
       if (fieldValue) {
         // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
         const replacedFilter = this.contextService.replaceFilter(mapSettings);
-        return replacedFilter.replaced
-          ? replacedFilter.object.geographicExtentValue
-          : false;
+        return replacedFilter.geographicExtentValue?.match(
+          this.contextService.filterRegex
+        )
+          ? false
+          : replacedFilter.geographicExtentValue;
       }
       const contextValue = geographicExtentValue?.match(
         this.contextService.contextRegex
@@ -1201,12 +1215,26 @@ export class MapComponent
    */
   private zoomOn(geographicExtent: string): void {
     const geographicExtentValue = this.getGeographicExtentValue();
-    if (geographicExtentValue) {
-      this.mapPolygonsService.zoomOn(
-        geographicExtentValue,
-        geographicExtent,
-        this.map
-      );
+    if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
+      this.geographicExtentValue = geographicExtentValue;
+      if (geographicExtentValue) {
+        this.mapPolygonsService.zoomOn(
+          geographicExtentValue,
+          geographicExtent,
+          this.map
+        );
+      } else {
+        this.setDefaultZoom();
+      }
     }
+  }
+
+  /**
+   * Set the default center and zoom level
+   */
+  private setDefaultZoom(): void {
+    const { center, zoom } = this.extractSettings().initialState.viewpoint;
+    this.currentZoom = zoom;
+    this.map.setView([center.latitude, center.longitude], zoom);
   }
 }

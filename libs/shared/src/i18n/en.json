@@ -545,6 +545,12 @@
 					"defaultPosition": "Default position for the filter",
 					"fixedRowHeight": "Row height",
 					"gridOptions": "Grid options",
+					"gridType": {
+						"fit": "Fit",
+						"placeholder": "Select a grid type",
+						"title": "Grid type",
+						"verticalFixed": "Vertical fixed"
+					},
 					"help": {
 						"minCols": "Reducing the number of columns may not have a direct impact if the dashboard contains widgets wider than the specified limit."
 					},
@@ -871,7 +877,6 @@
 				"modifiedValue": "Modified variable value",
 				"originalValue": "Original variable value",
 				"person": "Who modified",
-				"signalId": "Signal Id",
 				"variable": "Variable modified"
 			},
 			"download": "Download history",
@@ -1800,6 +1805,11 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"noVariables": "No variables defined",
+									"title": "GraphQL variable mapping",
+									"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+								},
 								"title": "Layout styles",
 								"use": "Use layout styles",
 								"wholeRow": {
@@ -2443,7 +2453,23 @@
 				"title": "Field"
 			},
 			"graphQLFilter": "GraphQL query parameters",
-			"path": "Path",
+			"pagination": {
+				"cursorPath": "Cursor path",
+				"cursorVariable": "Cursor query variable",
+				"offsetVariable": "Offset query variable",
+				"pageSizeVariable": "Page size query variable",
+				"pageVariable": "Page number query variable",
+				"strategy": "Pagination strategy",
+				"totalCountPath": "Total items count path",
+				"usePagination": {
+					"hint": "Depends on API support, allows fetching data by page",
+					"text": "Use pagination"
+				}
+			},
+			"path": {
+				"placeholder": "Enter a valid JSONPath",
+				"title": "Data path"
+			},
 			"payload": {
 				"label": "Payload",
 				"show": "Show payload"

@@ -20,7 +20,7 @@
       let-currentPage="currentPage"
     >
       <div class="w-full flex justify-between">
-        <div class="hidden sm:flex">
+        <div class="hidden sm:flex" *ngIf="showTotalItems">
           <!-- Page info -->
           <kendo-datapager-messages
             page="{{ 'components.paginator.page' | translate }}"
@@ -31,10 +31,11 @@
           </kendo-datapager-messages>
           <kendo-datapager-info></kendo-datapager-info>
         </div>
-        <div class="flex w-full sm:w-auto">
+        <div class="flex w-full sm:w-auto ml-auto">
           <!-- Page size -->
           <kendo-datapager-page-sizes
             class="hidden sm:flex text-gray-700"
+            *ngIf="showPageSizes"
             [pageSizes]="pageSizeOptions"
           ></kendo-datapager-page-sizes>
           <!-- Page buttons -->

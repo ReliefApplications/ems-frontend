@@ -35,6 +35,7 @@ import { debounceTime, takeUntil } from 'rxjs';
 import { get, isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
 import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
+import { GridType } from 'angular-gridster2';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -99,6 +100,7 @@ export class ViewSettingsModalComponent
     minCols: 8,
     fixedRowHeight: 200,
     margin: 10,
+    gridType: GridType.VerticalFixed,
   };
   /** Step object */
   private step?: Step;
@@ -106,6 +108,8 @@ export class ViewSettingsModalComponent
   private page?: Page;
   /** Show dashboard filter */
   public showFilter!: boolean;
+  /** Grid type */
+  public gridType = GridType;
 
   /**
    * Common settings of pages / steps.
@@ -267,6 +271,13 @@ export class ViewSettingsModalComponent
             ),
             Validators.compose([Validators.min(4), Validators.max(24)])
           ),
+          gridType: this.fb.control(
+            get<GridType>(
+              this.dashboard.gridOptions,
+              'gridType',
+              this.defaultGridOptions.gridType
+            )
+          ),
           fixedRowHeight: this.fb.control(
             get<number>(
               this.dashboard.gridOptions,
@@ -369,6 +380,10 @@ export class ViewSettingsModalComponent
       const updates = { gridOptions };
       this.onUpdate.emit(updates);
     };
-    this.dashboardService.editGridOptions(gridOptions, callback);
+    this.dashboardService.editGridOptions(
+      this.dashboard?.id,
+      gridOptions,
+      callback
+    );
   }
 }

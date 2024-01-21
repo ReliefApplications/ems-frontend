@@ -6,7 +6,7 @@
 </div>
 <!-- Available tabs -->
 <ui-tabs
-  class="grow"
+  class="flex flex-col grow"
   *ngIf="tabs.length > 0"
   cdkDropListOrientation="horizontal"
   cdkDropList
@@ -44,6 +44,7 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-settings
+        class="flex flex-col flex-1"
         [tabGroup]="$any(tab)"
         (delete)="onDeleteTab(i)"
       ></shared-tab-settings>

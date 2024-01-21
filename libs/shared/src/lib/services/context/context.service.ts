@@ -6,7 +6,16 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual, isObject, forEach, set } from 'lodash';
+import {
+  isNil,
+  isEmpty,
+  get,
+  isEqual,
+  isObject,
+  forEach,
+  set,
+  has,
+} from 'lodash';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
@@ -50,7 +59,9 @@ export class ContextService {
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /{{filter\.[^}]+}}/;
+  public filterRegex = /{{filter\.(.*?)}}/g;
+  /** Regex to detect the value of {{filter.}} in object */
+  public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
   public contextRegex = /{{context\.(.*?)}}/g;
   /** Dashboard object */
@@ -153,29 +164,6 @@ export class ContextService {
     private applicationService: ApplicationService,
     private router: Router
   ) {
-    this.dashboardService.dashboard$.subscribe(
-      (dashboard: Dashboard | null) => {
-        if (dashboard) {
-          if (this.dashboard?.id !== dashboard.id) {
-            this.dashboard = dashboard;
-          }
-          this.filterStructure.next(dashboard.filter?.structure);
-          localForage.getItem(this.positionKey).then((position) => {
-            if (position) {
-              this.filterPosition.next(position);
-            } else {
-              this.filterPosition.next(
-                dashboard.filter?.position ?? FilterPosition.BOTTOM
-              );
-            }
-          });
-        } else {
-          this.filterStructure.next(null);
-          this.filterPosition.next(null);
-          this.dashboard = undefined;
-        }
-      }
-    );
     this.filterPosition$.subscribe((position: any) => {
       if (position && this.dashboard?.id) {
         localForage.setItem(this.positionKey, position);
@@ -187,6 +175,35 @@ export class ContextService {
         this.filter.next({});
       }
     });
+  }
+
+  /**
+   * Sets the filter to match the one of the dashboard
+   *
+   * @param dashboard dashboard to get filter from
+   */
+  public setFilter(dashboard?: Dashboard) {
+    {
+      if (dashboard) {
+        if (this.dashboard?.id !== dashboard.id) {
+          this.dashboard = dashboard;
+        }
+        this.filterStructure.next(dashboard.filter?.structure);
+        localForage.getItem(this.positionKey).then((position) => {
+          if (position) {
+            this.filterPosition.next(position);
+          } else {
+            this.filterPosition.next(
+              dashboard.filter?.position ?? FilterPosition.BOTTOM
+            );
+          }
+        });
+      } else {
+        this.filterStructure.next(null);
+        this.filterPosition.next(null);
+        this.dashboard = undefined;
+      }
+    }
   }
 
   /**
@@ -214,20 +231,39 @@ export class ContextService {
    * @param object object with placeholders
    * @returns object with replaced placeholders
    */
-  public replaceFilter(object: any): { object: any; replaced: boolean } {
+  public replaceFilter(object: any): any {
     const filter = this.availableFilterFieldsValue;
     if (isEmpty(filter)) {
-      return { object, replaced: false };
+      return object;
     }
-    return {
-      object: JSON.parse(
-        JSON.stringify(object).replace(this.filterRegex, (match) => {
-          const field = match.replace('{{filter.', '').replace('}}', '');
-          return get(filter, field) || match;
-        })
-      ),
-      replaced: true,
-    };
+    return JSON.parse(
+      JSON.stringify(object).replace(this.filterRegex, (match) => {
+        const field = match.replace('{{filter.', '').replace('}}', '');
+        return get(filter, field) || match;
+      })
+    );
+  }
+
+  /**
+   * Remove placeholders from object
+   *
+   * @param obj object to clean
+   */
+  public removeEmptyPlaceholders(obj: any) {
+    for (const key in obj) {
+      if (has(obj, key)) {
+        if (typeof obj[key] === 'object') {
+          // Recursively call the function for nested objects
+          this.removeEmptyPlaceholders(obj[key]);
+        } else if (
+          typeof obj[key] === 'string' &&
+          obj[key].startsWith('{{') &&
+          obj[key].endsWith('}}')
+        ) {
+          delete obj[key];
+        }
+      }
+    }
   }
 
   /**
@@ -245,7 +281,7 @@ export class ContextService {
     //   return filter;
     // }
     // Regex to detect {{filter.}} in object
-    const filterRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
+    const filterRegex = this.filterValueRegex;
     // Regex to detect {{context.}} in object
     const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
 
@@ -413,13 +449,14 @@ export class ContextService {
   /**
    * Initializes the dashboard context
    *
+   * @param dashboard Current dashboard
    * @param callback additional callback
    */
-  public initContext(callback: any): void {
-    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+  public initContext(dashboard: Dashboard, callback: any): void {
+    if (!dashboard?.page?.context || !dashboard?.id) return;
     // Checks if the dashboard has context attached to it
-    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
-    const id = this.dashboard.id;
+    const contentWithContext = dashboard?.page?.contentWithContext || [];
+    const id = dashboard.id;
     const dContext = contentWithContext.find((c) => c.content === id);
 
     if (!dContext) return;

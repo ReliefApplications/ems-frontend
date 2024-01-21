@@ -1,5 +1,6 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
+import { GridType } from 'angular-gridster2';
 
 /** Form builder */
 const fb = new FormBuilder();
@@ -9,6 +10,7 @@ const DEFAULT_GRID_OPTIONS = {
   minCols: 8,
   fixedRowHeight: 200,
   margin: 10,
+  gridType: GridType.VerticalFixed,
 };
 
 /**
@@ -24,6 +26,13 @@ export const createTabFormGroup = (value?: any) => {
       minCols: fb.control(
         get<number>(value.gridOptions, 'minCols', DEFAULT_GRID_OPTIONS.minCols),
         Validators.compose([Validators.min(4), Validators.max(24)])
+      ),
+      gridType: fb.control(
+        get<GridType>(
+          value.gridOptions,
+          'gridType',
+          DEFAULT_GRID_OPTIONS.gridType
+        )
       ),
       fixedRowHeight: fb.control(
         get<number>(

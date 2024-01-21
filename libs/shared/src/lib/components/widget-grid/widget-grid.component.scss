@@ -31,3 +31,8 @@ gridster-item.gridster-item-moving {
   z-index: 1000;
   pointer-events: none;
 }
+
+// Make sure 'fit' grid use full height
+gridster.gridSize.fit {
+  height: 100% !important;
+}
