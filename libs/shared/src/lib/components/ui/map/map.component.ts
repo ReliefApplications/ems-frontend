@@ -254,9 +254,19 @@ export class MapComponent
           debounceTime(500),
           filter(({ previous, current }) =>
             this.contextService.shouldRefresh(
-              this.layers.map((layer) => {
-                return pick(layer, ['datasource', 'contextFilters', 'at']);
-              }),
+              this.layers
+                .map((layer) => {
+                  return pick(layer, ['datasource', 'contextFilters', 'at']);
+                })
+                .map((m) => ({
+                  ...m,
+                  datasource: {
+                    ...m.datasource,
+                    referenceDataVariableMapping: JSON.parse(
+                      get(m, 'datasource.referenceDataVariableMapping', '')
+                    ),
+                  },
+                })),
               previous,
               current
             )
