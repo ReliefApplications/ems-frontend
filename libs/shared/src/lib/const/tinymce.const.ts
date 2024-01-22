@@ -219,6 +219,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
             const textElement = editor.selection.getNode();
             textElement.setAttribute('data-filter-field', data.filterField);
             textElement.setAttribute('data-filter-value', data.filterValue);
+            textElement.setAttribute('data-filter-reset', '');
             api.close();
           },
           buttons: [

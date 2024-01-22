@@ -390,6 +390,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       };
       this.contextService.filter.next(updatedFilters);
     } else {
+      if (event.target.dataset.filterReset) {
+        this.contextService.filter.next({});
+      }
       const content = this.htmlContentComponent.el.nativeElement;
       const editorTriggers = content.querySelectorAll('.record-editor');
       editorTriggers.forEach((recordEditor: HTMLElement) => {
