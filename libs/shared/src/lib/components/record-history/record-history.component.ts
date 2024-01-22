@@ -1,5 +1,13 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ElementRef,
+  AfterViewInit
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
@@ -21,6 +29,7 @@ import {
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
 import { startCase, isNil } from 'lodash';
+import { ResizeEvent } from 'angular-resizable-element';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -53,7 +62,7 @@ const getValueType = (
 })
 export class RecordHistoryComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   /** Id of the record */
   @Input() id!: string;
@@ -111,6 +120,11 @@ export class RecordHistoryComponent
   historyForTable: any[] = [];
   /** Should view as table */
   viewAsTable = new FormControl(true);
+  public style: any = {};
+  /** minimum width */
+  private minWidth = 0;
+  /** minimum height */
+  private minHeight = 0;
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -131,6 +145,7 @@ export class RecordHistoryComponent
    * @param dateFormat DateTranslation service
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
+   * @param elementRef element reference
    */
   constructor(
     public dialog: Dialog,
@@ -138,7 +153,8 @@ export class RecordHistoryComponent
     private translate: TranslateService,
     private dateFormat: DateTranslateService,
     private apollo: Apollo,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private elementRef: ElementRef
   ) {
     super();
   }
@@ -242,6 +258,72 @@ export class RecordHistoryComponent
         });
       });
     });
+  }
+
+  ngAfterViewInit(): void {
+    // set min height and width based on current size
+    this.minHeight = this.elementRef.nativeElement.offsetHeight;
+    this.minWidth = this.elementRef.nativeElement.offsetWidth;
+    console.log("min height", this.minHeight);
+    console.log("min width", this.minWidth);
+  }
+
+  /**
+   * On resize action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    // console.log(this.elementRef.nativeElement);
+    // this.minHeight = this.elementRef.nativeElement.offsetHeight;
+    // this.minWidth = this.elementRef.nativeElement.offsetWidth;
+    console.log("min height", this.minHeight);
+    console.log("min width", this.minWidth);
+    const dashboardNavbar =
+      document.documentElement.getElementsByTagName('shared-navbar');
+    let dashboardNavbarWidth = 0;
+    if (dashboardNavbar[0] && !this.dialog) {
+      dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
+    }
+    // set the max width as 80% of the screen size
+    const maxWidth = Math.max(
+      Math.round(
+        (document.documentElement.clientWidth - dashboardNavbarWidth) * 0.8
+      ),
+      this.minWidth
+    );
+    // set the max height as 80% of the screen size
+    const maxHeight = Math.max(
+      Math.round(document.documentElement.clientHeight * 0.8),
+      this.minHeight
+    );
+    console.log("min height", this.minHeight);
+    console.log("max height", maxHeight);
+    console.log("min width", this.minWidth);
+    console.log("max width", maxWidth);
+    if (
+      event.rectangle.width &&
+      event.rectangle.height &&
+      (event.rectangle.width < this.minWidth ||
+        event.rectangle.height < this.minHeight) &&
+      (event.rectangle.width > maxWidth || event.rectangle.height > maxHeight)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   /**

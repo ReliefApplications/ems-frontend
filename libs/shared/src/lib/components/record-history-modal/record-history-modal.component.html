@@ -1,9 +1,25 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h3>{{ 'common.history' | translate }}</h3>
+    <h3>{{ 'common.history' | translate }}AAA</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <shared-record-history
+    <div 
+      mwlResizable
+      [enableGhostResize]="true"
+      (resizing)="onResizeEnd($event)"
+      [ngStyle]="style"
+    >
+    <div
+      class="resize-handle-left"
+      mwlResizeHandle
+      [resizeEdges]="{ left: true }"
+    ></div>
+    <div
+      class="resize-handle-right"
+      mwlResizeHandle
+      [resizeEdges]="{ right: true }"
+    ></div>
+      <shared-record-history
       class="max-h-screen"
       (cancel)="closeModal($event)"
       [id]="data.id"
@@ -12,6 +28,7 @@
       [refresh$]="data.refresh$"
       [showHeader]="false"
     ></shared-record-history>
+    </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button [uiDialogClose]>

@@ -5,6 +5,8 @@ import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
+import { ResizableModule } from 'angular-resizable-element';
+import { ResizeEvent } from 'angular-resizable-element';
 
 /**
  * This interface describes the structure of the data that will be displayed in the dialog modal
@@ -27,12 +29,15 @@ interface DialogData {
     DialogModule,
     ButtonModule,
     TranslateModule,
+    ResizableModule,
   ],
   selector: 'shared-history-modal',
   templateUrl: './record-history-modal.component.html',
   styleUrls: ['./record-history-modal.component.scss'],
 })
 export class RecordHistoryModalComponent {
+  public style: any = {};
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
@@ -57,5 +62,12 @@ export class RecordHistoryModalComponent {
     if (e) {
       this.dialogRef.close();
     }
+  }
+
+  onResizeEnd(event: ResizeEvent): void {
+    this.style = {
+      width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
   }
 }
