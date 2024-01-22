@@ -209,6 +209,7 @@ export class WidgetGridComponent
       minItemRows: 1, // min item number of rows
       minCols: this.colsNumber,
       fixedRowHeight: 200,
+      minimumHeight: 0,
       draggable: {
         enabled: this.canUpdate,
         ignoreContentClass: 'gridster-item-content',
@@ -231,6 +232,11 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
+
+    if (this.gridOptions.gridType !== GridType.Fit) {
+      this.gridOptions.minimumHeight = 0;
+    }
+
     // Set maxCols at the end, based on widgets & existing max
     this.gridOptions.maxCols = Math.max(
       this.maxCols,

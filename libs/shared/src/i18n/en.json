@@ -556,10 +556,12 @@
 					},
 					"margin": "Margin between widgets",
 					"minCols": "Number of columns",
+					"minimumHeight": "Minimum height",
 					"tooltip": {
 						"fixedRowHeight": "Size of rows in pixels.\nMust be greater or equal to 50.",
 						"margin": "Gap in pixels between widgets.\nMust be a positive integer.",
 						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
+						"minimumHeight": "Minimum size of the grid in pixels.\nMust be greater or equal to 0.",
 						"reset": "Reset to default"
 					}
 				}

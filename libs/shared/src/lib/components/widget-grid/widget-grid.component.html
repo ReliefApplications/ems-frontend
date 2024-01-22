@@ -13,8 +13,11 @@
     >
     </shared-widget-choice>
   </div>
-  <!-- GRID OF WIDGETS -->
-  <gridster [options]="gridOptions" class="!w-full">
+  <gridster
+    [options]="gridOptions"
+    class="!w-full"
+    [ngStyle]="{ 'min-height.px': gridOptions.minimumHeight }"
+  >
     <gridster-item
       [item]="widget"
       class="max-w-full"
@@ -59,6 +62,7 @@
       </ng-template>
     </gridster-item>
   </gridster>
+  <div class="pb-[32px]"></div>
 </ng-container>
 <!-- LOADING INDICATOR -->
 <ng-template #emptyTemplate>
