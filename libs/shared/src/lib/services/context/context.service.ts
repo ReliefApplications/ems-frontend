@@ -544,6 +544,15 @@ export class ContextService {
     }
   }
 
+  /**
+   * Should refresh widget, based on definition and previous & next filter values.
+   * Compare if definitions of widget, injecting previous & next filter values, are the same.
+   *
+   * @param widget widget definition
+   * @param previous previous filter value
+   * @param current next filter value
+   * @returns true if needs refresh
+   */
   shouldRefresh(widget: any, previous: any, current: any) {
     if (
       !isEqual(
