@@ -331,7 +331,8 @@ export class DashboardComponent
                 }
                 const { settings, originalSettings } =
                   this.contextService.updateSettingsContextContent(
-                    widget.settings
+                    widget.settings,
+                    this.dashboard
                   );
                 widget.originalSettings = originalSettings;
                 widget.settings = settings;
@@ -462,7 +463,8 @@ export class DashboardComponent
                     ...e.options,
                     defaultLayout: this.widgets[index].settings.defaultLayout,
                   }
-                : e.options
+                : e.options,
+              this.dashboard
             );
           if (settings) {
             // Save configuration

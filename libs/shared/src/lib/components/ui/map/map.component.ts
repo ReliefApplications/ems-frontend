@@ -717,19 +717,22 @@ export class MapComponent
    * Setup and draw layers on map and sets the baseTree.
    *
    * @param layerIds layerIds from saved edit layer info
+   * @param displayLayers boolean that controls whether all layers should be displayed directly
    * @returns layers
    */
-  private async getLayers(layerIds: string[]) {
+  private async getLayers(layerIds: string[], displayLayers = true) {
     /**
      * Parses a layer into a tree node
      *
      * @param layer The layer to create the tree node from
      * @param leafletLayer The leaflet layer previously created by the parent layer, if any
+     * @param displayLayers boolean that controls whether layers should be directly displayed
      * @returns The tree node
      */
     const parseTreeNode = async (
       layer: Layer,
-      leafletLayer?: L.Layer
+      leafletLayer?: L.Layer,
+      displayLayers = true
     ): Promise<OverlayLayerTree> => {
       // Add to the layers array if not already added
       if (this.layers.find((l) => l.id === layer.id)) return {} as any;
@@ -738,14 +741,14 @@ export class MapComponent
 
       if (layer.type === 'GroupLayer') {
         const children = layer.getChildren();
-        const childrenPromisse = children.map((Childrenlayer) => {
+        const childrenPromises = children.map((Childrenlayer) => {
           return this.mapLayersService
             .createLayersFromId(Childrenlayer, this.injector)
             .then(async (sublayer) => {
               if (sublayer.type === 'GroupLayer') {
                 const layer = await sublayer.getLayer();
-                return parseTreeNode(sublayer, layer);
-              } else return parseTreeNode(sublayer);
+                return parseTreeNode(sublayer, layer, displayLayers);
+              } else return parseTreeNode(sublayer, undefined, displayLayers);
             });
         });
 
@@ -755,7 +758,7 @@ export class MapComponent
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? await Promise.all(childrenPromisse)
+              ? await Promise.all(childrenPromises)
               : undefined,
         };
       } else {
@@ -766,7 +769,7 @@ export class MapComponent
         // Adds the layer to the map if not already added
         // note: group layers are of type L.LayerGroup
         // so we should check if the layer is not already added
-        if (!this.map.hasLayer(featureLayer)) {
+        if (!this.map.hasLayer(featureLayer) && displayLayers) {
           this.map.addLayer(featureLayer);
         }
         // It is a node, it does not have any children but it displays a layer
@@ -782,11 +785,11 @@ export class MapComponent
         return this.mapLayersService
           .createLayersFromId(id, this.injector)
           .then((layer) => {
-            return parseTreeNode(layer);
+            return parseTreeNode(layer, undefined, displayLayers);
           });
       });
 
-      Promise.all(layerPromises).then((layersTree) => {
+      Promise.all(layerPromises).then((layersTree: any) => {
         this.refreshLastUpdate();
         resolve({ layers: layersTree });
       });
@@ -1096,7 +1099,7 @@ export class MapComponent
 
     // get new layers, with filters applied
     this.resetLayers();
-    const l = await this.getLayers(layersToGet ?? []);
+    const l = await this.getLayers(layersToGet ?? [], false);
     this.overlaysTree = [l.layers];
 
     flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
@@ -1104,11 +1107,11 @@ export class MapComponent
         const id = (x.layer as any).id;
         if (!isNil(shouldDisplayStatuses[id])) {
           (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
-          if (!shouldDisplayStatuses[id]) {
-            x.layer.remove();
-          } else {
+          if (shouldDisplayStatuses[id]) {
             this.map.addLayer(x.layer);
           }
+        } else {
+          this.map.addLayer(x.layer);
         }
       }
     });
@@ -1181,12 +1184,10 @@ export class MapComponent
   private getGeographicExtentValue(): string | false {
     const mapSettings = this.extractSettings();
     const geographicExtentValue = mapSettings.geographicExtentValue;
-    console.log(geographicExtentValue);
     if (geographicExtentValue) {
       const fieldValue = geographicExtentValue?.match(
         this.contextService.filterRegex
       );
-      console.log(fieldValue);
       if (fieldValue) {
         // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
         const replacedFilter = this.contextService.replaceFilter(mapSettings);
@@ -1217,9 +1218,7 @@ export class MapComponent
    * @param  geographicExtent geographic extent (admin0)
    */
   private zoomOn(geographicExtent: string): void {
-    console.log('zooming');
     const geographicExtentValue = this.getGeographicExtentValue();
-    console.log(geographicExtentValue);
     if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
       this.geographicExtentValue = geographicExtentValue;
       if (geographicExtentValue) {
