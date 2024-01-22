@@ -15,6 +15,11 @@ import {
   forEach,
   set,
   has,
+  isArray,
+  every,
+  mapValues,
+  mergeWith,
+  uniq,
 } from 'lodash';
 import {
   Dashboard,
@@ -128,11 +133,6 @@ export class ContextService {
     return this.isFilterEnabled.asObservable();
   }
 
-  /** @returns current question values from the filter */
-  get availableFilterFieldsValue(): Record<string, any> {
-    return this.filter.getValue();
-  }
-
   /** Current dashboard context */
   public context: {
     [key: string]: any;
@@ -228,7 +228,7 @@ export class ContextService {
    */
   public replaceFilter(
     object: any,
-    filter = this.availableFilterFieldsValue
+    filter = this.filterValue(this.filter.getValue())
   ): any {
     if (isEmpty(filter)) {
       return object;
@@ -273,10 +273,7 @@ export class ContextService {
     f: T
   ): T {
     const filter = cloneDeep(f);
-    // if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
-    //   filter.filters = [];
-    //   return filter;
-    // }
+    const filterValue = this.filterValue(this.filter.getValue());
     // Regex to detect {{filter.}} in object
     const filterRegex = this.filterValueRegex;
     // Regex to detect {{context.}} in object
@@ -287,7 +284,7 @@ export class ContextService {
       if (filter.value && typeof filter.value === 'string') {
         const filterName = filter.value?.match(filterRegex)?.[0];
         if (filterName) {
-          filter.value = get(this.availableFilterFieldsValue, filterName);
+          filter.value = get(filterValue, filterName);
         } else {
           const contextName = filter.value?.match(contextRegex)?.[0];
           if (contextName) {
@@ -324,8 +321,9 @@ export class ContextService {
     if (this.isFilterEnabled.getValue()) {
       const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
       const atFilterName = atField.match(regex)?.[0] ?? '';
-      if (get(this.availableFilterFieldsValue, atFilterName)) {
-        return new Date(get(this.availableFilterFieldsValue, atFilterName));
+      const filterValue = this.filterValue(this.filter.getValue());
+      if (get(filterValue, atFilterName)) {
+        return new Date(get(filterValue, atFilterName));
       }
     }
     return undefined;
@@ -547,13 +545,61 @@ export class ContextService {
   shouldRefresh(widget: any, previous: any, current: any) {
     if (
       !isEqual(
-        this.replaceFilter(widget, previous),
-        this.replaceFilter(widget, current)
+        this.replaceFilter(widget, this.filterValue(previous)),
+        this.replaceFilter(widget, this.filterValue(current))
       )
     ) {
       return true;
     } else {
       return false;
     }
+  }
+
+  /**
+   * Transforms form value into filter value that can be used by widgets.
+   *
+   * @param obj form value
+   * @returns available filter value
+   */
+  public filterValue(obj: Record<string, any>): Record<string, any> {
+    // Detect if property is a tagbox using non-primitive reference data
+    const isTextAndFieldArray = (value: any) =>
+      isArray(value) &&
+      every(
+        value,
+        // In order to find tagbox using non-primitive reference data
+        (item) => isObject(item) && has(item, 'text') && has(item, 'value')
+      );
+    // Transform the filter values, so tagbox using non-primitive reference data can be read.
+    const transformFilter = (obj: any): any => {
+      return mapValues(obj, (value) => {
+        if (isTextAndFieldArray(value)) {
+          const transformedValues = value.map((item: any) => item.value);
+          const mergedObject = mergeWith(
+            {},
+            ...transformedValues,
+            (objValue: any, srcValue: any) => {
+              if (objValue) {
+                if (isArray(objValue)) {
+                  return objValue.concat(srcValue);
+                } else {
+                  return [srcValue];
+                }
+              } else {
+                return [srcValue];
+              }
+            }
+          );
+          const resultObject: Record<string, any[]> = {};
+          Object.keys(mergedObject).forEach((property) => {
+            resultObject[property] = uniq(mergedObject[property]);
+          });
+          return resultObject;
+        } else {
+          return value;
+        }
+      });
+    };
+    return transformFilter(obj);
   }
 }

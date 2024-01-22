@@ -1181,12 +1181,10 @@ export class MapComponent
   private getGeographicExtentValue(): string | false {
     const mapSettings = this.extractSettings();
     const geographicExtentValue = mapSettings.geographicExtentValue;
-    console.log(geographicExtentValue);
     if (geographicExtentValue) {
       const fieldValue = geographicExtentValue?.match(
         this.contextService.filterRegex
       );
-      console.log(fieldValue);
       if (fieldValue) {
         // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
         const replacedFilter = this.contextService.replaceFilter(mapSettings);
@@ -1217,9 +1215,7 @@ export class MapComponent
    * @param  geographicExtent geographic extent (admin0)
    */
   private zoomOn(geographicExtent: string): void {
-    console.log('zooming');
     const geographicExtentValue = this.getGeographicExtentValue();
-    console.log(geographicExtentValue);
     if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
       this.geographicExtentValue = geographicExtentValue;
       if (geographicExtentValue) {
