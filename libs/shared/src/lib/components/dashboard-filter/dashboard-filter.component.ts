@@ -188,8 +188,6 @@ export class DashboardFilterComponent
   private initSurvey(): void {
     this.survey = this.contextService.initSurvey();
 
-    this.setAvailableFiltersForContext();
-
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
 
@@ -204,18 +202,6 @@ export class DashboardFilterComponent
       renderGlobalProperties(this.referenceDataService);
     });
     this.onValueChange();
-  }
-
-  /**
-   * Set the available filters of dashboard filter in the shared context service
-   */
-  private setAvailableFiltersForContext() {
-    this.contextService.availableFilterFields = this.survey.getAllQuestions()
-      .length
-      ? this.survey
-          .getAllQuestions()
-          .map((question) => ({ name: question.title, value: question.name }))
-      : [];
   }
 
   /**

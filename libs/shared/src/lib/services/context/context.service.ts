@@ -16,7 +16,6 @@ import {
   set,
   has,
 } from 'lodash';
-import { DashboardService } from '../dashboard/dashboard.service';
 import {
   Dashboard,
   EditDashboardMutationResponse,
@@ -42,12 +41,6 @@ import { GET_RECORD_BY_ID } from './graphql/queries';
   providedIn: 'root',
 })
 export class ContextService {
-  /** Current dashboard filter available questions*/
-  public availableFilterFields: {
-    name: string;
-    value: string;
-  }[] = [];
-
   /** To update/keep the current filter */
   public filter = new BehaviorSubject<Record<string, any>>({});
   /** To update/keep the current filter structure  */
@@ -148,7 +141,6 @@ export class ContextService {
   /**
    * Dashboard context service
    *
-   * @param dashboardService Shared dashboard service
    * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
@@ -158,7 +150,6 @@ export class ContextService {
    * @param router Angular router
    */
   constructor(
-    private dashboardService: DashboardService,
     private dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
