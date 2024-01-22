@@ -50,7 +50,7 @@ const QUESTION_TYPES = [
   // 'imagepicker',
   'boolean',
   // 'image',
-  // 'html',
+  'html',
   // 'signaturepad',
   // 'expression',
   // 'matrix',
@@ -132,6 +132,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueFalse',
   'valueName',
   'inputType',
+  'html',
 ];
 
 /**
