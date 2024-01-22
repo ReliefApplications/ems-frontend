@@ -23,6 +23,7 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
+import { Dashboard } from '../../models/dashboard.model';
 
 /**
  * Interface for quick filters
@@ -52,6 +53,8 @@ export class DashboardFilterComponent
   @Input() opened = false;
   /** Is closable */
   @Input() closable = true;
+  /** Is closable */
+  @Input() dashboard?: Dashboard;
   /** Current position of filter */
   public position!: FilterPosition;
   /** Either left, right, top or bottom */
