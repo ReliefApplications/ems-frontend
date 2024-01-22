@@ -57,8 +57,6 @@ export class ContextService {
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
   public contextRegex = /{{context\.(.*?)}}/g;
-  /** Dashboard object */
-  public dashboard?: Dashboard;
   /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
@@ -115,11 +113,6 @@ export class ContextService {
     return this.filterOpened.asObservable();
   }
 
-  /** @returns key for storing position of filter */
-  get positionKey(): string {
-    return this.dashboard?.id + ':filterPosition';
-  }
-
   /** Used to update the state of whether the filter is enabled */
   public isFilterEnabled = new BehaviorSubject<boolean>(false);
 
@@ -158,11 +151,16 @@ export class ContextService {
     private applicationService: ApplicationService,
     private router: Router
   ) {
-    this.filterPosition$.subscribe((position: any) => {
-      if (position && this.dashboard?.id) {
-        localForage.setItem(this.positionKey, position);
+    this.filterPosition$.subscribe(
+      (value: { position: any; dashboardId: string }) => {
+        if (value.position && value.dashboardId) {
+          localForage.setItem(
+            this.positionKey(value.dashboardId),
+            value.position
+          );
+        }
       }
-    });
+    );
     this.applicationService.application$.subscribe((value) => {
       if (!value) {
         // Reset filter when leaving application
@@ -179,25 +177,35 @@ export class ContextService {
   public setFilter(dashboard?: Dashboard) {
     {
       if (dashboard) {
-        if (this.dashboard?.id !== dashboard.id) {
-          this.dashboard = dashboard;
-        }
         this.filterStructure.next(dashboard.filter?.structure);
-        localForage.getItem(this.positionKey).then((position) => {
+        localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
-            this.filterPosition.next(position);
+            this.filterPosition.next({
+              position: position,
+              dashboardId: dashboard.id,
+            });
           } else {
-            this.filterPosition.next(
-              dashboard.filter?.position ?? FilterPosition.BOTTOM
-            );
+            this.filterPosition.next({
+              position: dashboard.filter?.position ?? FilterPosition.BOTTOM,
+              dashboardId: dashboard.id,
+            });
           }
         });
       } else {
         this.filterStructure.next(null);
         this.filterPosition.next(null);
-        this.dashboard = undefined;
       }
     }
+  }
+
+  /**
+   * Return the filter position key
+   *
+   * @param dashboardId Current dashboard id
+   * @returns key for storing position of filter
+   */
+  private positionKey(dashboardId?: string): string {
+    return dashboardId + ':filterPosition';
   }
 
   /**
@@ -333,8 +341,10 @@ export class ContextService {
 
   /**
    * Opens the modal to edit filters
+   *
+   * @param dashboard Current dashboard
    */
-  public onEditFilter() {
+  public onEditFilter(dashboard?: Dashboard) {
     import(
       '../../components/dashboard-filter/filter-builder-modal/filter-builder-modal.component'
     ).then(({ FilterBuilderModalComponent }) => {
@@ -346,7 +356,7 @@ export class ContextService {
         if (newStructure) {
           this.filterStructure.next(newStructure);
           this.initSurvey();
-          this.saveFilter();
+          this.saveFilter(dashboard);
         }
       });
     });
@@ -384,13 +394,17 @@ export class ContextService {
    * If context data exists, returns an object containing context content mapped settings and widget's original settings
    *
    * @param settings Widget settings
+   * @param dashboard Current dashboard
    * @returns context content mapped settings and original settings
    */
-  public updateSettingsContextContent(settings: any): {
+  public updateSettingsContextContent(
+    settings: any,
+    dashboard?: Dashboard
+  ): {
     settings: any;
     originalSettings?: any;
   } {
-    if (this.dashboard?.contextData) {
+    if (dashboard?.contextData) {
       // If tile has context, replace the templates with the values
       // and keep the original, to be used for the widget settings
       const mappedContextContentSettings = this.replaceContext(settings);
@@ -407,16 +421,18 @@ export class ContextService {
    * @param value id of the element or record
    * @param contextType type of context element
    * @param route Angular current page
+   * @param dashboard Current dashboard
    */
   public onContextChange(
     value: string | number | undefined | null,
     contextType: 'record' | 'element' | undefined,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    dashboard?: Dashboard
   ): void {
     if (
-      !this.dashboard?.id ||
-      !this.dashboard?.page?.id ||
-      !this.dashboard.page.context ||
+      !dashboard?.id ||
+      !dashboard?.page?.id ||
+      !dashboard.page.context ||
       !contextType
     )
       return;
@@ -481,21 +497,25 @@ export class ContextService {
     }
   }
 
-  /** Saves the dashboard contextual filter using the editDashboard mutation */
-  private saveFilter(): void {
+  /**
+   * Saves the dashboard contextual filter using the editDashboard mutation
+   *
+   * @param dashboard Current dashboard
+   */
+  private saveFilter(dashboard?: Dashboard): void {
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD_FILTER,
         variables: {
-          id: this.dashboard?.id,
+          id: dashboard?.id,
           filter: {
-            ...this.dashboard?.filter,
+            ...dashboard?.filter,
             structure: this.filterStructure.getValue(),
           },
         },
       })
       .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors });
+        this.handleFilterMutationResponse({ data, errors }, dashboard);
       });
   }
 
@@ -505,11 +525,11 @@ export class ContextService {
    * @param response Graphql mutation response
    * @param response.data response data
    * @param response.errors response errors
-   * @param defaultPosition filter position
+   * @param dashboard Current dashboard
    */
   private handleFilterMutationResponse(
     response: { data: any; errors: any },
-    defaultPosition?: FilterPosition
+    dashboard?: Dashboard
   ) {
     const { data, errors } = response;
     if (errors) {
@@ -521,8 +541,11 @@ export class ContextService {
         { error: true }
       );
     } else {
-      if (defaultPosition) {
-        this.filterPosition.next(defaultPosition);
+      if (dashboard?.filter?.position) {
+        this.filterPosition.next({
+          position: dashboard.filter.position,
+          dashboardId: dashboard.id,
+        });
       } else {
         this.filterStructure.next(data.editDashboard.filter?.structure);
       }
