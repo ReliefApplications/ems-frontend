@@ -7,7 +7,8 @@ import {
 } from '@angular/core';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 /**
- * The navbar navigator used in the main layout
+ * Navbar used in the main layout.
+ * Can be horizontal or vertical.
  */
 @Component({
   selector: 'shared-navbar',
@@ -15,39 +16,24 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
-  /**
-   * Application layout
-   */
+  /** Application layout */
   @Input() appLayout = false;
-  /**
-   * Permission to add a page
-   */
+  /** Does admin has permission to add a page */
   @Input() canAddPage = false;
-  /**
-   * Indicates whether the navbar should be displayed vertically or horizontally.
-   */
+  /** Should be displayed vertically or horizontally.*/
   @Input() vertical = true;
-  /**
-   * Event emitted when the navbar items are reordered.
-   */
-  @Output() reorder: EventEmitter<any> = new EventEmitter();
-
-  // === NAVIGATION GROUP ===
-  /**
-   * Navigation groups
-   */
+  /** Navigation groups */
   @Input() navGroups: any[] = [];
-  /**
-   * Navigation group selected
-   */
+  /** Navigation group selected */
   @Input() nav: any;
-
-  // === DISPLAY ===
+  /** Event emitted when the navbar items are reordered. */
+  @Output() reorder: EventEmitter<any> = new EventEmitter();
   /** Boolean for portview threshold */
   public largeDevice: boolean;
 
   /**
-   * Left sidenav visible in application edition and preview.
+   * Navbar used in the main layout.
+   * Can be horizontal or vertical.
    */
   constructor() {
     this.largeDevice = window.innerWidth > 1024;

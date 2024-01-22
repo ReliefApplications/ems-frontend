@@ -29,6 +29,19 @@
             [uiTooltip]="'common.remove' | translate"
           ></ui-button>
         </div>
+
+        <!-- GraphQL variable mapping -->
+        <div
+          class="flex-1"
+          *ngIf="referenceData && referenceData.type === 'graphql'"
+        >
+          <shared-graphql-variables-mapping
+            [referenceData]="referenceData"
+            [control]="
+              formGroup.controls.card.controls.referenceDataVariableMapping
+            "
+          ></shared-graphql-variables-mapping>
+        </div>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"

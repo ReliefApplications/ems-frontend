@@ -118,6 +118,7 @@ export class WidgetGridComponent
   }
 
   ngOnInit(): void {
+    this.sortWidgets();
     this.availableWidgets = this.dashboardService.availableWidgets;
     this.skeletons = this.getSkeletons();
     this.setLayout();
@@ -417,7 +418,7 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
-    this.widgets.forEach((widget) => {
+    this.widgets.forEach((widget: GridsterItem) => {
       widget.cols = widget.cols ?? widget.defaultCols;
       widget.rows = widget.rows ?? widget.defaultRows;
       widget.minItemRows = widget.minItemRows ?? widget.minRow;
@@ -433,7 +434,15 @@ export class WidgetGridComponent
       .subscribe(() => {
         if (this.canUpdate) {
           this.onEditWidget({ type: 'display' });
+          this.sortWidgets();
         }
       });
+  }
+
+  /**
+   * Sort widgets by their position in the grid
+   */
+  private sortWidgets() {
+    this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
   }
 }

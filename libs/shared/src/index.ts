@@ -77,7 +77,6 @@ export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/search-menu/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
-export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
@@ -91,6 +90,7 @@ export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
+export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
 
 // Export of controls

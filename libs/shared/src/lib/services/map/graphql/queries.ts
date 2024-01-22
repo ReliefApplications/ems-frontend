@@ -13,6 +13,7 @@ export const GET_LAYER_BY_ID = gql`
       datasource {
         resource
         refData
+        referenceDataVariableMapping
         layout
         aggregation
         geoField

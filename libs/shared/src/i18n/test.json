@@ -215,7 +215,10 @@
 			"rawJson": "******"
 		},
 		"label": "******",
-		"layers": "******",
+		"layers": {
+			"few": "******",
+			"none": "******"
+		},
 		"layout": {
 			"few": "******",
 			"none": "******",
@@ -542,6 +545,12 @@
 					"defaultPosition": "******",
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
+					"gridType": {
+						"fit": "******",
+						"placeholder": "******",
+						"title": "******",
+						"verticalFixed": "******"
+					},
 					"help": {
 						"minCols": "******"
 					},
@@ -862,13 +871,25 @@
 				"to": "******",
 				"withValue": "******"
 			},
+			"columns": {
+				"action": "******",
+				"date": "******",
+				"modifiedValue": "******",
+				"originalValue": "******",
+				"person": "******",
+				"variable": "******"
+			},
 			"download": "******",
 			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
 			},
-			"preview": "******"
+			"preview": "******",
+			"range": {
+				"clear": "******"
+			},
+			"useTableMode": "******"
 		},
 		"icon": {
 			"modal": {
@@ -1669,6 +1690,7 @@
 						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
+							"fieldMapping": "******",
 							"geoField": "******",
 							"latitude": "******",
 							"longitude": "******"
@@ -1743,6 +1765,8 @@
 							"timedimension": "******",
 							"title": "******"
 						},
+						"geographicExtent": "******",
+						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
@@ -1755,6 +1779,7 @@
 						"defaultLabel": "******",
 						"label": "******",
 						"symbol": "******",
+						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
@@ -1768,7 +1793,8 @@
 							"latitude": "******",
 							"longitude": "******",
 							"zoom": "******"
-						}
+						},
+						"geographicExtent": "****** {{context}} ****** {{filter}} ******"
 					}
 				},
 				"style": {
@@ -1779,6 +1805,11 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"noVariables": "******",
+									"title": "******",
+									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+								},
 								"title": "******",
 								"use": "******",
 								"wholeRow": {
@@ -2422,7 +2453,23 @@
 				"title": "******"
 			},
 			"graphQLFilter": "******",
-			"path": "******",
+			"pagination": {
+				"cursorPath": "******",
+				"cursorVariable": "******",
+				"offsetVariable": "******",
+				"pageSizeVariable": "******",
+				"pageVariable": "******",
+				"strategy": "******",
+				"totalCountPath": "******",
+				"usePagination": {
+					"hint": "******",
+					"text": "******"
+				}
+			},
+			"path": {
+				"placeholder": "******",
+				"title": "******"
+			},
 			"payload": {
 				"label": "******",
 				"show": "******"

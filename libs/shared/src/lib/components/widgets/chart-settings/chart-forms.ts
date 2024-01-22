@@ -348,6 +348,9 @@ export const createChartWidgetForm = (id: any, value: any) => {
       chart: createChartForm(get(value, 'chart')),
       resource: [get(value, 'resource', null)],
       referenceData: [get(value, 'referenceData', null)],
+      referenceDataVariableMapping: [
+        get(value, 'referenceDataVariableMapping', null),
+      ],
       contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
       filters: fb.array(
         get(value, 'filters', []).map((x: any) => createFilterForm(x))

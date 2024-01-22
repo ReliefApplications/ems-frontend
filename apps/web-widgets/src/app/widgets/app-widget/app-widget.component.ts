@@ -14,6 +14,8 @@ import {
   ApplicationService,
   ContentType,
   ContextService,
+  DataTemplateService,
+  WorkflowService,
 } from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
@@ -28,6 +30,12 @@ import { Router } from '@angular/router';
   templateUrl: './app-widget.component.html',
   styleUrls: ['./app-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
+  providers: [
+    ApplicationService,
+    WorkflowService,
+    ContextService,
+    DataTemplateService,
+  ],
 })
 export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
@@ -36,6 +44,7 @@ export class AppWidgetComponent
   /** Application Id */
   @Input()
   set id(value: string) {
+    this.applicationService.loadApplication(value);
     // Get the current path
     const currentPath = this.router.url;
     if (currentPath.includes(value)) {
@@ -97,10 +106,12 @@ export class AppWidgetComponent
   ) {
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
-    this.contextService.filter$.pipe(debounceTime(500)).subscribe((value) => {
-      this.filterActive$.emit(!isEmpty(value));
-      this.filter$.emit(value);
-    });
+    this.contextService.filter$
+      .pipe(debounceTime(500))
+      .subscribe(({ current }) => {
+        this.filterActive$.emit(!isEmpty(current));
+        this.filter$.emit(current);
+      });
     this.applicationService.application$.subscribe(
       (application: Application | null) => {
         if (application) {
