@@ -11,11 +11,11 @@ import {
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy, isEqual } from 'lodash';
+import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -82,8 +82,6 @@ export class ChartComponent
   public loading = true;
   /** Chart options */
   public options: any = null;
-  /** Graphql query */
-  private dataQuery: any;
   /** Chart series as behavior subject */
   private series = new BehaviorSubject<any[]>([]);
   /** Chart series as observable */
@@ -96,6 +94,25 @@ export class ChartComponent
   public selectedFilter: CompositeFilterDescriptor | null = null;
   /** Aggregation id */
   private aggregationId?: string;
+
+  /** @returns the graphql query */
+  private get dataQuery() {
+    if (!this.settings.resource && !this.settings.referenceData) {
+      return null;
+    }
+
+    return this.aggregationService.aggregationDataQuery({
+      referenceData: this.settings.referenceData,
+      resource: this.settings.resource,
+      aggregation: this.aggregationId || '',
+      mapping: get(this.settings, 'chart.mapping', null),
+      contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
+      graphQLVariables: this.graphQLVariables,
+      at: this.settings.at
+        ? this.contextService.atArgumentValue(this.settings.at)
+        : undefined,
+    });
+  }
 
   /** @returns Context filters array */
   get contextFilters(): CompositeFilterDescriptor {
@@ -169,25 +186,39 @@ export class ChartComponent
   }
 
   ngOnInit(): void {
+    const { filterRegex, filter$ } = this.contextService;
+
     // Listen to dashboard filters changes if it is necessary
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(({ previous, current }) => {
-        if (
-          this.contextService.filterRegex.test(this.settings.contextFilters) ||
-          this.contextService.filterRegex.test(
-            this.settings.referenceDataVariableMapping
-          )
-        ) {
-          if (
-            this.contextService.shouldRefresh(this.settings, previous, current)
-          ) {
-            this.series.next([]);
-            this.loadChart();
+    if (
+      filterRegex.test(this.settings.contextFilters) ||
+      filterRegex.test(this.settings.referenceDataVariableMapping)
+    ) {
+      filter$
+        .pipe(
+          debounceTime(500),
+          takeUntil(this.destroy$),
+          // Switch map guarantees we discard previous requests results
+          switchMap(async ({ previous, current }) => {
+            if (
+              this.contextService.shouldRefresh(
+                this.settings,
+                previous,
+                current
+              )
+            ) {
+              const series = await this.getData();
+              return series;
+            }
+            return null;
+          })
+        )
+        .subscribe(async (series) => {
+          if (series) {
+            this.series.next(series);
             this.getOptions();
           }
-        }
-      });
+        });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -220,34 +251,13 @@ export class ChartComponent
       this.aggregationId = String(currentAggregationId)
         ? String(currentAggregationId)
         : this.aggregationId;
-      this.loadChart();
+
+      // Loads the chart
+      this.getData().then((series) => {
+        this.series.next(series);
+      });
     }
     this.getOptions();
-  }
-
-  /** Loads chart */
-  private loadChart(): void {
-    this.loading = true;
-    if (this.settings.resource || this.settings.referenceData) {
-      this.dataQuery = this.aggregationService.aggregationDataQuery({
-        referenceData: this.settings.referenceData,
-        resource: this.settings.resource,
-        aggregation: this.aggregationId || '',
-        mapping: get(this.settings, 'chart.mapping', null),
-        contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
-        graphQLVariables: this.graphQLVariables,
-        at: this.settings.at
-          ? this.contextService.atArgumentValue(this.settings.at)
-          : undefined,
-      });
-      if (this.dataQuery) {
-        this.getData();
-      } else {
-        this.loading = false;
-      }
-    } else {
-      this.loading = false;
-    }
   }
 
   /**
@@ -314,84 +324,96 @@ export class ChartComponent
     };
   }
 
-  /** Load the data, using widget parameters. */
-  private getData(): void {
-    this.dataQuery
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ errors, data, loading }: any) => {
-        if (errors) {
-          this.loading = false;
-          this.hasError = true;
-          this.series.next([]);
-        } else {
-          this.hasError = false;
-          const today = new Date();
-          this.lastUpdate =
-            ('0' + today.getHours()).slice(-2) +
-            ':' +
-            ('0' + today.getMinutes()).slice(-2);
-          if (
-            [
-              'pie',
-              'donut',
-              'radar',
-              'line',
-              'bar',
-              'column',
-              'polar',
-            ].includes(this.settings.chart.type)
-          ) {
-            const aggregationData = JSON.parse(
-              JSON.stringify(
-                this.settings.resource
-                  ? data.recordsAggregation
-                  : data.referenceDataAggregation
-              )
+  /**
+   * Load the data, using widget parameters.
+   *
+   * @returns The data
+   */
+  private async getData(): Promise<any[]> {
+    if (!this.dataQuery) {
+      return [];
+    }
+
+    try {
+      this.loading = true;
+      const { errors, data, loading }: any = await lastValueFrom(
+        this.dataQuery
+      );
+
+      if (errors) {
+        this.loading = false;
+        this.hasError = true;
+        this.loading = loading;
+        return [];
+      }
+
+      this.hasError = false;
+      const now = new Date();
+      this.lastUpdate =
+        ('0' + now.getHours()).slice(-2) +
+        ':' +
+        ('0' + now.getMinutes()).slice(-2);
+
+      switch (this.settings.chart.type) {
+        case 'pie':
+        case 'donut':
+        case 'radar':
+        case 'line':
+        case 'bar':
+        case 'column':
+        case 'polar': {
+          const aggregationData = cloneDeep(
+            this.settings.resource
+              ? data.recordsAggregation
+              : data.referenceDataAggregation
+          );
+          // If series
+          if (get(this.settings, 'chart.mapping.series', null)) {
+            const groups = groupBy(aggregationData, 'series');
+            const categories = uniq(
+              aggregationData.map((x: any) => x.category)
             );
-            // If series
-            if (get(this.settings, 'chart.mapping.series', null)) {
-              const groups = groupBy(aggregationData, 'series');
-              const categories = uniq(
-                aggregationData.map((x: any) => x.category)
+            this.loading = loading;
+            return Object.keys(groups).map((key) => {
+              const rawData = groups[key];
+              const returnData = Array.from(
+                categories,
+                (category) =>
+                  rawData.find((x) => x.category === category) || {
+                    category,
+                    field: null,
+                  }
               );
-              this.series.next(
-                Object.keys(groups).map((key) => {
-                  const rawData = groups[key];
-                  const returnData = Array.from(
-                    categories,
-                    (category) =>
-                      rawData.find((x) => x.category === category) || {
-                        category,
-                        field: null,
-                      }
-                  );
-                  return {
-                    label:
-                      key ||
-                      this.translate.instant('components.widget.chart.other'),
-                    name: key,
-                    data: returnData,
-                  };
-                })
-              );
-            } else {
-              // Group under same series
-              this.series.next([
-                {
-                  data: aggregationData,
-                },
-              ]);
-            }
-          } else {
-            this.series.next(
-              this.settings.resource
-                ? data.recordsAggregation
-                : data.referenceData
-            );
+              return {
+                label:
+                  key ||
+                  this.translate.instant('components.widget.chart.other'),
+                name: key,
+                data: returnData,
+              };
+            });
           }
+
+          // Group under same series
           this.loading = loading;
+          return [
+            {
+              data: aggregationData,
+            },
+          ];
         }
-      });
+        default: {
+          this.loading = loading;
+          return this.settings.resource
+            ? data.recordsAggregation
+            : data.referenceData;
+        }
+      }
+    } catch (error) {
+      this.loading = false;
+      this.hasError = true;
+      return [];
+    }
   }
 
   /**
@@ -407,6 +429,10 @@ export class ChartComponent
     } else {
       this.selectedFilter = null;
     }
-    this.loadChart();
+
+    // Reloads the chart
+    this.getData().then((series) => {
+      this.series.next(series);
+    });
   }
 }
