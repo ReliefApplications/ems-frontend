@@ -15,6 +15,9 @@
         | translate
     "
   ></ui-icon>
+  <ui-button category="secondary" (click)="setAvailableQueryVariables(true, true)">
+    {{ 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.refreshVariables' | translate }}
+  </ui-button>
 </span>
 <ngx-monaco-editor
   *ngIf="availableQueryVariables.length > 0"

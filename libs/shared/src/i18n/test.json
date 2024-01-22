@@ -1807,6 +1807,7 @@
 							"layoutStyles": {
 								"queryFilters": {
 									"noVariables": "******",
+									"refreshVariables": "******",
 									"title": "******",
 									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
 								},
