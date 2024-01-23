@@ -1,9 +1,4 @@
-import {
-  ComponentCollection,
-  Serializer,
-  SurveyModel,
-  SvgRegistry,
-} from 'survey-core';
+import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { QuestionUsers } from '../types';
@@ -71,8 +66,6 @@ export const init = (
       );
 
       const instance: UsersDropdownComponent = userDropdown.instance;
-      // Set the visibility of the dropdown
-      instance.setReadOnly(question.readOnly);
       // Filter by applications
       instance.applications = question.applications;
 
@@ -84,15 +77,18 @@ export const init = (
         question.value = value;
       });
 
-      (question.survey as SurveyModel).onValueChanged.add((survey: any) => {
-        if (survey.mode === 'display') {
-          instance.setReadOnly(true);
-        }
-      });
+      if (question.isReadOnly) {
+        instance.control.disable();
+      }
+
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',
         (value: boolean) => {
-          instance.setReadOnly(value);
+          if (value) {
+            instance.control.disable();
+          } else {
+            instance.control.enable();
+          }
         }
       );
     },

@@ -49,8 +49,6 @@ export class UsersDropdownComponent
   @Output() selectionChange = new EventEmitter<string[]>();
   /** Initial selection of users */
   public initialSelection: User[] = [];
-  /** Disable the element*/
-  public isReadOnly = false;
   /** Users query */
   public query!: QueryRef<UsersNodeQueryResponse>;
   /** Form control that has selected users */
@@ -139,14 +137,5 @@ export class UsersDropdownComponent
         ],
       } as CompositeFilterDescriptor,
     });
-  }
-
-  /**
-   * Sets the disabled state of the component
-   *
-   * @param value disabled value
-   */
-  public setReadOnly(value: boolean) {
-    this.isReadOnly = value;
   }
 }
