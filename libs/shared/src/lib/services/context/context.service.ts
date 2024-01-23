@@ -153,7 +153,7 @@ export class ContextService {
   ) {
     this.filterPosition$.subscribe(
       (value: { position: any; dashboardId: string }) => {
-        if (value.position && value.dashboardId) {
+        if (value && value.position && value.dashboardId) {
           localForage.setItem(
             this.positionKey(value.dashboardId),
             value.position
