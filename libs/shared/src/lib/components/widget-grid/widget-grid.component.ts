@@ -22,6 +22,7 @@ import {
   CompactType,
   DisplayGrid,
   GridType,
+  GridsterComponentInterface,
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
@@ -86,6 +87,8 @@ export class WidgetGridComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
+  /** Determines whether we need to use a minimum height */
+  public isMinHeightEnabled?: boolean;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -131,6 +134,11 @@ export class WidgetGridComponent
         this.setGridOptions();
       });
     this.setGridOptions();
+
+    // Initialize and listen grid size changes to determine whether the minimum height should be used
+    this.gridOptions.gridSizeChangedCallback = (grid) =>
+      this.enableMinHeight(grid);
+    this.enableMinHeight();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -188,6 +196,11 @@ export class WidgetGridComponent
     return MAX_COL_SPAN;
   }
 
+  private enableMinHeight(grid: GridsterComponentInterface | null = null) {
+    this.isMinHeightEnabled =
+      this.gridOptions.gridType === GridType.Fit && !grid?.mobile;
+  }
+
   /**
    * Set Gridster options.
    *
@@ -232,10 +245,6 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
-
-    if (this.gridOptions.gridType !== GridType.Fit) {
-      this.gridOptions.minimumHeight = 0;
-    }
 
     // Set maxCols at the end, based on widgets & existing max
     this.gridOptions.maxCols = Math.max(
