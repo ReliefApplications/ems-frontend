@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { DialogSize } from './types/dialog-size';
+import { ResizeEvent } from 'angular-resizable-element';
 
 /**
  * Dialog component.
@@ -18,6 +19,8 @@ export class DialogComponent implements OnChanges, OnInit {
   @Input() padding = true;
   /** Size of the dialog: small - medium - big - fullscreen */
   @Input() size!: DialogSize;
+  /** Boolean indicating whether the dialog is resizable. */
+  @Input() resizable = false;
 
   /** Close Dialog. */
   @Input() onClose = () => {
@@ -37,6 +40,10 @@ export class DialogComponent implements OnChanges, OnInit {
 
   ngOnChanges(): void {
     this.setDialogType();
+  }
+
+  onResizing(event: ResizeEvent): void {
+    this.dialogRef.updateSize(`${event.rectangle.width}px`, `${event.rectangle.height}px`);
   }
 
   /**

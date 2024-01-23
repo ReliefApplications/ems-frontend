@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
   ElementRef,
-  AfterViewInit
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -62,7 +61,7 @@ const getValueType = (
 })
 export class RecordHistoryComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   /** Id of the record */
   @Input() id!: string;
@@ -74,6 +73,8 @@ export class RecordHistoryComponent
   @Input() showHeader = true;
   /** Refresh content of the history */
   @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
+  /** Boolean indicating whether the dialog is resizable. */
+  @Input() resizable = false;
   /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
@@ -120,11 +121,8 @@ export class RecordHistoryComponent
   historyForTable: any[] = [];
   /** Should view as table */
   viewAsTable = new FormControl(true);
+  /** size style */
   public style: any = {};
-  /** minimum width */
-  private minWidth = 0;
-  /** minimum height */
-  private minHeight = 0;
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -260,14 +258,6 @@ export class RecordHistoryComponent
     });
   }
 
-  ngAfterViewInit(): void {
-    // set min height and width based on current size
-    this.minHeight = this.elementRef.nativeElement.offsetHeight;
-    this.minWidth = this.elementRef.nativeElement.offsetWidth;
-    console.log("min height", this.minHeight);
-    console.log("min width", this.minWidth);
-  }
-
   /**
    * On resize action
    *
@@ -287,39 +277,23 @@ export class RecordHistoryComponent
    * @returns boolean
    */
   validate(event: ResizeEvent): boolean {
-    // console.log(this.elementRef.nativeElement);
-    // this.minHeight = this.elementRef.nativeElement.offsetHeight;
-    // this.minWidth = this.elementRef.nativeElement.offsetWidth;
-    console.log("min height", this.minHeight);
-    console.log("min width", this.minWidth);
     const dashboardNavbar =
       document.documentElement.getElementsByTagName('shared-navbar');
     let dashboardNavbarWidth = 0;
     if (dashboardNavbar[0] && !this.dialog) {
       dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
     }
-    // set the max width as 80% of the screen size
-    const maxWidth = Math.max(
-      Math.round(
-        (document.documentElement.clientWidth - dashboardNavbarWidth) * 0.8
-      ),
-      this.minWidth
+    // set the min width as 40% of the screen size available
+    const minWidth = Math.round(
+      (document.documentElement.clientWidth - dashboardNavbarWidth) * 0.4
     );
-    // set the max height as 80% of the screen size
-    const maxHeight = Math.max(
-      Math.round(document.documentElement.clientHeight * 0.8),
-      this.minHeight
+    // set the max width as 95% of the screen size available
+    const maxWidth = Math.round(
+      (document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
     );
-    console.log("min height", this.minHeight);
-    console.log("max height", maxHeight);
-    console.log("min width", this.minWidth);
-    console.log("max width", maxWidth);
     if (
       event.rectangle.width &&
-      event.rectangle.height &&
-      (event.rectangle.width < this.minWidth ||
-        event.rectangle.height < this.minHeight) &&
-      (event.rectangle.width > maxWidth || event.rectangle.height > maxHeight)
+      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
     ) {
       return false;
     }
