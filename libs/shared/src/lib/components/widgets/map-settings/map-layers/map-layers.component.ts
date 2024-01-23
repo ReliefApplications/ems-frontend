@@ -59,7 +59,7 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
   private updateLayerList(): void {
     const layerIds = this.control.value;
     this.mapLayersService.getLayers(layerIds).subscribe((layers) => {
-      this.mapLayers = layers
+      this.mapLayers = layers;
       this.loading = false;
     });
   }

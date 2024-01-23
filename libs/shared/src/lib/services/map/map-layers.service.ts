@@ -168,6 +168,7 @@ export class MapLayersService {
   /**
    * Get the layers
    *
+   * @param ids id array
    * @returns Observable of layer
    */
   public getLayers(ids: string[]): Observable<LayerModel[]> {
@@ -176,7 +177,7 @@ export class MapLayersService {
         query: GET_LAYERS_BY_IDS,
         variables: {
           sortField: 'name',
-          ids: ids
+          ids: ids,
         },
       })
       .pipe(
