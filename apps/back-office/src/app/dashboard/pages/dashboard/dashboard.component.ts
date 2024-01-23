@@ -628,11 +628,12 @@ export class DashboardComponent
         if (!button) return;
         const currButtons = this.dashboard?.buttons || [];
 
-        this.dashboardService.saveDashboardButtons(this.dashboard?.id, [
-          ...currButtons,
-          button,
-        ]);
-        this.buttonActions.push(button);
+        this.dashboardService
+          .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+          ?.pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.buttonActions.push(button);
+          });
       });
   }
 
