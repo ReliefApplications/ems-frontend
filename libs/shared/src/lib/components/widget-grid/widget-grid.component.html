@@ -62,7 +62,8 @@
       </ng-template>
     </gridster-item>
   </gridster>
-  <div class="pb-[32px]"></div>
+  <!-- Manually creating a padding because the grid overlaps the default behavior -->
+  <div *ngIf="gridOptions.minimumHeight" class="h-[32px]"></div>
 </ng-container>
 <!-- LOADING INDICATOR -->
 <ng-template #emptyTemplate>

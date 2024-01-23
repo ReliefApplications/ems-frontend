@@ -49,7 +49,7 @@ export const createTabFormGroup = (value?: any) => {
           'minimumHeight',
           DEFAULT_GRID_OPTIONS.minimumHeight
         ),
-        Validators.min(100)
+        Validators.min(0)
       ),
       margin: fb.control(
         get<number>(value.gridOptions, 'margin', DEFAULT_GRID_OPTIONS.margin),
