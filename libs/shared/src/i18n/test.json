@@ -1806,7 +1806,9 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"help": "******",
 									"noVariables": "******",
+									"refresh": "******",
 									"title": "******",
 									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
 								},
