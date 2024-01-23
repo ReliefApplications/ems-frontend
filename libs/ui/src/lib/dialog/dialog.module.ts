@@ -19,7 +19,7 @@ import { ResizableModule } from 'angular-resizable-element';
     TranslateModule,
     ButtonModule,
     TooltipModule,
-    ResizableModule
+    ResizableModule,
   ],
   exports: [DialogComponent, DialogCloseDirective, TranslateModule],
 })

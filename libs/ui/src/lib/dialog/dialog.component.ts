@@ -42,8 +42,16 @@ export class DialogComponent implements OnChanges, OnInit {
     this.setDialogType();
   }
 
+  /**
+   * On resize action
+   *
+   * @param event resize event
+   */
   onResizing(event: ResizeEvent): void {
-    this.dialogRef.updateSize(`${event.rectangle.width}px`, `${event.rectangle.height}px`);
+    this.dialogRef.updateSize(
+      `${event.rectangle.width}px`,
+      `${event.rectangle.height}px`
+    );
   }
 
   /**
