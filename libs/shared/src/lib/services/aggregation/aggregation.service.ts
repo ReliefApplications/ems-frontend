@@ -124,6 +124,7 @@ export class AggregationService {
    * @param options.contextFilters context filters, if any
    * @param options.at 'at' argument value, if any
    * @param options.first number of records to fetch, -1 if all of them
+   * @param options.skip number of records to skip
    * @param options.graphQLVariables graphql variables (optional)
    * @returns Aggregation query
    */
@@ -137,6 +138,7 @@ export class AggregationService {
     contextFilters?: CompositeFilterDescriptor;
     at?: Date;
     first?: number;
+    skip?: number;
     graphQLVariables?: any;
   }): Observable<
     ApolloQueryResult<
@@ -157,6 +159,7 @@ export class AggregationService {
             : {},
           at: options.at,
           first: options.first,
+          skip: options.skip,
         },
       });
     } else {

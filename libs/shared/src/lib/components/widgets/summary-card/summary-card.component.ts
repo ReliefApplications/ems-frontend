@@ -9,12 +9,14 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import {
+  Observable,
   debounceTime,
   distinctUntilChanged,
   firstValueFrom,
+  switchMap,
   takeUntil,
 } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -36,7 +38,7 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
   }>;
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
-import { clone, cloneDeep, isNaN, isNil } from 'lodash';
+import { clone, cloneDeep, isNil } from 'lodash';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResourceQueryResponse } from '../../../models/resource.model';
@@ -48,6 +50,7 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { ApolloQueryResult } from '@apollo/client';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -106,7 +109,7 @@ export class SummaryCardComponent
   /** Sorted cards */
   private sortedCachedCards: CardT[] = [];
   /** Apollo data query */
-  private dataQuery!: QueryRef<any>;
+  private dataQuery!: any;
   /** Apollo meta query */
   private metaQuery: any;
   /** Current layout */
@@ -141,6 +144,58 @@ export class SummaryCardComponent
   private scrollEventListener!: any;
   /** Timeout listener for summary card scroll bind set on view switch */
   private scrollEventBindTimeout!: NodeJS.Timeout;
+
+  /**
+   * Gets the query for fetching cards
+   *
+   * @param variables Query variables, if any
+   * @returns the query or null
+   */
+  private getQuery(
+    variables: any = {}
+  ): Observable<ApolloQueryResult<unknown>> | null {
+    if (this.useLayout) {
+      if (!this.dataQuery || !this.layout) {
+        return null;
+      }
+
+      return this.apollo.query({
+        query: this.dataQuery,
+        variables: {
+          first: this.pageInfo.pageSize,
+          filter: this.queryFilter,
+          sortField: this.sortOptions.field || '',
+          sortOrder: this.sortOptions.order,
+          styles: this.layout.query?.style || null,
+          ...(this.settings.at && {
+            at: this.contextService.atArgumentValue(this.settings.at),
+          }),
+          ...variables,
+        },
+        fetchPolicy: 'network-only',
+      });
+    }
+
+    if (this.useAggregation) {
+      const card = this.settings.card;
+      if (!card || !card.resource || !card.aggregation) {
+        return null;
+      }
+      return this.aggregationService.aggregationDataQuery({
+        resource: card.resource,
+        aggregation: card.aggregation,
+        contextFilters: this.contextService.injectContext(this.contextFilters),
+        at: this.widget.settings.at
+          ? this.contextService.atArgumentValue(this.widget.settings.at)
+          : undefined,
+        first: this.pageInfo.pageSize,
+        skip: this.pageInfo.skip,
+        ...variables,
+      });
+    }
+
+    return null;
+  }
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -297,22 +352,51 @@ export class SummaryCardComponent
         this.handleSearch(value || '');
       });
 
+    const { filterRegex, filter$ } = this.contextService;
+
     // Listen to dashboard filters changes if it is necessary
     if (
-      this.contextService.filterRegex.test(
-        this.widget.settings.contextFilters
-      ) ||
-      this.contextService.filterRegex.test(
+      filterRegex.test(this.widget.settings.contextFilters) ||
+      filterRegex.test(
         this.widget?.settings?.card?.referenceDataVariableMapping
       )
     ) {
-      this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(({ previous, current }) => {
-          if (
-            this.contextService.shouldRefresh(this.widget, previous, current)
-          ) {
-            this.refresh();
+      filter$
+        .pipe(
+          debounceTime(500),
+          takeUntil(this.destroy$),
+          switchMap(async ({ previous, current }) => {
+            if (
+              this.contextService.shouldRefresh(this.widget, previous, current)
+            ) {
+              this.cards = [];
+              this.sortedCachedCards = [];
+              this.cachedCards = [];
+
+              if (this.summaryCardGrid) {
+                this.summaryCardGrid.nativeElement.scroll({
+                  top: 0,
+                  left: 0,
+                  behavior: 'smooth',
+                });
+              }
+
+              const cards = await this.getCardsOnPage({
+                pageSize: this.pageInfo.pageSize,
+                skip: 0,
+                previousPageIndex: 0,
+                pageIndex: 0,
+                totalItems: 0,
+              });
+
+              return cards;
+            }
+            return null;
+          })
+        )
+        .subscribe((cards) => {
+          if (cards) {
+            this.cards = cards;
           }
         });
     }
@@ -331,6 +415,38 @@ export class SummaryCardComponent
       this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
     }
     this.bindCardsScrollListener();
+  }
+
+  /**
+   * Gets the data query, taking into account the datasource type
+   *
+   * @returns the query or null
+   */
+  public async buildQueryByLayout() {
+    const card = this.settings.card;
+    if (!card || !card.resource || !card.layout) {
+      return null;
+    }
+    const layoutsRes = await this.gridLayoutService.getLayouts(card.resource, {
+      ids: [card.layout],
+      first: 1,
+    });
+    const layouts = layoutsRes.edges.map((edge) => edge.node);
+
+    if (layouts.length > 0) {
+      this.layout = layouts[0];
+      const layoutQuery = this.layout.query;
+
+      return {
+        query: this.queryBuilder.buildQuery({
+          query: layoutQuery,
+        }),
+        layoutQuery,
+      };
+    }
+
+    // If no layout is found, return null
+    return null;
   }
 
   /**
@@ -423,10 +539,27 @@ export class SummaryCardComponent
     // Resource configuration
     if (card.resource) {
       if (this.useAggregation) {
-        this.getCardsFromAggregation(card);
+        // Using aggregation
+        this.loading = true;
+        const query = this.getQuery();
+
+        if (query) {
+          this.dataQuery = query;
+          query.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            const cards = this.getUpdatedRecordCards(res);
+            this.cards = cards;
+          });
+        }
       } else if (this.useLayout) {
-        this.createDynamicQueryFromLayout(card);
+        // Using layout
+        this.createDynamicQueryFromLayout();
       }
+
+      // Set sort fields
+      this.sortFields = [];
+      this.widget.settings.sortFields?.forEach((sortField: any) => {
+        this.sortFields.push(sortField);
+      });
     } else if (this.useReferenceData) {
       // Using reference data
       this.refData = await this.referenceDataService.loadReferenceData(
@@ -464,39 +597,16 @@ export class SummaryCardComponent
   private handleSearch(search: string) {
     this.pageInfo.pageIndex = 0;
     this.pageInfo.skip = 0;
-    if (this.useAggregation) {
-      // Only need to fetch data if is dynamic and not an aggregation
-      const skippedFields = ['id', 'incrementalId'];
-      this.sortedCachedCards = this.cachedCards.filter((card: any) => {
-        const data = clone(card.record || card.rawValue || {});
-        skippedFields.forEach((field) => delete data[field]);
-        const recordValues = Object.values(data);
-        return recordValues.some(
-          (value) =>
-            (typeof value === 'string' &&
-              value.toLowerCase().includes(search.toLowerCase()) &&
-              !skippedFields.includes(value)) ||
-            (!isNaN(parseFloat(search)) &&
-              typeof value === 'number' &&
-              value === parseFloat(search))
-        );
-      });
-      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
-      this.pageInfo.length = this.sortedCachedCards.length;
-    } else if (this.useLayout) {
+
+    // Both layout and aggregation use the same query
+    if (this.useLayout || this.useAggregation) {
       this.loading = true;
-      this.dataQuery
-        ?.refetch({
-          skip: 0,
-          first: this.pageInfo.pageSize,
-          filter: this.queryFilter,
-          sortField: this.sortOptions.field,
-          sortOrder: this.sortOptions.order,
-          ...(this.settings.at && {
-            at: this.contextService.atArgumentValue(this.settings.at),
-          }),
-        })
-        .then(this.updateRecordCards.bind(this));
+      this.getQuery()
+        ?.pipe(takeUntil(this.destroy$))
+        .subscribe((res) => {
+          const cards = this.getUpdatedRecordCards(res);
+          this.cards = cards;
+        });
     } else if (this.useReferenceData) {
       if (this.refData?.pageInfo?.strategy) {
         this.refresh();
@@ -526,10 +636,12 @@ export class SummaryCardComponent
    * Updates the cards from fetched custom query
    *
    * @param res Query result
+   * @returns Updated cards
    */
-  private updateRecordCards(res: any) {
+  private getUpdatedRecordCards(res: any) {
+    let resCards = this.cards;
     if (!res?.data) {
-      return;
+      return resCards;
     }
     let newCards: any[] = [];
 
@@ -537,7 +649,7 @@ export class SummaryCardComponent
     if (this.layout) {
       const edges = res.data?.[layoutQueryName].edges;
       if (!edges) {
-        return;
+        return resCards;
       }
 
       newCards = edges.map((e: any) => ({
@@ -548,24 +660,25 @@ export class SummaryCardComponent
         style: e.meta.style,
       }));
     } else if (this.settings.card?.aggregation) {
-      if (!res.data?.recordsAggregation?.items) return;
+      if (!res.data?.recordsAggregation?.items) {
+        return resCards;
+      }
       newCards = res.data.recordsAggregation.items.map((x: any) => ({
         ...this.settings.card,
         rawValue: x,
       }));
     } else {
-      return;
+      return resCards;
     }
 
     // update card list and scroll behavior according to the card items display
-
     if (
       !this.settings.widgetDisplay?.usePagination &&
       !this.triggerRefreshCardList
     ) {
-      this.cards = [...this.cards, ...newCards];
+      resCards = [...this.cards, ...newCards];
     } else {
-      this.cards = newCards;
+      resCards = newCards;
       if (this.displayMode == 'cards') {
         this.summaryCardGrid.nativeElement.scroll({
           top: 0,
@@ -582,6 +695,7 @@ export class SummaryCardComponent
     this.scrolling = false;
     this.triggerRefreshCardList = false;
     this.loading = res.loading;
+    return resCards;
   }
 
   /**
@@ -724,12 +838,12 @@ export class SummaryCardComponent
     this.dataQuery.refetch();
   }
 
-  /**
-   * Gets the query for fetching the dynamic cards records from a card's settings
-   *
-   * @param card Card settings
-   */
-  private async createDynamicQueryFromLayout(card: any) {
+  /** Sets the query for fetching the dynamic cards records from a card's settings */
+  private async createDynamicQueryFromLayout() {
+    const card = this.settings.card;
+    if (!card || !card.resource || !card.layout) {
+      return;
+    }
     // gets metadata
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
@@ -740,97 +854,76 @@ export class SummaryCardComponent
       })
     );
 
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
-        if (layouts.length > 0) {
-          this.layout = layouts[0];
-          const layoutQuery = this.layout.query;
-          const builtQuery = this.queryBuilder.buildQuery({
-            query: layoutQuery,
-          });
-          const layoutFields = layoutQuery.fields;
-          this.fields = get(metaRes, 'data.resource.metadata', []).map(
-            (f: any) => {
-              const layoutField = layoutFields.find(
-                (lf: any) => lf.name === f.name
-              );
-              if (layoutField) {
-                return { ...layoutField, ...f };
-              }
-              return f;
-            }
-          );
+    const dataQuery = await this.buildQueryByLayout();
 
-          // Set sort fields
-          this.sortFields = [];
-          this.widget.settings.sortFields?.forEach((sortField: any) => {
-            this.sortFields.push(sortField);
-          });
+    const layout = this.layout;
+    if (!dataQuery || !layout) {
+      return;
+    }
 
-          if (builtQuery) {
-            this.sortOptions = {
-              field: get(this.layout?.query, 'sort.field', null),
-              order: get(this.layout?.query, 'sort.order', ''),
-            };
-            this.dataQuery = this.apollo.watchQuery<any>({
-              query: builtQuery,
-              variables: {
-                first: this.pageInfo.pageSize,
-                filter: this.queryFilter,
-                sortField: this.sortOptions.field,
-                sortOrder: this.sortOptions.order,
-                styles: layoutQuery.style || null,
-                ...(this.settings.at && {
-                  at: this.contextService.atArgumentValue(this.settings.at),
-                }),
-              },
-              fetchPolicy: 'network-only',
-              nextFetchPolicy: 'cache-first',
-            });
-            this.dataQuery.valueChanges
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(this.updateRecordCards.bind(this));
-          }
-          // Build meta query to add information to fields
-          this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
-          if (this.metaQuery) {
-            this.loading = true;
-            this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
-              next: async ({ data }: any) => {
-                for (const field in data) {
-                  if (Object.prototype.hasOwnProperty.call(data, field)) {
-                    this.metaFields = Object.assign({}, data[field]);
-                    try {
-                      await this.gridService.populateMetaFields(
-                        this.metaFields
-                      );
-                      this.fields = this.fields.map((field) => {
-                        //add shape for columns and matrices
-                        const metaData = this.metaFields[field.name];
-                        if (metaData && (metaData.columns || metaData.rows)) {
-                          return {
-                            ...field,
-                            columns: metaData.columns,
-                            rows: metaData.rows,
-                          };
-                        }
-                        return field;
-                      });
-                    } catch (err) {
-                      console.error(err);
-                    }
+    const { query: builtQuery } = dataQuery;
+
+    this.fields = get(metaRes, 'data.resource.metadata', []).map((f: any) => {
+      const layoutField = layout.query?.fields.find(
+        (lf: any) => lf.name === f.name
+      );
+      if (layoutField) {
+        return { ...layoutField, ...f };
+      }
+      return f;
+    });
+
+    if (builtQuery) {
+      this.dataQuery = builtQuery;
+      this.sortOptions = {
+        field: get(this.layout?.query, 'sort.field', null),
+        order: get(this.layout?.query, 'sort.order', ''),
+      };
+
+      // Init the cards
+      const query = this.getQuery();
+      if (query) {
+        query.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+          const cards = this.getUpdatedRecordCards(res);
+          this.cards = cards;
+        });
+      }
+    }
+
+    // Build meta query to add information to fields
+    this.metaQuery = this.queryBuilder.buildMetaQuery(layout.query);
+    if (this.metaQuery) {
+      this.loading = true;
+      this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+        next: async ({ data }: any) => {
+          for (const field in data) {
+            if (Object.prototype.hasOwnProperty.call(data, field)) {
+              this.metaFields = Object.assign({}, data[field]);
+              try {
+                await this.gridService.populateMetaFields(this.metaFields);
+                this.fields = this.fields.map((field) => {
+                  //add shape for columns and matrices
+                  const metaData = this.metaFields[field.name];
+                  if (metaData && (metaData.columns || metaData.rows)) {
+                    return {
+                      ...field,
+                      columns: metaData.columns,
+                      rows: metaData.rows,
+                    };
                   }
-                }
-              },
-              error: () => {
-                this.loading = false;
-              },
-            });
+                  return field;
+                });
+              } catch (err) {
+                console.error(err);
+              }
+            }
           }
-        }
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
+    }
   }
 
   /**
@@ -883,37 +976,6 @@ export class SummaryCardComponent
   }
 
   /**
-   * Gets the query for fetching the dynamic cards records from a card's settings
-   *
-   * @param card Card settings
-   */
-  private async getCardsFromAggregation(
-    card: NonNullable<SummaryCardFormT['value']['card']>
-  ) {
-    this.loading = true;
-    this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
-      card.resource as string,
-      card.aggregation as string,
-      this.pageInfo.pageSize,
-      0,
-      this.contextService.injectContext(this.contextFilters),
-      this.widget.settings.at
-        ? this.contextService.atArgumentValue(this.widget.settings.at)
-        : undefined
-    );
-
-    this.dataQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(this.updateRecordCards.bind(this));
-
-    // Set sort fields
-    this.sortFields = [];
-    this.widget.settings.sortFields?.forEach((sortField: any) => {
-      this.sortFields.push(sortField);
-    });
-  }
-
-  /**
    * Load more items on scroll.
    *
    * @param e scroll event
@@ -942,13 +1004,17 @@ export class SummaryCardComponent
             });
           }
         } else {
-          this.dataQuery
-            ?.fetchMore({
-              variables: {
-                skip: this.cards.length,
-              },
-            })
-            .then(this.updateRecordCards.bind(this));
+          const query = this.getQuery({
+            skip: this.cards.length,
+          });
+          if (!query) {
+            return;
+          }
+
+          query.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            const cards = this.getUpdatedRecordCards(res);
+            this.cards = cards;
+          });
         }
       }
     }
@@ -958,28 +1024,25 @@ export class SummaryCardComponent
    * Detects pagination events and update the items loaded.
    *
    * @param event Page change event.
+   * @returns Updated cards.
    */
-  public onPage(event: UIPageChangeEvent): void {
+  public async getCardsOnPage(event: UIPageChangeEvent) {
     this.pageInfo.pageSize = event.pageSize;
     this.pageInfo.skip = event.skip;
     this.pageInfo.pageIndex = event.pageIndex;
 
     if (this.dataQuery) {
       this.loading = true;
-      const layoutQuery = this.layout?.query;
-      this.dataQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          skip: event.skip,
-          filter: this.queryFilter,
-          sortField: this.sortOptions.field,
-          sortOrder: this.sortOptions.order,
-          styles: layoutQuery?.style || null,
-          ...(this.settings.at && {
-            at: this.contextService.atArgumentValue(this.settings.at),
-          }),
-        })
-        .then(this.updateRecordCards.bind(this));
+      const query = this.getQuery({
+        skip: event.skip,
+      });
+
+      if (!query) {
+        return [];
+      }
+
+      const res = await firstValueFrom(query);
+      return this.getUpdatedRecordCards(res);
     } else if (this.useReferenceData && this.refData) {
       const strategy = this.refData?.pageInfo?.strategy;
       const refData = this.refData;
@@ -1019,13 +1082,27 @@ export class SummaryCardComponent
           this.updateReferenceDataCards(items, pageInfo);
           this.loading = false;
         });
+
+      return [];
     }
+
+    return [];
+  }
+
+  /**
+   * Detects pagination events and update the items loaded.
+   *
+   * @param event Page change event.
+   * @returns Updated cards.
+   */
+  public async onPage(event: UIPageChangeEvent) {
+    this.cards = await this.getCardsOnPage(event);
   }
 
   /**
    * Refresh view
    */
-  public refresh() {
+  public async refresh() {
     this.cards = [];
     this.sortedCachedCards = [];
     this.cachedCards = [];
@@ -1038,13 +1115,15 @@ export class SummaryCardComponent
       });
     }
 
-    this.onPage({
+    const cards = await this.getCardsOnPage({
       pageSize: this.pageInfo.pageSize,
       skip: 0,
       previousPageIndex: 0,
       pageIndex: 0,
       totalItems: 0,
     });
+
+    this.cards = cards;
   }
 
   /**
