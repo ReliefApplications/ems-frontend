@@ -8,6 +8,7 @@ import {
   GraphQLSelectModule,
   IconModule,
   SpinnerModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -54,6 +55,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
     AlertModule,
     InputsModule,
     DropDownsModule,
+    ToggleModule,
   ],
 })
 export class ReferenceDataModule {}

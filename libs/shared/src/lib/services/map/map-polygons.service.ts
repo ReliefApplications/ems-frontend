@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { RestService } from '../rest/rest.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, first } from 'rxjs';
 import { EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
 import set from 'lodash/set';
 import { flattenDeep, get, isNil, isObject, uniq } from 'lodash';
+import * as L from 'leaflet';
 
 /** Available admin identifiers */
 type AdminIdentifier = 'admin0.iso2code' | 'admin0.iso3code' | 'admin0.id';
@@ -107,6 +108,42 @@ export class MapPolygonsService {
       );
     } else {
       return EMPTY_FEATURE_COLLECTION;
+    }
+  }
+
+  /**
+   * Fit bounds & zoom on country
+   *
+   * @param geographicExtentValue geographic extent value
+   * @param geographicExtent geographic extent (admin0)
+   * @param map leaflet map
+   */
+  public zoomOn(
+    geographicExtentValue: string,
+    geographicExtent: string,
+    map: L.Map
+  ): void {
+    // Only admin0 is available so far
+    if (geographicExtent === 'admin0') {
+      this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
+        const admin0 = this.admin0s.find(
+          (data) =>
+            data.iso2code === geographicExtentValue ||
+            data.iso3code === geographicExtentValue ||
+            data.name === geographicExtentValue
+        );
+        if (admin0) {
+          const layer = L.geoJSON({
+            type: 'Feature',
+            geometry: admin0.polygons,
+            properties: {},
+          } as any);
+          // Timeout seems to be needed for first load of the map.
+          setTimeout(() => {
+            map.fitBounds(layer.getBounds());
+          }, 500);
+        }
+      });
     }
   }
 }

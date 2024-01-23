@@ -76,6 +76,165 @@
           </div>
         </ng-template>
       </div>
+      <!-- Boolean for use pagination -->
+      <ui-toggle
+        formControlName="usePagination"
+        *ngIf="type === 'graphql'"
+        class="mb-4"
+      >
+        <ng-container ngProjectAs="label">
+          {{ 'pages.referenceData.pagination.usePagination.text' | translate }}
+          <ui-icon
+            class="ml-1 cursor-help self-center"
+            variant="grey"
+            [size]="18"
+            icon="info_outline"
+            [uiTooltip]="
+              'pages.referenceData.pagination.usePagination.hint' | translate
+            "
+          ></ui-icon
+        ></ng-container>
+      </ui-toggle>
+      <!-- Further pagination configuration -->
+      <div
+        class="flex flex-col gap-2"
+        *ngIf="referenceForm.get('usePagination')?.value === true"
+        formGroupName="pageInfo"
+      >
+        <div class="flex flex-row gap-2">
+          <!-- Dropdown with the list of pagination strategies -->
+          <div uiFormFieldDirective class="grow">
+            <label>
+              {{ 'pages.referenceData.pagination.strategy' | translate }}
+            </label>
+            <ui-select-menu formControlName="strategy">
+              <ui-select-option
+                *ngFor="let strategy of paginationStrategies"
+                [value]="strategy"
+              >
+                {{ strategy }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+
+          <!-- If the pagination strategy is "cursor", show the path to the cursor question -->
+          <div
+            uiFormFieldDirective
+            class="grow"
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'cursor'"
+          >
+            <label>{{
+              'pages.referenceData.pagination.cursorPath' | translate
+            }}</label>
+            <input
+              formControlName="cursorField"
+              type="text"
+              [placeholder]="'pages.referenceData.path.placeholder' | translate"
+            />
+            <ui-icon
+              icon="info_outline"
+              class="cursor-pointer"
+              variant="grey"
+              uiSuffix
+              [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
+            ></ui-icon>
+          </div>
+
+          <!-- If the pagination strategy is "cursor", show the cursor variable mapping dropdown -->
+          <div
+            uiFormFieldDirective
+            class="grow"
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'cursor'"
+          >
+            <label>
+              {{ 'pages.referenceData.pagination.cursorVariable' | translate }}
+            </label>
+            <ui-select-menu formControlName="cursorVar">
+              <ui-select-option
+                *ngFor="let variable of queryVariables"
+                [value]="variable"
+              >
+                {{ variable }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+
+          <!-- If the pagination strategy is "offset", show the offset variable mapping dropdown -->
+          <div
+            uiFormFieldDirective
+            class="grow"
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'offset'"
+          >
+            <label>
+              {{ 'pages.referenceData.pagination.offsetVariable' | translate }}
+            </label>
+            <ui-select-menu formControlName="offsetVar">
+              <ui-select-option
+                *ngFor="let variable of queryVariables"
+                [value]="variable"
+              >
+                {{ variable }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+
+          <!-- If the pagination strategy is "page", show the page variable mapping dropdown -->
+          <div
+            uiFormFieldDirective
+            class="grow"
+            *ngIf="referenceForm.get('pageInfo.strategy')?.value === 'page'"
+          >
+            <label>
+              {{ 'pages.referenceData.pagination.pageVariable' | translate }}
+            </label>
+            <ui-select-menu formControlName="pageVar">
+              <ui-select-option
+                *ngFor="let variable of queryVariables"
+                [value]="variable"
+              >
+                {{ variable }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </div>
+        <div class="flex flex-row gap-2">
+          <!-- Page size variable mapping dropdown -->
+          <div uiFormFieldDirective class="grow">
+            <label>
+              {{
+                'pages.referenceData.pagination.pageSizeVariable' | translate
+              }}
+            </label>
+            <ui-select-menu formControlName="pageSizeVar">
+              <ui-select-option
+                *ngFor="let variable of queryVariables"
+                [value]="variable"
+              >
+                {{ variable }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+
+          <!-- Input for the total count path -->
+          <div uiFormFieldDirective class="grow">
+            <label>{{
+              'pages.referenceData.pagination.totalCountPath' | translate
+            }}</label>
+            <input
+              formControlName="totalCountField"
+              type="text"
+              [placeholder]="'pages.referenceData.path.placeholder' | translate"
+            />
+            <ui-icon
+              icon="info_outline"
+              class="cursor-pointer"
+              variant="grey"
+              uiSuffix
+              [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
+            ></ui-icon>
+          </div>
+        </div>
+      </div>
       <div class="flex gap-x-2">
         <!-- Path -->
         <div
@@ -83,11 +242,11 @@
           uiFormFieldDirective
           *ngIf="['rest', 'graphql'].includes(type)"
         >
-          <label>{{ 'pages.referenceData.path' | translate }}</label>
+          <label>{{ 'pages.referenceData.path.title' | translate }}</label>
           <input
             formControlName="path"
             type="text"
-            [placeholder]="'common.placeholder.name' | translate"
+            [placeholder]="'pages.referenceData.path.placeholder' | translate"
           />
           <ui-icon
             icon="info_outline"
@@ -100,6 +259,7 @@
         <!-- Value field to be displayed -->
         <ng-container *ngTemplateOutlet="valueFieldTmpl"></ng-container>
       </div>
+
       <ui-alert class="mb-4">{{
         'pages.referenceData.fields.help' | translate
       }}</ui-alert>
@@ -229,25 +389,9 @@
       <!-- Value field to be displayed -->
       <ng-container *ngTemplateOutlet="valueFieldTmpl"></ng-container>
     </div>
+
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
-    <!-- For graphql -->
-    <!-- <div uiFormFieldDirective *ngIf="type === 'graphql'">
-      <label>{{ 'pages.referenceData.graphQLFilter' | translate }} </label>
-      <input
-        formControlName="graphQLFilter"
-        type="text"
-        [placeholder]="
-          'pages.referenceData.placeholder.graphQLFilter' | translate
-        "
-      />
-      <ui-icon
-        icon="info_outline"
-        class="cursor-pointer"
-        variant="grey"
-        uiSuffix
-        [uiTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
-      ></ui-icon>
-    </div> -->
+
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">

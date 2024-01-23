@@ -32,6 +32,15 @@ export const GET_REFERENCE_DATA = gql`
           title
         }
       }
+      pageInfo {
+        strategy
+        cursorField
+        cursorVar
+        offsetVar
+        pageVar
+        pageSizeVar
+        totalCountField
+      }
       canSee
       canUpdate
       canDelete
