@@ -561,7 +561,7 @@
 						"fixedRowHeight": "Size of rows in pixels.\nMust be greater or equal to 50.",
 						"margin": "Gap in pixels between widgets.\nMust be a positive integer.",
 						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
-						"minimumHeight": "Minimum size of the grid in pixels.\nMust be greater or equal to 0.",
+						"minimumHeight": "Minimum height of the grid in pixels.\nMust be greater than or equal to 0. \nThe dashboard won't automatically fit to the screen if its height is below this number.",
 						"reset": "Reset to default"
 					}
 				}
