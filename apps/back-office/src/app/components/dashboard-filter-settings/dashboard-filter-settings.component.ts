@@ -101,7 +101,7 @@ export class DashboardFilterSettingsComponent
    * Call context service onEditFilter method.
    */
   public onEditStructure() {
-    this.contextService.onEditFilter();
+    this.contextService.onEditFilter(this.dashboard);
   }
 
   /**
