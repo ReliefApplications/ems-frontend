@@ -556,10 +556,12 @@
 					},
 					"margin": "Marge entre les widgets",
 					"minCols": "Nombre de colonnes",
+					"minimumHeight": "Hauteur minimum",
 					"tooltip": {
 						"fixedRowHeight": "Taille des lignes en pixels.\nDoit être supérieur ou égal à 50.",
 						"margin": "Marge entre les widgets.\nDoit être un entier positif.",
 						"minCols": "Nombre de colonnes.\nDoit être compris entre 4 et 24.",
+						"minimumHeight": "Taille minimale de la grille en pixels.\nDoit être supérieur ou égal à 0.",
 						"reset": "Réinitialiser la valeur"
 					},
 					"tooltips": {
@@ -1819,7 +1821,9 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"help": "N'oubliez pas de supprimer les variables non utilisées.",
 									"noVariables": "Aucune variable définie",
+									"refresh": "Afficher toutes les variables graphQL",
 									"title": "Mappage de variables GraphQL",
 									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
 								},

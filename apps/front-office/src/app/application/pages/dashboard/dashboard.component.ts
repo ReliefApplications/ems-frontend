@@ -221,7 +221,8 @@ export class DashboardComponent
                 }
                 const { settings, originalSettings } =
                   this.contextService.updateSettingsContextContent(
-                    widget.settings
+                    widget.settings,
+                    this.dashboard
                   );
                 widget = {
                   ...widget,

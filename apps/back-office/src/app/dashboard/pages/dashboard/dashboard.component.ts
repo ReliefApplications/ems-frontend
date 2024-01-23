@@ -331,7 +331,8 @@ export class DashboardComponent
                 }
                 const { settings, originalSettings } =
                   this.contextService.updateSettingsContextContent(
-                    widget.settings
+                    widget.settings,
+                    this.dashboard
                   );
                 widget.originalSettings = originalSettings;
                 widget.settings = settings;
@@ -462,7 +463,8 @@ export class DashboardComponent
                     ...e.options,
                     defaultLayout: this.widgets[index].settings.defaultLayout,
                   }
-                : e.options
+                : e.options,
+              this.dashboard
             );
           if (settings) {
             // Save configuration
@@ -626,11 +628,12 @@ export class DashboardComponent
         if (!button) return;
         const currButtons = this.dashboard?.buttons || [];
 
-        this.dashboardService.saveDashboardButtons(this.dashboard?.id, [
-          ...currButtons,
-          button,
-        ]);
-        this.buttonActions.push(button);
+        this.dashboardService
+          .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+          ?.pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.buttonActions.push(button);
+          });
       });
   }
 
