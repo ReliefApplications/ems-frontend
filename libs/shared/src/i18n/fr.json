@@ -1819,8 +1819,9 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"help": "N'oubliez pas de supprimer les variables non utilisées.",
 									"noVariables": "Aucune variable définie",
-									"refreshVariables": "Actualiser les variables",
+									"refresh": "Afficher toutes les variables graphQL",
 									"title": "Mappage de variables GraphQL",
 									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
 								},

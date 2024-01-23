@@ -15,10 +15,17 @@
         | translate
     "
   ></ui-icon>
-  <ui-button category="secondary" (click)="setAvailableQueryVariables(true, true)">
-    {{ 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.refreshVariables' | translate }}
+  <ui-button class="ml-auto" category="secondary" (click)="refresh(true, true)">
+    {{
+      'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.refresh'
+        | translate
+    }}
   </ui-button>
 </span>
+<ui-alert *ngIf="availableQueryVariables.length > 0">{{
+  'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.help'
+    | translate
+}}</ui-alert>
 <ngx-monaco-editor
   *ngIf="availableQueryVariables.length > 0"
   [formControl]="control"
