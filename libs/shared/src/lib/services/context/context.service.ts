@@ -6,8 +6,21 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get, isEqual, isObject, merge } from 'lodash';
-import { DashboardService } from '../dashboard/dashboard.service';
+import {
+  isNil,
+  isEmpty,
+  get,
+  isEqual,
+  isObject,
+  forEach,
+  set,
+  has,
+  isArray,
+  every,
+  mapValues,
+  mergeWith,
+  uniq,
+} from 'lodash';
 import {
   Dashboard,
   EditDashboardMutationResponse,
@@ -33,24 +46,22 @@ import { GET_RECORD_BY_ID } from './graphql/queries';
   providedIn: 'root',
 })
 export class ContextService {
-  /** Current dashboard filter available questions*/
-  public availableFilterFields: {
-    name: string;
-    value: string;
-  }[] = [];
-
   /** To update/keep the current filter */
   public filter = new BehaviorSubject<Record<string, any>>({});
   /** To update/keep the current filter structure  */
   public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<any>(null);
+  /** To keep the history of previous dashboard filter values */
+  public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /{{filter\.[^}]+}}/;
-  /** Dashboard object */
-  public dashboard?: Dashboard;
+  public filterRegex = /{{filter\.(.*?)}}/g;
+  /** Regex to detect the value of {{filter.}} in object */
+  public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
+  /** Context regex */
+  public contextRegex = /{{context\.(.*?)}}/g;
   /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
@@ -72,7 +83,7 @@ export class ContextService {
 
   /** @returns filter value as observable */
   get filter$() {
-    return this.filter.asObservable().pipe(
+    return this.filter.pipe(
       pairwise(),
       // We only emit a filter value if filter value changes and we send back the actual(curr) value
       filter(
@@ -80,7 +91,10 @@ export class ContextService {
           !isEqual(prev, curr)
       ),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      map(([prev, curr]: [Record<string, any>, Record<string, any>]) => curr)
+      map(([prev, curr]: [Record<string, any>, Record<string, any>]) => ({
+        previous: prev,
+        current: curr,
+      }))
     );
   }
 
@@ -94,14 +108,14 @@ export class ContextService {
     return this.filterPosition.asObservable();
   }
 
+  /** @returns filterValues value as observable */
+  get filterValues$() {
+    return this.filterValues.asObservable();
+  }
+
   /** @returns filterOpened value as observable */
   get filterOpened$() {
     return this.filterOpened.asObservable();
-  }
-
-  /** @returns key for storing position of filter */
-  get positionKey(): string {
-    return this.dashboard?.id + ':filterPosition';
   }
 
   /** Used to update the state of whether the filter is enabled */
@@ -112,11 +126,6 @@ export class ContextService {
     return this.isFilterEnabled.asObservable();
   }
 
-  /** @returns current question values from the filter */
-  get availableFilterFieldsValue(): Record<string, any> {
-    return this.filter.getValue();
-  }
-
   /** Current dashboard context */
   public context: {
     [key: string]: any;
@@ -125,7 +134,6 @@ export class ContextService {
   /**
    * Dashboard context service
    *
-   * @param dashboardService Shared dashboard service
    * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
@@ -135,7 +143,6 @@ export class ContextService {
    * @param router Angular router
    */
   constructor(
-    private dashboardService: DashboardService,
     private dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
@@ -144,40 +151,61 @@ export class ContextService {
     private applicationService: ApplicationService,
     private router: Router
   ) {
-    this.dashboardService.dashboard$.subscribe(
-      (dashboard: Dashboard | null) => {
-        if (dashboard) {
-          if (this.dashboard?.id !== dashboard.id) {
-            this.dashboard = dashboard;
-          }
-          this.filterStructure.next(dashboard.filter?.structure);
-          localForage.getItem(this.positionKey).then((position) => {
-            if (position) {
-              this.filterPosition.next(position);
-            } else {
-              this.filterPosition.next(
-                dashboard.filter?.position ?? FilterPosition.BOTTOM
-              );
-            }
-          });
-        } else {
-          this.filterStructure.next(null);
-          this.filterPosition.next(null);
-          this.dashboard = undefined;
+    this.filterPosition$.subscribe(
+      (value: { position: any; dashboardId: string }) => {
+        if (value && value.position && value.dashboardId) {
+          localForage.setItem(
+            this.positionKey(value.dashboardId),
+            value.position
+          );
         }
       }
     );
-    this.filterPosition$.subscribe((position: any) => {
-      if (position && this.dashboard?.id) {
-        localForage.setItem(this.positionKey, position);
-      }
-    });
     this.applicationService.application$.subscribe((value) => {
       if (!value) {
         // Reset filter when leaving application
         this.filter.next({});
       }
     });
+  }
+
+  /**
+   * Sets the filter to match the one of the dashboard
+   *
+   * @param dashboard dashboard to get filter from
+   */
+  public setFilter(dashboard?: Dashboard) {
+    {
+      if (dashboard) {
+        this.filterStructure.next(dashboard.filter?.structure);
+        localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
+          if (position) {
+            this.filterPosition.next({
+              position: position,
+              dashboardId: dashboard.id,
+            });
+          } else {
+            this.filterPosition.next({
+              position: dashboard.filter?.position ?? FilterPosition.BOTTOM,
+              dashboardId: dashboard.id,
+            });
+          }
+        });
+      } else {
+        this.filterStructure.next(null);
+        this.filterPosition.next(null);
+      }
+    }
+  }
+
+  /**
+   * Return the filter position key
+   *
+   * @param dashboardId Current dashboard id
+   * @returns key for storing position of filter
+   */
+  private positionKey(dashboardId?: string): string {
+    return dashboardId + ':filterPosition';
   }
 
   /**
@@ -191,13 +219,56 @@ export class ContextService {
     if (!context) {
       return object;
     }
-    const regex = /{{context\.(.*?)}}/g;
     return JSON.parse(
-      JSON.stringify(object).replace(regex, (match) => {
+      JSON.stringify(object).replace(this.contextRegex, (match) => {
         const field = match.replace('{{context.', '').replace('}}', '');
         return get(context, field) || match;
       })
     );
+  }
+
+  /**
+   * Replace {{filter}} placeholders in object, with filter values
+   *
+   * @param object object with placeholders
+   * @param filter filter value
+   * @returns object with replaced placeholders
+   */
+  public replaceFilter(
+    object: any,
+    filter = this.filterValue(this.filter.getValue())
+  ): any {
+    if (isEmpty(filter)) {
+      return object;
+    }
+    return JSON.parse(
+      JSON.stringify(object).replace(this.filterRegex, (match) => {
+        const field = match.replace('{{filter.', '').replace('}}', '');
+        return get(filter, field) || match;
+      })
+    );
+  }
+
+  /**
+   * Remove placeholders from object
+   *
+   * @param obj object to clean
+   */
+  public removeEmptyPlaceholders(obj: any) {
+    for (const key in obj) {
+      if (has(obj, key)) {
+        if (typeof obj[key] === 'object') {
+          // Recursively call the function for nested objects
+          this.removeEmptyPlaceholders(obj[key]);
+        } else if (
+          typeof obj[key] === 'string' &&
+          obj[key].startsWith('{{') &&
+          obj[key].endsWith('}}')
+        ) {
+          delete obj[key];
+        }
+      }
+    }
   }
 
   /**
@@ -210,12 +281,9 @@ export class ContextService {
     f: T
   ): T {
     const filter = cloneDeep(f);
-    // if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
-    //   filter.filters = [];
-    //   return filter;
-    // }
+    const filterValue = this.filterValue(this.filter.getValue());
     // Regex to detect {{filter.}} in object
-    const filterRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
+    const filterRegex = this.filterValueRegex;
     // Regex to detect {{context.}} in object
     const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
 
@@ -224,7 +292,7 @@ export class ContextService {
       if (filter.value && typeof filter.value === 'string') {
         const filterName = filter.value?.match(filterRegex)?.[0];
         if (filterName) {
-          filter.value = get(this.availableFilterFieldsValue, filterName);
+          filter.value = get(filterValue, filterName);
         } else {
           const contextName = filter.value?.match(contextRegex)?.[0];
           if (contextName) {
@@ -261,8 +329,9 @@ export class ContextService {
     if (this.isFilterEnabled.getValue()) {
       const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
       const atFilterName = atField.match(regex)?.[0] ?? '';
-      if (get(this.availableFilterFieldsValue, atFilterName)) {
-        return new Date(get(this.availableFilterFieldsValue, atFilterName));
+      const filterValue = this.filterValue(this.filter.getValue());
+      if (get(filterValue, atFilterName)) {
+        return new Date(get(filterValue, atFilterName));
       }
     }
     return undefined;
@@ -270,8 +339,10 @@ export class ContextService {
 
   /**
    * Opens the modal to edit filters
+   *
+   * @param dashboard Current dashboard
    */
-  public onEditFilter() {
+  public onEditFilter(dashboard?: Dashboard) {
     import(
       '../../components/dashboard-filter/filter-builder-modal/filter-builder-modal.component'
     ).then(({ FilterBuilderModalComponent }) => {
@@ -283,7 +354,7 @@ export class ContextService {
         if (newStructure) {
           this.filterStructure.next(newStructure);
           this.initSurvey();
-          this.saveFilter();
+          this.saveFilter(dashboard);
         }
       });
     });
@@ -298,20 +369,22 @@ export class ContextService {
     const surveyStructure = this.filterStructure.getValue();
     const survey = this.formBuilderService.createSurvey(surveyStructure);
 
-    // get questions default value
-    const data = survey
-      .getAllQuestions()
-      .reduce(function (result: any, question: any) {
-        result[question.name] = question.defaultValue;
-        return result;
-      }, {});
+    // set each question value manually otherwise the defaultValueExpression is not loaded
+    forEach(this.filterValues.getValue(), (value, key) => {
+      if (survey.getQuestionByName(key)) {
+        survey.getQuestionByName(key).value = value;
+      }
+    });
 
-    // merge filter values with default values
-    if (!isEmpty(this.filter.getValue())) {
-      merge(data, this.filter.getValue());
-    }
+    // prevent the default value from being applied when a question has been intentionally cleared
+    const handleValueChanged = (sender: any, options: any) => {
+      const history = this.filterValues.getValue() ?? {};
+      set(history, options.name, options.value);
+      this.filterValues.next(history);
+    };
 
-    survey.data = data;
+    survey.onValueChanged.add(handleValueChanged);
+
     return survey;
   }
 
@@ -319,13 +392,17 @@ export class ContextService {
    * If context data exists, returns an object containing context content mapped settings and widget's original settings
    *
    * @param settings Widget settings
+   * @param dashboard Current dashboard
    * @returns context content mapped settings and original settings
    */
-  public updateSettingsContextContent(settings: any): {
+  public updateSettingsContextContent(
+    settings: any,
+    dashboard?: Dashboard
+  ): {
     settings: any;
     originalSettings?: any;
   } {
-    if (this.dashboard?.contextData) {
+    if (dashboard?.contextData) {
       // If tile has context, replace the templates with the values
       // and keep the original, to be used for the widget settings
       const mappedContextContentSettings = this.replaceContext(settings);
@@ -342,16 +419,18 @@ export class ContextService {
    * @param value id of the element or record
    * @param contextType type of context element
    * @param route Angular current page
+   * @param dashboard Current dashboard
    */
   public onContextChange(
     value: string | number | undefined | null,
     contextType: 'record' | 'element' | undefined,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    dashboard?: Dashboard
   ): void {
     if (
-      !this.dashboard?.id ||
-      !this.dashboard?.page?.id ||
-      !this.dashboard.page.context ||
+      !dashboard?.id ||
+      !dashboard?.page?.id ||
+      !dashboard.page.context ||
       !contextType
     )
       return;
@@ -381,13 +460,14 @@ export class ContextService {
   /**
    * Initializes the dashboard context
    *
+   * @param dashboard Current dashboard
    * @param callback additional callback
    */
-  public initContext(callback: any): void {
-    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+  public initContext(dashboard: Dashboard, callback: any): void {
+    if (!dashboard?.page?.context || !dashboard?.id) return;
     // Checks if the dashboard has context attached to it
-    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
-    const id = this.dashboard.id;
+    const contentWithContext = dashboard?.page?.contentWithContext || [];
+    const id = dashboard.id;
     const dContext = contentWithContext.find((c) => c.content === id);
 
     if (!dContext) return;
@@ -415,21 +495,25 @@ export class ContextService {
     }
   }
 
-  /** Saves the dashboard contextual filter using the editDashboard mutation */
-  private saveFilter(): void {
+  /**
+   * Saves the dashboard contextual filter using the editDashboard mutation
+   *
+   * @param dashboard Current dashboard
+   */
+  private saveFilter(dashboard?: Dashboard): void {
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD_FILTER,
         variables: {
-          id: this.dashboard?.id,
+          id: dashboard?.id,
           filter: {
-            ...this.dashboard?.filter,
+            ...dashboard?.filter,
             structure: this.filterStructure.getValue(),
           },
         },
       })
       .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors });
+        this.handleFilterMutationResponse({ data, errors }, dashboard);
       });
   }
 
@@ -439,11 +523,11 @@ export class ContextService {
    * @param response Graphql mutation response
    * @param response.data response data
    * @param response.errors response errors
-   * @param defaultPosition filter position
+   * @param dashboard Current dashboard
    */
   private handleFilterMutationResponse(
     response: { data: any; errors: any },
-    defaultPosition?: FilterPosition
+    dashboard?: Dashboard
   ) {
     const { data, errors } = response;
     if (errors) {
@@ -455,8 +539,11 @@ export class ContextService {
         { error: true }
       );
     } else {
-      if (defaultPosition) {
-        this.filterPosition.next(defaultPosition);
+      if (dashboard?.filter?.position) {
+        this.filterPosition.next({
+          position: dashboard.filter.position,
+          dashboardId: dashboard.id,
+        });
       } else {
         this.filterStructure.next(data.editDashboard.filter?.structure);
       }
@@ -467,5 +554,75 @@ export class ContextService {
         })
       );
     }
+  }
+
+  /**
+   * Should refresh widget, based on definition and previous & next filter values.
+   * Compare if definitions of widget, injecting previous & next filter values, are the same.
+   *
+   * @param widget widget definition
+   * @param previous previous filter value
+   * @param current next filter value
+   * @returns true if needs refresh
+   */
+  shouldRefresh(widget: any, previous: any, current: any) {
+    if (
+      !isEqual(
+        this.replaceFilter(widget, this.filterValue(previous)),
+        this.replaceFilter(widget, this.filterValue(current))
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Transforms form value into filter value that can be used by widgets.
+   *
+   * @param obj form value
+   * @returns available filter value
+   */
+  public filterValue(obj: Record<string, any>): Record<string, any> {
+    // Detect if property is a tagbox using non-primitive reference data
+    const isTextAndFieldArray = (value: any) =>
+      isArray(value) &&
+      every(
+        value,
+        // In order to find tagbox using non-primitive reference data
+        (item) => isObject(item) && has(item, 'text') && has(item, 'value')
+      );
+    // Transform the filter values, so tagbox using non-primitive reference data can be read.
+    const transformFilter = (obj: any): any => {
+      return mapValues(obj, (value) => {
+        if (isTextAndFieldArray(value)) {
+          const transformedValues = value.map((item: any) => item.value);
+          const mergedObject = mergeWith(
+            {},
+            ...transformedValues,
+            (objValue: any, srcValue: any) => {
+              if (objValue) {
+                if (isArray(objValue)) {
+                  return objValue.concat(srcValue);
+                } else {
+                  return [srcValue];
+                }
+              } else {
+                return [srcValue];
+              }
+            }
+          );
+          const resultObject: Record<string, any[]> = {};
+          Object.keys(mergedObject).forEach((property) => {
+            resultObject[property] = uniq(mergedObject[property]);
+          });
+          return resultObject;
+        } else {
+          return value;
+        }
+      });
+    };
+    return transformFilter(obj);
   }
 }

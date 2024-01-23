@@ -545,6 +545,12 @@
 					"defaultPosition": "******",
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
+					"gridType": {
+						"fit": "******",
+						"placeholder": "******",
+						"title": "******",
+						"verticalFixed": "******"
+					},
 					"help": {
 						"minCols": "******"
 					},
@@ -865,6 +871,14 @@
 				"to": "******",
 				"withValue": "******"
 			},
+			"columns": {
+				"action": "******",
+				"date": "******",
+				"modifiedValue": "******",
+				"originalValue": "******",
+				"person": "******",
+				"variable": "******"
+			},
 			"download": "******",
 			"empty": "******",
 			"field": {
@@ -874,7 +888,8 @@
 			"preview": "******",
 			"range": {
 				"clear": "******"
-			}
+			},
+			"useTableMode": "******"
 		},
 		"icon": {
 			"modal": {
@@ -1750,6 +1765,8 @@
 							"timedimension": "******",
 							"title": "******"
 						},
+						"geographicExtent": "******",
+						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
@@ -1776,7 +1793,8 @@
 							"latitude": "******",
 							"longitude": "******",
 							"zoom": "******"
-						}
+						},
+						"geographicExtent": "****** {{context}} ****** {{filter}} ******"
 					}
 				},
 				"style": {
@@ -1787,6 +1805,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "******",
+									"noVariables": "******",
+									"refresh": "******",
+									"title": "******",
+									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+								},
 								"title": "******",
 								"use": "******",
 								"wholeRow": {
@@ -2430,7 +2455,23 @@
 				"title": "******"
 			},
 			"graphQLFilter": "******",
-			"path": "******",
+			"pagination": {
+				"cursorPath": "******",
+				"cursorVariable": "******",
+				"offsetVariable": "******",
+				"pageSizeVariable": "******",
+				"pageVariable": "******",
+				"strategy": "******",
+				"totalCountPath": "******",
+				"usePagination": {
+					"hint": "******",
+					"text": "******"
+				}
+			},
+			"path": {
+				"placeholder": "******",
+				"title": "******"
+			},
 			"payload": {
 				"label": "******",
 				"show": "******"

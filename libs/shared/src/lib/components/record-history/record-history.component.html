@@ -1,149 +1,271 @@
-<div class="items-center p-4 border-b" [formGroup]="filters">
-  <!-- HEADER -->
-  <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
-    <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
-    <ui-button
-      [isIcon]="true"
-      icon="close"
-      class="float-right"
-      (click)="onCancel()"
-      [uiTooltip]="'common.close' | translate"
-    >
-    </ui-button>
-  </div>
-  <!-- FILTER -->
-  <div class="clear-both flex flex-col">
-    <div uiFormFieldDirective id="date-header">
-      <div class="flex items-center justify-between">
-        <label>
-          {{ 'common.input.dateRange' | translate }}
-        </label>
-        <ui-button
-          class="max-sm:!w-auto mb-3"
-          variant="danger"
-          (click)="clearDateFilters()"
-          *ngIf="filters.get('startDate')?.value || filters.get('endDate')?.value"
-        >
-            {{'components.history.range.clear' | translate}}
-        </ui-button>
-      </div>
-      <div
-        [uiDateWrapper]="calendar"
-        class="flex-col"
-      >
-        <input
-          [uiDatePicker]
-          formControlName="startDate"
-          [label]="'kendo.datepicker.startLabel' | translate"
-        />
-        <input
-          [uiDatePicker]
-          formControlName="endDate"
-          [label]="'kendo.datepicker.endLabel' | translate"
-        />
-        <ui-date-range #calendar> </ui-date-range>
-      </div>
-    </div>
-    <div uiFormFieldDirective>
-      <label>{{ 'components.history.field.select' | translate }}</label>
-      <ui-select-menu
-        formControlName="fields"
-        [multiselect]="true"
-      >
-        <ui-select-option
-          *ngFor="let field of sortedFields"
-          value="{{ field.name }}"
-          >{{ field.title || field.name }}</ui-select-option
-        >
-      </ui-select-menu>
+<div
+  [ngClass]="{
+    'w-screen lg:w-[80vw] p-6': showHeader
+  }"
+>
+  <div class="items-center border-b pb-4" [formGroup]="filters">
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
+      <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
       <ui-button
-        uiSuffix
-        *ngIf="filters.get('fields')?.value && filters.get('fields')!.value!.length > 0"
-        (click)="filters.get('fields')?.setValue([]); $event.stopPropagation()"
-        icon="close"
         [isIcon]="true"
         variant="danger"
+        icon="close"
+        class="float-right"
+        (click)="onCancel()"
         [uiTooltip]="'common.close' | translate"
-      ></ui-button>
+      >
+      </ui-button>
+    </div>
+    <!-- FILTER -->
+    <div class="clear-both flex flex-col">
+      <div uiFormFieldDirective id="date-header">
+        <div class="flex items-center justify-between">
+          <label>
+            {{ 'common.input.dateRange' | translate }}
+          </label>
+          <ui-button
+            class="max-sm:!w-auto mb-3"
+            variant="danger"
+            (click)="clearDateFilters()"
+            *ngIf="
+              filters.get('startDate')?.value || filters.get('endDate')?.value
+            "
+          >
+            {{ 'components.history.range.clear' | translate }}
+          </ui-button>
+        </div>
+        <div [uiDateWrapper]="calendar" class="flex-col">
+          <input
+            [uiDatePicker]
+            formControlName="startDate"
+            [label]="'kendo.datepicker.startLabel' | translate"
+          />
+          <input
+            [uiDatePicker]
+            formControlName="endDate"
+            [label]="'kendo.datepicker.endLabel' | translate"
+          />
+          <ui-date-range #calendar> </ui-date-range>
+        </div>
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.history.field.select' | translate }}</label>
+        <ui-select-menu formControlName="fields" [multiselect]="true">
+          <ui-select-option
+            *ngFor="let field of sortedFields"
+            value="{{ field.name }}"
+            >{{ field.title || field.name }}</ui-select-option
+          >
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          *ngIf="
+            filters.get('fields')?.value &&
+            filters.get('fields')!.value!.length > 0
+          "
+          (click)="
+            filters.get('fields')?.setValue([]); $event.stopPropagation()
+          "
+          icon="close"
+          [isIcon]="true"
+          variant="danger"
+          [uiTooltip]="'common.close' | translate"
+        ></ui-button>
+      </div>
+    </div>
+    <!-- ACTIONS -->
+    <div
+      class="flex flex-row justify-between text-end ml-auto items-center gap-2"
+    >
+      <ui-button
+        category="secondary"
+        variant="primary"
+        [uiMenuTriggerFor]="menu"
+      >
+        {{ 'components.history.download' | translate }}
+      </ui-button>
+      <ui-menu #menu>
+        <button uiMenuItem (click)="onDownload('csv')">.csv</button>
+        <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
+      </ui-menu>
+      <ui-toggle [formControl]="viewAsTable">
+        <ng-container ngProjectAs="label">
+          {{ 'components.history.useTableMode' | translate }}
+        </ng-container>
+      </ui-toggle>
     </div>
   </div>
-  <!-- ACTIONS -->
-  <div class="flex flex-row justify-start text-end ml-auto">
-    <ui-button category="secondary" variant="primary" [uiMenuTriggerFor]="menu">
-      {{ 'components.history.download' | translate }}
-    </ui-button>
-    <ui-menu #menu>
-      <button uiMenuItem (click)="onDownload('csv')">.csv</button>
-      <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
-    </ui-menu>
-  </div>
-</div>
-<ng-container *ngIf="!loading; else loadingTmpl">
-  <ng-container *ngIf="filterHistory.length; else emptyTmpl">
-    <!-- HISTORY CHANGES -->
-    <div>
-      <ng-container *ngFor="let item of filterHistory; let i = index">
-        <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
+  <ng-container *ngIf="!loading; else loadingTmpl">
+    <ng-container *ngIf="filterHistory.length; else emptyTmpl">
+      <!-- HISTORY CHANGES -->
+      <ng-container *ngIf="viewAsTable.value; else cardsTmpl">
+        <ng-container *ngTemplateOutlet="tableTmpl"></ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-template #emptyTmpl>
+      <shared-empty
+        [title]="'components.history.empty' | translate"
+      ></shared-empty>
+    </ng-template>
+  </ng-container>
+  <ng-template #loadingTmpl>
+    <!-- LOADING -->
+    <div class="grow overflow-y-auto">
+      <ng-container *ngFor="let _ of [].constructor(4); let i = index">
+        <ui-expansion-panel [index]="i">
           <ng-container ngProjectAs="title">
-            <span class="font-bold mr-2">{{
-              item.createdAt | sharedDate : 'shortDate'
-            }}</span>
-            {{ item.createdAt | sharedDate : 'shortTime' }}
-            <span class="history-user" *ngIf="item.createdBy">{{
-              item.createdBy
-            }}</span>
+            <kendo-skeleton width="50%"></kendo-skeleton>
+            <kendo-skeleton
+              class="history-user"
+              width="30%"
+              height="2em"
+            ></kendo-skeleton>
           </ng-container>
-
-          <div class="flex flex-col text-sm">
-            <div
-              class="changes-content"
-              *ngFor="
-                let value of showMore ? item.changes : item.changes.slice(0, 4)
-              "
-              [innerHTML]="getHTMLFromChange(value)"
-            ></div>
-            <div class="text-center mb-3">
-              <ui-button
-                variant="primary"
-                *ngIf="!showMore && item.changes.length > 4"
-                (click)="showMore = true"
-                >{{ 'common.pagination.loadMore' | translate }} ({{
-                  item.changes.length - 4
-                }})</ui-button
-              >
-            </div>
-            <ui-button
-              icon="update"
-              class="self-end"
-              (click)="onRevert(item.version)"
-              *ngIf="item.version"
-            >
-              {{ 'components.history.preview' | translate }}
-            </ui-button>
-          </div>
         </ui-expansion-panel>
       </ng-container>
     </div>
-  </ng-container>
-  <ng-template #emptyTmpl>
-    <shared-empty
-      [title]="'components.history.empty' | translate"
-    ></shared-empty>
   </ng-template>
-</ng-container>
-<ng-template #loadingTmpl>
-  <!-- LOADING -->
-  <div class="grow overflow-y-auto">
-    <ng-container *ngFor="let _ of [].constructor(4); let i = index">
-      <ui-expansion-panel [index]="i">
+</div>
+
+<!-- Display as table -->
+<ng-template #tableTmpl>
+  <div class="overflow-x-auto">
+    <table cdk-table uiTableWrapper [dataSource]="historyForTable">
+      <ng-container cdkColumnDef="id">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'common.id' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
+          {{ record?.incrementalId }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="variable">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.history.columns.variable' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
+          {{ element.displayName }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="date">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.history.columns.date' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
+          {{ element.createdAt | sharedDate : 'shortDate' }} -
+          {{ element.createdAt | sharedDate : 'shortTime' }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="person">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.history.columns.person' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
+          {{ element.createdBy }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="action">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.history.columns.action' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
+          <div [innerHTML]="getChipFromChange(element)"></div>
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="originalValue">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.history.columns.originalValue' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
+          {{ toReadableObjectValue(element.old) }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="modifiedValue">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.history.columns.modifiedValue' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
+          {{ toReadableObjectValue(element.new) }}
+        </td>
+      </ng-container>
+
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsHistory"></tr>
+      <tr *cdkRowDef="let row; columns: displayedColumnsHistory" cdk-row></tr>
+    </table>
+  </div>
+</ng-template>
+
+<!-- Display as cards -->
+<ng-template #cardsTmpl>
+  <div>
+    <ng-container *ngFor="let item of filterHistory; let i = index">
+      <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
         <ng-container ngProjectAs="title">
-          <kendo-skeleton width="50%"></kendo-skeleton>
-          <kendo-skeleton
-            class="history-user"
-            width="30%"
-            height="2em"
-          ></kendo-skeleton>
+          <span class="font-bold mr-2">{{
+            item.createdAt | sharedDate : 'shortDate'
+          }}</span>
+          {{ item.createdAt | sharedDate : 'shortTime' }}
+          <span class="history-user" *ngIf="item.createdBy">{{
+            item.createdBy
+          }}</span>
         </ng-container>
+
+        <div class="flex flex-col text-sm">
+          <div
+            class="changes-content"
+            *ngFor="
+              let value of showMore ? item.changes : item.changes.slice(0, 4)
+            "
+            [innerHTML]="getHTMLFromChange(value)"
+          ></div>
+          <div class="text-center mt-4 mb-3">
+            <ui-button
+              variant="primary"
+              *ngIf="!showMore && item.changes.length > 4"
+              (click)="showMore = true"
+              >{{ 'common.pagination.loadMore' | translate }} ({{
+                item.changes.length - 4
+              }})</ui-button
+            >
+          </div>
+          <ui-button
+            icon="update"
+            class="self-end"
+            (click)="onRevert(item.version)"
+            *ngIf="item.version"
+          >
+            {{ 'components.history.preview' | translate }}
+          </ui-button>
+        </div>
       </ui-expansion-panel>
     </ng-container>
   </div>

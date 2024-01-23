@@ -50,6 +50,14 @@ export const GET_REFERENCE_DATA = gql`
       id
       name
       fields
+      query
+      type
+      pageInfo {
+        cursorVar
+        offsetVar
+        pageVar
+        pageSizeVar
+      }
     }
   }
 `;
