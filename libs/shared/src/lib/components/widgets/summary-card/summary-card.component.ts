@@ -309,9 +309,28 @@ export class SummaryCardComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(({ previous, current }) => {
-          if (
-            this.contextService.shouldRefresh(this.widget, previous, current)
-          ) {
+          const widget = {
+            ...this.widget,
+            settings: {
+              ...this.widget.settings,
+              contextFilters: JSON.parse(
+                get(this.widget, 'settings.contextFilters', '')
+              ),
+              card: {
+                ...this.widget.settings.card,
+                ...(this.widget.settings.card.referenceDataVariableMapping && {
+                  referenceDataVariableMapping: JSON.parse(
+                    get(
+                      this.widget,
+                      'settings.card.referenceDataVariableMapping',
+                      ''
+                    )
+                  ),
+                }),
+              },
+            },
+          };
+          if (this.contextService.shouldRefresh(widget, previous, current)) {
             this.refresh();
           }
         });

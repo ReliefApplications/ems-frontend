@@ -260,6 +260,7 @@ export class MapComponent
                 })
                 .map((m) => ({
                   ...m,
+                  contextFilters: JSON.parse(get(m, 'contextFilters', '')),
                   datasource: {
                     ...m.datasource,
                     referenceDataVariableMapping: JSON.parse(

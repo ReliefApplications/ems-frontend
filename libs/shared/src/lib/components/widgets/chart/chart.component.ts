@@ -179,9 +179,18 @@ export class ChartComponent
             this.settings.referenceDataVariableMapping
           )
         ) {
-          if (
-            this.contextService.shouldRefresh(this.settings, previous, current)
-          ) {
+          const settings = {
+            ...this.settings,
+            contextFilters: JSON.parse(
+              get(this.settings, 'contextFilters', '')
+            ),
+            ...(this.settings.referenceDataVariableMapping && {
+              referenceDataVariableMapping: JSON.parse(
+                get(this.settings, 'referenceDataVariableMapping', '')
+              ),
+            }),
+          };
+          if (this.contextService.shouldRefresh(settings, previous, current)) {
             this.series.next([]);
             this.loadChart();
             this.getOptions();

@@ -57,7 +57,7 @@ export class ContextService {
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /"{{\s*filter\.(.*?)\s*}}"/g;
+  public filterRegex = /["']?{{filter\.(.*?)}}["']?/g;
   /** Regex to detect the value of {{filter.}} in object */
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
@@ -234,18 +234,14 @@ export class ContextService {
       return object;
     }
     const toString = JSON.stringify(object);
-    console.log('toString', toString);
     const replaced = toString.replace(this.filterRegex, (match) => {
-      const field = match.replace('"{{filter.', '').replace('}}"', '');
-      console.log('match', match);
-      console.log('field', field);
+      const field = match
+        .replace(/["']?\{\{filter\./, '')
+        .replace(/\}\}["']?/, '');
       const fieldValue = get(filter, field);
-      console.log('fieldValue', fieldValue);
       return fieldValue ? JSON.stringify(fieldValue) : match;
     });
-    console.log('replaced', replaced);
     const parsed = JSON.parse(replaced);
-    console.log('parsed', parsed);
     return parsed;
   }
 
@@ -551,8 +547,6 @@ export class ContextService {
    * @returns true if needs refresh
    */
   shouldRefresh(widget: any, previous: any, current: any) {
-    console.log('shouldRefresh', widget);
-    console.log('previous / current', previous, current);
     if (
       !isEqual(
         this.replaceFilter(widget, this.filterValue(previous)),
