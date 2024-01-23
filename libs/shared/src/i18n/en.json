@@ -1808,7 +1808,9 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"help": "Make sure to remove all unused variables, to prevent null arguments to be sent.",
 									"noVariables": "No variables defined",
+									"refresh": "See all graphQL variables",
 									"title": "GraphQL variable mapping",
 									"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
 								},
