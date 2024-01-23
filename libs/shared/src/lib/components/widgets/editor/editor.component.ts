@@ -390,9 +390,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       };
       this.contextService.filter.next(updatedFilters);
     } else {
-      if (event.target.dataset.filterReset) {
-        this.contextService.filter.next({});
-      }
       const content = this.htmlContentComponent.el.nativeElement;
       const editorTriggers = content.querySelectorAll('.record-editor');
       editorTriggers.forEach((recordEditor: HTMLElement) => {
@@ -400,6 +397,21 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.openEditRecordModal();
         }
       });
+    }
+    // Handle data-filter-reset event
+    if (event.target.dataset.filterReset) {
+      // Get all the fields that need to be cleared
+      const resetList = event.target.dataset.filterReset.split(';');
+      const updatedFilter: any = {};
+      for (const [key, value] of Object.entries(
+        this.contextService.filter.getValue()
+      )) {
+        // If key is not in list of fields that need to be cleared, add to updated Filter
+        if (!resetList.includes(key)) {
+          updatedFilter[key] = value;
+        }
+      }
+      this.contextService.filter.next(updatedFilter);
     }
   }
 
