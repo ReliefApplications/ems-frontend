@@ -2,7 +2,17 @@
   [ngClass]="{
     'w-screen lg:w-[80vw] p-6': showHeader
   }"
+  mwlResizable
+  (resizing)="onResizing($event)"
+  [ngStyle]="style"
+  [validateResize]="validate"
 >
+  <div
+    *ngIf="resizable"
+    class="cursor-col-resize absolute h-full left-0 w-1.5"
+    mwlResizeHandle
+    [resizeEdges]="{ left: true }"
+  ></div>
   <div class="items-center border-b pb-4" [formGroup]="filters">
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
