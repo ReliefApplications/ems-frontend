@@ -109,10 +109,10 @@ export class DashboardFilterComponent
     }
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((filterValue) => {
+      .subscribe(({ current }) => {
         // Cannot use this.survey.data = filterValue because of date questions
         this.survey.getAllQuestions().map((question) => {
-          this.survey.setValue(question.name, filterValue[question.name]);
+          this.survey.setValue(question.name, current[question.name]);
         });
       });
     this.contextService.filterOpened$
