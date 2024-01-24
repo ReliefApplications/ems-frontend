@@ -12,8 +12,10 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
+  BehaviorSubject,
   debounceTime,
   distinctUntilChanged,
+  filter,
   firstValueFrom,
   takeUntil,
 } from 'rxjs';
@@ -141,6 +143,8 @@ export class SummaryCardComponent
   private scrollEventListener!: any;
   /** Timeout listener for summary card scroll bind set on view switch */
   private scrollEventBindTimeout!: NodeJS.Timeout;
+  /** Subject that emits value when query becomes invalid */
+  private valid = new BehaviorSubject(true);
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -294,25 +298,29 @@ export class SummaryCardComponent
         takeUntil(this.destroy$)
       )
       .subscribe((value) => {
-        this.handleSearch(value || '');
+        this.invalidateLastQuery();
+        this.handleSearch(value || '', this.valid);
       });
+
+    const { filterRegex, filter$ } = this.contextService;
 
     // Listen to dashboard filters changes if it is necessary
     if (
-      this.contextService.filterRegex.test(
-        this.widget.settings.contextFilters
-      ) ||
-      this.contextService.filterRegex.test(
+      filterRegex.test(this.widget.settings.contextFilters) ||
+      filterRegex.test(
         this.widget?.settings?.card?.referenceDataVariableMapping
       )
     ) {
-      this.contextService.filter$
+      filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(({ previous, current }) => {
           if (
             this.contextService.shouldRefresh(this.widget, previous, current)
           ) {
-            this.refresh();
+            // Use subject to invalidate last query, to prevent it overwriting the new one
+            // in case it takes longer to get it from the server
+            this.invalidateLastQuery();
+            this.refresh(this.valid);
           }
         });
     }
@@ -331,6 +339,12 @@ export class SummaryCardComponent
       this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
     }
     this.bindCardsScrollListener();
+  }
+
+  /** Emits a value to invalidate the query and replace it with a new one */
+  private invalidateLastQuery() {
+    this.valid.next(false);
+    this.valid = new BehaviorSubject(true);
   }
 
   /**
@@ -460,8 +474,9 @@ export class SummaryCardComponent
    * Handles the search on cards
    *
    * @param search search value
+   * @param isValid used to check if the search is still valid
    */
-  private handleSearch(search: string) {
+  private handleSearch(search: string, isValid: BehaviorSubject<boolean>) {
     this.pageInfo.pageIndex = 0;
     this.pageInfo.skip = 0;
     if (this.useAggregation) {
@@ -496,10 +511,14 @@ export class SummaryCardComponent
             at: this.contextService.atArgumentValue(this.settings.at),
           }),
         })
-        .then(this.updateRecordCards.bind(this));
+        .then((res) => {
+          if (isValid && isValid.value) {
+            this.updateRecordCards(res);
+          }
+        });
     } else if (this.useReferenceData) {
       if (this.refData?.pageInfo?.strategy) {
-        this.refresh();
+        this.refresh(isValid);
       } else {
         const contextFilters = this.contextService.injectContext(
           this.contextFilters
@@ -790,7 +809,11 @@ export class SummaryCardComponent
               nextFetchPolicy: 'cache-first',
             });
             this.dataQuery.valueChanges
-              .pipe(takeUntil(this.destroy$))
+              .pipe(
+                takeUntil(this.destroy$),
+                // Also take until the refresh query subject emits a false value
+                takeUntil(this.valid.pipe(filter((x) => !x)))
+              )
               .subscribe(this.updateRecordCards.bind(this));
           }
           // Build meta query to add information to fields
@@ -903,7 +926,11 @@ export class SummaryCardComponent
     );
 
     this.dataQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        // Also take until the refresh query subject emits a false value
+        takeUntil(this.valid.pipe(filter((x) => !x)))
+      )
       .subscribe(this.updateRecordCards.bind(this));
 
     // Set sort fields
@@ -958,8 +985,12 @@ export class SummaryCardComponent
    * Detects pagination events and update the items loaded.
    *
    * @param event Page change event.
+   * @param isValid used to check if the search is still valid
    */
-  public onPage(event: UIPageChangeEvent): void {
+  public onPage(
+    event: UIPageChangeEvent,
+    isValid: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+  ): void {
     this.pageInfo.pageSize = event.pageSize;
     this.pageInfo.skip = event.skip;
     this.pageInfo.pageIndex = event.pageIndex;
@@ -979,7 +1010,11 @@ export class SummaryCardComponent
             at: this.contextService.atArgumentValue(this.settings.at),
           }),
         })
-        .then(this.updateRecordCards.bind(this));
+        .then((res) => {
+          if (isValid.value) {
+            this.updateRecordCards(res);
+          }
+        });
     } else if (this.useReferenceData && this.refData) {
       const strategy = this.refData?.pageInfo?.strategy;
       const refData = this.refData;
@@ -1016,16 +1051,20 @@ export class SummaryCardComponent
           ...(this.graphqlVariables ?? {}),
         })
         .then(({ items, pageInfo }) => {
-          this.updateReferenceDataCards(items, pageInfo);
-          this.loading = false;
+          if (isValid.value) {
+            this.updateReferenceDataCards(items, pageInfo);
+            this.loading = false;
+          }
         });
     }
   }
 
   /**
    * Refresh view
+   *
+   * @param isValid used to check if the search is still valid
    */
-  public refresh() {
+  public refresh(isValid?: BehaviorSubject<boolean>) {
     this.cards = [];
     this.sortedCachedCards = [];
     this.cachedCards = [];
@@ -1038,13 +1077,16 @@ export class SummaryCardComponent
       });
     }
 
-    this.onPage({
-      pageSize: this.pageInfo.pageSize,
-      skip: 0,
-      previousPageIndex: 0,
-      pageIndex: 0,
-      totalItems: 0,
-    });
+    this.onPage(
+      {
+        pageSize: this.pageInfo.pageSize,
+        skip: 0,
+        previousPageIndex: 0,
+        pageIndex: 0,
+        totalItems: 0,
+      },
+      isValid
+    );
   }
 
   /**

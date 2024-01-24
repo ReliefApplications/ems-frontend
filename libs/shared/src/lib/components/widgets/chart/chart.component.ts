@@ -169,25 +169,33 @@ export class ChartComponent
   }
 
   ngOnInit(): void {
-    // Listen to dashboard filters changes if it is necessary
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(({ previous, current }) => {
-        if (
-          this.contextService.filterRegex.test(this.settings.contextFilters) ||
-          this.contextService.filterRegex.test(
-            this.settings.referenceDataVariableMapping
-          )
-        ) {
+    const { filterRegex, filter$ } = this.contextService;
+
+    // Use subject to invalidate last query, to prevent it overwriting the new one
+    // in case it takes longer to get it from the server
+    let valid = new BehaviorSubject<boolean>(true);
+
+    if (
+      filterRegex.test(this.settings.contextFilters) ||
+      filterRegex.test(this.settings.referenceDataVariableMapping)
+    ) {
+      // Listen to dashboard filters changes if it is necessary
+      filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(({ previous, current }) => {
           if (
             this.contextService.shouldRefresh(this.settings, previous, current)
           ) {
+            // Invalidate last query
+            valid.next(false);
+            valid = new BehaviorSubject<boolean>(true);
+
             this.series.next([]);
-            this.loadChart();
+            this.loadChart(valid);
             this.getOptions();
           }
-        }
-      });
+        });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -225,8 +233,12 @@ export class ChartComponent
     this.getOptions();
   }
 
-  /** Loads chart */
-  private loadChart(): void {
+  /**
+   * Loads chart
+   *
+   * @param isValid Subject that indicates if the query is valid
+   */
+  private loadChart(isValid?: BehaviorSubject<boolean>): void {
     this.loading = true;
     if (this.settings.resource || this.settings.referenceData) {
       this.dataQuery = this.aggregationService.aggregationDataQuery({
@@ -241,7 +253,7 @@ export class ChartComponent
           : undefined,
       });
       if (this.dataQuery) {
-        this.getData();
+        this.getData(isValid);
       } else {
         this.loading = false;
       }
@@ -314,8 +326,12 @@ export class ChartComponent
     };
   }
 
-  /** Load the data, using widget parameters. */
-  private getData(): void {
+  /**
+   * Load the data, using widget parameters.
+   *
+   * @param isValid Subject that indicates if the query is valid
+   */
+  private getData(isValid?: BehaviorSubject<boolean>): void {
     this.dataQuery
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ errors, data, loading }: any) => {
@@ -325,6 +341,12 @@ export class ChartComponent
           this.series.next([]);
         } else {
           this.hasError = false;
+
+          // If query's been invalidated
+          if (isValid && !isValid.value) {
+            return;
+          }
+
           const today = new Date();
           this.lastUpdate =
             ('0' + today.getHours()).slice(-2) +

@@ -249,23 +249,23 @@ export class MapComponent
         allContextFilters + allGraphQLVariables
       )
     ) {
+      const dataToCheck = this.layers.map((layer) => {
+        return pick(layer, ['datasource', 'contextFilters', 'at']);
+      });
+      let isValid = new BehaviorSubject(true);
       this.contextService.filter$
         .pipe(
           debounceTime(500),
           filter(({ previous, current }) =>
-            this.contextService.shouldRefresh(
-              this.layers.map((layer) => {
-                return pick(layer, ['datasource', 'contextFilters', 'at']);
-              }),
-              previous,
-              current
-            )
+            this.contextService.shouldRefresh(dataToCheck, previous, current)
           ),
           concatMap(() => loadNextFilters()),
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
-          this.filterLayers();
+          isValid.next(false);
+          isValid = new BehaviorSubject(true);
+          this.filterLayers(isValid);
         });
     }
 
@@ -1072,8 +1072,12 @@ export class MapComponent
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
   }
 
-  /** Set the new layers based on the filter value */
-  private async filterLayers() {
+  /**
+   * Set the new layers based on the filter value
+   *
+   * @param isValid If the state is still valid
+   */
+  private async filterLayers(isValid: BehaviorSubject<boolean>) {
     this.document.getElementById('layer-control-button-close')?.click();
     this.refreshingLayers.next(false);
     const { layers: layersToGet, controls } = this.extractSettings();
@@ -1100,6 +1104,12 @@ export class MapComponent
     // get new layers, with filters applied
     this.resetLayers();
     const l = await this.getLayers(layersToGet ?? [], false);
+
+    // If not valid anymore, just return
+    if (!isValid.value) {
+      return;
+    }
+
     this.overlaysTree = [l.layers];
 
     flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {

@@ -9,7 +9,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GET_RESOURCE } from './graphql/queries';
-import { debounceTime, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GridService } from '../../../services/grid/grid.service';
@@ -60,6 +60,8 @@ export class AggregationGridComponent
   public pagerSettings = PAGER_SETTINGS;
   /** Show filter */
   public showFilter = false;
+  /** Subject to tell validity of latest query */
+  private isValid = new BehaviorSubject(true);
 
   /** Resource id */
   @Input() resourceId!: string;
@@ -120,7 +122,11 @@ export class AggregationGridComponent
           if (
             this.contextService.shouldRefresh(this.widget, previous, current)
           ) {
-            this.getAggregationData();
+            this.loading = true;
+            this.isValid.next(false);
+            const isValid = new BehaviorSubject(true);
+            this.isValid = isValid;
+            this.getAggregationData(isValid);
           }
         });
     }
@@ -132,14 +138,16 @@ export class AggregationGridComponent
   }
 
   ngOnChanges(): void {
-    this.getAggregationData();
+    this.getAggregationData(this.isValid);
     this.getAggregationFields();
   }
 
   /**
    * Get aggregation data from aggregation id and resource id
+   *
+   * @param isValid isValid subject
    */
-  private getAggregationData(): void {
+  private getAggregationData(isValid: BehaviorSubject<boolean>): void {
     this.loading = true;
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       this.resourceId,
@@ -153,7 +161,9 @@ export class AggregationGridComponent
     );
     this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
       next: ({ data, loading }) => {
-        this.updateValues(data, loading);
+        if (isValid.value) {
+          this.updateValues(data, loading);
+        }
       },
       error: (err: any) => {
         this.loading = false;

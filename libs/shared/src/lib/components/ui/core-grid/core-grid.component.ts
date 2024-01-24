@@ -5,6 +5,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -20,12 +21,9 @@ import {
   CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { DownloadService } from '../../../services/download/download.service';
-import {
-  QueryBuilderService,
-  QueryResponse,
-} from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   CONVERT_RECORD,
   DELETE_RECORDS,
@@ -49,7 +47,7 @@ import { DateTranslateService } from '../../../services/date-translate/date-tran
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, Subject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -80,7 +78,7 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 })
 export class CoreGridComponent
   extends UnsubscribeComponent
-  implements OnChanges
+  implements OnChanges, OnInit
 {
   // === INPUTS ===
   /** Grid settings */
@@ -109,9 +107,9 @@ export class CoreGridComponent
   @Input() selectedRows: string[] = [];
   /** Selectable settings */
   @Input() selectable = true;
-  /** Evemitter for selection change */
+  /** Event emitter for selection change */
   @Output() selectionChange = new EventEmitter();
-  /** Evemitter for row removal */
+  /** Event emitter for row removal */
   @Output() removeRowIds = new EventEmitter<string[]>();
 
   /** @returns list of selected items in the grid */
@@ -167,8 +165,6 @@ export class CoreGridComponent
   private metaFields: any;
   /** Details field for the grid. */
   public detailsField?: any;
-  /** Data query reference for fetching data. */
-  private dataQuery!: QueryRef<QueryResponse>;
   /** Meta query reference for fetching metadata. */
   private metaQuery!: any;
 
@@ -325,6 +321,40 @@ export class CoreGridComponent
   /** Current environment */
   private environment: any;
 
+  /** Indicates if the query is still valid */
+  private validQuery = new BehaviorSubject(true);
+
+  /** The built records query definition */
+  private builtQuery: any;
+
+  /**
+   * Gets the data query, based on the current settings and any other variables.
+   *
+   * @param variables additional variables to use in the query
+   * @returns the data query
+   */
+  private getDataQuery(variables: any = {}) {
+    if (!this.builtQuery) {
+      return null;
+    }
+
+    return this.apollo.query({
+      query: this.builtQuery,
+      variables: {
+        first: this.pageSize,
+        filter: this.queryFilter,
+        sortField: this.sortField || undefined,
+        sortOrder: this.sortOrder,
+        styles: this.style,
+        at: this.settings.at
+          ? this.contextService.atArgumentValue(this.settings.at)
+          : undefined,
+        ...variables,
+      },
+      fetchPolicy: 'no-cache',
+    });
+  }
+
   /**
    * Main Grid data component to display Records.
    * Used by grid widget, and in several other places, like record selection.
@@ -364,17 +394,24 @@ export class CoreGridComponent
   ) {
     super();
     this.environment = environment;
-    contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(({ previous, current }) => {
-        if (contextService.filterRegex.test(this.settings.contextFilters)) {
+  }
+
+  /** Setup listeners for context and filter changes */
+  ngOnInit(): void {
+    const { filterRegex, filter$ } = this.contextService;
+
+    if (filterRegex.test(this.widget.settings.contextFilters)) {
+      filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(({ previous, current }) => {
           if (
             this.contextService.shouldRefresh(this.widget, previous, current)
           ) {
-            if (this.dataQuery) this.reloadData();
+            this.loading = true;
+            this.reloadData(this.invalidateQuery());
           }
-        }
-      });
+        });
+    }
   }
 
   /**
@@ -388,6 +425,18 @@ export class CoreGridComponent
         this.configureGrid();
       }
     }
+  }
+
+  /**
+   * Invalidates the current query and returns a new subject for the query validity
+   *
+   * @returns the new subject for the query validity
+   */
+  private invalidateQuery(): BehaviorSubject<boolean> {
+    this.validQuery.next(false);
+    const newValidQuery = new BehaviorSubject(true);
+    this.validQuery = newValidQuery;
+    return newValidQuery;
   }
 
   /**
@@ -448,21 +497,7 @@ export class CoreGridComponent
           ),
         };
       } else {
-        this.dataQuery = this.apollo.watchQuery({
-          query: builtQuery,
-          variables: {
-            first: this.pageSize,
-            filter: this.queryFilter,
-            sortField: this.sortField || undefined,
-            sortOrder: this.sortOrder,
-            styles: this.style,
-            at: this.settings.at
-              ? this.contextService.atArgumentValue(this.settings.at)
-              : undefined,
-          },
-          fetchPolicy: 'no-cache',
-          nextFetchPolicy: 'cache-first',
-        });
+        this.builtQuery = builtQuery;
       }
 
       // Build meta query
@@ -749,78 +784,79 @@ export class CoreGridComponent
     return promises;
   }
 
-  // === DATA ===
-
   /**
    * Loads the data, using grid parameters.
+   *
+   * @param data data to load
    */
-  private getRecords(): void {
-    this.loading = true;
-    this.updatedItems = [];
-    if (this.dataQuery) {
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-        next: ({ data }) => {
-          this.loading = false;
-          this.status = {
-            error: false,
-          };
-          for (const field in data) {
-            try {
-              if (Object.prototype.hasOwnProperty.call(data, field)) {
-                const nodes =
-                  data[field]?.edges.map((x: any) => ({
-                    ...x.node,
-                    _meta: {
-                      style: x.meta.style,
-                      raw: x.meta.raw,
-                    },
-                  })) || [];
-                this.totalCount = data[field] ? data[field].totalCount : 0;
-                this.items = cloneData(nodes);
-                this.convertDateFields(this.items);
-                this.originalItems = cloneData(this.items);
-                this.loadItems();
-                for (const updatedItem of this.updatedItems) {
-                  const item: any = this.items.find(
-                    (x) => x.id === updatedItem.id
-                  );
-                  if (item) {
-                    Object.assign(item, updatedItem);
-                    item.saved = false;
-                  }
-                }
-                // if (!this.readOnly) {
-                //   this.initSelectedRows();
-                // }
-              }
-            } catch (error) {
-              console.error(error);
+  private handleDataResponse(data: any): void {
+    this.loading = false;
+    this.status = {
+      error: false,
+    };
+    for (const field in data) {
+      try {
+        if (Object.prototype.hasOwnProperty.call(data, field)) {
+          const nodes =
+            data[field]?.edges.map((x: any) => ({
+              ...x.node,
+              _meta: {
+                style: x.meta.style,
+                raw: x.meta.raw,
+              },
+            })) || [];
+          this.totalCount = data[field] ? data[field].totalCount : 0;
+          this.items = cloneData(nodes);
+          this.convertDateFields(this.items);
+          this.originalItems = cloneData(this.items);
+          this.loadItems();
+          for (const updatedItem of this.updatedItems) {
+            const item: any = this.items.find((x) => x.id === updatedItem.id);
+            if (item) {
+              Object.assign(item, updatedItem);
+              item.saved = false;
             }
           }
-          if (this.settings.query.temporaryRecords?.length) {
-            //Handles temporary records for resources creation in forms
-            this.getTemporaryRecords();
-          }
-        },
-        error: (err: any) => {
-          this.status = {
-            error: true,
-            message: this.translate.instant(
-              'components.widget.grid.errors.queryFetchFailed',
-              {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
-              }
-            ),
-          };
-          this.loading = false;
-        },
-      });
-    } else {
-      this.loading = false;
+          // if (!this.readOnly) {
+          //   this.initSelectedRows();
+          // }
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
+    if (this.settings.query.temporaryRecords?.length) {
+      //Handles temporary records for resources creation in forms
+      this.getTemporaryRecords();
+    }
+  }
+
+  /** Loads the initial records */
+  private getRecords(): void {
+    const query = this.getDataQuery();
+    this.loading = !query;
+    this.updatedItems = [];
+
+    query?.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data }) => {
+        this.handleDataResponse(data);
+      },
+      error: (err: any) => {
+        this.status = {
+          error: true,
+          message: this.translate.instant(
+            'components.widget.grid.errors.queryFetchFailed',
+            {
+              error:
+                err.networkError?.error?.errors
+                  ?.map((x: any) => x.message)
+                  .join(', ') || err,
+            }
+          ),
+        };
+        this.loading = false;
+      },
+    });
   }
 
   /**
@@ -848,16 +884,16 @@ export class CoreGridComponent
 
   /**
    * Reloads data and unselect all rows.
+   *
+   * @param isValid BehaviorSubject indicating if query is still valid
    */
-  public reloadData(): void {
+  public reloadData(isValid: BehaviorSubject<boolean> = this.validQuery): void {
     // TODO = check what to do there
-    this.onPageChange({ skip: 0, take: this.pageSize });
+    this.onPageChange({ skip: 0, take: this.pageSize }, isValid);
     // this.selectedRows = [];
     // this.updatedItems = [];
     this.refresh$.next(true);
   }
-
-  // === SELECTION ===
 
   /**
    * Handle selection change event.
@@ -921,7 +957,8 @@ export class CoreGridComponent
             this.loadItems();
           } else {
             // if no error, reload the grid
-            this.reloadData();
+            const isValid = this.invalidateQuery();
+            this.reloadData(isValid);
           }
         });
         break;
@@ -1040,7 +1077,8 @@ export class CoreGridComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.reloadData();
+            const isValid = this.invalidateQuery();
+            this.reloadData(isValid);
           }
         });
     }
@@ -1142,7 +1180,8 @@ export class CoreGridComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.validateRecords(ids);
-        this.reloadData();
+        const isValid = this.invalidateQuery();
+        this.reloadData(isValid);
       }
     });
   }
@@ -1195,7 +1234,8 @@ export class CoreGridComponent
           })
           .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
-            this.reloadData();
+            const isValid = this.invalidateQuery();
+            this.reloadData(isValid);
             this.layoutService.setRightSidenav(null);
           });
       }
@@ -1236,7 +1276,8 @@ export class CoreGridComponent
           );
         }
         Promise.all(promises).then(() => {
-          this.reloadData();
+          const isValid = this.invalidateQuery();
+          this.reloadData(isValid);
         });
       }
     });
@@ -1327,7 +1368,8 @@ export class CoreGridComponent
                   { error: true }
                 );
               } else {
-                this.reloadData();
+                const isValid = this.invalidateQuery();
+                this.reloadData(isValid);
                 this.layoutService.setRightSidenav(null);
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.dataRecovered')
@@ -1431,25 +1473,42 @@ export class CoreGridComponent
    * Detects pagination events and update the items loaded.
    *
    * @param event Page change event.
+   * @param isValid BehaviorSubject indicating if query is still valid
    */
-  public onPageChange(event: PageChangeEvent): void {
+  public onPageChange(
+    event: PageChangeEvent,
+    isValid: BehaviorSubject<boolean> = this.validQuery
+  ): void {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery
-      ?.refetch({
-        first: this.pageSize,
-        skip: this.skip,
-        filter: this.queryFilter,
-        sortField: this.sortField || undefined,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-        ...(this.settings.at && {
-          at: this.contextService.atArgumentValue(this.settings.at),
-        }),
-      })
-      .then(() => (this.loading = false));
+    this.getDataQuery({
+      skip: this.skip,
+    })
+      ?.pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data }) => {
+          if (isValid?.value) {
+            this.handleDataResponse(data);
+          }
+        },
+        error: (err: any) => {
+          this.status = {
+            error: true,
+            message: this.translate.instant(
+              'components.widget.grid.errors.queryFetchFailed',
+              {
+                error:
+                  err.networkError?.error?.errors
+                    ?.map((x: any) => x.message)
+                    .join(', ') || err,
+              }
+            ),
+          };
+          this.loading = false;
+        },
+      });
   }
 
   // === FILTERING ===
@@ -1472,7 +1531,9 @@ export class CoreGridComponent
     this.filter = filter;
     this.saveLocalLayout();
     this.skip = 0;
-    this.onPageChange({ skip: this.skip, take: this.pageSize });
+
+    const newValidQuery = this.invalidateQuery();
+    this.onPageChange({ skip: this.skip, take: this.pageSize }, newValidQuery);
   }
 
   /**
@@ -1483,7 +1544,9 @@ export class CoreGridComponent
   public onSearchChange(search: string): void {
     this.search = search;
     this.skip = 0;
-    this.onPageChange({ skip: this.skip, take: this.pageSize });
+
+    const newValidQuery = this.invalidateQuery();
+    this.onPageChange({ skip: this.skip, take: this.pageSize }, newValidQuery);
   }
 
   // === SORTING ===
@@ -1497,7 +1560,9 @@ export class CoreGridComponent
     this.sort = sort;
     this.saveLocalLayout();
     this.skip = 0;
-    this.onPageChange({ skip: this.skip, take: this.pageSize });
+
+    const newValidQuery = this.invalidateQuery();
+    this.onPageChange({ skip: this.skip, take: this.pageSize }, newValidQuery);
   }
 
   // === LAYOUT ===
