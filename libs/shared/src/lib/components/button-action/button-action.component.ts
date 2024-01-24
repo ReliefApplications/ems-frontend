@@ -81,10 +81,9 @@ export class ButtonActionComponent {
       if (value) {
         const currButtons = this.dashboard?.buttons || [];
         currButtons.splice(idx, 1);
-        this.dashboardService.saveDashboardButtons(
-          this.dashboard?.id,
-          currButtons
-        );
+        this.dashboardService
+          .saveDashboardButtons(this.dashboard?.id, currButtons)
+          ?.subscribe();
       }
     });
   }

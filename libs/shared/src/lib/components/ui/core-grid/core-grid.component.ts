@@ -366,9 +366,13 @@ export class CoreGridComponent
     this.environment = environment;
     contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe(({ previous, current }) => {
         if (contextService.filterRegex.test(this.settings.contextFilters)) {
-          if (this.dataQuery) this.reloadData();
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
+            if (this.dataQuery) this.reloadData();
+          }
         }
       });
   }

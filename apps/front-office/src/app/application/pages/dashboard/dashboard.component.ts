@@ -193,7 +193,6 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
           this.initContext();
           this.setWidgets();
           this.buttonActions = this.dashboard.buttons || [];
@@ -219,14 +218,6 @@ export class DashboardComponent
         this.snackBar.openSnackBar(err.message, { error: true });
         this.router.navigate(['/applications']);
       });
-  }
-
-  /**
-   * Removes all subscriptions of the component.
-   */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.dashboardService.closeDashboard();
   }
 
   /**
@@ -267,6 +258,6 @@ export class DashboardComponent
         this.route
       );
     };
-    this.contextService.initContext(callback);
+    this.contextService.initContext(this.dashboard as Dashboard, callback);
   }
 }

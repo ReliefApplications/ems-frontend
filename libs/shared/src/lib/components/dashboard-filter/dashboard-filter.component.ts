@@ -23,6 +23,7 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
+import { Dashboard } from '../../models/dashboard.model';
 
 /**
  * Interface for quick filters
@@ -52,6 +53,8 @@ export class DashboardFilterComponent
   @Input() opened = false;
   /** Is closable */
   @Input() closable = true;
+  /** Is closable */
+  @Input() dashboard?: Dashboard;
   /** Current position of filter */
   public position!: FilterPosition;
   /** Either left, right, top or bottom */
@@ -109,8 +112,8 @@ export class DashboardFilterComponent
     }
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.survey.data = value;
+      .subscribe(({ current }) => {
+        this.survey.data = current;
       });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))
@@ -188,8 +191,6 @@ export class DashboardFilterComponent
   private initSurvey(): void {
     this.survey = this.contextService.initSurvey();
 
-    this.setAvailableFiltersForContext();
-
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
 
@@ -204,18 +205,6 @@ export class DashboardFilterComponent
       renderGlobalProperties(this.referenceDataService);
     });
     this.onValueChange();
-  }
-
-  /**
-   * Set the available filters of dashboard filter in the shared context service
-   */
-  private setAvailableFiltersForContext() {
-    this.contextService.availableFilterFields = this.survey.getAllQuestions()
-      .length
-      ? this.survey
-          .getAllQuestions()
-          .map((question) => ({ name: question.title, value: question.name }))
-      : [];
   }
 
   /**

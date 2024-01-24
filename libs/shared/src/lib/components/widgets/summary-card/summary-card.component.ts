@@ -308,8 +308,12 @@ export class SummaryCardComponent
     ) {
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.refresh();
+        .subscribe(({ previous, current }) => {
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
+            this.refresh();
+          }
         });
     }
   }

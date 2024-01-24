@@ -136,18 +136,22 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe(({ previous, current }) => {
         if (
           this.contextService.filterRegex.test(
             allContextFilters + allGraphQLVariables
           )
         ) {
-          this.refresh$.next(true);
-          this.loading = true;
-          this.setHtml();
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
+            this.refresh$.next(true);
+            this.loading = true;
+            this.setHtml();
+          }
         }
         this.toggleActiveFilters(
-          value,
+          current,
           this.htmlContentComponent?.el.nativeElement
         );
       });

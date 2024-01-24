@@ -3,6 +3,7 @@
   [isFullScreen]="isFullScreen"
   variant="modern"
   [opened]="true"
+  [dashboard]="dashboard"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div
@@ -16,6 +17,7 @@
     [editable]="true"
     [isFullScreen]="isFullScreen"
     [opened]="true"
+    [dashboard]="dashboard"
   ></shared-dashboard-filter>
   <ng-container sharedFullScreen [(isFullScreenMode)]="isFullScreen">
     <ng-container
