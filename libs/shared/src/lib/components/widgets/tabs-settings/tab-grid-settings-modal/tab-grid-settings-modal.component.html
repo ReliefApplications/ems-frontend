@@ -115,6 +115,46 @@
             "
           ></ui-icon>
         </div>
+        <!-- Change the minimum height of the container -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          *ngIf="formGroup.get('gridType')?.value === gridType.Fit"
+        >
+          <label class="flex items-center gap-1">
+            {{
+              'components.application.dashboard.settings.minimumHeight'
+                | translate
+            }}
+            <!-- Tooltip -->
+            <ui-icon
+              class="cursor-help self-center"
+              icon="info_outline"
+              variant="grey"
+              [size]="18"
+              [uiTooltip]="
+                'components.application.dashboard.settings.tooltip.minimumHeight'
+                  | translate
+              "
+            ></ui-icon>
+          </label>
+          <input type="number" formControlName="minimumHeight" min="0" />
+          <ui-icon
+            uiSuffix
+            class="cursor-pointer"
+            icon="restart_alt"
+            variant="grey"
+            (click)="
+              formGroup
+                .get('minimumHeight')
+                ?.setValue(defaultGridOptions.minimumHeight)
+            "
+            [uiTooltip]="
+              'components.application.dashboard.settings.tooltip.reset'
+                | translate
+            "
+          ></ui-icon>
+        </div>
         <!-- Specify inner gap -->
         <div uiFormFieldDirective>
           <label class="flex items-center gap-1"

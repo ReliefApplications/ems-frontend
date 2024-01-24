@@ -55,6 +55,7 @@ export class TabGridSettingsModalComponent {
   public defaultGridOptions = {
     minCols: 8,
     fixedRowHeight: 200,
+    minimumHeight: 0,
     margin: 10,
   };
 

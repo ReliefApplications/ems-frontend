@@ -556,10 +556,12 @@
 					},
 					"margin": "******",
 					"minCols": "******",
+					"minimumHeight": "******",
 					"tooltip": {
 						"fixedRowHeight": "******",
 						"margin": "******",
 						"minCols": "******",
+						"minimumHeight": "******",
 						"reset": "******"
 					}
 				}
