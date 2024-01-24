@@ -51,7 +51,10 @@ export class ContextService {
   /** To update/keep the current filter structure  */
   public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
-  public filterPosition = new BehaviorSubject<any>(null);
+  public filterPosition = new BehaviorSubject<{
+    position: FilterPosition;
+    dashboardId: string;
+  } | null>(null);
   /** To keep the history of previous dashboard filter values */
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
@@ -152,7 +155,7 @@ export class ContextService {
     private router: Router
   ) {
     this.filterPosition$.subscribe(
-      (value: { position: any; dashboardId: string }) => {
+      (value: { position: FilterPosition; dashboardId: string } | null) => {
         if (value && value.position && value.dashboardId) {
           localForage.setItem(
             this.positionKey(value.dashboardId),
@@ -176,18 +179,20 @@ export class ContextService {
    */
   public setFilter(dashboard?: Dashboard) {
     {
-      if (dashboard) {
+      if (dashboard && dashboard.id) {
         this.filterStructure.next(dashboard.filter?.structure);
         localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
             this.filterPosition.next({
-              position: position,
-              dashboardId: dashboard.id,
+              position: position as FilterPosition,
+              dashboardId: dashboard.id ?? '',
             });
           } else {
             this.filterPosition.next({
-              position: dashboard.filter?.position ?? FilterPosition.BOTTOM,
-              dashboardId: dashboard.id,
+              position:
+                (dashboard.filter?.position as FilterPosition) ??
+                FilterPosition.BOTTOM,
+              dashboardId: dashboard.id ?? '',
             });
           }
         });
@@ -541,8 +546,8 @@ export class ContextService {
     } else {
       if (dashboard?.filter?.position) {
         this.filterPosition.next({
-          position: dashboard.filter.position,
-          dashboardId: dashboard.id,
+          position: dashboard.filter.position as FilterPosition,
+          dashboardId: dashboard.id ?? '',
         });
       } else {
         this.filterStructure.next(data.editDashboard.filter?.structure);

@@ -128,14 +128,16 @@ export class DashboardFilterComponent
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: FilterPosition | undefined) => {
-        if (value) {
-          this.position = value as FilterPosition;
-        } else {
-          this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+      .subscribe(
+        (value: { position: FilterPosition; dashboardId: string } | null) => {
+          if (value) {
+            this.position = value.position as FilterPosition;
+          } else {
+            this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+          }
+          this.setFilterContainerDimensions();
         }
-        this.setFilterContainerDimensions();
-      });
+      );
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -184,7 +186,10 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
-    this.contextService.filterPosition.next(position);
+    this.contextService.filterPosition.next({
+      position: position,
+      dashboardId: this.contextService.filterPosition.value?.dashboardId ?? '',
+    });
   }
 
   /** Render the survey using the saved structure */

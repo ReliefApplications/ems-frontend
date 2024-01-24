@@ -535,7 +535,8 @@
 						"bottom": "Show filter on the bottom",
 						"left": "Show filter on the left",
 						"right": "Show filter on the right",
-						"top": "Show filter on the top"
+						"top": "Show filter on the top",
+						"unset": "Position unset, please select one"
 					},
 					"info": "Dashboard filters can be used between pages to filter their content.",
 					"title": "Dashboard filters configuration"

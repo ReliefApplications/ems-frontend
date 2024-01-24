@@ -5,6 +5,7 @@ import {
   DashboardService,
   EditDashboardMutationResponse,
   UnsubscribeComponent,
+  FilterPosition,
 } from '@oort-front/shared';
 import {
   FormWrapperModule,
@@ -155,6 +156,12 @@ export class DashboardFilterSettingsComponent
         },
         complete: () => {
           this.contextService.isFilterEnabled.next(value.show);
+          this.contextService.filterPosition.next({
+            position:
+              (this.dashboard.filter?.position as FilterPosition) ||
+              FilterPosition.BOTTOM,
+            dashboardId: this.dashboard.id ?? '',
+          });
         },
       });
   }
