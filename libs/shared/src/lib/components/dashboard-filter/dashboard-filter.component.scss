@@ -72,13 +72,19 @@
       padding: 0 !important;
     }
     .sd-question__header--location--left {
-      margin-top: 6px !important;
+      margin-top: 0 !important;
+      align-self: center;
     }
     .sd-row--multiple > div {
       padding-left: 10px !important;
+      align-self: center;
     }
     .sd-question__content--left {
       padding-left: 10px !important;
+    }
+    .sd-page__row.sd-row--multiple.sd-row--compact {
+      width: 100% !important;
+      margin: 0 !important;
     }
   }
 }
