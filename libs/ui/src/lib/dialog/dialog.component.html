@@ -12,6 +12,7 @@
   class="flex flex-col h-full overflow-hidden py-4 sm:py-6"
   mwlResizable
   (resizing)="onResizing($event)"
+  [validateResize]="validate"
 >
   <div
     *ngIf="resizable"
@@ -24,18 +25,6 @@
     class="cursor-col-resize absolute h-full right-0 w-1.5"
     mwlResizeHandle
     [resizeEdges]="{ right: true }"
-  ></div>
-  <div
-    *ngIf="resizable"
-    class="absolute cursor-row-resize w-full h-1.5 bottom-0"
-    mwlResizeHandle
-    [resizeEdges]="{ bottom: true }"
-  ></div>
-  <div
-    *ngIf="resizable"
-    class="absolute cursor-row-resize w-full h-1.5 top-0"
-    mwlResizeHandle
-    [resizeEdges]="{ top: true }"
   ></div>
   <!-- Dialog header -->
   <div class="empty:hidden px-4 sm:px-6">

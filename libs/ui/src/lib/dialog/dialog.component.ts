@@ -85,4 +85,17 @@ export class DialogComponent implements OnChanges, OnInit {
       this.dialogRef.addPanelClass('no-padding-dialog');
     }
   }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    if (event.rectangle.width && event.rectangle.width < 600) {
+      return false;
+    }
+    return true;
+  }
 }

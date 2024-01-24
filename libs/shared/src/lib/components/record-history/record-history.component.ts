@@ -5,7 +5,7 @@ import {
   Input,
   OnInit,
   Output,
-  ElementRef,
+  Inject,
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -29,6 +29,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { startCase, isNil } from 'lodash';
 import { ResizeEvent } from 'angular-resizable-element';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -143,7 +144,7 @@ export class RecordHistoryComponent
    * @param dateFormat DateTranslation service
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
-   * @param elementRef element reference
+   * @param document Document
    */
   constructor(
     public dialog: Dialog,
@@ -152,7 +153,7 @@ export class RecordHistoryComponent
     private dateFormat: DateTranslateService,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private elementRef: ElementRef
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -271,25 +272,24 @@ export class RecordHistoryComponent
   }
 
   /**
-   * check if resize event is valid
+   * Check if resize event is valid
    *
    * @param event resize event
    * @returns boolean
    */
   validate(event: ResizeEvent): boolean {
-    const dashboardNavbar =
-      document.documentElement.getElementsByTagName('shared-navbar');
+    const dashboardNavbar = this.document.getElementsByTagName('shared-navbar');
     let dashboardNavbarWidth = 0;
     if (dashboardNavbar[0] && !this.dialog) {
       dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
     }
     // set the min width as 40% of the screen size available
     const minWidth = Math.round(
-      (document.documentElement.clientWidth - dashboardNavbarWidth) * 0.4
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.4
     );
     // set the max width as 95% of the screen size available
     const maxWidth = Math.round(
-      (document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
     );
     if (
       event.rectangle.width &&
