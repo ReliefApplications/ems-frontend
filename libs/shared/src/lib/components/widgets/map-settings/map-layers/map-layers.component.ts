@@ -57,12 +57,9 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
    * Update layer list for Layers tab
    */
   private updateLayerList(): void {
-    // todo: add filtering
-    this.mapLayersService.getLayers().subscribe((layers) => {
-      const layerIds = this.control.value;
-      this.mapLayers = layers
-        .filter((x) => layerIds.includes(x.id))
-        .sort((a, b) => layerIds.indexOf(a.id) - layerIds.indexOf(b.id));
+    const layerIds = this.control.value;
+    this.mapLayersService.getLayers(layerIds).subscribe((layers) => {
+      this.mapLayers = layers;
       this.loading = false;
     });
   }
