@@ -142,27 +142,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             allContextFilters + allGraphQLVariables
           )
         ) {
-          const settings = {
-            ...this.settings,
-            ...(this.settings.aggregations && {
-              aggregations: this.settings.aggregations.map(
-                (aggregation: any) => ({
-                  ...aggregation,
-                  ...(aggregation.referenceDataVariableMapping && {
-                    referenceDataVariableMapping: JSON.parse(
-                      aggregation.referenceDataVariableMapping || ''
-                    ),
-                  }),
-                  ...(aggregation.contextFilters && {
-                    contextFilters: JSON.parse(
-                      aggregation.contextFilters || ''
-                    ),
-                  }),
-                })
-              ),
-            }),
-          };
-          if (this.contextService.shouldRefresh(settings, previous, current)) {
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
             this.refresh$.next(true);
             this.loading = true;
             this.setHtml();

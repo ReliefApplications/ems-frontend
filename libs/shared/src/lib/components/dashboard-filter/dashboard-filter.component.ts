@@ -126,7 +126,6 @@ export class DashboardFilterComponent
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: FilterPosition | undefined) => {
-        console.log(value);
         if (value) {
           this.position = value as FilterPosition;
         } else {

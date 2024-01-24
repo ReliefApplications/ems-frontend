@@ -254,20 +254,9 @@ export class MapComponent
           debounceTime(500),
           filter(({ previous, current }) =>
             this.contextService.shouldRefresh(
-              this.layers
-                .map((layer) => {
-                  return pick(layer, ['datasource', 'contextFilters', 'at']);
-                })
-                .map((m) => ({
-                  ...m,
-                  contextFilters: JSON.parse(get(m, 'contextFilters', '')),
-                  datasource: {
-                    ...m.datasource,
-                    referenceDataVariableMapping: JSON.parse(
-                      get(m, 'datasource.referenceDataVariableMapping', '')
-                    ),
-                  },
-                })),
+              this.layers.map((layer) => {
+                return pick(layer, ['datasource', 'contextFilters', 'at']);
+              }),
               previous,
               current
             )
@@ -303,24 +292,6 @@ export class MapComponent
       };
       return new Promise(checkAgain);
     };
-
-    // To zoom on getGeographicExtentValue, if necessary
-    const settings = this.extractSettings();
-    const geographicExtentValue = settings.geographicExtentValue;
-    const geographicExtent = settings.geographicExtent;
-
-    // Check if has initial getGeographicExtentValue to zoom on country
-    const fieldValue = geographicExtentValue?.match(
-      this.contextService.filterRegex
-    );
-    if (fieldValue) {
-      // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
-      this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.zoomOn(geographicExtent as string);
-        });
-    }
   }
 
   override ngOnDestroy(): void {
@@ -451,6 +422,7 @@ export class MapComponent
       layers,
       controls,
       geographicExtent,
+      geographicExtentValue,
     } = this.extractSettings();
 
     if (initMap) {
@@ -532,6 +504,20 @@ export class MapComponent
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
+
+    // To zoom on getGeographicExtentValue, if necessary
+    // Check if has initial getGeographicExtentValue to zoom on country
+    const fieldValue = geographicExtentValue?.match(
+      this.contextService.filterRegex
+    );
+    if (fieldValue) {
+      // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.zoomOn(geographicExtent as string);
+        });
+    }
   }
 
   /**

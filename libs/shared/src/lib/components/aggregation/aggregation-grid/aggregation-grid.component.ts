@@ -17,7 +17,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { SortDescriptor } from '@progress/kendo-data-query';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 /**
  * Shared aggregation grid component.
@@ -117,16 +117,9 @@ export class AggregationGridComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(({ previous, current }) => {
-          const widget = {
-            ...this.widget,
-            settings: {
-              ...this.widget.settings,
-              contextFilters: JSON.parse(
-                get(this.widget, 'settings.contextFilters', '')
-              ),
-            },
-          };
-          if (this.contextService.shouldRefresh(widget, previous, current)) {
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
             this.getAggregationData();
           }
         });
