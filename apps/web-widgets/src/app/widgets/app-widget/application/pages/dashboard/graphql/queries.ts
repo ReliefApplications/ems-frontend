@@ -28,6 +28,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       canSee
       canUpdate
       filter
+      gridOptions
       page {
         id
         visible

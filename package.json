@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -67,6 +67,7 @@
     "@turf/centroid": "^6.5.0",
     "angular-gridster2": "^15.0.4",
     "angular-oauth2-oidc": "~13.0.1",
+    "angular-resizable-element": "^7.0.2",
     "apollo-angular": "^4.2.0",
     "chart.js": "^4.3.3",
     "chartjs-plugin-datalabels": "^2.2.0",

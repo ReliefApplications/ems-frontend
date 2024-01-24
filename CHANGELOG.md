@@ -1,3 +1,27 @@
+# [2.6.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.5.0...v2.6.0) (2024-01-23)
+
+
+### Bug Fixes
+
+* could not edit filter from dashboard-filter html ([43c37d0](https://github.com/ReliefApplications/ems-frontend/commit/43c37d059514378cd3a22d3e56b8c9ca1a804e60))
+* dashboard buttons would not be correctly saved ([9b32345](https://github.com/ReliefApplications/ems-frontend/commit/9b3234510402a69198381d4356da91b11aca5514))
+* incorrect display of tagbox & dropdown when using primitive ref data in dashboard filter ([2263cae](https://github.com/ReliefApplications/ems-frontend/commit/2263caeb9edca96c1f2ba1962261d65acd606bf9))
+* load dashboard filter default value expression ([#2288](https://github.com/ReliefApplications/ems-frontend/issues/2288)) ([2c99c32](https://github.com/ReliefApplications/ems-frontend/commit/2c99c328af6a5afdd7b3569a632e2faed9a78111))
+* Users question is editable even if readonly mode ([#2280](https://github.com/ReliefApplications/ems-frontend/issues/2280)) ([fec4499](https://github.com/ReliefApplications/ems-frontend/commit/fec4499ee113a2b7a554cb32a7a8f0d1e361ad17))
+
+
+### Features
+
+* Add ability to view history as table ([#2289](https://github.com/ReliefApplications/ems-frontend/issues/2289)) ([af65f0d](https://github.com/ReliefApplications/ems-frontend/commit/af65f0dfd6941034a20f7178454c2577a9d7f2b4))
+* allow addFields stage for reference data aggregations ([#2226](https://github.com/ReliefApplications/ems-frontend/issues/2226)) ([ba1fe54](https://github.com/ReliefApplications/ems-frontend/commit/ba1fe547f83c2cd5700803c97078ff881c75c1e8))
+* allow fit to screen widget grids ([6b6a6db](https://github.com/ReliefApplications/ems-frontend/commit/6b6a6db12c61b1d822129ad768f75ff461a1dcf0))
+* allow graphql reference data to pass variables ([#2275](https://github.com/ReliefApplications/ems-frontend/issues/2275)) ([4e9a8fc](https://github.com/ReliefApplications/ems-frontend/commit/4e9a8fcceae32263c7e4492a59487af225ba67b0))
+* allow map to be zoomed based on dynamic or static geographic extent ([#2292](https://github.com/ReliefApplications/ems-frontend/issues/2292)) ([dbf92bf](https://github.com/ReliefApplications/ems-frontend/commit/dbf92bf22efb2a4f5ce9a1b5981676eb3387fb6f))
+* allow search & sort to be passed to graphql ref data in summary cards ([0b24f8c](https://github.com/ReliefApplications/ems-frontend/commit/0b24f8c0a23eb96e921fb0c65ca9e44893e768b9))
+* pass graphql variables in reference data graphql charts ([#2298](https://github.com/ReliefApplications/ems-frontend/issues/2298)) ([206fd35](https://github.com/ReliefApplications/ems-frontend/commit/206fd353163c23a55a7e133519f48ce842c6a13f))
+* reference data aggregation now supports graphql variables injection ([#2301](https://github.com/ReliefApplications/ems-frontend/issues/2301)) ([8eac470](https://github.com/ReliefApplications/ems-frontend/commit/8eac47006d77b85efab0e9abca86d5ff68649a56))
+* use graphql reference data variables in layers ([#2297](https://github.com/ReliefApplications/ems-frontend/issues/2297)) ([fda16d7](https://github.com/ReliefApplications/ems-frontend/commit/fda16d76e914f3c5563388034ee8137baeeea880))
+
 # [2.5.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.4.0...v2.5.0) (2024-01-15)
 
 

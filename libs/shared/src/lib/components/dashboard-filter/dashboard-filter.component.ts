@@ -19,11 +19,10 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { Dashboard } from '../../models/dashboard.model';
-import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
+import { Dashboard } from '../../models/dashboard.model';
 
 /**
  * Interface for quick filters
@@ -53,10 +52,10 @@ export class DashboardFilterComponent
   @Input() opened = false;
   /** Is closable */
   @Input() closable = true;
+  /** Is closable */
+  @Input() dashboard?: Dashboard;
   /** Current position of filter */
   public position!: FilterPosition;
-  /** Dashboard the filter belongs to */
-  public dashboard?: Dashboard;
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
@@ -81,7 +80,6 @@ export class DashboardFilterComponent
   /**
    * Dashboard contextual filter component.
    *
-   * @param dashboardService Shared dashboard service
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
@@ -91,7 +89,6 @@ export class DashboardFilterComponent
    * @param _host sidenav container host
    */
   constructor(
-    private dashboardService: DashboardService,
     public contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: ReferenceDataService,
@@ -123,13 +120,6 @@ export class DashboardFilterComponent
       .subscribe((value) => {
         this.opened = value;
       });
-    this.dashboardService.dashboard$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((dashboard: Dashboard | null) => {
-        if (dashboard) {
-          this.dashboard = dashboard;
-        }
-      });
     this.contextService.filterStructure$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -139,6 +129,7 @@ export class DashboardFilterComponent
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: FilterPosition | undefined) => {
+        console.log(value);
         if (value) {
           this.position = value as FilterPosition;
         } else {
@@ -201,8 +192,6 @@ export class DashboardFilterComponent
   private initSurvey(): void {
     this.survey = this.contextService.initSurvey();
 
-    this.setAvailableFiltersForContext();
-
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
 
@@ -217,18 +206,6 @@ export class DashboardFilterComponent
       renderGlobalProperties(this.referenceDataService);
     });
     this.onValueChange();
-  }
-
-  /**
-   * Set the available filters of dashboard filter in the shared context service
-   */
-  private setAvailableFiltersForContext() {
-    this.contextService.availableFilterFields = this.survey.getAllQuestions()
-      .length
-      ? this.survey
-          .getAllQuestions()
-          .map((question) => ({ name: question.title, value: question.name }))
-      : [];
   }
 
   /**

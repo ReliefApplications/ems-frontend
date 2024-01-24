@@ -31,6 +31,8 @@ export class AggregationGridComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Data */
+  @Input() widget: any;
   /** Grid data */
   public gridData: GridDataResult = { data: [], total: 0 };
   /** Grid fields */
@@ -114,8 +116,12 @@ export class AggregationGridComponent
     if (this.contextService.filterRegex.test(this.contextFilters as string)) {
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.getAggregationData();
+        .subscribe(({ previous, current }) => {
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
+            this.getAggregationData();
+          }
         });
     }
     this.queryBuilder.isDoneLoading$.subscribe((doneLoading) => {

@@ -1,4 +1,5 @@
 import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +14,7 @@ import {
   ToggleModule,
   AlertModule,
 } from '@oort-front/ui';
+import { GridType } from 'angular-gridster2';
 
 /**
  * Represents the data passed to the dialog component.
@@ -30,6 +32,7 @@ interface DialogData {
   styleUrls: ['./tab-grid-settings-modal.component.scss'],
   standalone: true,
   imports: [
+    CommonModule,
     TabsModule,
     DialogModule,
     IconModule,
@@ -46,10 +49,13 @@ interface DialogData {
 export class TabGridSettingsModalComponent {
   /** Form group */
   public formGroup!: FormGroup;
+  /** Grid type */
+  public gridType = GridType;
   /** Default grid options */
   public defaultGridOptions = {
     minCols: 8,
     fixedRowHeight: 200,
+    minimumHeight: 0,
     margin: 10,
   };
 
