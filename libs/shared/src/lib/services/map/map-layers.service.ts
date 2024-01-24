@@ -29,7 +29,7 @@ import { AggregationBuilderService } from '../aggregation-builder/aggregation-bu
 import { Aggregation } from '../../models/aggregation.model';
 import { Layout } from '../../models/layout.model';
 import { ADD_LAYER, EDIT_LAYER, DELETE_LAYER } from './graphql/mutations';
-import { GET_LAYERS_BY_IDS, GET_LAYER_BY_ID } from './graphql/queries';
+import { GET_LAYERS, GET_LAYER_BY_ID } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
@@ -174,10 +174,19 @@ export class MapLayersService {
   public getLayers(ids: string[]): Observable<LayerModel[]> {
     return this.apollo
       .query<LayersQueryResponse>({
-        query: GET_LAYERS_BY_IDS,
+        query: GET_LAYERS,
         variables: {
           sortField: 'name',
-          ids: ids,
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: ids,
+              },
+            ],
+          },
         },
       })
       .pipe(

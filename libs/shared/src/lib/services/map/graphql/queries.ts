@@ -110,9 +110,9 @@ export const GET_LAYER_BY_ID = gql`
 
 // === GET LAYERS ===
 /** Graphql request for getting layers */
-export const GET_LAYERS_BY_IDS = gql`
-  query GetLayers($sortField: String, $filter: JSON, $ids: [ID]) {
-    layers(sortField: $sortField, filter: $filter, ids: $ids) {
+export const GET_LAYERS = gql`
+  query GetLayers($sortField: String, $filter: JSON) {
+    layers(sortField: $sortField, filter: $filter) {
       id
       name
     }
