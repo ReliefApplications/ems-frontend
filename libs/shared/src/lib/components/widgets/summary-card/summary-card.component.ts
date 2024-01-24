@@ -630,10 +630,13 @@ export class SummaryCardComponent
         );
       }
     }
-
+    const strategy = this.refData?.pageInfo?.strategy;
+    const start = strategy
+      ? this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize)
+      : 0;
     // Add the new items to the cached cards in the correct position
     this.cachedCards.splice(
-      this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize),
+      start,
       items.length,
       ...((items || []).map((x: any, index: number) => ({
         ...this.settings.card,
@@ -643,8 +646,6 @@ export class SummaryCardComponent
       })) as CardT[])
     );
 
-    const strategy = this.refData?.pageInfo?.strategy;
-
     const isPaginated = !!strategy && !!pageInfo;
     if (isPaginated) {
       // If using pagination, set the page size and total count
@@ -652,9 +653,6 @@ export class SummaryCardComponent
       this.pageInfo.length = pageInfo.totalCount;
       this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
       this.pageInfo.lastCursor = pageInfo.lastCursor;
-      if (this.pageInfo.pageSize > items.length) {
-        this.pageInfo.length = this.cards.length;
-      }
       this.sortedCachedCards = cloneDeep(this.cachedCards);
     } else {
       // Client side filtering
