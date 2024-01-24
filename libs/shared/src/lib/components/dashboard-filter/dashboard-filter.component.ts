@@ -19,7 +19,6 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
@@ -81,7 +80,6 @@ export class DashboardFilterComponent
   /**
    * Dashboard contextual filter component.
    *
-   * @param dashboardService Shared dashboard service
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
@@ -91,7 +89,6 @@ export class DashboardFilterComponent
    * @param _host sidenav container host
    */
   constructor(
-    private dashboardService: DashboardService,
     public contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: ReferenceDataService,

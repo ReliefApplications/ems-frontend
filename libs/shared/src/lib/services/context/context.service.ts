@@ -20,6 +20,7 @@ import {
   mapValues,
   mergeWith,
   uniq,
+  isString,
 } from 'lodash';
 import {
   Dashboard,
@@ -57,7 +58,7 @@ export class ContextService {
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /{{filter\.(.*?)}}/g;
+  public filterRegex = /["']?{{filter\.(.*?)}}["']?/g;
   /** Regex to detect the value of {{filter.}} in object */
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
@@ -228,6 +229,31 @@ export class ContextService {
   }
 
   /**
+   * Parse JSON values of object.
+   *
+   * @param obj object to transform
+   * @returns object, where string properties that can be transformed to objects, are returned as objects
+   */
+  private parseJSONValues(obj: any): any {
+    return mapValues(obj, (value: any) => {
+      if (isString(value)) {
+        try {
+          return JSON.parse(value);
+        } catch (error) {
+          // If parsing fails, return the original string value
+          return value;
+        }
+      } else if (isObject(value)) {
+        // If the value is an object, recursively parse it
+        return this.parseJSONValues(value);
+      } else {
+        // If the value is neither a string nor an object, return it as is
+        return value;
+      }
+    });
+  }
+
+  /**
    * Replace {{filter}} placeholders in object, with filter values
    *
    * @param object object with placeholders
@@ -239,14 +265,20 @@ export class ContextService {
     filter = this.filterValue(this.filter.getValue())
   ): any {
     if (isEmpty(filter)) {
-      return object;
+      return this.parseJSONValues(object);
     }
-    return JSON.parse(
-      JSON.stringify(object).replace(this.filterRegex, (match) => {
-        const field = match.replace('{{filter.', '').replace('}}', '');
-        return get(filter, field) || match;
-      })
-    );
+    // Transform all string fields into object ones when possible
+    const objectAsJSON = this.parseJSONValues(object);
+    const toString = JSON.stringify(objectAsJSON);
+    const replaced = toString.replace(this.filterRegex, (match) => {
+      const field = match
+        .replace(/["']?\{\{filter\./, '')
+        .replace(/\}\}["']?/, '');
+      const fieldValue = get(filter, field);
+      return fieldValue ? JSON.stringify(fieldValue) : match;
+    });
+    const parsed = JSON.parse(replaced);
+    return parsed;
   }
 
   /**

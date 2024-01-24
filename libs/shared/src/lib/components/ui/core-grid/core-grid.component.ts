@@ -1318,6 +1318,7 @@ export class CoreGridComponent
               revert: (version: any) => this.confirmRevertDialog(item, version),
               template: this.settings.template || null,
               refresh$: this.refresh$,
+              resizable: true,
             },
           });
         }
