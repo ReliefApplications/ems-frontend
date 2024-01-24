@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get } from 'lodash';
+import { isArray, isEqual, get, set } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -14,6 +14,7 @@ import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
+import { gql } from '@apollo/client';
 
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
@@ -269,6 +270,33 @@ export class ReferenceDataService {
   }
 
   /**
+   * Transform reference data graphql variables, to make sure they have the correct format.
+   *
+   * @param query graphql query to send
+   * @param variables variables mapping
+   * @returns void
+   */
+  private transformGraphQLVariables(query: string, variables: any = {}) {
+    const graphQLQuery = gql(query);
+    const definition = graphQLQuery.definitions?.[0];
+    if (definition?.kind !== 'OperationDefinition') {
+      return variables;
+    }
+    (definition.variableDefinitions ?? []).forEach((definition) => {
+      if (
+        get(definition, 'type.name.value') === 'JSON' &&
+        get(variables, definition.variable.name.value)
+      ) {
+        set(
+          variables,
+          definition.variable.name.value,
+          JSON.stringify(get(variables, definition.variable.name.value))
+        );
+      }
+    });
+  }
+
+  /**
    * Builds the request and process the query for the given reference data item and reference data request type
    *
    * @param referenceData Reference data item
@@ -281,6 +309,7 @@ export class ReferenceDataService {
     type: referenceDataType,
     variables: any = {}
   ) {
+    console.log('ici');
     let data!: any;
     if (type === referenceDataType.graphql) {
       const url =
@@ -288,6 +317,11 @@ export class ReferenceDataService {
         (referenceData.apiConfiguration?.name ?? '') +
         (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
       const query = this.processQuery(referenceData);
+
+      if (query) {
+        this.transformGraphQLVariables(query, variables);
+      }
+
       const body = { query, variables };
       data = (await this.apiProxy.buildPostRequest(url, body)) as any;
     } else if (type === referenceDataType.rest) {
