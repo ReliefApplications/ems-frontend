@@ -234,6 +234,12 @@
 
   .sd-root-modern {
     --sd-base-vertical-padding: 10px !important; //Reduces space between questions
+
+    sd-question {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+    }
   }
 
   // File upload file wrapper
