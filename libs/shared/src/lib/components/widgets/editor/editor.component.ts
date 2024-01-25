@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isEqual, isNil, set } from 'lodash';
+import { clone, get, isEmpty, isEqual, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -175,6 +175,17 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         node.dataset.filterActive = true;
       } else {
         node.dataset.filterActive = false;
+      }
+    } else {
+      // Handle empty filters. Need to leave filter field empty.
+      if (get(node, 'dataset.filterField') === '') {
+        console.log('empty');
+        console.log(filterValue);
+        if (!filterValue || isEmpty(filterValue)) {
+          node.dataset.filterActive = true;
+        } else {
+          node.dataset.filterActive = false;
+        }
       }
     }
     for (let i = 0; i < node.childNodes.length; i++) {
