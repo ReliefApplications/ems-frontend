@@ -179,8 +179,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     } else {
       // Handle empty filters. Need to leave filter field empty.
       if (get(node, 'dataset.filterField') === '') {
-        console.log('empty');
-        console.log(filterValue);
         if (!filterValue || isEmpty(filterValue)) {
           node.dataset.filterActive = true;
         } else {
