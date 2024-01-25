@@ -250,6 +250,23 @@ export class FilterBuilderModalComponent
           renderGlobalProperties(this.referenceDataService)
         )
     );
+
+    this.surveyCreator.onPropertyGridShowModal.add(
+      (sender: any, options: any) => {
+        // and there, put some code
+        console.log(options);
+        if (
+          options.obj.visibleChoices &&
+          options.obj.visibleChoices.length > 0
+        ) {
+          console.log('setting visible choices');
+          options.popupEditor.question.setPropertyValue(
+            'choices',
+            options.obj.visibleChoices
+          );
+        }
+      }
+    );
   }
 
   /**

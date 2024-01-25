@@ -247,9 +247,12 @@ export const render = (
             filter
           )
           .then((choices) => {
-            const newChoices = choices.map((choice) => new ItemValue(choice));
-            question.choices = newChoices;
-            question.setPropertyValue('visibleChoices', newChoices);
+            question.choices = [];
+            // this is to avoid that the choices appear on the 'choices' tab
+            question.setPropertyValue(
+              'visibleChoices',
+              choices.map((choice) => new ItemValue(choice))
+            );
 
             // manually set the selected option (not done by default)
             // only affects dropdown questions (only one option selected) with reference data and non primitive values
