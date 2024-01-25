@@ -887,11 +887,12 @@
 			},
 			"columns": {
 				"action": "Type d'action",
-				"date": "Date de modification",
-				"modifiedValue": "Valeur modifiée de la variable",
-				"originalValue": "Valeur originelle de la variable",
-				"person": "Modification effectuée par",
-				"variable": "Variable modifiée"
+				"date": "Date",
+				"modifiedValue": "Ancienne valeur",
+				"originalValue": "Nouvelle valeur",
+				"person": "Utilisateur",
+				"time": "Heure",
+				"variable": "Champ"
 			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",
