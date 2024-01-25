@@ -19,7 +19,6 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
@@ -81,7 +80,6 @@ export class DashboardFilterComponent
   /**
    * Dashboard contextual filter component.
    *
-   * @param dashboardService Shared dashboard service
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
@@ -91,7 +89,6 @@ export class DashboardFilterComponent
    * @param _host sidenav container host
    */
   constructor(
-    private dashboardService: DashboardService,
     public contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: ReferenceDataService,
@@ -128,14 +125,16 @@ export class DashboardFilterComponent
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: FilterPosition | undefined) => {
-        if (value) {
-          this.position = value as FilterPosition;
-        } else {
-          this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+      .subscribe(
+        (value: { position: FilterPosition; dashboardId: string } | null) => {
+          if (value) {
+            this.position = value.position as FilterPosition;
+          } else {
+            this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+          }
+          this.setFilterContainerDimensions();
         }
-        this.setFilterContainerDimensions();
-      });
+      );
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -184,7 +183,10 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
-    this.contextService.filterPosition.next(position);
+    this.contextService.filterPosition.next({
+      position: position,
+      dashboardId: this.contextService.filterPosition.value?.dashboardId ?? '',
+    });
   }
 
   /** Render the survey using the saved structure */

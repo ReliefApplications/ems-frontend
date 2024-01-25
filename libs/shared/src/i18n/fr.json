@@ -535,7 +535,8 @@
 						"bottom": "Afficher le filtre en bas",
 						"left": "Afficher le filtre à gauche",
 						"right": "Afficher le filtre à droite",
-						"top": "Afficher le filtre en haut"
+						"top": "Afficher le filtre en haut",
+						"unset": "Position indéfinie, sélectionnez en une"
 					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
@@ -556,10 +557,12 @@
 					},
 					"margin": "Marge entre les widgets",
 					"minCols": "Nombre de colonnes",
+					"minimumHeight": "Hauteur minimum",
 					"tooltip": {
 						"fixedRowHeight": "Taille des lignes en pixels.\nDoit être supérieur ou égal à 50.",
 						"margin": "Marge entre les widgets.\nDoit être un entier positif.",
 						"minCols": "Nombre de colonnes.\nDoit être compris entre 4 et 24.",
+						"minimumHeight": "Taille minimale de la grille en pixels.\nDoit être supérieur ou égal à 0.",
 						"reset": "Réinitialiser la valeur"
 					},
 					"tooltips": {
@@ -884,11 +887,12 @@
 			},
 			"columns": {
 				"action": "Type d'action",
-				"date": "Date de modification",
-				"modifiedValue": "Valeur modifiée de la variable",
-				"originalValue": "Valeur originelle de la variable",
-				"person": "Modification effectuée par",
-				"variable": "Variable modifiée"
+				"date": "Date",
+				"modifiedValue": "Ancienne valeur",
+				"originalValue": "Nouvelle valeur",
+				"person": "Utilisateur",
+				"time": "Heure",
+				"variable": "Champ"
 			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",

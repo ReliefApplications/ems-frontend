@@ -181,7 +181,8 @@ export class DashboardComponent
         this.contextService.onContextChange(
           value,
           this.contextType,
-          this.route
+          this.route,
+          this.dashboard
         );
       });
     /** Listen to router events navigation end, to get last version of params & queryParams. */
@@ -347,6 +348,10 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.contextService.filterPosition.next({
+            position: this.dashboard.filter?.position as any,
+            dashboardId: this.dashboard.id ?? '',
+          });
           if (this.gridOptionsTimeoutListener) {
             clearTimeout(this.gridOptionsTimeoutListener);
           }

@@ -2,7 +2,17 @@
   [ngClass]="{
     'w-screen lg:w-[80vw] p-6': showHeader
   }"
+  mwlResizable
+  (resizing)="onResizing($event)"
+  [ngStyle]="style"
+  [validateResize]="validate"
 >
+  <div
+    *ngIf="resizable"
+    class="cursor-col-resize absolute h-full left-0 w-1.5"
+    mwlResizeHandle
+    [resizeEdges]="{ left: true }"
+  ></div>
   <div class="items-center border-b pb-4" [formGroup]="filters">
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
@@ -97,6 +107,7 @@
     </div>
   </div>
   <ng-container *ngIf="!loading; else loadingTmpl">
+    <div class="text-sm my-4">ID : {{ record?.incrementalId }}</div>
     <ng-container *ngIf="filterHistory.length; else emptyTmpl">
       <!-- HISTORY CHANGES -->
       <ng-container *ngIf="viewAsTable.value; else cardsTmpl">
@@ -132,18 +143,6 @@
 <ng-template #tableTmpl>
   <div class="overflow-x-auto">
     <table cdk-table uiTableWrapper [dataSource]="historyForTable">
-      <ng-container cdkColumnDef="id">
-        <th uiCellHeader *cdkHeaderCellDef scope="col">
-          {{ 'common.id' | translate }}
-        </th>
-        <td
-          uiCell
-          *cdkCellDef="let element"
-          class="!text-gray-900 !font-medium max-w-[30vw]"
-        >
-          {{ record?.incrementalId }}
-        </td>
-      </ng-container>
       <ng-container cdkColumnDef="variable">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.history.columns.variable' | translate }}
@@ -165,7 +164,18 @@
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          {{ element.createdAt | sharedDate : 'shortDate' }} -
+          {{ element.createdAt | sharedDate : 'shortDate' }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="time">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.history.columns.time' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
+        >
           {{ element.createdAt | sharedDate : 'shortTime' }}
         </td>
       </ng-container>

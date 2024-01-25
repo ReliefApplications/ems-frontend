@@ -99,6 +99,7 @@ export class ViewSettingsModalComponent
   public defaultGridOptions = {
     minCols: 8,
     fixedRowHeight: 200,
+    minimumHeight: 0,
     margin: 10,
     gridType: GridType.VerticalFixed,
   };
@@ -285,6 +286,14 @@ export class ViewSettingsModalComponent
               this.defaultGridOptions.fixedRowHeight
             ),
             Validators.min(50)
+          ),
+          minimumHeight: this.fb.control(
+            get<number>(
+              this.dashboard.gridOptions,
+              'minimumHeight',
+              this.defaultGridOptions.minimumHeight
+            ),
+            Validators.min(0)
           ),
           margin: this.fb.control(
             get<number>(

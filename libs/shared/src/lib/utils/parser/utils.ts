@@ -148,6 +148,26 @@ const replaceRecordFields = (
 ): string => {
   let formattedHtml = html;
   if (fields) {
+    // Regular expression for detecting when ="{{data.*}}" is used and
+    // we should not interpret it, but keep the default attribute value
+    const attributeRegex = /([a-zA-Z]+)="{{data\.(.*?)}}"/g;
+
+    // Replace attributes with data binding expressions
+    formattedHtml = formattedHtml.replace(
+      attributeRegex,
+      (match, attributeName, dataFieldName) => {
+        // Check if it's an attribute with data binding
+        if (attributeName && dataFieldName) {
+          // Replace the attribute with the corresponding value
+          const value = get(fieldsValue, dataFieldName);
+          return !isNil(value) ? `${attributeName}="${value}"` : match;
+        } else {
+          // Return the original match if not a data binding attribute
+          return match;
+        }
+      }
+    );
+
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     // We check for LIST fields and duplicate their only element for each subfield
@@ -174,15 +194,28 @@ const replaceRecordFields = (
     });
 
     for (const field of fields) {
-      const toReadableObject = (obj: any): any =>
-        typeof obj === 'object' && obj !== null
-          ? Array.isArray(obj)
-            ? obj.map((o) => toReadableObject(o)).join('<br>') // If array, return mapped elements
-            : Object.keys(obj) // If object, return object keys and values as strings
+      const toReadableObject = (obj: any): any => {
+        // If value exists keep checking
+        if (obj) {
+          if (typeof obj === 'object') {
+            // If array, return mapped elements
+            if (Array.isArray(obj)) {
+              return obj.map((o) => toReadableObject(o)).join('<br>');
+            } else {
+              // If object, return object keys and values as strings
+              return Object.keys(obj)
                 .filter((key) => key !== '__typename')
                 .map((key) => `${key}: ${obj[key]}`)
-                .join(', ')
-          : `${obj}`; // If not an object, return string representation
+                .join(', ');
+            }
+          } else {
+            // If not an object, return string representation
+            return `${obj}`;
+          }
+        }
+        // Return default undefined/null value if no obj
+        return obj;
+      };
 
       const value = toReadableObject(get(fieldsValue, field.name));
 
