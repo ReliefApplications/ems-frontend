@@ -880,6 +880,7 @@
 				"modifiedValue": "New value",
 				"originalValue": "Old value",
 				"person": "User",
+				"time": "Time",
 				"variable": "Field"
 			},
 			"download": "Download history",

@@ -891,6 +891,7 @@
 				"modifiedValue": "Ancienne valeur",
 				"originalValue": "Nouvelle valeur",
 				"person": "Utilisateur",
+				"time": "Heure",
 				"variable": "Champ"
 			},
 			"download": "Télécharger l'historique",

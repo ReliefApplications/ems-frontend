@@ -103,6 +103,7 @@ export class RecordHistoryComponent
   public displayedColumnsHistory: string[] = [
     'variable',
     'date',
+    'time',
     'person',
     'action',
     'originalValue',
