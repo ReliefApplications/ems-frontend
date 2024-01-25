@@ -115,6 +115,8 @@ export class SummaryCardComponent
   private fields: any[] = [];
   /** Meta fields */
   private metaFields: any[] = [];
+  /** Flag indicating we’ve navigated to the last element in pagination */
+  private finalPage = false;
   /** Available sort fields */
   public sortFields: any[] = [];
   /** Active context fields */
@@ -653,15 +655,9 @@ export class SummaryCardComponent
     if (isPaginated) {
       // If using pagination, set the page size and total count
       // according to the response of the first page
-      this.pageInfo.length = pageInfo.totalCount;
-      this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
-      this.pageInfo.lastCursor = pageInfo.lastCursor;
+      this.setPaginationInfo(pageInfo);
       this.sortedCachedCards = cloneDeep(this.cachedCards);
-      if (totalCountConfigured && items.length < this.pageInfo.pageSize) {
-        this.disableNextButton = true;
-      } else {
-        this.disableNextButton = false;
-      }
+      this.checkIfFinalPage(totalCountConfigured, items);
     } else {
       // Client side filtering
       const contextFilters = this.contextService.injectContext(
@@ -720,6 +716,52 @@ export class SummaryCardComponent
 
     this.scrolling = false;
     this.loading = false;
+  }
+
+  /**
+   * Set the pagination info
+   *
+   * @param pageInfo Pagination info
+   * @param pageInfo.totalCount Total count
+   * @param pageInfo.pageSize Page size
+   * @param pageInfo.lastCursor Last cursor
+   */
+  setPaginationInfo(pageInfo: {
+    totalCount: any;
+    pageSize: any;
+    lastCursor: any;
+  }) {
+    this.pageInfo.length = this.finalPage
+      ? this.pageInfo.length
+      : pageInfo.totalCount;
+    this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
+    this.pageInfo.lastCursor = pageInfo.lastCursor;
+  }
+
+  /**
+   * Check if the current page is the last page
+   *
+   * @param totalCountConfigured Total count configured
+   * @param items Items
+   */
+  checkIfFinalPage(
+    totalCountConfigured: string | undefined,
+    items: string | any[]
+  ) {
+    if (totalCountConfigured && items.length < this.pageInfo.pageSize) {
+      this.finalPageBehavior();
+    } else {
+      this.disableNextButton = false;
+    }
+  }
+
+  /**
+   * Set new new behavior
+   */
+  finalPageBehavior() {
+    this.disableNextButton = true;
+    this.pageInfo.length = this.cachedCards.length;
+    this.finalPage = true;
   }
 
   /**
