@@ -152,11 +152,13 @@ export class ReferenceDataService {
    *
    * @param referenceData The reference data id or the reference data object
    * @param variables Graphql variables ( optional )
+   * @param widgetSettings Widget settings to get only the graphql fields used, if necessary ( optional )
    * @returns The item list and the value field
    */
   public async cacheItems(
     referenceData: string | ReferenceData,
-    variables: any = {}
+    variables: any = {},
+    widgetSettings: any = {}
   ) {
     // Initialization
     let items: any[] = [];
@@ -167,6 +169,9 @@ export class ReferenceDataService {
     if (typeof referenceData === 'string') {
       referenceData = await this.loadReferenceData(referenceData);
     }
+    console.log('referenceData', referenceData);
+    console.log('widgetSettings', widgetSettings);
+
     const cacheKey = `${referenceData.id || ''}-${JSON.stringify(variables)}`;
     const valueField = referenceData.valueField || 'id';
     const cacheTimestamp = localStorage.getItem(cacheKey + LAST_REQUEST_KEY);
@@ -181,7 +186,8 @@ export class ReferenceDataService {
     if (!isCached) {
       const { items: i, pageInfo: p } = await this.fetchItems(
         referenceData,
-        variables
+        variables,
+        widgetSettings
       );
       items = i;
       paginationRes = p;
@@ -214,6 +220,7 @@ export class ReferenceDataService {
         }
       }
     }
+    console.log('items', items);
 
     return { items, referenceData, pageInfo: paginationRes };
   }
@@ -223,9 +230,14 @@ export class ReferenceDataService {
    *
    * @param referenceData reference data to query items of
    * @param variables Graphql variables (optional)
+   * @param widgetSettings Widget settings to get only the graphql fields used, if necessary ( optional )
    * @returns list of items
    */
-  public async fetchItems(referenceData: ReferenceData, variables: any = {}) {
+  public async fetchItems(
+    referenceData: ReferenceData,
+    variables: any = {},
+    widgetSettings: any = {}
+  ) {
     const cacheKey = referenceData.id || '';
     // Initialization
     let items: any[];
@@ -235,6 +247,8 @@ export class ReferenceDataService {
 
     switch (referenceData.type) {
       case referenceDataType.graphql: {
+        const usedVariables = this.extractFieldsFromObject(widgetSettings);
+        console.log('usedVariables', usedVariables);
         const { items: i, pageInfo: p } = await this.processItemsByRequestType(
           referenceData,
           referenceDataType.graphql,
@@ -517,5 +531,34 @@ export class ReferenceDataService {
       }
     }
     return processedQuery;
+  }
+
+  /**
+   *  Extract from widget settings the used fields from reference data casted with the {{data.*}} placeholder.
+   *
+   * @param obj initial object (widget settings)
+   * @returns list of used fields
+   */
+  private extractFieldsFromObject(obj: any): any[] {
+    const fields: any[] = [];
+
+    const extractFields = (value: any) => {
+      if (typeof value === 'string') {
+        const regex = /{{data\.([a-zA-Z0-9_]+)}}/g;
+        let match;
+        while ((match = regex.exec(value)) !== null) {
+          fields.push(match[1]);
+        }
+      } else if (typeof value === 'object') {
+        for (const prop in value) {
+          if (prop in value) {
+            extractFields(value[prop]);
+          }
+        }
+      }
+    };
+
+    extractFields(obj);
+    return fields;
   }
 }

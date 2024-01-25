@@ -451,7 +451,8 @@ export class SummaryCardComponent
           this.refData.pageInfo?.pageSizeVar && {
             [this.refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize,
           }
-        )
+        ),
+        this.settings
       );
 
       this.updateReferenceDataCards(items, pageInfo);
@@ -1054,10 +1055,14 @@ export class SummaryCardComponent
       // Only set loading state if using pagination, not infinite scroll
       this.loading = !this.scrolling;
       this.referenceDataService
-        .cacheItems(refData, {
-          ...variables,
-          ...(this.graphqlVariables ?? {}),
-        })
+        .cacheItems(
+          refData,
+          {
+            ...variables,
+            ...(this.graphqlVariables ?? {}),
+          },
+          this.settings
+        )
         .then(({ items, pageInfo }) => {
           this.updateReferenceDataCards(items, pageInfo);
           this.loading = false;

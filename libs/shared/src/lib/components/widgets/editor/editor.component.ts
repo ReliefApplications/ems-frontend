@@ -262,7 +262,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         Promise.all([
           new Promise<void>((resolve) => {
             this.referenceDataService
-              .cacheItems(this.settings.referenceData)
+              .cacheItems(this.settings.referenceData, {}, this.settings)
               .then(({ items, referenceData }) => {
                 this.referenceData = referenceData;
                 this.fields = (referenceData.fields || [])
