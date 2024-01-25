@@ -253,16 +253,14 @@ export class FilterBuilderModalComponent
 
     this.surveyCreator.onPropertyGridShowModal.add(
       (sender: any, options: any) => {
-        // and there, put some code
-        console.log(options);
-        if (
-          options.obj.visibleChoices &&
-          options.obj.visibleChoices.length > 0
-        ) {
-          console.log('setting visible choices');
+        if (options.obj.visibleChoices?.length > 0) {
           options.popupEditor.question.setPropertyValue(
             'choices',
             options.obj.visibleChoices
+          );
+          options.popupEditor.question.setPropertyValue(
+            'value',
+            options.obj.value
           );
         }
       }

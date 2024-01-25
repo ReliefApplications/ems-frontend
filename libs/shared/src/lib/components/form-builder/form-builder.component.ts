@@ -335,6 +335,21 @@ export class FormBuilderComponent
         )
     );
 
+    this.surveyCreator.onPropertyGridShowModal.add(
+      (sender: any, options: any) => {
+        if (options.obj.visibleChoices?.length > 0) {
+          options.popupEditor.question.setPropertyValue(
+            'choices',
+            options.obj.visibleChoices
+          );
+          options.popupEditor.question.setPropertyValue(
+            'value',
+            options.obj.value
+          );
+        }
+      }
+    );
+
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons

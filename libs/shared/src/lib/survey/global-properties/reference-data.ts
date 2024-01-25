@@ -10,7 +10,7 @@ import {
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
-import { isEqual } from 'lodash';
+import { has, isEqual, omit } from 'lodash';
 
 /**
  * Check if a question is of select type
@@ -260,9 +260,16 @@ export const render = (
               !question.isPrimitiveValue &&
               question.getType() == 'dropdown'
             ) {
-              question.value = choices.find((choice) =>
-                isEqual(choice.value, question.value)
-              );
+              // question.value can have three different structures
+              if (has(question.value, 'text')) {
+                // form builder and forms
+                question.value = omit(question.defaultValue?.value, 'pos'); // position coordinates are defined for forms when editing
+              } else {
+                // dashboard filters
+                question.value = choices.find((choice) =>
+                  isEqual(choice.value, question.value)
+                );
+              }
             }
           });
       } else {
