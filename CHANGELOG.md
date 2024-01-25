@@ -1,3 +1,17 @@
+# [2.7.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.6.0...v2.7.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* could not use non scalar fields in filters ([#2315](https://github.com/ReliefApplications/ems-frontend/issues/2315)) ([cc4534d](https://github.com/ReliefApplications/ems-frontend/commit/cc4534d2abcc2873e61e228894aad78d15417468))
+* incorrect filter position when filter style is default one ([#2322](https://github.com/ReliefApplications/ems-frontend/issues/2322)) ([d18d587](https://github.com/ReliefApplications/ems-frontend/commit/d18d58765a3db79d3aed2baad4da47415a3a5780))
+* prevent fields used as attributes in text & summary cards widgets to be replaced with html elements ([#2330](https://github.com/ReliefApplications/ems-frontend/issues/2330)) ([95485cd](https://github.com/ReliefApplications/ems-frontend/commit/95485cd19bf1ca7278169388b2ce5307e1e75e43))
+
+
+### Features
+
+* Allow editor filters to also reset other filters on click ([#2317](https://github.com/ReliefApplications/ems-frontend/issues/2317)) ([cb1cee6](https://github.com/ReliefApplications/ems-frontend/commit/cb1cee6297d730cf6abb02ea0ab440487d72bb47))
+
 # [2.6.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.5.0...v2.6.0) (2024-01-23)
 
 
