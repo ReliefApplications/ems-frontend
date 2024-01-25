@@ -126,6 +126,8 @@ export class SummaryCardComponent
   public searchControl = new FormControl('');
   /** Is scrolling */
   public scrolling = false;
+  /** Disable next button  */
+  public disableNextButton = false;
   /** Is refresh card list action */
   private triggerRefreshCardList = false;
   /** Observer resize changes */
@@ -631,6 +633,7 @@ export class SummaryCardComponent
       }
     }
     const strategy = this.refData?.pageInfo?.strategy;
+    const totalCountConfigured = this.refData?.pageInfo?.totalCountField;
     const start = strategy
       ? this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize)
       : 0;
@@ -654,6 +657,11 @@ export class SummaryCardComponent
       this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
       this.pageInfo.lastCursor = pageInfo.lastCursor;
       this.sortedCachedCards = cloneDeep(this.cachedCards);
+      if (totalCountConfigured && items.length < this.pageInfo.pageSize) {
+        this.disableNextButton = true;
+      } else {
+        this.disableNextButton = false;
+      }
     } else {
       // Client side filtering
       const contextFilters = this.contextService.injectContext(

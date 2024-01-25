@@ -42,6 +42,8 @@ export class PaginatorComponent implements OnChanges {
   @Input() pageIndex = 0;
   /** Number of pages to show */
   @Input() displayedPageNumbers = 0;
+  /** Disable next button */
+  @Input() disableNextButton = false;
   /** Page change event */
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
   /** Generate random unique identifier for each paginator component */
