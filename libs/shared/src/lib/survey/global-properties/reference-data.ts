@@ -30,6 +30,11 @@ export const init = (referenceDataService: ReferenceDataService): void => {
   // declare the serializer
   const serializer: JsonMetadata = Serializer;
 
+  // Hide the choices from the property grid if choices from reference data is used
+  serializer.getProperty('selectbase', 'choices').visibleIf = (
+    obj: Question
+  ): boolean => !obj.referenceData;
+
   for (const type of ['tagbox', 'dropdown']) {
     // add properties
     serializer.addProperty(type, {
@@ -242,12 +247,10 @@ export const render = (
             filter
           )
           .then((choices) => {
-            question.choices = [];
-            // this is to avoid that the choices appear on the 'choices' tab
-            question.setPropertyValue(
-              'visibleChoices',
-              choices.map((choice) => new ItemValue(choice))
-            );
+            const newChoices = choices.map((choice) => new ItemValue(choice));
+            question.choices = newChoices;
+            question.setPropertyValue('visibleChoices', newChoices);
+
             // manually set the selected option (not done by default)
             // only affects dropdown questions (only one option selected) with reference data and non primitive values
             if (
