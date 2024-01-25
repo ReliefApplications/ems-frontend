@@ -128,8 +128,6 @@ export class SummaryCardComponent
   public searchControl = new FormControl('');
   /** Is scrolling */
   public scrolling = false;
-  /** Disable next button  */
-  public disableNextButton = false;
   /** Is refresh card list action */
   private triggerRefreshCardList = false;
   /** Observer resize changes */
@@ -748,10 +746,8 @@ export class SummaryCardComponent
     totalCountConfigured: string | undefined,
     items: string | any[]
   ) {
-    if (totalCountConfigured && items.length < this.pageInfo.pageSize) {
+    if (!totalCountConfigured && items.length < this.pageInfo.pageSize) {
       this.finalPageBehavior();
-    } else {
-      this.disableNextButton = false;
     }
   }
 
@@ -759,7 +755,6 @@ export class SummaryCardComponent
    * Set new new behavior
    */
   finalPageBehavior() {
-    this.disableNextButton = true;
     this.pageInfo.length = this.cachedCards.length;
     this.finalPage = true;
   }
@@ -1077,6 +1072,7 @@ export class SummaryCardComponent
     this.cards = [];
     this.sortedCachedCards = [];
     this.cachedCards = [];
+    this.finalPage = false;
 
     if (this.summaryCardGrid) {
       this.summaryCardGrid.nativeElement.scroll({

@@ -56,7 +56,6 @@
         refData?.pageInfo?.strategy === 'cursor' ? 0 : totalItemsKnown ? 5 : 0
       "
       [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
-      [disableNextButton]="disableNextButton"
       (pageChange)="onPage($event)"
     >
     </ui-paginator>
