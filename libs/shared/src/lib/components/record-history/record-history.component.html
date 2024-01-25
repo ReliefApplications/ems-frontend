@@ -107,6 +107,7 @@
     </div>
   </div>
   <ng-container *ngIf="!loading; else loadingTmpl">
+    <div class="text-sm my-4">ID : {{ record?.incrementalId }}</div>
     <ng-container *ngIf="filterHistory.length; else emptyTmpl">
       <!-- HISTORY CHANGES -->
       <ng-container *ngIf="viewAsTable.value; else cardsTmpl">
@@ -138,22 +139,11 @@
   </ng-template>
 </div>
 
+
 <!-- Display as table -->
 <ng-template #tableTmpl>
   <div class="overflow-x-auto">
     <table cdk-table uiTableWrapper [dataSource]="historyForTable">
-      <ng-container cdkColumnDef="id">
-        <th uiCellHeader *cdkHeaderCellDef scope="col">
-          {{ 'common.id' | translate }}
-        </th>
-        <td
-          uiCell
-          *cdkCellDef="let element"
-          class="!text-gray-900 !font-medium max-w-[30vw]"
-        >
-          {{ record?.incrementalId }}
-        </td>
-      </ng-container>
       <ng-container cdkColumnDef="variable">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.history.columns.variable' | translate }}

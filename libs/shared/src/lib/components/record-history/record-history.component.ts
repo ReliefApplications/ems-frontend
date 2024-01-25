@@ -101,7 +101,6 @@ export class RecordHistoryComponent
   public sortedFields: any[] = [];
   /** Table columns */
   public displayedColumnsHistory: string[] = [
-    'id',
     'variable',
     'date',
     'person',
