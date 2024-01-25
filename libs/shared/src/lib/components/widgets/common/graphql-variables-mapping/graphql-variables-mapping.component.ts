@@ -117,7 +117,6 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
             )
           );
         } else {
-          console.log(template);
           this.control.setValue(template);
         }
       }

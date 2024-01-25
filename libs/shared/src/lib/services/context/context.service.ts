@@ -20,6 +20,7 @@ import {
   mapValues,
   mergeWith,
   uniq,
+  isString,
 } from 'lodash';
 import {
   Dashboard,
@@ -51,13 +52,16 @@ export class ContextService {
   /** To update/keep the current filter structure  */
   public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
-  public filterPosition = new BehaviorSubject<any>(null);
+  public filterPosition = new BehaviorSubject<{
+    position: FilterPosition;
+    dashboardId: string;
+  } | null>(null);
   /** To keep the history of previous dashboard filter values */
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /{{filter\.(.*?)}}/g;
+  public filterRegex = /["']?{{filter\.(.*?)}}["']?/g;
   /** Regex to detect the value of {{filter.}} in object */
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
@@ -152,7 +156,7 @@ export class ContextService {
     private router: Router
   ) {
     this.filterPosition$.subscribe(
-      (value: { position: any; dashboardId: string }) => {
+      (value: { position: FilterPosition; dashboardId: string } | null) => {
         if (value && value.position && value.dashboardId) {
           localForage.setItem(
             this.positionKey(value.dashboardId),
@@ -176,18 +180,20 @@ export class ContextService {
    */
   public setFilter(dashboard?: Dashboard) {
     {
-      if (dashboard) {
+      if (dashboard && dashboard.id) {
         this.filterStructure.next(dashboard.filter?.structure);
         localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
             this.filterPosition.next({
-              position: position,
-              dashboardId: dashboard.id,
+              position: position as FilterPosition,
+              dashboardId: dashboard.id ?? '',
             });
           } else {
             this.filterPosition.next({
-              position: dashboard.filter?.position ?? FilterPosition.BOTTOM,
-              dashboardId: dashboard.id,
+              position:
+                (dashboard.filter?.position as FilterPosition) ??
+                FilterPosition.BOTTOM,
+              dashboardId: dashboard.id ?? '',
             });
           }
         });
@@ -228,6 +234,31 @@ export class ContextService {
   }
 
   /**
+   * Parse JSON values of object.
+   *
+   * @param obj object to transform
+   * @returns object, where string properties that can be transformed to objects, are returned as objects
+   */
+  private parseJSONValues(obj: any): any {
+    return mapValues(obj, (value: any) => {
+      if (isString(value)) {
+        try {
+          return JSON.parse(value);
+        } catch (error) {
+          // If parsing fails, return the original string value
+          return value;
+        }
+      } else if (isObject(value)) {
+        // If the value is an object, recursively parse it
+        return this.parseJSONValues(value);
+      } else {
+        // If the value is neither a string nor an object, return it as is
+        return value;
+      }
+    });
+  }
+
+  /**
    * Replace {{filter}} placeholders in object, with filter values
    *
    * @param object object with placeholders
@@ -239,14 +270,20 @@ export class ContextService {
     filter = this.filterValue(this.filter.getValue())
   ): any {
     if (isEmpty(filter)) {
-      return object;
+      return this.parseJSONValues(object);
     }
-    return JSON.parse(
-      JSON.stringify(object).replace(this.filterRegex, (match) => {
-        const field = match.replace('{{filter.', '').replace('}}', '');
-        return get(filter, field) || match;
-      })
-    );
+    // Transform all string fields into object ones when possible
+    const objectAsJSON = this.parseJSONValues(object);
+    const toString = JSON.stringify(objectAsJSON);
+    const replaced = toString.replace(this.filterRegex, (match) => {
+      const field = match
+        .replace(/["']?\{\{filter\./, '')
+        .replace(/\}\}["']?/, '');
+      const fieldValue = get(filter, field);
+      return fieldValue ? JSON.stringify(fieldValue) : match;
+    });
+    const parsed = JSON.parse(replaced);
+    return parsed;
   }
 
   /**
@@ -541,8 +578,8 @@ export class ContextService {
     } else {
       if (dashboard?.filter?.position) {
         this.filterPosition.next({
-          position: dashboard.filter.position,
-          dashboardId: dashboard.id,
+          position: dashboard.filter.position as FilterPosition,
+          dashboardId: dashboard.id ?? '',
         });
       } else {
         this.filterStructure.next(data.editDashboard.filter?.structure);
