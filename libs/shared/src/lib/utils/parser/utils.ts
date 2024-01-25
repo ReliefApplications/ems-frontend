@@ -160,7 +160,7 @@ const replaceRecordFields = (
         if (attributeName && dataFieldName) {
           // Replace the attribute with the corresponding value
           const value = get(fieldsValue, dataFieldName);
-          return value !== undefined ? `${attributeName}="${value}"` : match;
+          return !isNil(value) ? `${attributeName}="${value}"` : match;
         } else {
           // Return the original match if not a data binding attribute
           return match;
