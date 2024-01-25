@@ -78,7 +78,6 @@ export const filterReferenceData = (item: any, filter: any) => {
           return isNil(value) || !value.includes(filter.value);
         }
       case 'in':
-        console.log(value, filter.value);
         if (typeof value === 'string') {
           const regex = new RegExp(value, 'i');
           if (typeof filter.value === 'string') {
