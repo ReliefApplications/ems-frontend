@@ -51,6 +51,8 @@ export class DashboardComponent
   public isFullScreen = false;
   /** Dashboard id */
   public id = '';
+  /** Context id */
+  public contextId?: string;
   /** Application id */
   public applicationId?: string;
   /** Is dashboard loading */
@@ -68,15 +70,6 @@ export class DashboardComponent
   // === BUTTON ACTIONS ===
   /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
-
-  /** @returns type of context element */
-  get contextType() {
-    if (this.dashboard?.page?.context) {
-      return 'resource' in this.dashboard.page.context ? 'record' : 'element';
-    } else {
-      return;
-    }
-  }
 
   /**
    * Dashboard page.
@@ -170,9 +163,9 @@ export class DashboardComponent
    * @param contextId Context id (id of the element or the record)
    * @returns Promise
    */
-  private async loadDashboard(id: string, contextId?: string | number) {
+  private async loadDashboard(id: string, contextId?: string) {
     // don't init the dashboard if the id is the same
-    if (this.dashboard?.id === id) {
+    if (this.dashboard?.id === id && this.contextId === contextId) {
       return;
     }
 
@@ -180,18 +173,19 @@ export class DashboardComponent
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
-    this.id = id;
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
-          id: this.id,
+          id,
           contextEl: contextId || null,
         },
       })
     )
       .then(({ data }) => {
         if (data.dashboard) {
+          this.id = data.dashboard.id || id;
+          this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
           this.initContext();
           this.setWidgets();
@@ -254,8 +248,8 @@ export class DashboardComponent
     }) => {
       this.contextService.onContextChange(
         'element' in contextItem ? contextItem.element : contextItem.record,
-        this.contextType,
-        this.route
+        this.route,
+        this.dashboard
       );
     };
     this.contextService.initContext(this.dashboard as Dashboard, callback);

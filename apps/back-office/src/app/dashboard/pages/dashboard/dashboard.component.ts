@@ -178,11 +178,7 @@ export class DashboardComponent
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
         // Load template, or go back to default one
-        this.contextService.onContextChange(
-          value,
-          this.contextType,
-          this.route
-        );
+        this.contextService.onContextChange(value, this.route, this.dashboard);
       });
     /** Listen to router events navigation end, to get last version of params & queryParams. */
     this.router.events
@@ -237,18 +233,18 @@ export class DashboardComponent
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
     this.loading = true;
-    this.id = id;
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
-          id: this.id,
+          id,
           contextEl: contextID ?? null,
         },
       })
     )
       .then(({ data }) => {
         if (data.dashboard) {
+          this.id = data.dashboard.id || id;
           this.dashboard = data.dashboard;
           this.gridOptions = {
             ...omit(this.gridOptions, 'gridType'), // Prevent issue when gridType was not set
