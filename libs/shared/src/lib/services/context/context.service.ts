@@ -65,7 +65,7 @@ export class ContextService {
   /** Regex to detect the value of {{filter.}} in object */
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
-  public contextRegex = /{{context\.(.*?)}}/g;
+  public contextRegex = /{{context\.(.*?)}}/;
   /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
@@ -226,10 +226,13 @@ export class ContextService {
       return object;
     }
     return JSON.parse(
-      JSON.stringify(object).replace(this.contextRegex, (match) => {
-        const field = match.replace('{{context.', '').replace('}}', '');
-        return get(context, field) || match;
-      })
+      JSON.stringify(object).replace(
+        new RegExp(this.contextRegex, 'g'),
+        (match) => {
+          const field = match.replace('{{context.', '').replace('}}', '');
+          return get(context, field) || match;
+        }
+      )
     );
   }
 
@@ -275,13 +278,16 @@ export class ContextService {
     // Transform all string fields into object ones when possible
     const objectAsJSON = this.parseJSONValues(object);
     const toString = JSON.stringify(objectAsJSON);
-    const replaced = toString.replace(this.filterRegex, (match) => {
-      const field = match
-        .replace(/["']?\{\{filter\./, '')
-        .replace(/\}\}["']?/, '');
-      const fieldValue = get(filter, field);
-      return fieldValue ? JSON.stringify(fieldValue) : match;
-    });
+    const replaced = toString.replace(
+      new RegExp(this.filterRegex, 'g'),
+      (match) => {
+        const field = match
+          .replace(/["']?\{\{filter\./, '')
+          .replace(/\}\}["']?/, '');
+        const fieldValue = get(filter, field);
+        return fieldValue ? JSON.stringify(fieldValue) : match;
+      }
+    );
     const parsed = JSON.parse(replaced);
     return parsed;
   }

@@ -181,7 +181,8 @@ export class DashboardComponent
         this.contextService.onContextChange(
           value,
           this.contextType,
-          this.route
+          this.route,
+          this.dashboard
         );
       });
     /** Listen to router events navigation end, to get last version of params & queryParams. */
