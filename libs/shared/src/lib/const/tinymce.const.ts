@@ -204,21 +204,22 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
             filterField: '',
             filterValue: editor.selection.getContent(),
           },
-          onChange: (api) => {
-            // validate the data type
-            const data = api.getData();
-            const submitDisabled = !(data.filterField.length > 0);
-            if (submitDisabled) {
-              api.disable('submit');
-            } else {
-              api.enable('submit');
-            }
-          },
+          // onChange: (api) => {
+          //   // validate the data type
+          //   const data = api.getData();
+          //   const submitDisabled = !(data.filterField.length > 0);
+          //   if (submitDisabled) {
+          //     api.disable('submit');
+          //   } else {
+          //     api.enable('submit');
+          //   }
+          // },
           onSubmit: (api) => {
             const data = api.getData();
             const textElement = editor.selection.getNode();
             textElement.setAttribute('data-filter-field', data.filterField);
             textElement.setAttribute('data-filter-value', data.filterValue);
+            textElement.setAttribute('data-filter-reset', '');
             api.close();
           },
           buttons: [
@@ -231,7 +232,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
               type: 'submit',
               name: 'submit',
               primary: true,
-              disabled: true,
+              // disabled: true,
             },
           ],
         });
