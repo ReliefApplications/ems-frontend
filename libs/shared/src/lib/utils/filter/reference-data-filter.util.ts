@@ -77,28 +77,6 @@ export const filterReferenceData = (item: any, filter: any) => {
         } else {
           return isNil(value) || !value.includes(filter.value);
         }
-      case 'in':
-        if (typeof value === 'string') {
-          const regex = new RegExp(value, 'i');
-          if (typeof filter.value === 'string') {
-            return !isNil(filter.value) && regex.test(filter.value);
-          } else {
-            return !isNil(filter.value) && filter.value.includes(value);
-          }
-        } else {
-          return !isNil(filter.value) && filter.value.includes(value);
-        }
-      case 'notin':
-        if (typeof value === 'string') {
-          const regex = new RegExp(value, 'i');
-          if (typeof filter.value === 'string') {
-            return isNil(filter.value) || !regex.test(filter.value);
-          } else {
-            return isNil(filter.value) || !filter.value.includes(value);
-          }
-        } else {
-          return isNil(filter.value) || !filter.value.includes(value);
-        }
       default:
         return false;
     }
