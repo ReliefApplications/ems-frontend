@@ -31,17 +31,13 @@
         </div>
 
         <!-- GraphQL variable mapping -->
-        <div
-          class="flex-1"
+        <shared-graphql-variables-mapping
           *ngIf="referenceData && referenceData.type === 'graphql'"
-        >
-          <shared-graphql-variables-mapping
-            [referenceData]="referenceData"
-            [control]="
-              formGroup.controls.card.controls.referenceDataVariableMapping
-            "
-          ></shared-graphql-variables-mapping>
-        </div>
+          [referenceData]="referenceData"
+          [control]="
+            formGroup.controls.card.controls.referenceDataVariableMapping
+          "
+        ></shared-graphql-variables-mapping>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"
