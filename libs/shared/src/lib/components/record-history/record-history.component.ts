@@ -265,20 +265,8 @@ export class RecordHistoryComponent
    * @param event resize event
    */
   onResizing(event: ResizeEvent): void {
-    this.style = {
-      width: `${event.rectangle.width}px`,
-      height: `${event.rectangle.height}px`,
-    };
-  }
-
-  /**
-   * Check if resize event is valid
-   *
-   * @param event resize event
-   * @returns boolean
-   */
-  validate(event: ResizeEvent): boolean {
-    const dashboardNavbar = this.document.getElementsByTagName('shared-navbar');
+    const dashboardNavbar =
+      this.document?.getElementsByTagName('shared-navbar');
     let dashboardNavbarWidth = 0;
     if (dashboardNavbar[0] && !this.dialog) {
       dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
@@ -292,12 +280,16 @@ export class RecordHistoryComponent
       (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
     );
     if (
-      event.rectangle.width &&
-      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
+      !(
+        event.rectangle.width &&
+        (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
+      )
     ) {
-      return false;
+      this.style = {
+        width: `${event.rectangle.width}px`,
+        height: `${event.rectangle.height}px`,
+      };
     }
-    return true;
   }
 
   /**
