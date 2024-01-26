@@ -111,15 +111,11 @@
             </ng-container>
           </div>
           <!-- GraphQL variable mapping for reference data graphql-->
-          <div
-            class="flex-1"
+          <shared-graphql-variables-mapping
             *ngIf="referenceData && referenceData.type === 'graphql'"
-          >
-            <shared-graphql-variables-mapping
-              [referenceData]="referenceData"
-              [control]="$any(form.get('referenceDataVariableMapping'))"
-            ></shared-graphql-variables-mapping>
-          </div>
+            [referenceData]="referenceData"
+            [control]="$any(form.get('referenceDataVariableMapping'))"
+          ></shared-graphql-variables-mapping>
         </ng-template>
       </ui-tab>
       <ui-tab>

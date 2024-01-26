@@ -46,6 +46,7 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
     theme: 'vs-dark',
     language: 'json',
     fixedOverflowWidgets: true,
+    automaticLayout: true,
   };
 
   ngOnChanges(changes: SimpleChanges): void {
