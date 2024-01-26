@@ -167,13 +167,10 @@ export class SummaryCardComponent
     } else {
       filter = {
         logic: 'and',
-        filters: [this.layout?.query.filter],
+        filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return {
-      logic: 'and',
-      filters: [filter, this.contextService.injectContext(this.contextFilters)],
-    };
+    return filter;
   }
 
   /** @returns does the card use resource aggregation */
@@ -492,6 +489,9 @@ export class SummaryCardComponent
           skip: 0,
           first: this.pageInfo.pageSize,
           filter: this.queryFilter,
+          contextFilters: this.contextService.injectContext(
+            this.contextFilters
+          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           ...(this.settings.at && {
@@ -822,6 +822,9 @@ export class SummaryCardComponent
               variables: {
                 first: this.pageInfo.pageSize,
                 filter: this.queryFilter,
+                contextFilters: this.contextService.injectContext(
+                  this.contextFilters
+                ),
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
@@ -1015,6 +1018,9 @@ export class SummaryCardComponent
           first: this.pageInfo.pageSize,
           skip: event.skip,
           filter: this.queryFilter,
+          contextFilters: this.contextService.injectContext(
+            this.contextFilters
+          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
@@ -1141,6 +1147,9 @@ export class SummaryCardComponent
           .refetch({
             first: this.pageInfo.pageSize,
             filter: this.queryFilter,
+            contextFilters: this.contextService.injectContext(
+              this.contextFilters
+            ),
             sortField: this.sortOptions.field,
             sortOrder: this.sortOptions.order,
             ...(this.settings.at && {
