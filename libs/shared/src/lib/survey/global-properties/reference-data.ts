@@ -288,6 +288,11 @@ export const render = (
               !question.isPrimitiveValue &&
               question.getType() === 'dropdown'
             ) {
+              // When using dashboard filters, the question.value object is truncated
+              if (isEqual(question.value, question.defaultValue.value)) {
+                return (question.value = question.defaultValue);
+              }
+
               // First, if no value, we try to get the default value
               question.value = question.value ?? question.defaultValue;
 
