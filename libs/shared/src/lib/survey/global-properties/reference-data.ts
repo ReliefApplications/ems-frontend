@@ -289,7 +289,7 @@ export const render = (
               question.getType() === 'dropdown'
             ) {
               // When using dashboard filters, the question.value object is truncated
-              if (isEqual(question.value, question.defaultValue.value)) {
+              if (isEqual(question.value, question.defaultValue?.value)) {
                 return (question.value = question.defaultValue);
               }
 
