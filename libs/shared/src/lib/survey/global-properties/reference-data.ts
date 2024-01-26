@@ -10,7 +10,36 @@ import {
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
-import { has, isEqual, omit } from 'lodash';
+import { isEqual, isNil, omit } from 'lodash';
+
+/**
+ * Sets the choices on the default value modal editor for a reference data dropdown
+ *
+ * @param sender The sender survey
+ * @param options The options
+ */
+export const updateModalChoicesAndValue = (sender: any, options: any) => {
+  if (options.obj.visibleChoices?.length > 0) {
+    // Populate editor choices from actual question choices
+    options.popupEditor.question.setPropertyValue(
+      'choices',
+      options.obj.visibleChoices
+    );
+
+    if (isNil(options.obj.defaultValue)) {
+      return;
+    }
+
+    // Set default value if exists
+    options.popupEditor.question.setPropertyValue(
+      'value',
+      options.obj.isPrimitiveValue
+        ? options.obj.defaultValue
+        : // Gets rid of surveyJS pos artifact
+          omit(new ItemValue(options.obj.defaultValue).id as any, 'pos')
+    );
+  }
+};
 
 /**
  * Check if a question is of select type
@@ -86,6 +115,13 @@ export const init = (referenceDataService: ReferenceDataService): void => {
         Boolean(obj?.referenceData),
       visibleIndex: 3,
       default: true,
+      // reset the default value when it changes
+      onValueChanged: (obj: QuestionSelectBase, newValue: boolean) => {
+        if (newValue) {
+          obj.defaultValue = undefined;
+        }
+        obj.setPropertyValue('isPrimitiveValue', newValue);
+      },
     });
 
     serializer.addProperty(type, {
@@ -247,29 +283,28 @@ export const render = (
             filter
           )
           .then((choices) => {
-            question.choices = [];
             // this is to avoid that the choices appear on the 'choices' tab
-            question.setPropertyValue(
-              'visibleChoices',
-              choices.map((choice) => new ItemValue(choice))
-            );
+            // and also to avoid the choices being sent to the server
+            question.choices = [];
 
+            const choiceItems = choices.map((choice) => new ItemValue(choice));
+            question.setPropertyValue('visibleChoices', choiceItems);
             // manually set the selected option (not done by default)
             // only affects dropdown questions (only one option selected) with reference data and non primitive values
             if (
               !question.isPrimitiveValue &&
-              question.getType() == 'dropdown'
+              question.getType() === 'dropdown'
             ) {
-              // question.value can have three different structures
-              if (has(question.value, 'text')) {
-                // form builder and forms
-                question.value = omit(question.defaultValue?.value, 'pos'); // position coordinates are defined for forms when editing
-              } else {
-                // dashboard filters
-                question.value = choices.find((choice) =>
-                  isEqual(choice.value, question.value)
-                );
-              }
+              // First, if no value, we try to get the default value
+              question.value = question.value ?? question.defaultValue;
+
+              // We then create an ItemValue from the value
+              const valueItem = new ItemValue(question.value);
+
+              // Then, we try to find the value in the choices by comparing the ids
+              question.value = choiceItems.find((choice) =>
+                isEqual(choice.id, omit(valueItem.id as any, 'pos'))
+              );
             }
           });
       } else {

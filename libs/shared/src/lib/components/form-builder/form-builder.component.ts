@@ -28,6 +28,7 @@ import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
+import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
 
 /**
  * Array containing the different types of questions.
@@ -328,6 +329,7 @@ export class FormBuilderComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       this.formHelpersService.addQuestionTooltips as any
     );
+
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, options: any) =>
         options.survey.onAfterRenderQuestion.add(
@@ -335,20 +337,7 @@ export class FormBuilderComponent
         )
     );
 
-    this.surveyCreator.onPropertyGridShowModal.add(
-      (sender: any, options: any) => {
-        if (options.obj.visibleChoices?.length > 0) {
-          options.popupEditor.question.setPropertyValue(
-            'choices',
-            options.obj.visibleChoices
-          );
-          options.popupEditor.question.setPropertyValue(
-            'value',
-            options.obj.value
-          );
-        }
-      }
-    );
+    this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
 
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 

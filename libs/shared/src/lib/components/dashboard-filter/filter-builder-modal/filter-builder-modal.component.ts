@@ -24,6 +24,7 @@ import {
   CustomJSONEditorComponent,
   SurveyCustomJSONEditorPlugin,
 } from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -251,20 +252,7 @@ export class FilterBuilderModalComponent
         )
     );
 
-    this.surveyCreator.onPropertyGridShowModal.add(
-      (sender: any, options: any) => {
-        if (options.obj.visibleChoices?.length > 0) {
-          options.popupEditor.question.setPropertyValue(
-            'choices',
-            options.obj.visibleChoices
-          );
-          options.popupEditor.question.setPropertyValue(
-            'value',
-            options.obj.value
-          );
-        }
-      }
-    );
+    this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }
 
   /**
