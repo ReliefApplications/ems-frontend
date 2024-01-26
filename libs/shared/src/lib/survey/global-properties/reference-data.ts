@@ -115,13 +115,6 @@ export const init = (referenceDataService: ReferenceDataService): void => {
         Boolean(obj?.referenceData),
       visibleIndex: 3,
       default: true,
-      // reset the default value when it changes
-      onValueChanged: (obj: QuestionSelectBase, newValue: boolean) => {
-        if (newValue) {
-          obj.defaultValue = undefined;
-        }
-        obj.setPropertyValue('isPrimitiveValue', newValue);
-      },
     });
 
     serializer.addProperty(type, {
