@@ -309,7 +309,7 @@ export class DashboardComponent
         if (data.dashboard) {
           this.dashboard = data.dashboard;
           this.gridOptions = {
-            ...omit(this.gridOptions, 'gridType'), // Prevent issue when gridType was not set
+            ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
