@@ -76,10 +76,16 @@
 
 <ng-template #positionTmpl let-position>
   <div class="flex items-center gap-1">
-    <ui-icon [icon]="position + '_panel_open'" [isOutlined]="true"></ui-icon
+    <ui-icon
+      [icon]="position ? position + '_panel_open' : ''"
+      [isOutlined]="true"
+    ></ui-icon
     >{{
-      'components.application.dashboard.filter.filterPosition.' + position
-        | translate
+      position
+        ? ('components.application.dashboard.filter.filterPosition.' + position
+          | translate)
+        : ('components.application.dashboard.filter.filterPosition.unset'
+          | translate)
     }}
   </div>
 </ng-template>

@@ -52,6 +52,7 @@ import {
   difference,
   isEqual,
   flatMapDeep,
+  pick,
 } from 'lodash';
 import {
   BehaviorSubject,
@@ -154,8 +155,6 @@ export class MapComponent
   private arcGisWebMap: any;
   /** Layer control buttons */
   private layerControlButtons: any;
-  /** Applied dashboard filters */
-  private appliedDashboardFilters: Record<string, any>;
   /** Current layer ids */
   private layerIds: string[] = [];
   /** Resize observer on map container */
@@ -206,7 +205,6 @@ export class MapComponent
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
-    this.appliedDashboardFilters = this.contextService.filter.getValue();
   }
 
   /** Once template is ready, build the map. */
@@ -254,15 +252,19 @@ export class MapComponent
       this.contextService.filter$
         .pipe(
           debounceTime(500),
-          filter(() => {
-            const filters = this.contextService.filter.getValue();
-            return !isEqual(filters, this.appliedDashboardFilters);
-          }),
+          filter(({ previous, current }) =>
+            this.contextService.shouldRefresh(
+              this.layers.map((layer) => {
+                return pick(layer, ['datasource', 'contextFilters', 'at']);
+              }),
+              previous,
+              current
+            )
+          ),
           concatMap(() => loadNextFilters()),
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
-          console.log('should refresh');
           this.filterLayers();
         });
     }
@@ -290,24 +292,6 @@ export class MapComponent
       };
       return new Promise(checkAgain);
     };
-
-    // To zoom on getGeographicExtentValue, if necessary
-    const settings = this.extractSettings();
-    const geographicExtentValue = settings.geographicExtentValue;
-    const geographicExtent = settings.geographicExtent;
-
-    // Check if has initial getGeographicExtentValue to zoom on country
-    const fieldValue = geographicExtentValue?.match(
-      this.contextService.filterRegex
-    );
-    if (fieldValue) {
-      // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
-      this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.zoomOn(geographicExtent as string);
-        });
-    }
   }
 
   override ngOnDestroy(): void {
@@ -438,6 +422,7 @@ export class MapComponent
       layers,
       controls,
       geographicExtent,
+      geographicExtentValue,
     } = this.extractSettings();
 
     if (initMap) {
@@ -519,6 +504,20 @@ export class MapComponent
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
+
+    // To zoom on getGeographicExtentValue, if necessary
+    // Check if has initial getGeographicExtentValue to zoom on country
+    const fieldValue = geographicExtentValue?.match(
+      this.contextService.filterRegex
+    );
+    if (fieldValue) {
+      // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.zoomOn(geographicExtent as string);
+        });
+    }
   }
 
   /**
@@ -715,19 +714,22 @@ export class MapComponent
    * Setup and draw layers on map and sets the baseTree.
    *
    * @param layerIds layerIds from saved edit layer info
+   * @param displayLayers boolean that controls whether all layers should be displayed directly
    * @returns layers
    */
-  private async getLayers(layerIds: string[]) {
+  private async getLayers(layerIds: string[], displayLayers = true) {
     /**
      * Parses a layer into a tree node
      *
      * @param layer The layer to create the tree node from
      * @param leafletLayer The leaflet layer previously created by the parent layer, if any
+     * @param displayLayers boolean that controls whether layers should be directly displayed
      * @returns The tree node
      */
     const parseTreeNode = async (
       layer: Layer,
-      leafletLayer?: L.Layer
+      leafletLayer?: L.Layer,
+      displayLayers = true
     ): Promise<OverlayLayerTree> => {
       // Add to the layers array if not already added
       if (this.layers.find((l) => l.id === layer.id)) return {} as any;
@@ -736,14 +738,14 @@ export class MapComponent
 
       if (layer.type === 'GroupLayer') {
         const children = layer.getChildren();
-        const childrenPromisse = children.map((Childrenlayer) => {
+        const childrenPromises = children.map((Childrenlayer) => {
           return this.mapLayersService
             .createLayersFromId(Childrenlayer, this.injector)
             .then(async (sublayer) => {
               if (sublayer.type === 'GroupLayer') {
                 const layer = await sublayer.getLayer();
-                return parseTreeNode(sublayer, layer);
-              } else return parseTreeNode(sublayer);
+                return parseTreeNode(sublayer, layer, displayLayers);
+              } else return parseTreeNode(sublayer, undefined, displayLayers);
             });
         });
 
@@ -753,7 +755,7 @@ export class MapComponent
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? await Promise.all(childrenPromisse)
+              ? await Promise.all(childrenPromises)
               : undefined,
         };
       } else {
@@ -764,7 +766,7 @@ export class MapComponent
         // Adds the layer to the map if not already added
         // note: group layers are of type L.LayerGroup
         // so we should check if the layer is not already added
-        if (!this.map.hasLayer(featureLayer)) {
+        if (!this.map.hasLayer(featureLayer) && displayLayers) {
           this.map.addLayer(featureLayer);
         }
         // It is a node, it does not have any children but it displays a layer
@@ -780,11 +782,11 @@ export class MapComponent
         return this.mapLayersService
           .createLayersFromId(id, this.injector)
           .then((layer) => {
-            return parseTreeNode(layer);
+            return parseTreeNode(layer, undefined, displayLayers);
           });
       });
 
-      Promise.all(layerPromises).then((layersTree) => {
+      Promise.all(layerPromises).then((layersTree: any) => {
         this.refreshLastUpdate();
         resolve({ layers: layersTree });
       });
@@ -1070,9 +1072,7 @@ export class MapComponent
   /** Set the new layers based on the filter value */
   private async filterLayers() {
     this.document.getElementById('layer-control-button-close')?.click();
-    const filters = this.contextService.filter.getValue();
     this.refreshingLayers.next(false);
-    this.appliedDashboardFilters = filters;
     const { layers: layersToGet, controls } = this.extractSettings();
 
     const shouldDisplayStatuses: Record<string, boolean> = {};
@@ -1096,7 +1096,7 @@ export class MapComponent
 
     // get new layers, with filters applied
     this.resetLayers();
-    const l = await this.getLayers(layersToGet ?? []);
+    const l = await this.getLayers(layersToGet ?? [], false);
     this.overlaysTree = [l.layers];
 
     flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
@@ -1104,11 +1104,11 @@ export class MapComponent
         const id = (x.layer as any).id;
         if (!isNil(shouldDisplayStatuses[id])) {
           (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
-          if (!shouldDisplayStatuses[id]) {
-            x.layer.remove();
-          } else {
+          if (shouldDisplayStatuses[id]) {
             this.map.addLayer(x.layer);
           }
+        } else {
+          this.map.addLayer(x.layer);
         }
       }
     });

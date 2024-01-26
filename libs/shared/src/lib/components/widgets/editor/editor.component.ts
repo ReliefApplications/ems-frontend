@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isEqual, isNil, set } from 'lodash';
+import { clone, get, isEmpty, isEqual, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -136,18 +136,22 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe(({ previous, current }) => {
         if (
           this.contextService.filterRegex.test(
             allContextFilters + allGraphQLVariables
           )
         ) {
-          this.refresh$.next(true);
-          this.loading = true;
-          this.setHtml();
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
+            this.refresh$.next(true);
+            this.loading = true;
+            this.setHtml();
+          }
         }
         this.toggleActiveFilters(
-          value,
+          current,
           this.htmlContentComponent?.el.nativeElement
         );
       });
@@ -171,6 +175,15 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         node.dataset.filterActive = true;
       } else {
         node.dataset.filterActive = false;
+      }
+    } else {
+      // Handle empty filters. Need to leave filter field empty.
+      if (get(node, 'dataset.filterField') === '') {
+        if (!filterValue || isEmpty(filterValue)) {
+          node.dataset.filterActive = true;
+        } else {
+          node.dataset.filterActive = false;
+        }
       }
     }
     for (let i = 0; i < node.childNodes.length; i++) {
@@ -397,6 +410,21 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.openEditRecordModal();
         }
       });
+    }
+    // Handle data-filter-reset event
+    if (event.target.dataset.filterReset) {
+      // Get all the fields that need to be cleared
+      const resetList = event.target.dataset.filterReset.split(';');
+      const updatedFilter: any = {};
+      for (const [key, value] of Object.entries(
+        this.contextService.filter.getValue()
+      )) {
+        // If key is not in list of fields that need to be cleared, add to updated Filter
+        if (!resetList.includes(key)) {
+          updatedFilter[key] = value;
+        }
+      }
+      this.contextService.filter.next(updatedFilter);
     }
   }
 

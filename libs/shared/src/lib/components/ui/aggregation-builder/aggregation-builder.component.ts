@@ -18,6 +18,7 @@ import {
   ReferenceDataAggregationQueryResponse,
 } from '../../../models/aggregation.model';
 import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
+import { PipelineStage } from './pipeline/pipeline-stage.enum';
 
 /**
  * Main component of Aggregation builder.
@@ -66,6 +67,8 @@ export class AggregationBuilderComponent
   public mappingFields$!: Observable<any[]>;
   /** Aggregation records loading state */
   public loadingAggregationRecords = false;
+  /** Array to hold the list of stages allowed for aggregation data source type. */
+  public stageList!: string[];
 
   /**
    * Getter for the pipeline of the aggregation form
@@ -107,6 +110,13 @@ export class AggregationBuilderComponent
           this.initFields();
         }
       });
+
+    this.stageList = this.referenceData
+      ? Object.values(PipelineStage).filter(
+          // Disable "custom" stage for reference data aggregations
+          (stage: string) => stage !== PipelineStage.CUSTOM
+        )
+      : Object.values(PipelineStage);
 
     // Fields query
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields) => {

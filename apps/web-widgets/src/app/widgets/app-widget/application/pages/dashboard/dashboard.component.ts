@@ -213,15 +213,16 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
           this.widgets = cloneDeep(
             data.dashboard.structure ? data.dashboard.structure : []
           );
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.contextService.setFilter(this.dashboard);
         } else {
           this.contextService.isFilterEnabled.next(false);
+          this.contextService.setFilter();
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
@@ -238,14 +239,6 @@ export class DashboardComponent
         this.snackBar.openSnackBar(err.message, { error: true });
         this.router.navigate(['/applications']);
       });
-  }
-
-  /**
-   * Removes all subscriptions of the component.
-   */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.dashboardService.closeDashboard();
   }
 
   /**

@@ -40,7 +40,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -181,7 +181,8 @@ export class DashboardComponent
         this.contextService.onContextChange(
           value,
           this.contextType,
-          this.route
+          this.route,
+          this.dashboard
         );
       });
     /** Listen to router events navigation end, to get last version of params & queryParams. */
@@ -307,9 +308,8 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
           this.gridOptions = {
-            ...this.gridOptions,
+            ...omit(this.gridOptions, 'gridType'), // Prevent issue when gridType was not set
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
@@ -332,7 +332,8 @@ export class DashboardComponent
                 }
                 const { settings, originalSettings } =
                   this.contextService.updateSettingsContextContent(
-                    widget.settings
+                    widget.settings,
+                    this.dashboard
                   );
                 widget.originalSettings = originalSettings;
                 widget.settings = settings;
@@ -347,6 +348,10 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.contextService.filterPosition.next({
+            position: this.dashboard.filter?.position as any,
+            dashboardId: this.dashboard.id ?? '',
+          });
           if (this.gridOptionsTimeoutListener) {
             clearTimeout(this.gridOptionsTimeoutListener);
           }
@@ -356,8 +361,10 @@ export class DashboardComponent
               scrollToNewItems: true,
             };
           }, 1000);
+          this.contextService.setFilter(this.dashboard);
         } else {
           this.contextService.isFilterEnabled.next(false);
+          this.contextService.setFilter();
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
@@ -389,7 +396,6 @@ export class DashboardComponent
     }
     localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'filterStructure');
-    this.dashboardService.closeDashboard();
   }
 
   /**
@@ -462,7 +468,8 @@ export class DashboardComponent
                     ...e.options,
                     defaultLayout: this.widgets[index].settings.defaultLayout,
                   }
-                : e.options
+                : e.options,
+              this.dashboard
             );
           if (settings) {
             // Save configuration
@@ -574,7 +581,11 @@ export class DashboardComponent
       };
       if (this.contextId.value) {
         // Seeing a template
-        this.dashboardService.editName(dashboardName, callback);
+        this.dashboardService.editName(
+          this.dashboard?.id,
+          dashboardName,
+          callback
+        );
       } else {
         // Not part of contextual page
         if (this.isStep) {
@@ -620,20 +631,20 @@ export class DashboardComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (button) => {
         if (!button) return;
-        const currButtons =
-          (await firstValueFrom(this.dashboardService.dashboard$))?.buttons ||
-          [];
+        const currButtons = this.dashboard?.buttons || [];
 
-        this.dashboardService.saveDashboardButtons([...currButtons, button]);
-        this.buttonActions.push(button);
+        this.dashboardService
+          .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+          ?.pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.buttonActions.push(button);
+          });
       });
   }
 
   /** Opens modal for context dataset selection */
   public async selectContextDatasource() {
-    const currContext =
-      (await firstValueFrom(this.dashboardService.dashboard$))?.page?.context ??
-      null;
+    const currContext = this.dashboard?.page?.context ?? null;
 
     const { ContextDatasourceComponent } = await import(
       './components/context-datasource/context-datasource.component'
@@ -650,10 +661,20 @@ export class DashboardComponent
         if (context) {
           if (isEqual(context, currContext)) return;
 
-          await this.dashboardService.updateContext(context);
-          this.dashboard =
-            (await firstValueFrom(this.dashboardService.dashboard$)) ||
-            undefined;
+          this.dashboardService
+            .updateContext(this.dashboard?.page?.id, context)
+            ?.then(({ data }) => {
+              if (data) {
+                this.dashboard = {
+                  ...this.dashboard,
+                  page: {
+                    ...this.dashboard?.page,
+                    context,
+                    contentWithContext: data.editPageContext.contentWithContext,
+                  },
+                };
+              }
+            });
 
           const urlArr = this.router.url.split('/');
 
@@ -713,7 +734,7 @@ export class DashboardComponent
         });
       }
     };
-    this.contextService.initContext(callback);
+    this.contextService.initContext(this.dashboard as Dashboard, callback);
   }
 
   /**
@@ -730,7 +751,14 @@ export class DashboardComponent
       event.currentIndex
     );
 
-    this.dashboardService.saveDashboardButtons(this.buttonActions);
+    this.dashboardService
+      .saveDashboardButtons(this.dashboard?.id, this.buttonActions)
+      ?.subscribe(() => {
+        this.dashboard = {
+          ...this.dashboard,
+          buttons: this.buttonActions,
+        };
+      });
   }
 
   /**

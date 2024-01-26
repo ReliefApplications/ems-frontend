@@ -115,6 +115,8 @@ export class SummaryCardComponent
   private fields: any[] = [];
   /** Meta fields */
   private metaFields: any[] = [];
+  /** Flag indicating we’ve navigated to the last element in pagination */
+  private finalPage = false;
   /** Available sort fields */
   public sortFields: any[] = [];
   /** Active context fields */
@@ -238,6 +240,7 @@ export class SummaryCardComponent
       );
       mapping = this.contextService.replaceContext(mapping);
       mapping = this.contextService.replaceFilter(mapping);
+      mapping = this.replaceWidgetVariables(mapping);
       this.contextService.removeEmptyPlaceholders(mapping);
       return mapping;
     } catch {
@@ -307,8 +310,12 @@ export class SummaryCardComponent
     ) {
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.refresh();
+        .subscribe(({ previous, current }) => {
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
+            this.refresh();
+          }
         });
     }
   }
@@ -442,7 +449,7 @@ export class SummaryCardComponent
         Object.assign(
           this.graphqlVariables || {},
           this.refData.pageInfo?.pageSizeVar && {
-            [this.refData.pageInfo.pageSizeVar]: DEFAULT_PAGE_SIZE,
+            [this.refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize,
           }
         )
       );
@@ -493,23 +500,27 @@ export class SummaryCardComponent
         })
         .then(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData) {
-      const contextFilters = this.contextService.injectContext(
-        this.contextFilters
-      );
-      this.sortedCachedCards = cloneDeep(
-        this.cachedCards
-          .filter((x) => filterReferenceData(x.rawValue, contextFilters))
-          .filter((card: any) => {
-            return (
-              JSON.stringify(card.rawValue)
-                .replace(/("\w+":)/g, '')
-                .toLowerCase()
-                .indexOf(search.toLowerCase()) !== -1
-            );
-          })
-      );
-      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
-      this.pageInfo.length = this.sortedCachedCards.length;
+      if (this.refData?.pageInfo?.strategy) {
+        this.refresh();
+      } else {
+        const contextFilters = this.contextService.injectContext(
+          this.contextFilters
+        );
+        this.sortedCachedCards = cloneDeep(
+          this.cachedCards
+            .filter((x) => filterReferenceData(x.rawValue, contextFilters))
+            .filter((card: any) => {
+              return (
+                JSON.stringify(card.rawValue)
+                  .replace(/("\w+":)/g, '')
+                  .toLowerCase()
+                  .indexOf(search.toLowerCase()) !== -1
+              );
+            })
+        );
+        this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+        this.pageInfo.length = this.sortedCachedCards.length;
+      }
     }
   }
 
@@ -621,10 +632,14 @@ export class SummaryCardComponent
         );
       }
     }
-
+    const strategy = this.refData?.pageInfo?.strategy;
+    const totalCountConfigured = this.refData?.pageInfo?.totalCountField;
+    const start = strategy
+      ? this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize)
+      : 0;
     // Add the new items to the cached cards in the correct position
     this.cachedCards.splice(
-      this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize),
+      start,
       items.length,
       ...((items || []).map((x: any, index: number) => ({
         ...this.settings.card,
@@ -634,27 +649,35 @@ export class SummaryCardComponent
       })) as CardT[])
     );
 
-    const contextFilters = this.contextService.injectContext(
-      this.contextFilters
-    );
-
-    this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
-      filterReferenceData(x.rawValue, contextFilters)
-    );
-
-    const strategy = this.refData?.pageInfo?.strategy;
-
     const isPaginated = !!strategy && !!pageInfo;
     if (isPaginated) {
       // If using pagination, set the page size and total count
       // according to the response of the first page
-      this.pageInfo.length = pageInfo.totalCount;
-      this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
-      this.pageInfo.lastCursor = pageInfo.lastCursor;
-      if (this.pageInfo.pageSize > items.length) {
-        this.pageInfo.length = this.cards.length;
-      }
+      this.setPaginationInfo(pageInfo);
+      this.sortedCachedCards = cloneDeep(this.cachedCards);
+      this.checkIfFinalPage(totalCountConfigured, items);
     } else {
+      // Client side filtering
+      const contextFilters = this.contextService.injectContext(
+        this.contextFilters
+      );
+
+      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+        filterReferenceData(x.rawValue, contextFilters)
+      );
+
+      if (this.searchControl.value) {
+        this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
+          return (
+            JSON.stringify(card.rawValue)
+              .replace(/("\w+":)/g, '')
+              .toLowerCase()
+              .indexOf((this.searchControl.value as string).toLowerCase()) !==
+            -1
+          );
+        });
+      }
+
       // If not, all the items are already loaded
       this.pageInfo.length = this.cachedCards.length;
     }
@@ -691,6 +714,49 @@ export class SummaryCardComponent
 
     this.scrolling = false;
     this.loading = false;
+  }
+
+  /**
+   * Set the pagination info
+   *
+   * @param pageInfo Pagination info
+   * @param pageInfo.totalCount Total count
+   * @param pageInfo.pageSize Page size
+   * @param pageInfo.lastCursor Last cursor
+   */
+  setPaginationInfo(pageInfo: {
+    totalCount: any;
+    pageSize: any;
+    lastCursor: any;
+  }) {
+    this.pageInfo.length = this.finalPage
+      ? this.pageInfo.length
+      : pageInfo.totalCount;
+    this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
+    this.pageInfo.lastCursor = pageInfo.lastCursor;
+  }
+
+  /**
+   * Check if the current page is the last page
+   *
+   * @param totalCountConfigured Total count configured
+   * @param items Items
+   */
+  checkIfFinalPage(
+    totalCountConfigured: string | undefined,
+    items: string | any[]
+  ) {
+    if (!totalCountConfigured && items.length < this.pageInfo.pageSize) {
+      this.finalPageBehavior();
+    }
+  }
+
+  /**
+   * Set new new behavior
+   */
+  finalPageBehavior() {
+    this.pageInfo.length = this.cachedCards.length;
+    this.finalPage = true;
   }
 
   /**
@@ -754,7 +820,7 @@ export class SummaryCardComponent
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
-                first: DEFAULT_PAGE_SIZE,
+                first: this.pageInfo.pageSize,
                 filter: this.queryFilter,
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
@@ -871,7 +937,7 @@ export class SummaryCardComponent
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource as string,
       card.aggregation as string,
-      DEFAULT_PAGE_SIZE,
+      this.pageInfo.pageSize,
       0,
       this.contextService.injectContext(this.contextFilters),
       this.widget.settings.at
@@ -957,19 +1023,20 @@ export class SummaryCardComponent
           }),
         })
         .then(this.updateRecordCards.bind(this));
-    } else if (this.useReferenceData) {
+    } else if (this.useReferenceData && this.refData) {
       const strategy = this.refData?.pageInfo?.strategy;
       const refData = this.refData;
+
+      // Build the variables for the query based on the pagination strategy
+      const variables: any = Object.assign(
+        {},
+        refData?.pageInfo?.pageSizeVar
+          ? { [refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize }
+          : {}
+      );
+
       // If using pagination, fetch the next page
       if (strategy && refData?.pageInfo) {
-        // Build the variables for the query based on the pagination strategy
-        const variables: any = Object.assign(
-          {},
-          refData.pageInfo?.pageSizeVar
-            ? { [refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize }
-            : {}
-        );
-
         // Set the pagination variable according to the strategy
         if (refData.pageInfo.strategy === 'offset') {
           variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
@@ -982,25 +1049,19 @@ export class SummaryCardComponent
         } else if (refData.pageInfo.strategy === 'page') {
           variables[refData.pageInfo.pageVar] = event.pageIndex + 1;
         }
-
-        // Only set loading state if using pagination, not infinite scroll
-        this.loading = !this.scrolling;
-        this.referenceDataService
-          .cacheItems(refData, {
-            ...variables,
-            ...(this.graphqlVariables ?? {}),
-          })
-          .then(({ items, pageInfo }) => {
-            this.updateReferenceDataCards(items, pageInfo);
-            this.loading = false;
-          });
-      } else {
-        this.cards = this.sortedCachedCards.slice(
-          this.pageInfo.skip,
-          this.pageInfo.skip + this.pageInfo.pageSize
-        );
-        this.pageInfo.length = this.sortedCachedCards.length;
       }
+
+      // Only set loading state if using pagination, not infinite scroll
+      this.loading = !this.scrolling;
+      this.referenceDataService
+        .cacheItems(refData, {
+          ...variables,
+          ...(this.graphqlVariables ?? {}),
+        })
+        .then(({ items, pageInfo }) => {
+          this.updateReferenceDataCards(items, pageInfo);
+          this.loading = false;
+        });
     }
   }
 
@@ -1008,40 +1069,21 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
-    // Only apply logic for reference data with no pagination
-    if (this.useReferenceData) {
-      if (!this.refData?.pageInfo?.strategy) {
-        const contextFilters = this.contextService.injectContext(
-          this.contextFilters
-        );
-        this.sortedCachedCards = cloneDeep(
-          this.cachedCards.filter((x) =>
-            filterReferenceData(x.rawValue, contextFilters)
-          )
-        );
-        if (this.searchControl.value) {
-          this.sortedCachedCards = this.sortedCachedCards.filter(
-            (card: any) => {
-              return (
-                JSON.stringify(card.rawValue)
-                  .replace(/("\w+":)/g, '')
-                  .toLowerCase()
-                  .indexOf(
-                    (this.searchControl.value as string).toLowerCase()
-                  ) !== -1
-              );
-            }
-          );
-        }
-      } else {
-        // Remove previous cached data
-        this.cards = [];
-        this.sortedCachedCards = [];
-        this.cachedCards = [];
-      }
+    this.cards = [];
+    this.sortedCachedCards = [];
+    this.cachedCards = [];
+    this.finalPage = false;
+
+    if (this.summaryCardGrid) {
+      this.summaryCardGrid.nativeElement.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
     }
+
     this.onPage({
-      pageSize: DEFAULT_PAGE_SIZE,
+      pageSize: this.pageInfo.pageSize,
       skip: 0,
       previousPageIndex: 0,
       pageIndex: 0,
@@ -1107,33 +1149,70 @@ export class SummaryCardComponent
           })
           .then(() => (this.loading = false));
       } else if (this.useReferenceData) {
-        this.loading = true;
-        this.pageInfo.pageIndex = 0;
-        this.pageInfo.skip = 0;
-        if (e) {
-          const field = `rawValue.${this.sortOptions.field as string}`;
-          if (this.sortOptions.order === 'asc') {
-            this.sortedCachedCards.sort((a, b) => {
-              const fieldA = String(get(a, field) || '');
-              const fieldB = String(get(b, field) || '');
-              return fieldA.localeCompare(fieldB);
-            });
-          } else {
-            this.sortedCachedCards.sort((a, b) => {
-              const fieldA = String(get(a, field) || '');
-              const fieldB = String(get(b, field) || '');
-              return fieldB.localeCompare(fieldA);
-            });
-          }
-          this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+        if (this.refData?.pageInfo?.strategy) {
+          this.refresh();
         } else {
-          this.sortedCachedCards.sort(
-            (a, b) => (a.index as number) - (b.index as number)
-          );
-          this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+          this.loading = true;
+          this.pageInfo.pageIndex = 0;
+          this.pageInfo.skip = 0;
+          if (e) {
+            const field = `rawValue.${this.sortOptions.field as string}`;
+            if (this.sortOptions.order === 'asc') {
+              this.sortedCachedCards.sort((a, b) => {
+                const fieldA = String(get(a, field) || '');
+                const fieldB = String(get(b, field) || '');
+                return fieldA.localeCompare(fieldB);
+              });
+            } else {
+              this.sortedCachedCards.sort((a, b) => {
+                const fieldA = String(get(a, field) || '');
+                const fieldB = String(get(b, field) || '');
+                return fieldB.localeCompare(fieldA);
+              });
+            }
+            this.cards = this.sortedCachedCards.slice(
+              0,
+              this.pageInfo.pageSize
+            );
+          } else {
+            this.sortedCachedCards.sort(
+              (a, b) => (a.index as number) - (b.index as number)
+            );
+            this.cards = this.sortedCachedCards.slice(
+              0,
+              this.pageInfo.pageSize
+            );
+          }
+          this.loading = false;
         }
-        this.loading = false;
       }
     }
+  }
+
+  /**
+   * Replace widget variables in mapping
+   *
+   * @param object mapping
+   * @returns updated mapping
+   */
+  private replaceWidgetVariables(object: any): any {
+    // Replace sort options
+    const sort = this.sortOptions;
+    if (sort && sort.field && sort.order) {
+      object = JSON.parse(
+        JSON.stringify(object)
+          .replace(/{{widget.sortField}}/g, sort.field)
+          .replace(/{{widget.sortOrder}}/g, sort.order)
+      );
+    }
+
+    // Replace search
+    const search = this.searchControl.value;
+    if (search) {
+      object = JSON.parse(
+        JSON.stringify(object).replace(/{{widget.search}}/g, search)
+      );
+    }
+    return object;
   }
 }

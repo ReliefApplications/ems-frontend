@@ -166,8 +166,41 @@
                   | translate
               }}</ui-alert>
             </div>
-            <!-- Change default size of rows -->
+            <!-- Select the grid type -->
             <div uiFormFieldDirective [outline]="false">
+              <label>{{
+                'components.application.dashboard.settings.gridType.title'
+                  | translate
+              }}</label>
+              <ui-select-menu
+                formControlName="gridType"
+                [placeholder]="
+                  'components.application.dashboard.settings.gridType.placeholder'
+                    | translate
+                "
+              >
+                <ui-select-option [value]="gridType.VerticalFixed">
+                  {{
+                    'components.application.dashboard.settings.gridType.verticalFixed'
+                      | translate
+                  }}
+                </ui-select-option>
+                <ui-select-option [value]="gridType.Fit">
+                  {{
+                    'components.application.dashboard.settings.gridType.fit'
+                      | translate
+                  }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <!-- Change default size of rows -->
+            <div
+              uiFormFieldDirective
+              [outline]="false"
+              *ngIf="
+                settingsForm.get('gridOptions.gridType')?.value !== gridType.Fit
+              "
+            >
               <label class="flex items-center gap-1">
                 {{
                   'components.application.dashboard.settings.fixedRowHeight'
@@ -195,6 +228,48 @@
                   settingsForm
                     .get('gridOptions.fixedRowHeight')
                     ?.setValue(defaultGridOptions.fixedRowHeight)
+                "
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltip.reset'
+                    | translate
+                "
+              ></ui-icon>
+            </div>
+            <!-- Change the minimum height of the container -->
+            <div
+              uiFormFieldDirective
+              [outline]="false"
+              *ngIf="
+                settingsForm.get('gridOptions.gridType')?.value === gridType.Fit
+              "
+            >
+              <label class="flex items-center gap-1">
+                {{
+                  'components.application.dashboard.settings.minimumHeight'
+                    | translate
+                }}
+                <!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.minimumHeight'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="minimumHeight" min="0" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="restart_alt"
+                variant="grey"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.minimumHeight')
+                    ?.setValue(defaultGridOptions.minimumHeight)
                 "
                 [uiTooltip]="
                   'components.application.dashboard.settings.tooltip.reset'

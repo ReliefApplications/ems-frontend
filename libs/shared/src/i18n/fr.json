@@ -535,7 +535,8 @@
 						"bottom": "Afficher le filtre en bas",
 						"left": "Afficher le filtre à gauche",
 						"right": "Afficher le filtre à droite",
-						"top": "Afficher le filtre en haut"
+						"top": "Afficher le filtre en haut",
+						"unset": "Position indéfinie, sélectionnez en une"
 					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
@@ -545,15 +546,23 @@
 					"defaultPosition": "Position par défaut du filtre",
 					"fixedRowHeight": "Hauteur de ligne fixe",
 					"gridOptions": "Options de grille",
+					"gridType": {
+						"fit": "Ajuster",
+						"placeholder": "Sélectionnez un type de grille",
+						"title": "Type de grille",
+						"verticalFixed": "Vertical fixe"
+					},
 					"help": {
 						"minCols": "Réduire le nombre de colonnes peut ne pas avoir un impact direct si les widgets dépassent la limite spécifiée en largeur."
 					},
 					"margin": "Marge entre les widgets",
 					"minCols": "Nombre de colonnes",
+					"minimumHeight": "Hauteur minimum",
 					"tooltip": {
 						"fixedRowHeight": "Taille des lignes en pixels.\nDoit être supérieur ou égal à 50.",
 						"margin": "Marge entre les widgets.\nDoit être un entier positif.",
 						"minCols": "Nombre de colonnes.\nDoit être compris entre 4 et 24.",
+						"minimumHeight": "Taille minimale de la grille en pixels.\nDoit être supérieur ou égal à 0.",
 						"reset": "Réinitialiser la valeur"
 					},
 					"tooltips": {
@@ -878,11 +887,12 @@
 			},
 			"columns": {
 				"action": "Type d'action",
-				"date": "Date de modification",
-				"modifiedValue": "Valeur modifiée de la variable",
-				"originalValue": "Valeur originelle de la variable",
-				"person": "Modification effectuée par",
-				"variable": "Variable modifiée"
+				"date": "Date",
+				"modifiedValue": "Ancienne valeur",
+				"originalValue": "Nouvelle valeur",
+				"person": "Utilisateur",
+				"time": "Heure",
+				"variable": "Champ"
 			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",
@@ -1813,7 +1823,9 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"help": "N'oubliez pas de supprimer les variables non utilisées.",
 									"noVariables": "Aucune variable définie",
+									"refresh": "Afficher toutes les variables graphQL",
 									"title": "Mappage de variables GraphQL",
 									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
 								},

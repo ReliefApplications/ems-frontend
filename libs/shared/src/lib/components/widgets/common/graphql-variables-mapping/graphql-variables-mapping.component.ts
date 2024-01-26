@@ -1,7 +1,12 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule, TooltipModule } from '@oort-front/ui';
+import {
+  IconModule,
+  TooltipModule,
+  ButtonModule,
+  AlertModule,
+} from '@oort-front/ui';
 import { EmptyModule } from '../../../ui/empty/empty.module';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ReferenceData } from '../../../../models/reference-data.model';
@@ -23,6 +28,8 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
     MonacoEditorModule,
     FormsModule,
     ReactiveFormsModule,
+    ButtonModule,
+    AlertModule,
   ],
   templateUrl: './graphql-variables-mapping.component.html',
   styleUrls: ['./graphql-variables-mapping.component.scss'],
@@ -41,12 +48,23 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
     fixedOverflowWidgets: true,
   };
 
-  ngOnChanges(): void {
-    this.setAvailableQueryVariables();
+  ngOnChanges(changes: SimpleChanges): void {
+    // changed only reference data
+    if (changes['referenceData'] && !changes['control']) {
+      this.refresh(true);
+      // started the component
+    } else {
+      this.refresh();
+    }
   }
 
-  /** Parses que refData query and gets the available variable names, excluding the pagination ones */
-  private setAvailableQueryVariables(): void {
+  /**
+   * Refresh editor, updating template & variables if needed.
+   *
+   * @param restoreTemplate boolean to indicate if should restore variables template
+   * @param keepVariables boolean to indicate if should keep used variables
+   */
+  public refresh(restoreTemplate?: boolean, keepVariables?: boolean): void {
     if (this.referenceData?.type !== 'graphql') {
       this.availableQueryVariables = [];
       return;
@@ -72,8 +90,11 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
         (v) => ![cursorVar, offsetVar, pageVar, pageSizeVar].includes(v)
       );
 
-      // Checks if the variable mapping is null or empty.
-      if (!this.control.value) {
+      // Checks if the variable mapping is null or if should restore template
+      if (
+        (!this.control.value && this.control.value !== '') ||
+        restoreTemplate
+      ) {
         // If so, generate a template with the variables being keys of a json object.
         const template = JSON.stringify(
           availableVariables.reduce((acc, curr) => {
@@ -83,7 +104,21 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
           null,
           2
         );
-        this.control.setValue(template);
+        // if should restore variables keep the current variables and add the deleted ones
+        if (keepVariables) {
+          this.control.setValue(
+            JSON.stringify(
+              {
+                ...JSON.parse(template ?? '{}'),
+                ...JSON.parse(this.control.value ? this.control.value : '{}'),
+              },
+              null,
+              2
+            )
+          );
+        } else {
+          this.control.setValue(template);
+        }
       }
       this.availableQueryVariables = availableVariables;
     } catch (_) {

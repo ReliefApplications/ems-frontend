@@ -3,11 +3,13 @@
   [isFullScreen]="isFullScreen"
   variant="modern"
   [opened]="true"
+  [dashboard]="dashboard"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div
+  class="h-full flex flex-col"
   [ngClass]="{
-    'py-8 px-6 h-full bg-white overflow-y-auto overflow-x-hidden': isFullScreen
+    'py-8 px-6 bg-white overflow-y-auto overflow-x-hidden': isFullScreen
   }"
 >
   <shared-dashboard-filter
@@ -15,6 +17,7 @@
     [editable]="true"
     [isFullScreen]="isFullScreen"
     [opened]="true"
+    [dashboard]="dashboard"
   ></shared-dashboard-filter>
   <ng-container sharedFullScreen [(isFullScreenMode)]="isFullScreen">
     <ng-container
@@ -59,8 +62,10 @@
       </ng-container>
     </ng-container>
     <shared-widget-grid
+      class="flex-1"
       [loading]="loading"
       [widgets]="widgets"
+      [options]="dashboard?.gridOptions"
       (changeStep)="changeStep.emit($event)"
     ></shared-widget-grid>
   </ng-container>

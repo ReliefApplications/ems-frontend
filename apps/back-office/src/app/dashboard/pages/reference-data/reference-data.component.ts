@@ -263,12 +263,6 @@ export class ReferenceDataComponent
             );
           }
         });
-      } catch {
-        this.queryVariables = [];
-        controls.pageSizeVar.setValue(null);
-        controls.offsetVar.setValue(null);
-        controls.pageVar.setValue(null);
-        controls.cursorVar.setValue(null);
       } finally {
         // Update the pagination validators
         setPaginationValidators();

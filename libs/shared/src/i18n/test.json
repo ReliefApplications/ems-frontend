@@ -535,7 +535,8 @@
 						"bottom": "******",
 						"left": "******",
 						"right": "******",
-						"top": "******"
+						"top": "******",
+						"unset": "******"
 					},
 					"info": "******",
 					"title": "******"
@@ -545,15 +546,23 @@
 					"defaultPosition": "******",
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
+					"gridType": {
+						"fit": "******",
+						"placeholder": "******",
+						"title": "******",
+						"verticalFixed": "******"
+					},
 					"help": {
 						"minCols": "******"
 					},
 					"margin": "******",
 					"minCols": "******",
+					"minimumHeight": "******",
 					"tooltip": {
 						"fixedRowHeight": "******",
 						"margin": "******",
 						"minCols": "******",
+						"minimumHeight": "******",
 						"reset": "******"
 					}
 				}
@@ -871,6 +880,7 @@
 				"modifiedValue": "******",
 				"originalValue": "******",
 				"person": "******",
+				"time": "******",
 				"variable": "******"
 			},
 			"download": "******",
@@ -1800,7 +1810,9 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"help": "******",
 									"noVariables": "******",
+									"refresh": "******",
 									"title": "******",
 									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
 								},
