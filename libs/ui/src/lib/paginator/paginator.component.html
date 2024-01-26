@@ -20,7 +20,7 @@
       let-currentPage="currentPage"
     >
       <div class="w-full flex justify-between">
-        <div class="hidden sm:flex" *ngIf="showTotalItems">
+        <div class="hidden sm:flex" *ngIf="showTotalItems && isScreenCondensed">
           <!-- Page info -->
           <kendo-datapager-messages
             page="{{ 'components.paginator.page' | translate }}"
@@ -31,11 +31,12 @@
           </kendo-datapager-messages>
           <kendo-datapager-info></kendo-datapager-info>
         </div>
+      
         <div class="flex w-full sm:w-auto ml-auto">
           <!-- Page size -->
           <kendo-datapager-page-sizes
             class="hidden sm:flex text-gray-700"
-            *ngIf="showPageSizes"
+            *ngIf="showPageSizes && isScreenCondensed"
             [pageSizes]="pageSizeOptions"
           ></kendo-datapager-page-sizes>
           <!-- Page buttons -->
@@ -46,7 +47,7 @@
               [class.hide-first]="hideFirstLastButtons"
             ></kendo-datapager-prev-buttons>
             <kendo-datapager-numeric-buttons
-              *ngIf="displayedPageNumbers"
+              *ngIf="displayedPageNumbers && isScreenCondensed"
               [buttonCount]="displayedPageNumbers"
             ></kendo-datapager-numeric-buttons>
             <kendo-datapager-next-buttons

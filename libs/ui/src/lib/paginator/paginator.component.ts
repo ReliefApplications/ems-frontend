@@ -1,8 +1,11 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -19,7 +22,7 @@ import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.scss'],
 })
-export class PaginatorComponent implements OnChanges {
+export class PaginatorComponent implements OnChanges, OnInit, OnDestroy {
   /** Disable pagination */
   @Input() disabled = false;
   /** Number of items */
@@ -42,10 +45,52 @@ export class PaginatorComponent implements OnChanges {
   @Input() pageIndex = 0;
   /** Number of pages to show */
   @Input() displayedPageNumbers = 0;
+  /** Controls whether the page will be shown condensed based on screen size  */
+  public isScreenCondensed = true;
+  /** Observer resize changes */
+  private resizeObserver!: ResizeObserver;
   /** Page change event */
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
   /** Generate random unique identifier for each paginator component */
   public paginatorId = uuidv4();
+
+  /**
+   * Constructor
+   *
+   * @param elementRef Element reference
+   */
+  constructor(private elementRef: ElementRef) {}
+
+  ngOnInit(): void {
+    if (this.elementRef.nativeElement.parentElement) {
+      this.updateShowDisplayedPageNumbers(
+        this.elementRef.nativeElement.parentElement.clientWidth
+      );
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateShowDisplayedPageNumbers(
+          this.elementRef.nativeElement.parentElement.clientWidth
+        );
+      });
+      this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver?.disconnect();
+  }
+
+  /**
+   * Update show displayed page numbers
+   *
+   * @param width Width of the paginator
+   */
+  updateShowDisplayedPageNumbers(width: number) {
+    if (width < 600) {
+      this.isScreenCondensed = false;
+    } else {
+      this.isScreenCondensed = true;
+    }
+  }
 
   /**
    * Update page data on page change
