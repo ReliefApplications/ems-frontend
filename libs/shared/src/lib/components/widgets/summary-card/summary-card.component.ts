@@ -167,13 +167,10 @@ export class SummaryCardComponent
     } else {
       filter = {
         logic: 'and',
-        filters: [this.layout?.query.filter],
+        filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return {
-      logic: 'and',
-      filters: [filter, this.contextService.injectContext(this.contextFilters)],
-    };
+    return filter;
   }
 
   /** @returns does the card use resource aggregation */
@@ -1015,6 +1012,9 @@ export class SummaryCardComponent
           first: this.pageInfo.pageSize,
           skip: event.skip,
           filter: this.queryFilter,
+          contextFilters: this.contextService.injectContext(
+            this.contextFilters
+          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
