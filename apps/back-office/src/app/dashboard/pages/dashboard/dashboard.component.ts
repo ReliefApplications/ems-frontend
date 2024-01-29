@@ -247,7 +247,7 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.dashboard = data.dashboard;
           this.gridOptions = {
-            ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set
+            ...omit(this.gridOptions, 'gridType'), // Prevent issue when gridType was not set
             ...this.dashboard?.gridOptions,
             scrollToNewItems: false,
           };
@@ -286,10 +286,6 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
-          this.contextService.filterPosition.next({
-            position: this.dashboard.filter?.position as any,
-            dashboardId: this.dashboard.id ?? '',
-          });
           if (this.gridOptionsTimeoutListener) {
             clearTimeout(this.gridOptionsTimeoutListener);
           }
@@ -469,7 +465,7 @@ export class DashboardComponent
       this.widgets.forEach((widget) => {
         const contextContentCleanWidget = {
           ...widget,
-          settings: widget.originalSettings,
+          settings: widget.originalSettings ? widget.originalSettings : widget.settings,
         };
         delete contextContentCleanWidget.originalSettings;
         widgets.push(contextContentCleanWidget);
