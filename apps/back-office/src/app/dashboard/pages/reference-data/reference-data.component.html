@@ -65,6 +65,7 @@
             >{{ 'pages.referenceData.queryName' | translate }} *</label
           >
           <ngx-monaco-editor
+            class="!h-full !w-full"
             (onInit)="initEditor($event)"
             [options]="editorOptions"
             [formControl]="queryControl"
