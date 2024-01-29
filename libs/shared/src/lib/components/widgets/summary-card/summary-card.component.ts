@@ -561,13 +561,11 @@ export class SummaryCardComponent
 
     // update card list and scroll behavior according to the card items display
 
+    this.cards = newCards;
     if (
-      !this.settings.widgetDisplay?.usePagination &&
-      !this.triggerRefreshCardList
+      this.settings.widgetDisplay?.usePagination ||
+      this.triggerRefreshCardList
     ) {
-      this.cards = [...this.cards, ...newCards];
-    } else {
-      this.cards = newCards;
       if (this.displayMode == 'cards') {
         this.summaryCardGrid.nativeElement.scroll({
           top: 0,
