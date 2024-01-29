@@ -392,20 +392,6 @@ export const routes: Routes = [
             canActivate: [PermissionGuard],
           },
           {
-            path: 'pulljobs',
-            loadChildren: () =>
-              import('./pages/pull-jobs/pull-jobs.module').then(
-                (m) => m.PullJobsModule
-              ),
-            data: {
-              permission: {
-                action: 'read',
-                subject: 'PullJob',
-              },
-            },
-            canActivate: [PermissionGuard],
-          },
-          {
             path: '**',
             pathMatch: 'full',
             redirectTo: 'users',

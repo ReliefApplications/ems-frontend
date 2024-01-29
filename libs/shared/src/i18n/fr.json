@@ -336,11 +336,6 @@
 		"preview": "Prévisualisation",
 		"previous": "Précédent",
 		"publish": "Publier",
-		"pullJob": {
-			"few": "Tâches planifiées",
-			"none": "Aucune tâche planifiée",
-			"one": "Tâche planifiée"
-		},
 		"record": {
 			"few": "Enregistrements",
 			"none": "Pas d'enregistrement",
@@ -959,31 +954,16 @@
 			"title": "Préférences"
 		},
 		"pullJob": {
-			"delete": {
-				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
-				"title": "Supprimer la tâche"
-			},
 			"modal": {
-				"addMappingField": "ajouter un champ de correspondance",
 				"errors": {
 					"schedule": "Entrez une expression cron valide"
 				},
 				"hint": {
-					"path": "Entrer le chemin pour extraire la donnée de la réponse",
-					"schedule": "Entrez une expression CRON pour planifier la tâche",
-					"url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
+					"schedule": "Entrez une expression CRON pour planifier la tâche"
 				},
-				"identifier": "Identificateurs uniques",
-				"mapping": "Correspondance",
 				"placeholder": {
-					"path": "Entrez le chemin d'accès...",
-					"schedule": "Entrez l'horaire planifié...",
-					"url": "Entrer l'URL..."
-				},
-				"switch": "Changer de mode"
-			},
-			"paginator": {
-				"ariaLabel": "Sélectionez la page de tâches programmées"
+					"schedule": "Entrez l'horaire planifié..."
+				}
 			}
 		},
 		"queryBuilder": {
@@ -2244,12 +2224,7 @@
 			"new": "Nouvel attribut de position"
 		},
 		"pullJob": {
-			"edit": "Modifier une tâche planifiée",
-			"new": "Nouvelle tâche planifiée",
-			"nextIteration": "Prochaine exécution",
-			"path": "Chemin",
-			"schedule": "Horaire planifié",
-			"url": "Url"
+			"schedule": "Horaire planifié"
 		},
 		"record": {
 			"convert": "Convertir",
@@ -2459,9 +2434,6 @@
 				"updated": "Préférences sauvegardées."
 			},
 			"title": "Votre profil"
-		},
-		"pullJobs": {
-			"create": "Créer une tâche planifiée"
 		},
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",

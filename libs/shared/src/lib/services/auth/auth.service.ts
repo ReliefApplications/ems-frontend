@@ -48,7 +48,6 @@ type Subjects =
   | 'DistributionList'
   | 'Record'
   | 'Role'
-  | 'PullJob'
   | 'Group'
   | 'CustomNotification'
   | 'Form';
@@ -381,11 +380,11 @@ export class AuthService {
       can(['create', 'read', 'update', 'delete'], 'User');
     }
 
-    // === API Configuration / Pull Job ===
+    // === API Configuration ===
     if (globalPermissions.includes('can_manage_api_configurations')) {
       can(
         ['create', 'read', 'update', 'delete'],
-        ['ApiConfiguration', 'PullJob', 'ReferenceData']
+        ['ApiConfiguration', 'ReferenceData']
       );
     }
 
