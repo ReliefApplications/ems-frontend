@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -13,20 +13,15 @@ import {
   PageContextT,
   ReferenceData,
   ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
   Resource,
   UnsubscribeComponent,
   ResourceQueryResponse,
-  ResourcesQueryResponse,
+  ResourceSelectComponent,
+  ReferenceDataSelectComponent,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
-import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  GET_REFERENCE_DATA,
-  GET_REFERENCE_DATAS,
-  GET_RESOURCE,
-  GET_RESOURCES,
-} from './graphql/queries';
+import { Apollo } from 'apollo-angular';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import {
   ButtonModule,
   SelectMenuModule,
@@ -34,13 +29,9 @@ import {
   AlertModule,
   DialogModule,
   TooltipModule,
-  GraphQLSelectComponent,
-  GraphQLSelectModule,
   IconModule,
+  DividerModule,
 } from '@oort-front/ui';
-
-/** Default items per resources query, for pagination */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Create a form group for the page context datasource selection
@@ -49,11 +40,7 @@ const ITEMS_PER_PAGE = 10;
  * @returns the form group
  */
 const createContextDatasourceForm = (data?: PageContextT) => {
-  const origin =
-    data && 'resource' in data ? 'resource' : data ? 'refData' : 'resource';
-
   return new FormGroup({
-    origin: new FormControl<typeof origin>(origin, [Validators.required]),
     resource: new FormControl(
       data && 'resource' in data ? data.resource : null
     ),
@@ -81,7 +68,9 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     SelectMenuModule,
     FormWrapperModule,
     AlertModule,
-    GraphQLSelectModule,
+    ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    DividerModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -90,24 +79,15 @@ export class ContextDatasourceComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  // Form
+  /** Context form group */
   public form!: ReturnType<typeof createContextDatasourceForm>;
-
-  // Data
+  /** Selected resource */
   public resource: Resource | null = null;
+  /** Selected reference data */
   public refData: ReferenceData | null = null;
+  /** Current display field */
   public displayField: string | null = null;
-
-  // Queries
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-  public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
-
-  @ViewChild(GraphQLSelectComponent)
-  resourceSelect?: GraphQLSelectComponent;
-  @ViewChild(GraphQLSelectComponent)
-  refDataSelect?: GraphQLSelectComponent;
-
-  // Available fields
+  /** Available fields */
   public availableFields: string[] = [];
 
   /**
@@ -127,42 +107,53 @@ export class ContextDatasourceComponent
   }
 
   ngOnInit(): void {
-    this.initQueries();
+    // If the form has a resource, fetch it
+    const resourceID = this.form.get('resource')?.value;
+    if (resourceID) {
+      this.getResource(resourceID);
+    }
+    // Set subscription of resource
+    this.form.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // Set displayField to null
+        const displayField = this.form.get('displayField');
+        displayField?.setValue(null);
 
-    // When origin changes, reset the other fields
-    this.form
-      .get('origin')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.form.get('resource')?.setValue(null);
-        this.form.get('refData')?.setValue(null);
-        this.form.get('displayField')?.setValue(null);
+        if (value) {
+          this.form.controls.refData.setValue(null);
+          this.refData = null;
+          displayField?.enable();
+          this.getResource(value);
+        } else {
+          displayField?.disable();
+        }
       });
 
-    // When resource or refData changes, reset the displayField
-    // and update the respective variables values
-    (['resource', 'refData'] as const).forEach((field) => {
-      this.form
-        .get(field)
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          // Set displayField to null
-          const displayField = this.form.get('displayField');
-          displayField?.setValue(null);
+    // If form has a refData, fetch it
+    const refDataID = this.form.get('refData')?.value;
+    if (refDataID) {
+      this.getReferenceData(refDataID);
+    }
+    // Set subscription of resource
+    this.form.controls.refData.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // Set displayField to null
+        const displayField = this.form.get('displayField');
+        displayField?.setValue(null);
 
-          if (value) displayField?.enable();
-          else displayField?.disable();
+        if (value) {
+          this.form.controls.resource.setValue(null);
+          this.resource = null;
+          this.getReferenceData(value);
+          displayField?.enable();
+        } else {
+          displayField?.disable();
+        }
+      });
 
-          // Update the respective variables values
-          this[field] =
-            this[`${field}Select`]?.elements
-              .getValue()
-              .find((x) => x.id === value) ?? null;
-
-          // Update the displayField options
-          this.updateDisplayFieldOptions();
-        });
-    });
+    // do the same for ref data
 
     const sourceSelected =
       !!this.form.get('resource')?.value || !!this.form.get('refData')?.value;
@@ -170,116 +161,91 @@ export class ContextDatasourceComponent
     if (!sourceSelected) this.form.get('displayField')?.disable();
   }
 
-  /** Initializes queries and fetches initial data */
-  private initQueries(): void {
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
+  /**
+   * Get reference data by id
+   *
+   * @param id reference data id
+   */
+  private getReferenceData(id: string) {
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id,
+        },
+      })
+      .subscribe(({ data }) => {
+        this.refData = data.referenceData;
+        this.updateDisplayFieldOptions();
+      });
+  }
 
-    this.refDatasQuery = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
-      query: GET_REFERENCE_DATAS,
-      variables: {
-        first: ITEMS_PER_PAGE,
-      },
-    });
-
-    // If the form has a resource, fetch it
-    const resourceID = this.form.get('resource')?.value;
-    if (resourceID) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: resourceID,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.resource = data.resource;
-          this.updateDisplayFieldOptions();
-        });
-    }
-
-    // If form has a refData, fetch it
-    const refDataID = this.form.get('refData')?.value;
-    if (refDataID) {
-      this.apollo
-        .query<ReferenceDataQueryResponse>({
-          query: GET_REFERENCE_DATA,
-          variables: {
-            id: refDataID,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.refData = data.referenceData;
-          this.updateDisplayFieldOptions();
-        });
-    }
+  /**
+   * Get resource by id
+   *
+   * @param id resource id
+   */
+  private getResource(id: string) {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+        },
+      })
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
+        this.updateDisplayFieldOptions();
+      });
   }
 
   /** Updates the options for the display field select */
   private updateDisplayFieldOptions(): void {
-    const origin = this.form.get('origin')?.value;
-
-    switch (origin) {
-      case 'resource':
-        this.availableFields =
-          this.resource?.fields.map((x: any) => x.name) ?? [];
-        break;
-      case 'refData':
-        this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
-        break;
-      default:
-        this.availableFields = [];
+    if (this.resource) {
+      this.availableFields =
+        this.resource?.fields.map((x: any) => x.name) ?? [];
+    } else if (this.refData) {
+      // TODO: When frontend changes about referenceData fields are merged,
+      // swap to the commented line to remove any casting
+      // this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
+      this.availableFields =
+        this.refData?.fields?.map((x: any) => x.name) ?? [];
+    } else {
+      this.availableFields = [];
     }
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    this.resourcesQuery.refetch({
-      first: ITEMS_PER_PAGE,
-      sortField: 'name',
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
   }
 
   /** Emits the selected context */
   public onSubmit(): void {
     const formValue = this.form.getRawValue();
 
-    const noResource = !this.resource && formValue.origin === 'resource';
-    const noRefData = !this.refData && formValue.origin === 'refData';
-
-    if (!formValue.displayField || !formValue.origin || noResource || noRefData)
+    if (!formValue.displayField || (!formValue.refData && !formValue.resource))
       return;
 
-    const context: PageContextT =
-      formValue.origin === 'resource'
-        ? {
-            resource: this.resource?.id ?? '',
-            displayField: formValue.displayField ?? '',
-          }
-        : {
-            refData: this.refData?.id ?? '',
-            displayField: formValue.displayField ?? '',
-          };
+    const context: PageContextT = formValue.resource
+      ? {
+          resource: this.resource?.id ?? '',
+          displayField: formValue.displayField ?? '',
+        }
+      : {
+          refData: this.refData?.id ?? '',
+          displayField: formValue.displayField ?? '',
+        };
 
     this.dialogRef.close(context as any);
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.form.get(formField)?.value) {
+      this.form.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }

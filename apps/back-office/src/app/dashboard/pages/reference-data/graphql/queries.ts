@@ -32,6 +32,15 @@ export const GET_REFERENCE_DATA = gql`
           title
         }
       }
+      pageInfo {
+        strategy
+        cursorField
+        cursorVar
+        offsetVar
+        pageVar
+        pageSizeVar
+        totalCountField
+      }
       canSee
       canUpdate
       canDelete
@@ -45,6 +54,7 @@ export const GET_API_CONFIGURATION = gql`
     apiConfiguration(id: $id) {
       id
       name
+      authType
       graphQLEndpoint
     }
   }

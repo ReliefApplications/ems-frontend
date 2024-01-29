@@ -10,6 +10,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       name
       createdAt
       structure
+      contextData
       permissions {
         canSee {
           id
@@ -27,7 +28,8 @@ export const GET_DASHBOARD_BY_ID = gql`
       buttons
       canSee
       canUpdate
-      showFilter
+      filter
+      gridOptions
       page {
         id
         visible

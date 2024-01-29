@@ -6,7 +6,7 @@
 </div>
 <!-- Available tabs -->
 <ui-tabs
-  class="grow"
+  class="flex flex-col grow"
   *ngIf="tabs.length > 0"
   cdkDropListOrientation="horizontal"
   cdkDropList
@@ -37,13 +37,14 @@
           cdkDragHandle
           icon="drag_indicator"
           class="draggable"
-          [uiTooltip]="'models.page.tooltip.drag' | translate"
+          [uiTooltip]="'common.tooltip.dragDrop' | translate"
         >
         </ui-button>
       </div>
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-settings
+        class="flex flex-col flex-1"
         [tabGroup]="$any(tab)"
         (delete)="onDeleteTab(i)"
       ></shared-tab-settings>

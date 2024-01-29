@@ -32,9 +32,9 @@ const FALLBACK_LAYOUTS: Connection<Layout> = {
 })
 export class GridLayoutService {
   /**
-   * Constructor the GridLayoutService
+   * Shared service to manage grid predefined layouts.
    *
-   * @param apollo The apollo service
+   * @param apollo Apollo service
    */
   constructor(private apollo: Apollo) {}
 

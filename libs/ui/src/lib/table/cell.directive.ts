@@ -14,7 +14,7 @@ import {
 })
 export class CellDirective extends CdkCell implements AfterContentInit {
   /**
-   * Constructor for ui cell directive
+   * Ui Cell Directive
    *
    * @param columnDef column def associated with element
    * @param elRef Element linked to where the directive is used
@@ -28,6 +28,7 @@ export class CellDirective extends CdkCell implements AfterContentInit {
     super(columnDef, elRef);
   }
 
+  /** Cell classes */
   classes = [
     'whitespace-nowrap',
     'h-16',
@@ -40,6 +41,9 @@ export class CellDirective extends CdkCell implements AfterContentInit {
   ];
 
   ngAfterContentInit(): void {
+    // Adds a background color to all cells matching the row color
+    this.elRef.nativeElement.style['background-color'] = 'inherit';
+
     const classList = [
       ...this.elRef.nativeElement.classList,
       ...this.classes,

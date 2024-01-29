@@ -158,6 +158,7 @@ export class BarChartComponent implements OnChanges {
             autoSkip: isBar,
             maxRotation: 90,
             minRotation: 0,
+            stepSize: get(this.options, 'axes.x.stepSize', undefined),
           },
         },
         y: {
@@ -167,6 +168,9 @@ export class BarChartComponent implements OnChanges {
           stacked: get(this.options, 'stack', false),
           min: !isBar ? get(this.options, 'axes.y.min', undefined) : undefined,
           max: !isBar ? get(this.options, 'axes.y.max', undefined) : undefined,
+          ticks: {
+            stepSize: get(this.options, 'axes.y.stepSize', undefined),
+          },
         },
       },
       plugins: {

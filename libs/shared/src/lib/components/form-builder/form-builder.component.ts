@@ -27,6 +27,7 @@ import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 
 /**
  * Array containing the different types of questions.
@@ -101,15 +102,35 @@ export class FormBuilderComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges, OnDestroy
 {
+  /**
+   * Form object
+   */
   @Input() form!: Form;
+  /**
+   * Event emitted when the form is saved
+   */
   @Output() save: EventEmitter<any> = new EventEmitter();
+  /**
+   * Event emitted when the form is changed
+   */
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
+  /**
+   * SurveyJS creator model
+   */
   surveyCreator!: SurveyCreatorModel;
+  /**
+   * JSON object of the form
+   */
   public json: any;
 
+  /**
+   * List of related names
+   */
   private relatedNames!: string[];
+  /** Timeout to survey creator */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -172,11 +193,17 @@ export class FormBuilderComponent
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.referenceDataService) as any
       );
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
+      );
     }
   }
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     this.surveyCreator.survey?.dispose();
   }
 
@@ -188,7 +215,7 @@ export class FormBuilderComponent
   private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: true,
+      showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
@@ -220,6 +247,7 @@ export class FormBuilderComponent
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
+    new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
     this.surveyCreator.toolbox.forceCompact = false;
     this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
@@ -284,7 +312,10 @@ export class FormBuilderComponent
     // Scroll to question when added
     this.surveyCreator.onQuestionAdded.add((sender: any, options: any) => {
       const name = options.question.name;
-      setTimeout(() => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      this.timeoutListener = setTimeout(() => {
         const el = this.document.querySelector('[data-name="' + name + '"]');
         el?.scrollIntoView({ behavior: 'smooth' });
       });
@@ -294,12 +325,16 @@ export class FormBuilderComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService) as any
     );
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips as any
+    );
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, options: any) =>
         options.survey.onAfterRenderQuestion.add(
           renderGlobalProperties(this.referenceDataService)
         )
     );
+
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons

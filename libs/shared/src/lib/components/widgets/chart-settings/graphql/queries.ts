@@ -1,40 +1,5 @@
 import { gql } from 'apollo-angular';
 
-// === GET RESOURCES ===
-/** Graphql query for getting multiple resources with a cursor */
-export const GET_RESOURCES = gql`
-  query GetResources(
-    $first: Int
-    $afterCursor: ID
-    $sortField: String
-    $filter: JSON
-  ) {
-    resources(
-      first: $first
-      afterCursor: $afterCursor
-      sortField: $sortField
-      filter: $filter
-    ) {
-      edges {
-        node {
-          id
-          name
-          forms {
-            id
-            name
-          }
-        }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
-
 /** Graphql request to get resource */
 export const GET_RESOURCE = gql`
   query GetResource($id: ID!, $aggregationIds: [ID]) {
@@ -62,6 +27,78 @@ export const GET_RESOURCE = gql`
         }
         totalCount
       }
+    }
+  }
+`;
+
+/** Get reference data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!, $aggregationIds: [ID]) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+      valueField
+      graphQLTypeName
+      query
+      aggregations(ids: $aggregationIds) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
+/** Graphql request to get resource metadata */
+export const GET_RESOURCE_METADATA = gql`
+  query GetResourceMetadata($id: ID!) {
+    resource(id: $id) {
+      id
+      name
+      metadata {
+        name
+        automated
+        type
+        editor
+        filter
+        multiSelect
+        filterable
+        options
+        fields {
+          name
+          automated
+          type
+          editor
+          filter
+          multiSelect
+          filterable
+          options
+        }
+      }
+    }
+  }
+`;
+
+/** Graphql request to get reference data metadata */
+export const GET_REFERENCE_DATA_METADATA = gql`
+  query GetReferenceDataMetadata($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      fields
     }
   }
 `;

@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostBinding,
   Inject,
   OnDestroy,
   OnInit,
@@ -26,14 +27,9 @@ import {
   ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
-  RecordQueryResponse,
 } from '@oort-front/shared';
 import { EDIT_DASHBOARD } from './graphql/mutations';
-import {
-  GET_DASHBOARD_BY_ID,
-  GET_RECORD_BY_ID,
-  GET_RESOURCE_RECORDS,
-} from './graphql/queries';
+import { GET_DASHBOARD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import {
   map,
@@ -44,7 +40,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -52,6 +48,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { GridsterConfig } from 'angular-gridster2';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -109,17 +106,14 @@ export class DashboardComponent
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
   /** Timeout to scroll to newly added widget */
-  private timeoutListener!: NodeJS.Timeout;
+  private addTimeoutListener!: NodeJS.Timeout;
+  /** Timeout to load grid options */
+  private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Is edition active */
+  @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
-
-  /** @returns get newest widget id from existing ids */
-  get newestId(): number {
-    const widgets = this.widgets?.slice() || [];
-    return widgets.length === 0
-      ? 0
-      : Math.max(...widgets.map((x: any) => x.id)) + 1;
-  }
+  /** Additional grid configuration */
+  public gridOptions: GridsterConfig = {};
 
   /** @returns type of context element */
   get contextType() {
@@ -184,7 +178,12 @@ export class DashboardComponent
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
         // Load template, or go back to default one
-        this.onContextChange(value);
+        this.contextService.onContextChange(
+          value,
+          this.contextType,
+          this.route,
+          this.dashboard
+        );
       });
     /** Listen to router events navigation end, to get last version of params & queryParams. */
     this.router.events
@@ -293,7 +292,6 @@ export class DashboardComponent
       return;
     }
 
-    this.editionActive = true;
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
@@ -310,27 +308,63 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
-          this.initContext();
-          this.updateContextOptions();
+          this.gridOptions = {
+            ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set
+            ...this.dashboard?.gridOptions,
+            scrollToNewItems: false,
+          };
           this.canUpdate =
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
+          this.editionActive = this.canUpdate;
+          this.initContext();
+          this.updateContextOptions();
+          this.widgets = cloneDeep(
+            data.dashboard.structure
+              ?.filter((x: any) => x !== null)
+              .map((widget: any) => {
+                const contextData = this.dashboard?.contextData;
+                this.contextService.context = contextData || null;
 
-          this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = this.dashboard.structure
-            ? [...this.dashboard.structure.filter((x: any) => x !== null)]
-            : [];
+                if (!contextData) {
+                  return widget;
+                }
+                const { settings, originalSettings } =
+                  this.contextService.updateSettingsContextContent(
+                    widget.settings,
+                    this.dashboard
+                  );
+                widget.originalSettings = originalSettings;
+                widget.settings = settings;
+                return widget;
+              }) || []
+          );
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.contextService.filterPosition.next({
+            position: this.dashboard.filter?.position as any,
+            dashboardId: this.dashboard.id ?? '',
+          });
+          if (this.gridOptionsTimeoutListener) {
+            clearTimeout(this.gridOptionsTimeoutListener);
+          }
+          this.gridOptionsTimeoutListener = setTimeout(() => {
+            this.gridOptions = {
+              ...this.gridOptions,
+              scrollToNewItems: true,
+            };
+          }, 1000);
+          this.contextService.setFilter(this.dashboard);
         } else {
           this.contextService.isFilterEnabled.next(false);
+          this.contextService.setFilter();
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
@@ -354,12 +388,14 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
     }
-    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
-    localForage.removeItem(this.applicationId + 'contextualFilter');
-    this.dashboardService.closeDashboard();
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
+    }
+    localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'filterStructure');
   }
 
   /**
@@ -393,18 +429,19 @@ export class DashboardComponent
    * @param e add event
    */
   onAdd(e: any): void {
-    const widget = JSON.parse(JSON.stringify(e));
-    widget.id = this.newestId;
-    this.widgets = [...this.widgets, widget];
-    this.autoSaveChanges();
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
+    const widget = cloneDeep(e);
+    this.widgets.push(widget);
+    if (this.addTimeoutListener) {
+      clearTimeout(this.addTimeoutListener);
     }
     // scroll to the element once it is created
-    this.timeoutListener = setTimeout(() => {
-      const el = this.document.getElementById(`widget-${widget.id}`);
+    this.addTimeoutListener = setTimeout(() => {
+      const widgetComponents =
+        this.widgetGridComponent.widgetComponents.toArray();
+      const target = widgetComponents[widgetComponents.length - 1];
+      const el = this.document.getElementById(target.id);
       el?.scrollIntoView({ behavior: 'smooth' });
-    });
+    }, 1000);
   }
 
   /**
@@ -413,40 +450,42 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
-    // make sure that we save the default layout.
-    const index = this.widgets.findIndex((v: any) => v.id === e.id);
-    const options = this.widgets[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: this.widgets[index].settings.defaultLayout,
+    switch (e.type) {
+      case 'display': {
+        this.autoSaveChanges();
+        break;
+      }
+      case 'data': {
+        // Find the widget to be edited
+        const widgetComponents =
+          this.widgetGridComponent.widgetComponents.toArray();
+        const index = widgetComponents.findIndex((v: any) => v.id === e.id);
+        if (index > -1) {
+          const { settings, originalSettings } =
+            this.contextService.updateSettingsContextContent(
+              this.widgets[index]?.settings?.defaultLayout
+                ? {
+                    ...e.options,
+                    defaultLayout: this.widgets[index].settings.defaultLayout,
+                  }
+                : e.options,
+              this.dashboard
+            );
+          if (settings) {
+            // Save configuration
+            this.widgets[index] = {
+              ...this.widgets[index],
+              settings: settings,
+              ...(originalSettings && { originalSettings }),
+            };
+            this.autoSaveChanges();
+          }
         }
-      : e.options;
-    if (options) {
-      switch (e.type) {
-        case 'display': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x.defaultCols = options.cols;
-              x.defaultRows = options.rows;
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        case 'data': {
-          this.widgets = this.widgets.map((x) => {
-            if (x.id === e.id) {
-              x = { ...x, settings: options };
-            }
-            return x;
-          });
-          this.autoSaveChanges();
-          break;
-        }
-        default: {
-          break;
-        }
+
+        break;
+      }
+      default: {
+        break;
       }
     }
   }
@@ -457,8 +496,13 @@ export class DashboardComponent
    * @param e delete event
    */
   onDeleteTile(e: any): void {
-    this.widgets = this.widgets.filter((x) => x.id !== e.id);
-    this.autoSaveChanges();
+    const widgetComponents =
+      this.widgetGridComponent.widgetComponents.toArray();
+    const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
+    if (targetIndex > -1) {
+      this.widgets.splice(targetIndex, 1);
+      this.autoSaveChanges();
+    }
   }
 
   /**
@@ -477,29 +521,28 @@ export class DashboardComponent
     this.layoutService.closeRightSidenav = true;
   }
 
-  /**
-   * Drags and drops a widget to move it.
-   *
-   * @param e move event.
-   */
-  onMove(e: any): void {
-    // Duplicates array, some times the arrays is write protected
-    this.widgets = this.widgets.slice();
-    [this.widgets[e.oldIndex], this.widgets[e.newIndex]] = [
-      this.widgets[e.newIndex],
-      this.widgets[e.oldIndex],
-    ];
-    this.autoSaveChanges();
-  }
-
   /** Save the dashboard changes in the database. */
   private autoSaveChanges(): void {
+    let widgets = this.widgets;
+    // If context data exists we have to clean up widget setting original settings
+    // Which do not have the {{context}} replaced, and delete duplicated original settings property as it's not needed in the DB
+    if (this.dashboard?.contextData) {
+      widgets = [];
+      this.widgets.forEach((widget) => {
+        const contextContentCleanWidget = {
+          ...widget,
+          settings: widget.originalSettings,
+        };
+        delete contextContentCleanWidget.originalSettings;
+        widgets.push(contextContentCleanWidget);
+      });
+    }
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: this.id,
-          structure: this.widgets,
+          structure: widgets,
         },
       })
       .subscribe({
@@ -508,12 +551,6 @@ export class DashboardComponent
             errors,
             this.translate.instant('common.dashboard.one')
           );
-          if (!errors) {
-            this.dashboardService.openDashboard({
-              ...this.dashboard,
-              structure: this.widgets,
-            });
-          }
         },
         complete: () => (this.loading = false),
       });
@@ -544,7 +581,11 @@ export class DashboardComponent
       };
       if (this.contextId.value) {
         // Seeing a template
-        this.dashboardService.editName(dashboardName, callback);
+        this.dashboardService.editName(
+          this.dashboard?.id,
+          dashboardName,
+          callback
+        );
       } else {
         // Not part of contextual page
         if (this.isStep) {
@@ -565,41 +606,6 @@ export class DashboardComponent
           );
         }
       }
-    }
-  }
-
-  /**
-   * Toggles the filter for the current dashboard.
-   */
-  toggleFiltering(): void {
-    if (this.dashboard) {
-      this.showFilter = !this.showFilter;
-      this.apollo
-        .mutate<EditDashboardMutationResponse>({
-          mutation: EDIT_DASHBOARD,
-          variables: {
-            id: this.id,
-            showFilter: this.showFilter,
-          },
-        })
-        .subscribe({
-          next: ({ data, errors }) => {
-            this.applicationService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-            if (!errors) {
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                ...(data && { showFilter: data?.editDashboard.showFilter }),
-              });
-            }
-          },
-          complete: () => {
-            this.contextService.isFilterEnabled.next(this.showFilter);
-            this.loading = false;
-          },
-        });
     }
   }
 
@@ -625,20 +631,20 @@ export class DashboardComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (button) => {
         if (!button) return;
-        const currButtons =
-          (await firstValueFrom(this.dashboardService.dashboard$))?.buttons ||
-          [];
+        const currButtons = this.dashboard?.buttons || [];
 
-        this.dashboardService.saveDashboardButtons([...currButtons, button]);
-        this.buttonActions.push(button);
+        this.dashboardService
+          .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+          ?.pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.buttonActions.push(button);
+          });
       });
   }
 
   /** Opens modal for context dataset selection */
   public async selectContextDatasource() {
-    const currContext =
-      (await firstValueFrom(this.dashboardService.dashboard$))?.page?.context ??
-      null;
+    const currContext = this.dashboard?.page?.context ?? null;
 
     const { ContextDatasourceComponent } = await import(
       './components/context-datasource/context-datasource.component'
@@ -655,10 +661,20 @@ export class DashboardComponent
         if (context) {
           if (isEqual(context, currContext)) return;
 
-          await this.dashboardService.updateContext(context);
-          this.dashboard =
-            (await firstValueFrom(this.dashboardService.dashboard$)) ||
-            undefined;
+          this.dashboardService
+            .updateContext(this.dashboard?.page?.id, context)
+            ?.then(({ data }) => {
+              if (data) {
+                this.dashboard = {
+                  ...this.dashboard,
+                  page: {
+                    ...this.dashboard?.page,
+                    context,
+                    contentWithContext: data.editPageContext.contentWithContext,
+                  },
+                };
+              }
+            });
 
           const urlArr = this.router.url.split('/');
 
@@ -693,79 +709,32 @@ export class DashboardComponent
     if ('refData' in context) {
       this.refDataService.loadReferenceData(context.refData).then((refData) => {
         this.refDataValueField = refData.valueField || '';
-        this.refDataService.fetchItems(refData).then((items) => {
+        this.refDataService.fetchItems(refData).then(({ items }) => {
           this.refDataElements = items;
         });
       });
     }
   }
 
-  /**
-   * Handle dashboard context change by simply updating the url.
-   *
-   * @param value id of the element or record
-   */
-  private async onContextChange(value: string | number | undefined | null) {
-    if (
-      !this.dashboard?.id ||
-      !this.dashboard?.page?.id ||
-      !this.dashboard.page.context ||
-      !this.contextType
-    )
-      return;
-    if (value) {
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {
-          id: value,
-        },
-      });
-      // const urlArr = this.router.url.split('/');
-      // urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
-      // this.router.navigateByUrl(urlArr.join('/'));
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant(
-          'models.dashboard.context.notifications.loadDefault'
-        )
-      );
-      this.router.navigate(['.'], { relativeTo: this.route });
-      // const urlArr = this.router.url.split('/');
-      // urlArr[urlArr.length - 1] = parentDashboardId;
-      // this.router.navigateByUrl(urlArr.join('/'));
-    }
-  }
-
   /** Initializes the dashboard context */
-  private initContext() {
-    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
-    // Checks if the dashboard has context attached to it
-    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
-    const id = this.dashboard.id;
-    const dContext = contentWithContext.find((c) => c.content === id);
-
-    if (!dContext) return;
-
-    // If it has updated the form
-    if ('element' in dContext) {
-      this.contextId.setValue(dContext.element, { emitEvent: false });
-    } else if ('record' in dContext) {
-      // Get record by id
-      this.apollo
-        .query<RecordQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: dContext.record,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          if (res?.data) {
-            this.contextRecord = res.data.record;
-            this.contextId.setValue(dContext.record, { emitEvent: false });
-          }
+  private initContext(): void {
+    const callback = (contextItem: {
+      element?: string;
+      record?: string;
+      recordData?: Record;
+    }) => {
+      if ('element' in contextItem) {
+        this.contextId.setValue(contextItem.element as string, {
+          emitEvent: false,
         });
-    }
+      } else {
+        this.contextRecord = contextItem.recordData as Record;
+        this.contextId.setValue(contextItem.record as string, {
+          emitEvent: false,
+        });
+      }
+    };
+    this.contextService.initContext(this.dashboard as Dashboard, callback);
   }
 
   /**
@@ -782,7 +751,14 @@ export class DashboardComponent
       event.currentIndex
     );
 
-    this.dashboardService.saveDashboardButtons(this.buttonActions);
+    this.dashboardService
+      .saveDashboardButtons(this.dashboard?.id, this.buttonActions)
+      ?.subscribe(() => {
+        this.dashboard = {
+          ...this.dashboard,
+          buttons: this.buttonActions,
+        };
+      });
   }
 
   /**
@@ -814,6 +790,7 @@ export class DashboardComponent
           : this.dashboard?.step
           ? this.dashboard?.step.canUpdate
           : false,
+        dashboard: this.dashboard,
       },
     });
     // Subscribes to settings updates
@@ -825,20 +802,33 @@ export class DashboardComponent
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               step: {
                 ...this.dashboard?.step,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
           } else {
             this.dashboard = {
               ...this.dashboard,
               ...(updates.permissions && updates),
+              ...(updates.gridOptions && updates),
+              ...(updates.filter && updates),
               page: {
                 ...this.dashboard?.page,
-                ...(!updates.permissions && updates),
+                ...(!updates.permissions && !updates.filter && updates),
               },
             };
+          }
+          this.gridOptions = {
+            ...this.gridOptions,
+            ...this.dashboard?.gridOptions,
+          };
+
+          if (updates.filter) {
+            this.showFilter = updates.filter.show;
+            this.contextService.isFilterEnabled.next(this.showFilter);
           }
         }
       });
@@ -846,5 +836,33 @@ export class DashboardComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       subscription?.unsubscribe();
     });
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  public onSearchChange(search: string): void {
+    const context = this.dashboard?.page?.context;
+    if (!context) return;
+    if ('resource' in context) {
+      this.recordsQuery.refetch({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          id: context.resource,
+        },
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              field: context.displayField,
+              operator: 'contains',
+              value: search,
+            },
+          ],
+        },
+      });
+    }
   }
 }

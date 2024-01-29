@@ -5,6 +5,7 @@ import {
   OnInit,
   Input,
   Inject,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,22 +41,32 @@ const DEFAULT_STYLE = '';
 })
 export class CustomWidgetStyleComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
+  /** Form control for the scss editor */
   public formControl = new FormControl(DEFAULT_STYLE);
+  /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
+  /** Editor options */
   public editorOptions = {
     theme: 'vs-dark',
     language: 'scss',
     fixedOverflowWidgets: false,
   };
+  /** Style applied to the widget */
   private styleApplied!: HTMLStyleElement;
+  /** Loading state */
   public loading = false;
 
+  /** Initial style */
   private initialStyle = '';
 
+  /** Widget component */
   @Input() widgetComp: any;
-  @Input() save!: (tile: any) => void;
+  /** Save function */
+  @Input() save!: (widget: any) => void;
+  /** Timeout to init editor */
+  private initEditorTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -74,19 +85,22 @@ export class CustomWidgetStyleComponent
     super();
 
     // Avoids saving until the style is updated
-    this.formControl.valueChanges.subscribe(() => {
-      this.loading = true;
-    });
+    this.formControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loading = true;
+      });
 
     // Updates the style when the value changes
     this.formControl.valueChanges
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        const scss = `#${this.widgetComp.domId} {
+        const scss = `#${this.widgetComp.id} {
         ${value}
       }`;
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
+          .pipe(takeUntil(this.destroy$))
           .subscribe((css) => {
             set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
             this.styleApplied.innerText = css;
@@ -102,7 +116,7 @@ export class CustomWidgetStyleComponent
     // Avoids style duplication for the same element
     const widgetStyle = Array.from(
       this.document.querySelectorAll('style')
-    ).filter((style) => style.innerHTML.includes(this.widgetComp.domId))[0];
+    ).filter((style) => style.innerHTML.includes(this.widgetComp.id))[0];
     if (widgetStyle) this.styleApplied = widgetStyle;
     else this.styleApplied = this.document.createElement('style');
 
@@ -144,7 +158,7 @@ export class CustomWidgetStyleComponent
   async onSave(): Promise<void> {
     this.save({
       type: 'data',
-      id: this.widgetComp.widget.id,
+      id: this.widgetComp.id,
       options: this.widgetComp.widget.settings,
     });
 
@@ -159,7 +173,10 @@ export class CustomWidgetStyleComponent
    */
   public initEditor(editor: any): void {
     if (editor) {
-      setTimeout(() => {
+      if (this.initEditorTimeoutListener) {
+        clearTimeout(this.initEditorTimeoutListener);
+      }
+      this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -167,6 +184,13 @@ export class CustomWidgetStyleComponent
             this.formControl.markAsPristine();
           });
       }, 100);
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
     }
   }
 }

@@ -10,7 +10,8 @@
   [header]="header"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
-  [profileRoute]="'/' + appID + '/profile'"
+  [menuOpened]="!hideMenu"
+  [profileRoute]="appID ? '/' + appID + '/profile' : '/profile'"
   (openApplication)="onOpenApplication($event)"
 ></shared-layout>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
@@ -38,6 +39,7 @@
     [uiMenuTriggerFor]="settingsMenu"
     [uiTooltip]="'common.settings' | translate"
   ></ui-button>
+  <shared-dashboard-filter-icon></shared-dashboard-filter-icon>
 </ng-template>
 
 <!-- Admin pages -->

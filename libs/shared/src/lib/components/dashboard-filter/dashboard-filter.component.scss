@@ -1,11 +1,11 @@
 :host {
   // Host is positioned absolutely with an inset of 0
   // to take all the available space without interfering in the element flow of the DOM
-  position: absolute;
+  // position: absolute;
   // Also, in order to position the fixed element to the hosts parent, the element positioning is:
   // parent(relative) > host/component(absolute) > sidebar(fixed) otherwise the fixed element would position to the DOM viewport
-  inset: 0;
-  pointer-events: none;
+  // inset: 0;
+  // pointer-events: none;
 }
 
 .dashboard-filter-y-axis {
@@ -58,4 +58,39 @@
 
 .text-side {
   writing-mode: vertical-lr;
+}
+
+::ng-deep #filter-modern {
+  survey {
+    .sd-root-modern {
+      background-color: white !important;
+    }
+    .sd-body {
+      padding: 0 !important;
+    }
+    .sd-page.sd-page__empty-header {
+      padding: 0 !important;
+    }
+    .sd-question__header--location--left {
+      margin-top: 0 !important;
+      align-self: center;
+    }
+    .sd-row--multiple > div {
+      padding-left: 10px !important;
+      align-self: center;
+    }
+    .sd-question__content--left {
+      padding-left: 10px !important;
+    }
+    .sd-page__row.sd-row--multiple.sd-row--compact {
+      width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .sd-body--empty {
+    min-height: unset !important;
+  }
 }

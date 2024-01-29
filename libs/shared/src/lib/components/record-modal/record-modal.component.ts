@@ -68,14 +68,22 @@ export class RecordModalComponent
   implements AfterViewInit, OnDestroy
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Form */
   public form?: Form;
+  /** Record */
   public record: Record = {};
+  /** Modified at */
   public modifiedAt: Date | null = null;
+  /** Survey */
   public survey!: SurveyModel;
+  /** Survey next */
   public surveyNext?: SurveyModel;
+  /** Can edit */
   public canEdit: boolean | undefined = false;
 
+  /** Environment */
   environment: any;
 
   /** Selected page index */
@@ -271,6 +279,7 @@ export class RecordModalComponent
         revert: (version: any) =>
           this.confirmRevertDialog(this.record, version),
       },
+      panelClass: ['lg:w-4/5', 'w-full'],
       autoFocus: false,
     });
   }

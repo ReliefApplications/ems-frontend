@@ -21,7 +21,7 @@ import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
-import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
+import { CronExpressionControlModule } from '../../../controls/cron-expression-control/cron-expression-control.module';
 import {
   DividerModule,
   TooltipModule,
@@ -76,10 +76,15 @@ export class EditNotificationModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Notification */
   public notification?: CustomNotification;
+  /** Notification form group */
   public formGroup!: ReturnType<typeof this.getNotificationForm>;
+  /** Resources query reference */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  /** Resource */
   public resource?: Resource;
+  /** Layout */
   public layout?: Layout;
 
   /** @returns application templates */

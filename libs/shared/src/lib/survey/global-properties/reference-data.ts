@@ -1,5 +1,6 @@
 import { QuestionSelectBase, Question } from '../types';
 import {
+  ChoicesRestfull,
   ItemValue,
   JsonMetadata,
   Serializer,
@@ -9,6 +10,7 @@ import {
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
+import { isEqual } from 'lodash';
 
 /**
  * Check if a question is of select type
@@ -35,6 +37,11 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       category: 'Choices from Reference data',
       type: CustomPropertyGridComponentTypes.referenceDataDropdown,
       visibleIndex: 1,
+      onSetValue: (obj: QuestionSelectBase, value: string) => {
+        obj.setPropertyValue('choicesByUrl', new ChoicesRestfull());
+        obj.choicesByUrl.setData([]);
+        obj.setPropertyValue('referenceData', value);
+      },
     });
 
     registerCustomPropertyEditor(
@@ -58,7 +65,9 @@ export const init = (referenceDataService: ReferenceDataService): void => {
           referenceDataService
             .loadReferenceData(obj.referenceData)
             .then((referenceData) =>
-              choicesCallback(referenceData.fields?.map((x) => x.name) || [])
+              choicesCallback(
+                referenceData.fields?.map((x) => x?.name ?? x) || []
+              )
             );
         }
       },
@@ -133,7 +142,9 @@ export const init = (referenceDataService: ReferenceDataService): void => {
             referenceDataService
               .loadReferenceData(foreignQuestion.referenceData)
               .then((referenceData) =>
-                choicesCallback((referenceData.fields || []).map((x) => x.name))
+                choicesCallback(
+                  referenceData.fields?.map((x) => x?.name ?? x) || []
+                )
               );
           }
         }
@@ -180,7 +191,9 @@ export const init = (referenceDataService: ReferenceDataService): void => {
           referenceDataService
             .loadReferenceData(obj.referenceData)
             .then((referenceData) =>
-              choicesCallback((referenceData.fields || []).map((x) => x.name))
+              choicesCallback(
+                referenceData.fields?.map((x) => x?.name ?? x) || []
+              )
             );
         }
       },
@@ -241,6 +254,16 @@ export const render = (
               'visibleChoices',
               choices.map((choice) => new ItemValue(choice))
             );
+            // manually set the selected option (not done by default)
+            // only affects dropdown questions (only one option selected) with reference data and non primitive values
+            if (
+              !question.isPrimitiveValue &&
+              question.getType() == 'dropdown'
+            ) {
+              question.value = choices.find((choice) =>
+                isEqual(choice.value, question.value)
+              );
+            }
           });
       } else {
         question.choices = [];

@@ -15,15 +15,16 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-main
-        [formGroup]="formGroup"
+        [formGroup]="widgetFormGroup"
         [resource]="resource"
-        [queries]="filteredQueries"
         [templates]="templates"
       ></shared-tab-main>
     </ng-template>
   </ui-tab>
   <!-- AVAILABLE ACTIONS -->
-  <ui-tab *ngIf="formGroup && !(formGroup.value.aggregations.length > 0)">
+  <ui-tab
+    *ngIf="widgetFormGroup && !(widgetFormGroup.value.aggregations.length > 0)"
+  >
     <ng-container ngProjectAs="label">
       <ui-icon
         icon="toggle_on"
@@ -35,13 +36,30 @@
       <span>{{
         'components.widget.settings.grid.actions.title' | translate
       }}</span>
+      <!-- Icon with warning if any -->
+      <ui-icon
+        *ngIf="widgetFormGroup.get('actions')?.invalid"
+        class="ml-1 cursor-help self-center"
+        variant="danger"
+        icon="warning"
+        [size]="18"
+        [uiTooltip]="
+          'components.widget.settings.grid.warnings.general' | translate
+        "
+        uiTooltipPosition="right"
+      ></ui-icon>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-actions [formGroup]="formGroup"></shared-tab-actions>
+      <shared-tab-actions
+        [formGroup]="widgetFormGroup"
+        [fields]="fields"
+      ></shared-tab-actions>
     </ng-template>
   </ui-tab>
   <!-- BUTTONS -->
-  <ui-tab *ngIf="formGroup && !(formGroup.value.aggregations.length > 0)">
+  <ui-tab
+    *ngIf="widgetFormGroup && !(widgetFormGroup.value.aggregations.length > 0)"
+  >
     <ng-container ngProjectAs="label">
       <ui-icon
         icon="bolt"
@@ -57,12 +75,13 @@
     <ng-template uiTabContent>
       <shared-tab-buttons
         class="flex flex-col h-full"
-        [formGroup]="formGroup"
+        [formGroup]="widgetFormGroup"
         [fields]="fields"
         [templates]="appTemplates"
         [distributionLists]="distributionLists"
         [relatedForms]="relatedForms"
         [channels]="channels"
+        (loadChannels)="getChannels()"
       ></shared-tab-buttons>
     </ng-template>
   </ui-tab>
@@ -74,7 +93,7 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-contextual-filters-settings
-        [form]="formGroup"
+        [form]="widgetFormGroup"
       ></shared-contextual-filters-settings>
     </ng-template>
   </ui-tab>
@@ -89,7 +108,7 @@
       <span>{{ 'models.widget.display.title' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-display-settings [formGroup]="formGroup">
+      <shared-display-settings [formGroup]="widgetFormGroup">
       </shared-display-settings>
     </ng-template>
   </ui-tab>
@@ -107,8 +126,8 @@
     <ng-template uiTabContent>
       <shared-sorting-settings
         [fields]="fields"
-        [formArray]="$any(formGroup.get('sortFields'))"
-        [formGroup]="formGroup"
+        [formArray]="widgetFormGroup.controls.sortFields"
+        [formGroup]="widgetFormGroup"
       ></shared-sorting-settings>
     </ng-template>
   </ui-tab>

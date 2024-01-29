@@ -6,6 +6,8 @@ import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constan
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
+/** Prefix for aggregation keys */
+const AGGREGATION_PREFIX = '{{aggregation.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
 /** Prefix for avatar keys */
@@ -16,35 +18,70 @@ const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp'];
 const PLACEHOLDER_SUFFIX = '}}';
 
 /**
+ * Flattens the fields array, to also include the subfields of objects.
+ *
+ * @param fields Fields to flatten
+ * @param path Current path to the field
+ * @returns The flattened fields array
+ */
+const getFlatFields = (fields: any, path = ''): any => {
+  const flatFields: any = [];
+
+  fields.forEach((field: any) => {
+    flatFields.push({
+      ...field,
+      name: path + field.name,
+    });
+
+    // If an object, also include its subfields as data keys
+    if (field.kind === 'OBJECT') {
+      flatFields.push(...getFlatFields(field.fields, path + field.name + '.'));
+    } else if (field.kind === 'LIST') {
+      flatFields.push(
+        ...getFlatFields(field.fields, path + field.name + '.[0].')
+      );
+    }
+  });
+
+  return flatFields;
+};
+
+/**
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
  *
  * @param html The html text.
- * @param fieldsValue Field value.
- * @param fields Available fields.
- * @param pages list of application pages
- * @param styles Array of layout styles.
+ * @param options options
+ * @param options.data available data
+ * @param options.aggregation available aggregation data
+ * @param options.fields Available fields.
+ * @param options.pages list of application pages
+ * @param options.styles Array of layout styles.
  * @returns The parsed html.
  */
 export const parseHtml = (
   html: string,
-  fieldsValue: any,
-  fields: any,
-  pages: any[],
-  styles?: any[]
-) => {
-  const htmlWithLinks = replacePages(html, pages);
-  if (fieldsValue) {
-    const htmlWithRecord = replaceRecordFields(
-      htmlWithLinks,
-      fieldsValue,
-      fields,
-      styles
-    );
-    return applyOperations(htmlWithRecord);
-  } else {
-    return applyOperations(htmlWithLinks);
+  options: {
+    data?: any;
+    aggregation?: any;
+    fields?: any;
+    pages: any[];
+    styles?: any[];
   }
+) => {
+  let formattedHtml = replacePages(html, options.pages);
+  if (options.aggregation) {
+    formattedHtml = replaceAggregationData(formattedHtml, options.aggregation);
+  }
+  if (options.data) {
+    formattedHtml = replaceRecordFields(
+      formattedHtml,
+      options.data,
+      getFlatFields(options.fields),
+      options.styles
+    );
+  }
+  return applyOperations(formattedHtml);
 };
 
 /**
@@ -111,10 +148,77 @@ const replaceRecordFields = (
 ): string => {
   let formattedHtml = html;
   if (fields) {
+    // Regular expression for detecting when ="{{data.*}}" is used and
+    // we should not interpret it, but keep the default attribute value
+    const attributeRegex = /([a-zA-Z]+)="{{data\.(.*?)}}"/g;
+
+    // Replace attributes with data binding expressions
+    formattedHtml = formattedHtml.replace(
+      attributeRegex,
+      (match, attributeName, dataFieldName) => {
+        // Check if it's an attribute with data binding
+        if (attributeName && dataFieldName) {
+          // Replace the attribute with the corresponding value
+          const value = get(fieldsValue, dataFieldName);
+          return !isNil(value) ? `${attributeName}="${value}"` : match;
+        } else {
+          // Return the original match if not a data binding attribute
+          return match;
+        }
+      }
+    );
+
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
+    // We check for LIST fields and duplicate their only element for each subfield
+    const listFields = fields.filter((field: any) => field.kind === 'LIST');
+    listFields.forEach((field: any) => {
+      const subFields = fields.filter((subField: any) =>
+        subField.name.startsWith(field.name + '.[0]')
+      );
+
+      const length = get(fieldsValue, field.name)?.length ?? 0;
+      // Start from 1 because we already have the first element (the one being used as a template)
+      for (let i = 1; i < length; i++) {
+        subFields.forEach((subField: any) => {
+          const subFieldName = subField.name.replace(
+            `${field.name}.[0]`,
+            `${field.name}.[${i}]`
+          );
+          fields.push({
+            ...subField,
+            name: subFieldName,
+          });
+        });
+      }
+    });
+
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      const toReadableObject = (obj: any): any => {
+        // If value exists keep checking
+        if (obj) {
+          if (typeof obj === 'object') {
+            // If array, return mapped elements
+            if (Array.isArray(obj)) {
+              return obj.map((o) => toReadableObject(o)).join('<br>');
+            } else {
+              // If object, return object keys and values as strings
+              return Object.keys(obj)
+                .filter((key) => key !== '__typename')
+                .map((key) => `${key}: ${obj[key]}`)
+                .join(', ');
+            }
+          } else {
+            // If not an object, return string representation
+            return `${obj}`;
+          }
+        }
+        // Return default undefined/null value if no obj
+        return obj;
+      };
+
+      const value = toReadableObject(get(fieldsValue, field.name));
+
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       // Inject avatars
@@ -242,9 +346,10 @@ const replaceRecordFields = (
             break;
           case 'file':
             convertedValue = '';
-            if (isArray(value)) {
-              for (let i = 0; value[i]; ) {
-                const file = value[i];
+            const fileArray = get(fieldsValue, field.name);
+            if (isArray(fileArray)) {
+              for (let i = 0; fileArray[i]; ) {
+                const file = fileArray[i];
                 const fileExt = file.name.split('.').pop();
                 const fileIcon =
                   fileExt && ICON_EXTENSIONS[fileExt]
@@ -267,7 +372,6 @@ const replaceRecordFields = (
                   </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
               }
             }
-
             break;
           case 'owner':
           case 'users':
@@ -319,18 +423,23 @@ const replaceRecordFields = (
             break;
           }
           default:
+            const formattedValue = applyLayoutFormat(value, field);
             convertedValue = style
-              ? `<span style='${style}'>${applyLayoutFormat(
-                  value,
-                  field
-                )}</span>`
-              : applyLayoutFormat(value, field) || '';
+              ? `<span style='${style}'>${formattedValue}</span>`
+              : isNil(formattedValue)
+              ? ''
+              : formattedValue;
             break;
         }
       }
 
+      const escapeFieldNameForRegex = (fieldName: string): string =>
+        fieldName.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+
       const regex = new RegExp(
-        `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
+        `${DATA_PREFIX}${escapeFieldNameForRegex(
+          field.name
+        )}${PLACEHOLDER_SUFFIX}`,
         'gi'
       );
       formattedHtml = formattedHtml.replace(regex, convertedValue);
@@ -340,10 +449,37 @@ const replaceRecordFields = (
       );
       formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
+
+    const regex = /{{data\.(.*?)}}/g;
+    const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+      // Replace the key with correct value
+      return get(fieldsValue, p1, '');
+    });
+    formattedHtml = replacedHtml;
   }
   // replace all /n, removing it since we don't need because tailwind already styles it
   formattedHtml = formattedHtml.replace(/\n/g, '');
+  return formattedHtml;
+};
 
+/**
+ * Replace aggregation placeholders in template with aggregation data
+ *
+ * @param html html template
+ * @param aggregation aggregation data
+ * @returns formatted html
+ */
+const replaceAggregationData = (html: string, aggregation: any): string => {
+  let formattedHtml = html;
+
+  const regex = /{{aggregation\.(.*?)}}/g;
+  const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+    // Replace the key with correct value
+    return get(aggregation, p1, '');
+  });
+  formattedHtml = replacedHtml;
+  // replace all /n, removing it since we don't need because tailwind already styles it
+  formattedHtml = formattedHtml.replace(/\n/g, '');
   return formattedHtml;
 };
 
@@ -412,11 +548,27 @@ const applyOperations = (html: string): string => {
  * @param fields Array of fields.
  * @returns list of data keys
  */
-export const getDataKeys = (fields: any): { value: string; text: string }[] =>
-  fields.map((field: any) => ({
+export const getDataKeys = (fields: any): { value: string; text: string }[] => {
+  return getFlatFields(fields).map((field: any) => ({
     value: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
     text: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
   }));
+};
+
+/**
+ * Returns an array with the keys for aggregation autocompletion.
+ *
+ * @param aggregations Array of aggregations.
+ * @returns list of aggregation keys
+ */
+export const getAggregationKeys = (
+  aggregations: any[]
+): { value: string; text: string }[] => {
+  return aggregations.map((aggregation: any) => ({
+    value: AGGREGATION_PREFIX + aggregation.id + PLACEHOLDER_SUFFIX,
+    text: AGGREGATION_PREFIX + aggregation.name + PLACEHOLDER_SUFFIX,
+  }));
+};
 
 /**
  * Returns an array with the calc operations keys.
@@ -449,34 +601,31 @@ export const getPageKeys = (
 /**
  * Applies layout field format ignoring html tags
  *
- * @param name Original value of the field
+ * @param value Original value of the field
  * @param field Field information, used to get field name and format
  * @returns Formatted field value
  */
-export const applyLayoutFormat = (
-  name: string | null,
-  field: any
-): string | null => {
+export const applyLayoutFormat = (value: any, field: any): any => {
   // replaces value for label, if it exists
   if (field.options)
-    name = field.options.find((o: any) => o.value === name)?.text || name;
+    value = field.options.find((o: any) => o.value === value)?.text || value;
 
-  if (name && field.layoutFormat && field.layoutFormat.length > 1) {
+  if (value && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(
       `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
       'gi'
     );
-    const value = field.layoutFormat
+    const formattedValue = field.layoutFormat
       .replace(/<(.|\n)*?>/g, '')
-      .replace(regex, name);
-    return applyOperations(value);
+      .replace(regex, value);
+    return applyOperations(formattedValue);
   } else {
-    return name;
+    return value;
   }
 };
 
 /**
- * Loops throught the layout styles and returns the last style that pass the filters
+ * Loops through the layout styles and returns the last style that pass the filters
  *
  * @param layouts Array of layout styles
  * @param key The key of the actual property in the html

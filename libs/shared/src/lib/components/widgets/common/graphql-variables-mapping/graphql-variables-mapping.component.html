@@ -1,0 +1,43 @@
+<div class="inline-grid	w-full">
+  <span class="flex gap-2 mb-4 items-center">
+    <h3 class="mb-0">
+      {{
+        'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.title'
+          | translate
+      }}
+    </h3>
+    <ui-icon
+      icon="info_outline"
+      variant="grey"
+      [size]="18"
+      class="cursor-help"
+      [uiTooltip]="
+        'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.tooltip'
+          | translate
+      "
+    ></ui-icon>
+    <ui-button class="ml-auto" category="secondary" (click)="refresh(true, true)">
+      {{
+        'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.refresh'
+          | translate
+      }}
+    </ui-button>
+  </span>
+  <ui-alert *ngIf="availableQueryVariables.length > 0">{{
+    'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.help'
+      | translate
+  }}</ui-alert>
+<ngx-monaco-editor
+  *ngIf="availableQueryVariables.length > 0"
+    class="!h-full !w-full min-h-[200px] min-w-[200px]"
+    [formControl]="control"
+    [options]="editorOptions"
+  ></ngx-monaco-editor>
+  <shared-empty
+    *ngIf="availableQueryVariables.length === 0"
+    [title]="
+      'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.noVariables'
+        | translate
+    "
+  ></shared-empty>
+</div>

@@ -3,12 +3,14 @@ import { Apollo } from 'apollo-angular';
 import {
   catchError,
   filter,
+  first,
   forkJoin,
   lastValueFrom,
   map,
   mergeMap,
   Observable,
   of,
+  switchMap,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -21,7 +23,6 @@ import {
   LayerQueryResponse,
   LayersQueryResponse,
 } from '../../models/layer.model';
-import { Resource } from '../../models/resource.model';
 import { RestService } from '../rest/rest.service';
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 import { AggregationBuilderService } from '../aggregation-builder/aggregation-builder.service';
@@ -33,6 +34,7 @@ import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { MapPolygonsService } from './map-polygons.service';
 
 /**
  * Shared map layer service
@@ -42,13 +44,14 @@ import { DOCUMENT } from '@angular/common';
 })
 export class MapLayersService {
   /**
-   * Class constructor
+   * Shared map layer service
    *
    * @param apollo Apollo client instance
    * @param restService RestService
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
+   * @param mapPolygonsService Shared map polygons service
    * @param document document
    */
   constructor(
@@ -57,6 +60,7 @@ export class MapLayersService {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
     private contextService: ContextService,
+    private mapPolygonsService: MapPolygonsService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -164,13 +168,26 @@ export class MapLayersService {
   /**
    * Get the layers
    *
+   * @param ids id array
    * @returns Observable of layer
    */
-  public getLayers(): Observable<LayerModel[]> {
+  public getLayers(ids: string[]): Observable<LayerModel[]> {
     return this.apollo
       .query<LayersQueryResponse>({
         query: GET_LAYERS,
-        variables: {},
+        variables: {
+          sortField: 'name',
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: ids,
+              },
+            ],
+          },
+        },
       })
       .pipe(
         filter((response) => !!response.data),
@@ -196,17 +213,17 @@ export class MapLayersService {
   /**
    * Get fields from aggregation
    *
-   * @param resource A resource
+   * @param queryName query name to get the fields
    * @param aggregation A aggregation
    * @returns aggregation fields
    */
   public getAggregationFields(
-    resource: Resource | null,
+    queryName: string,
     aggregation: Aggregation | null
   ) {
     //@TODO this part should be refactored
     // Get fields
-    const fields = this.getAvailableSeriesFields(resource);
+    const fields = this.getAvailableSeriesFields(queryName);
     const selectedFields = aggregation?.sourceFields
       .map((x: string) => {
         const field = fields.find((y) => x === y.name);
@@ -240,11 +257,11 @@ export class MapLayersService {
   /**
    * Set available series fields, from resource fields and aggregation definition.
    *
-   * @param resource A resource
+   * @param queryName query name to get the fields
    */
-  private getAvailableSeriesFields(resource: Resource | null): any[] {
+  private getAvailableSeriesFields(queryName: string): any[] {
     return this.queryBuilder
-      .getFields(resource?.queryName as string)
+      .getFields(queryName as string)
       .filter(
         (field: any) =>
           !(
@@ -254,8 +271,6 @@ export class MapLayersService {
           )
       );
   }
-
-  // ================= LAYER CREATION ==================== //
 
   /**
    * Format given settings for Layer class
@@ -309,6 +324,47 @@ export class MapLayersService {
   }
 
   /**
+   * Format given settings for Layer class
+   *
+   * @param layerIds layer settings saved from the layer editor
+   * @param injector Injector containing all needed providers for layer class
+   * @returns Observable of LayerSettingsI
+   */
+  async createLayersFromId(
+    layerIds: string,
+    injector: Injector
+  ): Promise<Layer> {
+    const promise: Promise<Layer> = lastValueFrom(
+      this.getLayerById(layerIds).pipe(
+        mergeMap((layer: LayerModel) => {
+          if (this.isDatasourceValid(layer.datasource)) {
+            // Get the current layer + its geojson
+            return forkJoin({
+              layer: of(layer),
+              geojson: this.getLayerGeoJson(layer),
+            });
+          } else {
+            return of({
+              layer,
+              geojson: EMPTY_FEATURE_COLLECTION,
+            });
+          }
+        }),
+        map(
+          (layer: { layer: LayerModel; geojson: any }) =>
+            new Layer(
+              { ...layer.layer, geojson: layer.geojson },
+              injector,
+              this.document
+            )
+        )
+      )
+    );
+
+    return promise;
+  }
+
+  /**
    * Create layer from its definition
    *
    * @param layer Layer to get definition of.
@@ -344,18 +400,30 @@ export class MapLayersService {
    */
   async getLayerGeoJson(layer: LayerModel) {
     const contextFilters = layer.contextFilters
-      ? this.contextService.injectDashboardFilterValues(
-          JSON.parse(layer.contextFilters)
-        )
+      ? this.contextService.injectContext(JSON.parse(layer.contextFilters))
       : {};
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)
       : undefined;
+    const graphQLVariables = () => {
+      try {
+        let mapping = JSON.parse(
+          layer.datasource?.referenceDataVariableMapping || ''
+        );
+        mapping = this.contextService.replaceContext(mapping);
+        mapping = this.contextService.replaceFilter(mapping);
+        this.contextService.removeEmptyPlaceholders(mapping);
+        return mapping || {};
+      } catch {
+        return {};
+      }
+    };
     const params = new HttpParams({
       fromObject: omitBy(
         {
           ...layer.datasource,
           contextFilters: JSON.stringify(contextFilters),
+          graphQLVariables: JSON.stringify(graphQLVariables()),
           ...(at && {
             at: at.toString(),
           }),
@@ -363,13 +431,49 @@ export class MapLayersService {
         isNil
       ),
     });
-    return lastValueFrom(
-      this.restService
-        .get(`${this.restService.apiUrl}/gis/feature`, { params })
-        .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION)))
-    );
+    // Method to get layer from definition
+    // Query is sent to the back-end to fetch correct data
+    const getLayer = () => {
+      return lastValueFrom(
+        this.restService
+          .get(`${this.restService.apiUrl}/gis/feature`, { params })
+          .pipe(
+            map((value) => {
+              // When using adminField mapping, update the feature so geometry is replaced with according polygons
+              if (layer.datasource?.adminField) {
+                return this.mapPolygonsService.assignPolygons(
+                  value,
+                  layer.datasource.adminField as any
+                );
+              } else {
+                // Else, directly returns the feature layer
+                return value;
+              }
+            }),
+            // On error, returns a default geojson
+            catchError(() => of(EMPTY_FEATURE_COLLECTION))
+          )
+      );
+    };
+    // When using adminField, first make sure the polygons are fetched
+    if (layer.datasource?.adminField) {
+      return lastValueFrom(
+        this.mapPolygonsService.admin0sReady$.pipe(
+          first((v) => v),
+          switchMap(() => getLayer())
+        )
+      );
+    } else {
+      return getLayer();
+    }
   }
 
+  /**
+   * Check if the datasource is valid
+   *
+   * @param value datasource
+   * @returns true if the datasource is valid
+   */
   private isDatasourceValid = (value: LayerDatasource | undefined) => {
     if (value) {
       if (value.refData) {

@@ -10,12 +10,14 @@
   [header]="header"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
+  [menuOpened]="!hideMenu"
 ></shared-layout>
 <ng-template #header>
   <app-application-header
     [title]="title"
     [navItems]="adminNavItems"
     [canUpdate]="application?.canUpdate!"
+    class="overflow-hidden"
   ></app-application-header>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->

@@ -1,14 +1,20 @@
-<ui-dialog [padding]="false" class="!p-0">
+<ui-dialog [resizable]="true">
+  <ng-container ngProjectAs="header">
+    <h3>{{ 'common.history' | translate }}</h3>
+  </ng-container>
   <ng-container ngProjectAs="content">
     <shared-record-history
       class="max-h-screen"
       (cancel)="closeModal($event)"
       [id]="data.id"
       [revert]="data.revert"
+      [template]="data.template"
+      [refresh$]="data.refresh$"
+      [showHeader]="false"
     ></shared-record-history>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
   </ng-container>

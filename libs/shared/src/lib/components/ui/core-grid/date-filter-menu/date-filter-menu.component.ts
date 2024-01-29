@@ -42,16 +42,27 @@ export class DateFilterMenuComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Field */
   @Input() public field = '';
+  /** Filter */
   @Input() public filter: any;
+  /** Field value */
   @Input() public valueField = '';
+  /** Filter service */
   @Input() public filterService?: FilterService;
+  /** Field format */
+  @Input() public format = 'dd/MM/yy HH:mm';
 
+  /** Form */
   public form!: ReturnType<typeof this.createFormGroup>;
+  /** First date mode */
   public firstDateMode = 'date';
+  /** Second date mode */
   public secondDateMode = 'date';
 
+  /** Operators list */
   public operatorsList: any[] = [];
+  /** Logics */
   public logics = [
     {
       text: this.translate.instant('kendo.grid.filterOrLogic'),
@@ -63,6 +74,7 @@ export class DateFilterMenuComponent
     },
   ];
 
+  /** Popup settings */
   public popupSettings: PopupSettings = {
     popupClass: 'date-range-filter',
   };

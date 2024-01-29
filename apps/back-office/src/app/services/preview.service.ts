@@ -6,6 +6,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class PreviewService {
+  /**
+   * The role id
+   */
   private roleId = new BehaviorSubject<string>('');
 
   /**

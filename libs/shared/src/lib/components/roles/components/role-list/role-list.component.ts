@@ -30,18 +30,27 @@ import { FormBuilder } from '@angular/forms';
 })
 export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   // === INPUT DATA ===
+  /** Whether the role list is in an application */
   @Input() inApplication = false;
 
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Roles */
   public roles: Array<any> = new Array<any>([]);
+  /** Filtered roles */
   public filteredRoles: Array<any> = new Array<any>([]);
+  /** Displayed columns */
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
   // === FILTERS ===
+  /** Whether the filters are shown or not */
   public showFilters = false;
+  /** Form */
   form = this.fb.group({});
+  /** Search text */
   public searchText = '';
+  /** Users filter */
   public usersFilter = '';
 
   /**

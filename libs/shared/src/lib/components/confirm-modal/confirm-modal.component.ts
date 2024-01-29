@@ -28,10 +28,15 @@ interface DialogData {
   styleUrls: ['./confirm-modal.component.scss'],
 })
 export class ConfirmModalComponent {
+  /** Title of the modal */
   public title: string;
+  /** Content of the modal */
   public content: string;
+  /** Text of the cancel button */
   public cancelText: string;
+  /** Text of the confirm button */
   public confirmText: string;
+  /** Variant of the confirm button */
   public confirmVariant: Variant = 'primary';
 
   /**

@@ -1,109 +1,145 @@
 <div [formGroup]="form">
   <div class="w-full flex flex-col">
-    <!-- RESOURCE SELECTION  -->
-    <div uiFormFieldDirective fxFlex>
-      <label>{{ 'models.resource.select' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="resourcesQuery"
-        formControlName="resource"
-        [selectedElements]="[selectedResource]"
-        (searchChange)="onResourceSearchChange($event)"
-        [filterable]="true"
-      ></ui-graphql-select>
-    </div>
-
-    <div uiFormFieldDirective *ngIf="!selectedLayout">
-      <label>{{
-        'components.widget.settings.grid.layouts.select' | translate
-      }}</label>
-      <ui-select-menu
-        [disabled]="!selectedResource"
-        (click)="$event.preventDefault(); addLayout()"
-      >
-      </ui-select-menu>
-    </div>
-
-    <div uiFormFieldDirective *ngIf="selectedLayout">
-      <label>{{
-        'components.widget.settings.grid.layouts.select' | translate
-      }}</label>
-      <ui-select-menu [disabled]="true" [value]="selectedLayout.id">
-        <ui-select-option [value]="selectedLayout.id">{{
-          selectedLayout.name
-        }}</ui-select-option>
-      </ui-select-menu>
-      <ui-button
-        uiSuffix
-        variant="primary"
-        [isIcon]="true"
-        icon="edit"
-        (click)="editLayout()"
-        [uiTooltip]="'common.edit' | translate"
-      ></ui-button>
-      <ui-button
-        uiSuffix
-        variant="danger"
-        [isIcon]="true"
-        icon="close"
-        (click)="deselectLayout()"
-        [uiTooltip]="'common.remove' | translate"
-      ></ui-button>
-    </div>
-
-    <ng-container *ngIf="selectedLayout && selectedRecordID">
-      <h2>
-        {{
-          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
-            | translate
-        }}
-      </h2>
-      <ui-checkbox formControlName="useStyles">
-        <ng-container ngProjectAs="label">
-          {{
-            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
-              | translate
-          }}
-        </ng-container>
-      </ui-checkbox>
-      <div *ngIf="this.form.value.useStyles">
-        <p>
-          {{
-            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
-              | translate
-          }}
-        </p>
-        <div
-          uiRadioGroupDirective="applyStyles"
-          formControlName="wholeCardStyles"
-        >
-          <ui-radio [value]="false">
-            <ng-container ngProjectAs="label">
-              {{
-                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
-                  | translate
-              }}
-            </ng-container>
-          </ui-radio>
-          <ui-radio [value]="true">
-            <ng-container ngProjectAs="label">
-              {{
-                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
-                  | translate
-              }}
-            </ng-container>
-          </ui-radio>
-        </div>
+    <div class="flex-1 flex-col">
+      <!-- Reference data selection  -->
+      <div uiFormFieldDirective class="flex-1" *ngIf="!form.value.resource">
+        <label>{{ 'models.referenceData.select' | translate }}</label>
+        <shared-reference-data-select
+          formControlName="referenceData"
+          [selectedElements]="[referenceData]"
+        ></shared-reference-data-select>
+        <ui-button
+          *ngIf="form.value.referenceData"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('referenceData', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
       </div>
+      <ui-divider
+        class="max-w-xs m-auto"
+        [text]="'common.or' | translate"
+        *ngIf="!form.value.resource && !form.value.referenceData"
+      ></ui-divider>
+      <!-- RESOURCE SELECTION  -->
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        *ngIf="!form.value.referenceData"
+      >
+        <label>{{ 'models.resource.select' | translate }}</label>
+        <shared-resource-select
+          formControlName="resource"
+          [selectedElements]="[resource]"
+        ></shared-resource-select>
+        <ui-button
+          *ngIf="form.value.resource"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('resource', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+    </div>
+
+    <ng-container *ngIf="resource">
+      <div uiFormFieldDirective *ngIf="!layout">
+        <label>{{
+          'components.widget.settings.grid.layouts.select' | translate
+        }}</label>
+        <ui-select-menu
+          [disabled]="!resource"
+          (click)="$event.preventDefault(); addLayout()"
+        >
+        </ui-select-menu>
+      </div>
+
+      <div uiFormFieldDirective *ngIf="layout">
+        <label>{{
+          'components.widget.settings.grid.layouts.select' | translate
+        }}</label>
+        <ui-select-menu [disabled]="true" [value]="layout.name">
+          <ui-select-option [value]="layout.name">{{
+            layout.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editLayout()"
+          [uiTooltip]="'common.edit' | translate"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="deselectLayout()"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+
+      <ng-container *ngIf="layout && selectedRecordID">
+        <h2>
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
+              | translate
+          }}
+        </h2>
+        <ui-checkbox formControlName="useStyles">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
+                | translate
+            }}
+          </ng-container>
+        </ui-checkbox>
+        <div *ngIf="this.form.value.useStyles">
+          <p>
+            {{
+              'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
+                | translate
+            }}
+          </p>
+          <div
+            uiRadioGroupDirective="applyStyles"
+            formControlName="wholeCardStyles"
+          >
+            <ui-radio [value]="false">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
+                    | translate
+                }}
+              </ng-container>
+            </ui-radio>
+            <ui-radio [value]="true">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
+                    | translate
+                }}
+              </ng-container>
+            </ui-radio>
+          </div>
+        </div>
+      </ng-container>
     </ng-container>
   </div>
 
-  <div class="flex flex-col mt-2" *ngIf="selectedLayout">
+  <div class="flex flex-col mt-2" *ngIf="resource && layout">
     <h2>{{ 'models.record.select' | translate }}</h2>
     <shared-core-grid
       class="h-96"
-      [settings]="selectedLayout"
+      [settings]="layout"
       [multiSelect]="false"
       [selectable]="true"
       [showExport]="false"
@@ -111,5 +147,21 @@
       (selectionChange)="onSelectionChange($event)"
     >
     </shared-core-grid>
+  </div>
+
+  <div class="flex flex-col mt-2" *ngIf="referenceData">
+    <div uiFormFieldDirective>
+      <label>{{
+        'models.dashboard.context.refData.element' | translate
+      }}</label>
+      <ui-select-menu formControlName="element" [filterable]="true">
+        <ui-select-option
+          *ngFor="let element of refDataElements"
+          [value]="element[$any(referenceData.valueField)]"
+        >
+          {{ element[$any(referenceData.valueField)] }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
 </div>

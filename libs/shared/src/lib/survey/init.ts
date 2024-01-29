@@ -33,6 +33,15 @@ import {
   CustomPropertyGridEditors,
 } from './components/utils/components.enum';
 
+/** Name of the custom components we add to the survey */
+const CUSTOM_COMPONENTS = [
+  'resource',
+  'resources',
+  'owner',
+  'users',
+  'geospatial',
+];
+
 /**
  * Executes all init methods of custom SurveyJS.
  *
@@ -57,7 +66,17 @@ export const initCustomSurvey = (
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
     CustomWidgetCollection.Instance.clear();
+
+    // Save default items to be restored later
+    const defaultItems = ComponentCollection.Instance.items.filter(
+      (i) => !CUSTOM_COMPONENTS.includes(i.name)
+    );
+
+    // Clear all items
     ComponentCollection.Instance.clear();
+
+    // Add default items back
+    defaultItems.forEach((item) => ComponentCollection.Instance.add(item.json));
   }
 
   TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
@@ -102,7 +121,7 @@ export const initCustomSurvey = (
       document
     );
     OwnerComponent.init(apollo, ComponentCollection.Instance);
-    UsersComponent.init(apollo, ComponentCollection.Instance);
+    UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
   }
 

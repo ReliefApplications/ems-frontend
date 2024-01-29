@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
+import { WidgetSettings } from '../../../models/dashboard.model';
 
 /**
  * Chart settings component
@@ -13,57 +14,65 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
   styleUrls: ['./chart-settings.component.scss'],
 })
 /** Modal content for the settings of the chart widgets. */
-export class ChartSettingsComponent implements OnInit {
-  // === REACTIVE FORM ===
-  public formGroup!: UntypedFormGroup;
-
-  // === WIDGET ===
-  @Input() tile: any;
-
-  // === EMIT THE CHANGES APPLIED ===
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<any> = new EventEmitter();
-
-  // === DATA ===
+export class ChartSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit, WidgetSettings<typeof createChartWidgetForm>
+{
+  /** Widget definition */
+  @Input() widget: any;
+  /** Emit the applied change */
+  @Output() formChange: EventEmitter<ReturnType<typeof createChartWidgetForm>> =
+    new EventEmitter();
+  /** Widget form group */
+  public widgetFormGroup!: ReturnType<typeof createChartWidgetForm>;
+  /** Available chart types */
   public types = CHART_TYPES;
+  /** Current chart type */
   public type: any;
 
-  // === DISPLAY PREVIEW ===
-  public settings: any;
-  public grid: any;
-
-  /** @returns the form for the chart */
-  public get chartForm(): UntypedFormGroup {
-    return (this.formGroup?.controls.chart as UntypedFormGroup) || null;
+  /** @returns Chart form */
+  public get chartForm() {
+    return this.widgetFormGroup?.controls.chart;
   }
 
-  /** Stores the selected tab */
-  public selectedTab = 0;
+  /** @returns Chart's legend form */
+  public get legendForm() {
+    return this.chartForm?.controls.legend;
+  }
 
-  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.formGroup = extendWidgetForm(
-      createChartWidgetForm(this.tile.id, this.tile.settings),
-      this.tile.settings?.widgetDisplay
-    );
+    if (!this.widgetFormGroup) {
+      this.buildSettingsForm();
+    }
     this.type = this.types.find((x) => x.name === this.chartForm.value.type);
-    this.change.emit(this.formGroup);
 
-    this.formGroup?.valueChanges.subscribe(() => {
-      this.change.emit(this.formGroup);
-    });
+    this.widgetFormGroup.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.widgetFormGroup.markAsDirty({ onlySelf: true });
+        this.formChange.emit(this.widgetFormGroup);
+      });
 
-    this.chartForm.controls.type.valueChanges.subscribe((value) => {
-      this.type = this.types.find((x) => x.name === value);
-    });
+    this.chartForm.controls.type.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.type = this.types.find((x) => x.name === value);
+      });
+
+    this.legendForm.controls.position.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.legendForm.controls.visible.patchValue(value !== 'none');
+      });
   }
 
   /**
-   *  Handles the a tab change event
-   *
-   * @param event Event triggered on tab switch
+   * Build the settings form, using the widget saved parameters
    */
-  handleTabChange(event: number): void {
-    this.selectedTab = event;
+  public buildSettingsForm() {
+    this.widgetFormGroup = createChartWidgetForm(
+      this.widget.id,
+      this.widget.settings
+    );
   }
 }

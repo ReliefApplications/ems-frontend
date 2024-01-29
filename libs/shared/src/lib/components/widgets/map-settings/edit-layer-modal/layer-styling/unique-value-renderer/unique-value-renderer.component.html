@@ -13,7 +13,9 @@
   <!-- Unique values -->
   <div>
     <div class="flex gap-1 items-center mb-2">
-      <h2 class="m-0">{{ 'common.value.none' | translate }}</h2>
+      <h2 class="m-0">{{
+        'components.widget.settings.map.renderer.uniqueValue' | translate
+      }}</h2>
       <ui-button
         (click)="onAddInfo()"
         [isIcon]="true"
@@ -34,22 +36,60 @@
         class="hover:bg-gray-50 p-4 flex flex-col divide-y divide-gray-100"
         cdkDrag
       >
-        <ng-container *ngIf="index === openedIndex">
-          <ng-container
-            *ngTemplateOutlet="
-              openedTemplate;
-              context: { form: uniqueValueInfos.at(index) }
-            "
-          ></ng-container>
-        </ng-container>
-        <ng-container *ngIf="index !== openedIndex">
-          <ng-container
-            *ngTemplateOutlet="
-              defaultTemplate;
-              context: { value: uniqueValueInfos.at(index).value, index: index }
-            "
-          ></ng-container>
-        </ng-container>
+        <!-- header -->
+        <div
+          class="flex justify-between items-center w-full"
+          [ngClass]="{ 'pb-2': index === openedIndex }"
+        >
+          <div class="flex flex-1 gap-4 items-center cursor-pointer">
+            <ui-icon
+              cdkDragHandle
+              icon="drag_indicator"
+              variant="grey"
+              class="cursor-move"
+            ></ui-icon>
+            <div
+              class="flex flex-1 gap-2 items-center"
+              (click)="openedIndex = openedIndex === index ? -1 : index"
+            >
+              <span [innerHTML]="svgIcons[index] | sharedSanitizeHtml"></span>
+              <span
+                >{{ index }} -
+                {{ uniqueValueInfos.at(index).value.label }}</span
+              >
+            </div>
+          </div>
+          <ui-button
+            (click)="onRemoveInfo(index)"
+            [isIcon]="true"
+            icon="delete"
+            variant="danger"
+            [uiTooltip]="'common.delete' | translate"
+          ></ui-button>
+        </div>
+        <!-- body -->
+        <div
+          [formGroup]="$any(uniqueValueInfos.at(index))"
+          class="flex flex-col pt-2 w-full"
+          *ngIf="index === openedIndex"
+        >
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.widget.settings.map.renderer.label' | translate
+            }}</label>
+            <input formControlName="label" type="text" />
+          </div>
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.widget.settings.map.renderer.value' | translate
+            }}</label>
+            <input formControlName="value" type="text" />
+          </div>
+          <shared-simple-renderer
+            [geometryType]="geometryType"
+            [formGroup]="$any(uniqueValueInfos.at(index).get('symbol'))"
+          ></shared-simple-renderer>
+        </div>
       </li>
     </ul>
   </div>
@@ -70,67 +110,3 @@
     ></shared-simple-renderer>
   </div>
 </div>
-
-<!-- Opened unique value template -->
-<ng-template #openedTemplate let-form="form" let-index="index">
-  <div class="pb-2">
-    <ng-container
-      *ngTemplateOutlet="
-        headerTemplate;
-        context: { value: form.value, index: index }
-      "
-    ></ng-container>
-  </div>
-  <div [formGroup]="form" class="flex flex-col pt-2">
-    <div uiFormFieldDirective>
-      <label>{{
-        'components.widget.settings.map.renderer.label' | translate
-      }}</label>
-      <input formControlName="label" type="text" />
-    </div>
-    <div uiFormFieldDirective>
-      <label>{{
-        'components.widget.settings.map.renderer.value' | translate
-      }}</label>
-      <input formControlName="value" type="text" />
-    </div>
-    <shared-simple-renderer
-      [geometryType]="geometryType"
-      [formGroup]="form.get('symbol')"
-    ></shared-simple-renderer>
-  </div>
-</ng-template>
-
-<!-- Default unique value template -->
-<ng-template #defaultTemplate let-value="value" let-index="index">
-  <ng-container
-    *ngTemplateOutlet="headerTemplate; context: { value: value, index: index }"
-  ></ng-container>
-</ng-template>
-
-<!-- Unique value header template -->
-<ng-template #headerTemplate let-value="value" let-index="index">
-  <div class="flex justify-between items-center">
-    <div class="flex flex-1 gap-4 items-center cursor-pointer">
-      <ui-icon
-        cdkDraghandle
-        icon="drag_indicator"
-        variant="grey"
-        class="cursor-move"
-      ></ui-icon>
-      <div class="flex flex-1 gap-2 items-center" (click)="openedIndex = index">
-        <span
-          [innerHTML]="svgIcons[value.symbol.style] | sharedSanitizeHtml"
-        ></span>
-        <span>{{ value.label }}</span>
-      </div>
-    </div>
-    <ui-button
-      (click)="onRemoveInfo(index)"
-      [isIcon]="true"
-      icon="delete"
-      variant="danger"
-      [uiTooltip]="'common.delete' | translate"
-    ></ui-button>
-  </div>
-</ng-template>

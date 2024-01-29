@@ -30,7 +30,7 @@ const DISABLED_FIELDS = [
 
 /**
  * Shared grid service for the dashboards.
- * Exposes the available tiles, and find the settings from a widget.
+ * Exposes the available widgets, and find the settings from a widget.
  */
 @Injectable({
   providedIn: 'root',
@@ -38,7 +38,7 @@ const DISABLED_FIELDS = [
 export class GridService {
   /**
    * Shared grid service for the dashboards.
-   * Exposes the available tiles, and find the settings from a widget.
+   * Exposes the available wigets, and find the settings from a widget.
    *
    * @param fb Angular form builder
    * @param apiProxyService Shared API proxy service
@@ -117,6 +117,7 @@ export class GridService {
                 disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
                 hidden: hidden || cachedField?.hidden || false,
                 width: cachedField?.width || title.length * 7 + 50,
+                fixedWidth: f.width, // width used to overwrite autocalculation
                 order: cachedField?.order,
                 query: {
                   sort: f.sort,
@@ -171,6 +172,7 @@ export class GridService {
               disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
+              fixedWidth: f.width, // width used to overwrite autocalculation
               order: cachedField?.order,
               query: {
                 sort: f.sort,
@@ -202,6 +204,7 @@ export class GridService {
                 get(metaData, 'isCalculated', false),
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
+              fixedWidth: f.width, // width used to overwrite autocalculation
               order: cachedField?.order,
               canSee,
             };

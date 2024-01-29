@@ -9,12 +9,14 @@ export const EDIT_DASHBOARD = gql`
     $structure: JSON
     $name: String
     $buttons: [ButtonActionInputType]
+    $gridOptions: JSON
   ) {
     editDashboard(
       id: $id
       structure: $structure
       name: $name
       buttons: $buttons
+      gridOptions: $gridOptions
     ) {
       id
       name
@@ -35,6 +37,7 @@ export const EDIT_DASHBOARD = gql`
         }
       }
       buttons
+      gridOptions
       canSee
       canUpdate
       page {

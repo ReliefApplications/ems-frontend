@@ -10,60 +10,58 @@
       <ui-alert class="mb-6 text-sm">
         {{ 'models.dashboard.context.datasource.alert' | translate }}
       </ui-alert>
-      <!-- Origin -->
-      <div uiFormFieldDirective [outline]="false" class="mb-2">
-        <label>{{ 'models.dashboard.context.origin' | translate }}</label>
-        <ui-select-menu
-          formControlName="origin"
-          [placeholder]="'models.dashboard.context.selectOrigin' | translate"
+      <div class="flex-1 flex-col">
+        <!-- Reference data selection  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!form.value.resource"
         >
-          <ui-select-option value="resource">
-            {{ 'common.resource.one' | translate }}
-          </ui-select-option>
-          <ui-select-option value="refData">
-            {{ 'common.referenceData.one' | translate }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
-
-      <!-- Resource selection -->
-      <div
-        uiFormFieldDirective
-        class="grow"
-        *ngIf="form.get('origin')?.value === 'resource'"
-      >
-        <label>{{ 'common.resource.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="resourcesQuery"
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
-          formControlName="resource"
-          [selectedElements]="[resource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
+          <label>{{ 'models.referenceData.select' | translate }}</label>
+          <shared-reference-data-select
+            formControlName="refData"
+            [selectedElements]="[refData]"
+          ></shared-reference-data-select>
+          <!-- Remove value -->
+          <ui-button
+            *ngIf="form.value.refData"
+            uiSuffix
+            (click)="clearFormField('refData', $event)"
+            [isIcon]="true"
+            icon="close"
+            variant="danger"
+            [uiTooltip]="'common.remove' | translate"
+          ></ui-button>
+        </div>
+        <ui-divider
+          class="max-w-xs m-auto"
+          [text]="'common.or' | translate"
+          *ngIf="!form.value.resource && !form.value.refData"
+        ></ui-divider>
+        <!-- Resource selection  -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="!form.value.refData"
         >
-        </ui-graphql-select>
+          <label>{{ 'models.resource.select' | translate }}</label>
+          <shared-resource-select
+            formControlName="resource"
+            [selectedElements]="[resource]"
+          ></shared-resource-select>
+          <!-- Remove value -->
+          <ui-button
+            *ngIf="form.value.resource"
+            uiSuffix
+            (click)="clearFormField('resource', $event)"
+            [isIcon]="true"
+            icon="close"
+            variant="danger"
+            [uiTooltip]="'common.remove' | translate"
+          ></ui-button>
+        </div>
       </div>
-
-      <!-- Reference data selection  -->
-      <div
-        uiFormFieldDirective
-        class="grow"
-        *ngIf="form.get('origin')?.value === 'refData'"
-      >
-        <label>{{ 'common.referenceData.one' | translate }}</label>
-        <ui-graphql-select
-          *ngIf="refDatasQuery"
-          valueField="id"
-          textField="name"
-          [query]="refDatasQuery"
-          formControlName="refData"
-          [selectedElements]="[refData]"
-        >
-        </ui-graphql-select>
-      </div>
-
+      
       <!-- Field selection -->
       <div uiFormFieldDirective [outline]="false">
         <label>{{ 'models.dashboard.context.displayField' | translate }}</label>
@@ -93,7 +91,7 @@
   </ng-container>
 
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

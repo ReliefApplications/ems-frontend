@@ -93,7 +93,7 @@ export const init = (
       let pickerDiv: HTMLDivElement | null = null;
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
-        el.parentElement?.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+        el.parentElement?.querySelector('.k-input')?.parentElement?.remove(); // .k-input class is shared by the 3 types of picker
         // Remove the picker div whenever we switch question type, so it is not duplicated
         if (pickerDiv) {
           pickerDiv.remove();
@@ -126,6 +126,13 @@ export const init = (
               'top-0',
               'bottom-0'
             );
+
+            // disable the button if the question is read only
+            if (question.isReadOnly) {
+              button.disabled = true;
+              button.style.cursor = 'default';
+              button.classList.add('opacity-50');
+            }
 
             const icon = domService.appendComponentToBody(
               IconComponent,
@@ -184,19 +191,15 @@ export const init = (
             // Positioning the button inside the picker
             el.parentElement?.classList.add('relative');
             button.classList.add('absolute', 'right-7', 'z-10');
-            (question.survey as SurveyModel).onValueChanged.add(
-              (sender: any, options: any) => {
-                if (options.question.name === question.name) {
-                  if (options.question.value) {
-                    pickerInstance.writeValue(
-                      getDateDisplay(question.value, question.inputType)
-                    );
-                  } else {
-                    pickerInstance.writeValue(null as any);
-                  }
-                }
+            question.registerFunctionOnPropertyValueChanged('value', () => {
+              if (question.value) {
+                pickerInstance.writeValue(
+                  getDateDisplay(question.value, question.inputType)
+                );
+              } else {
+                pickerInstance.writeValue(null as any);
               }
-            );
+            });
             question.registerFunctionOnPropertyValueChanged(
               'readOnly',
               (value: boolean) => {

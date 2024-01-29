@@ -7,9 +7,11 @@ import {
   HostBinding,
   OnInit,
   OnDestroy,
-  Inject,
   TemplateRef,
   ElementRef,
+  Optional,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { ChartComponent } from '../widgets/chart/chart.component';
 import { EditorComponent } from '../widgets/editor/editor.component';
@@ -18,8 +20,8 @@ import { MapWidgetComponent } from '../widgets/map/map.component';
 import { SummaryCardComponent } from '../widgets/summary-card/summary-card.component';
 import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
-import { RestService } from '../../services/rest/rest.service';
-import { DOCUMENT } from '@angular/common';
+import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
+import { WidgetService } from '../../services/widget/widget.service';
 
 /** Component for the widgets */
 @Component({
@@ -27,10 +29,9 @@ import { DOCUMENT } from '@angular/common';
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
 })
-export class WidgetComponent implements OnInit, OnDestroy {
+export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /** Current widget definition */
   @Input() widget: any;
-  // todo: rename or delete
   /** Is widget in fullscreen mode */
   @Input() header = true;
   /** Can user update widget */
@@ -39,6 +40,29 @@ export class WidgetComponent implements OnInit, OnDestroy {
   @Input() headerLeftTemplate?: TemplateRef<any>;
   /** Template to display on the right of widget header */
   @Input() headerRightTemplate?: TemplateRef<any>;
+  /** Is fullscreen mode activated */
+  @Input() fullscreen = false;
+  /** Edit widget event emitter */
+  @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Change step workflow event emitter */
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  /** Id of the ticket. Visible in the dom */
+  @HostBinding()
+  id = `widget-${uuidv4()}`;
+  /** Reference to widget inner component */
+  @ViewChild('widgetContent')
+  widgetContentComponent!:
+    | ChartComponent
+    | GridWidgetComponent
+    | MapWidgetComponent
+    | EditorComponent
+    | SummaryCardComponent;
+  /** Html element containing widget custom style */
+  private customStyle?: HTMLStyleElement;
+  /** Previous position of the widget ( cols / x )  */
+  private previousPosition?: { cols: number; x: number };
+  /** Expanded state of the widget */
+  public expanded = false;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -49,69 +73,104 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** @returns should show widget header, based on widget settings */
+  /** @returns should widget show header, based on widget settings */
   get showHeader() {
-    return get(this.widget, 'settings.widgetDisplay.showHeader', true);
+    return get(this.widget, 'settings.widgetDisplay.showHeader') ?? true;
   }
 
-  private customStyle?: HTMLStyleElement;
+  /** @returns should widget show border, based on widget settings */
+  get showBorder() {
+    return get(this.widget, 'settings.widgetDisplay.showBorder') ?? true;
+  }
 
-  @HostBinding()
-  id = `widget-${uuidv4()}`;
+  /** @returns is widget expandable */
+  get expandable() {
+    return get(this.widget, 'settings.widgetDisplay.expandable') ?? false;
+  }
 
-  @ViewChild('widgetContent')
-  widgetContentComponent!:
-    | ChartComponent
-    | GridWidgetComponent
-    | MapWidgetComponent
-    | EditorComponent
-    | SummaryCardComponent;
+  /** @returns should show expand button, based on widget state & grid state */
+  get showExpand() {
+    return (
+      this.expandable &&
+      !this.canUpdate &&
+      !this.fullscreen &&
+      !this.grid.mobile &&
+      (this.widget.cols < this.grid.columns || this.expanded)
+    );
+  }
 
-  // === EMIT EVENT ===
-  @Output() edit: EventEmitter<any> = new EventEmitter();
-
-  // === STEP CHANGE FOR WORKFLOW ===
-  @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  /** @returns should widget use padding, based on widget settings */
+  get usePadding() {
+    return get(this.widget, 'settings.widgetDisplay.usePadding') ?? true;
+  }
 
   /**
    * Widget component
    *
-   * @param restService Shared rest service
-   * @param document document
    * @param elementRef reference to element
+   * @param grid Reference to parent gridster
+   * @param gridItem Reference to parent gridster item
+   * @param widgetService Shared widget service
    */
   constructor(
-    private restService: RestService,
-    @Inject(DOCUMENT) private document: Document,
-    public elementRef: ElementRef
+    public elementRef: ElementRef,
+    @Optional() private grid: GridsterComponent,
+    @Optional() private gridItem: GridsterItemComponent,
+    private widgetService: WidgetService
   ) {}
 
   ngOnInit(): void {
-    // Get style from widget definition
-    const style = get(this.widget, 'settings.widgetDisplay.style') || '';
-    if (style) {
-      const scss = `#${this.id} {
-        ${style}
-      }`;
-      // Compile to css ( we store style as scss )
-      this.restService
-        .post('style/scss-to-css', { scss }, { responseType: 'text' })
-        .subscribe((css) => {
-          // Add to head of document
-          const head = this.document.getElementsByTagName('head')[0];
-          this.customStyle = this.document.createElement('style');
-          this.customStyle.appendChild(this.document.createTextNode(css));
-          head.appendChild(this.customStyle);
-        });
+    // Initialize style
+    this.widgetService
+      .createCustomStyle(this.id, this.widget)
+      .then((customStyle) => {
+        if (customStyle) {
+          this.customStyle = customStyle;
+        }
+      });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['canUpdate']) {
+      // Reset size of the widget to default one, if admin enters edit mode
+      if (changes['canUpdate'].previousValue === false && this.expanded) {
+        this.onResize();
+      }
     }
   }
 
   ngOnDestroy(): void {
-    // Remove style from head if exists, to avoid too many styles to be active at same time
     if (this.customStyle) {
-      this.document
-        .getElementsByTagName('head')[0]
-        .removeChild(this.customStyle);
+      const parentNode = this.customStyle.parentNode;
+      parentNode?.removeChild(this.customStyle);
+    }
+  }
+
+  /** Resize widget, by button click. */
+  onResize() {
+    if (this.grid.options.api?.resize && this.grid.options.api.optionsChanged) {
+      if (this.expanded) {
+        // Revert widget size
+        this.widget.layerIndex = 0;
+        this.widget.cols = this.previousPosition?.cols;
+        this.widget.x = this.previousPosition?.x;
+        this.gridItem.updateOptions();
+        this.grid.options.api.resize();
+        this.expanded = false;
+      } else {
+        // Expand the widget
+        this.previousPosition = {
+          cols: this.widget.cols,
+          x: this.widget.x,
+        };
+        this.widget.layerIndex = 1;
+        this.widget.cols = this.grid.options.maxCols;
+        this.widget.x = 0;
+        this.gridItem.bringToFront(100);
+        this.gridItem.updateOptions();
+        this.grid.options.api.resize();
+        this.expanded = true;
+      }
     }
   }
 }

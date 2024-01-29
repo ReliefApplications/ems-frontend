@@ -22,12 +22,14 @@ import {
   ButtonActionT,
   ContextService,
   DashboardQueryResponse,
+  Record,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard page.
@@ -60,10 +62,12 @@ export class DashboardComponent
   public dashboard?: Dashboard;
   /** Show dashboard filter */
   public showFilter!: boolean;
-  /** Show name ( contextual pages ) */
-  public showName = false;
-
+  /** Current style variant */
+  public variant!: string;
+  /** hide / show the close icon on the right */
+  public closable = true;
   // === BUTTON ACTIONS ===
+  /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
 
   /** @returns type of context element */
@@ -133,7 +137,6 @@ export class DashboardComponent
         if (id) {
           if (queryId) {
             // Try to load template
-            this.showName = true;
             this.loadDashboard(id).then(() => {
               const templates = this.dashboard?.page?.contentWithContext;
               const type = this.contextType;
@@ -171,7 +174,6 @@ export class DashboardComponent
             });
           } else {
             // Don't use template, and directly load the dashboard from router's params
-            this.showName = false;
             this.loadDashboard(id).then(() => (this.loading = false));
           }
         }
@@ -206,13 +208,35 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = data.dashboard.structure
-            ? data.dashboard.structure
-            : [];
+          this.initContext();
+          this.widgets = cloneDeep(
+            data.dashboard.structure
+              ?.filter((x: any) => x !== null)
+              .map((widget: any) => {
+                const contextData = this.dashboard?.contextData;
+                this.contextService.context = contextData || null;
+
+                if (!contextData) {
+                  return widget;
+                }
+                const { settings, originalSettings } =
+                  this.contextService.updateSettingsContextContent(
+                    widget.settings,
+                    this.dashboard
+                  );
+                widget = {
+                  ...widget,
+                  originalSettings,
+                  settings,
+                };
+                return widget;
+              }) || []
+          );
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter ?? false;
+          this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.variant = this.dashboard.filter?.variant || 'default';
+          this.closable = this.dashboard.filter?.closable ?? false;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
@@ -234,20 +258,12 @@ export class DashboardComponent
   }
 
   /**
-   * Removes all subscriptions of the component.
-   */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.dashboardService.closeDashboard();
-  }
-
-  /**
    * Show modal confirmation before leave the page if has changes on form
    *
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.widgetGridComponent && !this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('pages.dashboard.update.exit'),
         content: this.translate.instant('pages.dashboard.update.exitMessage'),
@@ -264,5 +280,22 @@ export class DashboardComponent
       );
     }
     return true;
+  }
+
+  /** Initializes the dashboard context */
+  private initContext() {
+    const callback = (contextItem: {
+      element?: string;
+      record?: string;
+      recordData?: Record;
+    }) => {
+      this.contextService.onContextChange(
+        'element' in contextItem ? contextItem.element : contextItem.record,
+        this.contextType,
+        this.route,
+        this.dashboard
+      );
+    };
+    this.contextService.initContext(this.dashboard as Dashboard, callback);
   }
 }

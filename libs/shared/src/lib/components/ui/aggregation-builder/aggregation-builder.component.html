@@ -7,12 +7,24 @@
       [choices$]="fields$"
       [control]="$any(aggregationForm.get('sourceFields'))"
       [label]="'components.aggregationBuilder.sourceFields' | translate"
-    ></shared-tagbox>
+    >
+      <ng-container ngProjectAs="actionButton">
+        <ui-button
+          class="self-center"
+          category="secondary"
+          [loading]="loadingAggregationRecords"
+          (click)="onPreviewAggregation()"
+          >{{ 'pages.aggregation.preview.label' | translate }}</ui-button
+        >
+      </ng-container>
+    </shared-tagbox>
   </div>
   <!-- Pipeline builder -->
   <shared-pipeline
     [fields$]="selectedFields$"
     [metaFields$]="metaFields$"
+    [filterFields$]="selectedFilterFields$"
     [pipelineForm]="pipelineForm"
+    [stageList]="stageList"
   ></shared-pipeline>
 </ng-container>

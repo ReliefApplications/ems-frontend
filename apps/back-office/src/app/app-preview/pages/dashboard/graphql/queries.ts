@@ -34,6 +34,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       step {
         id
+        icon
         workflow {
           id
           page {
@@ -45,6 +46,8 @@ export const GET_DASHBOARD_BY_ID = gql`
         }
         canUpdate
       }
+      filter
+      gridOptions
     }
   }
 `;

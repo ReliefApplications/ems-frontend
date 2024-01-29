@@ -7,13 +7,11 @@ import {
   Resource,
   UnsubscribeComponent,
   ResourceQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
@@ -31,15 +29,36 @@ export class LayoutsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Resource
+   */
   public resource!: Resource;
+  /**
+   * Layouts
+   */
   public layouts: Layout[] = [];
+  /**
+   * Loading state
+   */
   public loading = true;
 
+  /**
+   * Columns to display
+   */
   public displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
   // ==== PAGINATION ====
+  /**
+   * Layouts query
+   */
   private layoutsQuery!: QueryRef<ResourceQueryResponse>;
+  /**
+   * Cached layouts
+   */
   private cachedLayouts: Layout[] = [];
+  /**
+   * Page info
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: 10,

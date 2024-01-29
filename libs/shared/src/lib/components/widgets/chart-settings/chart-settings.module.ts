@@ -10,8 +10,7 @@ import {
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { GridModule } from '../../../components/ui/core-grid/grid/grid.module';
-import { PaletteControlModule } from '../../palette-control/palette-control.module';
+import { PaletteControlModule } from '../../controls/palette-control/palette-control.module';
 import { QueryBuilderModule } from '../../query-builder/query-builder.module';
 import { AggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { ChartModule } from '../chart/chart.module';
@@ -20,6 +19,7 @@ import { ChartSettingsComponent } from './chart-settings.component';
 import { TabDisplayModule } from './tab-display/tab-display.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
+import { TabFiltersComponent } from './tab-filters/tab-filters.component';
 
 /** Module for the chart settings component */
 @NgModule({
@@ -36,7 +36,6 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     ExpansionPanelModule,
     TranslateModule,
     AggregationBuilderModule,
-    GridModule,
     PaletteControlModule,
     TabMainModule,
     TabDisplayModule,
@@ -44,6 +43,7 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     SelectMenuModule,
     DisplaySettingsComponent,
     ContextualFiltersSettingsComponent,
+    TabFiltersComponent,
   ],
   exports: [ChartSettingsComponent],
 })

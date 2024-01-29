@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { v4 as uuidv4 } from 'uuid';
 import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
@@ -12,15 +19,19 @@ import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.scss'],
 })
-export class PaginatorComponent {
+export class PaginatorComponent implements OnChanges {
   /** Disable pagination */
   @Input() disabled = false;
   /** Number of items */
   @Input() totalItems = 0;
+  /** Show total items */
+  @Input() showTotalItems = true;
   /** Current page size */
   @Input() pageSize = 10;
   /** Available page size */
   @Input() pageSizeOptions = [5, 10, 15];
+  /** If should allow user to change page size */
+  @Input() showPageSizes = true;
   /** Allow buttons to go to first & last pages */
   @Input() hideFirstLastButtons = true;
   /** Aria label */
@@ -54,5 +65,11 @@ export class PaginatorComponent {
       previousPageIndex: this.pageIndex,
     });
     this.pageIndex = currentPage;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['pageIndex']) {
+      this.skip = changes['pageIndex'].currentValue * this.pageSize;
+    }
   }
 }

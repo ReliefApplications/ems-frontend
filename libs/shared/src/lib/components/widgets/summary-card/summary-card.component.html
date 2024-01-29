@@ -6,6 +6,7 @@
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
           class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
+          [ngClass]="{ 'p-4': usePadding }"
           style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
         >
           <ng-container
@@ -17,17 +18,19 @@
               shape: 'rectangle'
             "
           >
-            <shared-summary-card-item
-              *ngFor="let card of cards; let i = index"
-              class="k-tilelayout-item k-card flex flex-col"
-              [style.order]="i"
-              style.grid-column-end="{{
-                'span ' + (2 > colsNumber ? colsNumber : 2)
-              }}"
-              style.grid-row-end="{{ 'span ' + 2 }}"
-              [card]="card"
-            >
-            </shared-summary-card-item>
+            <ng-container *ngFor="let card of cards; let i = index">
+              <shared-summary-card-item
+                *ngIf="!!cards[i]"
+                class="k-tilelayout-item k-card flex flex-col"
+                [style.order]="i"
+                style.grid-column-end="{{
+                  'span ' + (2 > colsNumber ? colsNumber : 2)
+                }}"
+                style.grid-row-end="{{ 'span ' + 2 }}"
+                [card]="card"
+              >
+              </shared-summary-card-item>
+            </ng-container>
           </ng-container>
         </div>
       </kendo-pdf-export>
@@ -40,10 +43,18 @@
       [pageIndex]="pageInfo.pageIndex"
       [skip]="pageInfo.skip"
       [pageSize]="pageInfo.pageSize"
-      [hideFirstLastButtons]="false"
+      [hideFirstLastButtons]="
+        !totalItemsKnown || refData?.pageInfo?.strategy === 'cursor'
+      "
       [pageSizeOptions]="[10, 25, 50, 100]"
+      [showPageSizes]="
+        refData?.pageInfo?.strategy ? !!refData?.pageInfo?.pageSizeVar : true
+      "
       [totalItems]="pageInfo.length"
-      [displayedPageNumbers]="5"
+      [showTotalItems]="totalItemsKnown"
+      [displayedPageNumbers]="
+        refData?.pageInfo?.strategy === 'cursor' ? 0 : totalItemsKnown ? 5 : 0
+      "
       [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
       (pageChange)="onPage($event)"
     >
@@ -54,9 +65,9 @@
     <div class="min-h-0 flex-1">
       <shared-grid-widget
         class="flex-1 h-full w-full"
-        [header]="false"
         [settings]="gridSettings"
         [widget]="widget"
+        (inlineEdition)="refreshCardList()"
       ></shared-grid-widget>
     </div>
   </ng-container>
@@ -110,28 +121,29 @@
       variant="primary"
       icon="open_in_new"
       (click)="openDataSource()"
-      *ngIf="
-        (settings.card?.showDataSourceLink && displayMode === 'cards') || false
-      "
+      *ngIf="showDataSourceButton"
     >
       {{ 'components.widget.summaryCard.dataSource' | translate }}
     </ui-button>
+    <ng-container *ngIf="canChangeDisplayMode">
+      <ui-button
+        [isIcon]="true"
+        icon="grid_view"
+        [disabled]="displayMode === 'cards'"
+        (click)="changeDisplayMode('cards')"
+        [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
+      ></ui-button>
+      <ui-button
+        [isIcon]="true"
+        icon="view_list"
+        [disabled]="displayMode === 'grid'"
+        (click)="changeDisplayMode('grid')"
+        [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
+      ></ui-button>
+    </ng-container>
+
     <ui-button
-      [isIcon]="true"
-      icon="grid_view"
-      [disabled]="displayMode === 'cards'"
-      (click)="changeDisplayMode('cards')"
-      [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
-    ></ui-button>
-    <ui-button
-      [isIcon]="true"
-      icon="view_list"
-      [disabled]="displayMode === 'grid'"
-      (click)="changeDisplayMode('grid')"
-      [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
-    ></ui-button>
-    <ui-button
-      *ngIf="export && displayMode === 'cards'"
+      *ngIf="exportable && displayMode === 'cards'"
       [isIcon]="true"
       icon="get_app"
       class="text-neutral-700"

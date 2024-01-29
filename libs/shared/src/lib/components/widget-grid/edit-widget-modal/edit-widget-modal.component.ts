@@ -4,6 +4,9 @@ import {
   ViewChild,
   ViewContainerRef,
   AfterViewInit,
+  createComponent,
+  EnvironmentInjector,
+  ComponentRef,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,14 +15,18 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { WidgetSettingsType } from '../../../models/dashboard.model';
 
 /** Model for dialog data */
 interface DialogData {
-  tile: any;
+  widget: any;
   template: any;
 }
 
-/** Component for a data tile */
+/**
+ * Edition of widget configuration in modal.
+ * The component is generic and inject specific settings component, based on the type of widget to edit.
+ */
 @Component({
   standalone: true,
   selector: 'shared-edit-widget-modal',
@@ -33,42 +40,60 @@ export class EditWidgetModalComponent
   implements AfterViewInit
 {
   /** Widget reactive form */
-  widgetForm?: UntypedFormGroup;
-
+  public widgetForm?: UntypedFormGroup;
   /** Reference to widget settings container */
   @ViewChild('settingsContainer', { read: ViewContainerRef })
-  settingsContainer: any;
+  public settingsContainer!: ViewContainerRef;
+  /** Settings component ref used to display content */
+  private componentRef!: ComponentRef<WidgetSettingsType>;
 
   /**
-   * Constructor of a data tile
+   * Edition of widget configuration in modal.
+   * The component is generic and inject specific settings component, based on the type of widget to edit.
    *
    * @param dialogRef Reference to a dialog opened via the Dialog service
    * @param data The dialog data
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
+   * @param environmentInjector Angular environment injector containing all registered DI for the settings component
    */
   constructor(
     public dialogRef: DialogRef<EditWidgetModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private environmentInjector: EnvironmentInjector
   ) {
     super();
+    // Create the settings component in the modal constructor to keep all hooks ready for the view insertion
+    this.componentRef = createComponent<WidgetSettingsType>(
+      this.data.template,
+      {
+        environmentInjector: this.environmentInjector,
+      }
+    );
+    /** Set current widget data and build up settings form in order to be ready once view is added to the DOM */
+    this.componentRef.instance.widget = this.data.widget;
+    this.componentRef.instance.buildSettingsForm();
+    this.widgetForm = this.componentRef.instance.widgetFormGroup;
+    /** Subscribe to current widget form changes */
+    this.componentRef.instance.formChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((e: any) => {
+        this.widgetForm = e;
+      });
   }
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
   ngAfterViewInit(): void {
-    const componentRef = this.settingsContainer.createComponent(
-      this.data.template
+    // Allows to set the change detector check in the next cycle so it waits until host view is complete loaded
+    Promise.resolve().then(() =>
+      this.settingsContainer.insert(this.componentRef.hostView)
     );
-    componentRef.instance.tile = this.data.tile;
-    componentRef.instance.change.subscribe((e: any) => {
-      this.widgetForm = e;
-    });
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending widget form value.
    */
   onSubmit(): void {
     this.dialogRef.close(this.widgetForm?.getRawValue());
@@ -81,6 +106,7 @@ export class EditWidgetModalComponent
   onClose(): void {
     if (this.widgetForm?.pristine) {
       this.dialogRef.close();
+      this.settingsContainer.clear();
     } else {
       const confirmDialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.close'),
@@ -95,6 +121,7 @@ export class EditWidgetModalComponent
         .subscribe((value: any) => {
           if (value) {
             this.dialogRef.close();
+            this.settingsContainer.clear();
           }
         });
     }
