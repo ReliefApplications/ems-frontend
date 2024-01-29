@@ -465,7 +465,9 @@ export class DashboardComponent
       this.widgets.forEach((widget) => {
         const contextContentCleanWidget = {
           ...widget,
-          settings: widget.originalSettings ? widget.originalSettings : widget.settings,
+          settings: widget.originalSettings
+            ? widget.originalSettings
+            : widget.settings,
         };
         delete contextContentCleanWidget.originalSettings;
         widgets.push(contextContentCleanWidget);
