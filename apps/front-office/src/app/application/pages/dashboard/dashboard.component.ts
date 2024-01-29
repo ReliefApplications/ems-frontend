@@ -292,7 +292,8 @@ export class DashboardComponent
       this.contextService.onContextChange(
         'element' in contextItem ? contextItem.element : contextItem.record,
         this.contextType,
-        this.route
+        this.route,
+        this.dashboard
       );
     };
     this.contextService.initContext(this.dashboard as Dashboard, callback);

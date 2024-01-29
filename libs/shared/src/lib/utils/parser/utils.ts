@@ -148,6 +148,26 @@ const replaceRecordFields = (
 ): string => {
   let formattedHtml = html;
   if (fields) {
+    // Regular expression for detecting when ="{{data.*}}" is used and
+    // we should not interpret it, but keep the default attribute value
+    const attributeRegex = /([a-zA-Z]+)="{{data\.(.*?)}}"/g;
+
+    // Replace attributes with data binding expressions
+    formattedHtml = formattedHtml.replace(
+      attributeRegex,
+      (match, attributeName, dataFieldName) => {
+        // Check if it's an attribute with data binding
+        if (attributeName && dataFieldName) {
+          // Replace the attribute with the corresponding value
+          const value = get(fieldsValue, dataFieldName);
+          return !isNil(value) ? `${attributeName}="${value}"` : match;
+        } else {
+          // Return the original match if not a data binding attribute
+          return match;
+        }
+      }
+    );
+
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     // We check for LIST fields and duplicate their only element for each subfield

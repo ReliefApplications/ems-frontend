@@ -52,17 +52,20 @@ export class ContextService {
   /** To update/keep the current filter structure  */
   public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
-  public filterPosition = new BehaviorSubject<any>(null);
+  public filterPosition = new BehaviorSubject<{
+    position: FilterPosition;
+    dashboardId: string;
+  } | null>(null);
   /** To keep the history of previous dashboard filter values */
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
-  public filterRegex = /["']?{{filter\.(.*?)}}["']?/g;
+  public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
-  public contextRegex = /{{context\.(.*?)}}/g;
+  public contextRegex = /{{context\.(.*?)}}/;
   /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
@@ -153,7 +156,7 @@ export class ContextService {
     private router: Router
   ) {
     this.filterPosition$.subscribe(
-      (value: { position: any; dashboardId: string }) => {
+      (value: { position: FilterPosition; dashboardId: string } | null) => {
         if (value && value.position && value.dashboardId) {
           localForage.setItem(
             this.positionKey(value.dashboardId),
@@ -177,18 +180,20 @@ export class ContextService {
    */
   public setFilter(dashboard?: Dashboard) {
     {
-      if (dashboard) {
+      if (dashboard && dashboard.id) {
         this.filterStructure.next(dashboard.filter?.structure);
         localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
             this.filterPosition.next({
-              position: position,
-              dashboardId: dashboard.id,
+              position: position as FilterPosition,
+              dashboardId: dashboard.id ?? '',
             });
           } else {
             this.filterPosition.next({
-              position: dashboard.filter?.position ?? FilterPosition.BOTTOM,
-              dashboardId: dashboard.id,
+              position:
+                (dashboard.filter?.position as FilterPosition) ??
+                FilterPosition.BOTTOM,
+              dashboardId: dashboard.id ?? '',
             });
           }
         });
@@ -221,10 +226,13 @@ export class ContextService {
       return object;
     }
     return JSON.parse(
-      JSON.stringify(object).replace(this.contextRegex, (match) => {
-        const field = match.replace('{{context.', '').replace('}}', '');
-        return get(context, field) || match;
-      })
+      JSON.stringify(object).replace(
+        new RegExp(this.contextRegex, 'g'),
+        (match) => {
+          const field = match.replace('{{context.', '').replace('}}', '');
+          return get(context, field) || match;
+        }
+      )
     );
   }
 
@@ -270,13 +278,16 @@ export class ContextService {
     // Transform all string fields into object ones when possible
     const objectAsJSON = this.parseJSONValues(object);
     const toString = JSON.stringify(objectAsJSON);
-    const replaced = toString.replace(this.filterRegex, (match) => {
-      const field = match
-        .replace(/["']?\{\{filter\./, '')
-        .replace(/\}\}["']?/, '');
-      const fieldValue = get(filter, field);
-      return fieldValue ? JSON.stringify(fieldValue) : match;
-    });
+    const replaced = toString.replace(
+      new RegExp(this.filterRegex, 'g'),
+      (match) => {
+        const field = match
+          .replace(/["']?\{\{filter\./, '')
+          .replace(/\}\}["']?/, '');
+        const fieldValue = get(filter, field);
+        return fieldValue ? JSON.stringify(fieldValue) : match;
+      }
+    );
     const parsed = JSON.parse(replaced);
     return parsed;
   }
@@ -573,8 +584,8 @@ export class ContextService {
     } else {
       if (dashboard?.filter?.position) {
         this.filterPosition.next({
-          position: dashboard.filter.position,
-          dashboardId: dashboard.id,
+          position: dashboard.filter.position as FilterPosition,
+          dashboardId: dashboard.id ?? '',
         });
       } else {
         this.filterStructure.next(data.editDashboard.filter?.structure);

@@ -135,3 +135,6 @@ export * from './lib/utils/public-api';
 
 // === CONST ===
 export * from './lib/const/tinymce.const';
+
+// === ENUM ===
+export * from './lib/components/dashboard-filter/enums/dashboard-filters.enum';
