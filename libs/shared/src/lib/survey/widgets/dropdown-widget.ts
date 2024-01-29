@@ -76,6 +76,14 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question.registerFunctionOnPropertyValueChanged(
+        'isPrimitiveValue',
+        (newValue: boolean) => {
+          dropdownInstance.clearValue();
+          dropdownInstance.valuePrimitive = newValue;
+          question.value = null;
+        }
+      );
       question.registerFunctionOnPropertyValueChanged('value', () => {
         // We need this line for resource select
         if (question.isPrimitiveValue) {
