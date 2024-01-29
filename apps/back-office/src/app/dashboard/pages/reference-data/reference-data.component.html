@@ -53,7 +53,14 @@
           </ui-graphql-select>
         </div>
         <!-- GraphQL Query -->
-        <div *ngIf="type === 'graphql' && queryControl; else restQueryTmpl">
+        <div
+          *ngIf="type === 'graphql' && queryControl; else restQueryTmpl"
+          mwlResizable
+          (resizing)="onResizing($event)"
+          [ngStyle]="style"
+          class="flex flex-col overflow-hidden relative"
+          [validateResize]="validate.bind(this)"
+        >
           <label class="block text-sm font-medium leading-6 text-gray-900"
             >{{ 'pages.referenceData.queryName' | translate }} *</label
           >
@@ -63,6 +70,11 @@
             [formControl]="queryControl"
             class="mb-2"
           ></ngx-monaco-editor>
+          <div
+            class="cursor-col-resize absolute h-full w-2 right-0"
+            mwlResizeHandle
+            [resizeEdges]="{ right: true }"
+          ></div>
         </div>
         <!-- QueryName -->
         <ng-template #restQueryTmpl>

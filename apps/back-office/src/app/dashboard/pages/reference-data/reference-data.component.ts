@@ -48,6 +48,7 @@ import { DOCUMENT } from '@angular/common';
 import { GridComponent } from '@progress/kendo-angular-grid';
 import { gql } from '@apollo/client';
 import { createRefDataForm } from './reference-data.form';
+import { ResizeEvent } from 'angular-resizable-element';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -125,6 +126,7 @@ export class ReferenceDataComponent
   public separator = new FormControl(',');
   /** Editor options */
   public editorOptions = {
+    automaticLayout: true,
     theme: 'vs-dark',
     language: 'graphql',
     formatOnPaste: true,
@@ -138,6 +140,8 @@ export class ReferenceDataComponent
   private addChipListTimeoutListener!: NodeJS.Timeout;
   /** Outside click listener for inline edition */
   private inlineEditionOutsideClickListener!: any;
+  /** size style */
+  public style: any = {};
 
   /** @returns the graphqlQuery form control */
   get queryControl() {
@@ -952,6 +956,47 @@ export class ReferenceDataComponent
 
     // Start the edition
     this.toggleInlineEditor(this.valueFields[this.valueFields.length - 1]);
+  }
+
+  /**
+   * On resizing action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const dashboardNavbar = this.document.getElementsByTagName('shared-navbar');
+    let dashboardNavbarWidth = 0;
+    if (dashboardNavbar[0]) {
+      dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
+    }
+    // set the min width as 40% of the screen size available
+    const minWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.4
+    );
+    // set the max width as 96% of the screen size available
+    const maxWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.96
+    );
+    if (
+      event.rectangle.width &&
+      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   override ngOnDestroy(): void {
