@@ -39,9 +39,6 @@ export class PreviewComponent implements OnInit, OnDestroy {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
 
-    console.log(`Email Data:`);
-    console.log(this.emailService.allLayoutdata);
-
     (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
       this.subjectString;
 
@@ -108,12 +105,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   replaceSubjectTokens() {
     const tokenRegex = /{{([^}]+)}}/g;
-    console.log(this.subjectString);
     let match;
     const firstRowData = this.emailService.allPreviewData[0]?.dataList[0];
     while ((match = tokenRegex.exec(this.subjectString)) !== null) {
-      console.log(match[1]);
-      console.log(match);
       const fieldName = match[1];
       const fieldValue = firstRowData[fieldName];
 
@@ -282,15 +276,11 @@ export class PreviewComponent implements OnInit, OnDestroy {
    * @param headerString The current header text value.
    */
   replaceInTheLast(headerString: string | any): void {
-    console.log(headerString);
     const tokenRegex = /{{([^}]+)\.([^}]+)\.(\d+)}}/g;
     let match;
     while ((match = tokenRegex.exec(this.headerString)) !== null) {
       // Extract the unitInMinutes from the token
       const unitInMinutes = Number(match[3]);
-      console.log(`match 1: ${match[1]}`);
-      console.log(`match 2: ${match[2]}`);
-      console.log(`match : ${match}`);
       const formattedDateTime = this.formatInLastString(unitInMinutes);
       // Replace the entire token with the formatted date and time
       this.headerString = headerString.replace(match[0], formattedDateTime);
@@ -398,7 +388,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
             .map(
               (fieldKeyString: any) =>
                 `<td style="${this.getTableStyle('td')}">${
-                  data[fieldKeyString]
+                  data[fieldKeyString] ? data[fieldKeyString] : ''
                 }</td>`
             )
             .join('')}</tr>`

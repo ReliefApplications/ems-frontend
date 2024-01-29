@@ -24,6 +24,7 @@ import { EmailService } from '../../email.service';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../../filter/filter.constant';
 import { GET_RESOURCE, GET_RESOURCES } from '../../graphql/queries';
 import { Subscription } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 /**
@@ -86,11 +87,13 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    * @param emailService helper functions
    * @param apollo server
    * @param formGroup Angular form builder
+   * @param snackBar snackbar helper function
    */
   constructor(
     public emailService: EmailService,
     private apollo: Apollo,
-    private formGroup: FormBuilder
+    private formGroup: FormBuilder,
+    public snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -98,11 +101,15 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       const name = 'Block ' + (this.activeTab.index + 1);
       this.query.controls['name'].setValue(name);
     }
-    if (
+    if (this.query?.value?.resource?.id) {
+      ITEMS_PER_PAGE = 70;
+      this.getResourceDataOnScroll();
+    } else if (
       !this.emailService?.resourcesNameId?.length ||
       (this.query?.value?.cacheData?.resource === undefined &&
         this.query?.value?.resource?.id)
     ) {
+      ITEMS_PER_PAGE = 0;
       this.getResourceDataOnScroll();
     } else {
       if (this.query?.value?.resource?.id && this.metaData == undefined) {
@@ -198,6 +205,11 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
             if (!found && ITEMS_PER_PAGE !== -1) {
               this.getResourceDataOnScroll();
             }
+            const resources =
+              data?.resources?.edges?.map((edge) => edge.node) || [];
+            this.emailService.resourcesNameId = resources.map((element) => {
+              return { id: element?.id?.toString(), name: element?.name };
+            });
             this.getResourceData(false);
           }
         });
@@ -214,9 +226,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     this.availableFields = [];
     this.selectedFields = [];
     this.filterFields = [];
-    fromHtml ? this.query.controls.fields.setValue([]) : ''; // Assuming 'fields' is the form control name
-    // this.query.get('fields').reset();
-    // console.log(this.query.value.fields);
+    fromHtml ? this.query.controls.fields.setValue([]) : '';
     if (this.selectedResourceId && this.emailService?.resourcesNameId?.length) {
       this.query.controls.resource.setValue(
         this.emailService.resourcesNameId.find(
@@ -561,8 +571,6 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.query.controls.fields.setValue(fieldExists);
       this.selectedFields = fieldExists;
     }
-
-    console.log(`Field type of ${field.name}: ${field.type}`); // Print the field type to the console
     // Removes the selected field from the available fields list
     this.availableFields = this.availableFields
       .filter((f: { name: string }) => f.name !== field.name)
@@ -608,28 +616,33 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
           .get('filters') as FormArray;
 
         // Iterate over the filters and update the value for 'inthelast' operators
-        filtersArray.controls.forEach((filterControl: AbstractControl) => {
-          const filterFormGroup = filterControl as FormGroup;
-          const operatorControl = filterFormGroup.get('operator');
+        filtersArray.controls.forEach(
+          (filterControl: AbstractControl, filterIndex: number) => {
+            const filterFormGroup = filterControl as FormGroup;
+            const operatorControl = filterFormGroup.get('operator');
 
-          if (operatorControl && operatorControl.value === 'inthelast') {
-            const inTheLastGroup = filterFormGroup.get(
-              'inTheLast'
-            ) as FormGroup;
-            if (inTheLastGroup) {
-              const inTheLastNumberControl = inTheLastGroup.get('number');
-              const inTheLastUnitControl = inTheLastGroup.get('unit');
+            if (operatorControl && operatorControl.value === 'inthelast') {
+              const inTheLastGroup = filterFormGroup.get(
+                'inTheLast'
+              ) as FormGroup;
+              if (inTheLastGroup) {
+                const inTheLastNumberControl = inTheLastGroup.get('number');
+                const inTheLastUnitControl = inTheLastGroup.get('unit');
 
-              if (inTheLastNumberControl && inTheLastUnitControl) {
-                const days = this.emailService.convertToMinutes(
-                  inTheLastNumberControl.value,
-                  inTheLastUnitControl.value
-                );
-                filterFormGroup.get('value')?.setValue(days);
+                if (inTheLastNumberControl && inTheLastUnitControl) {
+                  const days = this.emailService.convertToMinutes(
+                    inTheLastNumberControl.value,
+                    inTheLastUnitControl.value
+                  );
+                  filterFormGroup.get('value')?.setValue(days);
+                  this.queryValue[this.activeTab.index].filter.filters[
+                    filterIndex
+                  ].value = days;
+                }
               }
             }
           }
-        });
+        );
       }
 
       if (tabName == 'filter') {
@@ -651,8 +664,14 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
               this.emailService.disableSaveAndProceed.next(true);
             }
           },
-          () => {
+          (error: any) => {
             this.loading = false;
+            this.showDatasetLimitWarning = false;
+            this.emailService.disableSaveAndProceed.next(true);
+            this.snackBar.openSnackBar(
+              error?.message ?? 'Something Went Wrong',
+              { error: true }
+            );
           }
         );
       }
@@ -701,7 +720,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   this.dataSetFields = [
                     ...new Set(
                       this.queryValue[tempIndex].fields
-                        .map((data: any) => data.name)
+                        .map((data: any) => data.name.replaceAll('.', '_'))
                         .flat()
 
                       // this.dataList
@@ -727,7 +746,6 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   );
                   this.loading = false;
                   this.navigateToPreview.emit(allPreviewData);
-                  console.log(this.query.value);
                   this.emailService.setAllPreviewData(allPreviewData);
                 }
               }

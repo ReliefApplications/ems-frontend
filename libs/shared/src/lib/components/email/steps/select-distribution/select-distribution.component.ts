@@ -194,6 +194,24 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
       .getEmailNotifications(this.applicationId)
       .subscribe((res: any) => {
         this.distributionLists = res?.data?.emailNotifications?.edges ?? [];
+        let uniquDistributionLists = Array.from(
+          new Set(this.emailService.distributionListNames)
+        );
+        this.distributionLists = this.distributionLists.filter((ele: any) => {
+          if (
+            uniquDistributionLists.includes(
+              ele.node.recipients.distributionListName.toLowerCase()
+            )
+          ) {
+            uniquDistributionLists = uniquDistributionLists.filter(
+              (name) =>
+                ele.node.recipients.distributionListName.toLowerCase() !== name
+            );
+            return true;
+          } else {
+            return false;
+          }
+        });
       });
   }
 
@@ -237,24 +255,15 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * one To email address and name to proceed with next steps
    */
   validateDistributionList(): void {
-    const hasDistributionListId =
-      this.distributionListId !== null && this.distributionListId !== undefined;
-    const isToEmpty = this.recipients.To.length === 0;
-    const isDistributionListNameEmpty =
+    const isSaveAndProceedNotAllowed =
+      this.recipients.To.length === 0 ||
       this.recipients.distributionListName.length === 0;
-    const isNameDuplicate = this.isNameDuplicate();
-
-    let isValid = true;
-
-    if (!hasDistributionListId) {
-      // If distributionListId doesn't exist, check other conditions
-      isValid = isToEmpty || isDistributionListNameEmpty || isNameDuplicate;
-      this.emailService.disableSaveAndProceed.next(isValid);
-      this.triggerDuplicateChecker();
-    } else {
-      // If distributionListId exists, check conditions
-      isValid = isToEmpty || isDistributionListNameEmpty;
-      this.emailService.disableSaveAndProceed.next(isValid);
+    this.emailService.disableSaveAndProceed.next(isSaveAndProceedNotAllowed);
+    if (isSaveAndProceedNotAllowed) {
+      this.emailService.disableFormSteps.next({
+        stepperIndex: 2,
+        disableAction: true,
+      });
     }
   }
 }

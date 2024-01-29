@@ -38,7 +38,7 @@
         <div *ngIf="isNameDuplicate() && !distributionListId " class="text-red-500 text-sm mt-1">
           Name already exists.
         </div>
-    </div>
+            </div>
     <div class="text-gray-700 text-xs gap-1 flex items-end" style="font-weight: 500;">
       <input id="Alert_me" type="checkbox">
       <label for="Alert_me">
@@ -111,7 +111,7 @@
       <span class="w-4" *ngIf="showEmailTemplate"><ui-icon icon="expand_less" fontFamily="material" variant="primary"></ui-icon></span>
       <span class="w-4" *ngIf="!showEmailTemplate"><ui-icon icon="expand_more" fontFamily="material" variant="primary"></ui-icon></span>
     </div>
-    <shared-email-template [existingId]="this.distributionListId" (emailLoad)="to($event)" [emailBackLoad]="recipients.To" [emailFilter]="toEmailFilter" *ngIf="showEmailTemplate && templateFor === 'to'">To</shared-email-template>
+    <shared-email-template (emailLoad)="to($event)" (listChange)="validateDistributionList()" [emailBackLoad]="recipients.To" [emailFilter]="toEmailFilter" *ngIf="showEmailTemplate && templateFor === 'to'">To</shared-email-template>
 
     <!-- CC -->
     <div class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
@@ -120,7 +120,7 @@
       <span class="w-4" *ngIf="showEmailTemplate"><ui-icon icon="expand_less" fontFamily="material" variant="primary"></ui-icon></span>
       <span class="w-4" *ngIf="!showEmailTemplate"><ui-icon icon="expand_more" fontFamily="material" variant="primary"></ui-icon></span>
     </div>
-    <shared-email-template [existingId]="this.distributionListId" (emailLoad)="cc($event)" [emailBackLoad]="recipients.Cc" [emailFilter]="ccEmailFilter" *ngIf="showEmailTemplate && templateFor === 'cc'">cc</shared-email-template>
+    <shared-email-template (emailLoad)="cc($event)" (listChange)="validateDistributionList()" [emailBackLoad]="recipients.Cc" [emailFilter]="ccEmailFilter" *ngIf="showEmailTemplate && templateFor === 'cc'">cc</shared-email-template>
 
     <!-- BCC -->
     <div class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
@@ -129,7 +129,7 @@
       <span class="w-4" *ngIf="showEmailTemplate"><ui-icon icon="expand_less" fontFamily="material" variant="primary"></ui-icon></span>
       <span class="w-4" *ngIf="!showEmailTemplate"><ui-icon icon="expand_more" fontFamily="material" variant="primary"></ui-icon></span>
     </div>
-    <shared-email-template [existingId]="this.distributionListId" (emailLoad)="bcc($event)" [emailBackLoad]="recipients.Bcc" [emailFilter]="bccEmailFilter" *ngIf="showEmailTemplate && templateFor === 'bcc'">bcc</shared-email-template>
+    <shared-email-template (emailLoad)="bcc($event)" (listChange)="validateDistributionList()" [emailBackLoad]="recipients.Bcc" [emailFilter]="bccEmailFilter" *ngIf="showEmailTemplate && templateFor === 'bcc'">bcc</shared-email-template>
   </div>
   <div class="use-existing" *ngIf="showExistingDistributionList">
     <p (click)="showExistingDistributionList = !showExistingDistributionList" >Or Create New</p>

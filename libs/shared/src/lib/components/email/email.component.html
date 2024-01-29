@@ -1,11 +1,11 @@
-<ui-spinner *ngIf="loading"class="spinner"></ui-spinner>
+<ui-spinner *ngIf="emailService.emailListLoading"class="spinner"></ui-spinner>
 <div *ngIf="emailService.isExisting">
   <ui-button
       class="float-right"
       icon="add"
       category="secondary"
       variant="primary"
-      (click)="toggle()"
+      (click)="toggle(true)"
     >
     Create Notification
     </ui-button>
@@ -135,7 +135,7 @@
       </div>
       <!-- Pagination -->
         <ui-paginator
-        [disabled]="loading"
+        [disabled]="emailService.emailListLoading"
         [pageIndex]="pageInfo.pageIndex"
         [pageSize]="pageInfo.pageSize"
         [pageSizeOptions]="[10, 25, 50]"
@@ -193,7 +193,7 @@
 
   <!-- Pagination -->
   <ui-paginator
-  [disabled]="loading"
+  [disabled]="emailService.emailListLoading"
   [pageIndex]="distributionPageInfo.pageIndex"
   [pageSize]="distributionPageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"

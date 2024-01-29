@@ -28,7 +28,7 @@ const DISTRIBUTION_PAGE_SIZE = 5;
 export class EmailComponent extends UnsubscribeComponent implements OnInit {
   filterTemplateData: any = [];
   templateActualData: any = [];
-  public loading = true;
+  // public loading = true;
   public applicationId = '';
   public distributionLists: any = [];
   public emailNotifications: any = [];
@@ -86,29 +86,46 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
 
   /**
    * Resets email notification for user to go back to list.
+   *
+   * @param isNew
    */
-  toggle() {
+  toggle(isNew?: boolean) {
+    console.log('Toggle is calling');
     this.emailService.isLinear = true;
     this.emailService.stepperStep = 0;
+    this.emailService.disableSaveAndProceed.next(false);
+    this.emailService.enableAllSteps.next(false);
+    if (isNew) {
+      this.emailService.disableFormSteps.next({
+        stepperIndex: 0,
+        disableAction: true,
+      });
+    }
     this.emailService.isExisting = !this.emailService.isExisting;
+    this.emailService.enableAllSteps.next(false);
+    if (isNew) {
+      this.emailService.disableFormSteps.next({
+        stepperIndex: 0,
+        disableAction: true,
+      });
+    }
     if (!this.emailService.isExisting) {
       this.emailService.resetDataSetForm();
       this.emailService.setDatasetForm();
     }
     this.emailService.isEdit ? (this.emailService.isEdit = false) : null;
-    this.loading = true;
+    this.emailService.emailListLoading = true;
     this.emailService
       .getEmailNotifications(this.applicationId)
       .subscribe((res: any) => {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
-          this.loading = false;
+          this.emailService.emailListLoading = false;
           if (
             ele.node.recipients.distributionListName !== null &&
             ele.node.recipients.distributionListName !== ''
           ) {
-            this.distributionLists.push(ele.node.recipients);
             this.emailService.distributionListNames.push(
               ele.node?.recipients?.distributionListName.trim().toLowerCase()
             );
@@ -124,7 +141,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * Retrieves existing Email Notification.
    */
   getExistingTemplate() {
-    this.loading = true;
+    this.emailService.emailListLoading = true;
     this.emailService.isExisting = true;
     this.emailService.isPreview = false;
     this.emailService.isEdit = false;
@@ -138,14 +155,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((res: any) => {
         this.templateActualData = [];
         if (res?.data?.emailNotifications?.edges?.length === 0) {
-          this.loading = false;
+          this.emailService.emailListLoading = false;
         }
         this.distributionLists = [];
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.templateActualData.push(ele.node);
-          this.loading = false;
+          this.emailService.emailListLoading = false;
           if (
             ele.node.recipients.distributionListName !== null &&
             ele.node.recipients.distributionListName !== ''
@@ -158,6 +175,23 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           this.emailService.emailNotificationNames.push(
             ele.node.name.trim().toLowerCase()
           );
+        });
+        let uniquDistributionLists = Array.from(
+          new Set(this.emailService.distributionListNames)
+        );
+        this.distributionLists = this.distributionLists.filter((ele: any) => {
+          if (
+            uniquDistributionLists.includes(
+              ele.distributionListName.toLowerCase()
+            )
+          ) {
+            uniquDistributionLists = uniquDistributionLists.filter(
+              (name) => ele.distributionListName.toLowerCase() !== name
+            );
+            return true;
+          } else {
+            return false;
+          }
         });
         this.filterTemplateData = this.templateActualData;
         this.emailNotifications = this.filterTemplateData.slice(
@@ -206,7 +240,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     isClone?: boolean,
     isSendEmail?: boolean
   ) {
-    this.loading = true;
+    this.emailService.emailListLoading = true;
+    this.emailService.enableAllSteps.next(true);
     this.emailService
       .getEmailNotification(id, this.applicationId)
       .subscribe((res) => {
@@ -235,7 +270,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           this.emailService
             .addEmailNotification(emailData)
             .subscribe((res: any) => {
-              this.loading = false;
+              this.emailService.emailListLoading = false;
               this.emailService.configId = res.data.addEmailNotification.id;
               this.getEmailNotificationById(
                 res.data.addEmailNotification.id,
@@ -387,16 +422,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
 
     // this.emailService.datasetSave.emit(true);
     if (isSendEmail) {
-      this.emailService.stepperStep = -1;
-      this.emailService.isPreview = true;
-      this.emailService.isLinear = false;
-      this.emailService.getDataSet(emailData);
-      setTimeout(() => {
-        this.loading = false;
-      }, 1500);
+      this.emailService.getDataSet(emailData, true);
     } else {
+      this.emailService.getDataSet(emailData, false);
       this.emailService.stepperStep = 0;
-      this.loading = false;
     }
   }
 
@@ -465,15 +494,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   public deleteEmailNotification(data: any) {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.deleteObject', {
-        name: this.translate.instant('common.page.one'),
+        name: this.translate.instant('common.email.notification.one'),
       }),
-      content: 'Do you confirm the deletion of ' + data.name,
+      content: 'Do you confirm the deletion of ' + data.name + ' ?',
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.loading = true;
+        this.emailService.emailListLoading = true;
         this.emailService
           .deleteEmailNotification(data.id, this.applicationId)
           .subscribe(() => {
