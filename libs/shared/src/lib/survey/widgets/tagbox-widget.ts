@@ -97,6 +97,13 @@ export const init = (
         question.value = value;
       });
 
+      // On change, we update the value of the select
+      question.valueChangedCallback = () => {
+        if (question.value !== tagboxInstance.value) {
+          tagboxInstance.value = question.value;
+        }
+      };
+
       // We subscribe to whatever you write on the field so we can filter the data accordingly
       tagboxInstance.filterChange
         .pipe(
