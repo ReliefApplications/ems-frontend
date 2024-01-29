@@ -115,6 +115,8 @@ export class SummaryCardComponent
   private fields: any[] = [];
   /** Meta fields */
   private metaFields: any[] = [];
+  /** Flag indicating we’ve navigated to the last element in pagination */
+  private finalPage = false;
   /** Available sort fields */
   public sortFields: any[] = [];
   /** Active context fields */
@@ -165,13 +167,10 @@ export class SummaryCardComponent
     } else {
       filter = {
         logic: 'and',
-        filters: [this.layout?.query.filter],
+        filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return {
-      logic: 'and',
-      filters: [filter, this.contextService.injectContext(this.contextFilters)],
-    };
+    return filter;
   }
 
   /** @returns does the card use resource aggregation */
@@ -490,6 +489,9 @@ export class SummaryCardComponent
           skip: 0,
           first: this.pageInfo.pageSize,
           filter: this.queryFilter,
+          contextFilters: this.contextService.injectContext(
+            this.contextFilters
+          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           ...(this.settings.at && {
@@ -630,10 +632,14 @@ export class SummaryCardComponent
         );
       }
     }
-
+    const strategy = this.refData?.pageInfo?.strategy;
+    const totalCountConfigured = this.refData?.pageInfo?.totalCountField;
+    const start = strategy
+      ? this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize)
+      : 0;
     // Add the new items to the cached cards in the correct position
     this.cachedCards.splice(
-      this.pageInfo.pageIndex * (this.pageInfo.pageSize || pageInfo?.pageSize),
+      start,
       items.length,
       ...((items || []).map((x: any, index: number) => ({
         ...this.settings.card,
@@ -643,19 +649,13 @@ export class SummaryCardComponent
       })) as CardT[])
     );
 
-    const strategy = this.refData?.pageInfo?.strategy;
-
     const isPaginated = !!strategy && !!pageInfo;
     if (isPaginated) {
       // If using pagination, set the page size and total count
       // according to the response of the first page
-      this.pageInfo.length = pageInfo.totalCount;
-      this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
-      this.pageInfo.lastCursor = pageInfo.lastCursor;
-      if (this.pageInfo.pageSize > items.length) {
-        this.pageInfo.length = this.cards.length;
-      }
+      this.setPaginationInfo(pageInfo);
       this.sortedCachedCards = cloneDeep(this.cachedCards);
+      this.checkIfFinalPage(totalCountConfigured, items);
     } else {
       // Client side filtering
       const contextFilters = this.contextService.injectContext(
@@ -714,6 +714,49 @@ export class SummaryCardComponent
 
     this.scrolling = false;
     this.loading = false;
+  }
+
+  /**
+   * Set the pagination info
+   *
+   * @param pageInfo Pagination info
+   * @param pageInfo.totalCount Total count
+   * @param pageInfo.pageSize Page size
+   * @param pageInfo.lastCursor Last cursor
+   */
+  setPaginationInfo(pageInfo: {
+    totalCount: any;
+    pageSize: any;
+    lastCursor: any;
+  }) {
+    this.pageInfo.length = this.finalPage
+      ? this.pageInfo.length
+      : pageInfo.totalCount;
+    this.pageInfo.pageSize = this.pageInfo.pageSize || pageInfo.pageSize;
+    this.pageInfo.lastCursor = pageInfo.lastCursor;
+  }
+
+  /**
+   * Check if the current page is the last page
+   *
+   * @param totalCountConfigured Total count configured
+   * @param items Items
+   */
+  checkIfFinalPage(
+    totalCountConfigured: string | undefined,
+    items: string | any[]
+  ) {
+    if (!totalCountConfigured && items.length < this.pageInfo.pageSize) {
+      this.finalPageBehavior();
+    }
+  }
+
+  /**
+   * Set new new behavior
+   */
+  finalPageBehavior() {
+    this.pageInfo.length = this.cachedCards.length;
+    this.finalPage = true;
   }
 
   /**
@@ -779,6 +822,9 @@ export class SummaryCardComponent
               variables: {
                 first: this.pageInfo.pageSize,
                 filter: this.queryFilter,
+                contextFilters: this.contextService.injectContext(
+                  this.contextFilters
+                ),
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
@@ -972,6 +1018,9 @@ export class SummaryCardComponent
           first: this.pageInfo.pageSize,
           skip: event.skip,
           filter: this.queryFilter,
+          contextFilters: this.contextService.injectContext(
+            this.contextFilters
+          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
@@ -1029,6 +1078,7 @@ export class SummaryCardComponent
     this.cards = [];
     this.sortedCachedCards = [];
     this.cachedCards = [];
+    this.finalPage = false;
 
     if (this.summaryCardGrid) {
       this.summaryCardGrid.nativeElement.scroll({
@@ -1097,6 +1147,9 @@ export class SummaryCardComponent
           .refetch({
             first: this.pageInfo.pageSize,
             filter: this.queryFilter,
+            contextFilters: this.contextService.injectContext(
+              this.contextFilters
+            ),
             sortField: this.sortOptions.field,
             sortOrder: this.sortOptions.order,
             ...(this.settings.at && {

@@ -1,5 +1,12 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Inject,
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
@@ -21,6 +28,8 @@ import {
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
 import { startCase, isNil } from 'lodash';
+import { ResizeEvent } from 'angular-resizable-element';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -65,6 +74,8 @@ export class RecordHistoryComponent
   @Input() showHeader = true;
   /** Refresh content of the history */
   @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
+  /** Boolean indicating whether the dialog is resizable. */
+  @Input() resizable = false;
   /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
@@ -90,9 +101,9 @@ export class RecordHistoryComponent
   public sortedFields: any[] = [];
   /** Table columns */
   public displayedColumnsHistory: string[] = [
-    'id',
     'variable',
     'date',
+    'time',
     'person',
     'action',
     'originalValue',
@@ -111,6 +122,8 @@ export class RecordHistoryComponent
   historyForTable: any[] = [];
   /** Should view as table */
   viewAsTable = new FormControl(true);
+  /** size style */
+  public style: any = {};
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -131,6 +144,7 @@ export class RecordHistoryComponent
    * @param dateFormat DateTranslation service
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
+   * @param document Document
    */
   constructor(
     public dialog: Dialog,
@@ -138,7 +152,8 @@ export class RecordHistoryComponent
     private translate: TranslateService,
     private dateFormat: DateTranslateService,
     private apollo: Apollo,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -242,6 +257,47 @@ export class RecordHistoryComponent
         });
       });
     });
+  }
+
+  /**
+   * On resize action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const dashboardNavbar = this.document.getElementsByTagName('shared-navbar');
+    let dashboardNavbarWidth = 0;
+    if (dashboardNavbar[0] && !this.dialog) {
+      dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
+    }
+    // set the min width as 40% of the screen size available
+    const minWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.4
+    );
+    // set the max width as 95% of the screen size available
+    const maxWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
+    );
+    if (
+      event.rectangle.width &&
+      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   /**

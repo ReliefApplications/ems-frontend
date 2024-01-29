@@ -168,14 +168,25 @@ export class MapLayersService {
   /**
    * Get the layers
    *
+   * @param ids id array
    * @returns Observable of layer
    */
-  public getLayers(): Observable<LayerModel[]> {
+  public getLayers(ids: string[]): Observable<LayerModel[]> {
     return this.apollo
       .query<LayersQueryResponse>({
         query: GET_LAYERS,
         variables: {
           sortField: 'name',
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: ids,
+              },
+            ],
+          },
         },
       })
       .pipe(

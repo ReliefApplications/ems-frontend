@@ -414,6 +414,7 @@ export class FormRecordsComponent
         inputs: {
           id: item.id,
           revert: (version: any) => this.confirmRevertDialog(item, version),
+          resizable: true,
         },
       });
     });

@@ -535,7 +535,8 @@
 						"bottom": "Afficher le filtre en bas",
 						"left": "Afficher le filtre à gauche",
 						"right": "Afficher le filtre à droite",
-						"top": "Afficher le filtre en haut"
+						"top": "Afficher le filtre en haut",
+						"unset": "Position indéfinie, sélectionnez en une"
 					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
@@ -886,11 +887,12 @@
 			},
 			"columns": {
 				"action": "Type d'action",
-				"date": "Date de modification",
-				"modifiedValue": "Valeur modifiée de la variable",
-				"originalValue": "Valeur originelle de la variable",
-				"person": "Modification effectuée par",
-				"variable": "Variable modifiée"
+				"date": "Date",
+				"modifiedValue": "Ancienne valeur",
+				"originalValue": "Nouvelle valeur",
+				"person": "Utilisateur",
+				"time": "Heure",
+				"variable": "Champ"
 			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",

@@ -14,6 +14,7 @@ import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
+import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
 
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
@@ -288,6 +289,11 @@ export class ReferenceDataService {
         (referenceData.apiConfiguration?.name ?? '') +
         (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
       const query = this.processQuery(referenceData);
+
+      if (query) {
+        transformGraphQLVariables(query, variables);
+      }
+
       const body = { query, variables };
       data = (await this.apiProxy.buildPostRequest(url, body)) as any;
     } else if (type === referenceDataType.rest) {

@@ -196,6 +196,11 @@ export class WidgetGridComponent
     return MAX_COL_SPAN;
   }
 
+  /**
+   * Enables the min height parameter
+   *
+   * @param grid gridster component
+   */
   private enableMinHeight(grid: GridsterComponentInterface | null = null) {
     this.isMinHeightEnabled =
       this.gridOptions.gridType === GridType.Fit && !grid?.mobile;
