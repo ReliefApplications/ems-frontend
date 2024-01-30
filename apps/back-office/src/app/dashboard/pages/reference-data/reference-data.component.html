@@ -64,14 +64,16 @@
           <label class="block text-sm font-medium leading-6 text-gray-900"
             >{{ 'pages.referenceData.queryName' | translate }} *</label
           >
+          <!-- Graphql query editor -->
           <ngx-monaco-editor
             (onInit)="initEditor($event)"
             [options]="editorOptions"
             [formControl]="queryControl"
             class="!h-full !w-full"
           ></ngx-monaco-editor>
+          <!-- Resize handle -->
           <div
-            class="cursor-col-resize absolute w-full h-2 bottom-0"
+            class="cursor-row-resize absolute w-full h-2 bottom-0"
             mwlResizeHandle
             [resizeEdges]="{ bottom: true }"
           ></div>

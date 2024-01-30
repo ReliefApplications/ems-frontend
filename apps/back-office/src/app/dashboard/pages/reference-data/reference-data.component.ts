@@ -140,7 +140,7 @@ export class ReferenceDataComponent
   private addChipListTimeoutListener!: NodeJS.Timeout;
   /** Outside click listener for inline edition */
   private inlineEditionOutsideClickListener!: any;
-  /** size style */
+  /** size style of editor */
   public style: any = {};
 
   /** @returns the graphqlQuery form control */
@@ -420,6 +420,25 @@ export class ReferenceDataComponent
             this.router.navigate(['/referencedata']);
           },
         });
+    }
+  }
+
+  /**
+   * Override ngOnDestroy of base component to clear listeners.
+   */
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.addChipListTimeoutListener) {
+      clearTimeout(this.addChipListTimeoutListener);
+    }
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
+    if (this.formTimeoutListener) {
+      clearTimeout(this.formTimeoutListener);
+    }
+    if (this.inlineEditionOutsideClickListener) {
+      this.inlineEditionOutsideClickListener();
     }
   }
 
@@ -982,22 +1001,6 @@ export class ReferenceDataComponent
       return false;
     } else {
       return true;
-    }
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    if (this.addChipListTimeoutListener) {
-      clearTimeout(this.addChipListTimeoutListener);
-    }
-    if (this.initEditorTimeoutListener) {
-      clearTimeout(this.initEditorTimeoutListener);
-    }
-    if (this.formTimeoutListener) {
-      clearTimeout(this.formTimeoutListener);
-    }
-    if (this.inlineEditionOutsideClickListener) {
-      this.inlineEditionOutsideClickListener();
     }
   }
 }
