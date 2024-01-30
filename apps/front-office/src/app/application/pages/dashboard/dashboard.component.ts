@@ -15,7 +15,6 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  DashboardService,
   UnsubscribeComponent,
   WidgetGridComponent,
   ConfirmService,
@@ -87,7 +86,6 @@ export class DashboardComponent
    * @param router Angular router
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
-   * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
@@ -101,7 +99,6 @@ export class DashboardComponent
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: DashboardService,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private renderer: Renderer2,
@@ -235,10 +232,16 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
+          this.contextService.filterPosition.next({
+            position: this.dashboard.filter?.position as any,
+            dashboardId: this.dashboard.id ?? '',
+          });
+          this.contextService.setFilter(this.dashboard);
           this.variant = this.dashboard.filter?.variant || 'default';
           this.closable = this.dashboard.filter?.closable ?? false;
         } else {
           this.contextService.isFilterEnabled.next(false);
+          this.contextService.setFilter();
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
