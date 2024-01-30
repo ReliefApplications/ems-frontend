@@ -42,12 +42,14 @@ export const init = (
       dropdownDiv.classList.add('flex', 'min-h-[36px]');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv, question);
+      // Make sure the value is valid
       if (!isObject(question.value) && !isArray(question.value)) {
         dropdownInstance.value = question.value;
       }
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
       dropdownInstance.registerOnChange((value: any) => {
+        // Make sure the value is valid
         if (question.isPrimitiveValue) {
           if (!isObject(value) && !isArray(value)) {
             question.value = value;
@@ -82,6 +84,7 @@ export const init = (
           dropdownInstance.clearValue();
           dropdownInstance.valuePrimitive = newValue;
           question.value = null;
+          question.defaultValue = null;
         }
       );
       question.registerFunctionOnPropertyValueChanged('value', () => {
