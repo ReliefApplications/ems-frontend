@@ -195,7 +195,7 @@
       class="flex bg-white w-full border-gray-300 border-b px-6 py-2 z-10"
     >
       <survey class="flex-1 self-center pr-5" [model]="survey"></survey>
-      <div class="flex">
+      <div class="flex flex-col">
         <ng-container
           *ngIf="editable"
           [ngTemplateOutlet]="editTmpl"
@@ -208,6 +208,7 @@
           variant="grey"
           [uiTooltip]="'common.close' | translate"
           (click)="onToggleVisibility()"
+          class="h-fit"
         ></ui-button>
       </div>
     </div>
@@ -222,6 +223,7 @@
     icon="edit"
     (click)="contextService.onEditFilter(dashboard)"
     [uiTooltip]="'components.application.dashboard.editFilter' | translate"
+    class="h-fit"
   >
   </ui-button>
 </ng-template>
