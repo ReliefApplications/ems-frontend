@@ -63,12 +63,12 @@ export class ResourceGridModalComponent {
    *
    * @param data dialog data
    * @param dialogRef Dialog reference of the component
-   * @param ref Application reference
+   * @param app Application reference
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
     public dialogRef: DialogRef<ResourceGridModalComponent>,
-    private ref: ApplicationRef
+    private app: ApplicationRef
   ) {
     if (this.data.multiselect !== undefined)
       this.multiSelect = this.data.multiselect;
@@ -89,7 +89,7 @@ export class ResourceGridModalComponent {
         remove: false,
       },
     };
-    this.ref.tick();
+    this.app.tick();
   }
 
   /**
@@ -123,7 +123,7 @@ export class ResourceGridModalComponent {
    * @param saveChanges is update required
    */
   closeModal(saveChanges: boolean = true): void {
-    this.ref.tick();
+    this.app.tick();
     if (saveChanges) {
       this.dialogRef.close(this.selectedRows as any);
     }

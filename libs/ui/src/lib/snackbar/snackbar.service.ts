@@ -7,7 +7,6 @@ import {
   TemplateRef,
   createComponent,
 } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { SnackbarComponent } from './snackbar.component';
 import { SnackBarConfig } from './interfaces/snackbar.interfaces';
 import { DOCUMENT } from '@angular/common';
@@ -34,12 +33,10 @@ export class SnackbarService {
    * Snackbar is a brief notification that appears for a short time as a popup.
    *
    * @param document Document token containing current browser document
-   * @param translate Angular translate service
    * @param app Application reference
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private translate: TranslateService,
     private app: ApplicationRef
   ) {}
 

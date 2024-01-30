@@ -1,5 +1,7 @@
 import {
   AfterViewInit,
+  ApplicationRef,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
@@ -35,7 +37,9 @@ export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
    */
   constructor(
     @Inject(DIALOG_DATA) public data: WidgetData,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private app: ApplicationRef,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngAfterViewInit(): void {
@@ -43,6 +47,7 @@ export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
       new CustomEvent('expandchange', { detail: { expanded: true } })
     );
     this.portal = new DomPortal(this.data.element);
+    this.ref.detectChanges();
   }
 
   ngOnDestroy(): void {

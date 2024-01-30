@@ -1,4 +1,6 @@
 import {
+  ApplicationRef,
+  ChangeDetectorRef,
   Component,
   ComponentRef,
   EventEmitter,
@@ -215,7 +217,9 @@ export class LayoutComponent
     public dialog: Dialog,
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private app: ApplicationRef,
+    private ref: ChangeDetectorRef
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -267,11 +271,13 @@ export class LayoutComponent
               componentRef.instance[key] = value;
             }
           }
+          componentRef.changeDetectorRef.detectChanges();
 
           componentRef.instance.cancel.subscribe(() => {
             componentRef.destroy();
             this.layoutService.setRightSidenav(null);
           });
+          this.ref.detectChanges();
         } else {
           this.showSidenav = false;
           if (this.rightSidenav) {

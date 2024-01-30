@@ -1,6 +1,8 @@
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import {
+  ApplicationRef,
+  ChangeDetectorRef,
   ComponentFactoryResolver,
   Directive,
   EventEmitter,
@@ -44,7 +46,9 @@ export class TabBodyHostDirective
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     viewContainerRef: ViewContainerRef,
-    @Inject(DOCUMENT) _document: any
+    @Inject(DOCUMENT) _document: any,
+    private app: ApplicationRef,
+    private ref: ChangeDetectorRef
   ) {
     super(componentFactoryResolver, viewContainerRef, _document);
   }
@@ -60,7 +64,9 @@ export class TabBodyHostDirective
         }
         if (!this.hasAttached()) {
           this.attach(tab.content);
+          tab.com
         }
+        this.ref.detectChanges();
       });
   }
 
