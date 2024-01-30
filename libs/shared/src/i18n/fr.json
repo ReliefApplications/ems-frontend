@@ -1913,6 +1913,7 @@
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "Supprimer la valeur",
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
@@ -2069,6 +2070,7 @@
 			"unstick": "Désépingler"
 		},
 		"multiselect": {
+			"clearTitle": "Supprimer la valeur",
 			"noDataText": "No available choice"
 		},
 		"pager": {

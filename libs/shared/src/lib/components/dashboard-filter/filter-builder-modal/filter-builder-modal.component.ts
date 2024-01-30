@@ -24,6 +24,7 @@ import {
   CustomJSONEditorComponent,
   SurveyCustomJSONEditorPlugin,
 } from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -234,6 +235,12 @@ export class FilterBuilderModalComponent
       }
     });
 
+    // Set content
+    const survey = new SurveyModel(
+      this.data?.surveyStructure || DEFAULT_STRUCTURE
+    );
+    this.surveyCreator.JSON = survey.toJSON();
+
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService) as any
@@ -245,11 +252,7 @@ export class FilterBuilderModalComponent
         )
     );
 
-    // Set content
-    const survey = new SurveyModel(
-      this.data?.surveyStructure || DEFAULT_STRUCTURE
-    );
-    this.surveyCreator.JSON = survey.toJSON();
+    this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }
 
   /**
