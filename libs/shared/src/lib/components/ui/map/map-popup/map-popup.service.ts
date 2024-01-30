@@ -1,4 +1,4 @@
-import { Injectable, ComponentRef, Inject } from '@angular/core';
+import { Injectable, ComponentRef, Inject, NgZone } from '@angular/core';
 import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
@@ -30,10 +30,12 @@ export class MapPopupService {
    *
    * @param domService DomService
    * @param document document
+   * @param ngZone Triggers html changes
    */
   constructor(
     private domService: DomService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private ngZone: NgZone
   ) {}
 
   /**
@@ -55,38 +57,41 @@ export class MapPopupService {
       popupInfo.popupElements &&
       popupInfo.popupElements.length > 0
     ) {
-      const zoom = this.map.getZoom();
-      const radius = 1000 / zoom;
+      // To trigger change detection
+      this.ngZone.run(() => {
+        const zoom = this.map.getZoom();
+        const radius = 1000 / zoom;
 
-      if (!layerToBind) {
-        // create a circle around the point (for debugging)
-        const circle = L.circle(coordinates, {
-          radius: radius * 1000, // haversineDistance returns km, circle radius is in meters
-          color: 'red',
-          fillColor: '#f03',
-          fillOpacity: 0.5,
-        });
-        circle.addTo(this.map);
-        layerToBind = circle;
-      }
-
-      // Initialize and get a MapPopupComponent instance popup
-      const { instance, popup } = this.setPopupComponentAndContent(
-        featurePoints,
-        coordinates,
-        popupInfo
-      );
-
-      popup.on('remove', () => {
-        if (layerToBind instanceof L.Circle) {
-          this.map.removeLayer(layerToBind);
+        if (!layerToBind) {
+          // create a circle around the point (for debugging)
+          const circle = L.circle(coordinates, {
+            radius: radius * 1000, // haversineDistance returns km, circle radius is in meters
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+          });
+          circle.addTo(this.map);
+          layerToBind = circle;
         }
-        // We will bind and unbind each time we set the popup for dynamic purposes
-        layerToBind?.unbindPopup();
-        instance.destroy();
+
+        // Initialize and get a MapPopupComponent instance popup
+        const { instance, popup } = this.setPopupComponentAndContent(
+          featurePoints,
+          coordinates,
+          popupInfo
+        );
+
+        popup.on('remove', () => {
+          if (layerToBind instanceof L.Circle) {
+            this.map.removeLayer(layerToBind);
+          }
+          // We will bind and unbind each time we set the popup for dynamic purposes
+          layerToBind?.unbindPopup();
+          instance.destroy();
+        });
+        layerToBind.bindPopup(popup);
+        layerToBind.openPopup();
       });
-      layerToBind.bindPopup(popup);
-      layerToBind.openPopup();
     }
   }
 

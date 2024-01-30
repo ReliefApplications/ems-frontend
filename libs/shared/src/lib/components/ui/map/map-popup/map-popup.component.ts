@@ -1,5 +1,6 @@
 import {
   AfterContentInit,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -66,8 +67,9 @@ export class MapPopupComponent
    * Component for a popup that has information on multiple points
    *
    * @param sanitizer The dom sanitizer, to sanitize the template
+   * @param cdr ChangeDetectorRef
    */
-  constructor(private sanitizer: DomSanitizer) {
+  constructor(private sanitizer: DomSanitizer, private cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -101,6 +103,8 @@ export class MapPopupComponent
     // remove all script tags
     const sanitizedHtml = html.replace(scriptRegex, '');
     this.currentHtml = this.sanitizer.bypassSecurityTrustHtml(sanitizedHtml);
+    // Force change detection
+    this.cdr.detectChanges();
   }
 
   /**

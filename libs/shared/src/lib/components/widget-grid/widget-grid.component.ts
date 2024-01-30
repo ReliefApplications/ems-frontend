@@ -1,8 +1,10 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -115,7 +117,9 @@ export class WidgetGridComponent
   constructor(
     public dialog: Dialog,
     private dashboardService: DashboardService,
-    private _host: ElementRef
+    private _host: ElementRef,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {
     super();
   }
@@ -142,6 +146,7 @@ export class WidgetGridComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('ngOnChanges', changes);
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
     if (changes['widgets']) {
       this.setLayout();
@@ -162,6 +167,8 @@ export class WidgetGridComponent
         this.setGridOptions(true);
       }, 0);
     }
+    // Force change detection
+    // this.cdr.detectChanges();
   }
 
   override ngOnDestroy(): void {
@@ -294,25 +301,28 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
+    console.log('onExpandWidget');
     const target = this.widgetComponents.find((x) => x.id === e.id);
     if (target) {
       target.fullscreen = true;
       const { ExpandedWidgetComponent } = await import(
         './expanded-widget/expanded-widget.component'
       );
-      this.expandWidgetDialogRef = this.dialog.open(ExpandedWidgetComponent, {
-        data: {
-          element: target?.elementRef,
-        },
-        autoFocus: false,
-      });
-      // Destroy dialog ref after closed to show the widget header actions again
-      this.expandWidgetDialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-          target.fullscreen = false;
-          this.expandWidgetDialogRef = null;
+      this.ngZone.run(() => {
+        this.expandWidgetDialogRef = this.dialog.open(ExpandedWidgetComponent, {
+          data: {
+            element: target?.elementRef,
+          },
+          autoFocus: false,
         });
+        // Destroy dialog ref after closed to show the widget header actions again
+        this.expandWidgetDialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            target.fullscreen = false;
+            this.expandWidgetDialogRef = null;
+          });
+      });
     }
   }
 
@@ -322,6 +332,7 @@ export class WidgetGridComponent
    * @param event Step emitted by child grid widget component
    */
   triggerChangeStepAction(event: number) {
+    console.log('triggerChangeStepAction');
     this.changeStep.emit(event);
     if (this.expandWidgetDialogRef) {
       this.expandWidgetDialogRef?.close();
