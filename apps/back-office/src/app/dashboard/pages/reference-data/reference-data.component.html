@@ -58,23 +58,22 @@
           mwlResizable
           (resizing)="onResizing($event)"
           [ngStyle]="style"
-          class="flex flex-col overflow-hidden relative"
+          class="flex flex-col overflow-hidden relative h-[300px] mb-2"
           [validateResize]="validate.bind(this)"
         >
           <label class="block text-sm font-medium leading-6 text-gray-900"
             >{{ 'pages.referenceData.queryName' | translate }} *</label
           >
           <ngx-monaco-editor
-            class="!h-full !w-full"
             (onInit)="initEditor($event)"
             [options]="editorOptions"
             [formControl]="queryControl"
-            class="mb-2"
+            class="!h-full !w-full"
           ></ngx-monaco-editor>
           <div
-            class="cursor-col-resize absolute h-full w-2 right-0"
+            class="cursor-col-resize absolute w-full h-2 bottom-0"
             mwlResizeHandle
-            [resizeEdges]="{ right: true }"
+            [resizeEdges]="{ bottom: true }"
           ></div>
         </div>
         <!-- QueryName -->

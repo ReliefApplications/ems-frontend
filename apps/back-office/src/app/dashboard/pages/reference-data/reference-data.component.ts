@@ -965,7 +965,7 @@ export class ReferenceDataComponent
    */
   onResizing(event: ResizeEvent): void {
     this.style = {
-      width: `${event.rectangle.width}px`,
+      // width: `${event.rectangle.width}px`,
       height: `${event.rectangle.height}px`,
     };
   }
@@ -977,26 +977,12 @@ export class ReferenceDataComponent
    * @returns boolean
    */
   validate(event: ResizeEvent): boolean {
-    const dashboardNavbar = this.document.getElementsByTagName('shared-navbar');
-    let dashboardNavbarWidth = 0;
-    if (dashboardNavbar[0]) {
-      dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
-    }
-    // set the min width as 40% of the screen size available
-    const minWidth = Math.round(
-      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.4
-    );
-    // set the max width as 96% of the screen size available
-    const maxWidth = Math.round(
-      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.96
-    );
-    if (
-      event.rectangle.width &&
-      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
-    ) {
+    const minHeight = 300;
+    if (event.rectangle.height && event.rectangle.height < minHeight) {
       return false;
+    } else {
+      return true;
     }
-    return true;
   }
 
   override ngOnDestroy(): void {
