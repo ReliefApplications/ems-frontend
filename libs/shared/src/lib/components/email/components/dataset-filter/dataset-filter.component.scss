@@ -8,6 +8,13 @@
   flex: 1;
 }
 
+button:disabled,
+button.disabled-button {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+
 .field-box {
   padding: 20px 10px;
   @apply border-b-zinc-200 bg-white border-b border-solid;
@@ -50,7 +57,7 @@
 
 .form-error {
   border: 1px solid red;
-  border-radius: 5px;
+  outline-color: red;
   .ng-select-container {
       border: transparent !important;
   }
@@ -255,13 +262,13 @@ button.ui-button-icon:disabled {
       li {
         padding: 0px;
         min-height: 40px;
-      
+
         .k-link {
           padding-block: 0px;
         }
-      }      
-    }    
-  }  
+      }
+    }
+  }
 }
 ::ng-deep .loadingSign {
   .overflow-hidden {
@@ -288,4 +295,7 @@ button.ui-button-icon:disabled {
     background: #ffab0082;
     margin: 20px 0;
     border-radius: 5px;
+}
+.btn-width {
+  width: fit-content !important;
 }

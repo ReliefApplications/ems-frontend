@@ -1,183 +1,351 @@
 <div class="Email_Template">
-    <div class="mt-4 w-1/3">
+    <div class="dl-segment-button">
+        <div *ngFor="let segmentText of segmentButtons; index as segmentIndex" class="segment"
+          (click)="activeSegmentIndex = segmentIndex" [ngClass]="{'active': activeSegmentIndex === segmentIndex}">
+          {{segmentText}}</div>
+      </div>
+
+    <div class="mt-4 w-1/3" *ngIf="activeSegmentIndex === 0">
         <input #filterInput (keyup.enter)="addEmailManually(filterInput)" (change)="validateEmail(filterInput)"
         class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         [ngClass]="emailValidationError.length ? 'input-error': ''"
         type="text" [placeholder]="'components.select.distribution.email' | translate" />
         <p class="hint-text" *ngIf="emailValidationError.length">{{emailValidationError}}</p>
     </div>
-    <div
-        class="mt-4 p-1 gap-1 w-4/12 text-blue-700 text-base border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-        <span class="cursor-pointer flex rounded-lg items-center justify-center" (click)="toggleDropdown()">
-            {{ 'components.select.distribution.SelectFromList' | translate }}
-            <span class="w-4" *ngIf="(isDropdownVisible)">
-                <i class="flex items-center material-icons icon-primary" style="height: 24px; width: 24px; line-height: 24px; font-size: 24px; color: #175CD3 !important;"> expand_less </i>
-            </span>
-            <span class="w-4" *ngIf="!isDropdownVisible">
-                <i class="flex items-center material-icons icon-primary" style="height: 24px; width: 24px; line-height: 24px; font-size: 24px; color: #175CD3 !important;"> expand_more </i>
-            </span>
-        </span>
-        <span class="cursor-pointer flex p-1 rounded-lg items-center justify-center" (click)="toggleDropdown()"
-            *ngIf="isDropdownVisible && !emails?.length">
-            {{ 'common.noOptions' | translate }}
-        </span>
-        <div class="flex flex-col p-1 gap-1 rounded-lg items-center justify-center"
-            *ngIf="isDropdownVisible && emails?.length">
-            <ng-container *ngFor="let email of emails; let emailIndex = index">
-                <span class="cursor-pointer text-white-700 flex p-1 rounded-lg items-center w-full justify-center bg-gray-400"
-                    (click)="addSelectiveEmails(emailIndex)" [value]="email">
-                    {{ email }}
-                </span>
-            </ng-container>
+
+    <div class="select-from-list" *ngIf="activeSegmentIndex === 1">
+        <div class="w-1/2 mt-6 flex-row gap-4">
+            <label htmlFor="select__data__set" class="block text-gray-700 text-sm mb-1">
+                {{ 'components.queryBuilder.dataset.title' | translate }}*
+            </label>
+            <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset"  [ngModelOptions]="{ standalone: true }"
+                [items]="dataSets" bindLabel="name" [searchable]="true"  [virtualScroll]="true"
+                (clear)="clearDatasetSelection()"
+                (change)="bindDataSetDetails($event)" placeholder="{{
+                    'components.queryBuilder.dataset.select' | translate}}">
+                <ng-template disabled selected>
+                    <span></span>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <span>{{ this.emailService.replaceUnderscores(item.name || '') | titlecase }}</span>
+                </ng-template>
+            </ng-select>
+        </div>
+        <table *ngIf="dataList?.length" class="dataset-preview w-full border border-blue-600 shadow-xs m-1">
+            <thead class="bg-blue-600 border-blue-600 shadow-xs text-white">
+                <tr class="bg-blue-600 border-blue-600 shadow-xs text-white">
+                    <th>
+                        <input type="checkbox" [checked]="false" *ngIf="!isAllSelected" (change)="selectAllEmailItems($event)">
+                        <input type="checkbox" [checked]="true" *ngIf="isAllSelected" (change)="selectAllEmailItems($event)">
+                    </th>
+                    <ng-container *ngFor="let field of dataSetFields">
+                        <th class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center">
+                            {{ this.emailService.replaceUnderscores(field) | titlecase }}
+                        </th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of dataList; index as i" class="bg-white-600 border-blue-600 text-blue-600">
+                    <td>
+                        <input type="checkbox" (change)="selectUnselectIndividualEmails(i, $event)" [checked]="true" *ngIf="selectedItemIndexes.indexOf(i) !== -1">
+                        <input type="checkbox" (change)="selectUnselectIndividualEmails(i, $event)" [checked]="false" *ngIf="selectedItemIndexes.indexOf(i) === -1">
+                    </td>
+                    <ng-container *ngFor="let field of dataSetFields">
+                        <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
+                            {{ data[field] }}
+                        </td>
+                    </ng-container>
+                </tr>
+            </tbody>
+        </table>
+        <div class="button-wrapper">
+            <button (click)="addSelectedEmails()" *ngIf="selectedItemIndexes.length">Apply</button>
         </div>
     </div>
-    <div class="Create filters">
-        <p class="text-blue-700 text-base font-semibold font-small eading-normal">
-            {{ 'components.select.distribution.createFilterLogic' | translate }}
-        </p>
+    <!-- Filter -->
+    <div class="Create filters" *ngIf="activeSegmentIndex === 2">
+        <div class="w-1/2 mt-6 flex-row gap-4">
+            <label htmlFor="select__data__set" class="block text-sm font-medium leading-6 text-gray-900 mb-1">
+                {{ 'components.queryBuilder.dataset.title' | translate }}*
+            </label>
+            <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset" [ngModelOptions]="{ standalone: true }"
+                [items]="dataSets" bindLabel="name" [searchable]="true"  [virtualScroll]="true"
+                (clear)="clearDatasetSelection()"
+                (change)="bindDataSetDetails($event)" placeholder="{{
+                    'components.queryBuilder.dataset.select' | translate}}">
+                <ng-template disabled selected>
+                    <span></span>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <span>{{ this.emailService.replaceUnderscores(item.name || '') | titlecase }}</span>
+                </ng-template>
+            </ng-select>
+        </div>
         <div>
-            <div class="w-1/2 mt-6 flex-row gap-4">
-                <label htmlFor="select__data__set" class="block text-gray-700 text-sm mb-1">
-                    {{ 'components.queryBuilder.dataset.title' | translate }}*
-                </label>
-                <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset" [ngModelOptions]="{ standalone: true }"
-                    [items]="dataSets" bindLabel="name" [searchable]="true"  [virtualScroll]="true"
-                    (change)="bindDataSetDetails($event)" placeholder="{{
-                        'components.queryBuilder.dataset.select' | translate}}">
-                    <ng-template disabled selected>
-                        <span></span>
-                    </ng-template>
-                    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                        <span>{{ replaceUnderscores(item.name || '') | titlecase }}</span>
-                    </ng-template>
-                </ng-select>
-            </div>
-            <table *ngIf="dataList?.length" class="dataset-preview w-full border border-blue-600 shadow-xs m-1">
-                <thead class="bg-blue-600 border-blue-600 shadow-xs text-white">
-                    <tr class="bg-blue-600 border-blue-600 shadow-xs text-white">
-                        <ng-container *ngFor="let field of dataSetFields">
-                            <th class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center">
-                                {{ replaceUnderscores(field) | titlecase }}
-                            </th>
-                        </ng-container>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let data of dataList" class="bg-white-600 border-blue-600 text-blue-600">
-                        <ng-container *ngFor="let field of dataSetFields">
-                            <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
-                                {{ data[field] }}
-                            </td>
-                        </ng-container>
-                    </tr>
-                </tbody>
-            </table>
             <div [formGroup]="filterQuery">
                 <div class="flex-row gap-4 mt-6">
-                    <div class="flex gap-4">
+                    <div class="flex gap-4" *ngIf="selectedDataset?.fields?.length && !this.loading">
+                      <div class="flex gap-4 mt-2">
                         <div class="mt-2">
-                            <label htmlFor="exampleSelect" class="block text-gray-700 text-sm">
-                                {{ 'components.queryBuilder.filter.logic' | translate }}
-                            </label>
-                            <select formControlName="logic"
-                                class="mt-1 block w-32 py-1 px-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <option value="and">
-                                    {{ 'components.queryBuilder.filter.and' | translate }}
-                                </option>
-                                <option value="or">
-                                    {{ 'components.queryBuilder.filter.or' | translate }}
-                                </option>
-                            </select>
-                        </div>
+                          <!-- Label for Filter Logic -->
+                          <div>
+                            <label class="block text-sm font-medium leading-6 text-gray-900" htmlFor="exampleSelect">{{ 'components.queryBuilder.filter.logic' | translate }}</label>
+                          </div>
 
-                        <div class="mt-2">
-                            <label
-                            htmlFor="exampleSelect"
-                            class="block text-gray-700 text-sm" style="color: white;"
-                            >a
-                            </label>
-                            <button type="button"
-                                (click)="addNewDatasetFilter()"
-                                class="mt-1 block w-32 py-1 px-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm btnDataSet">
-                                {{ 'components.queryBuilder.filter.new' | translate }}
-                            </button>
-                        </div>
+                          <div class="flex items-center gap-5 mt-1">
+                            <!-- Filter Logic -->
+                            <div uiFormFieldDirective [defaultMargin]="false" class="w-28">
+                              <ui-select-menu formControlName="logic">
+                                <ui-select-option value="or">
+                                  {{ 'components.queryBuilder.filter.or' | translate }}
+                                </ui-select-option>
+                                <ui-select-option value="and">
+                                  {{ 'components.queryBuilder.filter.and' | translate }}
+                                </ui-select-option>
+                              </ui-select-menu>
+                            </div>
 
+                            <!-- Filter Row Button -->
+                            <ui-button category="tertiary" (click)="addNewDatasetFilter()">
+                              {{ 'components.queryBuilder.filter.new' | translate }}
+                            </ui-button>
+
+                          </div>
+                        </div>
+                      </div>
                     </div>
                 </div>
                 <div>
                     <div formArrayName="filters">
                         <div *ngFor="
-                let data of filterFields?.controls;
-                let fieldIndex = index
-              ">
+                            let data of filterFields?.controls;
+                            let fieldIndex = index
+                          ">
                             <div class="flex gap-5 ml-6" [formGroupName]="fieldIndex">
-                                <div class="mt-4 w-1/3">
+                                <!-- Filter Field -->
+                                <div
+                                  uiFormFieldDirective
+                                  [defaultMargin]="false"
+                                  class="mt-4 w-1/3">
                                     <label htmlFor="exampleSelect"
-                                    class="block text-gray-700 text-sm">
+                                    >
                                         {{ 'components.queryBuilder.filter.field' | translate }}
                                     </label>
-                                    <select id="exampleSelect" name="exampleSelect" (change)="setField($event)"
-                                        class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    <ui-select-menu
+                                        [filterable]="true"
+                                        id="exampleSelect"
+                                        name="exampleSelect"
+                                        (ngModelChange)="setField($event, fieldIndex)"
                                         formControlName="field">
-                                        <ng-container *ngFor="let fieldName of dataSetFields">
-                                            <option [value]="fieldName">
-                                                {{ replaceUnderscores(fieldName) | titlecase }}
-                                            </option>
+                                        <ng-container
+                                          *ngFor="let fieldDetails of dataSetFields">
+                                            <ui-select-option [value]="fieldDetails">
+                                                {{ this.emailService.replaceUnderscores(fieldDetails) | titlecase }}
+                                            </ui-select-option>
                                         </ng-container>
-                                    </select>
+                                    </ui-select-menu>
                                 </div>
-                                <div class="mt-4 w-1/3">
-                                    <label htmlFor="exampleSelect" class="block text-gray-700 text-sm">
+                                <!-- Filter Operator -->
+                                <div
+                                  uiFormFieldDirective
+                                  [defaultMargin]="false"
+                                  class="mt-4 w-1/3">
+                                    <label htmlFor="exampleSelect">
                                         {{ 'components.queryBuilder.filter.operator' | translate }}
                                     </label>
-                                    <select id="exampleSelect" name="exampleSelect"
-                                        class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        formControlName="operator">
-                                        <option [value]="operator?.value" *ngFor="let operator of operators">
-                                            {{ operator.label | translate | titlecase }}
-                                        </option>
-                                    </select>
+                                    <ui-select-menu id="exampleSelect" name="exampleSelect"
+                                        formControlName="operator"
+                                        (ngModelChange)="onOperatorChange($event, data)">
+                                        <ui-select-option
+                                          *ngFor="let operatorDetail of operators[fieldIndex]"
+                                          [value]="operatorDetail?.value"
+                                          >
+                                            {{ operatorDetail.label | translate | titlecase }}
+                                        </ui-select-option>
+                                    </ui-select-menu>
                                 </div>
-                                <div class="mt-4 w-1/3">
-                                    <label htmlFor="exampleSelect" class="block text-gray-700 text-sm">
-                                        {{ 'components.queryBuilder.filter.value' | translate }}
-                                    </label>
-                                    <input
-                                        class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        placeholder="Enter the value" formControlName="value" />
-                                </div>
+                                <!-- Filter Value -->
+                                <div
+                                  class="mt-4 w-1/3"
+                                  *ngIf="operators?.[fieldIndex] && !data.get('hideEditor')?.value"
+
+                                  >
+                                  <!-- Text Input for non-date/datetime fields -->
+                                  <ng-container *ngIf="!isDateOrDatetimeOperator(fieldIndex) && !isNumericOperator(fieldIndex)">
+                                    <div uiFormFieldDirective [defaultMargin]="false">
+                                      <label>{{ 'common.value.one' | translate }}</label>
+                                      <input formControlName="value" type="text"placeholder="Enter the value" />
+                                    </div>
+                                  </ng-container>
+                                  <!-- Numeric Input -->
+                                  <ng-container *ngIf="isNumericOperator(fieldIndex)" #numericEditor>
+                                    <div uiFormFieldDirective [defaultMargin]="false">
+                                      <label>{{ 'common.value.one' | translate }}</label>
+                                      <input formControlName="value" type="number" />
+                                    </div>
+                                  </ng-container>
+                                  <!-- Date / DateTime picker or within the Last... picker -->
+                                  <ng-container *ngIf="isDateOrDatetimeOperator(fieldIndex)">
+                                    <!-- Date Picker -->
+                                    <div uiFormFieldDirective [defaultMargin]="false" *ngIf="getFieldType(fieldIndex) === 'date' && data.get('operator')?.value !== 'inthelast'">
+                                      <label class="block text-gray-700 text-sm">{{ 'components.queryBuilder.filter.value' | translate }}</label>
+                                      <div class="grid grid-cols-6 gap-2">
+                                        <!-- Conditional rendering based on useExpression -->
+                                        <ng-container *ngIf="!useExpression; else textInput">
+                                          <div [uiDateWrapper]="calendar" class="col-span-5">
+                                            <input
+                                              [uiDatePicker]
+                                              formControlName="value"
+                                              [label]="'kendo.datepicker.dateLabel' | translate"
+                                              class="w-full"
+                                            />
+                                            <ui-date-picker #calendar></ui-date-picker>
+                                          </div>
+                                        </ng-container>
+                                        <ng-template #textInput>
+                                          <input
+                                            uiTooltip="YYYY/MM/DD"
+                                            formControlName="value"
+                                            type="text"
+                                            placeholder="YYYY/MM/DD"
+                                            class="col-span-5 w-full"
+                                          />
+                                        </ng-template>
+
+                                        <!-- Date and text Button -->
+                                        <div class="col-span-1">
+                                          <ui-button
+                                            [isIcon]="true"
+                                            icon="change_circle_outline"
+                                            variant="primary"
+                                            (click)="changeEditor()"
+                                            [uiTooltip]="
+                                              (useExpression
+                                                ? 'components.queryBuilder.tooltip.filter.date.usePicker'
+                                                : 'components.queryBuilder.tooltip.filter.date.useExpression'
+                                              ) | translate
+                                            "
+                                            class="w-full"
+                                          ></ui-button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!-- Date Time Picker -->
+                                    <div uiFormFieldDirective [defaultMargin]="false" *ngIf="(getFieldType(fieldIndex) === 'datetime' || getFieldType(fieldIndex) === 'datetime-local') && data.get('operator')?.value !== 'inthelast'">
+                                      <label class="block text-gray-700 text-sm">{{ 'components.queryBuilder.filter.value' | translate }}</label>
+                                      <div class="grid grid-cols-6 gap-2">
+                                        <ng-container *ngIf="!useExpression; else textInput">
+                                          <div [uiDateWrapper]="calendar" class="col-span-5">
+                                            <input
+                                              [uiDatePicker]
+                                              formControlName="value"
+                                              [label]="'kendo.datepicker.dateLabel' | translate"
+                                              class="w-full"
+                                            />
+                                            <ui-date-picker #calendar></ui-date-picker>
+                                          </div>
+                                        </ng-container>
+                                        <ng-template #textInput>
+                                          <input
+                                            uiTooltip="YYYY/MM/DD"
+                                            formControlName="value"
+                                            type="text"
+                                            placeholder="YYYY/MM/DD"
+                                            class="col-span-5 w-full"
+                                          />
+                                        </ng-template>
+
+                                        <!-- Date to text Button -->
+                                        <div class="col-span-1">
+                                          <ui-button
+                                            [isIcon]="true"
+                                            icon="change_circle_outline"
+                                            variant="primary"
+                                            (click)="changeEditor()"
+                                            [uiTooltip]="
+                                              (useExpression
+                                                ? 'components.queryBuilder.tooltip.filter.date.usePicker'
+                                                : 'components.queryBuilder.tooltip.filter.date.useExpression'
+                                              ) | translate
+                                            "
+                                            class="w-full"
+                                          ></ui-button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!-- within the Last... picker -->
+                                    <div
+                                      *ngIf="data.get('operator')?.value === 'inthelast'"
+                                      formGroupName="inTheLast"
+                                      class="flex">
+                                      <div
+                                      uiFormFieldDirective
+                                      [defaultMargin]="false"
+                                      class="mr-2">
+                                        <label>Number</label>
+                                        <ui-select-menu
+                                          formControlName="number"
+                                          >
+                                          <ui-select-option
+                                            *ngFor="let num of getNumbersArray()"
+                                            [value]="num">
+                                            {{ num }}
+                                          </ui-select-option>
+                                        </ui-select-menu>
+                                      </div>
+                                      <div
+                                        uiFormFieldDirective
+                                        [defaultMargin]="false"
+                                      >
+                                        <label>Unit</label>
+                                        <ui-select-menu formControlName="unit">
+                                          <ng-container *ngFor="let timeUnit of timeUnits">
+                                            <ui-select-option [value]="timeUnit.value">
+                                              {{ timeUnit.label }}
+                                            </ui-select-option>
+                                          </ng-container>
+                                        </ui-select-menu>
+                                      </div>
+                                    </div>
+                                    <div
+                                      *ngIf="data.get('operator')?.value === 'inthelast'" [hidden]="true">
+                                      <input
+                                        formControlName="value"
+                                        type="text"
+                                      />
+                                    </div>
+                                  </ng-container>
+                                  </div>
                                 <button
                                     class="ui-button-icon primary medium button-danger mt-8"
                                     (click)="deleteDatasetFilter(fieldIndex)">
                                     <ui-icon class="text-3xl" icon="delete" variant="danger"> </ui-icon>
                                 </button>
-                                <!-- <div class="deleteIcon mt-5" (click)="deleteDatasetFilter(fieldIndex)">
-                                    <svg class="mt-4" xmlns="http://www.w3.org/2000/svg" width="25" height="24"
-                                        viewBox="0 0 25 24" fill="none">
-                                        <path
-                                            d="M9.5 3H15.5M3.5 6H21.5M19.5 6L18.7987 16.5193C18.6935 18.0975 18.6409 18.8867 18.3 19.485C17.9999 20.0118 17.5472 20.4353 17.0017 20.6997C16.382 21 15.5911 21 14.0093 21H10.9907C9.40891 21 8.61803 21 7.99834 20.6997C7.45276 20.4353 7.00009 20.0118 6.69998 19.485C6.35911 18.8867 6.3065 18.0975 6.20129 16.5193L5.5 6M10.5 10.5V15.5M14.5 10.5V15.5"
-                                            stroke="#667085" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" />
-                                    </svg>
-                                </div> -->
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="p-3 pl-0 flex flex-wrap gap-4 items-center justify-start">
-                    <div class="flex gap-2 p-2 w-fit-content rounded-full items-center justify-center bg-gray-300"
-                        *ngFor="let emailText of selectedEmails; let chipIndex = index">
-                        <p>{{ emailText }}</p>
-                        <svg (click)="removeEmailChip(chipIndex)" xmlns="http://www.w3.org/2000/svg" width="17"
-                            height="16" viewBox="0 0 17 16" fill="none">
-                            <path
-                                d="M10.585 8L13.7122 4.87281C14.0959 4.48906 14.0959 3.86687 13.7122 3.48281L13.0172 2.78781C12.6334 2.40406 12.0113 2.40406 11.6272 2.78781L8.5 5.915L5.37281 2.78781C4.98906 2.40406 4.36688 2.40406 3.98281 2.78781L3.28781 3.48281C2.90406 3.86656 2.90406 4.48875 3.28781 4.87281L6.415 8L3.28781 11.1272C2.90406 11.5109 2.90406 12.1331 3.28781 12.5172L3.98281 13.2122C4.36656 13.5959 4.98906 13.5959 5.37281 13.2122L8.5 10.085L11.6272 13.2122C12.0109 13.5959 12.6334 13.5959 13.0172 13.2122L13.7122 12.5172C14.0959 12.1334 14.0959 11.5113 13.7122 11.1272L10.585 8Z"
-                                fill="black" />
-                        </svg>
-                    </div>
-                </div>
+
             </div>
+        </div>
+        <div class="button-wrapper" *ngIf="datasetFilterInfo.controls.length">
+            <button (click)="applyFilter()">Apply</button>
+        </div>
+    </div>
+    <div class="loadingSign" [ngClass]="{active: loading}">
+        <ui-spinner *ngIf="loading" style="position: relative;"></ui-spinner>
+      </div>
+    <div class="p-3 pl-0 flex flex-wrap gap-4 items-center justify-start">
+        <div class="flex gap-2 p-2 w-fit-content rounded-full items-center justify-center bg-gray-300 email-chips"
+            *ngFor="let emailText of selectedEmails; let chipIndex = index">
+            <p>{{ emailText }}</p>
+            <svg (click)="removeEmailChip(chipIndex)" xmlns="http://www.w3.org/2000/svg" width="17"
+                height="16" viewBox="0 0 17 16" fill="none">
+                <path
+                    d="M10.585 8L13.7122 4.87281C14.0959 4.48906 14.0959 3.86687 13.7122 3.48281L13.0172 2.78781C12.6334 2.40406 12.0113 2.40406 11.6272 2.78781L8.5 5.915L5.37281 2.78781C4.98906 2.40406 4.36688 2.40406 3.98281 2.78781L3.28781 3.48281C2.90406 3.86656 2.90406 4.48875 3.28781 4.87281L6.415 8L3.28781 11.1272C2.90406 11.5109 2.90406 12.1331 3.28781 12.5172L3.98281 13.2122C4.36656 13.5959 4.98906 13.5959 5.37281 13.2122L8.5 10.085L11.6272 13.2122C12.0109 13.5959 12.6334 13.5959 13.0172 13.2122L13.7122 12.5172C14.0959 12.1334 14.0959 11.5113 13.7122 11.1272L10.585 8Z"
+                    fill="black" />
+            </svg>
         </div>
     </div>
 </div>

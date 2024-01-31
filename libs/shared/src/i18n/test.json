@@ -753,6 +753,31 @@
 				}
 			}
 		},
+		"email": {
+			"distributionList": {
+				"duplicate": "******",
+				"import": {
+					"download": "******",
+					"loading": "******",
+					"name": "******",
+					"success": "******"
+				},
+				"list": "******"
+			},
+			"image": {
+				"rectangleValidation": "******",
+				"squareValidation": "******"
+			},
+			"name": "******",
+			"notification": {
+				"create": "******",
+				"list": "******",
+				"type": "******"
+			},
+			"preview": {
+				"subject": "******"
+			}
+		},
 		"emailBuilder": {
 			"body": "******",
 			"default": "******",
@@ -2439,6 +2464,7 @@
 				"actions": "******",
 				"emailCreated": "******",
 				"emailEdited": "******",
+				"emailFailMsg": "******",
 				"emailSent": "******"
 			}
 		},

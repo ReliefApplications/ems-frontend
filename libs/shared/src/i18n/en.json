@@ -753,6 +753,31 @@
 				}
 			}
 		},
+		"email": {
+			"distributionList": {
+				"duplicate": "Name already exists",
+				"import": {
+					"download": "Download Template",
+					"loading": "Importing file...",
+					"name": "Import",
+					"success": "Import Successful"
+				},
+				"list": "Distribution List"
+			},
+			"image": {
+				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",
+				"squareValidation": "Please upload an image with a more square aspect ratio, or similar to 200x200."
+			},
+			"name": "Email",
+			"notification": {
+				"create": "Create Notification",
+				"list": "Notification List",
+				"type": "Alert Type"
+			},
+			"preview": {
+				"subject": "Subject:"
+			}
+		},
 		"emailBuilder": {
 			"body": "Body",
 			"default": "Default",
@@ -2439,6 +2464,7 @@
 				"actions": "Actions",
 				"emailCreated": "New Email Notification Created",
 				"emailEdited": "Email Notification Edited Successfully",
+				"emailFailMsg": "Ooop!... Something is wrong while sending an email",
 				"emailSent": "Email Notification has Successfully been Saved and Sent"
 			}
 		},

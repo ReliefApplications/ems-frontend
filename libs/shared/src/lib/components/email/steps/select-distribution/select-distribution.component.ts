@@ -1,8 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { EmailService } from '../../email.service';
 import { FormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { DownloadService } from '../../../../services/download/download.service';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -25,11 +34,15 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param emailService helper functions
    * @param applicationService helper functions
    * @param downloadService helper functions
+   * @param snackBar snackbar helper function
+   * @param translate translate helper function
    */
   constructor(
     public emailService: EmailService,
     public applicationService: ApplicationService,
-    public downloadService: DownloadService
+    public downloadService: DownloadService,
+    public snackBar: SnackbarService,
+    public translate: TranslateService
   ) {
     this.getExistingTemplate();
     this.showExistingDistributionList =
@@ -76,6 +89,15 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     Cc: [],
     Bcc: [],
   };
+  public isLoading = false;
+  public cachedData: any = {};
+  public showToTemplate = false;
+  public showCCTemplate = false;
+  public showBccTemplate = false;
+
+  @ViewChild('fileUpload', { static: true }) fileElement:
+    | ElementRef
+    | undefined;
 
   ngOnInit(): void {
     this.recipients = this.emailService.recipients;
@@ -86,7 +108,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
+   * This method is used to show/hide the existing distribution list.
    */
   toggleDistributionListVisibility(): void {
     this.emailService.showExistingDistributionList =
@@ -101,6 +123,19 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param templateFor distribution email template for [ to | cc | bcc ]
    */
   toggleDropdown(templateFor: string): void {
+    if (templateFor.toLocaleLowerCase() === 'to') {
+      this.showToTemplate = !this.showToTemplate;
+      this.showCCTemplate = false;
+      this.showBccTemplate = false;
+    } else if (templateFor.toLocaleLowerCase() === 'cc') {
+      this.showCCTemplate = !this.showCCTemplate;
+      this.showToTemplate = false;
+      this.showBccTemplate = false;
+    } else if (templateFor.toLocaleLowerCase() === 'bcc') {
+      this.showBccTemplate = !this.showBccTemplate;
+      this.showToTemplate = false;
+      this.showCCTemplate = false;
+    }
     if (!this.templateFor || this.templateFor === templateFor) {
       this.showEmailTemplate = !this.showEmailTemplate;
     }
@@ -181,15 +216,15 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
+   * Get existing distribution list template.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   getExistingTemplate() {
     this.loading = true;
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       this.applicationId = res?.id;
     });
+    this.isLoading = true;
     this.emailService
       .getEmailNotifications(this.applicationId)
       .subscribe((res: any) => {
@@ -200,22 +235,33 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
         this.distributionLists = this.distributionLists.filter((ele: any) => {
           if (
             uniquDistributionLists.includes(
-              ele.node.recipients.distributionListName.toLowerCase()
+              ele.node.recipients.distributionListName?.toLowerCase()
             )
           ) {
             uniquDistributionLists = uniquDistributionLists.filter(
               (name) =>
-                ele.node.recipients.distributionListName.toLowerCase() !== name
+                ele.node.recipients.distributionListName?.toLowerCase() !== name
             );
             return true;
           } else {
             return false;
           }
         });
+        this.cacheDistributionList = this.distributionLists;
+        this.distributionLists = this.cacheDistributionList.slice(
+          this.distributionPageInfo.pageSize *
+            this.distributionPageInfo.pageIndex,
+          this.distributionPageInfo.pageSize *
+            (this.distributionPageInfo.pageIndex + 1)
+        );
+        this.distributionPageInfo.length = this.cacheDistributionList.length;
+        this.isLoading = false;
       });
   }
 
   /**
+   * Select Distribution List table row
+   *
    * @param index table row index
    */
   selectDistributionListRow(index: number): void {
@@ -226,13 +272,15 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
+   * Download Distribution List Template
    */
   downloadDistributionListTemplate(): void {
     this.downloadService.downloadDistributionListTemplate();
   }
 
   /**
+   * Import Distribution List
+   *
    * @param event file selection Event
    */
   fileSelectionHandler(event: any): void {
@@ -240,12 +288,25 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     const file: File = event.target.files[0];
     if (file) {
       this.downloadService.importDistributionList(file).subscribe((res) => {
-        this.recipients.To = [...this.recipients.To, ...res.To];
-        this.recipients.Cc = [...this.recipients.Cc, ...res.Cc];
-        this.recipients.Bcc = [...this.recipients.Bcc, ...res.Bcc];
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.email.distributionList.import.loading'
+          )
+        );
+        this.recipients.To = [...new Set([...this.recipients.To, ...res.To])];
+        this.recipients.Cc = [...new Set([...this.recipients.Cc, ...res.Cc])];
+        this.recipients.Bcc = [
+          ...new Set([...this.recipients.Bcc, ...res.Bcc]),
+        ];
         this.showEmailTemplate = true;
         this.templateFor = 'to';
         this.validateDistributionList();
+        if (this.fileElement) this.fileElement.nativeElement.value = '';
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.email.distributionList.import.success'
+          )
+        );
       });
     }
   }
@@ -265,5 +326,34 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
         disableAction: true,
       });
     }
+  }
+
+  /**
+   * Maintains paginator data
+   */
+  toggleExistingDistributionList() {
+    this.showExistingDistributionList = !this.showExistingDistributionList;
+    const event: UIPageChangeEvent = {
+      pageIndex: 0,
+      pageSize: DEFAULT_PAGE_SIZE,
+      previousPageIndex: 0,
+      skip: 0,
+      totalItems: this.cacheDistributionList.length,
+    };
+    this.onExistingList(event);
+  }
+
+  /**
+   * Maintains distribution page data.
+   *
+   * @param event The page change event.
+   */
+  onExistingList(event: UIPageChangeEvent) {
+    this.cachedData = handleTablePageEvent(
+      event,
+      this.pageInfo,
+      this.cacheDistributionList
+    );
+    this.distributionLists = this.cachedData;
   }
 }

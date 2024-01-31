@@ -56,3 +56,68 @@
 .input-error {
   border: 1px solid #ff0000;
 }
+
+.dl-segment-button {
+  display: flex;
+
+  .segment {
+      border: 1px solid #269ed1;
+      padding: 5px 10px;
+      cursor: pointer;
+      color: #269ed1;
+
+      &:first-child {
+          border-top-left-radius: 15px;
+          border-bottom-left-radius: 15px;
+          border-right: transparent;
+      }
+
+      &:last-child {
+          border-top-right-radius: 15px;
+          border-bottom-right-radius: 15px;
+          border-left: transparent;
+      }
+
+      &.active {
+          background:#269ed1;
+          color: #FFF;
+      }
+
+      &:hover {
+        background-color: #008dc9;
+        color: #FFF;
+      }
+  }
+}
+.email-chips {
+  padding: 2px 20px;
+    font-size: 14px;
+    border: 1px solid #0000005c;
+    background: #FFF;
+}
+
+.button-wrapper {
+  display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+    button {
+      height: 40px;
+    background: #269ed1;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #FFF;
+    }
+}
+
+
+.loadingSign{
+  display: none;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+
+  &.active {
+    display: flex;
+  }
+}

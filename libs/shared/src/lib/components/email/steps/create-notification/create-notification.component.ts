@@ -36,7 +36,8 @@ export class CreateNotificationComponent implements OnInit {
 
   /**
    * Name validation.
-   * @returns boolean
+   *
+   * @returns if the name is duplicate.
    */
   isNameDuplicate(): boolean {
     const enteredName = this.dataSetFormGroup.controls['name'].value

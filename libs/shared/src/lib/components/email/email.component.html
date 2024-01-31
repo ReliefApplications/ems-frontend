@@ -1,4 +1,4 @@
-<ui-spinner *ngIf="emailService.emailListLoading"class="spinner"></ui-spinner>
+<ui-spinner *ngIf="emailService.emailListLoading && emailService.isExisting" class="spinner"></ui-spinner>
 <div *ngIf="emailService.isExisting">
   <ui-button
       class="float-right"
@@ -7,13 +7,13 @@
       variant="primary"
       (click)="toggle(true)"
     >
-    Create Notification
+    {{'components.email.notification.create' | translate}}
     </ui-button>
     <br>
 </div>
 <div *ngIf="emailService.isExisting">
   <div class="mt-4">
-    <h2>Notification List</h2>
+    <h2>{{'components.email.notification.list' | translate}}</h2>
     <input
       id="exampleSelect"
       type="text"
@@ -40,7 +40,7 @@
           <ng-container cdkColumnDef="alerttype">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">
-                Alert Type
+                {{'components.email.notification.type' | translate}}
               </span>
             </th>
             <td uiCell *cdkCellDef="let element">
@@ -138,7 +138,7 @@
         [disabled]="emailService.emailListLoading"
         [pageIndex]="pageInfo.pageIndex"
         [pageSize]="pageInfo.pageSize"
-        [pageSizeOptions]="[10, 25, 50]"
+        [pageSizeOptions]="[5, 10, 25, 50]"
         [totalItems]="pageInfo.length"
         [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
         (pageChange)="onPage($event)"
@@ -172,7 +172,7 @@
 
 <div *ngIf="emailService.isExisting && templateActualData.length" class="mt-4">
   <div class="mt-4 overflow-x-hidden shadow-2lg">
-    <h2>Distribution List</h2>
+    <h2>{{'components.email.distributionList.list' | translate}}</h2>
     <div class="overflow-x-auto">
       <table cdk-table uiTableWrapper [dataSource]="distributionLists">
         <ng-container cdkColumnDef="name">
@@ -196,7 +196,7 @@
   [disabled]="emailService.emailListLoading"
   [pageIndex]="distributionPageInfo.pageIndex"
   [pageSize]="distributionPageInfo.pageSize"
-  [pageSizeOptions]="[10, 25, 50]"
+  [pageSizeOptions]="[5, 10, 25, 50]"
   [totalItems]="distributionPageInfo.length"
   [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
   (pageChange)="onDistributionPage($event)"
@@ -204,7 +204,7 @@
   </ui-paginator>
 
   </div>
-<ng-container *ngIf="!emailService.isExisting">  
+<ng-container *ngIf="!emailService.isExisting">
   <div>
     <ui-button
         [variant]="'danger'"

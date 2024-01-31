@@ -123,9 +123,6 @@ export class EmailService {
   public isPreview = false;
   public isLinear = true;
   public emailListLoading = true;
-  //private apiUrl = 'http://localhost:3000/notification/send-email/';
-
-  //private apiUrl = 'https://emspocdev.adapptlabs.com/api/notification/send-email/';
 
   /**
    * To replace all special characters with space
@@ -227,7 +224,9 @@ export class EmailService {
   }
 
   /**
+   * Retrieves the Table inline Styles.
    *
+   * @returns Table inline Styles
    */
   getTableStyles(): any {
     return this.defaultTableStyle;
@@ -270,8 +269,10 @@ export class EmailService {
   }
 
   /**
+   * Converts a file to a base64 string.
    *
-   * @param file
+   * @param file The file to be converted.
+   * @returns A promise that resolves to the base64 string.
    */
   convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -289,10 +290,12 @@ export class EmailService {
   }
 
   /**
+   * Converts a base64 string to a file.
    *
-   * @param base64String
-   * @param filename
-   * @param mimeType
+   * @param base64String base64 string you want to convert.
+   * @param filename name of the file.
+   * @param mimeType file type.
+   * @returns A file object
    */
   convertBase64ToFile(
     base64String: string,
@@ -560,8 +563,8 @@ export class EmailService {
    * Retrieves email notifications.
    *
    * @param id The application ids of the email notifications.
-   * @param limit
-   * @param skip
+   * @param limit The number of email notifications.
+   * @param skip The number of email notifications to skip.
    * @returns Email notifications query result.
    */
   getEmailNotifications(id: string, limit?: number, skip?: number) {
@@ -678,8 +681,8 @@ export class EmailService {
    * Edit an email notification with the provided id.
    *
    * @param id The notification data id.
-   * @param data
-   * @returns Email notification.
+   * @param data The notification data to be edited.
+   * @returns The edited Email notification.
    */
   editEmailNotification(id: string, data: any) {
     return this.apollo.query<any>({
@@ -724,9 +727,10 @@ export class EmailService {
   }
 
   /**
+   * Get the data set and flatten it.
    *
-   * @param emailData
-   * @param isSendEmail
+   * @param emailData data to be sent.
+   * @param isSendEmail checks if sending email or not.
    */
   getDataSet(emailData: any, isSendEmail?: boolean) {
     let count = 0;
@@ -794,8 +798,10 @@ export class EmailService {
   }
 
   /**
+   * Flattens the record.
    *
-   * @param record
+   * @param record The record to be flattened.
+   * @returns The flattened record.
    */
   flattenRecord(record: any): any {
     const result: any = {};
@@ -824,7 +830,7 @@ export class EmailService {
   }
 
   /**
-   *
+   * Resets the form.
    */
   resetDataSetForm() {
     this.datasetsForm.reset();

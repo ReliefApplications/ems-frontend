@@ -16,7 +16,7 @@
         </label>
         <select id="fieldSelect" (change)="insertSubjectFieldToken($event)" placeholder="Field Select" uiTooltip="First Row of first created block" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
           <option value="" disabled selected>{{'common.notifications.email.field.selectPlaceholder' | translate}}</option>
-          <option *ngFor="let field of firstBlockFields" [value]="'{{' + field + '}}'">{{ replaceUnderscores(field) | titlecase }}</option>
+          <option *ngFor="let field of firstBlockFields" [value]="'{{' + field + '}}'">{{ this.emailService.replaceUnderscores(field) | titlecase }}</option>
         </select>
       </div>
       <div class="w-1/3 px-2">
@@ -55,7 +55,7 @@
     <div class="flex-grow px-2">
       <label for="inTheLastDropdown" class="block text-gray-700 text-sm">{{'common.notifications.email.field.filtered' | translate}}</label>
       <select id="inTheLastDropdown" (change)="insertTokenAtCursor($event)" uiTooltip="Date Fields filtered by within the last" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
-        <option value="" disabled selected>{{'common.notifications.email.dropdown.inTheLast' | translate}}</option>
+        <option value="" selected>{{'common.notifications.email.dropdown.inTheLast' | translate}}</option>
         <option *ngFor="let control of inTheLastDropdown.controls" [value]="control.value">{{ control.value }}</option>
       </select>
     </div>
@@ -67,6 +67,7 @@
         <div class="flex flex-row items-center space-y-2">
           <img *ngIf="headerLogo" id="headerLogo" [src]="headerLogo" class="w-1/6 h-auto object-cover">
           <input
+            #headerLogoInput
             id="headerLogoInput"
             type="file"
             accept="image/*"
@@ -106,7 +107,7 @@
         <div class="block text-gray-700 text-sm mb-1">{{'common.notifications.email.field.selectBlock' | translate}}</div>
         <ng-container *ngIf="emailService.getAllPreviewData().length; else noBlocks">
           <select id="fieldSelect" (change)="insertDataSetToBodyHtmlByTabName($event)" class="block w-full mt-1 text-sm py-1.5 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
-            <option value="" disabled selected>{{'common.notifications.email.dropdown.selectBlock' | translate}}</option>
+            <option value="" selected>{{'common.notifications.email.dropdown.selectBlock' | translate}}</option>
             <option *ngFor="let previewData of emailService.getAllPreviewData(); let i = index" [value]="previewData.tabName">{{ previewData.tabName }}</option>
           </select>
         </ng-container>
@@ -136,7 +137,7 @@
   </div>
   <!-- Banner Image -->
   <div class="mb-4 bg-[#F5FAFF] flex items-center p-5">
-    <label for="banner_input" class="w-1/5 block text-gray-700 text-sm">
+    <label for="bannerInput" class="w-1/5 block text-gray-700 text-sm">
         {{'common.notifications.email.banner.image' | translate}}
     </label>
     <div *ngIf="bannerImage" class="w-1/5 mx-1">
@@ -144,7 +145,8 @@
     </div>
     <div class="w-1/2 flex justify-between">
         <input
-            id="banner_input"
+            #bannerInput
+            id="bannerInput"
             type="file"
             accept="image/*"
             placeholder="Upload an Image"
@@ -167,6 +169,7 @@
         <div class="flex flex-row items-center space-y-2">
           <img *ngIf="footerLogo" id="footerLogo" [src]="footerLogo" class="w-1/6 h-auto object-cover">
           <input
+            #footerLogoInput
             id="footerLogoInput"
             type="file"
             accept="image/*"

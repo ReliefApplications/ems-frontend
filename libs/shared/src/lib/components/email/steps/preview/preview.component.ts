@@ -118,7 +118,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Retrieves the style based on the item name.
+   * Retrieves the style based on the item name then sets the style in the email service.
    *
    * @param item The item you are retrieving the inline styling of.
    * @returns The inline styling of the item.
@@ -139,7 +139,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'headerLogo':
         styles[
           'headerLogoStyle'
-        ] = `margin: 0.5rem; display: block; width: 20%; padding: 0.25rem 0.5rem; border-radius: 0.375rem; background-color: ${this.emailService.headerBackgroundColor};`;
+        ] = `margin: 0.5rem; display: block; width: 15%; padding: 0.25rem 0.5rem; border-radius: 0.375rem; background-color: ${this.emailService.headerBackgroundColor};`;
         break;
       case 'headerHtml':
         styles[
@@ -185,7 +185,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Retrieves the table object based on the item name.
+   * Retrieves the table object based on the item name then sets the style in the email service.
    *
    * @param item The table part you are retrieving the inline styling of.
    * @returns The inline style of the item.
@@ -196,16 +196,16 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'tableDiv':
         styles[
           'tableDivStyle'
-        ] = `display: flex; flex-direction: column; align-items: center; width: 90%; margin-left: auto; margin-right: auto;`;
+        ] = `display: flex; flex-direction: column; align-items: center; width: 90%; margin: 0 auto;`;
         break;
       case 'label':
         styles[
           'labelStyle'
-        ] = `display: block; text-align: left !important; padding-left: 1.25rem; padding-top: 0.5rem; padding-bottom: 0.5rem; padding-right: 0.5rem; box-shadow: 0 0 #0000; width: 100%; font-size: 0.875rem; line-height: 1.25rem; font-family: 'Source Sans Pro', sans-serif; border: 3px solid #00205C; background-color: #00205C !important; color: #FFFFFF !important; font-style: normal; font-weight: 700;`;
+        ] = `display: block; text-align: left; padding-left: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; width: 100%; font-size: 0.875rem; line-height: 1.25rem; font-family: 'Source Sans Pro', sans-serif; background-color: #00205C; color: white; font-style: normal; font-weight: 700;`;
         break;
       case 'table':
         styles['tableStyle'] =
-          'width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; overflow:auto;';
+          'width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; overflow:auto; padding-left: 1.25rem; padding-top: 0.5rem; padding-bottom: 0.5rem; padding-right: 0.5rem;';
         break;
       case 'thead':
         styles[
@@ -224,7 +224,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
           'border-top: 1px solid #d1d5db; background-color: white;';
         break;
       case 'td':
-        styles['tdStyle'] = 'padding: 0.5rem; text-align: center;';
+        styles[
+          'tdStyle'
+        ] = `padding: 0.5rem; text-align: center; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif;`;
         break;
     }
     this.emailService.setTableStyles(styles);
@@ -240,34 +242,47 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   formatInLastString(minutes: number): string {
     const currentDate = new Date();
-    const pastDate = new Date(currentDate.getTime() - minutes * 60000);
+    // Multiplied by 60000 to convert minutes to milliseconds (to match getTime)
+    const currentDateUTC = new Date(
+      currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
+    );
 
-    const formattedPastDate = pastDate.toLocaleDateString('en-US', {
+    // Current date offset by minutes param
+    const pastDateUTC = new Date(currentDateUTC.getTime() - minutes * 60000);
+
+    // Past Date in date format (mm/dd/yyyy)
+    const formattedPastDate = pastDateUTC.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: '2-digit',
     });
-    const formattedPastTime = pastDate.toLocaleTimeString('en-US', {
+
+    // Past Date in time format (hh:mm)
+    const formattedPastTime = pastDateUTC.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
 
-    const formattedCurrentDate = currentDate.toLocaleDateString('en-US', {
+    // Current Date in date format (mm/dd/yyyy)
+    const formattedCurrentDate = currentDateUTC.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: '2-digit',
     });
-    const formattedCurrentTime = currentDate.toLocaleTimeString('en-US', {
+
+    // Current Date in time format (hh:mm)
+    const formattedCurrentTime = currentDateUTC.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
 
+    // If minutes is greater than a week then set past time as current time
     const minutesInAWeek = 7 * 24 * 60;
     if (minutes > minutesInAWeek) {
-      return `From ${formattedPastDate} ${formattedCurrentTime} as of ${formattedCurrentDate} ${formattedCurrentTime}`;
+      return `From ${formattedPastDate} ${formattedCurrentTime} UTC as of ${formattedCurrentDate} ${formattedCurrentTime} UTC`;
     }
 
-    return `From ${formattedPastDate} ${formattedPastTime} as of ${formattedCurrentDate} ${formattedCurrentTime}`;
+    return `From ${formattedPastDate} ${formattedPastTime} UTC as of ${formattedCurrentDate} ${formattedCurrentTime} UTC`;
   }
 
   /**
@@ -276,6 +291,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
    * @param headerString The current header text value.
    */
   replaceInTheLast(headerString: string | any): void {
+    // Token matching {{String.String.number}}
     const tokenRegex = /{{([^}]+)\.([^}]+)\.(\d+)}}/g;
     let match;
     while ((match = tokenRegex.exec(this.headerString)) !== null) {
@@ -292,6 +308,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   replaceTokensWithTables(): void {
     this.bodyString = this.emailService.allLayoutdata.bodyHtml;
+    // Token matching {{String}}
     const tokenRegex = /{{([^}]+)}}/g;
     let match;
     while ((match = tokenRegex.exec(this.bodyString)) !== null) {
@@ -316,6 +333,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const timeString = currentDate.toLocaleTimeString();
     const dateTimeString = currentDate.toLocaleString();
 
+    // Tokens to match
     const tokens = {
       '{{today.date}}': dateString,
       '{{now.datetime}}': dateTimeString,
@@ -369,7 +387,22 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   convertPreviewDataToHtml(previewData: any): string {
     if (!previewData?.dataList?.length) {
-      return '<label style="display: block; color: #4a5568; font-size: 0.875rem;">no data found</label>';
+      return `
+      <div style="${this.getTableStyle('tableDiv')}">
+        <div style="width: 100%;">
+          <label style="${this.getTableStyle('label')}">
+          ${previewData.tabName}</label>
+        </div>
+        <div style="width: 100%; overflow-x: auto;">
+          <table style="${this.getTableStyle('table')};">
+            <tbody style="${this.getTableStyle('tbody')}">
+              <tr style="${this.getTableStyle('tr')}">
+                <td style="${this.getTableStyle('td')}">no data found</td>
+              <tr>
+            </tbody>
+          </table>
+        </div>
+      </div>`;
     }
 
     const theadHtml = previewData.dataSetFields
@@ -396,33 +429,23 @@ export class PreviewComponent implements OnInit, OnDestroy {
       .join('');
 
     const tableHtml = `
-  <div style="${this.getTableStyle('tableDiv')}>
-   <label style="${this.getTableStyle('label')}">${previewData.tabName}</label>
-  <table id="tblPreview" style="${this.getTableStyle(
-    'table'
-  )}" class="dataset-preview">
-    <thead style="${this.getTableStyle('thead')}">
-      <tr style="${this.getTableStyle('tr')}">
-        ${theadHtml}
-      </tr>
-    </thead>
-    <tbody style="${this.getTableStyle('tbody')}">
-      ${tbodyHtml}
-    </tbody>
-  </table>
+  <div style="${this.getTableStyle('tableDiv')}">
+    <label style="${this.getTableStyle('label')}">${previewData.tabName}</label>
+    <div style="width: 100%; overflow-x: auto;">
+      <table style="${this.getTableStyle('table')}" class="dataset-preview">
+        <thead style="${this.getTableStyle('thead')}">
+          <tr style="${this.getTableStyle('tr')}">
+            ${theadHtml}
+          </tr>
+        </thead>
+        <tbody style="${this.getTableStyle('tbody')}">
+          ${tbodyHtml}
+        </tbody>
+      </table>
+    </div>
   </div>
 `;
     return tableHtml;
-  }
-
-  /**
-   * To replace all special characters with space
-   *
-   * @param value The string to process and replace special characters with spaces.
-   * @returns The processed string with special characters replaced by spaces.
-   */
-  replaceUnderscores(value: string): string {
-    return value ? value.replace(/[^a-zA-Z0-9-]/g, ' ') : '';
   }
 
   ngOnDestroy(): void {

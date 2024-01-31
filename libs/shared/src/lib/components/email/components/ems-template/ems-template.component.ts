@@ -8,10 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {
-  StepperActivateEvent,
-  StepperComponent,
-} from '@progress/kendo-angular-layout';
+import { StepperComponent } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../email.service';
 import { Router } from '@angular/router';
 import { ApplicationService } from '../../../../services/application/application.service';
@@ -180,6 +177,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
    */
   public next(): void {
     this.setLayoutValidation = false;
+    this.emailService.isLinear = false;
     if (this.currentStep === 0) {
       if (
         this.emailService.datasetsForm.controls['name'].valid &&
@@ -255,6 +253,12 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
           },
           (error) => {
             console.error('Error sending email:', error);
+            this.snackBar.openSnackBar(
+              this.translate.instant('pages.application.settings.emailFailMsg'),
+              { error: true }
+            );
+            this.emailService.datasetsForm.reset();
+            this.navigateToEms.emit();
           }
         );
     } catch (error) {
@@ -277,8 +281,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
-   * submission
+   * Submission for sending and saving emails
    */
   saveAndSend(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -296,32 +299,24 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
           queryData.applicationId = res?.id;
           queryData.recipients = this.emailService.recipients;
         });
-        this.applicationService.application$.subscribe((res: any) => {
-          this.emailService.datasetsForm
-            .get('applicationId')
-            ?.setValue(res?.id);
-          // For email notification edit operation.
-          if (this.emailService.isEdit) {
-            this.emailService
-              .editEmailNotification(this.emailService.editId, queryData)
-              .subscribe((res) => {
-                this.emailService.isEdit = false;
-                this.emailService.editId = '';
-                this.emailService.configId =
-                  res.data?.editAndGetEmailNotification?.id;
-                resolve();
-              }, reject);
-          } else {
-            // For email notification create operation.
-            this.emailService
-              .addEmailNotification(queryData)
-              .subscribe((res: any) => {
-                this.emailService.configId = res.data?.addEmailNotification?.id;
-                //window.location.reload();
-                resolve();
-              }, reject);
-          }
-        }, reject);
+        //For email notification edit operation.
+        if (this.emailService.isEdit) {
+          this.emailService
+            .editEmailNotification(this.emailService.editId, queryData)
+            .subscribe((res) => {
+              this.emailService.configId =
+                res.data?.editAndGetEmailNotification?.id;
+              resolve();
+            }, reject);
+        } else {
+          // For email notification create operation.
+          this.emailService
+            .addEmailNotification(queryData)
+            .subscribe((res: any) => {
+              this.emailService.configId = res.data?.addEmailNotification?.id;
+              resolve();
+            }, reject);
+        }
       } else {
         resolve();
       }
@@ -329,8 +324,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
-   * submission
+   * Submission
    */
   submit() {
     if (Object.keys(this.emailService.datasetsForm.value).length) {
@@ -376,28 +370,10 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
+   * Navigates to list screen.
    */
   navigateToListScreen() {
     this.navigateToEms.emit();
-  }
-
-  /**
-   *
-   * @param ev
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onStepActivate(ev: StepperActivateEvent): void {
-    this.currentStep = 0;
-    // this.emailService.isLinear =
-    //   this.emailService.isEdit || this.emailService.isPreview
-    //     ? false
-    //     : this.emailService.isLinear;
-    // if (ev.index === 4 || ev.index === 5) {
-    //   this.isLinear = false;
-    // } else {
-    //   this.isLinear = true;
-    // }
   }
 
   ngOnDestroy(): void {
@@ -405,6 +381,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Disables all next steps from the specified stepper index.
    *
    * @param stepperIndex - current stepper index
    */

@@ -62,7 +62,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   public operators: { [key: number]: { value: string; label: string }[] } = {};
   public showDatasetLimitWarning = false;
   public totalMatchingRecords = 0;
-  // Changes from date picker to text expression
+  /** FIELD TAB */
+  public currentTabIndex = 0;
+  /**  Changes from date picker to text expression */
   public useExpression = false;
   filterOperators = FILTER_OPERATORS;
   /** IN THE LAST TIME UNITS */
@@ -80,6 +82,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   public loading = false;
   fieldOptions: any;
   currentFieldName: any;
+  showErrorMessage: any = '';
 
   /**
    * To use helper functions, Apollo serve
@@ -169,6 +172,24 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handles Filter, Field, Style Tab selection changes
+   *
+   * @param event The tab selected
+   */
+  onTabSelect(event: any): void {
+    const newIndex = event.index;
+    const previousIndex = this.currentTabIndex;
+    const filterTabIndex = 0;
+    const fieldsTabIndex = 1;
+
+    // Check if the current active tab is "Filter" and the selected tab is "Fields"
+    if (newIndex === fieldsTabIndex && previousIndex === filterTabIndex) {
+      this.getDataSet('filter');
+    }
+    this.currentTabIndex = newIndex;
+  }
+
+  /**
    * To fetch Resource Data On Scroll
    */
   getResourceDataOnScroll() {
@@ -227,6 +248,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     this.selectedFields = [];
     this.filterFields = [];
     fromHtml ? this.query.controls.fields.setValue([]) : '';
+    this.showDatasetLimitWarning = false;
+    this.emailService.disableSaveAndProceed.next(false);
+    this.currentTabIndex = 0;
     if (this.selectedResourceId && this.emailService?.resourcesNameId?.length) {
       this.query.controls.resource.setValue(
         this.emailService.resourcesNameId.find(
@@ -235,6 +259,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       );
       this.resource = {};
       this.loading = true;
+      this.showErrorMessage = '';
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
@@ -250,13 +275,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
             this.metaData.forEach((field: any) => {
               if (
                 field &&
-                ![
-                  'resource',
-                  'resources',
-                  'matrix',
-                  'matrixdynamic',
-                  'matrixdropdown',
-                ].includes(field.type)
+                !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(
+                  field.type
+                )
               ) {
                 if (field) {
                   if (field.name === 'createdBy' && field.fields?.length) {
@@ -362,7 +383,15 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
               );
             }
           }
+          if (
+            this.query?.value?.resource !== null &&
+            !this.resource?.fields?.length
+          ) {
+            this.showErrorMessage = "Selected form doesn't contain any fields";
+          }
         });
+    } else {
+      this.showErrorMessage = "Selected form doesn't contain any fields";
     }
   }
 
@@ -485,6 +514,26 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     if (this.operators?.[index]) {
       delete this.operators[index];
     }
+
+    //Updated Object key number as Operators missing in filter when we try to delete few of the filters
+    const new_Operators: any[] = [];
+    Object.keys(this.operators)
+      .filter((op: any) => parseInt(op) < index)
+      .forEach((ele: any) => {
+        new_Operators[ele] = this.operators[ele];
+      });
+    Object.keys(this.operators)
+      .filter((op: any) => parseInt(op) > index)
+      .forEach((ele: any) => {
+        if (parseInt(ele) !== 0) {
+          const old_key = parseInt(ele);
+          const new_key = old_key - 1;
+          new_Operators[new_key] = this.operators[old_key];
+        } else {
+          new_Operators[ele] = this.operators[ele];
+        }
+      });
+    this.operators = new_Operators;
   }
 
   /**
@@ -566,7 +615,8 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    */
   addSelectedFields(field: any): void {
     const fieldExists = clone(this.query.value.fields) || [];
-    if (!JSON.stringify(fieldExists).includes(field.name)) {
+    const fieldExistsArray = fieldExists?.map((ele: any) => ele?.name);
+    if (!fieldExistsArray.includes(field.name)) {
       fieldExists.push(field);
       this.query.controls.fields.setValue(fieldExists);
       this.selectedFields = fieldExists;
@@ -720,7 +770,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   this.dataSetFields = [
                     ...new Set(
                       this.queryValue[tempIndex].fields
-                        .map((data: any) => data.name.replaceAll('.', '_'))
+                        .map((data: any) => data.name)
                         .flat()
 
                       // this.dataList
@@ -756,6 +806,10 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     } else {
       this.query.controls['name'].markAsTouched();
     }
+    this.emailService.selectedDataSet = '';
+    this.emailService.toEmailFilter = '';
+    this.emailService.ccEmailFilter = '';
+    this.emailService.bccEmailFilter = '';
   }
 
   /**

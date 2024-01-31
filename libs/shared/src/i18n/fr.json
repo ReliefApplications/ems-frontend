@@ -759,6 +759,31 @@
 				}
 			}
 		},
+		"email": {
+			"distributionList": {
+				"duplicate": "Le nom existe déjà",
+				"import": {
+					"download": "Télécharger le modèle",
+					"loading": "Importation du fichier...",
+					"name": "Importer",
+					"success": "Importation réussie"
+				},
+				"list": "Liste de distribution"
+			},
+			"image": {
+				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
+				"squareValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus carré, ou similaire à 200x200."
+			},
+			"name": "Email",
+			"notification": {
+				"create": "Créer une notification",
+				"list": "Liste des notifications",
+				"type": "Type d'alerte"
+			},
+			"preview": {
+				"subject": "Sujet:"
+			}
+		},
 		"emailBuilder": {
 			"body": "Corps du texte",
 			"default": "Défaut",
@@ -2453,6 +2478,7 @@
 				"actions": "Actions",
 				"emailCreated": "Nouvelle notification par e-mail créée",
 				"emailEdited": "Notification par e-mail modifiée avec succès.",
+				"emailFailMsg": "Oups !... Quelque chose ne va pas lors de l'envoi d'un e-mail",
 				"emailSent": "La notification par e-mail a été enregistrée et envoyée avec succès"
 			}
 		},

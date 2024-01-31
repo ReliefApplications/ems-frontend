@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { EmailService } from './email.service';
 import { ApplicationService } from '../../services/application/application.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+} from '@angular/forms';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
@@ -87,7 +92,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Resets email notification for user to go back to list.
    *
-   * @param isNew
+   * @param isNew value of if the user is creating a new email notification.
    */
   toggle(isNew?: boolean) {
     console.log('Toggle is calling');
@@ -112,6 +117,17 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     if (!this.emailService.isExisting) {
       this.emailService.resetDataSetForm();
       this.emailService.setDatasetForm();
+    } else {
+      const dataSetArray = this.emailService.datasetsForm.get(
+        'dataSets'
+      ) as FormArray;
+      dataSetArray.controls.forEach(
+        (datasetControl: AbstractControl<any, any>) => {
+          const datasetFormGroup = datasetControl as FormGroup | null;
+          datasetFormGroup?.get('cacheData')?.reset();
+        }
+      );
+      this.emailService.selectedDataSet = '';
     }
     this.emailService.isEdit ? (this.emailService.isEdit = false) : null;
     this.emailService.emailListLoading = true;
@@ -134,6 +150,22 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             ele.node.name.trim().toLowerCase()
           );
         });
+        const distributionListPaginationConfig = {
+          pageIndex: 0,
+          pageSize: this.distributionPageInfo.pageSize,
+          previousPageIndex: 0,
+          skip: 0,
+          totalItems: this.cacheDistributionList.length,
+        };
+        const notificationListPaginationConfig = {
+          pageIndex: 0,
+          pageSize: this.pageInfo.pageSize,
+          previousPageIndex: 0,
+          skip: 0,
+          totalItems: this.templateActualData.length,
+        };
+        this.onDistributionPage(distributionListPaginationConfig);
+        this.onPage(notificationListPaginationConfig);
       });
   }
 
@@ -556,7 +588,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   onDistributionPage(e: UIPageChangeEvent): void {
     const cachedData = handleTablePageEvent(
       e,
-      this.pageInfo,
+      this.distributionPageInfo,
       this.cacheDistributionList
     );
     this.distributionLists = cachedData;
