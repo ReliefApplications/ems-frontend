@@ -55,11 +55,18 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
   public style: any = {};
 
   ngOnChanges(changes: SimpleChanges): void {
-    // changed only reference data
+    // if the mapping is already loaded
     if (changes['referenceData'] && !changes['control']) {
+      // if the reference data doesn't change
+      if (
+        changes.referenceData.currentValue?.id ==
+        changes.referenceData.previousValue?.id
+      ) {
+        return;
+      }
       this.refresh(true);
-      // started the component
     } else {
+      // init the mapping
       this.refresh();
     }
   }
