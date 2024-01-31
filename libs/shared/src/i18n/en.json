@@ -250,6 +250,18 @@
 				"ready": "Email ready",
 				"sent": "Email sent"
 			},
+			"export": {
+				"download": "Download",
+				"format": "Format:",
+				"image": "{{image}} Ready",
+				"includeHeaderFooter": "Include Header and Footer",
+				"landscape": "Landscape",
+				"loading": "Loading {{type}} export",
+				"orientation": "Orientation:",
+				"paperSize": "Paper Size:",
+				"pdf": "PDF Ready",
+				"portrait": "Portrait"
+			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {

@@ -250,6 +250,18 @@
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
 			},
+			"export": {
+				"download": "Télécharger",
+				"format": "Format:",
+				"image": "{{image}} prêt",
+				"includeHeaderFooter": "Inclure l'en-tête et le pied de page",
+				"landscape": "Paysage",
+				"loading": "Chargement de l'exportation {{type}}",
+				"orientation": "Orientation:",
+				"paperSize": "Format du papier:",
+				"pdf": "PDF prêt",
+				"portrait": "portrait"
+			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {

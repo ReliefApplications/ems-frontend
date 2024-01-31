@@ -250,6 +250,18 @@
 				"ready": "******",
 				"sent": "******"
 			},
+			"export": {
+				"download": "******",
+				"format": "******",
+				"image": "{{image}} ******",
+				"includeHeaderFooter": "******",
+				"landscape": "******",
+				"loading": "****** {{type}} ******",
+				"orientation": "******",
+				"paperSize": "******",
+				"pdf": "******",
+				"portrait": "******"
+			},
 			"fetchingGroups": "******",
 			"file": {
 				"download": {

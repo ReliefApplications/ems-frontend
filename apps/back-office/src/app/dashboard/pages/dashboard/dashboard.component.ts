@@ -38,9 +38,9 @@ import {
   startWith,
   debounceTime,
 } from 'rxjs/operators';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, Subscription, firstValueFrom, first } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { cloneDeep, isEqual, omit } from 'lodash';
+import { cloneDeep, isEqual, upperCase, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { DashboardExportActionComponent } from './components/dashboard-export-action/dashboard-export-action.component';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
@@ -126,9 +126,10 @@ export class DashboardComponent
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
-  /** PDF export scale */
-  public exportScale = 0.45;
+  /** Map Loaded subscription */
+  private mapReadyForExportSubscription?: Subscription;
   private mapExists = false;
+  private mapStatusSubscription?: Subscription;
 
   /** @returns type of context element */
   get contextType() {
@@ -162,7 +163,7 @@ export class DashboardComponent
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
-   * @param mapStatusService
+   * @param mapStatusService Service for managing map ready and export status
    * @param layoutService Shared layout service
    * @param document Document
    * @param clipboard Angular clipboard service
@@ -230,10 +231,9 @@ export class DashboardComponent
             () => (this.loading = false)
           );
           // Returns true if a map exists in the dashboard
-          this.mapStatusService.mapStatus$
+          this.mapStatusSubscription = this.mapStatusService.mapStatus$
             .pipe(takeUntil(this.destroy$))
             .subscribe((status: any) => {
-              console.log('Map status:', status);
               if (status) {
                 this.mapExists = true;
               }
@@ -359,6 +359,14 @@ export class DashboardComponent
     }
     localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'filterStructure');
+
+    // Unsubscribe from map export subscription
+    if (this.mapReadyForExportSubscription) {
+      this.mapReadyForExportSubscription.unsubscribe();
+    }
+    // Unsubscribe from map exist status subscription
+    this.mapStatusSubscription?.unsubscribe();
+    this.mapExists = false;
   }
 
   /**
@@ -730,35 +738,19 @@ export class DashboardComponent
    * This method generates a PDF with the user input provided parameters.
    *
    * @param includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param orientation The orientation of the PDF.
    * @param pdfSize The size of the PDF to be generated.
-   * @param pdfScale The scale of the PDF content.
-   * @param pdfMargin The margins inserted into the PDF content.
    * @returns {Promise<string>} A promise that resolves to a string representing the PDF data.
    */
   public async pdfDrawer(
     includeHeaderFooter: boolean,
-    orientation: string,
-    pdfSize: string,
-    pdfScale: number,
-    pdfMargin: string
+    pdfSize: string
   ): Promise<string> {
-    const marginCalc =
-      pdfMargin === 'none'
-        ? { top: 0, left: 0, bottom: 0 }
-        : pdfMargin === 'minimum'
-        ? { top: 5, left: 10, bottom: 10 }
-        : { top: 5, left: 20, bottom: 10 };
-
     if (includeHeaderFooter) {
       this.addHeaderAndFooter();
     }
 
     const drawing = await drawDOM(this.exporter.nativeElement, {
       paperSize: pdfSize,
-      margin: marginCalc,
-      landscape: orientation === 'landscape' ? true : false,
-      scale: this.exportScaleCalc(pdfSize) * (pdfScale / 100),
     });
     const pdfData = await exportPDF(drawing);
     if (includeHeaderFooter) {
@@ -776,6 +768,10 @@ export class DashboardComponent
       exportType: 'pdf',
     };
 
+    if (this.mapReadyForExportSubscription) {
+      this.mapReadyForExportSubscription.unsubscribe();
+    }
+
     // Open the DashboardExportActionComponent dialog
     const dialogRef = this.dialog.open(DashboardExportActionComponent, {
       data: { data },
@@ -783,25 +779,51 @@ export class DashboardComponent
 
     // Handle the dialog result
     dialogRef.closed.subscribe(async (result) => {
-      console.log(`Dialog result: ${JSON.stringify(result)}`);
-      const resultValue = result as {
-        includeHeaderFooter: boolean;
-        orientation: string;
-        paperSize: string;
-        scale: number;
-        margin: string;
-      };
-      // Sends export = true to map component when kendo export starts
-      this.mapStatusService.updateExportingStatus(true);
+      if (result !== true && result !== undefined) {
+        const resultValue = result as {
+          includeHeaderFooter: boolean;
+          paperSize: string;
+        };
+        // Sends export = true to map component when kendo export starts
+        this.mapStatusService.updateExportingStatus(true);
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.export.loading', {
+            type: 'PDF',
+          })
+        );
 
-      const pdfData = await this.pdfDrawer(
-        resultValue.includeHeaderFooter,
-        resultValue.orientation,
-        resultValue.paperSize,
-        resultValue.scale,
-        resultValue.margin
-      );
-      saveAs(pdfData, `${this.dashboard?.name}.pdf`);
+        if (this.mapExists) {
+          this.mapStatusService.mapReadyForExport$
+            .pipe(
+              filter((ready) => ready === true), // Waits until map is ready
+              first()
+            )
+            .subscribe(async () => {
+              // Sets 0.5 second timeout to ensure the map layer is fully loaded
+              setTimeout(async () => {
+                const pdfData = await this.pdfDrawer(
+                  resultValue.includeHeaderFooter,
+                  resultValue.paperSize
+                );
+                saveAs(pdfData, `${this.dashboard?.name}.pdf`);
+                this.mapStatusService.setMapReadyForExport(false);
+              }, 500);
+            });
+        } else {
+          // If no map exists, proceed as normal
+          const pdfData = await this.pdfDrawer(
+            resultValue.includeHeaderFooter,
+            resultValue.paperSize
+          );
+          saveAs(pdfData, `${this.dashboard?.name}.pdf`);
+          this.mapStatusService.setMapReadyForExport(false);
+        }
+        setTimeout(async () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.export.pdf')
+          );
+        }, 500);
+      }
     });
   }
 
@@ -850,18 +872,17 @@ export class DashboardComponent
     if (includeHeaderFooter) {
       this.addHeaderAndFooter();
     }
-
     const background = this.exporter.nativeElement.style.color;
     this.exporter.nativeElement.style.background = '#fff';
     const drawing = await drawDOM(this.exporter.nativeElement, {
-      margin: { top: 10, left: 5, right: 5, bottom: 10 },
+      margin: { top: 10, left: 10, right: 10, bottom: 10 },
     });
     this.exporter.nativeElement.style.background = background;
     const pngData = await exportImage(drawing);
     if (includeHeaderFooter) {
       this.removeHeaderAndFooter();
     }
-
+    this.mapStatusService.updateExportingStatus(false);
     return pngData;
   }
 
@@ -876,22 +897,62 @@ export class DashboardComponent
       exportType: 'png',
     };
 
+    this.mapReadyForExportSubscription?.unsubscribe();
+
     // Open the DashboardExportActionComponent dialog
     const dialogRef = this.dialog.open(DashboardExportActionComponent, {
       data: { data },
     });
 
-    // Handle the dialog result
+    // Sets the user input values from dialog box
     dialogRef.closed.subscribe(async (result) => {
-      console.log(`Dialog result: ${JSON.stringify(result)}`);
-      const resultValue = result as {
-        format: 'png' | 'jpeg';
-        includeHeaderFooter: boolean;
-      };
-      format = resultValue.format;
-      includeHeaderFooter = resultValue.includeHeaderFooter;
-      const pngData = await this.pngDrawer(includeHeaderFooter);
-      saveAs(pngData, `${this.dashboard?.name}.${format}`);
+      if (result !== true && result !== undefined) {
+        const resultValue = result as {
+          format: 'png' | 'jpeg';
+          includeHeaderFooter: boolean;
+        };
+
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.export.loading', {
+            type: upperCase(resultValue.format),
+          })
+        );
+
+        // Sets exporting status to true
+        this.mapStatusService.updateExportingStatus(true);
+
+        if (this.mapExists) {
+          this.mapStatusService.mapReadyForExport$
+            .pipe(
+              filter((ready) => ready === true), // Waits until map is ready
+              first()
+            )
+            .subscribe(async () => {
+              // Sets 0.5 second timeout to ensure the map layer is fully loaded
+              setTimeout(async () => {
+                format = resultValue.format;
+                includeHeaderFooter = resultValue.includeHeaderFooter;
+
+                // Draws the Dashboard in its current state
+                const pngData = await this.pngDrawer(includeHeaderFooter);
+                saveAs(pngData, `${this.dashboard?.name}.${format}`);
+                this.mapStatusService.setMapReadyForExport(false);
+              }, 500);
+            });
+        } else {
+          format = resultValue.format;
+          includeHeaderFooter = resultValue.includeHeaderFooter;
+          const pngData = await this.pngDrawer(includeHeaderFooter);
+          saveAs(pngData, `${this.dashboard?.name}.${format}`);
+        }
+        setTimeout(async () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.export.image', {
+              image: upperCase(resultValue.format),
+            })
+          );
+        }, 1000);
+      }
     });
   }
 

@@ -22,6 +22,9 @@ export class MapStatusService {
     new BehaviorSubject<boolean>(false);
   isExporting$: Observable<boolean> = this.isExportingSubject.asObservable();
 
+  private mapReadyForExportSubject = new BehaviorSubject<boolean>(false);
+  mapReadyForExport$ = this.mapReadyForExportSubject.asObservable();
+
   /**
    * Updates the status of the map.
    *
@@ -38,5 +41,14 @@ export class MapStatusService {
    */
   updateExportingStatus(status: boolean): void {
     this.isExportingSubject.next(status);
+  }
+
+  /**
+   * Checks if the map is ready for export.
+   *
+   * @param ready is true if map is ready for exporting, else false.
+   */
+  setMapReadyForExport(ready: boolean): void {
+    this.mapReadyForExportSubject.next(ready);
   }
 }

@@ -172,6 +172,10 @@ export class MapComponent
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
   /** Revert Map Exporting subscription */
   private revertMapSubscription?: Subscription;
+  /** Base export Layer Checker */
+  private basemapLoaded = false;
+  /** Web export Layer Checker */
+  private webmapLoaded = false;
   /** Current geographic extent value */
   private geographicExtentValue: any;
   /** Subject to emit signals for cancelling previous data queries */
@@ -294,21 +298,32 @@ export class MapComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((isExporting) => {
         if (isExporting) {
-          // Save the current basemap and webmap
+          // Saves the current basemap and webmap
           const originalBasemap = this.basemap;
           const originalWebMap = this.arcGisWebMap;
 
-          // Replace the current map layer with the WHO Polygon Raster Basemap
+          // Replaces the current map layer with the WHO Polygon Raster Basemap
           this.basemap = L.tileLayer(
             'https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Raster_Basemap/MapServer/tile/{z}/{y}/{x}',
             {
               attribution:
                 '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             }
-          ).addTo(this.map);
+          );
 
-          // Replace the current webmap with an empty layer group (or any other placeholder)
-          this.arcGisWebMap = L.layerGroup().addTo(this.map);
+          // Listens for the 'load' event to know once the tiles are loaded
+          this.basemap
+            .on('load', () => {
+              this.onBasemapLoad();
+              // Replaces the current webmap with an empty layer group
+              this.arcGisWebMap = L.layerGroup().addTo(this.map);
+              this.onWebmapLoad();
+            })
+            .addTo(this.map);
+
+          if (this.checkIfMapIsFullyReady()) {
+            this.mapStatusService.setMapReadyForExport(true);
+          }
 
           // If there's an existing subscription to revert the map, unsubscribe first
           if (this.revertMapSubscription) {
@@ -328,9 +343,44 @@ export class MapComponent
               this.arcGisWebMap = originalWebMap.addTo(this.map); // Then add the webmap on top
               // Unsubscribe to clean up
               this.revertMapSubscription?.unsubscribe();
+              // Reset the map ready status to false
+              this.mapStatusService.setMapReadyForExport(false);
+              this.basemapLoaded = false;
+              this.webmapLoaded = false;
             });
         }
       });
+  }
+
+  /**
+   * Sets the basemap status to loaded for export
+   */
+  onBasemapLoad() {
+    this.basemapLoaded = true;
+    this.checkIfMapIsFullyReady();
+  }
+
+  /**
+   * Sets the webmap status to loaded for export
+   */
+  onWebmapLoad() {
+    this.webmapLoaded = true;
+    this.checkIfMapIsFullyReady();
+  }
+
+  /**
+   * Checks if the map is fully loaded.
+   *
+   * @returns true if the map is fully loaded, else false
+   */
+  checkIfMapIsFullyReady(): boolean {
+    const isFullyReady = this.basemapLoaded && this.webmapLoaded;
+
+    if (isFullyReady) {
+      this.mapStatusService.setMapReadyForExport(true);
+    }
+
+    return isFullyReady;
   }
 
   override ngOnDestroy(): void {
