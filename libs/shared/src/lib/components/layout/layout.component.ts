@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ComponentRef,
   EventEmitter,
@@ -204,6 +205,7 @@ export class LayoutComponent
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
+   * @param cdr ChangeDetectorRef
    */
   constructor(
     @Inject('environment') environment: any,
@@ -215,7 +217,8 @@ export class LayoutComponent
     public dialog: Dialog,
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -278,6 +281,7 @@ export class LayoutComponent
             this.rightSidenav.clear();
           }
         }
+        this.cdr.detectChanges();
       });
 
     this.breadcrumbService.breadcrumbs$

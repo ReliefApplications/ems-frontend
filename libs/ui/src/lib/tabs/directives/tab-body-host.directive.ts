@@ -58,7 +58,6 @@ export class TabBodyHostDirective
     this.openedTab
       .pipe(takeUntil(this.destroy$))
       .subscribe((tab: TabComponent) => {
-        console.log('uiTabBodyHost', tab);
         if (tab !== this._openedTab && this.hasAttached()) {
           this.detach();
         }

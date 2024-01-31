@@ -119,7 +119,6 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.tabs.changes
       .pipe(startWith(this.tabs), takeUntil(this.destroy$))
       .subscribe((tabs: QueryList<TabComponent>) => {
-        console.log('tabs tabs.changes', tabs);
         // Force change detection
         this.cdr.detectChanges();
         this.reorder$.next();
@@ -130,7 +129,6 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('tabs ngOnChanges', changes);
     if (changes['selectedIndex']) {
       this.setSelectedTab();
     }
@@ -168,7 +166,6 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
    */
   public setSelectedTab() {
     this.tabs?.forEach((tab) => {
-      console.log('tabs setSelectedTab');
       if (tab.index === this.selectedIndex) {
         tab.selected = true;
       } else {
@@ -184,7 +181,6 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
    */
   private subscribeToOpenTabEvents(): void {
     this.tabs?.forEach((tab, index) => {
-      console.log('tabs subscribeToOpenTabEvents 1');
       tab.variant = this.variant;
       tab.vertical = this.vertical;
       tab.index = index;
@@ -204,7 +200,6 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
     // To avoid that we select all tabs by default
     this.tabs?.forEach((tab) => {
-      console.log('tabs subscribeToOpenTabEvents 2');
       if (tab.index === this.selectedIndex) {
         this.showContent(tab);
       }
@@ -212,7 +207,6 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    console.log('tabs ngOnDestroy');
     if (this.showContentTimeoutListener) {
       clearTimeout(this.showContentTimeoutListener);
     }

@@ -113,6 +113,8 @@ export class WidgetGridComponent
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    * @param _host host element ref
+   * @param cdr ChangeDetectorRef
+   * @param ngZone Triggers html changes
    */
   constructor(
     public dialog: Dialog,
@@ -146,10 +148,9 @@ export class WidgetGridComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('ngOnChanges', changes);
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
     if (changes['widgets']) {
-      this.setLayout();
+      this.setLayout(true);
     }
     if (changes['options']) {
       this.setGridOptions();
@@ -159,7 +160,7 @@ export class WidgetGridComponent
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue)
     ) {
-      this.setLayout();
+      this.setLayout(true);
       if (this.gridOptionsTimeoutListener) {
         clearTimeout(this.gridOptionsTimeoutListener);
       }
@@ -167,8 +168,6 @@ export class WidgetGridComponent
         this.setGridOptions(true);
       }, 0);
     }
-    // Force change detection
-    // this.cdr.detectChanges();
   }
 
   override ngOnDestroy(): void {
@@ -263,6 +262,8 @@ export class WidgetGridComponent
       this.maxCols,
       (this.gridOptions.maxCols || this.gridOptions.minCols) as number
     );
+    // Force change detection
+    this.cdr.detectChanges();
   }
 
   /**
@@ -301,7 +302,6 @@ export class WidgetGridComponent
    * @param e widget to open.
    */
   async onExpandWidget(e: any): Promise<void> {
-    console.log('onExpandWidget');
     const target = this.widgetComponents.find((x) => x.id === e.id);
     if (target) {
       target.fullscreen = true;
@@ -332,7 +332,6 @@ export class WidgetGridComponent
    * @param event Step emitted by child grid widget component
    */
   triggerChangeStepAction(event: number) {
-    console.log('triggerChangeStepAction');
     this.changeStep.emit(event);
     if (this.expandWidgetDialogRef) {
       this.expandWidgetDialogRef?.close();
@@ -444,8 +443,10 @@ export class WidgetGridComponent
 
   /**
    * Updates layout based on the passed widget array.
+   *
+   * @param detectChanges to know when manual detect changes is required
    */
-  private setLayout(): void {
+  private setLayout(detectChanges = false): void {
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
@@ -468,6 +469,10 @@ export class WidgetGridComponent
           this.sortWidgets();
         }
       });
+    if (detectChanges) {
+      // Force change detection
+      this.cdr.detectChanges();
+    }
   }
 
   /**
