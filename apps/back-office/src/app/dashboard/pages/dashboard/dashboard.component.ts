@@ -128,7 +128,9 @@ export class DashboardComponent
   public gridOptions: GridsterConfig = {};
   /** Map Loaded subscription */
   private mapReadyForExportSubscription?: Subscription;
+  /** Map Exists State */
   private mapExists = false;
+  /** Map Status Subscription */
   private mapStatusSubscription?: Subscription;
 
   /** @returns type of context element */
