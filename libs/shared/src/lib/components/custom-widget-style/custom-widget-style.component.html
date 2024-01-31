@@ -1,4 +1,15 @@
-<div class="w-80 h-full flex flex-col">
+<div
+  class="h-full flex flex-col w-[30vw]"
+  mwlResizable
+  (resizing)="onResizing($event)"
+  [ngStyle]="navbarStyle"
+  [validateResize]="validate.bind(this)"
+>
+  <div
+    class="cursor-col-resize absolute h-full left-0 w-1.5 z-10"
+    mwlResizeHandle
+    [resizeEdges]="{ left: true }"
+  ></div>
   <!-- Header -->
   <div class="items-center p-4 border-b">
     <div class="flex justify-between items-center mb-2">
@@ -29,7 +40,7 @@
   <!-- Style editor -->
   <div class="grow overflow-y-auto overflow-x-hidden">
     <ngx-monaco-editor
-      class="!h-full"
+      class="!h-full !w-full"
       (onInit)="initEditor($event)"
       [options]="editorOptions"
       [formControl]="formControl"

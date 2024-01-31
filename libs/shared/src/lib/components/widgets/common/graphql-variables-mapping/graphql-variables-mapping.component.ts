@@ -12,6 +12,8 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { gql } from '@apollo/client';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Graphql variables mapping, for widgets using graphql reference data.
@@ -30,6 +32,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     ButtonModule,
     AlertModule,
+    ResizableModule,
   ],
   templateUrl: './graphql-variables-mapping.component.html',
   styleUrls: ['./graphql-variables-mapping.component.scss'],
@@ -46,15 +49,26 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
     theme: 'vs-dark',
     language: 'json',
     fixedOverflowWidgets: true,
+    formatOnPaste: true,
     automaticLayout: true,
   };
+  /** size style of editor */
+  public style: any = {};
 
   ngOnChanges(changes: SimpleChanges): void {
-    // changed only reference data
+    // if the mapping is already loaded
     if (changes['referenceData'] && !changes['control']) {
-      this.refresh(true);
-      // started the component
+      // if the reference data doesn't change
+      if (
+        !isEqual(
+          changes.referenceData.currentValue?.id,
+          changes.referenceData.previousValue?.id
+        )
+      ) {
+        this.refresh(true);
+      }
     } else {
+      // init the mapping
       this.refresh();
     }
   }
@@ -125,6 +139,33 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
     } catch (_) {
       console.error('Error while building available graphql variables', _);
       this.availableQueryVariables = [];
+    }
+  }
+
+  /**
+   * On resizing action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      // width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const minHeight = 300;
+    if (event.rectangle.height && event.rectangle.height < minHeight) {
+      return false;
+    } else {
+      return true;
     }
   }
 }

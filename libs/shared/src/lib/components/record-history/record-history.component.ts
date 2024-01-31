@@ -267,7 +267,7 @@ export class RecordHistoryComponent
   onResizing(event: ResizeEvent): void {
     this.style = {
       width: `${event.rectangle.width}px`,
-      height: `${event.rectangle.height}px`,
+      // height: `${event.rectangle.height}px`,
     };
   }
 
@@ -278,14 +278,21 @@ export class RecordHistoryComponent
    * @returns boolean
    */
   validate(event: ResizeEvent): boolean {
-    const dashboardNavbar = this.document.getElementsByTagName('shared-navbar');
+    const dashboardNavbars =
+      this.document.getElementsByTagName('shared-navbar');
     let dashboardNavbarWidth = 0;
-    if (dashboardNavbar[0] && !this.dialog) {
-      dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
+    if (dashboardNavbars[0]) {
+      if (
+        (dashboardNavbars[0] as any).offsetWidth <
+        this.document.documentElement.clientWidth
+      ) {
+        // Only if the sidenav is not horizontal
+        dashboardNavbarWidth = (dashboardNavbars[0] as any).offsetWidth;
+      }
     }
-    // set the min width as 40% of the screen size available
+    // set the min width as 30% of the screen size available
     const minWidth = Math.round(
-      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.4
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.3
     );
     // set the max width as 95% of the screen size available
     const maxWidth = Math.round(

@@ -1900,6 +1900,7 @@
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
@@ -2056,6 +2057,7 @@
 			"unstick": "Unstick"
 		},
 		"multiselect": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"pager": {
