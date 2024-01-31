@@ -7,6 +7,7 @@
   >
     <h2 *ngIf="widgets.length === 0">{{ 'models.widget.add' | translate }}</h2>
     <shared-widget-choice
+      class="export-hide"
       [floating]="widgets.length > 0"
       [widgetTypes]="availableWidgets"
       (add)="onAdd($event)"

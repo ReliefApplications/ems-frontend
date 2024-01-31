@@ -11,8 +11,11 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
   styleUrls: ['./dashboard-export-action.component.scss'],
 })
 export class DashboardExportActionComponent {
-  data: any;
-  scaleValue = 100;
+  public data: any;
+  public imageFormats = [
+    { value: 'png', label: 'PNG' },
+    { value: 'jpeg', label: 'JPEG' },
+  ];
 
   exportImage = new FormGroup({
     format: new FormControl('png'),
@@ -21,10 +24,7 @@ export class DashboardExportActionComponent {
 
   exportPDF = new FormGroup({
     includeHeaderFooter: new FormControl(false),
-    orientation: new FormControl('portrait'),
-    paperSize: new FormControl('a4'),
-    scale: new FormControl(100),
-    margin: new FormControl('minimum'),
+    paperSize: new FormControl('auto'),
   });
 
   /**
@@ -38,7 +38,6 @@ export class DashboardExportActionComponent {
     public dialogRef: DialogRef<any>
   ) {
     this.data = dialogData.data;
-    console.log(this.data.exportType);
   }
 
   /**
@@ -48,6 +47,13 @@ export class DashboardExportActionComponent {
    */
   closeImageDialog(): void {
     this.dialogRef.close(this.exportImage.value);
+  }
+
+  /**
+   * Returns true if the user closes the dialog box
+   */
+  closeDialog(): void {
+    this.dialogRef.close(true);
   }
 
   /**

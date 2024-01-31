@@ -1,63 +1,73 @@
-<div *ngIf="data.exportType==='pdf'" class="flex items-center justify-center bg-white p-10 rounded-3x">
-  <form class="w-full max-w-md mx-auto" [formGroup]="exportPDF" (ngSubmit)="closePDFDialog()">
-    <label class="block mb-4">
-      <input type="checkbox" formControlName="includeHeaderFooter" class="mr-2">
-      Include Header and Footer
-    </label>
-    <label class="block mb-4">
-    Orientation:
-    <input type="radio" formControlName="orientation" value="portrait" class="mr-2">
-    Portrait
-    <input type="radio" formControlName="orientation" value="landscape" class="ml-2">
-    Landscape
-    </label>
-    <label class="block mb-4">
-      Paper Size:
-      <select formControlName="paperSize" class="ml-2 w-full py-2 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
-        <option value="auto">Auto</option>
-        <option value="letter">Letter</option>
-        <option value="tabloid">Tabloid</option>
-        <option value="a0">A0</option>
-        <option value="a1">A1</option>
-        <option value="a2">A2</option>
-        <option value="a3">A3</option>
-        <option value="a4">A4</option>
-        <option value="a5">A5</option>
-      </select>
-    </label>
-    <label class="block mb-4">
-      Scale:
-      <input type="range" formControlName="scale" min="0" max="200" step="1" [(ngModel)]="scaleValue" class="ml-2">
-      {{ scaleValue }}%
-    </label>
-    <label class="block mb-4">
-      Margin:
-      <select formControlName="margin" class="ml-2 w-full py-2 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
-        <option value="minimum">Minimum</option>
-        <option value="none">None</option>
-        <option value="custom">Custom</option>
-      </select>
-    </label>
-    <button type="submit" class="bg-blue-800 hover:bg-blue-500 hover:text-blue-950 text-white font-bold py-2 px-4 rounded-full">Download</button>
-  </form>
+<div (click)="closeDialog()">
+  <div *ngIf="data.exportType==='pdf'" class="relative flex items-center bg-white p-10 rounded-3xl" (click)="$event.stopPropagation()">
+    <div class="absolute top-0 right-0 m-1 rounded-full">
+      <ui-button
+        uiSuffix
+        [isIcon]="true"
+        icon="close"
+        variant="danger"
+        (click)="closeDialog()"
+        [uiTooltip]="'common.cancel' | translate"
+      >
+      </ui-button>
+    </div>
+    <form class="w-full max-w-md mx-auto" [formGroup]="exportPDF" (ngSubmit)="closePDFDialog()">
+      <label class="block mb-4">
+        <input type="checkbox" formControlName="includeHeaderFooter" class="mr-2">
+        {{'common.notifications.export.includeHeaderFooter' | translate}}
+      </label>
+      <label class="block mb-4">
+        {{'common.notifications.export.paperSize' | translate}}
+        <select formControlName="paperSize" class="ml-2 w-full py-2 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 disabled-select">
+          <option value="auto" >Auto</option>
+        </select>
+      </label>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        cdkFocusInitial
+        (click)="closePDFDialog()"
+      >
+      {{'common.notifications.export.download' | translate}}
+      </ui-button>
+    </form>
+  </div>
  </div>
 
 
 
-
- <div *ngIf="data.exportType==='png'" class="flex items-center justify-center bg-white p-10 rounded-3xl">
+ <div (click)="closeDialog()" class="overlay">
+ <div *ngIf="data.exportType==='png'" class="relative flex items-center bg-white p-10 rounded-3xl" (click)="$event.stopPropagation()">
+  <div class="absolute top-0 right-0 m-1 rounded-full">
+    <ui-button
+      uiSuffix
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      (click)="closeDialog()"
+      [uiTooltip]="'common.cancel' | translate"
+    >
+    </ui-button>
+  </div>
   <form [formGroup]="exportImage" (ngSubmit)="closeImageDialog()">
    <label class="block mb-4">
      <input type="checkbox" formControlName="includeHeaderFooter" class="mr-2">
-     Include Header and Footer
+     {{'common.notifications.export.includeHeaderFooter' | translate}}
    </label>
    <label class="block mb-4">
-     Format:
-     <select formControlName="format" class="ml-2 w-full py-2 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-600 focus:ring-opacity-50">
-       <option value="png">PNG</option>
-       <option value="jpeg">JPEG</option>
-     </select>
+    {{'common.notifications.export.format' | translate}}
+    <select formControlName="format" class="ml-2 w-full py-2 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-600 focus:ring-opacity-50">
+      <option *ngFor="let format of imageFormats" [value]="format.value">{{format.label}}</option>
+    </select>
    </label>
-   <button type="submit" class="bg-blue-800 hover:bg-blue-500 hover:text-blue-950 text-white font-bold py-2 px-4 rounded-full">Download</button>
+   <ui-button
+      category="secondary"
+      variant="primary"
+      cdkFocusInitial
+      (click)="closeImageDialog()"
+    >
+    {{'common.notifications.export.download' | translate}}
+    </ui-button>
   </form>
+ </div>
  </div>
