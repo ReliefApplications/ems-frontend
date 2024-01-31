@@ -13,6 +13,7 @@ import { ReferenceData } from '../../../../models/reference-data.model';
 import { gql } from '@apollo/client';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Graphql variables mapping, for widgets using graphql reference data.
@@ -59,12 +60,13 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
     if (changes['referenceData'] && !changes['control']) {
       // if the reference data doesn't change
       if (
-        changes.referenceData.currentValue?.id ==
-        changes.referenceData.previousValue?.id
+        !isEqual(
+          changes.referenceData.currentValue?.id,
+          changes.referenceData.previousValue?.id
+        )
       ) {
-        return;
+        this.refresh(true);
       }
-      this.refresh(true);
     } else {
       // init the mapping
       this.refresh();
