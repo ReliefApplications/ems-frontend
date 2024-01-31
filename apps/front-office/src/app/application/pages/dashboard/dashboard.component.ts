@@ -28,6 +28,7 @@ import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard page.
@@ -66,7 +67,6 @@ export class DashboardComponent
   public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
-  // === BUTTON ACTIONS ===
   /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
 
@@ -133,7 +133,7 @@ export class DashboardComponent
 
   /** Sets up the widgets from the dashboard structure */
   private setWidgets() {
-    this.widgets =
+    this.widgets = cloneDeep(
       this.dashboard?.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
@@ -143,14 +143,18 @@ export class DashboardComponent
             return widget;
           }
           const { settings, originalSettings } =
-            this.contextService.updateSettingsContextContent(widget.settings);
+            this.contextService.updateSettingsContextContent(
+              widget.settings,
+              this.dashboard
+            );
           widget = {
             ...widget,
             originalSettings,
             settings,
           };
           return widget;
-        }) || [];
+        }) || []
+    );
   }
 
   /**

@@ -264,7 +264,6 @@ export class DashboardComponent
               .map((widget: any) => {
                 const contextData = this.dashboard?.contextData;
                 this.contextService.context = contextData || null;
-
                 if (!contextData) {
                   return widget;
                 }
