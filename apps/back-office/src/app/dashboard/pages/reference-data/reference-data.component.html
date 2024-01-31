@@ -49,6 +49,8 @@
             [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
             [selectedElements]="[selectedApiConfiguration]"
+            [filterable]="true"
+            (searchChange)="onSearchChange($event)"
           >
           </ui-graphql-select>
         </div>

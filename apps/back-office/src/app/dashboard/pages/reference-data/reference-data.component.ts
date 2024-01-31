@@ -1003,4 +1003,26 @@ export class ReferenceDataComponent
       return true;
     }
   }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  onSearchChange(search: string): void {
+    const variables = this.apiConfigurationsQuery.variables;
+    this.apiConfigurationsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
+  }
 }
