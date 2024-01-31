@@ -1,12 +1,12 @@
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import {
-  ChangeDetectorRef,
   ComponentFactoryResolver,
   Directive,
   EventEmitter,
   Inject,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewContainerRef,
@@ -41,13 +41,13 @@ export class TabBodyHostDirective
    * @param componentFactoryResolver Angular component factory resolver ( deprecated )
    * @param viewContainerRef Angular view container reference
    * @param _document document
-   * @param cdr ChangeDetectorRef
+   * @param ngZone Triggers html changes
    */
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     viewContainerRef: ViewContainerRef,
     @Inject(DOCUMENT) _document: any,
-    private cdr: ChangeDetectorRef
+    private ngZone: NgZone
   ) {
     super(componentFactoryResolver, viewContainerRef, _document);
   }
@@ -58,14 +58,14 @@ export class TabBodyHostDirective
     this.openedTab
       .pipe(takeUntil(this.destroy$))
       .subscribe((tab: TabComponent) => {
-        if (tab !== this._openedTab && this.hasAttached()) {
-          this.detach();
-        }
-        if (!this.hasAttached()) {
-          this.attach(tab.content);
-        }
-        // Force change detection
-        this.cdr.detectChanges();
+        this.ngZone.run(() => {
+          if (tab !== this._openedTab && this.hasAttached()) {
+            this.detach();
+          }
+          if (!this.hasAttached()) {
+            this.attach(tab.content);
+          }
+        });
       });
   }
 

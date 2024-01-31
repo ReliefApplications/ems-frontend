@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -113,14 +112,12 @@ export class WidgetGridComponent
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    * @param _host host element ref
-   * @param cdr ChangeDetectorRef
    * @param ngZone Triggers html changes
    */
   constructor(
     public dialog: Dialog,
     private dashboardService: DashboardService,
     private _host: ElementRef,
-    private cdr: ChangeDetectorRef,
     private ngZone: NgZone
   ) {
     super();
@@ -150,7 +147,7 @@ export class WidgetGridComponent
   ngOnChanges(changes: SimpleChanges): void {
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
     if (changes['widgets']) {
-      this.setLayout(true);
+      this.setLayout();
     }
     if (changes['options']) {
       this.setGridOptions();
@@ -160,7 +157,7 @@ export class WidgetGridComponent
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue)
     ) {
-      this.setLayout(true);
+      this.setLayout();
       if (this.gridOptionsTimeoutListener) {
         clearTimeout(this.gridOptionsTimeoutListener);
       }
@@ -262,8 +259,6 @@ export class WidgetGridComponent
       this.maxCols,
       (this.gridOptions.maxCols || this.gridOptions.minCols) as number
     );
-    // Force change detection
-    this.cdr.detectChanges();
   }
 
   /**
@@ -443,36 +438,32 @@ export class WidgetGridComponent
 
   /**
    * Updates layout based on the passed widget array.
-   *
-   * @param detectChanges to know when manual detect changes is required
    */
-  private setLayout(detectChanges = false): void {
-    if (this.changesSubscription) {
-      this.changesSubscription.unsubscribe();
-    }
-    this.widgets.forEach((widget: GridsterItem) => {
-      widget.cols = widget.cols ?? widget.defaultCols;
-      widget.rows = widget.rows ?? widget.defaultRows;
-      widget.minItemRows = widget.minItemRows ?? widget.minRow;
-      widget.resizeEnabled = this.canUpdate;
-      widget.dragEnabled = this.canUpdate;
-      delete widget.defaultCols;
-      delete widget.defaultRows;
-      delete widget.minItemRows;
-    });
-    // Prevent changes to be saved too often
-    this.changesSubscription = this.structureChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.canUpdate) {
-          this.onEditWidget({ type: 'display' });
-          this.sortWidgets();
-        }
+  private setLayout(): void {
+    this.ngZone.run(() => {
+      if (this.changesSubscription) {
+        this.changesSubscription.unsubscribe();
+      }
+      this.widgets.forEach((widget: GridsterItem) => {
+        widget.cols = widget.cols ?? widget.defaultCols;
+        widget.rows = widget.rows ?? widget.defaultRows;
+        widget.minItemRows = widget.minItemRows ?? widget.minRow;
+        widget.resizeEnabled = this.canUpdate;
+        widget.dragEnabled = this.canUpdate;
+        delete widget.defaultCols;
+        delete widget.defaultRows;
+        delete widget.minItemRows;
       });
-    if (detectChanges) {
-      // Force change detection
-      this.cdr.detectChanges();
-    }
+      // Prevent changes to be saved too often
+      this.changesSubscription = this.structureChanges
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          if (this.canUpdate) {
+            this.onEditWidget({ type: 'display' });
+            this.sortWidgets();
+          }
+        });
+    });
   }
 
   /**
