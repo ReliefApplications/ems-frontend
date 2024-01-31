@@ -268,7 +268,7 @@ export class CustomStyleComponent
   onResizing(event: ResizeEvent): void {
     this.navbarStyle = {
       width: `${event.rectangle.width}px`,
-      height: `${event.rectangle.height}px`,
+      // height: `${event.rectangle.height}px`,
     };
   }
 
@@ -279,10 +279,17 @@ export class CustomStyleComponent
    * @returns boolean
    */
   validate(event: ResizeEvent): boolean {
-    const dashboardNavbar = this.document.getElementsByTagName('shared-navbar');
+    const dashboardNavbars =
+      this.document.getElementsByTagName('shared-navbar');
     let dashboardNavbarWidth = 0;
-    if (dashboardNavbar[0]) {
-      dashboardNavbarWidth = (dashboardNavbar[0] as any).offsetWidth;
+    if (dashboardNavbars[0]) {
+      if (
+        (dashboardNavbars[0] as any).offsetWidth <
+        this.document.documentElement.clientWidth
+      ) {
+        // Only if the sidenav is not horizontal
+        dashboardNavbarWidth = (dashboardNavbars[0] as any).offsetWidth;
+      }
     }
     // set the min width as 30% of the screen size available
     const minWidth = Math.round(
