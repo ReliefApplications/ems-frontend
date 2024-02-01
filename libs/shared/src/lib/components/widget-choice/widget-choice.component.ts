@@ -31,5 +31,6 @@ export class WidgetChoiceComponent {
    */
   public onSelect(e: any): void {
     this.add.emit(e);
+    console.log('Selected widget:', e);
   }
 }

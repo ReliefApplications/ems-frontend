@@ -43,9 +43,11 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /** Is fullscreen mode activated */
   @Input() fullscreen = false;
   /** Edit widget event emitter */
-  @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() edit = new EventEmitter<any>();
   /** Change step workflow event emitter */
-  @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  @Output() changeStep = new EventEmitter<number>();
+  /** On empty dataset changes */
+  @Output() emptyDatasetChange = new EventEmitter<boolean>();
   /** Id of the ticket. Visible in the dom */
   @HostBinding()
   id = `widget-${uuidv4()}`;

@@ -365,7 +365,11 @@ export const createChartWidgetForm = (id: any, value: any) => {
     }
   );
 
-  return extendWidgetForm(form, value?.widgetDisplay);
+  return extendWidgetForm(form, value?.widgetDisplay, {
+    hideIfEmpty: fb.control(
+      get<boolean>(value, 'widgetDisplay.hideIfEmpty', false)
+    ),
+  });
 };
 
 /**

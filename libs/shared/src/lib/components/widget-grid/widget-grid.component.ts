@@ -49,6 +49,8 @@ export class WidgetGridComponent
 {
   /** Available widgets */
   public availableWidgets: any[] = WIDGET_TYPES;
+  /** Hidden widgets */
+  public hiddenWidgets: any[] = [];
   /** Loading status */
   @Input() loading = false;
   /** Widgets */
@@ -142,8 +144,10 @@ export class WidgetGridComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('widgets changed');
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
     if (changes['widgets']) {
+      console.log('AAAAA', this.widgets);
       this.setLayout();
     }
     if (changes['options']) {
@@ -154,6 +158,17 @@ export class WidgetGridComponent
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue)
     ) {
+      if (changes['canUpdate'].currentValue === true) {
+        this.widgets = this.widgets.concat(this.hiddenWidgets);
+        this.hiddenWidgets = [];
+      } else {
+        this.hiddenWidgets = this.widgets.filter(
+          (w) => w.hidden && w.settings?.widgetDisplay?.hideIfEmpty
+        );
+        this.widgets = this.widgets.filter(
+          (w) => !w.hidden || !w.settings?.widgetDisplay?.hideIfEmpty
+        );
+      }
       this.setLayout();
       if (this.gridOptionsTimeoutListener) {
         clearTimeout(this.gridOptionsTimeoutListener);
@@ -215,7 +230,11 @@ export class WidgetGridComponent
     this.gridOptions = {
       ...this.gridOptions,
       ...(isDashboardSet && {
-        itemChangeCallback: () => this.structureChanges.next(true),
+        itemChangeCallback: (widget) => {
+          if (widget.hidden !== true) {
+            this.structureChanges.next(true);
+          }
+        },
       }),
       scrollToNewItems: false,
       gridType: GridType.VerticalFixed,
@@ -265,6 +284,7 @@ export class WidgetGridComponent
    */
   onEditWidget(e: any): void {
     this.edit.emit(e);
+    console.log('edit', e, this.widgets);
   }
 
   /**
@@ -464,5 +484,48 @@ export class WidgetGridComponent
    */
   private sortWidgets() {
     this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
+  }
+
+  /**
+   * Handle empty dataset change
+   *
+   * @param empty empty status
+   * @param idx index of the widget
+   * @param currentStatus current status of the widget
+   */
+  public handleEmptyDatasetChange(
+    empty: boolean,
+    idx: number,
+    currentStatus: 'shown' | 'hidden'
+  ) {
+    // log all the parameters
+    console.log({ empty, idx, currentStatus });
+    if (
+      (empty && currentStatus === 'hidden') ||
+      (!empty && currentStatus === 'shown')
+    ) {
+      // No change, we don't need to do anything
+      return;
+    }
+
+    // If currently hidden, we move it to the widgets array
+    if (empty) {
+      const widget = this.widgets[idx];
+      widget.hidden = true;
+
+      if (!this.canUpdate && widget.settings?.widgetDisplay?.hideIfEmpty) {
+        this.hiddenWidgets.push(widget);
+        this.widgets.splice(idx, 1);
+      }
+    } else {
+      // If currently shown, we move it to the hidden widgets array
+      const widget = this.hiddenWidgets[idx];
+      widget.hidden = false;
+
+      if (!this.canUpdate && widget.settings?.widgetDisplay?.hideIfEmpty) {
+        this.widgets.push(this.hiddenWidgets[idx]);
+        this.hiddenWidgets.splice(idx, 1);
+      }
+    }
   }
 }

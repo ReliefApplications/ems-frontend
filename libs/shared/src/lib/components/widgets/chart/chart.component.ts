@@ -7,11 +7,13 @@ import {
   Inject,
   OnInit,
   TemplateRef,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy, isEqual } from 'lodash';
+import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -70,6 +72,8 @@ export class ChartComponent
   @Input() export = true;
   /** Widget settings */
   @Input() settings: any = null;
+  /** On empty dataset changes */
+  @Output() emptyDatasetChange = new EventEmitter<boolean>();
   /** Widget header template reference */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Chart component reference */
@@ -80,6 +84,8 @@ export class ChartComponent
     | BarChartComponent;
   /** Loading indicator */
   public loading = true;
+  /** If had an empty response */
+  public emptyDataset = false;
   /** Chart options */
   public options: any = null;
   /** Graphql query */
@@ -330,6 +336,22 @@ export class ChartComponent
             ('0' + today.getHours()).slice(-2) +
             ':' +
             ('0' + today.getMinutes()).slice(-2);
+
+          const aggregationData = cloneDeep(
+            this.settings.resource
+              ? data.recordsAggregation
+              : data.referenceDataAggregation
+          );
+
+          // Check if we got any data back
+          const empty =
+            Array.isArray(aggregationData) && aggregationData.length === 0;
+
+          if (empty !== this.emptyDataset) {
+            this.emptyDataset = empty;
+            this.emptyDatasetChange.emit(empty);
+          }
+
           if (
             [
               'pie',
@@ -341,13 +363,6 @@ export class ChartComponent
               'polar',
             ].includes(this.settings.chart.type)
           ) {
-            const aggregationData = JSON.parse(
-              JSON.stringify(
-                this.settings.resource
-                  ? data.recordsAggregation
-                  : data.referenceDataAggregation
-              )
-            );
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
@@ -383,11 +398,7 @@ export class ChartComponent
               ]);
             }
           } else {
-            this.series.next(
-              this.settings.resource
-                ? data.recordsAggregation
-                : data.referenceData
-            );
+            this.series.next(aggregationData);
           }
           this.loading = loading;
         }

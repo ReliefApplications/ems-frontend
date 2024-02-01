@@ -367,7 +367,7 @@ export class DashboardComponent
    */
   onAdd(e: any): void {
     const widget = cloneDeep(e);
-    this.widgets.push(widget);
+    this.widgets = [...this.widgets, widget];
     if (this.addTimeoutListener) {
       clearTimeout(this.addTimeoutListener);
     }
@@ -375,6 +375,7 @@ export class DashboardComponent
     this.addTimeoutListener = setTimeout(() => {
       const widgetComponents =
         this.widgetGridComponent.widgetComponents.toArray();
+
       const target = widgetComponents[widgetComponents.length - 1];
       const el = this.document.getElementById(target.id);
       el?.scrollIntoView({ behavior: 'smooth' });

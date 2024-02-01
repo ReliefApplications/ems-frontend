@@ -2,9 +2,11 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   Renderer2,
   TemplateRef,
   ViewChild,
@@ -73,6 +75,8 @@ export class SummaryCardComponent
   @Input() settings!: SummaryCardFormT['value'];
   /** Should show padding */
   @Input() usePadding = true;
+  /** On empty dataset changes */
+  @Output() emptyDatasetChange = new EventEmitter<boolean>();
   /** Reference to header template */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to summary card grid */
@@ -99,6 +103,8 @@ export class SummaryCardComponent
   public refData: ReferenceData | null = null;
   /** Loading indicators */
   public loading = true;
+  /** Indicates if the query returned no data */
+  public emptyDataset = false;
   /** Available cards */
   public cards: CardT[] = [];
   /** Cached cards */
@@ -332,6 +338,15 @@ export class SummaryCardComponent
     this.bindCardsScrollListener();
   }
 
+  /** Updates the emptyDataset property based on the displayed cards */
+  private updateEmptyDatasetValue() {
+    const empty = this.cards.length === 0;
+    if (empty !== this.emptyDataset) {
+      this.emptyDataset = empty;
+      this.emptyDatasetChange.emit(empty);
+    }
+  }
+
   /**
    * Bind the scroll event listener to the summary cards container
    */
@@ -477,6 +492,7 @@ export class SummaryCardComponent
         );
       });
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+      this.updateEmptyDatasetValue();
       this.pageInfo.length = this.sortedCachedCards.length;
     } else if (this.useLayout) {
       this.loading = true;
@@ -515,6 +531,7 @@ export class SummaryCardComponent
             })
         );
         this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+        this.updateEmptyDatasetValue();
         this.pageInfo.length = this.sortedCachedCards.length;
       }
     }
@@ -546,7 +563,9 @@ export class SummaryCardComponent
         style: e.meta.style,
       }));
     } else if (this.settings.card?.aggregation) {
-      if (!res.data?.recordsAggregation?.items) return;
+      if (!res.data?.recordsAggregation?.items) {
+        return;
+      }
       newCards = res.data.recordsAggregation.items.map((x: any) => ({
         ...this.settings.card,
         rawValue: x,
@@ -556,8 +575,9 @@ export class SummaryCardComponent
     }
 
     // update card list and scroll behavior according to the card items display
-
     this.cards = newCards;
+    this.updateEmptyDatasetValue();
+
     if (
       this.settings.widgetDisplay?.usePagination ||
       this.triggerRefreshCardList
@@ -706,6 +726,7 @@ export class SummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     }
 
+    this.updateEmptyDatasetValue();
     this.scrolling = false;
     this.loading = false;
   }

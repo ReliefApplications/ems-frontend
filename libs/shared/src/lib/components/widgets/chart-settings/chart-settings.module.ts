@@ -8,6 +8,7 @@ import {
   IconModule,
   SelectMenuModule,
   TabsModule,
+  ToggleModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { PaletteControlModule } from '../../controls/palette-control/palette-control.module';
@@ -44,6 +45,7 @@ import { TabFiltersComponent } from './tab-filters/tab-filters.component';
     DisplaySettingsComponent,
     ContextualFiltersSettingsComponent,
     TabFiltersComponent,
+    ToggleModule,
   ],
   exports: [ChartSettingsComponent],
 })

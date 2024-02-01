@@ -165,6 +165,15 @@
               'components.widget.settings.summaryCard.gridMode' | translate
             }}</ng-container>
           </ui-toggle>
+          <ui-toggle
+            [formControl]="
+              $any(widgetFormGroup.get('widgetDisplay.hideIfEmpty'))
+            "
+          >
+            <ng-container ngProjectAs="label">{{
+              'components.widget.settings.hideIfEmpty' | translate
+            }}</ng-container>
+          </ui-toggle>
           <div>
             <p class="font-medium mt-0 mb-0.5">
               {{

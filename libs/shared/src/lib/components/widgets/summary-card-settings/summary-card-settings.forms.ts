@@ -63,6 +63,9 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       gridMode: new FormControl(
         get<boolean>(configuration, 'widgetDisplay.gridMode', true)
       ),
+      hideIfEmpty: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.hideIfEmpty', false)
+      ),
     }
   );
 

@@ -37,6 +37,7 @@
           #widgetElement
           [widget]="widget"
           (changeStep)="triggerChangeStepAction($event)"
+          (emptyDatasetChange)="handleEmptyDatasetChange($event, i, 'shown')"
           (edit)="onEditWidget($event)"
           [canUpdate]="canUpdate"
           [headerLeftTemplate]="headerLeftTemplate"
@@ -91,3 +92,11 @@
     </gridster-item>
   </gridster>
 </ng-template>
+<!-- Hidden widgets -->
+<shared-widget
+  class="hidden"
+  *ngFor="let widget of hiddenWidgets; let i = index"
+  #widgetElement
+  [widget]="widget"
+  (emptyDatasetChange)="handleEmptyDatasetChange($event, i, 'hidden')"
+></shared-widget>
