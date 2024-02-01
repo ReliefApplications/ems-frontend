@@ -145,7 +145,7 @@ export class DateFilterMenuComponent
           field: this.field,
           operator: this.filter.filters[0]
             ? this.filter.filters[0].operator
-            : 'eq',
+            : 'gte',
           value: this.fb.control(
             this.filter.filters[0] ? this.filter.filters[0].value : ''
           ),
@@ -154,7 +154,7 @@ export class DateFilterMenuComponent
           field: this.field,
           operator: this.filter.filters[1]
             ? this.filter.filters[1].operator
-            : 'eq',
+            : 'lte',
           value: this.fb.control(
             this.filter.filters[1] ? this.filter.filters[1].value : ''
           ),
