@@ -21,7 +21,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MessageService } from '@progress/kendo-angular-l10n';
+import { L10N_PREFIX, MessageService } from '@progress/kendo-angular-l10n';
 import {
   AppAbility,
   KendoTranslationService,
@@ -213,6 +213,7 @@ export const getBaseHref = () => {
     ResizeBatchService,
     DatePipe,
     { provide: APP_BASE_HREF, useFactory: getBaseHref },
+    { provide: L10N_PREFIX, useValue: ' ' },
   ],
 })
 export class AppModule implements DoBootstrap {

@@ -460,23 +460,17 @@ export class ContextService {
    * Handle dashboard context change by simply updating the url.
    *
    * @param value id of the element or record
-   * @param contextType type of context element
    * @param route Angular current page
    * @param dashboard Current dashboard
    */
   public onContextChange(
     value: string | number | undefined | null,
-    contextType: 'record' | 'element' | undefined,
     route: ActivatedRoute,
     dashboard?: Dashboard
   ): void {
-    if (
-      !dashboard?.id ||
-      !dashboard?.page?.id ||
-      !dashboard.page.context ||
-      !contextType
-    )
+    if (!dashboard?.id || !dashboard.page?.id || !dashboard.page.context) {
       return;
+    }
     if (value) {
       this.router.navigate(['.'], {
         relativeTo: route,

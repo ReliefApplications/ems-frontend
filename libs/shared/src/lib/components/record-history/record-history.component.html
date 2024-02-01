@@ -5,7 +5,7 @@
   mwlResizable
   (resizing)="onResizing($event)"
   [ngStyle]="style"
-  [validateResize]="validate"
+  [validateResize]="validate.bind(this)"
 >
   <div
     *ngIf="resizable"

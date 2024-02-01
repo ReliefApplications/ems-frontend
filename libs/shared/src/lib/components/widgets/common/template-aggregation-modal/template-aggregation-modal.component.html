@@ -97,7 +97,7 @@
                 </div>
               </ng-container>
               <ng-container *ngIf="!form.value.aggregation">
-                <div class="flex justify-center">
+                <div class="flex justify-center mb-4">
                   <ui-button
                     category="tertiary"
                     variant="primary"
@@ -111,15 +111,11 @@
             </ng-container>
           </div>
           <!-- GraphQL variable mapping for reference data graphql-->
-          <div
-            class="flex-1"
+          <shared-graphql-variables-mapping
             *ngIf="referenceData && referenceData.type === 'graphql'"
-          >
-            <shared-graphql-variables-mapping
-              [referenceData]="referenceData"
-              [control]="$any(form.get('referenceDataVariableMapping'))"
-            ></shared-graphql-variables-mapping>
-          </div>
+            [referenceData]="referenceData"
+            [control]="$any(form.get('referenceDataVariableMapping'))"
+          ></shared-graphql-variables-mapping>
         </ng-template>
       </ui-tab>
       <ui-tab>

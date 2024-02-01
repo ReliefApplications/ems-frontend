@@ -48,6 +48,7 @@ import { DOCUMENT } from '@angular/common';
 import { GridComponent } from '@progress/kendo-angular-grid';
 import { gql } from '@apollo/client';
 import { createRefDataForm } from './reference-data.form';
+import { ResizeEvent } from 'angular-resizable-element';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -125,6 +126,7 @@ export class ReferenceDataComponent
   public separator = new FormControl(',');
   /** Editor options */
   public editorOptions = {
+    automaticLayout: true,
     theme: 'vs-dark',
     language: 'graphql',
     formatOnPaste: true,
@@ -138,6 +140,8 @@ export class ReferenceDataComponent
   private addChipListTimeoutListener!: NodeJS.Timeout;
   /** Outside click listener for inline edition */
   private inlineEditionOutsideClickListener!: any;
+  /** size style of editor */
+  public style: any = {};
 
   /** @returns the graphqlQuery form control */
   get queryControl() {
@@ -416,6 +420,25 @@ export class ReferenceDataComponent
             this.router.navigate(['/referencedata']);
           },
         });
+    }
+  }
+
+  /**
+   * Override ngOnDestroy of base component to clear listeners.
+   */
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.addChipListTimeoutListener) {
+      clearTimeout(this.addChipListTimeoutListener);
+    }
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
+    if (this.formTimeoutListener) {
+      clearTimeout(this.formTimeoutListener);
+    }
+    if (this.inlineEditionOutsideClickListener) {
+      this.inlineEditionOutsideClickListener();
     }
   }
 
@@ -954,19 +977,52 @@ export class ReferenceDataComponent
     this.toggleInlineEditor(this.valueFields[this.valueFields.length - 1]);
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    if (this.addChipListTimeoutListener) {
-      clearTimeout(this.addChipListTimeoutListener);
+  /**
+   * On resizing action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      // width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const minHeight = 300;
+    if (event.rectangle.height && event.rectangle.height < minHeight) {
+      return false;
+    } else {
+      return true;
     }
-    if (this.initEditorTimeoutListener) {
-      clearTimeout(this.initEditorTimeoutListener);
-    }
-    if (this.formTimeoutListener) {
-      clearTimeout(this.formTimeoutListener);
-    }
-    if (this.inlineEditionOutsideClickListener) {
-      this.inlineEditionOutsideClickListener();
-    }
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  onSearchChange(search: string): void {
+    const variables = this.apiConfigurationsQuery.variables;
+    this.apiConfigurationsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
   }
 }

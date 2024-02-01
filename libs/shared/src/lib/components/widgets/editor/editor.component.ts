@@ -206,7 +206,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       this.contextService.removeEmptyPlaceholders(mapping);
       return mapping;
     } catch {
-      console.log('error');
       return null;
     }
   }

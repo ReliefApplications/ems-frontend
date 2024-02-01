@@ -92,7 +92,15 @@ export const init = (
       tagboxDiv.id = 'tagbox';
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const tagboxInstance = createTagboxInstance(tagboxDiv, question);
-      tagboxInstance.value = question.value;
+      // Make sure the value is valid
+      try {
+        tagboxInstance.value = question.value;
+        tagboxInstance.verifySettings();
+      } catch (err) {
+        console.error(err);
+        tagboxInstance.value = [];
+      }
+
       tagboxInstance.placeholder = question.placeholder;
       tagboxInstance.readonly = question.isReadOnly;
       tagboxInstance.registerOnChange((value: any) => {
@@ -117,6 +125,15 @@ export const init = (
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
         question._propertyValueChangedVirtual
+      );
+      question.registerFunctionOnPropertyValueChanged(
+        'isPrimitiveValue',
+        (newValue: boolean) => {
+          tagboxInstance.clearAll();
+          tagboxInstance.valuePrimitive = newValue;
+          question.value = null;
+          question.defaultValue = null;
+        }
       );
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',

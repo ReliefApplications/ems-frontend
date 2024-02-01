@@ -107,6 +107,7 @@ export class DashboardFilterComponent
       });
       this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
+    // Can listen to changes made from widget ( editor & summary cards sending updated filters )
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(({ current }) => {
