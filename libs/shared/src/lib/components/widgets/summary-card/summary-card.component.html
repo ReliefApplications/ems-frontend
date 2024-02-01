@@ -2,7 +2,7 @@
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
     <!-- Export -->
-    <div class="w-full grow overflow-auto" #summaryCardGrid>
+    <div class="w-full grow overflow-auto relative" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
           class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
@@ -31,6 +31,15 @@
               >
               </shared-summary-card-item>
             </ng-container>
+
+            <div
+              class="absolute inset-0 grid place-content-center"
+              *ngIf="cards.length === 0 && !loading"
+            >
+              <p class="text-gray-900">
+                {{ 'common.noData' | translate }}
+              </p>
+            </div>
           </ng-container>
         </div>
       </kendo-pdf-export>

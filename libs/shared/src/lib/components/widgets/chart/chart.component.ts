@@ -11,7 +11,7 @@ import {
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy, isEqual } from 'lodash';
+import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -92,6 +92,8 @@ export class ChartComponent
   public lastUpdate = '';
   /** Is aggregation broken */
   public hasError = false;
+  /** If had an empty response */
+  public emptyDataset = false;
   /** Selected predefined filter */
   public selectedFilter: CompositeFilterDescriptor | null = null;
   /** Aggregation id */
@@ -330,6 +332,7 @@ export class ChartComponent
             ('0' + today.getHours()).slice(-2) +
             ':' +
             ('0' + today.getMinutes()).slice(-2);
+
           if (
             [
               'pie',
@@ -341,13 +344,16 @@ export class ChartComponent
               'polar',
             ].includes(this.settings.chart.type)
           ) {
-            const aggregationData = JSON.parse(
-              JSON.stringify(
-                this.settings.resource
-                  ? data.recordsAggregation
-                  : data.referenceDataAggregation
-              )
+            const aggregationData = cloneDeep(
+              this.settings.resource
+                ? data.recordsAggregation
+                : data.referenceDataAggregation
             );
+
+            // Check if we got any data back
+            this.emptyDataset =
+              Array.isArray(aggregationData) && aggregationData.length === 0;
+
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
@@ -388,6 +394,10 @@ export class ChartComponent
                 ? data.recordsAggregation
                 : data.referenceData
             );
+
+            this.emptyDataset =
+              Array.isArray(this.series.value) &&
+              this.series.value.length === 0;
           }
           this.loading = loading;
         }
