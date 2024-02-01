@@ -18,16 +18,22 @@ export const transformGraphQLVariables = (
   if (definition?.kind !== 'OperationDefinition') {
     return variables;
   }
-  (definition.variableDefinitions ?? []).forEach((definition) => {
+  (definition.variableDefinitions ?? []).forEach((def) => {
     if (
-      get(definition, 'type.name.value') === 'JSON' &&
-      get(variables, definition.variable.name.value)
+      get(def, 'type.name.value') === 'JSON' &&
+      get(variables, def.variable.name.value)
     ) {
-      set(
-        variables,
-        definition.variable.name.value,
-        JSON.stringify(get(variables, definition.variable.name.value))
-      );
+      let value = get(variables, def.variable.name.value);
+      if (value && typeof value === 'object') {
+        // eslint-disable-next-line no-prototype-builtins
+        if (value.hasOwnProperty('AND') && value.AND !== null) {
+          value = { AND: Object.values(value.AND) };
+          // eslint-disable-next-line no-prototype-builtins
+        } else if (value.hasOwnProperty('OR') && value.OR !== null) {
+          value = { OR: Object.values(value.OR) };
+        }
+      }
+      set(variables, def.variable.name.value, JSON.stringify(value, null, 2));
     }
   });
 };
