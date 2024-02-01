@@ -14,7 +14,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isNil, set } from 'lodash';
+import { clone, get, isEmpty, isEqual, isNil, set } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -23,11 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import {
-  ReferenceData,
-  ReferenceDataQueryResponse,
-} from '../../../models/reference-data.model';
-import { GET_REFERENCE_DATA } from './graphql/queries';
+import { ReferenceData } from '../../../models/reference-data.model';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ContextService } from '../../../services/context/context.service';
@@ -74,7 +70,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   /** Loading indicator */
   public loading = true;
   /** Refresh subject, emit a value when refresh needed */
-  refresh$: Subject<boolean> = new Subject<boolean>();
+  public refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Timeout to init active filter */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -128,19 +126,106 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.setHtml();
 
+    // Gather all context filters in a single text value
+    const allContextFilters = this.aggregations
+      .map((aggregation: any) => aggregation.contextFilters)
+      .join('');
+    const allGraphQLVariables = this.aggregations
+      .map((aggregation: any) => aggregation.referenceDataVariableMapping)
+      .join('');
+    // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.refresh$.next(true);
-        this.loading = true;
-        this.setHtml();
+      .subscribe(({ previous, current }) => {
+        if (
+          this.contextService.filterRegex.test(
+            allContextFilters + allGraphQLVariables
+          )
+        ) {
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
+            this.refresh$.next(true);
+            this.loading = true;
+            this.setHtml();
+          }
+        }
+        this.toggleActiveFilters(
+          current,
+          this.htmlContentComponent?.el.nativeElement
+        );
       });
+  }
+
+  /**
+   * Set the elements as active if matching dashboard filter
+   *
+   * @param filterValue value of the current dashboard filter
+   * @param node HTML element
+   */
+  private toggleActiveFilters = (filterValue: any, node: any) => {
+    if (get(node, 'dataset.filterField')) {
+      const value = get(node, 'dataset.filterValue');
+      const filterFieldValue = get(filterValue, node.dataset.filterField);
+      const isNilOrEmpty = (x: any) => isNil(x) || x === '';
+      if (
+        isEqual(value, filterFieldValue) ||
+        (isNilOrEmpty(value) && isNilOrEmpty(filterFieldValue))
+      ) {
+        node.dataset.filterActive = true;
+      } else {
+        node.dataset.filterActive = false;
+      }
+    } else {
+      // Handle empty filters. Need to leave filter field empty.
+      if (get(node, 'dataset.filterField') === '') {
+        if (!filterValue || isEmpty(filterValue)) {
+          node.dataset.filterActive = true;
+        } else {
+          node.dataset.filterActive = false;
+        }
+      }
+    }
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const child = node.childNodes[i];
+      this.toggleActiveFilters(filterValue, child);
+    }
+  };
+
+  /**
+   * Gets graphQLVariables from target aggregation
+   *
+   * @param aggregation aggregation we need the mapping variables from
+   * @returns the graphql query variables object
+   */
+  private graphQLVariables(aggregation: any) {
+    try {
+      let mapping = JSON.parse(aggregation.referenceDataVariableMapping || '');
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
+    } catch {
+      return null;
+    }
   }
 
   /**
    * Set widget html.
    */
   private setHtml() {
+    const callback = () => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      // Necessary because ViewChild is not initialized immediately
+      this.timeoutListener = setTimeout(() => {
+        this.toggleActiveFilters(
+          this.contextService.filter.getValue(),
+          this.htmlContentComponent.el.nativeElement
+        );
+      }, 500);
+    };
     if (this.settings.record && this.settings.resource) {
       from(
         Promise.all([
@@ -169,29 +254,37 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else if (this.settings.element && this.settings.referenceData) {
       from(
         Promise.all([
           new Promise<void>((resolve) => {
-            this.getReferenceData()
-              .then(() => {
-                this.referenceDataService
-                  .cacheItems(this.settings.referenceData)
-                  .then((value) => {
-                    if (value) {
-                      const field = this.referenceData?.valueField;
-                      const selectedItemKey = String(this.settings.element);
-                      if (field) {
-                        this.fieldsValue = value.find(
-                          (x: any) => String(get(x, field)) === selectedItemKey
-                        );
-                      }
-                    }
-                  })
-                  .finally(() => resolve());
+            this.referenceDataService
+              .cacheItems(this.settings.referenceData)
+              .then(({ items, referenceData }) => {
+                this.referenceData = referenceData;
+                this.fields = (referenceData.fields || [])
+                  .filter((field: any) => field && typeof field !== 'string')
+                  .map((field: any) => {
+                    return {
+                      label: field.name,
+                      name: field.name,
+                      type: field.type,
+                    };
+                  });
+                if (items) {
+                  const field = this.referenceData?.valueField;
+                  const selectedItemKey = String(this.settings.element);
+                  if (field) {
+                    this.fieldsValue = items.find(
+                      (x: any) => String(get(x, field)) === selectedItemKey
+                    );
+                  }
+                }
               })
-              .catch(() => resolve());
+              .catch(() => resolve())
+              .finally(() => resolve());
           }),
           this.getAggregationsData(),
         ])
@@ -207,6 +300,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
@@ -221,6 +315,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     }
   }
@@ -243,6 +338,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
               contextFilters: aggregation.contextFilters
                 ? JSON.parse(aggregation.contextFilters)
                 : {},
+              graphQLVariables: this.graphQLVariables(aggregation),
               at: this.contextService.atArgumentValue(aggregation.at),
             })
           )
@@ -314,6 +410,21 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     }
+    // Handle data-filter-reset event
+    if (event.target.dataset.filterReset) {
+      // Get all the fields that need to be cleared
+      const resetList = event.target.dataset.filterReset.split(';');
+      const updatedFilter: any = {};
+      for (const [key, value] of Object.entries(
+        this.contextService.filter.getValue()
+      )) {
+        // If key is not in list of fields that need to be cleared, add to updated Filter
+        if (!resetList.includes(key)) {
+          updatedFilter[key] = value;
+        }
+      }
+      this.contextService.filter.next(updatedFilter);
+    }
   }
 
   /**
@@ -358,33 +469,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     }
-  }
-
-  /**
-   * Get reference data.
-   */
-  private async getReferenceData() {
-    this.apollo
-      .query<ReferenceDataQueryResponse>({
-        query: GET_REFERENCE_DATA,
-        variables: {
-          id: this.settings.referenceData,
-        },
-      })
-      .subscribe(({ data }) => {
-        if (data.referenceData) {
-          this.referenceData = data.referenceData;
-          this.fields = (data.referenceData.fields || [])
-            .filter((field) => field && typeof field !== 'string')
-            .map((field) => {
-              return {
-                label: field.name,
-                name: field.name,
-                type: field.type,
-              };
-            });
-        }
-      });
   }
 
   /** Sets layout */

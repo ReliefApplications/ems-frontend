@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
+  Inject,
   Input,
   NgZone,
   OnChanges,
@@ -13,15 +14,15 @@ import {
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Model, SurveyModel } from 'survey-core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { Dashboard } from '../../models/dashboard.model';
-import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
+import { DOCUMENT } from '@angular/common';
+import { Dashboard } from '../../models/dashboard.model';
 
 /**
  * Interface for quick filters
@@ -51,10 +52,10 @@ export class DashboardFilterComponent
   @Input() opened = false;
   /** Is closable */
   @Input() closable = true;
+  /** Is closable */
+  @Input() dashboard?: Dashboard;
   /** Current position of filter */
   public position!: FilterPosition;
-  /** Dashboard the filter belongs to */
-  public dashboard?: Dashboard;
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
@@ -79,21 +80,21 @@ export class DashboardFilterComponent
   /**
    * Dashboard contextual filter component.
    *
-   * @param dashboardService Shared dashboard service
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
    * @param dateTranslate Service used for date formatting
+   * @param document Document
    * @param _host sidenav container host
    */
   constructor(
-    private dashboardService: DashboardService,
     public contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
+    @Inject(DOCUMENT) private document: Document,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -106,18 +107,16 @@ export class DashboardFilterComponent
       });
       this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
-
+    // Can listen to changes made from widget ( editor & summary cards sending updated filters )
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(({ current }) => {
+        this.survey.data = current;
+      });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.opened = value;
-      });
-    this.dashboardService.dashboard$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((dashboard: Dashboard | null) => {
-        if (dashboard) {
-          this.dashboard = dashboard;
-        }
       });
     this.contextService.filterStructure$
       .pipe(takeUntil(this.destroy$))
@@ -127,14 +126,16 @@ export class DashboardFilterComponent
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: FilterPosition | undefined) => {
-        if (value) {
-          this.position = value as FilterPosition;
-        } else {
-          this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+      .subscribe(
+        (value: { position: FilterPosition; dashboardId: string } | null) => {
+          if (value) {
+            this.position = value.position as FilterPosition;
+          } else {
+            this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+          }
+          this.setFilterContainerDimensions();
         }
-        this.setFilterContainerDimensions();
-      });
+      );
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -183,14 +184,15 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
-    this.contextService.filterPosition.next(position);
+    this.contextService.filterPosition.next({
+      position: position,
+      dashboardId: this.contextService.filterPosition.value?.dashboardId ?? '',
+    });
   }
 
   /** Render the survey using the saved structure */
   private initSurvey(): void {
     this.survey = this.contextService.initSurvey();
-
-    this.setAvailableFiltersForContext();
 
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
@@ -206,18 +208,6 @@ export class DashboardFilterComponent
       renderGlobalProperties(this.referenceDataService);
     });
     this.onValueChange();
-  }
-
-  /**
-   * Set the available filters of dashboard filter in the shared context service
-   */
-  private setAvailableFiltersForContext() {
-    this.contextService.availableFilterFields = this.survey.getAllQuestions()
-      .length
-      ? this.survey
-          .getAllQuestions()
-          .map((question) => ({ name: question.title, value: question.name }))
-      : [];
   }
 
   /**
@@ -316,42 +306,52 @@ export class DashboardFilterComponent
       this.quickFilters = displayValues
         .filter((question) => !!question.value)
         .map((question) => {
+          // To check if the value used is primitive
+          const isPrimitive =
+            isValuePrimitiveKeys[
+              question.name as keyof typeof isValuePrimitiveKeys
+            ];
           let mappedQuestion;
-          if (question.value instanceof Array && question.value.length > 2) {
-            mappedQuestion = {
-              label: question.title + ` (${question.value.length})`,
-              tooltip: question.displayValue,
-            };
-          } else {
-            // To check if the value used is primitive
-            const isPrimitive =
-              isValuePrimitiveKeys[
-                question.name as keyof typeof isValuePrimitiveKeys
-              ];
-            // If the value used is not primitive, use the text label to display selection in the filter
-            if (!isPrimitive) {
-              // Check if value is a date to format it with the date pipe
-              const checkValue = this.isDate(
-                question.name as string,
-                question.displayValue.text
-              );
-              mappedQuestion = {
-                label: checkValue.isDate
-                  ? checkValue.formattedValue
-                  : question.displayValue.text,
+          if (question.value instanceof Array) {
+            if (question.value.length > 2) {
+              return {
+                label: question.title + ` (${question.value.length})`,
+                tooltip: question.displayValue,
               };
             } else {
-              // else for primitive values, the selected display value
-              const checkValue = this.isDate(
-                question.name as string,
-                question.displayValue
-              );
-              mappedQuestion = {
-                label: checkValue.isDate
-                  ? checkValue.formattedValue
-                  : question.displayValue,
-              };
+              if (!isPrimitive) {
+                // Tagbox question
+                return {
+                  label: question.value.map((x) => x.text),
+                };
+              }
             }
+          }
+          // If the value used is not primitive, use the text label to display selection in the filter
+          if (!isPrimitive) {
+            // Check if value is a date to format it with the date pipe
+            const checkValue = this.isDate(
+              question.name as string,
+              question.displayValue.text
+            );
+            mappedQuestion = {
+              label: checkValue.isDate
+                ? checkValue.formattedValue
+                : question.displayValue.text
+                ? question.displayValue.text
+                : question.displayValue,
+            };
+          } else {
+            // else for primitive values, the selected display value
+            const checkValue = this.isDate(
+              question.name as string,
+              question.displayValue
+            );
+            mappedQuestion = {
+              label: checkValue.isDate
+                ? checkValue.formattedValue
+                : question.displayValue,
+            };
           }
           return mappedQuestion;
         });
@@ -373,8 +373,7 @@ export class DashboardFilterComponent
         if (this._host.showSidenav[0]) {
           // remove width from left sidenav if opened
           this.containerWidth = `${
-            this._host.el.nativeElement.offsetWidth -
-            this._host.sidenav.get(0).nativeElement.offsetWidth
+            this.document.getElementById('appPageContainer')?.offsetWidth
           }px`;
           this.containerHeight = `${this._host.el.nativeElement.offsetHeight}px`;
           // Add width from left sidenav as left offset

@@ -18,17 +18,19 @@
               shape: 'rectangle'
             "
           >
-            <shared-summary-card-item
-              *ngFor="let card of cards; let i = index"
-              class="k-tilelayout-item k-card flex flex-col"
-              [style.order]="i"
-              style.grid-column-end="{{
-                'span ' + (2 > colsNumber ? colsNumber : 2)
-              }}"
-              style.grid-row-end="{{ 'span ' + 2 }}"
-              [card]="card"
-            >
-            </shared-summary-card-item>
+            <ng-container *ngFor="let card of cards; let i = index">
+              <shared-summary-card-item
+                *ngIf="!!cards[i]"
+                class="k-tilelayout-item k-card flex flex-col"
+                [style.order]="i"
+                style.grid-column-end="{{
+                  'span ' + (2 > colsNumber ? colsNumber : 2)
+                }}"
+                style.grid-row-end="{{ 'span ' + 2 }}"
+                [card]="card"
+              >
+              </shared-summary-card-item>
+            </ng-container>
           </ng-container>
         </div>
       </kendo-pdf-export>
@@ -41,10 +43,18 @@
       [pageIndex]="pageInfo.pageIndex"
       [skip]="pageInfo.skip"
       [pageSize]="pageInfo.pageSize"
-      [hideFirstLastButtons]="false"
+      [hideFirstLastButtons]="
+        !totalItemsKnown || refData?.pageInfo?.strategy === 'cursor'
+      "
       [pageSizeOptions]="[10, 25, 50, 100]"
+      [showPageSizes]="
+        refData?.pageInfo?.strategy ? !!refData?.pageInfo?.pageSizeVar : true
+      "
       [totalItems]="pageInfo.length"
-      [displayedPageNumbers]="5"
+      [showTotalItems]="totalItemsKnown"
+      [displayedPageNumbers]="
+        refData?.pageInfo?.strategy === 'cursor' ? 0 : totalItemsKnown ? 5 : 0
+      "
       [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
       (pageChange)="onPage($event)"
     >
@@ -57,6 +67,7 @@
         class="flex-1 h-full w-full"
         [settings]="gridSettings"
         [widget]="widget"
+        (inlineEdition)="refreshCardList()"
       ></shared-grid-widget>
     </div>
   </ng-container>

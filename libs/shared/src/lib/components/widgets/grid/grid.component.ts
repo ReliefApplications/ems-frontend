@@ -119,6 +119,9 @@ export class GridWidgetComponent
   /** Emit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
+
   /**
    * Test if the grid uses a layout, and if a layout is used, if any item is currently updated.
    *

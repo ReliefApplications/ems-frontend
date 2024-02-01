@@ -53,9 +53,9 @@ export class RecordSelectionTabComponent
     if (this.form.get('referenceData')?.value) {
       this.referenceDataService
         .cacheItems(this.form.get('referenceData')?.value as string)
-        .then((value) => {
-          if (value) {
-            this.refDataElements = value;
+        .then(({ items }) => {
+          if (items) {
+            this.refDataElements = items;
           }
         });
     }
@@ -65,9 +65,9 @@ export class RecordSelectionTabComponent
         if (value) {
           this.referenceDataService
             .cacheItems(this.form.get('referenceData')?.value as string)
-            .then((value) => {
-              if (value) {
-                this.refDataElements = value;
+            .then(({ items }) => {
+              if (items) {
+                this.refDataElements = items;
               }
             });
         } else {

@@ -14,17 +14,24 @@ import { GET_SHORT_FORM_BY_ID } from '../graphql/queries';
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit, OnChanges {
+  /** Form id */
   @Input() id = '620236aa030f3a5e5db78319';
 
+  /** Reference to the form component */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
 
   // === DATA ===
+  /** boolean to check wether page is still loading */
   public loading = true;
+  /** Form */
   public form?: Form;
+  /** Is the form completed */
   public completed = false;
+  /** boolean, whether to hid or not the new record */
   public hideNewRecord = false;
 
+  /** Get the form query */
   private getFormQuery = this.apollo.query<FormQueryResponse>({
     query: GET_SHORT_FORM_BY_ID,
     variables: {

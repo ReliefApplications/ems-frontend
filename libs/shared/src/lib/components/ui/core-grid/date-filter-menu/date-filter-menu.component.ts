@@ -50,6 +50,8 @@ export class DateFilterMenuComponent
   @Input() public valueField = '';
   /** Filter service */
   @Input() public filterService?: FilterService;
+  /** Field format */
+  @Input() public format = 'dd/MM/yy HH:mm';
 
   /** Form */
   public form!: ReturnType<typeof this.createFormGroup>;
@@ -143,7 +145,7 @@ export class DateFilterMenuComponent
           field: this.field,
           operator: this.filter.filters[0]
             ? this.filter.filters[0].operator
-            : 'eq',
+            : 'gte',
           value: this.fb.control(
             this.filter.filters[0] ? this.filter.filters[0].value : ''
           ),
@@ -152,7 +154,7 @@ export class DateFilterMenuComponent
           field: this.field,
           operator: this.filter.filters[1]
             ? this.filter.filters[1].operator
-            : 'eq',
+            : 'lte',
           value: this.fb.control(
             this.filter.filters[1] ? this.filter.filters[1].value : ''
           ),

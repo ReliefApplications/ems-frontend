@@ -30,7 +30,8 @@ import { UILayoutService } from './layout/layout.service';
 })
 export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   /** A list of SidenavDirective children. */
-  @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
+  @ContentChildren(SidenavDirective)
+  uiSidenavDirective!: QueryList<SidenavDirective>;
   /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
   /** A list of side navigation menus. */

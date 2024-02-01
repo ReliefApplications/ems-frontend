@@ -8,7 +8,7 @@ import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get } from 'lodash';
+import { snakeCase, cloneDeep, set, get, isNil } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
@@ -87,7 +87,7 @@ export class FormHelpersService {
       if (questions[field]) {
         const key = questions[field].getValueName();
         // If there is no value for this question
-        if (!survey.data[key]) {
+        if (isNil(survey.data[key])) {
           // And is not boolean(false by default, we want to save that), we nullify it
           if (questions[field].getType() !== 'boolean') {
             // survey.data[key] = null;
@@ -366,10 +366,10 @@ export class FormHelpersService {
   /**
    * Add tooltip to the survey question if exists
    *
-   * @param _ Default value of afterRenderQuestion callback
+   * @param survey current survey
    * @param options current survey question options
    */
-  public addQuestionTooltips(_: any, options: any): void {
+  public addQuestionTooltips(survey: any, options: any): void {
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
@@ -378,7 +378,10 @@ export class FormHelpersService {
       '.sd-question__title'
     );
     if (titleElement) {
-      titleElement.querySelectorAll('.sv-string-viewer').forEach((el: any) => {
+      const selector = survey.isDesignMode
+        ? '.svc-string-editor'
+        : '.sv-string-viewer';
+      titleElement.querySelectorAll(selector).forEach((el: any) => {
         const tooltip = document.createElement('span');
         tooltip.title = options.question.tooltip;
         tooltip.innerHTML = '?';

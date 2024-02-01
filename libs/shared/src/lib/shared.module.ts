@@ -8,7 +8,6 @@ import { EditorSettingsModule } from './components/widgets/editor-settings/edito
 import { GridSettingsModule } from './components/widgets/grid-settings/grid-settings.module';
 import { MapSettingsModule } from './components/widgets/map-settings/map-settings.module';
 import { WidgetGridModule } from './components/widget-grid/widget-grid.module';
-import { UsersModule } from './components/users/users.module';
 import { RolesModule } from './components/roles/roles.module';
 import { RecordHistoryModule } from './components/record-history/record-history.module';
 import { ContentChoiceModule } from './components/content-choice/content-choice.module';
@@ -61,7 +60,6 @@ import { PayloadModalComponent } from './components/payload-modal/payload-modal.
     MapSettingsModule,
     WidgetGridModule,
     SortingSettingsModule,
-    UsersModule,
     RolesModule,
     RecordHistoryModule,
     ContentChoiceModule,
