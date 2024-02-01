@@ -171,6 +171,9 @@ export class WidgetGridComponent
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }
+    if (this.setFullscreenTimeoutListener) {
+      clearTimeout(this.setFullscreenTimeoutListener);
+    }
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
