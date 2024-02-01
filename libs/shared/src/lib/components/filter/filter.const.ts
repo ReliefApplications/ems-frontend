@@ -12,19 +12,19 @@ export const FILTER_OPERATORS = [
   },
   {
     value: 'gte',
-    label: 'kendo.grid.filterGteOperator',
+    label: 'kendo.grid.filterAfterOrEqualOperator',
   },
   {
     value: 'gt',
-    label: 'kendo.grid.filterGtOperator',
+    label: 'kendo.grid.filterAfterOperator',
   },
   {
     value: 'lte',
-    label: 'kendo.grid.filterLteOperator',
+    label: 'kendo.grid.filterBeforeOrEqualOperator',
   },
   {
     value: 'lt',
-    label: 'kendo.grid.filterLtOperator',
+    label: 'kendo.grid.filterBeforeOperator',
   },
   {
     value: 'isnull',
