@@ -293,8 +293,3 @@ export interface DeleteDashboardMutationResponse {
 export interface DashboardsQueryResponse {
   dashboards: Dashboard[];
 }
-
-/** Model for create dashboard with context mutation response */
-export interface CreateDashboardWithContextMutationResponse {
-  addDashboardWithContext: Pick<Dashboard, 'id' | 'structure' | 'page'>;
-}

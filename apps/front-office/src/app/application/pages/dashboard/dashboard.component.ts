@@ -51,6 +51,8 @@ export class DashboardComponent
   public isFullScreen = false;
   /** Dashboard id */
   public id = '';
+  /** Context id */
+  public contextId?: string;
   /** Application id */
   public applicationId?: string;
   /** Is dashboard loading */
@@ -65,18 +67,8 @@ export class DashboardComponent
   public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
-  // === BUTTON ACTIONS ===
   /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
-
-  /** @returns type of context element */
-  get contextType() {
-    if (this.dashboard?.page?.context) {
-      return 'resource' in this.dashboard.page.context ? 'record' : 'element';
-    } else {
-      return;
-    }
-  }
 
   /**
    * Dashboard page.
@@ -132,60 +124,49 @@ export class DashboardComponent
         /** Extract query id to load template */
         const queryId = this.route.snapshot.queryParamMap.get('id');
         if (id) {
-          if (queryId) {
-            // Try to load template
-            this.loadDashboard(id).then(() => {
-              const templates = this.dashboard?.page?.contentWithContext;
-              const type = this.contextType;
-              if (type) {
-                // Find template from parent's templates, based on query params id
-                const template = templates?.find((d) => {
-                  // If templates use reference data
-                  if (type === 'element')
-                    return (
-                      'element' in d &&
-                      d.element.toString().trim() === queryId.trim()
-                    );
-                  // If templates use resource
-                  else if (type === 'record')
-                    return (
-                      'record' in d &&
-                      d.record.toString().trim() === queryId.trim()
-                    );
-                  return false;
-                });
-
-                if (template) {
-                  // Load template, it will erase current dashboard
-                  this.loadDashboard(template.content).then(
-                    () => (this.loading = false)
-                  );
-                } else {
-                  // Will use current template
-                  this.loading = false;
-                  return;
-                }
-              } else {
-                this.loading = false;
-              }
-            });
-          } else {
-            // Don't use template, and directly load the dashboard from router's params
-            this.loadDashboard(id).then(() => (this.loading = false));
-          }
+          this.loadDashboard(id, queryId?.trim()).then(
+            () => (this.loading = false)
+          );
         }
       });
+  }
+
+  /** Sets up the widgets from the dashboard structure */
+  private setWidgets() {
+    this.widgets = cloneDeep(
+      this.dashboard?.structure
+        ?.filter((x: any) => x !== null)
+        .map((widget: any) => {
+          const contextData = this.dashboard?.contextData;
+          this.contextService.context = contextData || null;
+          if (!contextData) {
+            return widget;
+          }
+          const { settings, originalSettings } =
+            this.contextService.updateSettingsContextContent(
+              widget.settings,
+              this.dashboard
+            );
+          widget = {
+            ...widget,
+            originalSettings,
+            settings,
+          };
+          return widget;
+        }) || []
+    );
   }
 
   /**
    * Init the dashboard
    *
    * @param id Dashboard id
+   * @param contextId Context id (id of the element or the record)
    * @returns Promise
    */
-  private async loadDashboard(id: string) {
+  private async loadDashboard(id: string, contextId?: string) {
     // don't init the dashboard if the id is the same
-    if (this.dashboard?.id === id) {
+    if (this.dashboard?.id === id && this.contextId === contextId) {
       return;
     }
 
@@ -193,42 +174,22 @@ export class DashboardComponent
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
-    this.id = id;
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
-          id: this.id,
+          id,
+          contextEl: contextId || null,
         },
       })
     )
       .then(({ data }) => {
         if (data.dashboard) {
+          this.id = data.dashboard.id || id;
+          this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
           this.initContext();
-          this.widgets = cloneDeep(
-            data.dashboard.structure
-              ?.filter((x: any) => x !== null)
-              .map((widget: any) => {
-                const contextData = this.dashboard?.contextData;
-                this.contextService.context = contextData || null;
-
-                if (!contextData) {
-                  return widget;
-                }
-                const { settings, originalSettings } =
-                  this.contextService.updateSettingsContextContent(
-                    widget.settings,
-                    this.dashboard
-                  );
-                widget = {
-                  ...widget,
-                  originalSettings,
-                  settings,
-                };
-                return widget;
-              }) || []
-          );
+          this.setWidgets();
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
@@ -294,7 +255,6 @@ export class DashboardComponent
     }) => {
       this.contextService.onContextChange(
         'element' in contextItem ? contextItem.element : contextItem.record,
-        this.contextType,
         this.route,
         this.dashboard
       );
