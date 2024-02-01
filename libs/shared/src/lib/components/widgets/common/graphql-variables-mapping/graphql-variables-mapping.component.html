@@ -1,40 +1,62 @@
-<span class="flex gap-2 mb-4 items-center">
-  <h3 class="mb-0">
-    {{
-      'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.title'
-        | translate
-    }}
-  </h3>
-  <ui-icon
-    icon="info_outline"
-    variant="grey"
-    [size]="18"
-    class="cursor-help"
-    [uiTooltip]="
-      'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.tooltip'
+<div class="w-full">
+  <span class="flex gap-2 mb-4 items-center">
+    <h3 class="mb-0">
+      {{
+        'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.title'
+          | translate
+      }}
+    </h3>
+    <ui-icon
+      icon="info_outline"
+      variant="grey"
+      [size]="18"
+      class="cursor-help"
+      [uiTooltip]="
+        'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.tooltip'
+          | translate
+      "
+    ></ui-icon>
+    <ui-button
+      class="ml-auto"
+      category="secondary"
+      (click)="refresh(true, true)"
+    >
+      {{
+        'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.refresh'
+          | translate
+      }}
+    </ui-button>
+  </span>
+  <ui-alert *ngIf="availableQueryVariables.length > 0">{{
+    'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.help'
+      | translate
+  }}</ui-alert>
+  <div
+    *ngIf="availableQueryVariables.length > 0"
+    mwlResizable
+    class="flex flex-col relative h-[300px]"
+    [ngStyle]="style"
+    (resizing)="onResizing($event)"
+    [validateResize]="validate.bind(this)"
+  >
+    <!-- JSON editor -->
+    <ngx-monaco-editor
+      class="!h-full !w-full min-w-[200px]"
+      [formControl]="control"
+      [options]="editorOptions"
+    ></ngx-monaco-editor>
+    <!-- Resize handle -->
+    <div
+      class="cursor-row-resize absolute w-full h-2 bottom-0"
+      mwlResizeHandle
+      [resizeEdges]="{ bottom: true }"
+    ></div>
+  </div>
+  <shared-empty
+    *ngIf="availableQueryVariables.length === 0"
+    [title]="
+      'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.noVariables'
         | translate
     "
-  ></ui-icon>
-  <ui-button class="ml-auto" category="secondary" (click)="refresh(true, true)">
-    {{
-      'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.refresh'
-        | translate
-    }}
-  </ui-button>
-</span>
-<ui-alert *ngIf="availableQueryVariables.length > 0">{{
-  'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.help'
-    | translate
-}}</ui-alert>
-<ngx-monaco-editor
-  *ngIf="availableQueryVariables.length > 0"
-  [formControl]="control"
-  [options]="editorOptions"
-></ngx-monaco-editor>
-<shared-empty
-  *ngIf="availableQueryVariables.length === 0"
-  [title]="
-    'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.noVariables'
-      | translate
-  "
-></shared-empty>
+  ></shared-empty>
+</div>

@@ -49,20 +49,36 @@
             [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
             [selectedElements]="[selectedApiConfiguration]"
+            [filterable]="true"
+            (searchChange)="onSearchChange($event)"
           >
           </ui-graphql-select>
         </div>
         <!-- GraphQL Query -->
-        <div *ngIf="type === 'graphql' && queryControl; else restQueryTmpl">
+        <div
+          *ngIf="type === 'graphql' && queryControl; else restQueryTmpl"
+          mwlResizable
+          (resizing)="onResizing($event)"
+          [ngStyle]="style"
+          class="flex flex-col overflow-hidden relative h-[300px] mb-2"
+          [validateResize]="validate.bind(this)"
+        >
           <label class="block text-sm font-medium leading-6 text-gray-900"
             >{{ 'pages.referenceData.queryName' | translate }} *</label
           >
+          <!-- Graphql query editor -->
           <ngx-monaco-editor
             (onInit)="initEditor($event)"
             [options]="editorOptions"
             [formControl]="queryControl"
-            class="mb-2"
+            class="!h-full !w-full"
           ></ngx-monaco-editor>
+          <!-- Resize handle -->
+          <div
+            class="cursor-row-resize absolute w-full h-2 bottom-0"
+            mwlResizeHandle
+            [resizeEdges]="{ bottom: true }"
+          ></div>
         </div>
         <!-- QueryName -->
         <ng-template #restQueryTmpl>
