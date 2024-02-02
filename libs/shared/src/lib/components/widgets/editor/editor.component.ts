@@ -6,6 +6,7 @@ import {
   ViewChild,
   HostListener,
   Renderer2,
+  ElementRef,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -28,6 +29,7 @@ import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-w
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ContextService } from '../../../services/context/context.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { Router } from '@angular/router';
 
 /**
  * Text widget component using Tinymce.
@@ -105,6 +107,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param contextService Context service
    * @param renderer Angular renderer2 service
    * @param aggregationService Shared aggregation service
+   * @param el Element ref
+   * @param router Angular router
    */
   constructor(
     private apollo: Apollo,
@@ -117,7 +121,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private referenceDataService: ReferenceDataService,
     private contextService: ContextService,
     private renderer: Renderer2,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private el: ElementRef,
+    private router: Router
   ) {
     super();
   }
@@ -224,6 +230,24 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.contextService.filter.getValue(),
           this.htmlContentComponent.el.nativeElement
         );
+        const anchorElements = this.el.nativeElement.querySelectorAll('a');
+        anchorElements.forEach((anchor: HTMLElement) => {
+          this.renderer.listen(anchor, 'click', (event: Event) => {
+            // Prevent the default behavior of the anchor tag
+            event.preventDefault();
+            // Use the Angular Router to navigate to the desired route
+            const href = anchor.getAttribute('href');
+            if (href) {
+              if (href?.startsWith('./')) {
+                // Navigation inside the app builder
+                this.router.navigateByUrl(href.substring(1));
+              } else {
+                // Default navigation
+                window.location.href = href;
+              }
+            }
+          });
+        });
       }, 500);
     };
     if (this.settings.record && this.settings.resource) {

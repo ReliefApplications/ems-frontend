@@ -251,6 +251,9 @@ export class ContextService {
           // If parsing fails, return the original string value
           return value;
         }
+      } else if (isArray(value)) {
+        // If the value is an array, recursively parse each element
+        return value.map((element: any) => this.parseJSONValues(element));
       } else if (isObject(value)) {
         // If the value is an object, recursively parse it
         return this.parseJSONValues(value);
@@ -300,11 +303,17 @@ export class ContextService {
   public removeEmptyPlaceholders(obj: any) {
     for (const key in obj) {
       if (has(obj, key)) {
-        if (typeof obj[key] === 'object') {
+        if (isArray(obj[key])) {
+          // If the value is an array, recursively parse each element
+          obj[key].forEach((element: any) => {
+            this.removeEmptyPlaceholders(element);
+          });
+          obj[key] = obj[key].filter((element: any) => !isEmpty(element));
+        } else if (isObject(obj[key])) {
           // Recursively call the function for nested objects
           this.removeEmptyPlaceholders(obj[key]);
         } else if (
-          typeof obj[key] === 'string' &&
+          isString(obj[key]) &&
           obj[key].startsWith('{{') &&
           obj[key].endsWith('}}')
         ) {
