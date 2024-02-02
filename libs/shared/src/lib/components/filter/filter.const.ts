@@ -12,19 +12,19 @@ export const FILTER_OPERATORS = [
   },
   {
     value: 'gte',
-    label: 'kendo.grid.filterAfterOrEqualOperator',
+    label: 'kendo.grid.filterGteOperator',
   },
   {
     value: 'gt',
-    label: 'kendo.grid.filterAfterOperator',
+    label: 'kendo.grid.filterGtOperator',
   },
   {
     value: 'lte',
-    label: 'kendo.grid.filterBeforeOrEqualOperator',
+    label: 'kendo.grid.filterLteOperator',
   },
   {
     value: 'lt',
-    label: 'kendo.grid.filterBeforeOperator',
+    label: 'kendo.grid.filterLtOperator',
   },
   {
     value: 'isnull',
@@ -69,6 +69,46 @@ export const FILTER_OPERATORS = [
   {
     value: 'notin',
     label: 'kendo.grid.filterIsNotInOperator',
+  },
+];
+
+/**
+ * Available date operators.
+ */
+export const DATE_FILTER_OPERATORS = [
+  {
+    value: 'eq',
+    label: 'kendo.grid.filterEqOperator',
+  },
+  {
+    value: 'neq',
+    label: 'kendo.grid.filterNotEqOperator',
+  },
+  {
+    value: 'gte',
+    label: 'kendo.grid.filterAfterOrEqualOperator',
+  },
+  {
+    value: 'gt',
+    label: 'kendo.grid.filterAfterOperator',
+  },
+  {
+    value: 'lte',
+    label: 'kendo.grid.filterBeforeOrEqualOperator',
+  },
+  {
+    value: 'lt',
+    label: 'kendo.grid.filterBeforeOperator',
+  },
+  {
+    value: 'isnull',
+    label: 'kendo.grid.filterIsNullOperator',
+    disableValue: true,
+  },
+  {
+    value: 'isnotnull',
+    label: 'kendo.grid.filterIsNotNullOperator',
+    disableValue: true,
   },
 ];
 
