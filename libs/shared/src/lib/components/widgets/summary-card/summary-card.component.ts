@@ -1185,12 +1185,10 @@ export class SummaryCardComponent
     }
 
     // Replace search
-    const search = this.searchControl.value;
-    if (search) {
-      object = JSON.parse(
-        JSON.stringify(object).replace(/{{widget.search}}/g, search)
-      );
-    }
+    const search = this.searchControl.value || '';
+    object = JSON.parse(
+      JSON.stringify(object).replace(/{{widget.search}}/g, search)
+    );
     return object;
   }
 
