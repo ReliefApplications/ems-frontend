@@ -11,17 +11,21 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
   styleUrls: ['./dashboard-export-action.component.scss'],
 })
 export class DashboardExportActionComponent {
+  /** Dialog Result (from forms) */
   public data: any;
+  /** Image Formats */
   public imageFormats = [
     { value: 'png', label: 'PNG' },
     { value: 'jpeg', label: 'JPEG' },
   ];
 
+  /** Image Export Form*/
   exportImage = new FormGroup({
     format: new FormControl('png'),
     includeHeaderFooter: new FormControl(false),
   });
 
+  /** PDF Export Form*/
   exportPDF = new FormGroup({
     includeHeaderFooter: new FormControl(false),
     paperSize: new FormControl('auto'),
