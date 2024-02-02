@@ -285,7 +285,7 @@ export class ContextService {
           .replace(/["']?\{\{filter\./, '')
           .replace(/\}\}["']?/, '');
         const fieldValue = get(filter, field);
-        return fieldValue ? JSON.stringify(fieldValue) : match;
+        return isNil(fieldValue) ? match : JSON.stringify(fieldValue);
       }
     );
     const parsed = JSON.parse(replaced);
