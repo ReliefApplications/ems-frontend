@@ -95,7 +95,7 @@
   *ngIf="!loading && !hasError && emptyDataset"
   class="absolute inset-0 grid place-items-center"
 >
-  <p class="text-gray-900">{{ 'common.noData' | translate }}</p>
+  <shared-empty icon="find_in_page" [title]="'common.noData' | translate" />
 </div>
 <div *ngIf="hasError" class="chart-error">
   <ui-icon variant="danger" icon="error_outline"></ui-icon>

@@ -36,9 +36,10 @@
               class="absolute inset-0 grid place-content-center"
               *ngIf="cards.length === 0 && !loading"
             >
-              <p class="text-gray-900">
-                {{ 'common.noData' | translate }}
-              </p>
+              <shared-empty
+                icon="find_in_page"
+                [title]="'common.noData' | translate"
+              />
             </div>
           </ng-container>
         </div>
