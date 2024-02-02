@@ -25,6 +25,9 @@ export class MapPopupService {
     this.map = _map;
   }
 
+  /** Timeout to open popup */
+  private timeoutListener!: NodeJS.Timeout;
+
   /**
    * Injects DomService and TranslateService instances to the service
    *
@@ -85,8 +88,16 @@ export class MapPopupService {
         layerToBind?.unbindPopup();
         instance.destroy();
       });
-      layerToBind.bindPopup(popup);
-      layerToBind.openPopup();
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      this.timeoutListener = setTimeout(() => {
+        const popupElement = popup.getContent() as HTMLElement;
+        layerToBind?.bindPopup(popup, {
+          autoPanPadding: [0, popupElement.offsetHeight],
+        });
+        layerToBind?.openPopup();
+      }, 0);
     }
   }
 
