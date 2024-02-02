@@ -8,7 +8,10 @@ import {
 } from '@progress/kendo-angular-grid';
 import { PopupSettings } from '@progress/kendo-angular-dateinputs';
 import { takeUntil } from 'rxjs';
-import { FIELD_TYPES, DATE_FILTER_OPERATORS } from '../../../filter/filter.const';
+import {
+  FIELD_TYPES,
+  DATE_FILTER_OPERATORS,
+} from '../../../filter/filter.const';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
 
