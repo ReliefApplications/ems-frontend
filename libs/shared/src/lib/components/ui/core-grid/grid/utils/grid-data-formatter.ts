@@ -91,7 +91,10 @@ export function formatGridRowData(
    */
   function iterateFields(fields: GridField[], parent?: GridField) {
     fields
-      .filter((field) => !!get(rowData, parent ? parent.name : field.name))
+      .filter((field) => {
+        const value = get(rowData, parent ? parent.name : field.name);
+        return value === 0 ? true : !!value;
+      })
       .forEach((field) => {
         // Reference data
         if (field.subFields && field.meta.type === 'referenceData') {
