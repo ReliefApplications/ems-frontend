@@ -1,31 +1,75 @@
-:host kendo-datapager {
-  @apply p-3 pr-0 bg-white border-l-0 border-b-0 border-r-0 border-t;
+kendo-datapager {
+  @apply p-3 bg-white border-l-0 border-b-0 border-r-0 border-t;
 }
 
-:host ::ng-deep .k-pager-md .k-pager-numbers-wrap .k-button {
-  --tw-border-opacity: 1 !important;
-  border-color: rgb(212 212 212 / var(--tw-border-opacity)) !important;
-  @apply h-full text-base border-r border-l-0 border-t-0 border-b-0;
-}
+:host ::ng-deep {
+  .k-pager-md .k-pager-numbers-wrap .k-button {
+    --tw-border-opacity: 1 !important;
+    border-color: rgb(212 212 212 / var(--tw-border-opacity)) !important;
+    @apply h-full text-base border-r border-l-0 border-t-0 border-b-0;
+  }
 
-:host ::ng-deep .hide-last button:last-child,
-:host ::ng-deep .hide-first button:first-child {
-  display: none !important;
-}
+  // When cursor pagination, hide first & last buttons
+  .hide-first-last {
+    kendo-datapager-prev-buttons {
+      .k-pager-first {
+        display: none !important;
+      }
+    }
+    kendo-datapager-next-buttons {
+      .k-pager-last {
+        display: none !important;
+      }
+      button:first-child {
+        border-right: 0 !important;
+      }
+    }
+  }
 
-:host ::ng-deep kendo-datapager-next-buttons button:first-child {
-  border-right: 0 !important;
-}
+  kendo-datapager.k-pager-mobile-sm {
+    &:not(.hide-first-last) {
+      kendo-datapager-next-buttons {
+        button:first-child {
+          border-left-width: 1px !important;
+        }
+      }
+    }
+  }
 
-:host ::ng-deep kendo-dropdownlist {
-  background-image: none !important;
-  @apply border-0 border-b border-neutral-500 bg-inherit;
-}
+  // Hide last border ( duplicated )
+  kendo-datapager-next-buttons button:last-child {
+    border-right: 0 !important;
+  }
 
-:host ::ng-deep kendo-datapager-info {
-  @apply text-sm text-gray-700;
-}
+  kendo-dropdownlist,
+  select {
+    background-image: none !important;
+    @apply border-0 border-b border-neutral-500 bg-inherit;
+  }
 
-:host ::ng-deep .k-pager {
-  @apply border-0 focus:shadow-none;
+  k-pager {
+    @apply border-0 focus:shadow-none;
+  }
+
+  kendo-datapager-info {
+    order: 1;
+    @apply text-sm text-gray-700;
+    justify-content: flex-start;
+  }
+
+  // Change native order of elements
+  kendo-datapager-page-sizes {
+    order: 2;
+  }
+
+  .k-pager-numbers-wrap {
+    order: 3;
+    @apply border rounded-md ml-auto;
+  }
+
+  kendo-datapager-numeric-buttons {
+    select {
+      margin: 0 !important;
+    }
+  }
 }
