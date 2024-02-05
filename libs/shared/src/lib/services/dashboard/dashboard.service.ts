@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import {
-  CreateDashboardWithContextMutationResponse,
   Dashboard,
   EditDashboardMutationResponse,
   WIDGET_TYPES,
@@ -13,11 +12,7 @@ import {
 } from '../../models/page.model';
 import { firstValueFrom } from 'rxjs';
 import { Apollo } from 'apollo-angular';
-import {
-  EDIT_DASHBOARD,
-  UPDATE_PAGE_CONTEXT,
-  CREATE_DASHBOARD_WITH_CONTEXT,
-} from './graphql/mutations';
+import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
 
@@ -111,30 +106,6 @@ export class DashboardService {
         variables: {
           id: pageId,
           context,
-        },
-      })
-    );
-  }
-
-  /**
-   * Duplicates a dashboard and adds context to it.
-   *
-   * @param page Page to copy content from
-   * @param context The type of context to be added to the dashboard
-   * @param id The id of the context to be added to the dashboard
-   * @returns The newly created dashboard
-   */
-  public createDashboardWithContext(
-    page: string,
-    context: 'element' | 'record',
-    id: string | number
-  ) {
-    return firstValueFrom(
-      this.apollo.mutate<CreateDashboardWithContextMutationResponse>({
-        mutation: CREATE_DASHBOARD_WITH_CONTEXT,
-        variables: {
-          page,
-          [context]: id,
         },
       })
     );

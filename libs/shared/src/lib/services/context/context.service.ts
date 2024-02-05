@@ -251,6 +251,9 @@ export class ContextService {
           // If parsing fails, return the original string value
           return value;
         }
+      } else if (isArray(value)) {
+        // If the value is an array, recursively parse each element
+        return value.map((element: any) => this.parseJSONValues(element));
       } else if (isObject(value)) {
         // If the value is an object, recursively parse it
         return this.parseJSONValues(value);
@@ -285,7 +288,7 @@ export class ContextService {
           .replace(/["']?\{\{filter\./, '')
           .replace(/\}\}["']?/, '');
         const fieldValue = get(filter, field);
-        return fieldValue ? JSON.stringify(fieldValue) : match;
+        return isNil(fieldValue) ? match : JSON.stringify(fieldValue);
       }
     );
     const parsed = JSON.parse(replaced);
@@ -300,11 +303,17 @@ export class ContextService {
   public removeEmptyPlaceholders(obj: any) {
     for (const key in obj) {
       if (has(obj, key)) {
-        if (typeof obj[key] === 'object') {
+        if (isArray(obj[key])) {
+          // If the value is an array, recursively parse each element
+          obj[key].forEach((element: any) => {
+            this.removeEmptyPlaceholders(element);
+          });
+          obj[key] = obj[key].filter((element: any) => !isEmpty(element));
+        } else if (isObject(obj[key])) {
           // Recursively call the function for nested objects
           this.removeEmptyPlaceholders(obj[key]);
         } else if (
-          typeof obj[key] === 'string' &&
+          isString(obj[key]) &&
           obj[key].startsWith('{{') &&
           obj[key].endsWith('}}')
         ) {
@@ -460,23 +469,17 @@ export class ContextService {
    * Handle dashboard context change by simply updating the url.
    *
    * @param value id of the element or record
-   * @param contextType type of context element
    * @param route Angular current page
    * @param dashboard Current dashboard
    */
   public onContextChange(
     value: string | number | undefined | null,
-    contextType: 'record' | 'element' | undefined,
     route: ActivatedRoute,
     dashboard?: Dashboard
   ): void {
-    if (
-      !dashboard?.id ||
-      !dashboard?.page?.id ||
-      !dashboard.page.context ||
-      !contextType
-    )
+    if (!dashboard?.id || !dashboard.page?.id || !dashboard.page.context) {
       return;
+    }
     if (value) {
       this.router.navigate(['.'], {
         relativeTo: route,

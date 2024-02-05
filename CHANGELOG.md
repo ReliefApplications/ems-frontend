@@ -1,3 +1,23 @@
+# [2.8.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.7.0...v2.8.0) (2024-02-01)
+
+
+### Bug Fixes
+
+* buttons in modern dashboard filter would take all height ([3b6a9ff](https://github.com/ReliefApplications/ems-frontend/commit/3b6a9ff2cd6428c311ea6f3dbc1593d20bf891fb))
+* context filters with summary cards ([#2334](https://github.com/ReliefApplications/ems-frontend/issues/2334)) ([dce1481](https://github.com/ReliefApplications/ems-frontend/commit/dce14813346357b122ef94c04677724a54c653dc))
+* dashboard filter would not appear in front-office ([582c0c5](https://github.com/ReliefApplications/ems-frontend/commit/582c0c5296bf01266e9fe5c161e7934e37e05920))
+* date & datetime filters not working as expected ([#2259](https://github.com/ReliefApplications/ems-frontend/issues/2259)) ([178c050](https://github.com/ReliefApplications/ems-frontend/commit/178c0507e5acad58c080170add95e9d90e97704e))
+* default value not working for reference data in dashboard filter ([#2325](https://github.com/ReliefApplications/ems-frontend/issues/2325)) ([52b8f8d](https://github.com/ReliefApplications/ems-frontend/commit/52b8f8da7bdd2a1cf06b359fd1755fb9e4f1f057))
+* history would not be resizable in sidenav ([0076a23](https://github.com/ReliefApplications/ems-frontend/commit/0076a23cd688b79fadc69cf4c7322e23bb71c984))
+* in some cases, incorrect value in tagbox would raise an error ([6f69ed3](https://github.com/ReliefApplications/ems-frontend/commit/6f69ed395e0bd5aaf34a448f787276dd31854c58))
+* prevent loading previous value for minimum height ([#2336](https://github.com/ReliefApplications/ems-frontend/issues/2336)) ([97523bc](https://github.com/ReliefApplications/ems-frontend/commit/97523bc6b0cf4d74f79028be8369b8370b78ed52))
+
+
+### Features
+
+* add new min & max operators in template parser ([#2349](https://github.com/ReliefApplications/ems-frontend/issues/2349)) ([266e47f](https://github.com/ReliefApplications/ems-frontend/commit/266e47f94725d978166fc9fe7fc1e0177533be6d))
+* allow custom styling sidenav resizing ([#2346](https://github.com/ReliefApplications/ems-frontend/issues/2346)) ([2b3a9bb](https://github.com/ReliefApplications/ems-frontend/commit/2b3a9bb096019fa842cdf205d8ecb4c102a4b486))
+
 # [2.7.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.6.0...v2.7.0) (2024-01-25)
 
 
