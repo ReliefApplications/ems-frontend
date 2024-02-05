@@ -257,6 +257,7 @@
 				"includeHeaderFooter": "Include Header and Footer",
 				"landscape": "Landscape",
 				"loading": "Loading {{type}} export",
+				"options": "Export options",
 				"orientation": "Orientation:",
 				"paperSize": "Paper Size:",
 				"pdf": "PDF Ready",

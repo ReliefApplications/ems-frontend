@@ -257,6 +257,7 @@
 				"includeHeaderFooter": "Inclure l'en-tête et le pied de page",
 				"landscape": "Paysage",
 				"loading": "Chargement de l'exportation {{type}}",
+				"options": "Options d'exportation",
 				"orientation": "Orientation:",
 				"paperSize": "Format du papier:",
 				"pdf": "PDF prêt",

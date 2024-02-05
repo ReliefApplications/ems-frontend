@@ -784,7 +784,7 @@ export class DashboardComponent
 
     // Open the DashboardExportActionComponent dialog
     const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data: { data },
+      data,
     });
 
     // Handle the dialog result
@@ -904,14 +904,14 @@ export class DashboardComponent
     let format: 'png' | 'jpeg';
     let includeHeaderFooter: boolean;
     const data = {
-      exportType: 'png',
+      exportType: 'image',
     };
 
     this.mapReadyForExportSubscription?.unsubscribe();
 
     // Open the DashboardExportActionComponent dialog
     const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data: { data },
+      data,
     });
 
     // Sets the user input values from dialog box

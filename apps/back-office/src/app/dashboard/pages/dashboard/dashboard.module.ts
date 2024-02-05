@@ -24,6 +24,7 @@ import {
   DialogModule,
   GraphQLSelectModule,
   IconModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
@@ -59,6 +60,7 @@ import { DashboardExportActionComponent } from './components/dashboard-export-ac
     AlertModule,
     DragDropModule,
     ButtonActionModule,
+    ToggleModule,
   ],
   exports: [DashboardComponent],
 })
