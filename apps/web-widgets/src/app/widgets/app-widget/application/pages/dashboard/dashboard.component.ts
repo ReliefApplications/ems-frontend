@@ -141,9 +141,7 @@ export class DashboardComponent
       this.dashboard?.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
-          const contextData = this.dashboard?.contextData;
-          this.contextService.context = contextData || null;
-          if (!contextData) {
+          if (!this.contextService.context) {
             return widget;
           }
           const { settings, originalSettings } =
@@ -192,6 +190,7 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.contextService.context = this.dashboard?.contextData || null;
           this.initContext();
           this.setWidgets();
           this.buttonActions = this.dashboard.buttons || [];
