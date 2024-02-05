@@ -108,11 +108,9 @@ export class DateFilterMenuComponent
     this.operatorsList = DATE_FILTER_OPERATORS.filter((x) =>
       type?.operators?.includes(x.value)
     );
-    console.log(this.operatorsList);
     this.operatorsList.forEach((o) => {
       o.text = this.translate.instant(o.label);
     });
-    console.log(this.operatorsList);
     popupService.onClose
       .pipe(takeUntil(this.destroy$))
       .subscribe((e: PopupCloseEvent) => {
