@@ -1,71 +1,61 @@
-<div (click)="closeDialog()">
-  <div *ngIf="data.exportType==='pdf'" class="relative flex items-center bg-white p-10 rounded-3xl" (click)="$event.stopPropagation()">
-    <div class="absolute top-0 right-0 m-1 rounded-full">
-      <ui-button
-        uiSuffix
-        [isIcon]="true"
-        icon="close"
-        variant="danger"
-        (click)="closeDialog()"
-        [uiTooltip]="'common.cancel' | translate"
+<ui-dialog [closable]="true" size="small">
+  <ng-container ngProjectAs="header">
+    <h3>{{ 'common.notifications.export.options' | translate }}</h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form class="w-full pb-1" [formGroup]="form">
+      <!-- Selection of image format, only for image export -->
+      <div
+        *ngIf="data.exportType === 'image'"
+        uiFormFieldDirective
+        [outline]="false"
       >
-      </ui-button>
-    </div>
-    <form class="w-full max-w-md mx-auto" [formGroup]="exportPDF" (ngSubmit)="closePDFDialog()">
-      <label class="block mb-4">
-        <input type="checkbox" formControlName="includeHeaderFooter" class="mr-2">
-        {{'common.notifications.export.includeHeaderFooter' | translate}}
-      </label>
-      <label class="block mb-4">
-        {{'common.notifications.export.paperSize' | translate}}
-        <select formControlName="paperSize" class="ml-2 w-full py-2 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 disabled-select">
-          <option value="auto" >Auto</option>
-        </select>
-      </label>
-      <ui-button
-        category="secondary"
-        variant="primary"
-        (click)="closePDFDialog()"
+        <label>{{ 'common.notifications.export.format' | translate }}</label>
+        <ui-select-menu formControlName="format">
+          <ui-select-option
+            *ngFor="let format of imageFormats"
+            [value]="format.value"
+          >
+            {{ format.label }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <!-- Selection of paper size, only for PDF export -->
+      <div
+        *ngIf="data.exportType === 'pdf'"
+        uiFormFieldDirective
+        [outline]="false"
       >
-      {{'common.notifications.export.download' | translate}}
-      </ui-button>
+        <label>{{ 'common.notifications.export.paperSize' | translate }}</label>
+        <ui-select-menu formControlName="paperSize">
+          <ui-select-option
+            *ngFor="let size of paperSizes"
+            [value]="size.value"
+          >
+            {{ size.label }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <!-- Whether or not to include headers and footers when exporting-->
+      <ui-toggle formControlName="includeHeaderFooter">
+        <ng-container ngProjectAs="label">
+          {{ 'common.notifications.export.includeHeaderFooter' | translate }}
+        </ng-container>
+      </ui-toggle>
     </form>
-  </div>
- </div>
-
-
-
- <div (click)="closeDialog()" class="overlay">
- <div *ngIf="data.exportType==='png'" class="relative flex items-center bg-white p-10 rounded-3xl" (click)="$event.stopPropagation()">
-  <div class="absolute top-0 right-0 m-1 rounded-full">
-    <ui-button
-      uiSuffix
-      [isIcon]="true"
-      icon="close"
-      variant="danger"
-      (click)="closeDialog()"
-      [uiTooltip]="'common.cancel' | translate"
-    >
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]>
+      {{ 'common.close' | translate }}
     </ui-button>
-  </div>
-  <form [formGroup]="exportImage" (ngSubmit)="closeImageDialog()">
-   <label class="block mb-4">
-     <input type="checkbox" formControlName="includeHeaderFooter" class="mr-2">
-     {{'common.notifications.export.includeHeaderFooter' | translate}}
-   </label>
-   <label class="block mb-4">
-    {{'common.notifications.export.format' | translate}}
-    <select formControlName="format" class="ml-2 w-full py-2 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-600 focus:ring-opacity-50">
-      <option *ngFor="let format of imageFormats" [value]="format.value">{{format.label}}</option>
-    </select>
-   </label>
-   <ui-button
+    <ui-button
       category="secondary"
       variant="primary"
-      (click)="closeImageDialog()"
+      (click)="confirmDownload()"
     >
-    {{'common.notifications.export.download' | translate}}
+      {{ 'common.notifications.export.download' | translate }}
     </ui-button>
-  </form>
- </div>
- </div>
+  </ng-container>
+</ui-dialog>
