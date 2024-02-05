@@ -118,12 +118,6 @@ export class DashboardFilterComponent
       .subscribe((value) => {
         this.opened = value;
       });
-    this.contextService.filterStructure$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.surveyStructure = value || '';
-        this.initSurvey();
-      });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
       .subscribe(
@@ -144,6 +138,10 @@ export class DashboardFilterComponent
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
+    }
+    if (changes.dashboard) {
+      this.surveyStructure = this.dashboard?.filter?.structure || '';
+      this.initSurvey();
     }
   }
 

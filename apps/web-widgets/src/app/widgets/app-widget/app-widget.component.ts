@@ -16,6 +16,7 @@ import {
   ContextService,
   DataTemplateService,
   WorkflowService,
+  MapLayersService,
 } from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
@@ -35,6 +36,7 @@ import { Router } from '@angular/router';
     WorkflowService,
     ContextService,
     DataTemplateService,
+    MapLayersService,
   ],
 })
 export class AppWidgetComponent
