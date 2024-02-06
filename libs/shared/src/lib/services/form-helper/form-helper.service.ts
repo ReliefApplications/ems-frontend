@@ -8,7 +8,7 @@ import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get } from 'lodash';
+import { snakeCase, cloneDeep, set, get, isNil } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
@@ -87,7 +87,7 @@ export class FormHelpersService {
       if (questions[field]) {
         const key = questions[field].getValueName();
         // If there is no value for this question
-        if (this.isNil(survey.data[key])) {
+        if (isNil(survey.data[key])) {
           // And is not boolean(false by default, we want to save that), we nullify it
           if (questions[field].getType() !== 'boolean') {
             // survey.data[key] = null;
@@ -101,16 +101,6 @@ export class FormHelpersService {
       }
     }
     survey.data = data;
-  }
-
-  /**
-   * Check if a value is null or undefined
-   *
-   * @param arg The value to check
-   * @returns True if the value is null or undefined, false otherwise
-   */
-  isNil(arg: any): any {
-    return arg === null || arg === undefined;
   }
 
   /**
