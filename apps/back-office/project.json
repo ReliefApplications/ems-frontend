@@ -296,6 +296,31 @@
             "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
+        "oort-hit-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.hit.uat.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "14kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/hit-uat"]
+          }
+        },
         "oort-alimentaide": {
           "fileReplacements": [
             {

@@ -307,6 +307,30 @@
             "includePaths": ["libs/styles/src/lib/themes/alimentaide"]
           }
         },
+        "oort-hit-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.oort.hit.uat.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "14kb"
+            }
+          ],
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/hit-uat"]
+          }
+        },
         "oort-demo": {
           "fileReplacements": [
             {
