@@ -1,9 +1,14 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
+  Renderer2,
+  RendererStyleFlags2,
   SimpleChanges,
 } from '@angular/core';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
@@ -19,7 +24,7 @@ import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.scss'],
 })
-export class PaginatorComponent implements OnChanges {
+export class PaginatorComponent implements OnChanges, AfterViewInit, OnDestroy {
   /** Disable pagination */
   @Input() disabled = false;
   /** Number of items */
@@ -46,6 +51,60 @@ export class PaginatorComponent implements OnChanges {
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
   /** Generate random unique identifier for each paginator component */
   public paginatorId = uuidv4();
+  /** Observer resize changes */
+  private resizeObserver!: ResizeObserver;
+
+  /**
+   * Constructor
+   *
+   * @param renderer Renderer reference
+   * @param el Element reference
+   */
+  constructor(private renderer: Renderer2, private el: ElementRef) {}
+
+  ngAfterViewInit(): void {
+    if (this.el.nativeElement.parentElement) {
+      this.updateShowDisplayPageSize(
+        this.el.nativeElement.parentElement.clientWidth
+      );
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateShowDisplayPageSize(
+          this.el.nativeElement.parentElement.clientWidth
+        );
+      });
+      this.resizeObserver.observe(this.el.nativeElement.parentElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver?.disconnect();
+  }
+
+  /**
+   * Update show displayed page size
+   *
+   * @param width Width of the paginator
+   */
+  updateShowDisplayPageSize(width: number) {
+    const myElement = this.el.nativeElement.querySelector(
+      'kendo-datapager-page-sizes'
+    );
+    if (width < 400) {
+      this.renderer.setStyle(
+        myElement,
+        'display',
+        'none',
+        RendererStyleFlags2.Important
+      );
+    } else {
+      this.renderer.setStyle(
+        myElement,
+        'display',
+        'block',
+        RendererStyleFlags2.Important
+      );
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['pageIndex']) {
