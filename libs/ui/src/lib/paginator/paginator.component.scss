@@ -36,6 +36,14 @@ kendo-datapager {
     }
   }
 
+  kendo-datapager.k-pager-mobile-md kendo-datapager-page-sizes {
+    display: block !important;
+  }
+
+  kendo-datapager.k-pager-mobile-sm kendo-datapager-page-sizes {
+    display: block !important;
+  }
+
   // Hide last border ( duplicated )
   kendo-datapager-next-buttons button:last-child {
     border-right: 0 !important;
