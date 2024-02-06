@@ -125,6 +125,7 @@ export class AggregationService {
    * @param options.at 'at' argument value, if any
    * @param options.first number of records to fetch, -1 if all of them
    * @param options.graphQLVariables graphql variables (optional)
+   * @param options.aggregationPreview boolean whether we are previewing an aggregation
    * @returns Aggregation query
    */
   aggregationDataQuery(options: {
@@ -138,6 +139,7 @@ export class AggregationService {
     at?: Date;
     first?: number;
     graphQLVariables?: any;
+    aggregationPreview?: boolean;
   }): Observable<
     ApolloQueryResult<
       AggregationDataQueryResponse | ReferenceDataAggregationQueryResponse
@@ -157,6 +159,7 @@ export class AggregationService {
             : {},
           at: options.at,
           first: options.first,
+          aggregationPreview: options.aggregationPreview,
         },
       });
     } else {
@@ -174,6 +177,7 @@ export class AggregationService {
           graphQLVariables: options.graphQLVariables,
           at: options.at,
           first: options.first,
+          aggregationPreview: options.aggregationPreview,
         },
       });
     }
