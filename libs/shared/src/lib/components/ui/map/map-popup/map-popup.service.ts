@@ -1,4 +1,4 @@
-import { Injectable, ComponentRef, Inject } from '@angular/core';
+import { Injectable, ComponentRef, Inject, Renderer2 } from '@angular/core';
 import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
@@ -36,6 +36,7 @@ export class MapPopupService {
    */
   constructor(
     private domService: DomService,
+    private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -92,11 +93,29 @@ export class MapPopupService {
         clearTimeout(this.timeoutListener);
       }
       this.timeoutListener = setTimeout(() => {
-        const popupElement = popup.getContent() as HTMLElement;
-        layerToBind?.bindPopup(popup, {
-          autoPanPadding: [0, popupElement.offsetHeight],
-        });
-        layerToBind?.openPopup();
+        layerToBind
+          ?.bindPopup(popup, {
+            autoPan: false,
+            // offset: [0, popupHeight]
+          })
+          .openPopup();
+
+        const popupHeight =
+          (popup.getElement()?.offsetHeight ?? 0) + 20 + 7 + 24;
+        const y_diff =
+          this.map.latLngToContainerPoint(coordinates).y < popupHeight;
+
+        popup.getPane()?.classList.toggle('bottom-popup', y_diff);
+        // this.renderer.setStyle(
+        //   popup.getPane()?.firstChild,
+        //   'bottom',
+        //   y_diff ? popupHeight + 'px' : '0px'
+        // );
+
+        // popup.setLatLng([
+        //   popup.getLatLng()?.lat ?? 0,
+        //   popup.getLatLng()?.lng ?? 0,
+        // ]);
       }, 0);
     }
   }

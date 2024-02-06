@@ -11,6 +11,16 @@
   row-gap: 6px;
 }
 
+::ng-deep .bottom-popup .leaflet-popup-tip-container {
+  margin-top: 0;
+  top: 0;
+  transform: rotateX(180deg) translateY(100%);
+}
+
+::ng-deep .bottom-popup .leaflet-popup-tip  {
+  background-color: #008dc9;
+}
+
 .shared-popup-header {
   background: #008dc9;
   color: white;
