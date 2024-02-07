@@ -63,7 +63,7 @@
     <ui-icon [icon]="expanded ? 'chevron_left' : 'chevron_right'"></ui-icon>
   </button>
 
-  <ng-container [ngSwitch]="widget.component">
+  <ng-container *ngIf="!loading" [ngSwitch]="widget.component">
     <!-- CHART -->
     <shared-chart
       *ngSwitchCase="'chart'"

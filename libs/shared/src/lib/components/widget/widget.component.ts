@@ -57,12 +57,14 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     | MapWidgetComponent
     | EditorComponent
     | SummaryCardComponent;
+  /** Expanded state of the widget */
+  public expanded = false;
+  /** Loading state of the widget */
+  public loading = true;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
   /** Previous position of the widget ( cols / x )  */
   private previousPosition?: { cols: number; x: number };
-  /** Expanded state of the widget */
-  public expanded = false;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -127,7 +129,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         if (customStyle) {
           this.customStyle = customStyle;
         }
-      });
+      })
+      .finally(() => (this.loading = false));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

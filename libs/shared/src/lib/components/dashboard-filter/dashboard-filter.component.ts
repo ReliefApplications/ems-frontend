@@ -68,8 +68,6 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   /** Filter template */
   public survey: Model = new Model();
-  /** Filter template structure */
-  public surveyStructure: any = {};
   /** Quick filter display */
   public quickFilters: QuickFilter[] = [];
   /** Indicate empty status of filter */
@@ -118,12 +116,6 @@ export class DashboardFilterComponent
       .subscribe((value) => {
         this.opened = value;
       });
-    this.contextService.filterStructure$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.surveyStructure = value || '';
-        this.initSurvey();
-      });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
       .subscribe(
@@ -136,6 +128,13 @@ export class DashboardFilterComponent
           this.setFilterContainerDimensions();
         }
       );
+    // Updates the survey with the latest filter structure
+    this.contextService.filterStructure$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.initSurvey();
+      });
+
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -144,6 +143,9 @@ export class DashboardFilterComponent
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
+    }
+    if (changes.dashboard) {
+      this.initSurvey();
     }
   }
 

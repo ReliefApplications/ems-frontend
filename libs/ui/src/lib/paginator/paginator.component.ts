@@ -47,6 +47,12 @@ export class PaginatorComponent implements OnChanges {
   /** Generate random unique identifier for each paginator component */
   public paginatorId = uuidv4();
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['pageIndex']) {
+      this.skip = changes['pageIndex'].currentValue * this.pageSize;
+    }
+  }
+
   /**
    * Update page data on page change
    *
@@ -65,11 +71,5 @@ export class PaginatorComponent implements OnChanges {
       previousPageIndex: this.pageIndex,
     });
     this.pageIndex = currentPage;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['pageIndex']) {
-      this.skip = changes['pageIndex'].currentValue * this.pageSize;
-    }
   }
 }

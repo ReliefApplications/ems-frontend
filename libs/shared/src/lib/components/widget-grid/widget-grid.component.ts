@@ -89,6 +89,8 @@ export class WidgetGridComponent
   private changesSubscription?: Subscription;
   /** Determines whether we need to use a minimum height */
   public isMinHeightEnabled?: boolean;
+  /** Timeout listener */
+  private setFullscreenTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -168,6 +170,9 @@ export class WidgetGridComponent
     super.ngOnDestroy();
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
+    }
+    if (this.setFullscreenTimeoutListener) {
+      clearTimeout(this.setFullscreenTimeoutListener);
     }
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
@@ -310,8 +315,14 @@ export class WidgetGridComponent
       this.expandWidgetDialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
-          target.fullscreen = false;
-          this.expandWidgetDialogRef = null;
+          // sync with the dashboard content
+          if (this.setFullscreenTimeoutListener) {
+            clearTimeout(this.setFullscreenTimeoutListener);
+          }
+          this.setFullscreenTimeoutListener = setTimeout(() => {
+            target.fullscreen = false;
+            this.expandWidgetDialogRef = null;
+          });
         });
     }
   }

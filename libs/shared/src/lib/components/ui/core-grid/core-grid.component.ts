@@ -649,6 +649,16 @@ export class CoreGridComponent
         delete item.validationErrors;
       }
       return Promise.all(this.promisedChanges()).then((allRes) => {
+        if (allRes) {
+          const hasErrors = allRes.filter((item: any) => {
+            if (item.data.editRecord.validationErrors) {
+              return item.data.editRecord.validationErrors.length;
+            }
+          });
+          if (hasErrors.length > 0) {
+            this.grid?.expandActionsColumn();
+          }
+        }
         for (const res of allRes) {
           const resRecord: Record = res.data.editRecord;
           const updatedIndex = this.updatedItems.findIndex(
