@@ -1,3 +1,16 @@
+## [2.8.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.0...v2.8.1) (2024-02-07)
+
+
+### Bug Fixes
+
+* arrays not correctly transformed in context filters [#84646](https://github.com/ReliefApplications/ems-frontend/issues/84646) ([#2361](https://github.com/ReliefApplications/ems-frontend/issues/2361)) ([284f295](https://github.com/ReliefApplications/ems-frontend/commit/284f295b966862613a7d266efa366ae1887ce989))
+* form number questions dont accept 0 as answer ([#2367](https://github.com/ReliefApplications/ems-frontend/issues/2367)) ([9af9eda](https://github.com/ReliefApplications/ems-frontend/commit/9af9eda4eff6938d7407f35c5d419cf5b1b78cae))
+* fullscreen doesnt trigger changes in widget display ([#2357](https://github.com/ReliefApplications/ems-frontend/issues/2357)) ([c863f7e](https://github.com/ReliefApplications/ems-frontend/commit/c863f7e09eed82cd36ed745675d72af05838d66c))
+* grid inline edition info icon partially hidden ([#2214](https://github.com/ReliefApplications/ems-frontend/issues/2214)) ([2b824be](https://github.com/ReliefApplications/ems-frontend/commit/2b824be0dc651d10b867cd4e5e5691f8eedde3e0))
+* issue with web elements not using dedicated instance of map layers service per instance ([319d284](https://github.com/ReliefApplications/ems-frontend/commit/319d2845b0e3b47faf87d5dd77bea9746d3e17c7))
+* some array filters would not work fine ([ccae634](https://github.com/ReliefApplications/ems-frontend/commit/ccae6344a4dddfb2ba4fbb9b4fabf5acc6869c4f))
+* update filter survey with latest filter structure ([#2368](https://github.com/ReliefApplications/ems-frontend/issues/2368)) ([33e5394](https://github.com/ReliefApplications/ems-frontend/commit/33e53948ce8ec88a282cc12fd9c06a772d321ea1))
+
 # [2.8.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.7.0...v2.8.0) (2024-02-01)
 
 
