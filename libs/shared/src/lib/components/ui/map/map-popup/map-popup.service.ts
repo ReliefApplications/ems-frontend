@@ -1,4 +1,4 @@
-import { Injectable, ComponentRef, Inject, Renderer2 } from '@angular/core';
+import { Injectable, ComponentRef, Inject } from '@angular/core';
 import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
@@ -9,6 +9,13 @@ import { MapPopupComponent } from './map-popup.component';
 import { PopupInfo } from '../../../../models/layer.model';
 import { DOCUMENT } from '@angular/common';
 
+enum Position {
+  Top,
+  Bottom,
+  Left,
+  Right,
+  Float,
+}
 /**
  * Shared map control service.
  */
@@ -18,11 +25,16 @@ export class MapPopupService {
   /** Map instance */
   private map!: L.Map;
 
+  private popupPane!: HTMLElement | undefined;
+
+  private position: Position = Position.Top;
+
   /**
    * Set the map that loaded this popup service instance
    */
   public set setMap(_map: L.Map) {
     this.map = _map;
+    this.popupPane = this.map.getPane('popupPane');
   }
 
   /** Timeout to open popup */
@@ -36,7 +48,6 @@ export class MapPopupService {
    */
   constructor(
     private domService: DomService,
-    private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -82,6 +93,11 @@ export class MapPopupService {
       );
 
       popup.on('remove', () => {
+        // prevents visual bug (bottom-popup switch + content destruction)
+        this.popupPane
+          ?.querySelector('.leaflet-popup')
+          ?.classList.add('invisible');
+
         if (layerToBind instanceof L.Circle) {
           this.map.removeLayer(layerToBind);
         }
@@ -92,31 +108,78 @@ export class MapPopupService {
       if (this.timeoutListener) {
         clearTimeout(this.timeoutListener);
       }
-      this.timeoutListener = setTimeout(() => {
+      setTimeout(() => {
+        if (this.popupPane) {
+          this.popupPane.className = 'leaflet-pane leaflet-popup-pane';
+          this.position = Position.Top;
+        }
+
         layerToBind
           ?.bindPopup(popup, {
             autoPan: false,
-            // offset: [0, popupHeight]
           })
           .openPopup();
 
-        const popupHeight =
-          (popup.getElement()?.offsetHeight ?? 0) + 20 + 7 + 24;
-        const y_diff =
-          this.map.latLngToContainerPoint(coordinates).y < popupHeight;
+        const popupEl: any = popup.getElement();
+        const popupHeight = popupEl?.offsetHeight + 20 + 24; // pop up height + margin + icon size
+        const popupWidth = popupEl?.offsetWidth / 2 + 20; // pop up width + margin
 
-        popup.getPane()?.classList.toggle('bottom-popup', y_diff);
-        // this.renderer.setStyle(
-        //   popup.getPane()?.firstChild,
-        //   'bottom',
-        //   y_diff ? popupHeight + 'px' : '0px'
-        // );
+        if (this.map.project(coordinates).x < popupWidth) {
+          this.position = Position.Right;
+          this.popupPane?.classList.add('right-popup');
+        } else if (
+          (this.map.getPixelWorldBounds().max?.x ?? 0) -
+            this.map.project(coordinates).x <
+          popupWidth
+        ) {
+          this.position = Position.Left;
+          this.popupPane?.classList.add('left-popup');
+        } else if (this.map.project(coordinates).y < popupHeight) {
+          if (this.position === Position.Top) {
+            this.position = Position.Bottom;
+            this.popupPane?.classList.add('bottom-popup');
+          } else {
+            this.position = Position.Float;
+            this.popupPane?.classList.add('float-popup');
+          }
+        }
 
-        // popup.setLatLng([
-        //   popup.getLatLng()?.lat ?? 0,
-        //   popup.getLatLng()?.lng ?? 0,
-        // ]);
-      }, 0);
+        // TODO CSS
+
+        this.autoPan(popup, popupEl);
+      }, 0); // to get correct popup height
+    }
+  }
+
+  private autoPan(popup: L.Popup, popupEl: HTMLElement) {
+    if (this.position === Position.Float) {
+      return;
+    }
+
+    const margin = 20;
+    const popupLatLng: L.LatLng = popup.getLatLng() ?? L.latLng(0, 0);
+    const popupPoint = this.map.latLngToContainerPoint(popupLatLng);
+    const mapSize = this.map.getSize();
+
+    let dx = 0;
+    let dy = 0;
+
+    if (this.position !== Position.Left && this.position !== Position.Right) {
+      if (popupPoint.x - popupEl.offsetWidth / 2 < margin) {
+        dx = -1 * (margin + popupEl.offsetWidth / 2 - popupPoint.x);
+      } else if (popupPoint.x + popupEl.offsetWidth / 2 > mapSize.x - margin) {
+        dx = margin + popupEl.offsetWidth / 2 - (mapSize.x - popupPoint.x);
+      }
+    }
+
+    if (this.position !== Position.Bottom) {
+      if (popupPoint.y - popupEl.offsetHeight - 24 < margin) {
+        dy = -1 * (margin + popupEl.offsetHeight + 24 - popupPoint.y);
+      }
+    }
+
+    if (dx !== 0 || dy !== 0) {
+      this.map.panBy([dx, dy]);
     }
   }
 

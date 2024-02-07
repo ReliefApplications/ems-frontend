@@ -11,6 +11,19 @@
   row-gap: 6px;
 }
 
+::ng-deep .float-popup .leaflet-popup-tip-container {
+  display: none;
+}
+
+::ng-deep .left-popup .leaflet-popup {
+  left: unset !important; 
+  right: 20px !important; 
+}
+
+::ng-deep .bottom-popup .leaflet-popup {
+  top: 38px !important; 
+}
+
 ::ng-deep .bottom-popup .leaflet-popup-tip-container {
   margin-top: 0;
   top: 0;
