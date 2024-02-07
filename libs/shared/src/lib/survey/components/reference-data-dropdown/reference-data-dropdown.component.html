@@ -5,4 +5,15 @@
     [selectedElements]="[selectedReferenceData]"
   >
   </shared-reference-data-select>
+  <ui-button
+    *ngIf="control.value"
+    uiSuffix
+    size="small"
+    [isIcon]="true"
+    (click)="clearFormField($event)"
+    icon="close"
+    variant="danger"
+    [uiTooltip]="'common.remove' | translate"
+  ></ui-button>
 </div>
+

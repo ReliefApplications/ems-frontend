@@ -130,6 +130,7 @@ export type LayerDatasourceType = 'Point' | 'Polygon';
 export interface LayerDatasource {
   resource?: string;
   refData?: string;
+  referenceDataVariableMapping?: string;
   layout?: string;
   aggregation?: string;
   geoField?: string;

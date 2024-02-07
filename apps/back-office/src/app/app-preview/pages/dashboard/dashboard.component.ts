@@ -81,7 +81,6 @@ export class DashboardComponent
           next: ({ data, loading }) => {
             if (data.dashboard) {
               this.dashboard = data.dashboard;
-              this.dashboardService.openDashboard(this.dashboard);
               this.widgets = cloneDeep(
                 data.dashboard.structure ? data.dashboard.structure : []
               );
@@ -115,6 +114,5 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.dashboardService.closeDashboard();
   }
 }

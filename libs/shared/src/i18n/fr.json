@@ -215,7 +215,10 @@
 			"rawJson": "JSON brut"
 		},
 		"label": "Etiquette",
-		"layers": "Couches",
+		"layers": {
+			"few": "Couches",
+			"none": "Pas de couche"
+		},
 		"layout": {
 			"few": "Mises en page",
 			"none": "Aucune mise en page",
@@ -532,7 +535,8 @@
 						"bottom": "Afficher le filtre en bas",
 						"left": "Afficher le filtre à gauche",
 						"right": "Afficher le filtre à droite",
-						"top": "Afficher le filtre en haut"
+						"top": "Afficher le filtre en haut",
+						"unset": "Position indéfinie, sélectionnez en une"
 					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
@@ -542,15 +546,23 @@
 					"defaultPosition": "Position par défaut du filtre",
 					"fixedRowHeight": "Hauteur de ligne fixe",
 					"gridOptions": "Options de grille",
+					"gridType": {
+						"fit": "Ajuster",
+						"placeholder": "Sélectionnez un type de grille",
+						"title": "Type de grille",
+						"verticalFixed": "Vertical fixe"
+					},
 					"help": {
 						"minCols": "Réduire le nombre de colonnes peut ne pas avoir un impact direct si les widgets dépassent la limite spécifiée en largeur."
 					},
 					"margin": "Marge entre les widgets",
 					"minCols": "Nombre de colonnes",
+					"minimumHeight": "Hauteur minimum",
 					"tooltip": {
 						"fixedRowHeight": "Taille des lignes en pixels.\nDoit être supérieur ou égal à 50.",
 						"margin": "Marge entre les widgets.\nDoit être un entier positif.",
 						"minCols": "Nombre de colonnes.\nDoit être compris entre 4 et 24.",
+						"minimumHeight": "Taille minimale de la grille en pixels.\nDoit être supérieur ou égal à 0.",
 						"reset": "Réinitialiser la valeur"
 					},
 					"tooltips": {
@@ -873,13 +885,26 @@
 				"to": "à",
 				"withValue": "avec valeur"
 			},
+			"columns": {
+				"action": "Type d'action",
+				"date": "Date",
+				"modifiedValue": "Ancienne valeur",
+				"originalValue": "Nouvelle valeur",
+				"person": "Utilisateur",
+				"time": "Heure",
+				"variable": "Champ"
+			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",
 			"field": {
 				"all": "Tous les champs",
-				"select": "Sélectionner un champ"
+				"select": "Sélectionner les champs"
 			},
-			"preview": "Prévisualiser et revenir"
+			"preview": "Prévisualiser et revenir",
+			"range": {
+				"clear": "Effacer la plage de données"
+			},
+			"useTableMode": "Afficher en table"
 		},
 		"icon": {
 			"modal": {
@@ -1682,6 +1707,7 @@
 						"createGroup": "Créer un nouveau groupe de couches",
 						"createLayer": "Créer un nouveau calque",
 						"dataSource": {
+							"fieldMapping": "Mapping des Champs",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"
@@ -1756,6 +1782,8 @@
 							"timedimension": "Dimension temporelle",
 							"title": "Contrôles de la carte"
 						},
+						"geographicExtent": "Type d'étendue",
+						"geographicExtentValue": "Valeur de l'étendue",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
@@ -1768,6 +1796,7 @@
 						"defaultLabel": "Libellé par défaut",
 						"label": "Libellé",
 						"symbol": "Symbole",
+						"uniqueValue": "Valeurs uniques",
 						"value": "Valeur"
 					},
 					"tooltip": {
@@ -1781,7 +1810,8 @@
 							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
 							"longitude": "Définissez la longitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la longitude de la carte d'aperçu.",
 							"zoom": "Sélectionnez un zoom par défaut"
-						}
+						},
+						"geographicExtent": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"
 					}
 				},
 				"style": {
@@ -1792,6 +1822,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "N'oubliez pas de supprimer les variables non utilisées.",
+									"noVariables": "Aucune variable définie",
+									"refresh": "Afficher toutes les variables graphQL",
+									"title": "Mappage de variables GraphQL",
+									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
+								},
 								"title": "Styles de mise en page",
 								"use": "Utiliser les styles de mise en page",
 								"wholeRow": {
@@ -1876,6 +1913,7 @@
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "Supprimer la valeur",
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
@@ -2032,6 +2070,7 @@
 			"unstick": "Désépingler"
 		},
 		"multiselect": {
+			"clearTitle": "Supprimer la valeur",
 			"noDataText": "No available choice"
 		},
 		"pager": {
@@ -2436,7 +2475,23 @@
 				"title": "Champ"
 			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
-			"path": "Chemin",
+			"pagination": {
+				"cursorPath": "Chemin du curseur",
+				"cursorVariable": "Variable de requête de curseur",
+				"offsetVariable": "Variable de requête de décalage",
+				"pageSizeVariable": "Variable de requête de taille de page",
+				"pageVariable": "Variable de requête de numéro de page",
+				"strategy": "Stratégie de pagination",
+				"totalCountPath": "Chemin du nombre total d'articles",
+				"usePagination": {
+					"hint": "Dépend de la prise en charge de l'API, permet de récupérer des données par page",
+					"text": "Utiliser la pagination"
+				}
+			},
+			"path": {
+				"placeholder": "Entrez un JSONPath valide",
+				"title": "Chemin de données"
+			},
 			"payload": {
 				"label": "Réponse de l'API",
 				"show": "Afficher la réponse de l'API"

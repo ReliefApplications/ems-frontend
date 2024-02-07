@@ -22,6 +22,7 @@ import {
   CompactType,
   DisplayGrid,
   GridType,
+  GridsterComponentInterface,
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
@@ -86,6 +87,10 @@ export class WidgetGridComponent
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
   private changesSubscription?: Subscription;
+  /** Determines whether we need to use a minimum height */
+  public isMinHeightEnabled?: boolean;
+  /** Timeout listener */
+  private setFullscreenTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -118,6 +123,7 @@ export class WidgetGridComponent
   }
 
   ngOnInit(): void {
+    this.sortWidgets();
     this.availableWidgets = this.dashboardService.availableWidgets;
     this.skeletons = this.getSkeletons();
     this.setLayout();
@@ -130,6 +136,11 @@ export class WidgetGridComponent
         this.setGridOptions();
       });
     this.setGridOptions();
+
+    // Initialize and listen grid size changes to determine whether the minimum height should be used
+    this.gridOptions.gridSizeChangedCallback = (grid) =>
+      this.enableMinHeight(grid);
+    this.enableMinHeight();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -160,6 +171,9 @@ export class WidgetGridComponent
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }
+    if (this.setFullscreenTimeoutListener) {
+      clearTimeout(this.setFullscreenTimeoutListener);
+    }
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
@@ -188,6 +202,16 @@ export class WidgetGridComponent
   }
 
   /**
+   * Enables the min height parameter
+   *
+   * @param grid gridster component
+   */
+  private enableMinHeight(grid: GridsterComponentInterface | null = null) {
+    this.isMinHeightEnabled =
+      this.gridOptions.gridType === GridType.Fit && !grid?.mobile;
+  }
+
+  /**
    * Set Gridster options.
    *
    *  @param isDashboardSet Property to add item change callback handler once the dashboard is ready and editable
@@ -208,6 +232,7 @@ export class WidgetGridComponent
       minItemRows: 1, // min item number of rows
       minCols: this.colsNumber,
       fixedRowHeight: 200,
+      minimumHeight: 0,
       draggable: {
         enabled: this.canUpdate,
         ignoreContentClass: 'gridster-item-content',
@@ -230,6 +255,7 @@ export class WidgetGridComponent
       keepFixedHeightInMobile: true,
       ...this.options,
     };
+
     // Set maxCols at the end, based on widgets & existing max
     this.gridOptions.maxCols = Math.max(
       this.maxCols,
@@ -289,8 +315,14 @@ export class WidgetGridComponent
       this.expandWidgetDialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
-          target.fullscreen = false;
-          this.expandWidgetDialogRef = null;
+          // sync with the dashboard content
+          if (this.setFullscreenTimeoutListener) {
+            clearTimeout(this.setFullscreenTimeoutListener);
+          }
+          this.setFullscreenTimeoutListener = setTimeout(() => {
+            target.fullscreen = false;
+            this.expandWidgetDialogRef = null;
+          });
         });
     }
   }
@@ -417,7 +449,7 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
-    this.widgets.forEach((widget) => {
+    this.widgets.forEach((widget: GridsterItem) => {
       widget.cols = widget.cols ?? widget.defaultCols;
       widget.rows = widget.rows ?? widget.defaultRows;
       widget.minItemRows = widget.minItemRows ?? widget.minRow;
@@ -433,7 +465,15 @@ export class WidgetGridComponent
       .subscribe(() => {
         if (this.canUpdate) {
           this.onEditWidget({ type: 'display' });
+          this.sortWidgets();
         }
       });
+  }
+
+  /**
+   * Sort widgets by their position in the grid
+   */
+  private sortWidgets() {
+    this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
   }
 }

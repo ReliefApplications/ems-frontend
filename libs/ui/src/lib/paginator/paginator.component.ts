@@ -24,10 +24,14 @@ export class PaginatorComponent implements OnChanges {
   @Input() disabled = false;
   /** Number of items */
   @Input() totalItems = 0;
+  /** Show total items */
+  @Input() showTotalItems = true;
   /** Current page size */
   @Input() pageSize = 10;
   /** Available page size */
   @Input() pageSizeOptions = [5, 10, 15];
+  /** If should allow user to change page size */
+  @Input() showPageSizes = true;
   /** Allow buttons to go to first & last pages */
   @Input() hideFirstLastButtons = true;
   /** Aria label */
@@ -42,6 +46,12 @@ export class PaginatorComponent implements OnChanges {
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
   /** Generate random unique identifier for each paginator component */
   public paginatorId = uuidv4();
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['pageIndex']) {
+      this.skip = changes['pageIndex'].currentValue * this.pageSize;
+    }
+  }
 
   /**
    * Update page data on page change
@@ -61,11 +71,5 @@ export class PaginatorComponent implements OnChanges {
       previousPageIndex: this.pageIndex,
     });
     this.pageIndex = currentPage;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['pageIndex']) {
-      this.skip = changes['pageIndex'].currentValue * this.pageSize;
-    }
   }
 }

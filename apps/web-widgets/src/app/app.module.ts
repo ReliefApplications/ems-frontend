@@ -21,7 +21,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MessageService } from '@progress/kendo-angular-l10n';
+import { L10N_PREFIX, MessageService } from '@progress/kendo-angular-l10n';
 import {
   AppAbility,
   KendoTranslationService,
@@ -39,7 +39,6 @@ import { PureAbility } from '@casl/ability';
 // Config
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
-import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
 import { APP_BASE_HREF, LOCATION_INITIALIZED } from '@angular/common';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
@@ -214,6 +213,7 @@ export const getBaseHref = () => {
     ResizeBatchService,
     DatePipe,
     { provide: APP_BASE_HREF, useFactory: getBaseHref },
+    { provide: L10N_PREFIX, useValue: ' ' },
   ],
 })
 export class AppModule implements DoBootstrap {
@@ -229,13 +229,7 @@ export class AppModule implements DoBootstrap {
    * Create the web elements.
    */
   ngDoBootstrap(): void {
-    // Form
-    const form = createCustomElement(FormWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('apb-form', form);
-
-    // Form
+    // Application widget
     const application = createCustomElement(AppWidgetComponent, {
       injector: this.injector,
     });

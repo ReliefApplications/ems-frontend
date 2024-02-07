@@ -54,6 +54,7 @@ import { WidgetComponent } from '../../../widget/widget.component';
 import { DatePipe } from '../../../../pipes/date/date.pipe';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
 import { formatGridRowData } from './utils/grid-data-formatter';
+import { GridActions } from '../models/grid-settings.model';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -107,7 +108,7 @@ export class GridComponent
   /** Input decorator for canUpdate. */
   @Input() canUpdate = false;
   /** Input decorator for actions */
-  @Input() actions = {
+  @Input() actions: GridActions = {
     add: false,
     update: false,
     delete: false,
@@ -425,39 +426,9 @@ export class GridComponent
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
     if (!this.loadingRecords) {
-      // format filter timezones before sending
-      this.formatFiltersTimezones(filter);
       this.filter = filter;
       this.filterChange.emit(filter);
     }
-  }
-
-  /**
-   * Format filter before sending.
-   * Adjust date filters to remove timezone.
-   *
-   * @param filter Filter value.
-   */
-  private formatFiltersTimezones(filter: any) {
-    filter.filters.forEach((subFilter: any) => {
-      // if there are sub filters
-      if (subFilter.filters) {
-        this.formatFiltersTimezones(subFilter);
-      } else if (subFilter.value instanceof Date) {
-        const currentDate = subFilter.value;
-        const hoursToAdjustTimezone = Math.floor(
-          (currentDate as Date).getTimezoneOffset() / 60
-        );
-        const minutesToAdjustTimezone =
-          (currentDate as Date).getTimezoneOffset() % 60;
-
-        const dateObj = new Date(currentDate);
-        dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
-        dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
-
-        subFilter.value = dateObj;
-      }
-    });
   }
 
   /**

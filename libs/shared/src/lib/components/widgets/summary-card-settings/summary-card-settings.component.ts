@@ -69,8 +69,6 @@ export class SummaryCardSettingsComponent
   public layout: Layout | null = null;
   /** Current aggregation */
   public aggregation: Aggregation | null = null;
-  /** Result of custom aggregation data */
-  public customAggregation: any;
   /** Available fields */
   public fields: any[] = [];
   /** Available resource templates */
@@ -143,7 +141,6 @@ export class SummaryCardSettingsComponent
         this.widgetFormGroup?.get('card.aggregation')?.setValue(null);
         this.layout = null;
         this.aggregation = null;
-        this.customAggregation = null;
         this.fields = [];
         if (value) {
           this.referenceData = null;
@@ -199,7 +196,6 @@ export class SummaryCardSettingsComponent
           }
         } else {
           this.aggregation = null;
-          this.customAggregation = null;
         }
       });
 
@@ -380,10 +376,9 @@ export class SummaryCardSettingsComponent
       })
       ?.subscribe(({ data }: any) => {
         if (data.recordsAggregation) {
-          this.customAggregation = data.recordsAggregation;
-          // @TODO: Figure out fields' types from aggregation
-          this.fields = this.customAggregation.items[0]
-            ? Object.keys(this.customAggregation.items[0]).map((f) => ({
+          const customAggregation = data.recordsAggregation;
+          this.fields = customAggregation.items[0]
+            ? Object.keys(customAggregation.items[0]).map((f) => ({
                 name: f,
                 editor: 'text',
               }))

@@ -11,7 +11,6 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,6 +26,7 @@ import {
   ReferenceDataQueryResponse,
   ApiConfigurationQueryResponse,
   EditReferenceDataMutationResponse,
+  paginationStrategy,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { EDIT_REFERENCE_DATA } from './graphql/mutations';
@@ -46,6 +46,9 @@ import { GraphQLError } from 'graphql';
 import { Dialog } from '@angular/cdk/dialog';
 import { DOCUMENT } from '@angular/common';
 import { GridComponent } from '@progress/kendo-angular-grid';
+import { gql } from '@apollo/client';
+import { createRefDataForm } from './reference-data.form';
+import { ResizeEvent } from 'angular-resizable-element';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -66,29 +69,30 @@ export class ReferenceDataComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === DATA ===
-  /**
-   * Loading state
-   */
+  /** Reference to the field input.*/
+  @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
+  /** Reference to the csv data input. */
+  @ViewChild('csvData') csvData?: TextareaComponent;
+  /** Reference to the kendo grid. */
+  @ViewChild(GridComponent) kendoGrid!: GridComponent;
+  /** Loading state */
   public loading = true;
   /** Reference data id */
   public id = '';
   /** Reference data */
   public referenceData?: ReferenceData;
-
-  // === FORM ===
   /** Reference data form */
   public referenceForm!: ReturnType<typeof this.getRefDataForm>;
   /** Reference data types */
   public referenceTypeChoices = Object.values(referenceDataType);
-
-  // === API ===
+  /** Pagination methods */
+  public paginationStrategies = Object.values(paginationStrategy);
   /** Selected API configuration */
   public selectedApiConfiguration?: ApiConfiguration;
   /** Api configurations query */
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
-
-  // === FIELDS ===
+  /** List of query variables */
+  public queryVariables: string[] = [];
   /** Value fields */
   public valueFields: NonNullable<ReferenceData['fields']> = [];
   /** Payload */
@@ -120,36 +124,24 @@ export class ReferenceDataComponent
   public csvLoading = false;
   /** CSV separator */
   public separator = new FormControl(',');
+  /** Editor options */
+  public editorOptions = {
+    automaticLayout: true,
+    theme: 'vs-dark',
+    language: 'graphql',
+    formatOnPaste: true,
+    fixedOverflowWidgets: true,
+  };
   /** Timeout to form */
   private formTimeoutListener!: NodeJS.Timeout;
   /** Timeout to init editor */
   private initEditorTimeoutListener!: NodeJS.Timeout;
   /** Timeout to add an object to the chip list. */
   private addChipListTimeoutListener!: NodeJS.Timeout;
-
-  /**
-   * Reference to the field input.
-   */
-  @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
-  /**
-   * Reference to the csv data input.
-   */
-  @ViewChild('csvData') csvData?: TextareaComponent;
-  /**
-   * Reference to the kendo grid.
-   */
-  @ViewChild(GridComponent) kendoGrid!: GridComponent;
-
-  // === MONACO EDITOR ===
-  /** Editor options */
-  public editorOptions = {
-    theme: 'vs-dark',
-    language: 'graphql',
-    formatOnPaste: true,
-  };
-
   /** Outside click listener for inline edition */
   private inlineEditionOutsideClickListener!: any;
+  /** size style of editor */
+  public style: any = {};
 
   /** @returns the graphqlQuery form control */
   get queryControl() {
@@ -224,33 +216,75 @@ export class ReferenceDataComponent
    * @returns Reference data form group
    */
   private getRefDataForm() {
-    const form = new FormGroup({
-      name: new FormControl(this.referenceData?.name, Validators.required),
-      type: new FormControl(this.referenceData?.type, Validators.required),
-      valueField: new FormControl(
-        this.referenceData?.valueField,
-        Validators.required
-      ),
-      fields: new FormControl(this.referenceData?.fields, Validators.required),
-      apiConfiguration: new FormControl(
-        this.referenceData?.apiConfiguration?.id
-      ),
-      query: new FormControl(this.referenceData?.query),
-      path: new FormControl(this.referenceData?.path),
-      data: new FormControl(this.referenceData?.data),
-    });
+    const { form, controls } = createRefDataForm(this.referenceData);
+
+    /** Updates the requirement of the cursor field field */
+    const setPaginationValidators = () => {
+      // All optional by default
+      controls.cursorVar.optional();
+      controls.cursorField.optional();
+      controls.offsetVar.optional();
+      controls.pageVar.optional();
+      controls.pageSizeVar.optional();
+
+      const usePagination = !!form.get('usePagination')?.value;
+      if (!usePagination) {
+        controls.strategy.optional();
+        return;
+      }
+
+      // Set common validator to all pagination strategies
+      controls.strategy.require();
+
+      // Set specific validators to each pagination strategy
+      switch (controls.strategy.getValue()) {
+        case 'cursor':
+          controls.cursorVar.require();
+          controls.cursorField.require();
+          break;
+        case 'offset':
+          controls.offsetVar.require();
+          break;
+        case 'page':
+          controls.pageVar.require();
+          break;
+      }
+    };
+
+    const handleQueryChange = (queryStr: string, resetFields = true) => {
+      // Clear the fields
+      if (resetFields) {
+        clearFields();
+      }
+
+      // Update the query variables
+      try {
+        const query = gql(queryStr ?? '');
+        query.definitions.forEach((definition) => {
+          if (definition.kind === 'OperationDefinition') {
+            this.queryVariables = (definition.variableDefinitions ?? []).map(
+              (variable) => variable.variable.name.value
+            );
+          }
+        });
+      } finally {
+        // Update the pagination validators
+        setPaginationValidators();
+      }
+    };
 
     // Clear valueFields when type, apiConfiguration, path or query changes
     const clearFields = () => {
       this.payload = null;
       this.valueFields = [];
-      form.get('fields')?.setValue([]);
+      form.get('fields')?.setValue([], { emitEvent: false });
     };
 
     // Wait for the form to be initialized before subscribing to changes
     if (this.formTimeoutListener) {
       clearTimeout(this.formTimeoutListener);
     }
+
     this.formTimeoutListener = setTimeout(() => {
       form
         .get('type')
@@ -260,17 +294,15 @@ export class ReferenceDataComponent
 
           // Clear the query field if the type is not GraphQL
           if (this.type !== referenceDataType.graphql)
-            form.get('query')?.setValue('');
+            this.queryControl?.setValue('');
 
           // Set the default query if the type is GraphQL
           if (this.type === referenceDataType.graphql)
-            form
-              .get('query')
-              ?.setValue(
-                `# ${this.translateService.instant(
-                  'pages.referenceData.tooltip.graphQLFilter'
-                )}\n\n${DEFAULT_QUERY}`
-              );
+            this.queryControl?.setValue(
+              `# ${this.translateService.instant(
+                'pages.referenceData.tooltip.graphQLFilter'
+              )}\n\n${DEFAULT_QUERY}`
+            );
         });
 
       form
@@ -278,10 +310,29 @@ export class ReferenceDataComponent
         ?.valueChanges.pipe(takeUntil(this.destroy$))
         .subscribe(clearFields);
 
+      // Subscribe to query changes, and update the query variables and clear fields
+      this.queryControl?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((query) => {
+          if (query) {
+            handleQueryChange(query);
+          }
+        });
+
       form
-        .get('query')
+        .get('pageInfo.strategy')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(clearFields);
+        .subscribe(() => {
+          setPaginationValidators();
+        });
+
+      form
+        .get('usePagination')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(setPaginationValidators);
+
+      // Initialize the query variables
+      handleQueryChange(this.queryControl?.value, false);
     }, 100);
 
     return form;
@@ -373,6 +424,25 @@ export class ReferenceDataComponent
   }
 
   /**
+   * Override ngOnDestroy of base component to clear listeners.
+   */
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.addChipListTimeoutListener) {
+      clearTimeout(this.addChipListTimeoutListener);
+    }
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
+    if (this.formTimeoutListener) {
+      clearTimeout(this.formTimeoutListener);
+    }
+    if (this.inlineEditionOutsideClickListener) {
+      this.inlineEditionOutsideClickListener();
+    }
+  }
+
+  /**
    * Load all Api Configurations.
    *
    * @param type type of API configuration
@@ -406,9 +476,6 @@ export class ReferenceDataComponent
             first: ITEMS_PER_PAGE,
           },
         });
-      // this.apiConfigurationsQuery.valueChanges.subscribe(({ loading }) => {
-      //   this.loading = loading;
-      // });
     } else {
       this.referenceForm.get('apiConfiguration')?.clearValidators();
       this.referenceForm.get('query')?.clearValidators();
@@ -488,42 +555,69 @@ export class ReferenceDataComponent
    */
   onSave(): void {
     this.loading = true;
+    const formValue = this.referenceForm.value;
     const variables = { id: this.id };
+    const specificStrategyVariables: any = {};
+
+    switch (formValue.pageInfo?.strategy) {
+      case 'cursor':
+        specificStrategyVariables.cursorVar = formValue.pageInfo?.cursorVar;
+        specificStrategyVariables.cursorField = formValue.pageInfo?.cursorField;
+        break;
+      case 'offset':
+        specificStrategyVariables.offsetVar = formValue.pageInfo?.offsetVar;
+        break;
+      case 'page':
+        specificStrategyVariables.pageVar = formValue.pageInfo?.pageVar;
+        break;
+    }
+
     Object.assign(
       variables,
-      this.referenceForm.value.name !== this.referenceData?.name && {
-        name: this.referenceForm.value.name,
+      formValue.name !== this.referenceData?.name && {
+        name: formValue.name,
       },
-      this.referenceForm.value.type !== this.referenceData?.type && {
-        type: this.referenceForm.value.type,
+      formValue.type !== this.referenceData?.type && {
+        type: formValue.type,
       },
-      this.referenceForm.value.valueField !==
-        this.referenceData?.valueField && {
-        valueField: this.referenceForm.value.valueField,
+      formValue.valueField !== this.referenceData?.valueField && {
+        valueField: formValue.valueField,
       },
-      this.referenceForm.value.fields !== this.referenceData?.fields && {
-        fields: this.referenceForm.value.fields,
-      }
+      formValue.fields !== this.referenceData?.fields && {
+        fields: formValue.fields,
+      },
+      formValue.usePagination
+        ? {
+            pageInfo: {
+              totalCountField: formValue.pageInfo?.totalCountField,
+              pageSizeVar: formValue.pageInfo?.pageSizeVar,
+              strategy: formValue.pageInfo?.strategy,
+              ...specificStrategyVariables,
+            },
+          }
+        : {
+            pageInfo: null,
+          }
     );
     if (
       ['graphql', 'rest'].includes(get(this.referenceForm, 'value.type', ''))
     ) {
       Object.assign(
         variables,
-        this.referenceForm.value.apiConfiguration !==
+        formValue.apiConfiguration !==
           this.referenceData?.apiConfiguration?.id && {
-          apiConfiguration: this.referenceForm.value.apiConfiguration,
+          apiConfiguration: formValue.apiConfiguration,
         },
-        this.referenceForm.value.path !== this.referenceData?.path && {
-          path: this.referenceForm.value.path,
+        formValue.path !== this.referenceData?.path && {
+          path: formValue.path,
         },
-        this.referenceForm.value.query !== this.referenceData?.query && {
-          query: this.referenceForm.value.query,
+        formValue.query !== this.referenceData?.query && {
+          query: formValue.query,
         }
       );
     } else {
       // Maps each field to its type
-      const typePerField = (this.referenceForm.value.fields ?? []).reduce(
+      const typePerField = (formValue.fields ?? []).reduce(
         (acc: any, field: any) => {
           acc[field.name] = field.type;
           return acc;
@@ -534,8 +628,8 @@ export class ReferenceDataComponent
       // Parsed data is the array with the field types enforced
       // If a field of an element is not of the expected type, the field is skipped
       const parsedData: any[] = [];
-      if (this.referenceForm.value.data) {
-        this.referenceForm.value.data.forEach((element: any) => {
+      if (formValue.data) {
+        formValue.data.forEach((element: any) => {
           if (typeof element !== 'object' || element === null) {
             return;
           }
@@ -577,8 +671,8 @@ export class ReferenceDataComponent
       }
       Object.assign(
         variables,
-        this.referenceForm.value.data !== this.referenceData?.data && {
-          data: this.referenceForm.value.data,
+        formValue.data !== this.referenceData?.data && {
+          data: formValue.data,
         }
       );
     }
@@ -883,19 +977,52 @@ export class ReferenceDataComponent
     this.toggleInlineEditor(this.valueFields[this.valueFields.length - 1]);
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    if (this.addChipListTimeoutListener) {
-      clearTimeout(this.addChipListTimeoutListener);
+  /**
+   * On resizing action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      // width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const minHeight = 300;
+    if (event.rectangle.height && event.rectangle.height < minHeight) {
+      return false;
+    } else {
+      return true;
     }
-    if (this.initEditorTimeoutListener) {
-      clearTimeout(this.initEditorTimeoutListener);
-    }
-    if (this.formTimeoutListener) {
-      clearTimeout(this.formTimeoutListener);
-    }
-    if (this.inlineEditionOutsideClickListener) {
-      this.inlineEditionOutsideClickListener();
-    }
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  onSearchChange(search: string): void {
+    const variables = this.apiConfigurationsQuery.variables;
+    this.apiConfigurationsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
   }
 }

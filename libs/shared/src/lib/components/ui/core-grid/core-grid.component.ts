@@ -39,8 +39,8 @@ import {
   Record,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
-import { GridSettings } from './models/grid-settings.model';
-import { get, isEqual } from 'lodash';
+import { GridActions, GridSettings } from './models/grid-settings.model';
+import { get, isEqual, isNil } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -299,7 +299,7 @@ export class CoreGridComponent
 
   // === ACTIONS ===
   /** Grid actions */
-  public actions = {
+  public actions: GridActions = {
     add: false,
     update: false,
     delete: false,
@@ -318,6 +318,9 @@ export class CoreGridComponent
 
   /** Whether the grid is editable */
   public editable = false;
+
+  /** Whether the grid is searchable */
+  public searchable = true;
 
   /** Current environment */
   private environment: any;
@@ -361,11 +364,16 @@ export class CoreGridComponent
   ) {
     super();
     this.environment = environment;
-
     contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.dataQuery) this.reloadData();
+      .subscribe(({ previous, current }) => {
+        if (contextService.filterRegex.test(this.settings.contextFilters)) {
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
+            if (this.dataQuery) this.reloadData();
+          }
+        }
       });
   }
 
@@ -411,6 +419,10 @@ export class CoreGridComponent
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
+    if (!isNil(this.settings.actions?.search)) {
+      this.searchable = this.settings.actions?.search;
+    }
+
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
@@ -1275,6 +1287,7 @@ export class CoreGridComponent
               revert: (version: any) => this.confirmRevertDialog(item, version),
               template: this.settings.template || null,
               refresh$: this.refresh$,
+              resizable: true,
             },
           });
         }
@@ -1364,15 +1377,6 @@ export class CoreGridComponent
       return;
     }
 
-    const getSubFields = (field: any) => {
-      return field.subFields.flatMap((y: any) => [
-        { name: y.name, title: y.title },
-        ...(y.subFields || []).flatMap((sub: any) => ({
-          name: sub.name,
-          title: sub.title,
-        })),
-      ]);
-    };
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
@@ -1400,7 +1404,12 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: getSubFields(x),
+            subFields: x.subFields
+              .filter((y: any) => !y.hidden)
+              .map((y: any) => ({
+                name: y.name,
+                title: y.title,
+              })),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1410,7 +1419,10 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: getSubFields(x),
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
           })),
       }),
     };

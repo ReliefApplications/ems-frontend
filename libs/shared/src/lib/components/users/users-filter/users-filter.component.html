@@ -11,9 +11,9 @@
       <!-- Title filter -->
       <div uiFormFieldDirective class="w-44" [defaultMargin]="false">
         <label>{{ 'common.title' | translate }}</label>
-        <ui-select-menu formControlName="roleFilter">
+        <ui-select-menu formControlName="role">
           <ui-select-option>-</ui-select-option>
-          <ui-select-option [value]="role.title" *ngFor="let role of roles">
+          <ui-select-option [value]="role.id" *ngFor="let role of roles">
             {{ role.title }}
           </ui-select-option>
         </ui-select-menu>

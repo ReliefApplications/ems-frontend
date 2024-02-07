@@ -62,7 +62,7 @@ export class GridSettingsComponent
 
   // === NOTIFICATIONS ===
   /** List of channels */
-  public channels: Channel[] = [];
+  public channels?: Channel[];
 
   // === FLOATING BUTTON ===
   /** List of fields */
@@ -260,7 +260,14 @@ export class GridSettingsComponent
         .subscribe(() => {
           this.formChange.emit(this.widgetFormGroup);
         });
+    }
+  }
 
+  /**
+   * Load GET_CHANNELS query when data is necessary.
+   */
+  public getChannels(): void {
+    if (this.widgetFormGroup) {
       this.applicationService.application$
         .pipe(takeUntil(this.destroy$))
         .subscribe((application: Application | null) => {

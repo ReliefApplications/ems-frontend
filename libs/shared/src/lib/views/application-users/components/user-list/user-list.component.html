@@ -1,5 +1,5 @@
 <!-- Actions when selected items -->
-<ng-container *ngIf="!loading; else loadingTmpl">
+<ng-container *ngIf="!loading.getValue(); else loadingTmpl">
   <div
     *ngIf="selection.selected.length > 0"
     class="flex gap-2 items-center mb-2 justify-end"
@@ -131,7 +131,7 @@
       </div>
     </div>
     <ui-paginator
-      [disabled]="loading || updating"
+      [disabled]="loading.getValue() || updating"
       [pageIndex]="pageInfo.pageIndex"
       [pageSize]="pageInfo.pageSize"
       [pageSizeOptions]="[10, 25, 50]"
