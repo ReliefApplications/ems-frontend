@@ -289,6 +289,15 @@ export class AggregationBuilderComponent
     if (this.loadingAggregationRecords) {
       return;
     }
+    if (!this.aggregationForm.value.id) {
+      this.snackBar.openSnackBar(
+        this.translateService.instant(
+          'pages.aggregation.preview.missingAggregation'
+        ),
+        { error: true }
+      );
+      return;
+    }
     // get the aggregation data
     this.loadingAggregationRecords = true;
     const query$ = this.aggregationService.aggregationDataQuery({
@@ -298,7 +307,6 @@ export class AggregationBuilderComponent
       sourceFields: this.aggregationForm.value.sourceFields,
       pipeline: this.aggregationForm.value.pipeline,
       first: -1,
-      aggregationPreview: true,
     });
 
     const { data: aggregationData, errors } = await firstValueFrom(query$);

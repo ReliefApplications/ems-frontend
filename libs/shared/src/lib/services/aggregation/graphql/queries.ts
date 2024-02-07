@@ -68,7 +68,6 @@ export const GET_RESOURCE_AGGREGATION_DATA = gql`
     $at: Date
     $sortOrder: String
     $sortField: String
-    $aggregationPreview: Boolean
   ) {
     recordsAggregation(
       resource: $resource
@@ -82,7 +81,6 @@ export const GET_RESOURCE_AGGREGATION_DATA = gql`
       at: $at
       sortOrder: $sortOrder
       sortField: $sortField
-      aggregationPreview: $aggregationPreview
     )
   }
 `;
@@ -102,7 +100,6 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
     $at: Date
     $sortOrder: String
     $sortField: String
-    $aggregationPreview: Boolean
   ) {
     referenceDataAggregation(
       referenceData: $referenceData
@@ -117,7 +114,6 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
       at: $at
       sortOrder: $sortOrder
       sortField: $sortField
-      aggregationPreview: $aggregationPreview
     )
   }
 `;
