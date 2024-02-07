@@ -907,26 +907,30 @@ export class GridComponent
    * Expand the action column so the edit icon fits
    */
   expandActionsColumn() {
-    // filter the action column
-    const actionColumn = this.columns.filter(
+    // Find the action column
+    const actionColumn = this.columns.find(
       (column) => !column.hidden && !column.title
-    )[0];
-    // default column width 54 + 34 (edit icon)
-    actionColumn.width = 84;
-    this.setColumnsWidth();
+    );
+    if (actionColumn) {
+      // default column width 54 + 34 (edit icon)
+      actionColumn.width = 84;
+      this.setColumnsWidth();
+    }
   }
 
   /**
    * Restore the original action column size
    */
   collapseActionsColumn() {
-    // filter the action column
-    const actionColumn = this.columns.filter(
+    // Find the action column
+    const actionColumn = this.columns.find(
       (column) => !column.hidden && !column.title
-    )[0];
-    // default column width 54
-    actionColumn.width = 54;
-    this.setColumnsWidth();
+    );
+    if (actionColumn) {
+      // default column width 54
+      actionColumn.width = 54;
+      this.setColumnsWidth();
+    }
   }
 
   /**
