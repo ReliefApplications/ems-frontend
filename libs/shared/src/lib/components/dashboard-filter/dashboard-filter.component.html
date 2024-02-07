@@ -34,7 +34,7 @@
             position === filterPosition.TOP ||
             position === filterPosition.BOTTOM
         }"
-        class="relative flex justify-between text-white"
+        class="relative flex justify-between text-white export-hide"
       >
         <!-- Toggle opened status -->
         <div
@@ -48,7 +48,7 @@
           (click)="onToggleVisibility()"
         >
           <div class="pointer-events-auto">
-            <ui-icon icon="view_stream" class="cursor-pointer"></ui-icon>
+            <ui-icon icon="view_stream" class="cursor-pointer export-hide"></ui-icon>
           </div>
         </div>
       </header>
@@ -119,7 +119,7 @@
             >
               <!--            matTooltipClass="multiline-tooltip"-->
               <div
-                class="z-20 whitespace-nowrap"
+                class="z-20 whitespace-nowrap export-hide"
                 [uiTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
               >
                 {{ quickFilter.label }}
@@ -142,6 +142,7 @@
                 icon="{{ position + '_panel_open' }}"
                 [isOutlined]="true"
                 (click)="changeFilterPosition(position)"
+                class="export-hide"
                 [uiTooltip]="
                   contextService.FilterPositionTooltips[position] | translate
                 "
@@ -203,6 +204,7 @@
         ></ng-container>
         <ui-button
           *ngIf="closable"
+          class="export-hide"
           [isIcon]="true"
           icon="close"
           variant="grey"
@@ -221,6 +223,7 @@
     [variant]="variant"
     [isIcon]="true"
     icon="edit"
+    class="export-hide"
     (click)="onEditStructure()"
     [uiTooltip]="'components.application.dashboard.editFilter' | translate"
     class="h-fit"
