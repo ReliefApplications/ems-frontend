@@ -121,12 +121,14 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     // Initialize style
+    this.widget.isStyleLoaded = false;
     this.widgetService
       .createCustomStyle(this.id, this.widget)
       .then((customStyle) => {
         if (customStyle) {
           this.customStyle = customStyle;
         }
+        this.widget.isStyleLoaded = true;
       });
   }
 
