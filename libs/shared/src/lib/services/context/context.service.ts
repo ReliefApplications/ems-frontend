@@ -308,7 +308,9 @@ export class ContextService {
           obj[key].forEach((element: any) => {
             this.removeEmptyPlaceholders(element);
           });
-          obj[key] = obj[key].filter((element: any) => !isEmpty(element));
+          obj[key] = obj[key].filter((element: any) =>
+            isObject(element) ? !isEmpty(element) : true
+          );
         } else if (isObject(obj[key])) {
           // Recursively call the function for nested objects
           this.removeEmptyPlaceholders(obj[key]);
