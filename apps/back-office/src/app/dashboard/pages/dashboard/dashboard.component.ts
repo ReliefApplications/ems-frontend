@@ -250,7 +250,8 @@ export class DashboardComponent
       return;
     }
 
-    this.mapStatusService.updateMapStatus(false);
+    // Ensures cleanup of the count of map widgets present on the dashboard to 0.
+    this.mapStatusService.resetMapCount();
     this.mapExists = false; // MapExists state reset
 
     const rootElement = this.elementRef.nativeElement;
@@ -815,7 +816,7 @@ export class DashboardComponent
                   resultValue.paperSize
                 );
                 saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-                this.mapStatusService.setMapReadyForExport(false);
+                this.mapStatusService.clearLoadedMaps();
               }, 500);
             });
         } else {
@@ -825,7 +826,7 @@ export class DashboardComponent
             resultValue.paperSize
           );
           saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-          this.mapStatusService.setMapReadyForExport(false);
+          this.mapStatusService.clearLoadedMaps();
         }
         setTimeout(async () => {
           this.snackBar.openSnackBar(
@@ -850,11 +851,11 @@ export class DashboardComponent
     const dateTimeText =
       dateTime.toLocaleDateString() + ' ' + dateTime.toLocaleTimeString();
     const pageTitle = this.dashboard?.name;
-    header.innerHTML = `<span style="float: left;">${dateTimeText}</span><span style="display: block; text-align: center;">${pageTitle}</span>`;
+    header.innerHTML = `<span class="float-left">${dateTimeText}</span><span class="block text-center">${pageTitle}</span>`;
 
     // Add URL to footer
     const url = window.location.href;
-    footer.innerHTML = `<span style="text-align: center;">${url}</span>`;
+    footer.innerHTML = `<span class="text-center">${url}</span>`;
 
     // Append header and footer to the dashboard
     this.exporter.nativeElement.prepend(header);
@@ -945,7 +946,7 @@ export class DashboardComponent
                 // Draws the Dashboard in its current state
                 const pngData = await this.pngDrawer(includeHeaderFooter);
                 saveAs(pngData, `${this.dashboard?.name}.${format}`);
-                this.mapStatusService.setMapReadyForExport(false);
+                this.mapStatusService.clearLoadedMaps();
               }, 500);
             });
         } else {
@@ -953,6 +954,7 @@ export class DashboardComponent
           includeHeaderFooter = resultValue.includeHeaderFooter;
           const pngData = await this.pngDrawer(includeHeaderFooter);
           saveAs(pngData, `${this.dashboard?.name}.${format}`);
+          this.mapStatusService.clearLoadedMaps();
         }
         setTimeout(async () => {
           this.snackBar.openSnackBar(

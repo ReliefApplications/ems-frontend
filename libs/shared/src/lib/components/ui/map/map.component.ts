@@ -218,7 +218,7 @@ export class MapComponent
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
-    this.mapStatusService.updateMapStatus(true);
+    this.mapStatusService.incrementMapCount();
   }
 
   /** Once template is ready, build the map. */
@@ -315,12 +315,9 @@ export class MapComponent
               // Replaces the current webmap with an empty layer group
               this.arcGisWebMap = L.layerGroup().addTo(this.map);
               this.onWebmapLoad();
+              this.checkIfMapIsFullyReady();
             })
             .addTo(this.map);
-
-          if (this.checkIfMapIsFullyReady()) {
-            this.mapStatusService.setMapReadyForExport(true);
-          }
 
           // If there's an existing subscription to revert the map, unsubscribe first
           if (this.revertMapSubscription) {
@@ -337,14 +334,13 @@ export class MapComponent
               this.map.removeLayer(this.basemap);
               this.map.removeLayer(this.arcGisWebMap);
               this.basemap = originalBasemap.addTo(this.map); // Add the basemap back first
-
               if (originalWebMap) {
                 this.arcGisWebMap = originalWebMap.addTo(this.map); // Then add the webmap on top
               }
               // Unsubscribe to clean up
               this.revertMapSubscription?.unsubscribe();
               // Reset the map ready status to false
-              this.mapStatusService.setMapReadyForExport(false);
+              this.mapStatusService.decrementMapLoadedCount();
               this.basemapLoaded = false;
               this.webmapLoaded = false;
             });
@@ -357,7 +353,6 @@ export class MapComponent
    */
   onBasemapLoad() {
     this.basemapLoaded = true;
-    this.checkIfMapIsFullyReady();
   }
 
   /**
@@ -365,7 +360,6 @@ export class MapComponent
    */
   onWebmapLoad() {
     this.webmapLoaded = true;
-    this.checkIfMapIsFullyReady();
   }
 
   /**
@@ -375,11 +369,9 @@ export class MapComponent
    */
   checkIfMapIsFullyReady(): boolean {
     const isFullyReady = this.basemapLoaded && this.webmapLoaded;
-
     if (isFullyReady) {
-      this.mapStatusService.setMapReadyForExport(true);
+      this.mapStatusService.incrementMapLoadedCount();
     }
-
     return isFullyReady;
   }
 
@@ -389,6 +381,7 @@ export class MapComponent
       clearTimeout(this.firstLoadEmitTimeoutListener);
     }
     this.resizeObserver?.disconnect();
+    this.mapStatusService.decrementMapCount();
   }
 
   /** Set map listeners */
