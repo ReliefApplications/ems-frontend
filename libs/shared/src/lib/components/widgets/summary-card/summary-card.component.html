@@ -11,7 +11,7 @@
         >
           <ng-container
             *sharedSkeleton="
-              loading || !widget.isStyleLoaded;
+              loading;
               repeat: colsNumber * 5;
               height: '80px';
               width: 80;
@@ -39,7 +39,7 @@
     <!-- Pagination -->
     <ui-paginator
       *ngIf="settings.widgetDisplay?.usePagination"
-      [disabled]="loading || !widget.isStyleLoaded"
+      [disabled]="loading"
       [pageIndex]="pageInfo.pageIndex"
       [skip]="pageInfo.skip"
       [pageSize]="pageInfo.pageSize"
