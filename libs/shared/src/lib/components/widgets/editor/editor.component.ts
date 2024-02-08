@@ -71,8 +71,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public aggregationsData: any = {};
   /** Loading indicator */
   public loading = true;
-  /** Refresh subject, emit a value when refresh needed */
-  public refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
 
@@ -151,7 +151,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           if (
             this.contextService.shouldRefresh(this.settings, previous, current)
           ) {
-            this.refresh$.next(true);
+            this.cancelRefresh$.next();
             this.loading = true;
             this.setHtml();
           }
@@ -261,7 +261,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedStyle = this.dataTemplateService.renderStyle(
             this.settings.wholeCardStyles || false,
@@ -313,7 +313,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
@@ -328,7 +328,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
