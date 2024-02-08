@@ -55,7 +55,7 @@ export class PaginatorComponent implements OnChanges, AfterViewInit, OnDestroy {
   private resizeObserver!: ResizeObserver;
 
   /**
-   * Constructor
+   * Core paginator element
    *
    * @param renderer Renderer reference
    * @param el Element reference
