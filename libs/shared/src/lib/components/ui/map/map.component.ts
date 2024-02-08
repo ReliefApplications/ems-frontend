@@ -54,13 +54,7 @@ import {
   flatMapDeep,
   pick,
 } from 'lodash';
-import {
-  BehaviorSubject,
-  concatMap,
-  debounceTime,
-  filter,
-  takeUntil,
-} from 'rxjs';
+import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
@@ -165,10 +159,10 @@ export class MapComponent
   private basemapTree: L.Control.Layers.TreeObject[][] = [];
   /** Current layers tree */
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
-  /** Refreshing layers. When true, should prevent layers to be duplicated  */
-  private refreshingLayers = new BehaviorSubject<boolean>(true);
   /** Current geographic extent value */
   private geographicExtentValue: any;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /**
    * Map widget component
@@ -261,37 +255,12 @@ export class MapComponent
               current
             )
           ),
-          concatMap(() => loadNextFilters()),
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
           this.filterLayers();
         });
     }
-
-    /**
-     * Keep checking until filters are applied in order to apply next one
-     */
-    let filterCheckTimeoutListener: NodeJS.Timeout;
-    const loadNextFilters = (): Promise<void> => {
-      const checkAgain = (resolve: () => void) => {
-        if (this.refreshingLayers.getValue()) {
-          if (filterCheckTimeoutListener) {
-            clearTimeout(filterCheckTimeoutListener);
-          }
-          resolve();
-        } else {
-          if (filterCheckTimeoutListener) {
-            clearTimeout(filterCheckTimeoutListener);
-          }
-          filterCheckTimeoutListener = setTimeout(
-            () => checkAgain(resolve),
-            100
-          );
-        }
-      };
-      return new Promise(checkAgain);
-    };
   }
 
   override ngOnDestroy(): void {
@@ -703,11 +672,6 @@ export class MapComponent
         layers
       );
     }
-    // this.baseTree = {
-    //   label: 'Base Maps',
-    //   children: basemaps,
-    //   collapsed: true,
-    // };
   }
 
   /**
@@ -1072,7 +1036,7 @@ export class MapComponent
   /** Set the new layers based on the filter value */
   private async filterLayers() {
     this.document.getElementById('layer-control-button-close')?.click();
-    this.refreshingLayers.next(false);
+    this.cancelRefresh$.next();
     const { layers: layersToGet, controls } = this.extractSettings();
 
     const shouldDisplayStatuses: Record<string, boolean> = {};
@@ -1096,36 +1060,39 @@ export class MapComponent
 
     // get new layers, with filters applied
     this.resetLayers();
-    const l = await this.getLayers(layersToGet ?? [], false);
-    this.overlaysTree = [l.layers];
+    from(this.getLayers(layersToGet ?? [], false))
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .subscribe((res) => {
+        this.overlaysTree = [res.layers];
 
-    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
-      if (x.layer) {
-        const id = (x.layer as any).id;
-        if (!isNil(shouldDisplayStatuses[id])) {
-          (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
-          if (shouldDisplayStatuses[id]) {
-            this.map.addLayer(x.layer);
+        flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach(
+          (x) => {
+            if (x.layer) {
+              const id = (x.layer as any).id;
+              if (!isNil(shouldDisplayStatuses[id])) {
+                (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
+                if (shouldDisplayStatuses[id]) {
+                  this.map.addLayer(x.layer);
+                }
+              } else {
+                this.map.addLayer(x.layer);
+              }
+            }
           }
-        } else {
-          this.map.addLayer(x.layer);
+        );
+
+        if (controls.layer) {
+          // remove current layer controls
+          this.layerControlButtons.remove();
+          this.layerControlButtons = null;
+
+          // create new layer controls, from newly created layers
+          this.setLayersControl(
+            flatten(this.basemapTree),
+            flatten(this.overlaysTree)
+          );
         }
-      }
-    });
-
-    if (controls.layer) {
-      // remove current layer controls
-      this.layerControlButtons.remove();
-      this.layerControlButtons = null;
-
-      // create new layer controls, from newly created layers
-      this.setLayersControl(
-        flatten(this.basemapTree),
-        flatten(this.overlaysTree)
-      );
-    }
-
-    this.refreshingLayers.next(true);
+      });
   }
 
   /**
