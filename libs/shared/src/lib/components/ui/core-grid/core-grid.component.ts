@@ -49,7 +49,7 @@ import { DateTranslateService } from '../../../services/date-translate/date-tran
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, Subject } from 'rxjs';
+import { firstValueFrom, from, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -324,6 +324,8 @@ export class CoreGridComponent
 
   /** Current environment */
   private environment: any;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /**
    * Main Grid data component to display Records.
@@ -1447,8 +1449,8 @@ export class CoreGridComponent
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery
-      ?.refetch({
+    from(
+      this.dataQuery?.refetch({
         first: this.pageSize,
         skip: this.skip,
         filter: this.queryFilter,
@@ -1459,7 +1461,9 @@ export class CoreGridComponent
           at: this.contextService.atArgumentValue(this.settings.at),
         }),
       })
-      .then(() => (this.loading = false));
+    )
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .subscribe(() => (this.loading = false));
   }
 
   // === FILTERING ===
