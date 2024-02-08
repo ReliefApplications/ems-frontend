@@ -246,7 +246,7 @@ export class ContextService {
     return mapValues(obj, (value: any) => {
       if (isString(value)) {
         try {
-          return JSON.parse(value);
+          return isObject(JSON.parse(value)) ? JSON.parse(value) : value;
         } catch (error) {
           // If parsing fails, return the original string value
           return value;
