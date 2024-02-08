@@ -13,15 +13,10 @@ import { DOCUMENT } from '@angular/common';
  */
 @Injectable()
 export class MapPopupService {
-  // There would be an instance of map popup service for each map
   /** Map instance */
   private map!: L.Map;
-
-  // Popup pane
+  /** Popup pane of the map */
   private popupPane!: HTMLElement | undefined;
-
-  // Is the popup outside of the world bounds?
-  private isPopupOutOfBounds = { x: false, y: false };
 
   /**
    * Set the map that loaded this popup service instance
@@ -31,6 +26,8 @@ export class MapPopupService {
     this.popupPane = this.map.getPane('popupPane');
   }
 
+  /** Is the popup outside of the world bounds? */
+  private isPopupOutOfBounds = { x: false, y: false };
   /** Timeout to open popup */
   private timeoutListener!: NodeJS.Timeout;
 
@@ -38,6 +35,7 @@ export class MapPopupService {
    * Injects DomService and TranslateService instances to the service
    *
    * @param domService DomService
+   * @param renderer Angular renderer
    * @param document document
    */
   constructor(
@@ -126,7 +124,7 @@ export class MapPopupService {
    * Set the popup position if it is out of the world bounds
    *
    * @param coordinates Coordinates
-   * @param popupEl Popup Element
+   * @param popup Popup Element
    */
   private setPopupPosition(coordinates: L.LatLng, popup: L.Popup) {
     const popupEl: any = popup.getElement();
