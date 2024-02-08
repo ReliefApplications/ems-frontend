@@ -6,15 +6,18 @@
   ></div>
   <kendo-datapager
     class="!border-none"
-    [ngClass]="{ 'hide-first-last': hideFirstLastButtons }"
+    [ngClass]="{ 
+      'hide-first-last': hideFirstLastButtons,
+      'hide-info': !showTotalItems,
+    }"
     [attr.aria-label]="ariaLabel"
     [attr.aria-controls]="paginatorId"
     [style.width.%]="100"
     [pageSize]="pageSize"
     [skip]="skip"
     [total]="totalItems"
-    [buttonCount]="displayedPageNumbers"
-    [pageSizeValues]="pageSizeOptions"
+    [buttonCount]="buttonCount"
+    [pageSizeValues]="showPageSizes && pageSizeOptions"
     [info]="true"
     (pageChange)="onPageChange($event)"
   >
