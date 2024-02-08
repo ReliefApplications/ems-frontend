@@ -89,6 +89,8 @@ export class WidgetGridComponent
   private changesSubscription?: Subscription;
   /** Determines whether we need to use a minimum height */
   public isMinHeightEnabled?: boolean;
+  /** Timeout listener */
+  private setFullscreenTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -169,6 +171,9 @@ export class WidgetGridComponent
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }
+    if (this.setFullscreenTimeoutListener) {
+      clearTimeout(this.setFullscreenTimeoutListener);
+    }
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
@@ -196,6 +201,11 @@ export class WidgetGridComponent
     return MAX_COL_SPAN;
   }
 
+  /**
+   * Enables the min height parameter
+   *
+   * @param grid gridster component
+   */
   private enableMinHeight(grid: GridsterComponentInterface | null = null) {
     this.isMinHeightEnabled =
       this.gridOptions.gridType === GridType.Fit && !grid?.mobile;
@@ -305,8 +315,14 @@ export class WidgetGridComponent
       this.expandWidgetDialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
-          target.fullscreen = false;
-          this.expandWidgetDialogRef = null;
+          // sync with the dashboard content
+          if (this.setFullscreenTimeoutListener) {
+            clearTimeout(this.setFullscreenTimeoutListener);
+          }
+          this.setFullscreenTimeoutListener = setTimeout(() => {
+            target.fullscreen = false;
+            this.expandWidgetDialogRef = null;
+          });
         });
     }
   }

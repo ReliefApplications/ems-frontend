@@ -1,3 +1,50 @@
+## [2.8.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.0...v2.8.1) (2024-02-07)
+
+
+### Bug Fixes
+
+* arrays not correctly transformed in context filters [#84646](https://github.com/ReliefApplications/ems-frontend/issues/84646) ([#2361](https://github.com/ReliefApplications/ems-frontend/issues/2361)) ([284f295](https://github.com/ReliefApplications/ems-frontend/commit/284f295b966862613a7d266efa366ae1887ce989))
+* form number questions dont accept 0 as answer ([#2367](https://github.com/ReliefApplications/ems-frontend/issues/2367)) ([9af9eda](https://github.com/ReliefApplications/ems-frontend/commit/9af9eda4eff6938d7407f35c5d419cf5b1b78cae))
+* fullscreen doesnt trigger changes in widget display ([#2357](https://github.com/ReliefApplications/ems-frontend/issues/2357)) ([c863f7e](https://github.com/ReliefApplications/ems-frontend/commit/c863f7e09eed82cd36ed745675d72af05838d66c))
+* grid inline edition info icon partially hidden ([#2214](https://github.com/ReliefApplications/ems-frontend/issues/2214)) ([2b824be](https://github.com/ReliefApplications/ems-frontend/commit/2b824be0dc651d10b867cd4e5e5691f8eedde3e0))
+* issue with web elements not using dedicated instance of map layers service per instance ([319d284](https://github.com/ReliefApplications/ems-frontend/commit/319d2845b0e3b47faf87d5dd77bea9746d3e17c7))
+* some array filters would not work fine ([ccae634](https://github.com/ReliefApplications/ems-frontend/commit/ccae6344a4dddfb2ba4fbb9b4fabf5acc6869c4f))
+* update filter survey with latest filter structure ([#2368](https://github.com/ReliefApplications/ems-frontend/issues/2368)) ([33e5394](https://github.com/ReliefApplications/ems-frontend/commit/33e53948ce8ec88a282cc12fd9c06a772d321ea1))
+
+# [2.8.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.7.0...v2.8.0) (2024-02-01)
+
+
+### Bug Fixes
+
+* buttons in modern dashboard filter would take all height ([3b6a9ff](https://github.com/ReliefApplications/ems-frontend/commit/3b6a9ff2cd6428c311ea6f3dbc1593d20bf891fb))
+* context filters with summary cards ([#2334](https://github.com/ReliefApplications/ems-frontend/issues/2334)) ([dce1481](https://github.com/ReliefApplications/ems-frontend/commit/dce14813346357b122ef94c04677724a54c653dc))
+* dashboard filter would not appear in front-office ([582c0c5](https://github.com/ReliefApplications/ems-frontend/commit/582c0c5296bf01266e9fe5c161e7934e37e05920))
+* date & datetime filters not working as expected ([#2259](https://github.com/ReliefApplications/ems-frontend/issues/2259)) ([178c050](https://github.com/ReliefApplications/ems-frontend/commit/178c0507e5acad58c080170add95e9d90e97704e))
+* default value not working for reference data in dashboard filter ([#2325](https://github.com/ReliefApplications/ems-frontend/issues/2325)) ([52b8f8d](https://github.com/ReliefApplications/ems-frontend/commit/52b8f8da7bdd2a1cf06b359fd1755fb9e4f1f057))
+* history would not be resizable in sidenav ([0076a23](https://github.com/ReliefApplications/ems-frontend/commit/0076a23cd688b79fadc69cf4c7322e23bb71c984))
+* in some cases, incorrect value in tagbox would raise an error ([6f69ed3](https://github.com/ReliefApplications/ems-frontend/commit/6f69ed395e0bd5aaf34a448f787276dd31854c58))
+* prevent loading previous value for minimum height ([#2336](https://github.com/ReliefApplications/ems-frontend/issues/2336)) ([97523bc](https://github.com/ReliefApplications/ems-frontend/commit/97523bc6b0cf4d74f79028be8369b8370b78ed52))
+
+
+### Features
+
+* add new min & max operators in template parser ([#2349](https://github.com/ReliefApplications/ems-frontend/issues/2349)) ([266e47f](https://github.com/ReliefApplications/ems-frontend/commit/266e47f94725d978166fc9fe7fc1e0177533be6d))
+* allow custom styling sidenav resizing ([#2346](https://github.com/ReliefApplications/ems-frontend/issues/2346)) ([2b3a9bb](https://github.com/ReliefApplications/ems-frontend/commit/2b3a9bb096019fa842cdf205d8ecb4c102a4b486))
+
+# [2.7.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.6.0...v2.7.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* could not use non scalar fields in filters ([#2315](https://github.com/ReliefApplications/ems-frontend/issues/2315)) ([cc4534d](https://github.com/ReliefApplications/ems-frontend/commit/cc4534d2abcc2873e61e228894aad78d15417468))
+* incorrect filter position when filter style is default one ([#2322](https://github.com/ReliefApplications/ems-frontend/issues/2322)) ([d18d587](https://github.com/ReliefApplications/ems-frontend/commit/d18d58765a3db79d3aed2baad4da47415a3a5780))
+* prevent fields used as attributes in text & summary cards widgets to be replaced with html elements ([#2330](https://github.com/ReliefApplications/ems-frontend/issues/2330)) ([95485cd](https://github.com/ReliefApplications/ems-frontend/commit/95485cd19bf1ca7278169388b2ce5307e1e75e43))
+
+
+### Features
+
+* Allow editor filters to also reset other filters on click ([#2317](https://github.com/ReliefApplications/ems-frontend/issues/2317)) ([cb1cee6](https://github.com/ReliefApplications/ems-frontend/commit/cb1cee6297d730cf6abb02ea0ab440487d72bb47))
+
 # [2.6.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.5.0...v2.6.0) (2024-01-23)
 
 

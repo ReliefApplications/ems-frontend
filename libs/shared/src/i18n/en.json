@@ -875,12 +875,13 @@
 				"withValue": "with value"
 			},
 			"columns": {
-				"action": "Action taken",
-				"date": "Date of modification",
-				"modifiedValue": "Modified variable value",
-				"originalValue": "Original variable value",
-				"person": "Who modified",
-				"variable": "Variable modified"
+				"action": "Action type",
+				"date": "Date",
+				"modifiedValue": "New value",
+				"originalValue": "Old value",
+				"person": "User",
+				"time": "Time",
+				"variable": "Field"
 			},
 			"download": "Download history",
 			"empty": "No activity detected",
@@ -1899,6 +1900,7 @@
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
@@ -2055,6 +2057,7 @@
 			"unstick": "Unstick"
 		},
 		"multiselect": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"pager": {

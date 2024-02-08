@@ -65,7 +65,7 @@ export class ContextService {
   /** Regex to detect the value of {{filter.}} in object */
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
   /** Context regex */
-  public contextRegex = /{{context\.(.*?)}}/g;
+  public contextRegex = /{{context\.(.*?)}}/;
   /** Available filter positions */
   public positionList = [
     FilterPosition.LEFT,
@@ -226,10 +226,13 @@ export class ContextService {
       return object;
     }
     return JSON.parse(
-      JSON.stringify(object).replace(this.contextRegex, (match) => {
-        const field = match.replace('{{context.', '').replace('}}', '');
-        return get(context, field) || match;
-      })
+      JSON.stringify(object).replace(
+        new RegExp(this.contextRegex, 'g'),
+        (match) => {
+          const field = match.replace('{{context.', '').replace('}}', '');
+          return get(context, field) || match;
+        }
+      )
     );
   }
 
@@ -243,11 +246,14 @@ export class ContextService {
     return mapValues(obj, (value: any) => {
       if (isString(value)) {
         try {
-          return JSON.parse(value);
+          return isObject(JSON.parse(value)) ? JSON.parse(value) : value;
         } catch (error) {
           // If parsing fails, return the original string value
           return value;
         }
+      } else if (isArray(value)) {
+        // If the value is an array, recursively parse each element
+        return value.map((element: any) => this.parseJSONValues(element));
       } else if (isObject(value)) {
         // If the value is an object, recursively parse it
         return this.parseJSONValues(value);
@@ -275,13 +281,16 @@ export class ContextService {
     // Transform all string fields into object ones when possible
     const objectAsJSON = this.parseJSONValues(object);
     const toString = JSON.stringify(objectAsJSON);
-    const replaced = toString.replace(this.filterRegex, (match) => {
-      const field = match
-        .replace(/["']?\{\{filter\./, '')
-        .replace(/\}\}["']?/, '');
-      const fieldValue = get(filter, field);
-      return fieldValue ? JSON.stringify(fieldValue) : match;
-    });
+    const replaced = toString.replace(
+      new RegExp(this.filterRegex, 'g'),
+      (match) => {
+        const field = match
+          .replace(/["']?\{\{filter\./, '')
+          .replace(/\}\}["']?/, '');
+        const fieldValue = get(filter, field);
+        return isNil(fieldValue) ? match : JSON.stringify(fieldValue);
+      }
+    );
     const parsed = JSON.parse(replaced);
     return parsed;
   }
@@ -294,11 +303,19 @@ export class ContextService {
   public removeEmptyPlaceholders(obj: any) {
     for (const key in obj) {
       if (has(obj, key)) {
-        if (typeof obj[key] === 'object') {
+        if (isArray(obj[key])) {
+          // If the value is an array, recursively parse each element
+          obj[key].forEach((element: any) => {
+            this.removeEmptyPlaceholders(element);
+          });
+          obj[key] = obj[key].filter((element: any) =>
+            isObject(element) ? !isEmpty(element) : true
+          );
+        } else if (isObject(obj[key])) {
           // Recursively call the function for nested objects
           this.removeEmptyPlaceholders(obj[key]);
         } else if (
-          typeof obj[key] === 'string' &&
+          isString(obj[key]) &&
           obj[key].startsWith('{{') &&
           obj[key].endsWith('}}')
         ) {
@@ -454,23 +471,17 @@ export class ContextService {
    * Handle dashboard context change by simply updating the url.
    *
    * @param value id of the element or record
-   * @param contextType type of context element
    * @param route Angular current page
    * @param dashboard Current dashboard
    */
   public onContextChange(
     value: string | number | undefined | null,
-    contextType: 'record' | 'element' | undefined,
     route: ActivatedRoute,
     dashboard?: Dashboard
   ): void {
-    if (
-      !dashboard?.id ||
-      !dashboard?.page?.id ||
-      !dashboard.page.context ||
-      !contextType
-    )
+    if (!dashboard?.id || !dashboard.page?.id || !dashboard.page.context) {
       return;
+    }
     if (value) {
       this.router.navigate(['.'], {
         relativeTo: route,

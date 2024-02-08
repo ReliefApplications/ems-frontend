@@ -282,7 +282,6 @@ export class ReferenceDataService {
     type: referenceDataType,
     variables: any = {}
   ) {
-    console.log('ici');
     let data!: any;
     if (type === referenceDataType.graphql) {
       const url =

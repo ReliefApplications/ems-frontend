@@ -10,7 +10,36 @@ import {
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
-import { isEqual } from 'lodash';
+import { isEqual, isNil, omit } from 'lodash';
+
+/**
+ * Sets the choices on the default value modal editor for a reference data dropdown
+ *
+ * @param sender The sender survey
+ * @param options The options
+ */
+export const updateModalChoicesAndValue = (sender: any, options: any) => {
+  if (options.obj.visibleChoices?.length > 0) {
+    // Populate editor choices from actual question choices
+    options.popupEditor.question.setPropertyValue(
+      'choices',
+      options.obj.visibleChoices
+    );
+
+    if (isNil(options.obj.defaultValue)) {
+      return;
+    }
+
+    // Set default value if exists
+    options.popupEditor.question.setPropertyValue(
+      'value',
+      options.obj.isPrimitiveValue
+        ? options.obj.defaultValue
+        : // Gets rid of surveyJS pos artifact
+          omit(new ItemValue(options.obj.defaultValue).id as any, 'pos')
+    );
+  }
+};
 
 /**
  * Check if a question is of select type
@@ -29,6 +58,11 @@ const isSelectQuestion = (question: Question): boolean =>
 export const init = (referenceDataService: ReferenceDataService): void => {
   // declare the serializer
   const serializer: JsonMetadata = Serializer;
+
+  // Hide the choices from the property grid if choices from reference data is used
+  serializer.getProperty('selectbase', 'choices').visibleIf = (
+    obj: Question
+  ): boolean => !obj.referenceData;
 
   for (const type of ['tagbox', 'dropdown']) {
     // add properties
@@ -65,7 +99,9 @@ export const init = (referenceDataService: ReferenceDataService): void => {
           referenceDataService
             .loadReferenceData(obj.referenceData)
             .then((referenceData) =>
-              choicesCallback(referenceData.fields?.map((x) => x.name) || [])
+              choicesCallback(
+                referenceData.fields?.map((x) => x?.name ?? x) || []
+              )
             );
         }
       },
@@ -140,7 +176,9 @@ export const init = (referenceDataService: ReferenceDataService): void => {
             referenceDataService
               .loadReferenceData(foreignQuestion.referenceData)
               .then((referenceData) =>
-                choicesCallback((referenceData.fields || []).map((x) => x.name))
+                choicesCallback(
+                  referenceData.fields?.map((x) => x?.name ?? x) || []
+                )
               );
           }
         }
@@ -187,7 +225,9 @@ export const init = (referenceDataService: ReferenceDataService): void => {
           referenceDataService
             .loadReferenceData(obj.referenceData)
             .then((referenceData) =>
-              choicesCallback((referenceData.fields || []).map((x) => x.name))
+              choicesCallback(
+                referenceData.fields?.map((x) => x?.name ?? x) || []
+              )
             );
         }
       },
@@ -242,20 +282,32 @@ export const render = (
             filter
           )
           .then((choices) => {
-            question.choices = [];
             // this is to avoid that the choices appear on the 'choices' tab
-            question.setPropertyValue(
-              'visibleChoices',
-              choices.map((choice) => new ItemValue(choice))
-            );
+            // and also to avoid the choices being sent to the server
+            question.choices = [];
+
+            const choiceItems = choices.map((choice) => new ItemValue(choice));
+            question.setPropertyValue('visibleChoices', choiceItems);
             // manually set the selected option (not done by default)
             // only affects dropdown questions (only one option selected) with reference data and non primitive values
             if (
               !question.isPrimitiveValue &&
-              question.getType() == 'dropdown'
+              question.getType() === 'dropdown'
             ) {
-              question.value = choices.find((choice) =>
-                isEqual(choice.value, question.value)
+              // When using dashboard filters, the question.value object is truncated
+              if (isEqual(question.value, question.defaultValue?.value)) {
+                return (question.value = question.defaultValue);
+              }
+
+              // First, if no value, we try to get the default value
+              question.value = question.value ?? question.defaultValue;
+
+              // We then create an ItemValue from the value
+              const valueItem = new ItemValue(question.value);
+
+              // Then, we try to find the value in the choices by comparing the ids
+              question.value = choiceItems.find((choice) =>
+                isEqual(choice.id, omit(valueItem.id as any, 'pos'))
               );
             }
           });

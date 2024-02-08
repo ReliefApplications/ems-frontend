@@ -684,6 +684,16 @@ export class CoreGridComponent
         delete item.validationErrors;
       }
       return Promise.all(this.promisedChanges()).then((allRes) => {
+        if (allRes) {
+          const hasErrors = allRes.filter((item: any) => {
+            if (item.data.editRecord.validationErrors) {
+              return item.data.editRecord.validationErrors.length;
+            }
+          });
+          if (hasErrors.length > 0) {
+            this.grid?.expandActionsColumn();
+          }
+        }
         for (const res of allRes) {
           const resRecord: Record = res.data.editRecord;
           const updatedIndex = this.updatedItems.findIndex(
@@ -1409,15 +1419,6 @@ export class CoreGridComponent
       return;
     }
 
-    const getSubFields = (field: any) => {
-      return field.subFields.flatMap((y: any) => [
-        { name: y.name, title: y.title },
-        ...(y.subFields || []).flatMap((sub: any) => ({
-          name: sub.name,
-          title: sub.title,
-        })),
-      ]);
-    };
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
@@ -1445,7 +1446,12 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: getSubFields(x),
+            subFields: x.subFields
+              .filter((y: any) => !y.hidden)
+              .map((y: any) => ({
+                name: y.name,
+                title: y.title,
+              })),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1455,7 +1461,10 @@ export class CoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: getSubFields(x),
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
           })),
       }),
     };

@@ -68,8 +68,6 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   /** Filter template */
   public survey: Model = new Model();
-  /** Filter template structure */
-  public surveyStructure: any = {};
   /** Quick filter display */
   public quickFilters: QuickFilter[] = [];
   /** Indicate empty status of filter */
@@ -107,6 +105,7 @@ export class DashboardFilterComponent
       });
       this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
+    // Can listen to changes made from widget ( editor & summary cards sending updated filters )
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(({ current }) => {
@@ -116,12 +115,6 @@ export class DashboardFilterComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.opened = value;
-      });
-    this.contextService.filterStructure$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.surveyStructure = value || '';
-        this.initSurvey();
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
@@ -135,6 +128,13 @@ export class DashboardFilterComponent
           this.setFilterContainerDimensions();
         }
       );
+    // Updates the survey with the latest filter structure
+    this.contextService.filterStructure$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.initSurvey();
+      });
+
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -143,6 +143,9 @@ export class DashboardFilterComponent
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
+    }
+    if (changes.dashboard) {
+      this.initSurvey();
     }
   }
 

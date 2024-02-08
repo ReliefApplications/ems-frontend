@@ -171,13 +171,10 @@ export class SummaryCardComponent
     } else {
       filter = {
         logic: 'and',
-        filters: [this.layout?.query.filter],
+        filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return {
-      logic: 'and',
-      filters: [filter, this.contextService.injectContext(this.contextFilters)],
-    };
+    return filter;
   }
 
   /** @returns does the card use resource aggregation */
@@ -457,15 +454,11 @@ export class SummaryCardComponent
         // we update it when we get the first page and set the total count to the number of items
         this.pageInfo.pageSize = 0;
       }
+      const variables = this.queryPaginationVariables();
 
       const { items, pageInfo } = await this.referenceDataService.cacheItems(
         this.refData,
-        Object.assign(
-          this.graphqlVariables || {},
-          this.refData.pageInfo?.pageSizeVar && {
-            [this.refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize,
-          }
-        )
+        { ...variables, ...(this.graphqlVariables ?? {}) }
       );
 
       this.updateReferenceDataCards(items, pageInfo);
@@ -507,6 +500,9 @@ export class SummaryCardComponent
           skip: 0,
           first: this.pageInfo.pageSize,
           filter: this.queryFilter,
+          contextFilters: this.contextService.injectContext(
+            this.contextFilters
+          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           ...(this.settings.at && {
@@ -580,13 +576,11 @@ export class SummaryCardComponent
 
     // update card list and scroll behavior according to the card items display
 
+    this.cards = newCards;
     if (
-      !this.settings.widgetDisplay?.usePagination &&
-      !this.triggerRefreshCardList
+      this.settings.widgetDisplay?.usePagination ||
+      this.triggerRefreshCardList
     ) {
-      this.cards = [...this.cards, ...newCards];
-    } else {
-      this.cards = newCards;
       if (this.displayMode == 'cards') {
         this.summaryCardGrid.nativeElement.scroll({
           top: 0,
@@ -841,6 +835,9 @@ export class SummaryCardComponent
               variables: {
                 first: this.pageInfo.pageSize,
                 filter: this.queryFilter,
+                contextFilters: this.contextService.injectContext(
+                  this.contextFilters
+                ),
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
@@ -1046,6 +1043,9 @@ export class SummaryCardComponent
           first: this.pageInfo.pageSize,
           skip: event.skip,
           filter: this.queryFilter,
+          contextFilters: this.contextService.injectContext(
+            this.contextFilters
+          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
@@ -1059,37 +1059,12 @@ export class SummaryCardComponent
           }
         });
     } else if (this.useReferenceData && this.refData) {
-      const strategy = this.refData?.pageInfo?.strategy;
-      const refData = this.refData;
-
-      // Build the variables for the query based on the pagination strategy
-      const variables: any = Object.assign(
-        {},
-        refData?.pageInfo?.pageSizeVar
-          ? { [refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize }
-          : {}
-      );
-
-      // If using pagination, fetch the next page
-      if (strategy && refData?.pageInfo) {
-        // Set the pagination variable according to the strategy
-        if (refData.pageInfo.strategy === 'offset') {
-          variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
-        } else if (refData.pageInfo.strategy === 'cursor') {
-          // Get the cursor at the index of skip
-          variables[refData.pageInfo.cursorVar] =
-            this.sortedCachedCards[
-              this.pageInfo.skip - 1
-            ]?.rawValue?.__CURSOR__;
-        } else if (refData.pageInfo.strategy === 'page') {
-          variables[refData.pageInfo.pageVar] = event.pageIndex + 1;
-        }
-      }
-
       // Only set loading state if using pagination, not infinite scroll
       this.loading = !this.scrolling;
+      const variables = this.queryPaginationVariables(event.pageIndex);
+
       this.referenceDataService
-        .cacheItems(refData, {
+        .cacheItems(this.refData, {
           ...variables,
           ...(this.graphqlVariables ?? {}),
         })
@@ -1183,6 +1158,9 @@ export class SummaryCardComponent
           .refetch({
             first: this.pageInfo.pageSize,
             filter: this.queryFilter,
+            contextFilters: this.contextService.injectContext(
+              this.contextFilters
+            ),
             sortField: this.sortOptions.field,
             sortOrder: this.sortOptions.order,
             ...(this.settings.at && {
@@ -1249,12 +1227,43 @@ export class SummaryCardComponent
     }
 
     // Replace search
-    const search = this.searchControl.value;
-    if (search) {
-      object = JSON.parse(
-        JSON.stringify(object).replace(/{{widget.search}}/g, search)
-      );
-    }
+    const search = this.searchControl.value || '';
+    object = JSON.parse(
+      JSON.stringify(object).replace(/{{widget.search}}/g, search)
+    );
     return object;
+  }
+
+  /**
+   * Build the variables for the query based on the pagination strategy
+   *
+   * @param pageIndex Page index number (for onPage events)
+   * @returns variables object
+   */
+  private queryPaginationVariables(pageIndex = 0): any {
+    const strategy = this.refData?.pageInfo?.strategy;
+    const refData = this.refData;
+
+    const variables: any = Object.assign(
+      {},
+      refData?.pageInfo?.pageSizeVar
+        ? { [refData.pageInfo.pageSizeVar]: this.pageInfo.pageSize }
+        : {}
+    );
+    // If using pagination, fetch the next page
+    if (strategy && refData?.pageInfo) {
+      // Set the pagination variable according to the strategy
+      if (refData.pageInfo.strategy === 'offset') {
+        variables[refData.pageInfo.offsetVar] = this.pageInfo.skip;
+      } else if (refData.pageInfo.strategy === 'cursor') {
+        // Get the cursor at the index of skip
+        variables[refData.pageInfo.cursorVar] =
+          this.sortedCachedCards[this.pageInfo.skip - 1]?.rawValue?.__CURSOR__;
+      } else if (refData.pageInfo.strategy === 'page') {
+        variables[refData.pageInfo.pageVar] = pageIndex + 1;
+      }
+    }
+
+    return variables;
   }
 }
