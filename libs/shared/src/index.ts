@@ -4,6 +4,7 @@
 
 // === SERVICES ===
 export * from './lib/services/auth/auth.service';
+export * from './lib/services/url-change/url-change.service';
 export * from './lib/services/grid/grid.service';
 export * from './lib/services/application/application.service';
 export * from './lib/services/download/download.service';

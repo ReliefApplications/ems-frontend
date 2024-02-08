@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { Subscription } from 'rxjs';
+import { UrlChangeService } from '@oort-front/shared';
 
 /**
  * Application workflow page component.
@@ -77,6 +78,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param translate Angular translate module.
+   * @param urlChangeService Shared url change service
    */
   constructor(
     private apollo: Apollo,
@@ -88,7 +90,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private authService: AuthService,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private urlChangeService: UrlChangeService
   ) {
     super();
   }
@@ -101,62 +104,25 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
       this.workflowService.loadWorkflow(this.id);
     });
 
+    this.urlChangeService.navUrl
+      .asObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.workflow) {
+          console.log('en mode papouya', this.workflow);
+          const workflow = this.workflow;
+          this.workflow = undefined;
+          this.initSteps(workflow);
+        }
+      });
+
     this.workflowService.workflow$
       .pipe(takeUntil(this.destroy$))
       .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
           this.loading = false;
-          if (!this.workflow || workflow.id !== this.workflow.id) {
-            const firstStep = this.steps[0];
-            if (firstStep) {
-              const firstStepIsForm = firstStep.type === ContentType.form;
-              const currentStepId = this.router.url.split('/').pop();
-              // If redirect to the workflow beginning, just go to the firstStep
-              let currentStep: Step = firstStep;
-              let currentActiveStep = 0;
-              if (
-                !(firstStepIsForm
-                  ? firstStep.id === currentStepId
-                  : firstStep.content === currentStepId)
-              ) {
-                // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)
-                workflow?.steps?.forEach((step: Step, index: number) => {
-                  const stepIsForm = step.type === ContentType.form;
-                  if (
-                    (stepIsForm && step.id === currentStepId) ||
-                    step.content === currentStepId
-                  ) {
-                    currentStep = step;
-                    currentActiveStep = index;
-                    return;
-                  }
-                });
-              }
-              if (currentStep.type === ContentType.form) {
-                this.router.navigate(
-                  ['./' + currentStep.type + '/' + currentStep.id],
-                  { relativeTo: this.route }
-                );
-              } else {
-                this.router.navigate(
-                  ['./' + currentStep.type + '/' + currentStep.content],
-                  { relativeTo: this.route }
-                );
-              }
-              this.activeStep = currentActiveStep;
-            }
-            if (!firstStep) {
-              this.router.navigate([`./`], { relativeTo: this.route });
-            }
-          } else {
-            if (
-              workflow.steps &&
-              workflow.steps.length > (this.workflow.steps || []).length
-            ) {
-              this.activeStep = workflow.steps.length - 1;
-            }
-          }
+          this.initSteps(workflow);
           this.workflow = workflow;
           this.canEditName = this.workflow?.page?.canUpdate || false;
           this.applicationId = this.workflow.page?.application?.id;
@@ -194,6 +160,64 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         },
         callback
       );
+    }
+  }
+
+  /**
+   * inits the workflow steps
+   *
+   * @param workflow worflow
+   */
+  initSteps(workflow: Workflow) {
+    if (!this.workflow || workflow.id !== this.workflow.id) {
+      const firstStep = this.steps[0];
+      if (firstStep) {
+        const firstStepIsForm = firstStep.type === ContentType.form;
+        const currentStepId = this.router.url.split('/').pop();
+        // If redirect to the workflow beginning, just go to the firstStep
+        let currentStep: Step = firstStep;
+        let currentActiveStep = 0;
+        if (
+          !(firstStepIsForm
+            ? firstStep.id === currentStepId
+            : firstStep.content === currentStepId)
+        ) {
+          // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)
+          workflow?.steps?.forEach((step: Step, index: number) => {
+            const stepIsForm = step.type === ContentType.form;
+            if (
+              (stepIsForm && step.id === currentStepId) ||
+              step.content === currentStepId
+            ) {
+              currentStep = step;
+              currentActiveStep = index;
+              return;
+            }
+          });
+        }
+        if (currentStep.type === ContentType.form) {
+          this.router.navigate(
+            ['./' + currentStep.type + '/' + currentStep.id],
+            { relativeTo: this.route }
+          );
+        } else {
+          this.router.navigate(
+            ['./' + currentStep.type + '/' + currentStep.content],
+            { relativeTo: this.route }
+          );
+        }
+        this.activeStep = currentActiveStep;
+      }
+      if (!firstStep) {
+        this.router.navigate([`./`], { relativeTo: this.route });
+      }
+    } else {
+      if (
+        workflow.steps &&
+        workflow.steps.length > (this.workflow.steps || []).length
+      ) {
+        this.activeStep = workflow.steps.length - 1;
+      }
     }
   }
 

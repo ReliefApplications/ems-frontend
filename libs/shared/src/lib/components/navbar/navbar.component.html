@@ -76,7 +76,7 @@
           <li routerLinkActive="text-primary-600 bg-gray-50">
             <a
               class="group"
-              (click)="largeDevice ? null : nav.toggle()"
+              (click)="fireUrlChange(item.path)"
               [routerLink]="item.path"
             >
               <ui-icon

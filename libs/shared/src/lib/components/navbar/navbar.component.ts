@@ -6,6 +6,8 @@ import {
   HostListener,
 } from '@angular/core';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { UrlChangeService } from '../../services/url-change/url-change.service';
+
 /**
  * Navbar used in the main layout.
  * Can be horizontal or vertical.
@@ -34,8 +36,10 @@ export class NavbarComponent {
   /**
    * Navbar used in the main layout.
    * Can be horizontal or vertical.
+   *
+   * @param urlChangeService shared urlChangeService
    */
-  constructor() {
+  constructor(private urlChangeService: UrlChangeService) {
     this.largeDevice = window.innerWidth > 1024;
   }
 
@@ -70,5 +74,17 @@ export class NavbarComponent {
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.largeDevice = event.target.innerWidth > 1024;
+  }
+
+  /**
+   * toggles the side nav for small devices
+   *
+   * @param url url that changes
+   */
+  fireUrlChange(url: string) {
+    this.urlChangeService.navUrl.next(url);
+    if (!this.largeDevice) {
+      this.nav.toggle();
+    }
   }
 }
