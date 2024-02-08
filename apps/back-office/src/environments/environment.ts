@@ -14,34 +14,19 @@ import { Environment } from './environment.type';
 //   showDebugInformation: true,
 //   strictDiscoveryDocumentValidation: false,
 // };
+
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer:
-    'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
+  issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
-  clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
-  scope:
-    'openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user',
-  // Last scope is used to authenticate against Common Services
+  clientId: 'oort-client',
+  scope: 'openid profile email offline_access',
   responseType: 'code',
   showDebugInformation: true,
-  strictDiscoveryDocumentValidation: false,
 };
-/**
-//  * Authentication configuration
-//  */
-// const authConfig: AuthConfig = {
-//   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
-//   redirectUri: 'http://localhost:4200/',
-//   postLogoutRedirectUri: 'http://localhost:4200/auth/',
-//   clientId: 'oort-client',
-//   scope: 'openid profile email offline_access',
-//   responseType: 'code',
-//   showDebugInformation: true,
-// };
 
 /**
  * Environment file for local development.
