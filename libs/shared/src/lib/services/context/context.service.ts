@@ -246,7 +246,7 @@ export class ContextService {
     return mapValues(obj, (value: any) => {
       if (isString(value)) {
         try {
-          return JSON.parse(value);
+          return isObject(JSON.parse(value)) ? JSON.parse(value) : value;
         } catch (error) {
           // If parsing fails, return the original string value
           return value;
@@ -308,7 +308,9 @@ export class ContextService {
           obj[key].forEach((element: any) => {
             this.removeEmptyPlaceholders(element);
           });
-          obj[key] = obj[key].filter((element: any) => !isEmpty(element));
+          obj[key] = obj[key].filter((element: any) =>
+            isObject(element) ? !isEmpty(element) : true
+          );
         } else if (isObject(obj[key])) {
           // Recursively call the function for nested objects
           this.removeEmptyPlaceholders(obj[key]);

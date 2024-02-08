@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { applyLayoutFormat } from '../../../../../utils/parser/utils';
 import { DatePipe } from '../../../../../pipes/date/date.pipe';
 import { ICON_EXTENSIONS } from '../grid.constants';
@@ -91,7 +91,9 @@ export function formatGridRowData(
    */
   function iterateFields(fields: GridField[], parent?: GridField) {
     fields
-      .filter((field) => !!get(rowData, parent ? parent.name : field.name))
+      .filter(
+        (field) => !isNil(get(rowData, parent ? parent.name : field.name))
+      )
       .forEach((field) => {
         // Reference data
         if (field.subFields && field.meta.type === 'referenceData') {
