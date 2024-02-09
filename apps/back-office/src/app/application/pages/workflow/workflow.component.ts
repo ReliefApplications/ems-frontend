@@ -107,12 +107,9 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     this.urlChangeService.navUrl
       .asObservable()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.workflow) {
-          console.log('en mode papouya', this.workflow);
-          const workflow = this.workflow;
-          this.workflow = undefined;
-          this.initSteps(workflow);
+      .subscribe((url) => {
+        if (this.workflow && url.includes(this.workflow.id as string)) {
+          this.initSteps(this.workflow, true);
         }
       });
 
@@ -166,10 +163,11 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   /**
    * inits the workflow steps
    *
-   * @param workflow worflow
+   * @param workflow workflow
+   * @param redirect boolean, true if redirecting from the navbar
    */
-  initSteps(workflow: Workflow) {
-    if (!this.workflow || workflow.id !== this.workflow.id) {
+  initSteps(workflow: Workflow, redirect?: boolean) {
+    if (!this.workflow || workflow.id !== this.workflow.id || redirect) {
       const firstStep = this.steps[0];
       if (firstStep) {
         const firstStepIsForm = firstStep.type === ContentType.form;
