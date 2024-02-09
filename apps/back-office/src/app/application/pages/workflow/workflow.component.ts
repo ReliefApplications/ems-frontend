@@ -102,9 +102,9 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.loading = true;
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
+          this.loading = true;
           this.id = id;
           this.workflowService.loadWorkflow(this.id);
         }
@@ -128,9 +128,14 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
               workflow.steps &&
               workflow.steps.length > (this.workflow.steps || []).length
             ) {
+              // After add new step, go to last/new step
               this.activeStep = workflow.steps.length - 1;
             }
-            this.loadStep(this.activeStep);
+            const currentUrl = this.router.url;
+            // Check if the current URL ends with 'add-step'
+            if (!currentUrl.endsWith('add-step')) {
+              this.loadStep(this.activeStep);
+            }
           }
           this.workflow = workflow;
           this.canEditName = this.workflow?.page?.canUpdate || false;

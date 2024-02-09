@@ -53,7 +53,6 @@ export class WorkflowService {
    * @param id workflow id.
    */
   loadWorkflow(id: any): void {
-    this.workflow.next(null);
     this.apollo
       .query<WorkflowQueryResponse>({
         query: GET_WORKFLOW_BY_ID,
@@ -61,8 +60,14 @@ export class WorkflowService {
           id,
         },
       })
-      .subscribe(({ data }) => {
-        this.workflow.next(data.workflow);
+      .subscribe({
+        next: ({ data }) => {
+          this.workflow.next(data.workflow);
+        },
+        error: (err) => {
+          this.workflow.next(null);
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
