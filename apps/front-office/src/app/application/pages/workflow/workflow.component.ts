@@ -112,7 +112,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * inits the workflow steps
+   * Inits the workflow steps and handles url change
    *
    * @param workflow workflow
    */

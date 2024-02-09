@@ -77,7 +77,7 @@ export class NavbarComponent {
   }
 
   /**
-   * toggles the side nav for small devices
+   * toggles the side nav for small devices and fires url changes
    *
    * @param url url that changes
    */
