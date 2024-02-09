@@ -140,18 +140,27 @@
           </ui-button>
           <div class="flex flex-col gap-2 mt-2">
             <div class="flex justify-between">
-              <h3>Geographic extent</h3>
+              <h3>
+                {{
+                  'components.widget.settings.map.properties.geographicExtent'
+                    | translate
+                }}
+              </h3>
               <ui-button
-                [uiTooltip]="'Add new geographic extent'"
+                [uiTooltip]="
+                  'components.widget.settings.map.properties.addGeographicExtent'
+                    | translate
+                "
                 [isIcon]="true"
                 icon="add"
                 (click)="onAddExtent()"
               ></ui-button>
             </div>
 
-            <ui-alert
-              >Use filter and / or page context to zoom on the map</ui-alert
-            >
+            <ui-alert>{{
+              'components.widget.settings.map.properties.filterAlert'
+                | translate
+            }}</ui-alert>
             <ng-container
               *ngFor="let element of geographicExtents.controls; index as i"
               [formGroup]="$any(element)"
@@ -217,7 +226,7 @@
                 </div>
                 <!-- Remove extent -->
                 <ui-button
-                  [uiTooltip]="'Remove geographic extent'"
+                  [uiTooltip]="'components.widget.settings.map.properties.removeGeographicExtent' | translate"
                   [isIcon]="true"
                   icon="delete"
                   variant="danger"

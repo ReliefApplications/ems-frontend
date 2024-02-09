@@ -1756,6 +1756,7 @@
 						"zoomTo": "******"
 					},
 					"properties": {
+						"addGeographicExtent": "******",
 						"basemap": "******",
 						"controls": {
 							"download": "******",
@@ -1769,10 +1770,12 @@
 							"timedimension": "******",
 							"title": "******"
 						},
+						"filterAlert": "******",
 						"geographicExtent": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
+						"removeGeographicExtent": "******",
 						"setByMap": "******",
 						"title": "******",
 						"webmap": "******",

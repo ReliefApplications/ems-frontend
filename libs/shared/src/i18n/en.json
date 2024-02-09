@@ -1756,6 +1756,7 @@
 						"zoomTo": "Zoom to"
 					},
 					"properties": {
+						"addGeographicExtent": "Add new geographic extent",
 						"basemap": "Base map",
 						"controls": {
 							"download": "Download",
@@ -1769,10 +1770,12 @@
 							"timedimension": "Time dimension",
 							"title": "Visible Map Controls"
 						},
+						"filterAlert": "Use filter and / or page context to zoom on the map",
 						"geographicExtent": "Geographic extent",
 						"geographicExtentValue": "Geographic extent value",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
+						"removeGeographicExtent": "Remove geographic extent",
 						"setByMap": "Set By Map",
 						"title": "Map Parameters",
 						"webmap": "WebMap",
