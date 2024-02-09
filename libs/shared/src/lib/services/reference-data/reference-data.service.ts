@@ -92,7 +92,6 @@ export class ReferenceDataService {
   ): Promise<{ value: string | number; text: string }[]> {
     const sortByDisplayField = (a: any, b: any) =>
       a[displayField] > b[displayField] ? 1 : -1;
-
     // get items
     const { items, referenceData } = await this.cacheItems(referenceDataID);
     const valueField = referenceData?.valueField || '';
@@ -106,25 +105,25 @@ export class ReferenceDataService {
       ((foreignIsMultiselect && filter.foreignValue.length) ||
         (!foreignIsMultiselect && !!filter.foreignValue))
     ) {
-      const cache = (await localForage.getItem(
-        filter.foreignReferenceData
-      )) as CachedItems;
+      const cache = await this.cacheItems(filter.foreignReferenceData);
       if (!cache) {
         return [];
       }
-      const { items: foreignItems, valueField: foreignValueField } = cache;
+      const { items: foreignItems } = cache;
+      const foreignValueField = cache.referenceData?.valueField || '';
       let selectedForeignValue: any | any[];
       // Retrieve foreign field items for multiselect or single select
       if (foreignIsMultiselect) {
-        selectedForeignValue = filter.foreignValue.map(
-          (value: any) =>
-            foreignItems.find((item) => item[foreignValueField] === value)[
-              filter.foreignField
-            ]
-        );
+        selectedForeignValue = filter.foreignValue.map((value: any) => {
+          return foreignItems.find(
+            (item) => item[foreignValueField] === value.value[foreignValueField]
+          )[filter.foreignField];
+        });
       } else {
         selectedForeignValue = foreignItems.find(
-          (item) => get(item, foreignValueField) === filter.foreignValue
+          (item) =>
+            get(item, foreignValueField) ===
+            filter.foreignValue[foreignValueField]
         )[filter.foreignField];
       }
       return items
