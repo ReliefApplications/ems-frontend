@@ -329,7 +329,6 @@ export class ChartComponent
     this.dataQuery
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe(({ errors, data, loading }: any) => {
-        console.log('ici');
         if (errors) {
           this.loading = false;
           this.hasError = true;

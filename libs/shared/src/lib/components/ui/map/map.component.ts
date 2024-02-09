@@ -53,7 +53,7 @@ import {
   isEqual,
   flatMapDeep,
   pick,
-  isString,
+  clone,
 } from 'lodash';
 import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
@@ -350,12 +350,7 @@ export class MapComponent
     const zoomControl = get(mapSettings, 'zoomControl', false);
     const controls = get(mapSettings, 'controls', DefaultMapControls);
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
-    const geographicExtentValue = get(
-      mapSettings,
-      'geographicExtentValue',
-      undefined
-    );
-    const geographicExtent = get(mapSettings, 'geographicExtent', 'admin0');
+    const geographicExtents = get(mapSettings, 'geographicExtents', []);
     const layers = get(mapSettings, 'layers', []);
 
     return {
@@ -369,8 +364,7 @@ export class MapComponent
       layers,
       controls,
       arcGisWebMap,
-      geographicExtentValue,
-      geographicExtent,
+      geographicExtents,
     };
   }
 
@@ -391,8 +385,7 @@ export class MapComponent
       arcGisWebMap,
       layers,
       controls,
-      geographicExtent,
-      geographicExtentValue,
+      geographicExtents,
     } = this.extractSettings();
 
     if (initMap) {
@@ -434,7 +427,7 @@ export class MapComponent
       // Set the needed map instance for it's popup service instance
       this.mapPopupService.setMap = this.map;
 
-      this.zoomOn(geographicExtent as string);
+      this.zoomOn();
     } else {
       // If value changes for the map we would change in order to not trigger map events unnecessarily
       if (this.map.getMaxZoom() !== maxZoom) {
@@ -477,7 +470,7 @@ export class MapComponent
 
     // To zoom on getGeographicExtentValue, if necessary
     // Check if has initial getGeographicExtentValue to zoom on country
-    const fieldValue = geographicExtentValue?.match(
+    const fieldValue = JSON.stringify(geographicExtents).match(
       this.contextService.filterRegex
     );
     if (fieldValue) {
@@ -485,8 +478,7 @@ export class MapComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
-          console.log('should zoom on');
-          this.zoomOn(geographicExtent as string);
+          this.zoomOn();
         });
     }
   }
@@ -1147,59 +1139,32 @@ export class MapComponent
    *
    * @returns geographic extent value
    */
-  private getGeographicExtentValue(): string | false {
+  private getGeographicExtents(): any {
     const mapSettings = this.extractSettings();
-    const geographicExtentValue = mapSettings.geographicExtentValue;
-    if (geographicExtentValue) {
-      const fieldValue = geographicExtentValue?.match(
-        this.contextService.filterRegex
-      );
-      console.log(fieldValue);
-      if (fieldValue) {
-        // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
-        const replacedFilter = this.contextService.replaceFilter(mapSettings);
-        if (isString(replacedFilter.geographicExtentValue)) {
-          return replacedFilter.geographicExtentValue?.match(
-            this.contextService.filterRegex
-          )
-            ? false
-            : replacedFilter.geographicExtentValue;
-        } else {
-          return replacedFilter.geographicExtentValue;
-        }
-      }
-      const contextValue = geographicExtentValue?.match(
-        this.contextService.contextRegex
-      );
-      // If geographic extent is dynamic and in the format {{context., context dashboard is not set
-      if (contextValue) {
-        return false;
-      }
-      // As the dashboard context value is automatically replaced on dashboard init,
-      // and the geographicExtentValue can also be static, return the value directly
-      return geographicExtentValue as string;
+    const geographicExtents = mapSettings.geographicExtents;
+    if (geographicExtents && geographicExtents.length > 0) {
+      let mapping = clone(geographicExtents);
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
     } else {
-      return false;
+      return null;
     }
   }
 
   /**
    * If geographicExtentValue exists, calls mapPolygonsService to zoom on it
-   *
-   * @param  geographicExtent geographic extent (admin0)
    */
-  private zoomOn(geographicExtent: string): void {
-    const geographicExtentValue = this.getGeographicExtentValue();
-    console.log(geographicExtentValue);
-    console.log(this.geographicExtentValue);
+  private zoomOn(): void {
+    const geographicExtentValue = this.getGeographicExtents();
     if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
       this.geographicExtentValue = geographicExtentValue;
-      if (geographicExtentValue) {
-        this.mapPolygonsService.zoomOn(
-          geographicExtentValue,
-          geographicExtent,
-          this.map
-        );
+      if (
+        geographicExtentValue &&
+        geographicExtentValue.some((x: any) => x.value)
+      ) {
+        this.mapPolygonsService.zoomOn(geographicExtentValue, this.map);
       } else {
         this.setDefaultZoom();
       }

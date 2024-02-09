@@ -243,6 +243,9 @@ export class ContextService {
    * @returns object, where string properties that can be transformed to objects, are returned as objects
    */
   private parseJSONValues(obj: any): any {
+    if (isArray(obj)) {
+      return obj.map((element: any) => this.parseJSONValues(element));
+    }
     return mapValues(obj, (value: any) => {
       if (isString(value)) {
         try {
@@ -275,7 +278,6 @@ export class ContextService {
     object: any,
     filter = this.filterValue(this.filter.getValue())
   ): any {
-    console.log(filter);
     if (isEmpty(filter)) {
       return this.parseJSONValues(object);
     }

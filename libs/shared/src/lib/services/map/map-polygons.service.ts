@@ -116,87 +116,89 @@ export class MapPolygonsService {
    * Fit bounds & zoom on country
    *
    * @param geographicExtentValue geographic extent value
-   * @param geographicExtent geographic extent (admin0)
    * @param map leaflet map
    */
   public zoomOn(
-    geographicExtentValue: string | string[],
-    geographicExtent: string,
+    geographicExtentValue: { extent: string; value: string | string[] }[],
     map: L.Map
   ): void {
-    console.log(geographicExtentValue);
     this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
-      let layer: L.GeoJSON | undefined = undefined;
-      switch (geographicExtent) {
-        case 'admin0': {
-          if (isArray(geographicExtentValue)) {
-            const admin0s = this.admin0s.filter(
-              (data) =>
-                geographicExtentValue.includes(data.iso2code) ||
-                geographicExtentValue.includes(data.iso3code) ||
-                geographicExtentValue.includes(data.name)
-            );
-            if (admin0s.length > 0) {
-              layer = L.geoJSON({
-                type: 'FeatureCollection',
-                features: admin0s.map((x: any) => ({
+      // let layer: L.GeoJSON | undefined = undefined;
+      const geoJSON: any = {
+        type: 'FeatureCollection',
+        features: [],
+      };
+      geographicExtentValue.forEach((x) => {
+        switch (x.extent) {
+          case 'admin0': {
+            if (isArray(x.value)) {
+              const admin0s = this.admin0s.filter(
+                (data) =>
+                  x.value.includes(data.iso2code) ||
+                  x.value.includes(data.iso3code) ||
+                  x.value.includes(data.name)
+              );
+              if (admin0s.length > 0) {
+                geoJSON.features.push({
+                  type: 'FeatureCollection',
+                  features: admin0s.map((x: any) => ({
+                    type: 'Feature',
+                    geometry: x.polygons,
+                    properties: {},
+                  })),
+                });
+              }
+            } else {
+              const admin0 = this.admin0s.find(
+                (data) =>
+                  data.iso2code === x.value ||
+                  data.iso3code === x.value ||
+                  data.name === x.value
+              );
+              if (admin0) {
+                geoJSON.features.push({
                   type: 'Feature',
-                  geometry: x.polygons,
+                  geometry: admin0.polygons,
                   properties: {},
-                })),
-              } as any);
+                });
+              }
             }
-          } else {
-            const admin0 = this.admin0s.find(
-              (data) =>
-                data.iso2code === geographicExtentValue ||
-                data.iso3code === geographicExtentValue ||
-                data.name === geographicExtentValue
-            );
-            if (admin0) {
-              layer = L.geoJSON({
-                type: 'Feature',
-                geometry: admin0.polygons,
-                properties: {},
-              } as any);
-            }
+            break;
           }
-          break;
-        }
-        case 'region': {
-          if (isArray(geographicExtentValue)) {
-            const regions = REGIONS.filter((data) =>
-              geographicExtentValue.includes(data.name)
-            );
-            if (regions.length > 0) {
-              layer = L.geoJSON({
-                type: 'FeatureCollection',
-                features: regions.map((x) => ({
+          case 'region': {
+            if (isArray(x.value)) {
+              const regions = REGIONS.filter((data) =>
+                x.value.includes(data.name)
+              );
+              if (regions.length > 0) {
+                geoJSON.features.push({
+                  type: 'FeatureCollection',
+                  features: regions.map((x) => ({
+                    type: 'Feature',
+                    geometry: x.geometry,
+                    properties: {},
+                  })),
+                });
+              }
+            } else {
+              const region = REGIONS.find((data) => data.name === x.value);
+              if (region) {
+                geoJSON.features.push({
                   type: 'Feature',
-                  geometry: x.geometry,
+                  geometry: region.geometry,
                   properties: {},
-                })),
-              } as any);
+                });
+              }
             }
-          } else {
-            const region = REGIONS.find(
-              (data) => data.name === geographicExtentValue
-            );
-            if (region) {
-              layer = L.geoJSON({
-                type: 'Feature',
-                geometry: region.geometry,
-                properties: {},
-              } as any);
-            }
+            break;
           }
-          break;
         }
-      }
-      if (layer) {
+      });
+
+      if (geoJSON.features.length > 0) {
         // Timeout seems to be needed for first load of the map.
         setTimeout(() => {
-          map.fitBounds((layer as L.GeoJSON).getBounds());
+          map.fitBounds(L.geoJSON(geoJSON).getBounds());
         }, 500);
       }
     });

@@ -157,19 +157,11 @@ export class MapSettingsComponent
         } as MapConstructorSettings)
       );
     this.widgetFormGroup
-      .get('geographicExtentValue')
+      .get('geographicExtents')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
-          geographicExtentValue: value,
-        } as MapConstructorSettings)
-      );
-    this.widgetFormGroup
-      .get('geographicExtent')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({
-          geographicExtent: value,
+          geographicExtents: value,
         } as MapConstructorSettings)
       );
   }
