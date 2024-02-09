@@ -1701,6 +1701,9 @@
 							"title": "Styles de calque"
 						}
 					},
+					"help": {
+						"geographicExtent": "Utilisez le filtre et/ou le contexte de la page pour zoomer sur la carte"
+					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"chooseLayer": "Choisir un calque existant",
@@ -1769,7 +1772,6 @@
 						"zoomTo": "Zoomer sur"
 					},
 					"properties": {
-						"addGeographicExtent": "Ajouter un nouveau type d'étendue",
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
@@ -1783,12 +1785,10 @@
 							"timedimension": "Dimension temporelle",
 							"title": "Contrôles de la carte"
 						},
-						"filterAlert": "Utilisez le filtre et/ou le contexte de la page pour zoomer sur la carte",
 						"geographicExtent": "Type d'étendue",
 						"geographicExtentValue": "Valeur de l'étendue",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
-						"removeGeographicExtent": "Supprimer le type d'étendue",
 						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
 						"webmap": "WebMap",
@@ -1815,8 +1815,10 @@
 							"zoom": "Sélectionnez un zoom par défaut"
 						},
 						"geographicExtent": {
+							"add": "Ajouter un nouveau type d'étendue",
 							"admin0": "Utiliez le code iso2, le code iso3, ou le nom du pays",
 							"region": "Utilisez le nom de région",
+							"remove": "Supprimer le type d'étendue",
 							"value": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"
 						}
 					}

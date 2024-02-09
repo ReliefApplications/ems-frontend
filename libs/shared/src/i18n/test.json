@@ -1688,6 +1688,9 @@
 							"title": "******"
 						}
 					},
+					"help": {
+						"geographicExtent": "******"
+					},
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
@@ -1756,7 +1759,6 @@
 						"zoomTo": "******"
 					},
 					"properties": {
-						"addGeographicExtent": "******",
 						"basemap": "******",
 						"controls": {
 							"download": "******",
@@ -1770,12 +1772,10 @@
 							"timedimension": "******",
 							"title": "******"
 						},
-						"filterAlert": "******",
 						"geographicExtent": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
-						"removeGeographicExtent": "******",
 						"setByMap": "******",
 						"title": "******",
 						"webmap": "******",
@@ -1802,8 +1802,10 @@
 							"zoom": "******"
 						},
 						"geographicExtent": {
+							"add": "******",
 							"admin0": "******",
 							"region": "******",
+							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
 						}
 					}
