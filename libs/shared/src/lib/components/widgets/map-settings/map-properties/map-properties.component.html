@@ -83,8 +83,9 @@
                   <input type="number" formControlName="latitude" />
                   <ui-icon
                     uiSuffix
-                    icon="info"
+                    icon="info_outline"
                     class="cursor-pointer"
+                    [size]="18"
                     variant="grey"
                     [uiTooltip]="
                       'components.widget.settings.map.tooltip.default.latitude'
@@ -113,8 +114,9 @@
                   <input type="number" formControlName="longitude" />
                   <ui-icon
                     uiSuffix
-                    icon="info"
+                    icon="info_outline"
                     class="cursor-pointer"
+                    [size]="18"
                     variant="grey"
                     [uiTooltip]="
                       'components.widget.settings.map.tooltip.default.longitude'
@@ -149,7 +151,7 @@
                 icon="info_outline"
                 class="cursor-pointer"
                 [uiTooltip]="
-                  'components.widget.settings.map.tooltip.geographicExtent'
+                  'components.widget.settings.map.tooltip.geographicExtent.value'
                     | translate
                 "
                 [size]="18"
@@ -174,6 +176,15 @@
                   {{ field }}
                 </ui-select-option>
               </ui-select-menu>
+              <ui-icon
+                *ngIf="geographicExtentTooltip"
+                uiSuffix
+                icon="info_outline"
+                class="cursor-pointer"
+                [uiTooltip]="geographicExtentTooltip | translate"
+                [size]="18"
+                variant="grey"
+              ></ui-icon>
             </div>
           </div>
           <ui-divider></ui-divider>

@@ -23,11 +23,30 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
   /** Available base maps */
   public baseMaps = BASEMAPS;
   /** Available geographic extent fields */
-  public geographicExtents = ['admin0'];
+  public geographicExtents = ['admin0', 'region'];
 
   /** @returns the form group for the map controls */
   get controlsFormGroup() {
     return this.form.get('controls') as UntypedFormGroup;
+  }
+
+  /** @returns geographic extent tooltip, based on selected extent */
+  get geographicExtentTooltip(): string | undefined {
+    const geographicExtent = this.form.value.geographicExtent;
+    if (geographicExtent) {
+      switch (geographicExtent) {
+        case 'admin0': {
+          return 'components.widget.settings.map.tooltip.geographicExtent.admin0';
+        }
+        case 'region': {
+          return 'components.widget.settings.map.tooltip.geographicExtent.region';
+        }
+        default: {
+          return;
+        }
+      }
+    }
+    return;
   }
 
   /**

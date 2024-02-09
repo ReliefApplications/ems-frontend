@@ -1798,7 +1798,11 @@
 							"longitude": "******",
 							"zoom": "******"
 						},
-						"geographicExtent": "****** {{context}} ****** {{filter}} ******"
+						"geographicExtent": {
+							"admin0": "******",
+							"region": "******",
+							"value": "****** {{context}} ****** {{filter}} ******"
+						}
 					}
 				},
 				"style": {

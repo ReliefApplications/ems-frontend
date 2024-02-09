@@ -53,6 +53,7 @@ import {
   isEqual,
   flatMapDeep,
   pick,
+  isString,
 } from 'lodash';
 import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
@@ -484,6 +485,7 @@ export class MapComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
+          console.log('should zoom on');
           this.zoomOn(geographicExtent as string);
         });
     }
@@ -1152,14 +1154,19 @@ export class MapComponent
       const fieldValue = geographicExtentValue?.match(
         this.contextService.filterRegex
       );
+      console.log(fieldValue);
       if (fieldValue) {
         // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
         const replacedFilter = this.contextService.replaceFilter(mapSettings);
-        return replacedFilter.geographicExtentValue?.match(
-          this.contextService.filterRegex
-        )
-          ? false
-          : replacedFilter.geographicExtentValue;
+        if (isString(replacedFilter.geographicExtentValue)) {
+          return replacedFilter.geographicExtentValue?.match(
+            this.contextService.filterRegex
+          )
+            ? false
+            : replacedFilter.geographicExtentValue;
+        } else {
+          return replacedFilter.geographicExtentValue;
+        }
       }
       const contextValue = geographicExtentValue?.match(
         this.contextService.contextRegex
@@ -1183,6 +1190,8 @@ export class MapComponent
    */
   private zoomOn(geographicExtent: string): void {
     const geographicExtentValue = this.getGeographicExtentValue();
+    console.log(geographicExtentValue);
+    console.log(this.geographicExtentValue);
     if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
       this.geographicExtentValue = geographicExtentValue;
       if (geographicExtentValue) {

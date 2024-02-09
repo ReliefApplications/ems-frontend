@@ -275,6 +275,7 @@ export class ContextService {
     object: any,
     filter = this.filterValue(this.filter.getValue())
   ): any {
+    console.log(filter);
     if (isEmpty(filter)) {
       return this.parseJSONValues(object);
     }
