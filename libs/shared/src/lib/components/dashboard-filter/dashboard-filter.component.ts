@@ -129,11 +129,9 @@ export class DashboardFilterComponent
         }
       );
     // Updates the survey with the latest filter structure
-    this.contextService.filterStructure$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.initSurvey();
-      });
+    // this.dashboard?.filter?.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    //   this.initSurvey();
+    // });
 
     if (!this.variant) {
       this.variant = 'default';
