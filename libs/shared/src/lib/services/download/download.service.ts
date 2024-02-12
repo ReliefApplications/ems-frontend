@@ -43,8 +43,8 @@ export class DownloadService {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param restService Shared rest service
-   * @param authService Shared authentication service
    * @param document document
+   * @param authService Shared authentication service
    */
   constructor(
     private snackBar: SnackbarService,
@@ -108,6 +108,7 @@ export class DownloadService {
 
     this.restService
       .get(path, {
+        ...options,
         responseType: 'blob',
         headers: path.startsWith(LIFT_REPORT_URL)
           ? headers.append(
