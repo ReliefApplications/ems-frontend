@@ -129,7 +129,7 @@ export class DashboardFilterComponent
         }
       );
     // Updates the survey with the latest filter structure
-   // console.log(this.dashboard);
+    // console.log(this.dashboard);
     if (this.dashboard?.filter?.structure) {
       this.dashboard.filter?.structure
         .pipe(takeUntil(this.destroy$))
