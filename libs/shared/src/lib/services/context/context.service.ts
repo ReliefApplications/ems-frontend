@@ -49,8 +49,6 @@ import { GET_RECORD_BY_ID } from './graphql/queries';
 export class ContextService {
   /** To update/keep the current filter */
   public filter = new BehaviorSubject<Record<string, any>>({});
-  /** To update/keep the current filter structure  */
-  public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<{
     position: FilterPosition;
@@ -100,11 +98,6 @@ export class ContextService {
         current: curr,
       }))
     );
-  }
-
-  /** @returns filterStructure value as observable */
-  get filterStructure$() {
-    return this.filterStructure.asObservable();
   }
 
   /** @returns filterPosition value as observable */
@@ -181,7 +174,6 @@ export class ContextService {
   public setFilter(dashboard?: Dashboard) {
     {
       if (dashboard && dashboard.id) {
-        this.filterStructure.next(dashboard.filter?.structure);
         localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
             this.filterPosition.next({
@@ -198,7 +190,6 @@ export class ContextService {
           }
         });
       } else {
-        this.filterStructure.next(null);
         this.filterPosition.next(null);
       }
     }
@@ -404,12 +395,11 @@ export class ContextService {
       '../../components/dashboard-filter/filter-builder-modal/filter-builder-modal.component'
     ).then(({ FilterBuilderModalComponent }) => {
       const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
-        data: { surveyStructure: this.filterStructure.getValue() },
+        data: { surveyStructure: dashboard?.filter?.structure },
         autoFocus: false,
       });
       dialogRef.closed.subscribe((newStructure) => {
         if (newStructure) {
-          this.filterStructure.next(newStructure);
           this.initSurvey();
           this.saveFilter(dashboard);
         }
@@ -420,10 +410,11 @@ export class ContextService {
   /**
    * Render the survey using the saved structure
    *
+   * @param dashboard Current dashboard
    * @returns survey model created from the structure
    */
-  public initSurvey(): SurveyModel {
-    const surveyStructure = this.filterStructure.getValue();
+  public initSurvey(dashboard?: Dashboard): SurveyModel {
+    const surveyStructure = dashboard?.filter?.structure;
     const survey = this.formBuilderService.createSurvey(surveyStructure);
 
     // set each question value manually otherwise the defaultValueExpression is not loaded
@@ -559,7 +550,7 @@ export class ContextService {
           id: dashboard?.id,
           filter: {
             ...dashboard?.filter,
-            structure: this.filterStructure.getValue(),
+            structure: dashboard?.filter?.structure,
           },
         },
       })
@@ -596,7 +587,9 @@ export class ContextService {
           dashboardId: dashboard.id ?? '',
         });
       } else {
-        this.filterStructure.next(data.editDashboard.filter?.structure);
+        if (dashboard && dashboard.filter) {
+          dashboard.filter.structure = data.editDashboard.filter?.structure;
+        }
       }
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectUpdated', {

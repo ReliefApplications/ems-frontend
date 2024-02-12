@@ -93,7 +93,7 @@ export class DashboardFilterSettingsComponent
         this.onEdit(value);
       });
 
-    this.contextService.filterStructure$.subscribe((value) => {
+    this.dashboard.filter?.structure.subscribe((value: unknown) => {
       this.formGroup.controls.structure.setValue(value, { emitEvent: false });
     });
   }
