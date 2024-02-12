@@ -10,12 +10,13 @@ import { Dialog } from '@angular/cdk/dialog';
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
 import {
-  buildSearchButton,
   buildAddButton,
+  buildSearchButton,
   processNewCreatedRecords,
+  setUpActionsButtonWrapper,
 } from './utils';
 import { QuestionResource } from '../types';
-import { Injector, NgZone } from '@angular/core';
+import { ComponentRef, Injector, NgZone } from '@angular/core';
 import {
   ComponentCollection,
   Serializer,
@@ -654,6 +655,10 @@ export const init = (
       }
     },
     onAfterRender: (question: QuestionResource, el: any): void => {
+      const parentElement = el.querySelector('.sd-question__content');
+      // Display the add button | grid for resources question
+      const actionsButtons = setUpActionsButtonWrapper();
+      let gridComponentRef!: ComponentRef<CoreGridComponent>;
       // hide tagbox if grid view is enable
       setTimeout(() => {
         if (question.displayAsGrid) {
@@ -663,38 +668,23 @@ export const init = (
           }
         }
       }, 500);
-      // Display the add button | grid for resources question
+
+      const searchBtn = buildSearchButton(
+        question,
+        question.gridFieldsSettings,
+        true,
+        dialog,
+        temporaryRecordsForm,
+        document,
+        ngZone
+      );
+      searchBtn.style.display = 'none';
       if (question.resource) {
-        const parentElement = el.querySelector('.sd-question__content');
+        searchBtn.style.display = 'block';
         if (parentElement) {
-          const instance: CoreGridComponent | null = buildRecordsGrid(
-            question,
-            parentElement.firstChild
-          );
-          if (instance) {
-            instance.removeRowIds.subscribe((ids) => {
-              question.value = question.value.filter(
-                (id: string) => !ids.includes(id)
-              );
-            });
-          }
+          gridComponentRef = buildGridDisplay(question, parentElement);
           if ((question.survey as SurveyModel).mode !== 'display') {
-            el.parentElement.querySelector('#actionsButtons')?.remove();
-            const actionsButtons = document.createElement('div');
-            actionsButtons.id = 'actionsButtons';
-            actionsButtons.style.display = 'flex';
-            actionsButtons.style.marginBottom = '0.5em';
-
-            const searchBtn = buildSearchButton(
-              question,
-              question.gridFieldsSettings,
-              true,
-              dialog,
-              temporaryRecordsForm,
-              document
-            );
-            actionsButtons.appendChild(searchBtn);
-
+            searchBtn.style.display = 'block';
             const addBtn = buildAddButton(
               question,
               true,
@@ -704,23 +694,7 @@ export const init = (
             );
             actionsButtons.appendChild(addBtn);
 
-            parentElement.insertBefore(
-              actionsButtons,
-              parentElement.firstChild
-            );
             // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
-
-            question.registerFunctionOnPropertyValueChanged(
-              'gridFieldsSettings',
-              () => {
-                searchBtn.style.display = question.gridFieldsSettings
-                  ? ''
-                  : 'none';
-              }
-            );
-            question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-              searchBtn.style.display = question.canSearch ? '' : 'none';
-            });
             question.registerFunctionOnPropertyValueChanged(
               'addTemplate',
               () => {
@@ -761,9 +735,90 @@ export const init = (
           });
         }
       }
+      actionsButtons.appendChild(searchBtn);
+      parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+      question.registerFunctionOnPropertyValueChanged('resource', () => {
+        if (question.resource && question.canSearch) {
+          searchBtn.style.display = 'block';
+        }
+      });
+      question.registerFunctionOnPropertyValueChanged('canSearch', () => {
+        if (question.displayAsGrid) {
+          setGridInputs(gridComponentRef.instance, question);
+        } else {
+          searchBtn.style.display = question.canSearch ? 'block' : 'none';
+        }
+      });
+      question.registerFunctionOnPropertyValueChanged(
+        'gridFieldsSettings',
+        () => {
+          if (question.displayAsGrid) {
+            // Update grid configuration display
+            domService.removeComponentFromBody(gridComponentRef);
+            gridComponentRef = buildGridDisplay(question, parentElement);
+            searchBtn.style.display = 'none';
+          }
+        }
+      );
+      question.registerFunctionOnPropertyValueChanged('displayAsGrid', () => {
+        const element = el.parentElement?.querySelector('#tagbox');
+        if (question.displayAsGrid) {
+          if (element) {
+            element.style.display = 'none';
+          }
+          searchBtn.style.display = 'none';
+          gridComponentRef = buildGridDisplay(question, parentElement);
+        } else {
+          domService.removeComponentFromBody(gridComponentRef);
+          if (element) {
+            element.style.display = 'block';
+          }
+          if (question.canSearch) {
+            searchBtn.style.display = 'block';
+          }
+        }
+      });
+      question.registerFunctionOnPropertiesValueChanged(
+        [
+          'canDelete',
+          'history',
+          'convert',
+          'update',
+          'inlineEdition',
+          'export',
+        ],
+        () => {
+          if (question.displayAsGrid) {
+            setGridInputs(gridComponentRef.instance, question);
+          }
+        }
+      );
     },
   };
   componentCollectionInstance.add(component);
+
+  /**
+   * Build grid component ready to display in the given question
+   *
+   * @param question Current question data
+   * @param parentElement Given element where to display grid component
+   * @returns created core grid component reference
+   */
+  function buildGridDisplay(
+    question: QuestionResource,
+    parentElement: HTMLElement
+  ): ComponentRef<CoreGridComponent> {
+    const grid: ComponentRef<CoreGridComponent> =
+      buildRecordsGrid(question, parentElement.firstChild) || undefined;
+    if (grid.instance) {
+      grid.instance.removeRowIds.subscribe((ids) => {
+        question.value = question.value.filter(
+          (id: string) => !ids.includes(id)
+        );
+      });
+    }
+    return grid;
+  }
 
   /**
    * Set an advance filter
@@ -796,31 +851,26 @@ export const init = (
    * @returns The CoreGridComponent, or null if the displayAsGrid property
    * of the question object is false
    */
-  const buildRecordsGrid = (question: any, el: any) => {
-    let instance: CoreGridComponent;
-    if (question.displayAsGrid) {
-      const grid = domService.appendComponentToBody(
-        CoreGridComponent,
-        el.parentElement
-      );
-      instance = grid.instance;
-      setGridInputs(instance, question);
-      (question.survey as SurveyModel)?.onValueChanged.add(
-        (_: any, options: any) => {
-          // If question is inside a panel that is updated, also updates the grid
-          const isInPanel =
-            question.parentQuestion?.getType() === 'paneldynamic';
-          if (
-            options.name === question.name ||
-            (isInPanel && options.name === question.parentQuestion.name)
-          ) {
-            setGridInputs(instance, question);
-          }
-        }
-      );
-      return instance;
-    }
-    return null;
+  const buildRecordsGrid = (
+    question: any,
+    el: any
+  ): ComponentRef<CoreGridComponent> => {
+    const grid = domService.appendComponentToBody(
+      CoreGridComponent,
+      el.parentElement
+    );
+    setGridInputs(grid.instance, question);
+    question.survey?.onValueChanged.add((_: any, options: any) => {
+      // If question is inside a panel that is updated, also updates the grid
+      const isInPanel = question.parentQuestion?.getType() === 'paneldynamic';
+      if (
+        options.name === question.name ||
+        (isInPanel && options.name === question.parentQuestion.name)
+      ) {
+        setGridInputs(grid.instance, question);
+      }
+    });
+    return grid;
   };
 
   /**
@@ -833,9 +883,15 @@ export const init = (
     instance.multiSelect = true;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
-    if (!question.readOnlyGrid) {
+    if (
+      !question.readOnly &&
+      (question.survey as SurveyModel).mode !== 'display'
+    ) {
       Object.assign(settings, {
         actions: {
+          search: question.canSearch,
+          add: question.addRecord,
+          export: question.export,
           delete: question.canDelete,
           history: question.history,
           convert: question.convert,

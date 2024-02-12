@@ -4,7 +4,7 @@ import { WidgetComponent } from './widget.component';
 
 describe('WidgetComponent', () => {
   let component: WidgetComponent;
-  let fixture: ComponentFixture<sharedWidgetComponent>;
+  let fixture: ComponentFixture<WidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

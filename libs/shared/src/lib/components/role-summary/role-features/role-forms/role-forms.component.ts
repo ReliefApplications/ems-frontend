@@ -17,15 +17,23 @@ import { get } from 'lodash';
   styleUrls: ['./role-forms.component.scss'],
 })
 export class RoleFormsComponent implements OnInit, OnChanges {
+  /** Role */
   @Input() role!: Role;
+  /** Pages array */
   @Input() pages: Page[] = [];
+  /** Loading status */
   @Input() loading = false;
+  /** Search string */
   @Input() search = '';
 
+  /** Event emitter for edit */
   @Output() edit = new EventEmitter();
 
+  /** Columns to display */
   public displayedColumns = ['name', 'actions'];
+  /** Accessible pages array */
   public accessiblePages: string[] = [];
+  /** Filtered pages array */
   public filteredPages = this.pages;
 
   ngOnInit(): void {

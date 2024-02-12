@@ -7,6 +7,7 @@
 		"add": "Add",
 		"adminField": "Admin field",
 		"aggregation": {
+			"add": "Add aggregation",
 			"few": "Aggregations",
 			"none": "No aggregation",
 			"one": "Aggregation"
@@ -30,7 +31,6 @@
 					"confirmationMessage": "Do you want to delete archived page: {{name}}?",
 					"title": "Delete?"
 				},
-				"one": "page",
 				"restore": {
 					"action": "Restore",
 					"confirmationMessage": "Do you want to restore the archived page: {{name}}?",
@@ -206,6 +206,7 @@
 			"none": "No groups",
 			"one": "Group"
 		},
+		"hide": "Hide",
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -214,12 +215,16 @@
 			"rawJson": "Raw JSON"
 		},
 		"label": "Label",
-		"layers": "Layers",
+		"layers": {
+			"few": "Layers",
+			"none": "No layer"
+		},
 		"layout": {
 			"few": "Layouts",
 			"none": "No layout",
 			"one": "Layout"
 		},
+		"loading": "Loading",
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
@@ -251,6 +256,7 @@
 				},
 				"upload": {
 					"error": "Something went wrong during the upload",
+					"maxFileSize": "Maximum file size is {{size}} MB.",
 					"processing": "Uploading file...",
 					"ready": "File uploaded"
 				}
@@ -310,6 +316,12 @@
 		},
 		"platform": {
 			"backOffice": "Back-Office"
+		},
+		"position": {
+			"bottomleft": "Bottom left",
+			"bottomright": "Bottom right",
+			"topleft": "Top left",
+			"topright": "Top right"
 		},
 		"positionAttribute": {
 			"few": "Position attributes",
@@ -397,6 +409,7 @@
 		},
 		"title": "Title",
 		"tooltip": {
+			"dragDrop": "Drag and drop to reorder",
 			"editor": {
 				"insert": "Type '{' to inject expressions and variables"
 			}
@@ -490,7 +503,7 @@
 				"addFields": "Add fields",
 				"custom": "Custom",
 				"filter": "Filter",
-				"group": "Group",
+				"group": "Group & Accumulator",
 				"sort": "Sort",
 				"unwind": "Unwind"
 			},
@@ -498,9 +511,10 @@
 				"addFields": "Adds new fields to documents.",
 				"custom": "Defines a custom aggregation function or expression in JavaScript.",
 				"filter": "Returns an array with only those elements that match the condition.",
-				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
-				"selectedFields": "Only unused fields can removed.",
-				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
+				"group": "Group records based on field values and construct personalized accumulators",
+				"groupingRules": "Grouping rules are optional.",
+				"selectedFields": "Only unused fields can be removed.",
+				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
 			}
 		},
@@ -528,20 +542,44 @@
 				"clearFields": "Clear fields",
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
+				"enterEditMode": "Enter edit mode",
+				"enterPreviewMode": "Enter preview mode",
 				"filter": {
 					"empty": "No filters have been defined by the administrators",
 					"filterPosition": {
 						"bottom": "Show filter on the bottom",
 						"left": "Show filter on the left",
 						"right": "Show filter on the right",
-						"top": "Show filter on the top"
+						"top": "Show filter on the top",
+						"unset": "Position unset, please select one"
 					},
 					"info": "Dashboard filters can be used between pages to filter their content.",
 					"title": "Dashboard filters configuration"
 				},
 				"filterSettings": "Filter settings",
 				"settings": {
-					"defaultPosition": "Default position for the filter"
+					"defaultPosition": "Default position for the filter",
+					"fixedRowHeight": "Row height",
+					"gridOptions": "Grid options",
+					"gridType": {
+						"fit": "Fit",
+						"placeholder": "Select a grid type",
+						"title": "Grid type",
+						"verticalFixed": "Vertical fixed"
+					},
+					"help": {
+						"minCols": "Reducing the number of columns may not have a direct impact if the dashboard contains widgets wider than the specified limit."
+					},
+					"margin": "Margin between widgets",
+					"minCols": "Number of columns",
+					"minimumHeight": "Minimum height",
+					"tooltip": {
+						"fixedRowHeight": "Size of rows in pixels.\nMust be greater or equal to 50.",
+						"margin": "Gap in pixels between widgets.\nMust be a positive integer.",
+						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
+						"minimumHeight": "Minimum height of the grid in pixels.\nMust be greater than or equal to 0. \nThe dashboard won't automatically fit to the screen if its height is below this number.",
+						"reset": "Reset to default"
+					}
 				}
 			},
 			"delete": {
@@ -606,8 +644,13 @@
 				"title": "Unlock edition"
 			},
 			"update": {
+				"hideMenu": "Hide menu by default",
 				"placeholder": {
 					"description": "Please enter a description for the application"
+				},
+				"sideMenu": "Show menu on the side",
+				"tooltip": {
+					"hideMenu": "Only applies when menu is located on the side"
 				}
 			},
 			"users": {
@@ -704,7 +747,7 @@
 		},
 		"emailPreview": {
 			"errors": {
-				"missingSubject": "The subject of the mail cannot be empty."
+				"missingSubject": "The subject of the email cannot be empty."
 			},
 			"from": "From",
 			"subject": "Subject",
@@ -744,6 +787,25 @@
 			"display": {
 				"submissionMessage": "The form has successfully been submitted."
 			},
+			"draftRecords": {
+				"buttonLoad": "Load draft record",
+				"confirmModal": {
+					"confirmDelete": "Do you really want to delete this draft record?",
+					"confirmLoad": "Do you really want to load this draft record?",
+					"delete": "Delete this draft",
+					"load": "Load this draft"
+				},
+				"creationDate": "Creation date",
+				"delete": "Delete this draft",
+				"load": "Load this draft",
+				"noDrafts": "No draft available.",
+				"preview": "Preview this draft",
+				"previewTitle": "Draft record",
+				"save": "Save as draft",
+				"select": "Select draft record",
+				"successEdit": "Successfully edited draft",
+				"successSave": "Successfully saved as draft"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -781,6 +843,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
+				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -836,13 +899,26 @@
 				"to": "to",
 				"withValue": "with value"
 			},
+			"columns": {
+				"action": "Action type",
+				"date": "Date",
+				"modifiedValue": "New value",
+				"originalValue": "Old value",
+				"person": "User",
+				"time": "Time",
+				"variable": "Field"
+			},
 			"download": "Download history",
 			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
-				"select": "Select a field"
+				"select": "Select fields"
 			},
-			"preview": "Preview and revert"
+			"preview": "Preview and revert",
+			"range": {
+				"clear": "Clear range"
+			},
+			"useTableMode": "Use table mode"
 		},
 		"icon": {
 			"modal": {
@@ -1070,7 +1146,9 @@
 				"select": "From Reference data"
 			},
 			"fields": {
-				"ariaLabel": "Input available fields of reference data"
+				"add": "Add field",
+				"ariaLabel": "Input available fields of reference data",
+				"new": "New field"
 			},
 			"paginator": {
 				"ariaLabel": "Select page of reference data"
@@ -1265,6 +1343,9 @@
 						"invalid": "Invalid aggregation"
 					}
 				},
+				"filters": {
+					"select": "Select a filter..."
+				},
 				"other": "Other"
 			},
 			"display": {
@@ -1284,7 +1365,8 @@
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
-						"frontoffice": "Invalid grid configuration, please contact your admin"
+						"frontoffice": "Invalid grid configuration, please contact your admin",
+						"widgets": "Invalid grid configuration, please contact your admin"
 					},
 					"metaQueryBuildFailed": "Error building metadata",
 					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",
@@ -1326,6 +1408,9 @@
 					"one": "{{count}} item"
 				},
 				"layout": {
+					"button": {
+						"title": "This will erase current layout with default layout"
+					},
 					"reset": "Reset default Layout"
 				},
 				"loading": {
@@ -1357,6 +1442,12 @@
 					"axes": "Axes",
 					"categories": "Categories",
 					"color": "Color",
+					"filters": {
+						"add": "Add filter",
+						"delete": "Delete filter",
+						"empty": "No filters configured",
+						"title": "Predefined filters"
+					},
 					"grid": {
 						"buttons": {
 							"modifySelectedRows": {
@@ -1401,6 +1492,7 @@
 						"title": "Series"
 					},
 					"size": "Size",
+					"stepSize": "Step size",
 					"style": "Style",
 					"text": "Text",
 					"title": {
@@ -1408,7 +1500,8 @@
 						"format": "Title format"
 					},
 					"tooltip": {
-						"palette": "Palette provides default colors to chart elements if not manually set."
+						"palette": "Palette provides default colors to chart elements if not manually set.",
+						"stepSize": "Interval between each tick mark on the chart's axis, when possible"
 					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
@@ -1427,6 +1520,21 @@
 						"convert": "Convert records",
 						"delete": "Delete records",
 						"export": "Export records",
+						"goTo": {
+							"column": {
+								"label": "Column name",
+								"placeholder": "Type a title for the column..."
+							},
+							"field": {
+								"label": "Pass field as query parameter",
+								"placeholder": "Select a field"
+							},
+							"label": "Navigate to page",
+							"target": {
+								"label": "Target page",
+								"placeholder": "Select a page"
+							}
+						},
 						"inline": "Inline edition",
 						"navigateToPage": "Navigate to page",
 						"pageUrl": {
@@ -1479,6 +1587,9 @@
 						"create": "Add a button",
 						"defaultName": "Action button",
 						"enable": "Enable",
+						"placeholder": {
+							"modifyValue": "Set as null"
+						},
 						"requireConfirmation": "Require confirmation",
 						"title": "Quick action buttons",
 						"tooltip": {
@@ -1501,6 +1612,7 @@
 							"convert": "If authorized, user can convert record using another template of selected resource",
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
+							"goTo": "User can go to specified page on click",
 							"inline": "If authorized, user can edit records in the grid",
 							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
@@ -1529,6 +1641,10 @@
 					"tooltip": {
 						"template": "Select a template for addition and edition of records",
 						"useRecordId": "Url will contain id of the item, in order to redirect to contextual page, if configured"
+					},
+					"warnings": {
+						"add": "Please select a template",
+						"general": "Warning: actions contain errors"
 					}
 				},
 				"iconPicker": {
@@ -1631,6 +1747,7 @@
 						"createGroup": "Create a new group layer",
 						"createLayer": "Create a new layer",
 						"dataSource": {
+							"fieldMapping": "Field Mapping",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"
@@ -1695,6 +1812,9 @@
 						"basemap": "Base map",
 						"controls": {
 							"download": "Download",
+							"lastUpdate": "Last updated on",
+							"lastUpdateError": "Last modified time could not be loaded",
+							"lastUpdatePosition": "Select a position to display the control",
 							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",
@@ -1702,6 +1822,8 @@
 							"timedimension": "Time dimension",
 							"title": "Visible Map Controls"
 						},
+						"geographicExtent": "Geographic extent",
+						"geographicExtentValue": "Geographic extent value",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
@@ -1714,6 +1836,7 @@
 						"defaultLabel": "Default label",
 						"label": "Label",
 						"symbol": "Symbol",
+						"uniqueValue": "Unique values",
 						"value": "Value"
 					},
 					"tooltip": {
@@ -1727,7 +1850,8 @@
 							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
 							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
-						}
+						},
+						"geographicExtent": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
 					}
 				},
 				"style": {
@@ -1738,6 +1862,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "Make sure to remove all unused variables, to prevent null arguments to be sent.",
+									"noVariables": "No variables defined",
+									"refresh": "See all graphQL variables",
+									"title": "GraphQL variable mapping",
+									"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+								},
 								"title": "Layout styles",
 								"use": "Use layout styles",
 								"wholeRow": {
@@ -1751,7 +1882,8 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
-							"title": "Display",
+							"padding": "Use card inner padding",
+							"title": "Card display",
 							"tooltip": {
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
@@ -1779,6 +1911,8 @@
 						}
 					},
 					"dynamic": "Dynamic",
+					"exportable": "Allow export of the cards",
+					"gridMode": "Allow to show as grid",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
 					},
@@ -1805,14 +1939,25 @@
 				},
 				"viewAsCards": "View as cards",
 				"viewAsGrid": "View as grid"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "You can build custom aggregations and inject them in the editor using {{aggregation.<id>}} placeholders.",
+					"template": {
+						"add": "Add new template aggregation",
+						"edit": "Edit template aggregation"
+					}
+				}
 			}
 		}
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateFormat": "YYYY/MM/DD or expression ({{today}} or {{now}})",
 			"dateLabel": "Select a date",
 			"endLabel": "Select a end date",
 			"startLabel": "Select a start date",
@@ -1965,6 +2110,7 @@
 			"unstick": "Unstick"
 		},
 		"multiselect": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"pager": {
@@ -1997,6 +2143,7 @@
 		},
 		"upload": {
 			"dropFilesHere": "Drop files here to upload",
+			"invalidMaxFileSize": "File size too large.",
 			"select": "Select files..."
 		}
 	},
@@ -2008,8 +2155,12 @@
 		},
 		"application": {
 			"description": "Description",
+			"errors": {
+				"style": {
+					"notFound": "Unable to load application's style"
+				}
+			},
 			"id": "Application ID",
-			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",
@@ -2047,6 +2198,7 @@
 				"text": "Button text",
 				"variant": "Button variant"
 			},
+			"closable": "Closable",
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -2070,18 +2222,33 @@
 					"element": "Element"
 				},
 				"selectDisplayField": "Select display field",
-				"selectOrigin": "Select context origin"
+				"selectOrigin": "Select context origin",
+				"title": "Context",
+				"tooltip": {
+					"useContextEditor": "Use context editor",
+					"useDefaultEditor": "Use default editor"
+				}
 			},
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
+			"filterVariant": {
+				"title": "Filter variant",
+				"variantsOptions": {
+					"selectOrigin": "Select filter variant",
+					"variant_default": "Default",
+					"variant_modern": "Modern"
+				}
+			},
 			"historicalDate": "Get dataset at",
 			"share": "Share Dashboard",
 			"tooltip": {
-				"dashboardFilter": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
-				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}.",
-				"useDashboardFilterEditor": "Use dashboard filter editor",
-				"useDefaultEditor": "Use default editor"
+				"filter": {
+					"closable": "When variant is modern, or application is used as web element, it will indicate if filter can be closed or not",
+					"fields": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
+					"position": "Only applicable when default variant is active"
+				},
+				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}."
 			}
 		},
 		"form": {
@@ -2144,7 +2311,8 @@
 			"select": "Select a record"
 		},
 		"referenceData": {
-			"add": "Add new reference data"
+			"add": "Add new reference data",
+			"select": "Select a reference data"
 		},
 		"resource": {
 			"create": "Create a Resource",
@@ -2182,6 +2350,9 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"expand": "Show button to expand widget",
+				"header": "Show widget header",
+				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
 				"title": "Widget display",
@@ -2205,6 +2376,11 @@
 				"title": "Sorting"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Expand widget",
+					"help": "Only appears in front-office or in preview mode",
+					"restore": "Restore default"
+				},
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
@@ -2222,6 +2398,12 @@
 	"pages": {
 		"administration": {
 			"title": "Administration"
+		},
+		"aggregation": {
+			"preview": {
+				"label": "Aggregation data preview",
+				"missingAggregation": "Cannot load selected aggregation. Aggregation not found"
+			}
 		},
 		"apiConfiguration": {
 			"authentication": "Authentication settings",
@@ -2332,12 +2514,33 @@
 			"csv": "CSV input",
 			"fields": {
 				"fetch": "Fetch fields",
+				"help": "The fields are calculated based on the attributes of the first item in the payload.",
 				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
 				"noFields": "No fields found",
 				"title": "Field"
 			},
 			"graphQLFilter": "GraphQL query parameters",
-			"path": "Path",
+			"pagination": {
+				"cursorPath": "Cursor path",
+				"cursorVariable": "Cursor query variable",
+				"offsetVariable": "Offset query variable",
+				"pageSizeVariable": "Page size query variable",
+				"pageVariable": "Page number query variable",
+				"strategy": "Pagination strategy",
+				"totalCountPath": "Total items count path",
+				"usePagination": {
+					"hint": "Depends on API support, allows fetching data by page",
+					"text": "Use pagination"
+				}
+			},
+			"path": {
+				"placeholder": "Enter a valid JSONPath",
+				"title": "Data path"
+			},
+			"payload": {
+				"label": "Payload",
+				"show": "Show payload"
+			},
 			"placeholder": {
 				"csv": "Insert CSV here",
 				"graphQLFilter": "Enter a filter to be used once choices are already cached"

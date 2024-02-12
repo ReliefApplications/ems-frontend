@@ -50,9 +50,31 @@ export class DownloadService {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private restService: RestService,
-    private authService: AuthService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private authService: AuthService
   ) {}
+
+  /**
+   * Set up a snackbar element with the given message and duration
+   *
+   * @param {string} translationKey Translation key for the file download snackbar message
+   * @param {duration} duration Time duration of the opened snackbar element
+   * @returns snackbar reference
+   */
+  private createLoadingSnackbarRef(translationKey: string, duration = 0) {
+    // Opens a loader in a snackbar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SnackbarSpinnerComponent,
+      {
+        duration,
+        data: {
+          message: this.translate.instant(translationKey),
+          loading: true,
+        },
+      }
+    );
+    return snackBarRef;
+  }
 
   /**
    * Set up needed headers and response information for the file download action
@@ -62,22 +84,11 @@ export class DownloadService {
    */
   private triggerFileDownloadMessage(translationKey: string) {
     // Opens a loader in a snackbar
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(translationKey),
-          loading: true,
-        },
-      }
-    );
+    const snackBarRef = this.createLoadingSnackbarRef(translationKey);
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
-      'Content-Type': 'application/json',
     });
-
     return { snackBarRef, headers };
   }
 
@@ -87,8 +98,9 @@ export class DownloadService {
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
+   * @param options (optional) request options
    */
-  getFile(path: string, type: string, fileName: string): void {
+  getFile(path: string, type: string, fileName: string, options?: any): void {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
@@ -112,7 +124,7 @@ export class DownloadService {
             'common.notifications.file.download.ready'
           );
           snackBarSpinner.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(
@@ -120,7 +132,7 @@ export class DownloadService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }
@@ -153,7 +165,7 @@ export class DownloadService {
               'common.notifications.file.download.ongoing'
             );
             snackBarSpinner.instance.loading = false;
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           } else {
             const blob = new Blob([res], { type });
             this.saveFile(fileName, blob);
@@ -161,7 +173,7 @@ export class DownloadService {
               'common.notifications.file.download.ready'
             );
             snackBarSpinner.instance.loading = false;
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           }
         },
         error: () => {
@@ -170,7 +182,7 @@ export class DownloadService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }
@@ -211,7 +223,7 @@ export class DownloadService {
             'common.notifications.file.download.ready'
           );
           snackBarSpinner.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         () => {
           snackBarSpinner.instance.message = this.translate.instant(
@@ -219,7 +231,7 @@ export class DownloadService {
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         }
       );
   }
@@ -267,16 +279,16 @@ export class DownloadService {
             'common.notifications.file.upload.ready'
           );
           snackBarSpinner.instance.loading = false;
-
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
-        error: () => {
+        error: (err) => {
+          console.log(err);
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.upload.error'
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       })
     );
@@ -291,20 +303,9 @@ export class DownloadService {
    * @returns The path of the uploaded file
    */
   uploadBlob(file: any, type: BlobType, entity: string): Promise<string> {
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.file.upload.processing'
-          ),
-          loading: true,
-        },
-      }
+    const snackBarRef = this.createLoadingSnackbarRef(
+      'common.notifications.file.upload.processing'
     );
-    const snackBarSpinner = snackBarRef.instance.nestedComponent;
-
     const path = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -318,20 +319,19 @@ export class DownloadService {
         .subscribe((res: { path: string }) => {
           const { path } = res ?? {};
           if (path) {
-            snackBarSpinner.instance.message = this.translate.instant(
+            snackBarRef.instance.message = this.translate.instant(
               'common.notifications.file.upload.ready'
             );
-            snackBarSpinner.instance.loading = false;
-
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.loading = false;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             resolve(path);
           } else {
-            snackBarSpinner.instance.message = this.translate.instant(
+            snackBarRef.instance.message = this.translate.instant(
               'common.notifications.file.upload.error'
             );
-            snackBarSpinner.instance.loading = false;
-            snackBarSpinner.instance.error = true;
-            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            snackBarRef.instance.loading = false;
+            snackBarRef.instance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             reject();
           }
         });

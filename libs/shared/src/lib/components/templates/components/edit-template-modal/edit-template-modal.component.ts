@@ -10,7 +10,7 @@ import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { EditorControlComponent } from '../../../editor-control/editor-control.component';
+import { EditorControlComponent } from '../../../controls/editor-control/editor-control.component';
 import { RawEditorSettings } from 'tinymce';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import {
@@ -56,6 +56,7 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
 })
 export class EditTemplateModalComponent implements OnInit {
   // === REACTIVE FORM ===
+  /** Reactive form for the template */
   form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     type: [get(this.data, 'type', 'email'), Validators.required],

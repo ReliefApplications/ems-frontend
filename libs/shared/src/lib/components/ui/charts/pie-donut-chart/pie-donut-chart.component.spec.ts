@@ -4,7 +4,7 @@ import { PieDonutChartComponent } from './pie-donut-chart.component';
 
 describe('PieChartComponent', () => {
   let component: PieDonutChartComponent;
-  let fixture: ComponentFixture<sharedPieDonutChartComponent>;
+  let fixture: ComponentFixture<PieDonutChartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

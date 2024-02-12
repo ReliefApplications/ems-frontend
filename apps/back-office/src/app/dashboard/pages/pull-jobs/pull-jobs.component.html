@@ -106,7 +106,10 @@
 </ng-container>
 <ng-template #loadingTmpl>
   <!-- Loading indicator -->
-  <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+  <shared-skeleton-table
+    [columns]="['common.name', 'common.status', 'models.pullJob.nextIteration']"
+    [actions]="true"
+  >
   </shared-skeleton-table>
 </ng-template>
 
@@ -114,6 +117,7 @@
   *ngIf="pullJobs.length"
   [disabled]="loading"
   [pageSize]="pageInfo.pageSize"
+  [pageIndex]="pageInfo.pageIndex"
   [pageSizeOptions]="[10, 25, 50]"
   [totalItems]="pageInfo.length"
   [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"

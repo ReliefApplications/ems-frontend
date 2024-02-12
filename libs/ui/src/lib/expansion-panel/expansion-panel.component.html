@@ -18,7 +18,7 @@
     class="accordion-item justify-between"
     (click)="accordionItem.toggle()"
   >
-    <span>
+    <span class="flex">
       <ng-content select="title"></ng-content>
     </span>
     <ng-container *ngIf="displayIcon">

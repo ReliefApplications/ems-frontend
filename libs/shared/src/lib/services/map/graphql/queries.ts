@@ -13,6 +13,7 @@ export const GET_LAYER_BY_ID = gql`
       datasource {
         resource
         refData
+        referenceDataVariableMapping
         layout
         aggregation
         geoField
@@ -110,8 +111,8 @@ export const GET_LAYER_BY_ID = gql`
 // === GET LAYERS ===
 /** Graphql request for getting layers */
 export const GET_LAYERS = gql`
-  query GetLayers {
-    layers {
+  query GetLayers($sortField: String, $filter: JSON) {
+    layers(sortField: $sortField, filter: $filter) {
       id
       name
     }

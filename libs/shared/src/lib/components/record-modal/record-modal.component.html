@@ -44,7 +44,10 @@
           <survey [model]="surveyNext"></survey>
         </div>
       </ng-container>
-      <div class="grow" [ngClass]="{ 'max-w-[50%]': surveyNext }">
+      <div
+        class="grow"
+        [ngClass]="{ 'max-w-[50%]': surveyNext, 'max-w-full': !surveyNext }"
+      >
         <survey [model]="survey"></survey>
       </div>
     </div>
@@ -67,7 +70,7 @@
       </ui-button>
     </ng-container>
     <ng-container *ngIf="!loading && !data.compareTo">
-      <ui-button uiDialogClose variant="danger">
+      <ui-button [uiDialogClose] variant="danger">
         {{ 'common.close' | translate }}
       </ui-button>
       <ng-container *ngIf="survey?.visiblePages ?? [] as pages">

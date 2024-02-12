@@ -11,7 +11,7 @@ import { EditorSettingsComponent } from './editor-settings.component';
 
 describe('EditorSettingsComponent', () => {
   let component: EditorSettingsComponent;
-  let fixture: ComponentFixture<sharedEditorSettingsComponent>;
+  let fixture: ComponentFixture<EditorSettingsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

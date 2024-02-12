@@ -1,5 +1,5 @@
 import { FaIconName } from '@oort-front/ui';
-import { Gradient } from '../components/gradient-picker/gradient-picker.component';
+import { Gradient } from '../components/controls/gradient-picker/gradient-picker.component';
 import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
 
 /**
@@ -96,7 +96,8 @@ export interface Fields {
   label: string;
   name: string;
   type: string;
-  [key: string]: string;
+  text?: string;
+  fields?: Fields[];
 }
 
 /** Possible types of Popup element */
@@ -129,6 +130,7 @@ export type LayerDatasourceType = 'Point' | 'Polygon';
 export interface LayerDatasource {
   resource?: string;
   refData?: string;
+  referenceDataVariableMapping?: string;
   layout?: string;
   aggregation?: string;
   geoField?: string;

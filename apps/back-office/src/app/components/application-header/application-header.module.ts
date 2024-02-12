@@ -2,9 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationHeaderComponent } from './application-header.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule, TooltipModule } from '@oort-front/ui';
+import {
+  IconModule,
+  TooltipModule,
+  MenuModule,
+  ButtonModule,
+} from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
-import { MenuModule, ButtonModule } from '@oort-front/ui';
+import { DashboardFilterIconComponent } from '@oort-front/shared';
 
 /**
  * Application toolbar module.
@@ -19,6 +24,7 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     RouterModule,
     ButtonModule,
     TooltipModule,
+    DashboardFilterIconComponent,
   ],
   exports: [ApplicationHeaderComponent],
 })

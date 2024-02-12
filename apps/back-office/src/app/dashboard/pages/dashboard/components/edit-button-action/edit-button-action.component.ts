@@ -73,11 +73,15 @@ const createButtonActionForm = (data?: ButtonActionT) => {
   styleUrls: ['./edit-button-action.component.scss'],
 })
 export class EditButtonActionComponent implements OnInit {
+  /** Form group */
   public form: ReturnType<typeof createButtonActionForm>;
 
+  /** Variants */
   public variants = ButtonVariants;
+  /** Categories */
   public categories = ButtonCategories;
 
+  /** Is the action new */
   public isNew: boolean;
 
   /** tinymce href editor */

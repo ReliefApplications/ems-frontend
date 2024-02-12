@@ -18,12 +18,26 @@
       >
     </ui-select-menu>
   </div>
-  <ng-container *ngIf="field && editor">
+  <ng-container *ngIf="field && editor && !hideEditor">
     <ng-container
       [ngTemplateOutlet]="editor"
       [ngTemplateOutletContext]="{ valueControl: valueControl }"
     ></ng-container>
   </ng-container>
+
+  <!-- TOGGLE CONTEXT EDITOR -->
+  <ui-button
+    *ngIf="field && canUseContext"
+    [isIcon]="true"
+    icon="cached"
+    (click)="toggleContextEditor()"
+    [uiTooltip]="
+      (contextEditorIsActivated
+        ? 'models.dashboard.context.tooltip.useDefaultEditor'
+        : 'models.dashboard.context.tooltip.useContextEditor'
+      ) | translate
+    "
+  ></ui-button>
 
   <!-- TOGGLE FILTER EDITOR -->
   <!-- <ui-button
@@ -54,7 +68,7 @@
   <ng-template #fieldSelect>
     <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
       <label>{{ 'common.field.one' | translate }}</label>
-      <ui-select-menu formControlName="field">
+      <ui-select-menu formControlName="field" [filterable]="true">
         <ng-container *ngFor="let field of fields">
           <ui-select-option *ngIf="!field.fields" [value]="field.name">
             {{ field.text || field.name }}
@@ -174,4 +188,17 @@
       </ui-select-menu>
     </div>
   </ng-template> -->
+
+  <!-- CONTEXT EDITOR -->
+  <ng-template #contextEditor>
+    <div uiFormFieldDirective [outline]="false" [defaultMargin]="false">
+      <label>{{ 'models.dashboard.context.title' | translate }}</label>
+      <input matInput formControlName="value" type="text" />
+      <!-- To be replaced by the new editor control, so we can have autocomplete -->
+      <!-- <safe-editor-control
+        formControlName="title"
+        [editorConfig]="editorConfig"
+      ></safe-editor-control> -->
+    </div>
+  </ng-template>
 </form>

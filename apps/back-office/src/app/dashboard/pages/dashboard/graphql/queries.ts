@@ -3,11 +3,12 @@ import { gql } from 'apollo-angular';
 // === GET DASHBOARD BY ID ===
 /** Graphql query for getting a dashboard by its id */
 export const GET_DASHBOARD_BY_ID = gql`
-  query GetDashboardById($id: ID!) {
-    dashboard(id: $id) {
+  query GetDashboardById($id: ID!, $contextEl: JSON) {
+    dashboard(id: $id, contextEl: $contextEl, createIfMissing: true) {
       id
       name
       createdAt
+      contextData
       structure
       permissions {
         canSee {
@@ -52,7 +53,8 @@ export const GET_DASHBOARD_BY_ID = gql`
         }
         canUpdate
       }
-      showFilter
+      filter
+      gridOptions
     }
   }
 `;

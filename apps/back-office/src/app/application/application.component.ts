@@ -34,6 +34,8 @@ export class ApplicationComponent
   public application?: Application;
   /** Use side menu or not */
   public sideMenu = false;
+  /** Should hide menu by default ( only when vertical ) */
+  public hideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
   /** Loading indicator */
@@ -101,6 +103,13 @@ export class ApplicationComponent
               .pipe(takeUntil(this.destroy$))
               .subscribe(() => this.configNavItems());
           }
+          if (application.canUpdate) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.archive.few'),
+              path: './settings/archive',
+              icon: 'delete',
+            });
+          }
           this.navGroups = [
             {
               name: this.translate.instant('common.page.few'),
@@ -127,7 +136,8 @@ export class ApplicationComponent
             }
           }
           this.application = application;
-          this.sideMenu = this.application?.sideMenu ?? false;
+          this.sideMenu = this.application?.sideMenu ?? true;
+          this.hideMenu = this.application?.hideMenu ?? false;
         } else {
           this.title = '';
           this.navGroups = [];

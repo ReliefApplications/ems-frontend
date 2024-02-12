@@ -4,7 +4,7 @@ import { MapWidgetComponent } from './map.component';
 
 describe('MapWidgetComponent', () => {
   let component: MapWidgetComponent;
-  let fixture: ComponentFixture<sharedMapWidgetComponent>;
+  let fixture: ComponentFixture<MapWidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -18,10 +18,10 @@ const ACTIONS_TRANSLATIONS: Record<(typeof rowActions)[number], string> = {
   styleUrls: ['./row-actions.component.scss'],
 })
 export class GridRowActionsComponent {
-  // === DATA ===
+  /** Item to be shown */
   @Input() item: any;
 
-  // === ACTIONS ===
+  /** Actions */
   @Input() actions = {
     update: false,
     delete: false,
@@ -29,8 +29,11 @@ export class GridRowActionsComponent {
     convert: false,
     remove: false,
   };
+
   /** Tells if only one action is enabled, if it should be displayed as a single button */
   @Input() singleActionAsButton = false;
+
+  /** Event emitter for the action event */
   @Output() action = new EventEmitter();
 
   /** @returns A boolean indicating if the component must be shown */

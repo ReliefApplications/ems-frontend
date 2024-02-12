@@ -43,13 +43,17 @@ export class DatePipe implements PipeTransform {
    */
   transform(
     value: string | number | Date | null | undefined,
-    format: DateFormat = 'mediumDate',
+    format: DateFormat | string = 'mediumDate',
     timezone: string | undefined = undefined
   ): string | null {
     try {
       const datePipe = new AngularDatePipe(this.dateTranslate.currentLang);
-
-      return datePipe.transform(value, format, timezone);
+      return datePipe.transform(
+        value,
+        format,
+        timezone,
+        this.dateTranslate.currentLang
+      );
     } catch {
       console.warn(
         `Dates are not available with language ${this.dateTranslate.currentLang},`,

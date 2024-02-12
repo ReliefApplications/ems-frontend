@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Optional } from '@angular/core';
 import { get } from 'lodash';
-import { CardT } from '../summary-card.component';
+import { CardT, SummaryCardComponent } from '../summary-card.component';
 
 /**
  * Single Item component of Summary card widget.
@@ -11,10 +11,26 @@ import { CardT } from '../summary-card.component';
   styleUrls: ['./summary-card-item.component.scss'],
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
+  /** Card configuration */
   @Input() card!: CardT;
+  /** Available fields */
   public fields: any[] = [];
+  /** Mapping fields / values */
   public fieldsValue: any = null;
+  /** Loaded styles */
   public styles: any[] = [];
+
+  /** @returns should widget use padding, based on widget settings */
+  get usePadding() {
+    return get(this.card, 'usePadding') ?? true;
+  }
+
+  /**
+   * Single Item component of Summary card widget.
+   *
+   * @param parent Reference to parent summary card component
+   */
+  constructor(@Optional() public parent: SummaryCardComponent) {}
 
   ngOnInit(): void {
     this.setContent();
@@ -27,80 +43,36 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata || [];
-    if (!this.card.resource) return;
-    if (this.card.aggregation) {
-      this.fieldsValue = this.card.cardAggregationData;
-      this.setContentFromAggregation();
-    } else this.setContentFromLayout();
+    // No datasource
+    if (!this.card.resource && !this.card.referenceData) return;
+    if (this.card.resource) {
+      // Using resource
+      if (this.card.layout) {
+        this.setContentFromLayout();
+      } else {
+        this.fieldsValue = this.card.rawValue;
+        this.setContentFromAggregation();
+      }
+    } else {
+      // Using reference data
+      this.fieldsValue = this.card.rawValue;
+      this.styles = [];
+    }
   }
 
   /**
    * Set content of the card item, querying associated record.
    */
   private async setContentFromLayout(): Promise<void> {
-    await this.getStyles();
+    this.getStyles();
     this.fieldsValue = { ...this.card.record };
     this.fields = this.card.metadata || [];
   }
 
   /** Sets layout style */
-  private async getStyles(): Promise<void> {
-    // this.layout = this.card.layout;
+  private getStyles(): void {
     this.styles = get(this.card.layout, 'query.style', []);
-    // this.styles = get(this.card, 'meta.style', []);
   }
-
-  /**
-   * Queries the data for each of the static cards.
-   */
-  // private async getCardData() {
-  //   // gets metadata
-  //   const metaRes = await firstValueFrom(
-  //     this.apollo.query<GetResourceMetadataQueryResponse>({
-  //       query: GET_RESOURCE_METADATA,
-  //       variables: {
-  //         id: this.card.resource,
-  //       },
-  //     })
-  //   );
-  //   const queryName = get(metaRes, 'data.resource.queryName');
-
-  //   const builtQuery = this.queryBuilder.buildQuery({
-  //     query: this.layout.query,
-  //   });
-  //   const layoutFields = this.layout.query.fields;
-  //   this.fields = get(metaRes, 'data.resource.metadata', []).map((f: any) => {
-  //     const layoutField = layoutFields.find((lf: any) => lf.name === f.name);
-  //     if (layoutField) {
-  //       return { ...layoutField, ...f };
-  //     }
-  //     return f;
-  //   });
-  //   if (builtQuery) {
-  //     this.apollo
-  //       .query<any>({
-  //         query: builtQuery,
-  //         variables: {
-  //           first: 1,
-  //           filter: {
-  //             // get only the record we need
-  //             logic: 'and',
-  //             filters: [
-  //               {
-  //                 field: 'id',
-  //                 operator: 'eq',
-  //                 value: this.card.record,
-  //               },
-  //             ],
-  //           },
-  //         },
-  //       })
-  //       .subscribe((res) => {
-  //         const record: any = get(res.data, `${queryName}.edges[0].node`, null);
-  //         this.fieldsValue = { ...record };
-  //       });
-  //   }
-  // }
 
   /**
    * Set content of the card item from aggregation data.
@@ -113,5 +85,12 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       name: key,
       editor: 'text',
     }));
+  }
+
+  /**
+   * Refresh card
+   */
+  public refresh() {
+    this.parent.refresh();
   }
 }

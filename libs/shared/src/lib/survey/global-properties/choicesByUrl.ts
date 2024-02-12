@@ -35,6 +35,7 @@ const DEFAULT_PROPERTIES = [
 
 /** Class used internally by surveyJS, but not exported */
 class XmlParser {
+  /** DOM parser */
   private parser = new DOMParser();
 
   // eslint-disable-next-line jsdoc/require-jsdoc
@@ -159,7 +160,11 @@ export const init = (): void => {
     }
   };
 
-  /** @returns ChoicesRestful data, including new properties */
+  /**
+   * Get choices restful data
+   *
+   * @returns ChoicesRestful data, including new properties
+   */
   (ChoicesRestful.prototype as any).getData = function () {
     if (this.isEmpty) return null;
     const res = {} as any;

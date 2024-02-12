@@ -1,22 +1,25 @@
 <!-- Form header -->
 <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
   <shared-record-summary
+    *ngIf="record"
     [record]="record"
-    [cacheDate]="storageDate"
-    (clear)="onClear()"
     (showHistory)="onShowHistory()"
   ></shared-record-summary>
   <shared-form-actions
     [survey]="survey"
     [surveyActive]="surveyActive"
   ></shared-form-actions>
+  <!-- <shared-draft-record
+    [survey]="survey"
+    [formId]="form.id ?? ''"
+    (loadDraft)="onLoadDraftRecord($event)"
+  ></shared-draft-record> -->
 </div>
 <!-- Form pages -->
 <ui-tabs
   class="mb-4"
   [selectedIndex]="(selectedPageIndex$ | async)!"
   (selectedIndexChange)="onShowPage($event)"
-  *ngIf="!survey?.hidePagesTab"
 >
   <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
     <ng-container ngProjectAs="label">
@@ -51,10 +54,13 @@
           (click)="survey.nextPage()"
           >{{ 'common.next' | translate }}</ui-button
         >
-        <ui-button variant="primary" category="secondary" (click)="submit()">{{
-          survey.saveButtonText || ('common.save' | translate)
-        }}</ui-button>
       </ng-container>
+      <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
+        'components.form.draftRecords.save' | translate
+      }}</ui-button> -->
+      <ui-button variant="primary" category="secondary" (click)="submit()">{{
+        'common.save' | translate
+      }}</ui-button>
     </div>
   </ui-fixed-wrapper>
 </ng-container>

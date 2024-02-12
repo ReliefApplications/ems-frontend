@@ -2,7 +2,7 @@
 
 This library was generated with [Nx](https://nx.dev).
 
-Shared library for oort-frontend repository where to set all shared themes and styling
+Shared library for ems-frontend repository where to set all shared themes and styling
 
 ## Running unit tests
 

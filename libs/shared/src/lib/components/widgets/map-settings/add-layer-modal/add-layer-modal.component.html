@@ -8,13 +8,15 @@
     <form class="flex flex-col">
       <!-- API to use -->
       <div uiFormFieldDirective class="flex-1">
-        <label>{{ 'common.layers' | translate }}</label>
+        <label>{{ 'common.layers.few' | translate }}</label>
         <ui-graphql-select
           valueField="id"
           textField="name"
           [required]="true"
           [query]="layersQuery"
           [formControl]="layerControl"
+          (searchChange)="onSearchChange($event)"
+          [filterable]="true"
         >
         </ui-graphql-select>
       </div>

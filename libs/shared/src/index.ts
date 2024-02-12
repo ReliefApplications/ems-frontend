@@ -24,6 +24,7 @@ export * from './lib/services/context/context.service';
 export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/rest/rest.service';
+export * from './lib/services/map/map-layers.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -75,14 +76,13 @@ export * from './lib/components/roles/public-api';
 export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
-export * from './lib/components/status-modal/public-api';
 export * from './lib/components/search-menu/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
-export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/dashboard-filter/public-api';
+export * from './lib/components/dashboard-filter-icon/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
@@ -91,15 +91,16 @@ export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
-export * from './lib/components/cron-expression-control/public-api';
+export * from './lib/components/users/public-api';
+export * from './lib/components/payload-modal/payload-modal.component';
+
+// Export of controls
+export * from './lib/components/controls/public-api';
 export * from './lib/components/applications-archive/public-api';
-export * from './lib/components/dashboard-filter/public-api';
-export * from './lib/components/editor-control/editor-control.component';
 export * from './lib/components/button-action/public-api';
 export * from './lib/components/custom-widget-style/custom-widget-style.component';
 export * from './lib/components/list-filter/list-filter.component';
 export * from './lib/components/status-options/status-options.component';
-export * from './lib/components/icon-picker/icon-picker.module';
 
 // === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
 export * from './lib/survey/components/application-dropdown/application-dropdown.component';
@@ -135,3 +136,6 @@ export * from './lib/utils/public-api';
 
 // === CONST ===
 export * from './lib/const/tinymce.const';
+
+// === ENUM ===
+export * from './lib/components/dashboard-filter/enums/dashboard-filters.enum';

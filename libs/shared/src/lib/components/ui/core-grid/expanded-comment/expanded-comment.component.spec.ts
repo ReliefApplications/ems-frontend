@@ -14,7 +14,7 @@ import {
 
 describe('ExpandedCommentComponent', () => {
   let component: ExpandedCommentComponent;
-  let fixture: ComponentFixture<sharedExpandedCommentComponent>;
+  let fixture: ComponentFixture<ExpandedCommentComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

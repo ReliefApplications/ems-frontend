@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { createButtonFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
@@ -15,13 +21,22 @@ import { TabsComponent } from '@oort-front/ui';
   styleUrls: ['./tab-buttons.component.scss'],
 })
 export class TabButtonsComponent {
+  /** Form group */
   @Input() formGroup!: UntypedFormGroup;
+  /** List of fields */
   @Input() fields: any[] = [];
+  /** List of forms */
   @Input() relatedForms: Form[] = [];
-  @Input() channels: Channel[] = [];
+  /** List of channels */
+  @Input() channels?: Channel[];
+  /** List of templates */
   @Input() templates: any[] = [];
+  /** List of distribution lists */
   @Input() distributionLists: any[] = [];
+  /** Emits when the select channel is opened for the first time */
+  @Output() loadChannels = new EventEmitter<void>();
 
+  /** Tabs component */
   @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
 
   /** @returns List of the floating buttons */

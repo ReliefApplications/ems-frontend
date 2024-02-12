@@ -3,6 +3,7 @@
  */
 export const sharedEnvironment = {
   module: 'backoffice',
+  maxFileSize: 7, // transformed into MB later, just indicate number of MB there
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   version: require('../../../../package.json').version,
   esriApiKey:

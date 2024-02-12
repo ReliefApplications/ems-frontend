@@ -62,14 +62,6 @@
   display: block !important;
 }
 
-::ng-deep survey shared-core-grid {
-  height: 410px;
-
-  .sv_row div {
-    min-width: unset;
-  }
-}
-
 ::ng-deep .survey-title__tooltip {
   background-color: var(--primary);
   padding: 0 0.35rem;
@@ -300,6 +292,19 @@
   .sd-boolean {
     @apply bg-gray-200 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2;
   }
+  // Left question
+  .sd-question__content--left {
+    max-width: 100%;
+  }
+  // Grid
+  shared-core-grid {
+    display: block;
+    height: 410px;
+
+    .sv_row div {
+      min-width: unset;
+    }
+  }
 }
 
 // On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible
@@ -320,4 +325,5 @@
 
 ::ng-deep .sd-body.sd-body--static {
   max-width: unset;
+  padding: 20px 0;
 }

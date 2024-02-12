@@ -29,7 +29,6 @@ export const init = (
     'tagbox',
     '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g><path d="M15,11H0V5h15V11z M1,10h13V6H1V10z"/></g><rect x="2" y="7" width="4" height="2"/><rect x="7" y="7" width="4" height="2"/></svg>'
   );
-  let currentSearchValue = '';
   const componentName = 'tagbox';
   const widget = {
     name: 'tagbox',
@@ -71,6 +70,7 @@ export const init = (
     },
     isDefaultRender: false,
     afterRender: (question: any, el: HTMLElement): void => {
+      let currentSearchValue = '';
       const defaultTagbox = el.querySelector('sv-ng-tagbox-question');
       if (defaultTagbox) {
         el.removeChild(defaultTagbox);
@@ -83,6 +83,8 @@ export const init = (
       ) {
         question.choices = parentQuestion.choices;
       }
+      // Remove previous input if already rendered
+      el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
@@ -90,7 +92,15 @@ export const init = (
       tagboxDiv.id = 'tagbox';
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const tagboxInstance = createTagboxInstance(tagboxDiv, question);
-      tagboxInstance.value = question.value;
+      // Make sure the value is valid
+      try {
+        tagboxInstance.value = question.value;
+        tagboxInstance.verifySettings();
+      } catch (err) {
+        console.error(err);
+        tagboxInstance.value = [];
+      }
+
       tagboxInstance.placeholder = question.placeholder;
       tagboxInstance.readonly = question.isReadOnly;
       tagboxInstance.registerOnChange((value: any) => {
@@ -122,6 +132,15 @@ export const init = (
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
         question._propertyValueChangedVirtual
+      );
+      question.registerFunctionOnPropertyValueChanged(
+        'isPrimitiveValue',
+        (newValue: boolean) => {
+          tagboxInstance.clearAll();
+          tagboxInstance.valuePrimitive = newValue;
+          question.value = null;
+          question.defaultValue = null;
+        }
       );
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',
@@ -174,6 +193,9 @@ export const init = (
     tagboxInstance.valueField = 'value';
     tagboxInstance.popupSettings = { appendTo: 'component' };
     tagboxInstance.fillMode = 'none';
+    tagboxInstance.tagMapper = (tags: any[]) => {
+      return tags.length < 2 ? tags : [tags];
+    };
     return tagboxInstance;
   };
   // ⚠ danger ⚠

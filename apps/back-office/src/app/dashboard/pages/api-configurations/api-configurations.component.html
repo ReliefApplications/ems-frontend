@@ -3,7 +3,7 @@
     <app-api-configuration-filter
       #filter
       (filter)="applyFilter($event)"
-      [loading]="loading"
+      [loading]="updating"
     >
     </app-api-configuration-filter>
     <!-- Actions -->
@@ -29,7 +29,7 @@
       cdk-table
       uiTableWrapper
       (sortChange)="onSort($event)"
-      [dataSource]="filteredDataSources"
+      [dataSource]="dataSource"
     >
       <ng-container cdkColumnDef="name">
         <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
@@ -47,7 +47,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="status">
-        <th uiTableHeaderSort="status" uiCellHeader *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
@@ -60,7 +60,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="authType">
-        <th uiTableHeaderSort="authType" uiCellHeader *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           <span class="headerTitle">
             {{ 'models.apiConfiguration.authType' | translate }}
           </span>
@@ -114,7 +114,8 @@
   </div>
 </div>
 <ui-paginator
-  [disabled]="loading"
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"
   [totalItems]="pageInfo.length"

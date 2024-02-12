@@ -1,3 +1,5 @@
+import * as L from 'leaflet';
+
 /**
  * Map settings for leaflet.
  */
@@ -25,6 +27,7 @@ export interface MapConstructorSettings {
   pmIgnore?: boolean;
   controls: MapControls;
   arcGisWebMap?: string;
+  geographicExtents?: { value: string; extent: string }[];
 }
 
 /** Available leaflet event types. */
@@ -50,6 +53,7 @@ export interface MapControls {
   measure: boolean;
   layer: boolean;
   search: boolean;
+  lastUpdate: L.ControlPosition | undefined | null;
 }
 
 /** Default values for the map controls */
@@ -60,4 +64,5 @@ export const DefaultMapControls: MapControls = {
   measure: false,
   layer: false,
   search: true,
+  lastUpdate: null,
 };

@@ -7,4 +7,7 @@
   [activeStep]="activeStep"
 >
 </shared-workflow-stepper>
-<router-outlet (activate)="onActivate($event)"></router-outlet>
+<router-outlet
+  (activate)="onActivate($event)"
+  (deactivate)="clearSubscriptions()"
+></router-outlet>

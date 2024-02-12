@@ -5,6 +5,7 @@ import {
   OnInit,
   Input,
   Inject,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +19,8 @@ import { RestService } from '../../services/rest/rest.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
+import { ResizeEvent } from 'angular-resizable-element';
+import { ResizableModule } from 'angular-resizable-element';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -34,28 +37,42 @@ const DEFAULT_STYLE = '';
     TranslateModule,
     ButtonModule,
     TooltipModule,
+    ResizableModule,
   ],
   templateUrl: './custom-widget-style.component.html',
   styleUrls: ['./custom-widget-style.component.scss'],
 })
 export class CustomWidgetStyleComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
+  /** Form control for the scss editor */
   public formControl = new FormControl(DEFAULT_STYLE);
+  /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
+  /** Editor options */
   public editorOptions = {
+    automaticLayout: true,
     theme: 'vs-dark',
     language: 'scss',
     fixedOverflowWidgets: false,
   };
+  /** Style applied to the widget */
   private styleApplied!: HTMLStyleElement;
+  /** Loading state */
   public loading = false;
 
+  /** Initial style */
   private initialStyle = '';
 
+  /** Widget component */
   @Input() widgetComp: any;
-  @Input() save!: (tile: any) => void;
+  /** Save function */
+  @Input() save!: (widget: any) => void;
+  /** Timeout to init editor */
+  private initEditorTimeoutListener!: NodeJS.Timeout;
+  /** Navbar size style */
+  public navbarStyle: any = {};
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -74,19 +91,22 @@ export class CustomWidgetStyleComponent
     super();
 
     // Avoids saving until the style is updated
-    this.formControl.valueChanges.subscribe(() => {
-      this.loading = true;
-    });
+    this.formControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loading = true;
+      });
 
     // Updates the style when the value changes
     this.formControl.valueChanges
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        const scss = `#${this.widgetComp.domId} {
+        const scss = `#${this.widgetComp.id} {
         ${value}
       }`;
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
+          .pipe(takeUntil(this.destroy$))
           .subscribe((css) => {
             set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
             this.styleApplied.innerText = css;
@@ -102,7 +122,7 @@ export class CustomWidgetStyleComponent
     // Avoids style duplication for the same element
     const widgetStyle = Array.from(
       this.document.querySelectorAll('style')
-    ).filter((style) => style.innerHTML.includes(this.widgetComp.domId))[0];
+    ).filter((style) => style.innerHTML.includes(this.widgetComp.id))[0];
     if (widgetStyle) this.styleApplied = widgetStyle;
     else this.styleApplied = this.document.createElement('style');
 
@@ -144,7 +164,7 @@ export class CustomWidgetStyleComponent
   async onSave(): Promise<void> {
     this.save({
       type: 'data',
-      id: this.widgetComp.widget.id,
+      id: this.widgetComp.id,
       options: this.widgetComp.widget.settings,
     });
 
@@ -159,7 +179,10 @@ export class CustomWidgetStyleComponent
    */
   public initEditor(editor: any): void {
     if (editor) {
-      setTimeout(() => {
+      if (this.initEditorTimeoutListener) {
+        clearTimeout(this.initEditorTimeoutListener);
+      }
+      this.initEditorTimeoutListener = setTimeout(() => {
         editor
           .getAction('editor.action.formatDocument')
           .run()
@@ -168,5 +191,60 @@ export class CustomWidgetStyleComponent
           });
       }, 100);
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.initEditorTimeoutListener) {
+      clearTimeout(this.initEditorTimeoutListener);
+    }
+  }
+
+  /**
+   * On resize action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.navbarStyle = {
+      width: `${event.rectangle.width}px`,
+      // height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const dashboardNavbars =
+      this.document.getElementsByTagName('shared-navbar');
+    let dashboardNavbarWidth = 0;
+    if (dashboardNavbars[0]) {
+      if (
+        (dashboardNavbars[0] as any).offsetWidth <
+        this.document.documentElement.clientWidth
+      ) {
+        // Only if the sidenav is not horizontal
+        dashboardNavbarWidth = (dashboardNavbars[0] as any).offsetWidth;
+      }
+    }
+    // set the min width as 30% of the screen size available
+    const minWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.3
+    );
+    // set the max width as 95% of the screen size available
+    const maxWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
+    );
+    if (
+      event.rectangle.width &&
+      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
+    ) {
+      return false;
+    }
+    return true;
   }
 }

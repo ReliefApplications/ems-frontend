@@ -23,17 +23,26 @@ const DEFAULT_PAGE_SIZE = 10;
   styleUrls: ['./role-users.component.scss'],
 })
 export class RoleUsersComponent extends UnsubscribeComponent implements OnInit {
+  /** Role to display */
   @Input() role!: Role;
+  /** Auto assigned flag */
   @Input() autoAssigned = false;
+  /** Loading status */
   public loading = true;
+  /** Updating status */
   public updating = false;
 
+  /** Displayed columns */
   public displayedColumns = ['name', 'username'];
 
+  /** Users */
   public users = new Array<User>();
+  /** Cached users */
   public cachedUsers: User[] = [];
+  /** Users query */
   private usersQuery!: QueryRef<RoleUsersNodesQueryResponse>;
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,

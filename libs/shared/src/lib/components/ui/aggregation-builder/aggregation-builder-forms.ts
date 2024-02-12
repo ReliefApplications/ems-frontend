@@ -184,6 +184,7 @@ export const createMappingForm = (value: any, widgetType: string) =>
  */
 export const createAggregationForm = (value: any) =>
   formBuilder.group({
+    id: [get(value, 'id', null)],
     name: [get(value, 'name', null), Validators.required],
     sourceFields: [get(value, 'sourceFields', []), Validators.required],
     pipeline: formBuilder.array(
