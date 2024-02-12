@@ -13,51 +13,68 @@
     >
     </shared-widget-choice>
   </div>
-  <!-- GRID OF WIDGETS -->
-  <gridster [options]="gridOptions" class="!w-full">
-    <gridster-item
-      [item]="widget"
-      *ngFor="let widget of widgets; let i = index"
+
+  <!-- Using an additional div to prevent the grid from overlapping the parent's padding -->
+  <div
+    class="h-full"
+    [ngClass]="{
+      'pb-[32px] mb-[-32px] box-content': isMinHeightEnabled
+    }"
+  >
+    <gridster
+      [options]="gridOptions"
+      class="!w-full"
+      [ngStyle]="{
+        'min-height.px': isMinHeightEnabled ? gridOptions.minimumHeight : 0
+      }"
     >
-      <shared-widget
-        #widgetElement
-        [widget]="widget"
-        (changeStep)="triggerChangeStepAction($event)"
-        (edit)="onEditWidget($event)"
-        [canUpdate]="canUpdate"
-        [headerLeftTemplate]="headerLeftTemplate"
-        [headerRightTemplate]="headerRightTemplate"
-      ></shared-widget>
-      <!-- Left header template -->
-      <ng-template #headerLeftTemplate>
-        <!-- Drag n drop indicator -->
-        <ui-icon
-          *ngIf="canUpdate"
-          icon="drag_indicator"
-          class="cursor-grab drag-handler flex items-center justify-center h-[40px] w-[40px] -ml-3 bg-white/70 rounded-2xl pointer-events-auto"
-          variant="grey"
-          [uiTooltip]="'common.tooltip.dragDrop' | translate"
-        >
-        </ui-icon>
-      </ng-template>
-      <!-- Right header template -->
-      <ng-template #headerRightTemplate let-id>
-        <!-- Widget actions -->
-        <shared-widget-actions
-          class="-mr-3 bg-white/70 rounded-2xl pointer-events-auto"
-          [id]="id"
-          [canUpdate]="canUpdate"
-          [collapsed]="widgetElement.elementRef.nativeElement.clientWidth < 500"
+      <gridster-item
+        [item]="widget"
+        class="max-w-full"
+        *ngFor="let widget of widgets; let i = index"
+      >
+        <shared-widget
+          #widgetElement
           [widget]="widget"
+          (changeStep)="triggerChangeStepAction($event)"
           (edit)="onEditWidget($event)"
-          (delete)="onDeleteWidget($event)"
-          (expand)="onExpandWidget($event)"
-          (style)="onStyleWidget($event)"
-        >
-        </shared-widget-actions>
-      </ng-template>
-    </gridster-item>
-  </gridster>
+          [canUpdate]="canUpdate"
+          [headerLeftTemplate]="headerLeftTemplate"
+          [headerRightTemplate]="headerRightTemplate"
+        ></shared-widget>
+        <!-- Left header template -->
+        <ng-template #headerLeftTemplate>
+          <!-- Drag n drop indicator -->
+          <ui-icon
+            *ngIf="canUpdate"
+            icon="drag_indicator"
+            class="cursor-grab drag-handler flex items-center justify-center h-[40px] w-[40px] -ml-3 bg-white/70 rounded-2xl pointer-events-auto"
+            variant="grey"
+            [uiTooltip]="'common.tooltip.dragDrop' | translate"
+          >
+          </ui-icon>
+        </ng-template>
+        <!-- Right header template -->
+        <ng-template #headerRightTemplate let-id>
+          <!-- Widget actions -->
+          <shared-widget-actions
+            class="-mr-3 bg-white/70 rounded-2xl pointer-events-auto"
+            [id]="id"
+            [canUpdate]="canUpdate"
+            [collapsed]="
+              widgetElement.elementRef.nativeElement.clientWidth < 500
+            "
+            [widget]="widget"
+            (edit)="onEditWidget($event)"
+            (delete)="onDeleteWidget($event)"
+            (expand)="onExpandWidget($event)"
+            (style)="onStyleWidget($event)"
+          >
+          </shared-widget-actions>
+        </ng-template>
+      </gridster-item>
+    </gridster>
+  </div>
 </ng-container>
 <!-- LOADING INDICATOR -->
 <ng-template #emptyTemplate>

@@ -17,6 +17,8 @@ import {
   AggregationDataQueryResponse,
   ReferenceDataAggregationQueryResponse,
 } from '../../../models/aggregation.model';
+import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
+import { PipelineStage } from './pipeline/pipeline-stage.enum';
 
 /**
  * Main component of Aggregation builder.
@@ -65,6 +67,8 @@ export class AggregationBuilderComponent
   public mappingFields$!: Observable<any[]>;
   /** Aggregation records loading state */
   public loadingAggregationRecords = false;
+  /** Array to hold the list of stages allowed for aggregation data source type. */
+  public stageList!: string[];
 
   /**
    * Getter for the pipeline of the aggregation form
@@ -106,6 +110,13 @@ export class AggregationBuilderComponent
           this.initFields();
         }
       });
+
+    this.stageList = this.referenceData
+      ? Object.values(PipelineStage).filter(
+          // Disable "custom" stage for reference data aggregations
+          (stage: string) => stage !== PipelineStage.CUSTOM
+        )
+      : Object.values(PipelineStage);
 
     // Fields query
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields) => {
@@ -176,34 +187,7 @@ export class AggregationBuilderComponent
           updateSelectedFilterFields();
         });
     } else if (this.referenceData) {
-      const refDataMeta: Metadata[] = [];
-      const getEditor = (field: any) => {
-        switch (field.type) {
-          case 'boolean': {
-            return 'boolean';
-          }
-          case 'number': {
-            return 'numeric';
-          }
-          case 'string': {
-            return 'text';
-          }
-          default: {
-            return '';
-          }
-        }
-      };
-      (this.referenceData.fields ?? []).forEach((field) => {
-        const meta: Metadata = {
-          name: field.graphQLFieldName || field.name,
-          type: field.type,
-          automated: false,
-          filterable: !['object', 'array'].includes(field.type),
-          editor: getEditor(field),
-        };
-
-        refDataMeta.push(meta);
-      });
+      const refDataMeta = getReferenceMetadata(this.referenceData);
       this.filterFields.next(refDataMeta);
       updateSelectedFilterFields();
     }

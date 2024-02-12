@@ -21,6 +21,7 @@ import { Apollo } from 'apollo-angular';
 import { ResourcesQueryResponse } from '../../../models/resource.model';
 import { GET_RESOURCES } from './graphql/queries';
 import { TranslateModule } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -75,19 +76,38 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
     private apollo: Apollo
   ) {
     super(ngControl, elementRef, renderer, changeDetectorRef, shadowDomService);
-    this.query = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
+
     this.valueField = 'id';
     this.textField = 'name';
     this.filterable = true;
-    this.searchChange.subscribe((value) => {
+    this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.onSearchChange(value);
     });
+  }
+
+  /**
+   * Override GraphQLSelectComponent onOpenSelect to only load query when
+   * select menu is open for the first time.
+   *
+   */
+  public override onOpenSelect(): void {
+    if (!this.query) {
+      this.query = this.apollo.watchQuery<ResourcesQueryResponse>({
+        query: GET_RESOURCES,
+        variables: {
+          first: ITEMS_PER_PAGE,
+          sortField: 'name',
+        },
+      });
+
+      this.query.valueChanges
+        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+        .subscribe(({ data, loading }) => {
+          this.queryName = Object.keys(data)[0];
+          this.updateValues(data, loading);
+        });
+    }
+    super.onOpenSelect();
   }
 
   /**
@@ -97,7 +117,7 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
    */
   public onSearchChange(search: string): void {
     const variables = this.query.variables;
-    this.query.refetch({
+    this.query?.refetch({
       ...variables,
       filter: {
         logic: 'and',

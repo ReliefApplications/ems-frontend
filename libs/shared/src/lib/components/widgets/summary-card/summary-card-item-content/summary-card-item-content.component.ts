@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   HostListener,
   Input,
   OnChanges,
@@ -17,6 +18,7 @@ import { HtmlWidgetContentComponent } from '../../common/html-widget-content/htm
 import { takeUntil } from 'rxjs';
 import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
 import { ContextService } from '../../../../services/context/context.service';
+import { Router } from '@angular/router';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -49,6 +51,8 @@ export class SummaryCardItemContentComponent
   public formattedHtml: SafeHtml = '';
   /** Formatted style, to be applied */
   public formattedStyle?: string;
+  /** Timeout to init active filter */
+  private timeoutListener!: NodeJS.Timeout;
 
   /**
    * Content component of Single Item of Summary Card.
@@ -58,34 +62,36 @@ export class SummaryCardItemContentComponent
    * @param parent Reference to parent summary card item component
    * @param contextService Context service
    * @param renderer Angular renderer2 service
+   * @param el Element ref
+   * @param router Angular router
    */
   constructor(
     private dataTemplateService: DataTemplateService,
     private dialog: Dialog,
     @Optional() public parent: SummaryCardItemComponent,
     private contextService: ContextService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private router: Router
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.formattedStyle = this.dataTemplateService.renderStyle(
-      this.wholeCardStyles,
-      this.fieldsValue,
-      this.styles
-    );
-    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, {
-      fields: this.fields,
-      data: this.fieldsValue,
-      styles: this.styles,
-    });
+    this.setHtml();
   }
 
   /**
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
+    this.setHtml();
+  }
+
+  /**
+   * Set widget html.
+   */
+  private setHtml() {
     this.formattedStyle = this.dataTemplateService.renderStyle(
       this.wholeCardStyles,
       this.fieldsValue,
@@ -96,6 +102,36 @@ export class SummaryCardItemContentComponent
       data: this.fieldsValue,
       styles: this.styles,
     });
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    this.timeoutListener = setTimeout(() => {
+      // Timeout allows to wait for content to be ready
+      const anchorElements = this.el.nativeElement.querySelectorAll('a');
+      anchorElements.forEach((anchor: HTMLElement) => {
+        this.renderer.listen(anchor, 'click', (event: Event) => {
+          // Prevent the default behavior of the anchor tag
+          event.preventDefault();
+          // Use the Angular Router to navigate to the desired route ( if needed )
+          const href = anchor.getAttribute('href');
+          const target = anchor.getAttribute('target');
+          if (href) {
+            if (target === '_blank') {
+              // Open link in a new tab, don't use Angular router
+              window.open(href, '_blank');
+            } else {
+              if (href?.startsWith('./')) {
+                // Navigation inside the app builder
+                this.router.navigateByUrl(href.substring(1));
+              } else {
+                // Default navigation
+                window.location.href = href;
+              }
+            }
+          }
+        });
+      });
+    }, 500);
   }
 
   /**

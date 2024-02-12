@@ -7,6 +7,7 @@ import {
   Inject,
   OnInit,
   TemplateRef,
+  OnDestroy,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -14,8 +15,8 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -64,7 +65,7 @@ const joinFilters = (
 })
 export class ChartComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit, OnChanges, OnDestroy
 {
   /** Can chart be exported */
   @Input() export = true;
@@ -94,6 +95,10 @@ export class ChartComponent
   public hasError = false;
   /** Selected predefined filter */
   public selectedFilter: CompositeFilterDescriptor | null = null;
+  /** Aggregation id */
+  private aggregationId?: string;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /** @returns Context filters array */
   get contextFilters(): CompositeFilterDescriptor {
@@ -103,6 +108,21 @@ export class ChartComponent
           logic: 'and',
           filters: [],
         };
+  }
+
+  /** @returns the graphql query variables object */
+  get graphQLVariables() {
+    try {
+      let mapping = JSON.parse(
+        this.settings.referenceDataVariableMapping || ''
+      );
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
+    } catch {
+      return null;
+    }
   }
 
   /**
@@ -152,11 +172,25 @@ export class ChartComponent
   }
 
   ngOnInit(): void {
-    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.series.next([]);
-      this.loadChart();
-      this.getOptions();
-    });
+    // Listen to dashboard filters changes if it is necessary
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(({ previous, current }) => {
+        if (
+          this.contextService.filterRegex.test(this.settings.contextFilters) ||
+          this.contextService.filterRegex.test(
+            this.settings.referenceDataVariableMapping
+          )
+        ) {
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
+            this.series.next([]);
+            this.loadChart();
+            this.getOptions();
+          }
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -182,48 +216,45 @@ export class ChartComponent
     };
 
     if (!isEqual(previousDatasource, currentDatasource)) {
+      const currentAggregationId = get(
+        changes,
+        'settings.currentValue.chart.aggregationId'
+      );
+      this.aggregationId = String(currentAggregationId)
+        ? String(currentAggregationId)
+        : this.aggregationId;
       this.loadChart();
     }
     this.getOptions();
   }
 
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.cancelRefresh$.next();
+    this.cancelRefresh$.complete();
+  }
+
   /** Loads chart */
   private loadChart(): void {
+    this.cancelRefresh$.next();
     this.loading = true;
     if (this.settings.resource || this.settings.referenceData) {
-      this.aggregationService
-        .getAggregations({
-          resource: this.settings.resource,
-          referenceData: this.settings.referenceData,
-          ids: [get(this.settings, 'chart.aggregationId', null)],
-          first: 1,
-        })
-        .then((res) => {
-          const aggregation = res.edges[0]?.node || null;
-          if (aggregation) {
-            this.dataQuery = this.aggregationService.aggregationDataQuery({
-              referenceData: this.settings.referenceData,
-              resource: this.settings.resource,
-              aggregation: aggregation.id || '',
-              mapping: get(this.settings, 'chart.mapping', null),
-              contextFilters: joinFilters(
-                this.contextFilters,
-                this.selectedFilter
-              ),
-              at: this.settings.at
-                ? this.contextService.atArgumentValue(this.settings.at)
-                : undefined,
-            });
-            if (this.dataQuery) {
-              this.getData();
-            } else {
-              this.loading = false;
-            }
-          } else {
-            this.loading = false;
-          }
-        })
-        .catch(() => (this.loading = false));
+      this.dataQuery = this.aggregationService.aggregationDataQuery({
+        referenceData: this.settings.referenceData,
+        resource: this.settings.resource,
+        aggregation: this.aggregationId || '',
+        mapping: get(this.settings, 'chart.mapping', null),
+        contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
+        graphQLVariables: this.graphQLVariables,
+        at: this.settings.at
+          ? this.contextService.atArgumentValue(this.settings.at)
+          : undefined,
+      });
+      if (this.dataQuery) {
+        this.getData();
+      } else {
+        this.loading = false;
+      }
     } else {
       this.loading = false;
     }
@@ -296,7 +327,7 @@ export class ChartComponent
   /** Load the data, using widget parameters. */
   private getData(): void {
     this.dataQuery
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe(({ errors, data, loading }: any) => {
         if (errors) {
           this.loading = false;

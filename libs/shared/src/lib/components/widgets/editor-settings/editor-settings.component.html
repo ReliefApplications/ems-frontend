@@ -28,7 +28,7 @@
       </ng-template>
     </ui-tab>
     <!-- Preview -->
-    <ui-tab *ngIf="widgetFormGroup.value">
+    <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon icon="preview" [size]="24"></ui-icon>
         <span>{{
@@ -38,6 +38,7 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-editor
+          id="widgetPreview"
           #widgetContent
           class="flex-1 h-full w-full"
           [settings]="widget.settings"

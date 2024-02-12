@@ -156,6 +156,7 @@
                 [field]="field.name"
                 [filterService]="filterService"
                 valueField="value"
+                [format]="field.format"
               >
               </shared-date-filter-menu>
             </ng-template>
@@ -1031,7 +1032,7 @@
       [columnMenu]="false"
       [width]="54"
       [resizable]="true"
-      [title]="actions.navigateSettings.title"
+      [title]="actions.navigateSettings?.title ?? ''"
       [sticky]="true"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
@@ -1044,8 +1045,8 @@
             action.emit({
               action: 'goTo',
               item: dataItem,
-              pageUrl: actions.navigateSettings.pageUrl,
-              field: actions.navigateSettings.field
+              pageUrl: actions.navigateSettings?.pageUrl,
+              field: actions.navigateSettings?.field
             })
           "
           [uiTooltip]="'components.widget.grid.actions.goTo' | translate"

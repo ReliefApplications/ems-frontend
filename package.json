@@ -1,12 +1,12 @@
 {
   "name": "oort-front",
-  "version": "2.3.0",
+  "version": "2.8.2",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
-    "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui",
+    "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets",
     "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci",
     "bundle:widgets": "npx nx build web-widgets --configuration=azure-dev  && node .scripts/build-widgets.js"
   },
@@ -67,6 +67,7 @@
     "@turf/centroid": "^6.5.0",
     "angular-gridster2": "^15.0.4",
     "angular-oauth2-oidc": "~13.0.1",
+    "angular-resizable-element": "^7.0.2",
     "apollo-angular": "^4.2.0",
     "chart.js": "^4.3.3",
     "chartjs-plugin-datalabels": "^2.2.0",

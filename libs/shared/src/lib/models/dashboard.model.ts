@@ -7,6 +7,7 @@ import { EditorSettingsComponent } from '../components/widgets/editor-settings/e
 import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
+import { EventEmitter } from '@angular/core';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -23,6 +24,25 @@ export interface DashboardFilter {
   closable?: boolean;
   structure?: any;
   position?: string;
+}
+
+/** Widget settings types */
+export type WidgetSettingsType = WidgetSettings<any>;
+
+/**
+ * Extended class of all widget settings components
+ *
+ * Implement this class for any widget settings class component that is created
+ */
+export abstract class WidgetSettings<T extends (...args: any[]) => any> {
+  /** Change event emitted on widget settings form group value change */
+  public formChange!: EventEmitter<ReturnType<T>>;
+  /** Related widget property */
+  public widget: any;
+  /** Widget settings form group */
+  public widgetFormGroup!: ReturnType<T>;
+  /** Build settings form for the given widget type */
+  public buildSettingsForm!: () => void;
 }
 
 /** List of Widget types with their properties */
@@ -272,9 +292,4 @@ export interface DeleteDashboardMutationResponse {
 /** Model for dashboards graphql query response */
 export interface DashboardsQueryResponse {
   dashboards: Dashboard[];
-}
-
-/** Model for create dashboard with context mutation response */
-export interface CreateDashboardWithContextMutationResponse {
-  addDashboardWithContext: Pick<Dashboard, 'id' | 'structure' | 'page'>;
 }

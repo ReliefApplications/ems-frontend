@@ -215,7 +215,10 @@
 			"rawJson": "******"
 		},
 		"label": "******",
-		"layers": "******",
+		"layers": {
+			"few": "******",
+			"none": "******"
+		},
 		"layout": {
 			"few": "******",
 			"none": "******",
@@ -532,7 +535,8 @@
 						"bottom": "******",
 						"left": "******",
 						"right": "******",
-						"top": "******"
+						"top": "******",
+						"unset": "******"
 					},
 					"info": "******",
 					"title": "******"
@@ -542,15 +546,23 @@
 					"defaultPosition": "******",
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
+					"gridType": {
+						"fit": "******",
+						"placeholder": "******",
+						"title": "******",
+						"verticalFixed": "******"
+					},
 					"help": {
 						"minCols": "******"
 					},
 					"margin": "******",
 					"minCols": "******",
+					"minimumHeight": "******",
 					"tooltip": {
 						"fixedRowHeight": "******",
 						"margin": "******",
 						"minCols": "******",
+						"minimumHeight": "******",
 						"reset": "******"
 					}
 				}
@@ -862,13 +874,26 @@
 				"to": "******",
 				"withValue": "******"
 			},
+			"columns": {
+				"action": "******",
+				"date": "******",
+				"modifiedValue": "******",
+				"originalValue": "******",
+				"person": "******",
+				"time": "******",
+				"variable": "******"
+			},
 			"download": "******",
 			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
 			},
-			"preview": "******"
+			"preview": "******",
+			"range": {
+				"clear": "******"
+			},
+			"useTableMode": "******"
 		},
 		"icon": {
 			"modal": {
@@ -1663,12 +1688,16 @@
 							"title": "******"
 						}
 					},
+					"help": {
+						"geographicExtent": "******"
+					},
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
 						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
+							"fieldMapping": "******",
 							"geoField": "******",
 							"latitude": "******",
 							"longitude": "******"
@@ -1743,6 +1772,8 @@
 							"timedimension": "******",
 							"title": "******"
 						},
+						"geographicExtent": "******",
+						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
@@ -1755,6 +1786,7 @@
 						"defaultLabel": "******",
 						"label": "******",
 						"symbol": "******",
+						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
@@ -1768,6 +1800,13 @@
 							"latitude": "******",
 							"longitude": "******",
 							"zoom": "******"
+						},
+						"geographicExtent": {
+							"add": "******",
+							"admin0": "******",
+							"region": "******",
+							"remove": "******",
+							"value": "****** {{context}} ****** {{filter}} ******"
 						}
 					}
 				},
@@ -1779,6 +1818,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "******",
+									"noVariables": "******",
+									"refresh": "******",
+									"title": "******",
+									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+								},
 								"title": "******",
 								"use": "******",
 								"wholeRow": {
@@ -1863,6 +1909,7 @@
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "******",
 			"noDataText": "******"
 		},
 		"datepicker": {
@@ -2019,6 +2066,7 @@
 			"unstick": "******"
 		},
 		"multiselect": {
+			"clearTitle": "******",
 			"noDataText": "******"
 		},
 		"pager": {
@@ -2422,7 +2470,23 @@
 				"title": "******"
 			},
 			"graphQLFilter": "******",
-			"path": "******",
+			"pagination": {
+				"cursorPath": "******",
+				"cursorVariable": "******",
+				"offsetVariable": "******",
+				"pageSizeVariable": "******",
+				"pageVariable": "******",
+				"strategy": "******",
+				"totalCountPath": "******",
+				"usePagination": {
+					"hint": "******",
+					"text": "******"
+				}
+			},
+			"path": {
+				"placeholder": "******",
+				"title": "******"
+			},
 			"payload": {
 				"label": "******",
 				"show": "******"

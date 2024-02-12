@@ -9,7 +9,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GET_RESOURCE } from './graphql/queries';
-import { debounceTime, takeUntil } from 'rxjs';
+import { Subject, debounceTime, from, merge, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GridService } from '../../../services/grid/grid.service';
@@ -31,6 +31,16 @@ export class AggregationGridComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Data */
+  @Input() widget: any;
+  /** Resource id */
+  @Input() resourceId!: string;
+  /** Aggregation */
+  @Input() aggregation!: Aggregation;
+  /** Context filters to be used with dashboard filters */
+  @Input() contextFilters: string | undefined;
+  /** Version at to be used with dashboard filters */
+  @Input() at: string | undefined;
   /** Grid data */
   public gridData: GridDataResult = { data: [], total: 0 };
   /** Grid fields */
@@ -52,21 +62,14 @@ export class AggregationGridComponent
   public pageSize = 10;
   /** Skip */
   public skip = 0;
-  /** Data query */
-  private dataQuery!: QueryRef<AggregationDataQueryResponse>;
   /** Pager settings */
   public pagerSettings = PAGER_SETTINGS;
   /** Show filter */
   public showFilter = false;
-
-  /** Resource id */
-  @Input() resourceId!: string;
-  /** Aggregation */
-  @Input() aggregation!: Aggregation;
-  /** Context filters to be used with dashboard filters */
-  @Input() contextFilters: string | undefined;
-  /** Version at to be used with dashboard filters */
-  @Input() at: string | undefined;
+  /** Data query */
+  private dataQuery!: QueryRef<AggregationDataQueryResponse>;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -110,11 +113,18 @@ export class AggregationGridComponent
   }
 
   ngOnInit(): void {
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.getAggregationData();
-      });
+    // Listen to dashboard filters changes if it is necessary
+    if (this.contextService.filterRegex.test(this.contextFilters as string)) {
+      this.contextService.filter$
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(({ previous, current }) => {
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
+            this.getAggregationData();
+          }
+        });
+    }
     this.queryBuilder.isDoneLoading$.subscribe((doneLoading) => {
       if (doneLoading) {
         this.getAggregationFields();
@@ -142,18 +152,20 @@ export class AggregationGridComponent
         : undefined,
       this.at ? this.contextService.atArgumentValue(this.at) : undefined
     );
-    this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-      next: ({ data, loading }) => {
-        this.updateValues(data, loading);
-      },
-      error: (err: any) => {
-        this.loading = false;
-        this.setErrorStatus(
-          err,
-          'components.widget.grid.errors.queryFetchFailed'
-        );
-      },
-    });
+    this.dataQuery.valueChanges
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: (err: any) => {
+          this.loading = false;
+          this.setErrorStatus(
+            err,
+            'components.widget.grid.errors.queryFetchFailed'
+          );
+        },
+      });
   }
 
   /**
@@ -250,8 +262,8 @@ export class AggregationGridComponent
     this.skip = event.skip;
     this.pageSize = event.take;
 
-    this.dataQuery
-      .fetchMore({
+    from(
+      this.dataQuery.fetchMore({
         variables: {
           first: this.pageSize,
           skip: this.skip,
@@ -259,7 +271,9 @@ export class AggregationGridComponent
           sortOrder: this.sortOrder,
         },
       })
-      .then((results) => this.updateValues(results.data, results.loading));
+    )
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .subscribe((results) => this.updateValues(results.data, results.loading));
   }
 
   /**

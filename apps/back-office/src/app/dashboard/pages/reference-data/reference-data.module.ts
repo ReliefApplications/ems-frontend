@@ -8,6 +8,7 @@ import {
   GraphQLSelectModule,
   IconModule,
   SpinnerModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,6 +26,7 @@ import {
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { ResizableModule } from 'angular-resizable-element';
 
 /**
  * Reference Data page module.
@@ -54,6 +56,8 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
     AlertModule,
     InputsModule,
     DropDownsModule,
+    ToggleModule,
+    ResizableModule,
   ],
 })
 export class ReferenceDataModule {}

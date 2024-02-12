@@ -279,6 +279,7 @@ export class RecordModalComponent
         revert: (version: any) =>
           this.confirmRevertDialog(this.record, version),
       },
+      panelClass: ['lg:w-4/5', 'w-full'],
       autoFocus: false,
     });
   }

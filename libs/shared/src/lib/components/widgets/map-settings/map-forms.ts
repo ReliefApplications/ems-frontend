@@ -47,6 +47,7 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   layers: [],
   controls: DefaultMapControls,
   arcGisWebMap: null,
+  geographicExtents: [],
 };
 
 /** Default gradient for heatmap */
@@ -142,6 +143,11 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
       layout: [get(value, 'layout', null)],
       aggregation: [get(value, 'aggregation', null)],
       refData: [get(value, 'refData', null)],
+      referenceDataVariableMapping: get<string | null>(
+        value,
+        'referenceDataVariableMapping',
+        null
+      ),
       geoField: [
         {
           value: get(value, 'geoField', null),
@@ -507,6 +513,23 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
   });
 
 /**
+ * Create geographic extent entry
+ *
+ * @param value geographic extent value
+ * @param value.value geographic extent dynamic value
+ * @param value.extent geographic extent ( admin0 or region )
+ * @returns geographic extent form group
+ */
+export const createGeographicExtent = (value?: {
+  value: string;
+  extent: string;
+}): FormGroup =>
+  fb.group({
+    value: [get(value, 'value', null)],
+    extent: [get(value, 'extent', 'admin0')],
+  });
+
+/**
  * Create map form from value
  *
  * @param id widget id
@@ -548,6 +571,11 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
       }),
     }),
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
+    geographicExtents: fb.array(
+      get(value, 'geographicExtents', []).map((x: any) =>
+        createGeographicExtent(x)
+      )
+    ),
     // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
     layers: [get(value, 'layers', [])] as string[],

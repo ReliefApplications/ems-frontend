@@ -3,6 +3,7 @@ import calcFunctions from './calcFunctions';
 import { Page } from '../../models/page.model';
 import { REFERENCE_DATA_END } from '../../services/query-builder/query-builder.service';
 import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
+import jsonpath from 'jsonpath';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
@@ -148,6 +149,26 @@ const replaceRecordFields = (
 ): string => {
   let formattedHtml = html;
   if (fields) {
+    // Regular expression for detecting when ="{{data.*}}" is used and
+    // we should not interpret it, but keep the default attribute value
+    const attributeRegex = /([a-zA-Z]+)="{{data\.(.*?)}}"/g;
+
+    // Replace attributes with data binding expressions
+    formattedHtml = formattedHtml.replace(
+      attributeRegex,
+      (match, attributeName, dataFieldName) => {
+        // Check if it's an attribute with data binding
+        if (attributeName && dataFieldName) {
+          // Replace the attribute with the corresponding value
+          const value = get(fieldsValue, dataFieldName);
+          return !isNil(value) ? `${attributeName}="${value}"` : match;
+        } else {
+          // Return the original match if not a data binding attribute
+          return match;
+        }
+      }
+    );
+
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     // We check for LIST fields and duplicate their only element for each subfield
@@ -174,15 +195,28 @@ const replaceRecordFields = (
     });
 
     for (const field of fields) {
-      const toReadableObject = (obj: any): any =>
-        typeof obj === 'object' && obj !== null
-          ? Array.isArray(obj)
-            ? obj.map((o) => toReadableObject(o)).join('<br>') // If array, return mapped elements
-            : Object.keys(obj) // If object, return object keys and values as strings
+      const toReadableObject = (obj: any): any => {
+        // If value exists keep checking
+        if (obj) {
+          if (typeof obj === 'object') {
+            // If array, return mapped elements
+            if (Array.isArray(obj)) {
+              return obj.map((o) => toReadableObject(o)).join('<br>');
+            } else {
+              // If object, return object keys and values as strings
+              return Object.keys(obj)
                 .filter((key) => key !== '__typename')
                 .map((key) => `${key}: ${obj[key]}`)
-                .join(', ')
-          : `${obj}`; // If not an object, return string representation
+                .join(', ');
+            }
+          } else {
+            // If not an object, return string representation
+            return `${obj}`;
+          }
+        }
+        // Return default undefined/null value if no obj
+        return obj;
+      };
 
       const value = toReadableObject(get(fieldsValue, field.name));
 
@@ -313,9 +347,10 @@ const replaceRecordFields = (
             break;
           case 'file':
             convertedValue = '';
-            if (isArray(value)) {
-              for (let i = 0; value[i]; ) {
-                const file = value[i];
+            const fileArray = get(fieldsValue, field.name);
+            if (isArray(fileArray)) {
+              for (let i = 0; fileArray[i]; ) {
+                const file = fileArray[i];
                 const fileExt = file.name.split('.').pop();
                 const fileIcon =
                   fileExt && ICON_EXTENSIONS[fileExt]
@@ -338,7 +373,6 @@ const replaceRecordFields = (
                   </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
               }
             }
-
             break;
           case 'owner':
           case 'users':
@@ -439,12 +473,18 @@ const replaceRecordFields = (
 const replaceAggregationData = (html: string, aggregation: any): string => {
   let formattedHtml = html;
 
-  const regex = /{{aggregation\.(.*?)}}/g;
-  const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
-    // Replace the key with correct value
-    return get(aggregation, p1, '');
-  });
-  formattedHtml = replacedHtml;
+  for (const key of Object.keys(aggregation)) {
+    const regex = new RegExp(`{{aggregation\\.${key}\\.(.*?)}}`, 'g');
+    const replacedHtml = formattedHtml.replace(regex, (match, p1) => {
+      try {
+        // Replace the key with correct value
+        return jsonpath.query(get(aggregation, key), p1)[0] || '';
+      } catch {
+        return '';
+      }
+    });
+    formattedHtml = replacedHtml;
+  }
   // replace all /n, removing it since we don't need because tailwind already styles it
   formattedHtml = formattedHtml.replace(/\n/g, '');
   return formattedHtml;

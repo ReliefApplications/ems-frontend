@@ -370,6 +370,7 @@ export class FormComponent
           id: this.record.id,
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
+          resizable: true,
         },
       });
     }

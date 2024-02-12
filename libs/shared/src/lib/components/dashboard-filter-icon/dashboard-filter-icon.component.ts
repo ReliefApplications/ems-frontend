@@ -48,8 +48,8 @@ export class DashboardFilterIconComponent
   ngOnInit(): void {
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.active = !isEmpty(value);
+      .subscribe(({ current }) => {
+        this.active = !isEmpty(current);
       });
   }
 

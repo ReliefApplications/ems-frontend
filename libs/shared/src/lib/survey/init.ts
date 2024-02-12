@@ -121,7 +121,7 @@ export const initCustomSurvey = (
       document
     );
     OwnerComponent.init(apollo, ComponentCollection.Instance);
-    UsersComponent.init(apollo, ComponentCollection.Instance);
+    UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
   }
 
