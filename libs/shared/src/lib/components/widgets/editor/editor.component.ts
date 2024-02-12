@@ -235,15 +235,21 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.renderer.listen(anchor, 'click', (event: Event) => {
             // Prevent the default behavior of the anchor tag
             event.preventDefault();
-            // Use the Angular Router to navigate to the desired route
+            // Use the Angular Router to navigate to the desired route ( if needed )
             const href = anchor.getAttribute('href');
+            const target = anchor.getAttribute('target');
             if (href) {
-              if (href?.startsWith('./')) {
-                // Navigation inside the app builder
-                this.router.navigateByUrl(href.substring(1));
+              if (target === '_blank') {
+                // Open link in a new tab, don't use Angular router
+                window.open(href, '_blank');
               } else {
-                // Default navigation
-                window.location.href = href;
+                if (href?.startsWith('./')) {
+                  // Navigation inside the app builder
+                  this.router.navigateByUrl(href.substring(1));
+                } else {
+                  // Default navigation
+                  window.location.href = href;
+                }
               }
             }
           });
