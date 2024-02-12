@@ -26,6 +26,12 @@ kendo-datapager {
     }
   }
 
+  .hide-info {
+    kendo-datapager-info {
+      display: none !important;
+    }
+  }
+
   kendo-datapager.k-pager-mobile-sm {
     &:not(.hide-first-last) {
       kendo-datapager-next-buttons {

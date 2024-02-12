@@ -243,10 +243,13 @@ export class ContextService {
    * @returns object, where string properties that can be transformed to objects, are returned as objects
    */
   private parseJSONValues(obj: any): any {
+    if (isArray(obj)) {
+      return obj.map((element: any) => this.parseJSONValues(element));
+    }
     return mapValues(obj, (value: any) => {
       if (isString(value)) {
         try {
-          return JSON.parse(value);
+          return isObject(JSON.parse(value)) ? JSON.parse(value) : value;
         } catch (error) {
           // If parsing fails, return the original string value
           return value;

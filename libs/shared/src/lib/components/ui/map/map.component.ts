@@ -53,14 +53,9 @@ import {
   isEqual,
   flatMapDeep,
   pick,
+  clone,
 } from 'lodash';
-import {
-  BehaviorSubject,
-  concatMap,
-  debounceTime,
-  filter,
-  takeUntil,
-} from 'rxjs';
+import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
@@ -165,10 +160,10 @@ export class MapComponent
   private basemapTree: L.Control.Layers.TreeObject[][] = [];
   /** Current layers tree */
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
-  /** Refreshing layers. When true, should prevent layers to be duplicated  */
-  private refreshingLayers = new BehaviorSubject<boolean>(true);
   /** Current geographic extent value */
   private geographicExtentValue: any;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /**
    * Map widget component
@@ -261,37 +256,12 @@ export class MapComponent
               current
             )
           ),
-          concatMap(() => loadNextFilters()),
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
           this.filterLayers();
         });
     }
-
-    /**
-     * Keep checking until filters are applied in order to apply next one
-     */
-    let filterCheckTimeoutListener: NodeJS.Timeout;
-    const loadNextFilters = (): Promise<void> => {
-      const checkAgain = (resolve: () => void) => {
-        if (this.refreshingLayers.getValue()) {
-          if (filterCheckTimeoutListener) {
-            clearTimeout(filterCheckTimeoutListener);
-          }
-          resolve();
-        } else {
-          if (filterCheckTimeoutListener) {
-            clearTimeout(filterCheckTimeoutListener);
-          }
-          filterCheckTimeoutListener = setTimeout(
-            () => checkAgain(resolve),
-            100
-          );
-        }
-      };
-      return new Promise(checkAgain);
-    };
   }
 
   override ngOnDestroy(): void {
@@ -380,12 +350,7 @@ export class MapComponent
     const zoomControl = get(mapSettings, 'zoomControl', false);
     const controls = get(mapSettings, 'controls', DefaultMapControls);
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
-    const geographicExtentValue = get(
-      mapSettings,
-      'geographicExtentValue',
-      undefined
-    );
-    const geographicExtent = get(mapSettings, 'geographicExtent', 'admin0');
+    const geographicExtents = get(mapSettings, 'geographicExtents', []);
     const layers = get(mapSettings, 'layers', []);
 
     return {
@@ -399,8 +364,7 @@ export class MapComponent
       layers,
       controls,
       arcGisWebMap,
-      geographicExtentValue,
-      geographicExtent,
+      geographicExtents,
     };
   }
 
@@ -421,8 +385,7 @@ export class MapComponent
       arcGisWebMap,
       layers,
       controls,
-      geographicExtent,
-      geographicExtentValue,
+      geographicExtents,
     } = this.extractSettings();
 
     if (initMap) {
@@ -464,7 +427,7 @@ export class MapComponent
       // Set the needed map instance for it's popup service instance
       this.mapPopupService.setMap = this.map;
 
-      this.zoomOn(geographicExtent as string);
+      this.zoomOn();
     } else {
       // If value changes for the map we would change in order to not trigger map events unnecessarily
       if (this.map.getMaxZoom() !== maxZoom) {
@@ -507,7 +470,7 @@ export class MapComponent
 
     // To zoom on getGeographicExtentValue, if necessary
     // Check if has initial getGeographicExtentValue to zoom on country
-    const fieldValue = geographicExtentValue?.match(
+    const fieldValue = JSON.stringify(geographicExtents).match(
       this.contextService.filterRegex
     );
     if (fieldValue) {
@@ -515,7 +478,7 @@ export class MapComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
-          this.zoomOn(geographicExtent as string);
+          this.zoomOn();
         });
     }
   }
@@ -703,11 +666,6 @@ export class MapComponent
         layers
       );
     }
-    // this.baseTree = {
-    //   label: 'Base Maps',
-    //   children: basemaps,
-    //   collapsed: true,
-    // };
   }
 
   /**
@@ -1072,7 +1030,7 @@ export class MapComponent
   /** Set the new layers based on the filter value */
   private async filterLayers() {
     this.document.getElementById('layer-control-button-close')?.click();
-    this.refreshingLayers.next(false);
+    this.cancelRefresh$.next();
     const { layers: layersToGet, controls } = this.extractSettings();
 
     const shouldDisplayStatuses: Record<string, boolean> = {};
@@ -1096,36 +1054,39 @@ export class MapComponent
 
     // get new layers, with filters applied
     this.resetLayers();
-    const l = await this.getLayers(layersToGet ?? [], false);
-    this.overlaysTree = [l.layers];
+    from(this.getLayers(layersToGet ?? [], false))
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .subscribe((res) => {
+        this.overlaysTree = [res.layers];
 
-    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
-      if (x.layer) {
-        const id = (x.layer as any).id;
-        if (!isNil(shouldDisplayStatuses[id])) {
-          (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
-          if (shouldDisplayStatuses[id]) {
-            this.map.addLayer(x.layer);
+        flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach(
+          (x) => {
+            if (x.layer) {
+              const id = (x.layer as any).id;
+              if (!isNil(shouldDisplayStatuses[id])) {
+                (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
+                if (shouldDisplayStatuses[id]) {
+                  this.map.addLayer(x.layer);
+                }
+              } else {
+                this.map.addLayer(x.layer);
+              }
+            }
           }
-        } else {
-          this.map.addLayer(x.layer);
+        );
+
+        if (controls.layer) {
+          // remove current layer controls
+          this.layerControlButtons.remove();
+          this.layerControlButtons = null;
+
+          // create new layer controls, from newly created layers
+          this.setLayersControl(
+            flatten(this.basemapTree),
+            flatten(this.overlaysTree)
+          );
         }
-      }
-    });
-
-    if (controls.layer) {
-      // remove current layer controls
-      this.layerControlButtons.remove();
-      this.layerControlButtons = null;
-
-      // create new layer controls, from newly created layers
-      this.setLayersControl(
-        flatten(this.basemapTree),
-        flatten(this.overlaysTree)
-      );
-    }
-
-    this.refreshingLayers.next(true);
+      });
   }
 
   /**
@@ -1178,52 +1139,32 @@ export class MapComponent
    *
    * @returns geographic extent value
    */
-  private getGeographicExtentValue(): string | false {
+  private getGeographicExtents(): any {
     const mapSettings = this.extractSettings();
-    const geographicExtentValue = mapSettings.geographicExtentValue;
-    if (geographicExtentValue) {
-      const fieldValue = geographicExtentValue?.match(
-        this.contextService.filterRegex
-      );
-      if (fieldValue) {
-        // If geographic extent is dynamic and in the format {{filter., try to replace it by dashboard filter value, if any
-        const replacedFilter = this.contextService.replaceFilter(mapSettings);
-        return replacedFilter.geographicExtentValue?.match(
-          this.contextService.filterRegex
-        )
-          ? false
-          : replacedFilter.geographicExtentValue;
-      }
-      const contextValue = geographicExtentValue?.match(
-        this.contextService.contextRegex
-      );
-      // If geographic extent is dynamic and in the format {{context., context dashboard is not set
-      if (contextValue) {
-        return false;
-      }
-      // As the dashboard context value is automatically replaced on dashboard init,
-      // and the geographicExtentValue can also be static, return the value directly
-      return geographicExtentValue as string;
+    const geographicExtents = mapSettings.geographicExtents;
+    if (geographicExtents && geographicExtents.length > 0) {
+      let mapping = clone(geographicExtents);
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
     } else {
-      return false;
+      return null;
     }
   }
 
   /**
    * If geographicExtentValue exists, calls mapPolygonsService to zoom on it
-   *
-   * @param  geographicExtent geographic extent (admin0)
    */
-  private zoomOn(geographicExtent: string): void {
-    const geographicExtentValue = this.getGeographicExtentValue();
+  private zoomOn(): void {
+    const geographicExtentValue = this.getGeographicExtents();
     if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
       this.geographicExtentValue = geographicExtentValue;
-      if (geographicExtentValue) {
-        this.mapPolygonsService.zoomOn(
-          geographicExtentValue,
-          geographicExtent,
-          this.map
-        );
+      if (
+        geographicExtentValue &&
+        geographicExtentValue.some((x: any) => x.value)
+      ) {
+        this.mapPolygonsService.zoomOn(geographicExtentValue, this.map);
       } else {
         this.setDefaultZoom();
       }

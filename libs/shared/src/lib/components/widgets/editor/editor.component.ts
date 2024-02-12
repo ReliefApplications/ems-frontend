@@ -71,8 +71,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public aggregationsData: any = {};
   /** Loading indicator */
   public loading = true;
-  /** Refresh subject, emit a value when refresh needed */
-  public refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
 
@@ -151,7 +151,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           if (
             this.contextService.shouldRefresh(this.settings, previous, current)
           ) {
-            this.refresh$.next(true);
+            this.cancelRefresh$.next();
             this.loading = true;
             this.setHtml();
           }
@@ -235,15 +235,21 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.renderer.listen(anchor, 'click', (event: Event) => {
             // Prevent the default behavior of the anchor tag
             event.preventDefault();
-            // Use the Angular Router to navigate to the desired route
+            // Use the Angular Router to navigate to the desired route ( if needed )
             const href = anchor.getAttribute('href');
+            const target = anchor.getAttribute('target');
             if (href) {
-              if (href?.startsWith('./')) {
-                // Navigation inside the app builder
-                this.router.navigateByUrl(href.substring(1));
+              if (target === '_blank') {
+                // Open link in a new tab, don't use Angular router
+                window.open(href, '_blank');
               } else {
-                // Default navigation
-                window.location.href = href;
+                if (href?.startsWith('./')) {
+                  // Navigation inside the app builder
+                  this.router.navigateByUrl(href.substring(1));
+                } else {
+                  // Default navigation
+                  window.location.href = href;
+                }
               }
             }
           });
@@ -261,7 +267,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedStyle = this.dataTemplateService.renderStyle(
             this.settings.wholeCardStyles || false,
@@ -313,7 +319,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
@@ -328,7 +334,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
