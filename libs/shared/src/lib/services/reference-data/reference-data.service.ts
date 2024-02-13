@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get, isNil } from 'lodash';
+import { isArray, isEqual, get, isNil, isObject } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -115,15 +115,23 @@ export class ReferenceDataService {
       // Retrieve foreign field items for multiselect or single select
       if (foreignIsMultiselect) {
         selectedForeignValue = filter.foreignValue.map((value: any) => {
+          const isPrimitiveValue = !isObject(value);
           return foreignItems.find(
-            (item) => item[foreignValueField] === value.value[foreignValueField]
+            (item) =>
+              item[foreignValueField] ===
+              (isPrimitiveValue
+                ? value
+                : (value as any).value[foreignValueField])
           )?.[filter.foreignField];
         });
       } else {
+        const isPrimitiveValue = !isObject(filter.foreignValue);
         selectedForeignValue = foreignItems.find(
           (item) =>
             get(item, foreignValueField) ===
-            filter.foreignValue[foreignValueField]
+            (isPrimitiveValue
+              ? filter.foreignValue
+              : filter.foreignValue?.[foreignValueField])
         )?.[filter.foreignField];
       }
       return items
