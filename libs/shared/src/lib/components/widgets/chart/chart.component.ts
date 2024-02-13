@@ -7,6 +7,7 @@ import {
   Inject,
   OnInit,
   TemplateRef,
+  OnDestroy,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -15,7 +16,7 @@ import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -64,7 +65,7 @@ const joinFilters = (
 })
 export class ChartComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit, OnChanges, OnDestroy
 {
   /** Can chart be exported */
   @Input() export = true;
@@ -98,6 +99,8 @@ export class ChartComponent
   public selectedFilter: CompositeFilterDescriptor | null = null;
   /** Aggregation id */
   private aggregationId?: string;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /** @returns Context filters array */
   get contextFilters(): CompositeFilterDescriptor {
@@ -227,8 +230,15 @@ export class ChartComponent
     this.getOptions();
   }
 
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.cancelRefresh$.next();
+    this.cancelRefresh$.complete();
+  }
+
   /** Loads chart */
   private loadChart(): void {
+    this.cancelRefresh$.next();
     this.loading = true;
     if (this.settings.resource || this.settings.referenceData) {
       this.dataQuery = this.aggregationService.aggregationDataQuery({
@@ -319,7 +329,7 @@ export class ChartComponent
   /** Load the data, using widget parameters. */
   private getData(): void {
     this.dataQuery
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe(({ errors, data, loading }: any) => {
         if (errors) {
           this.loading = false;

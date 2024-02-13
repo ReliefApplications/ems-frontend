@@ -68,8 +68,6 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   /** Filter template */
   public survey: Model = new Model();
-  /** Filter template structure */
-  public surveyStructure: any = {};
   /** Quick filter display */
   public quickFilters: QuickFilter[] = [];
   /** Indicate empty status of filter */
@@ -130,6 +128,13 @@ export class DashboardFilterComponent
           this.setFilterContainerDimensions();
         }
       );
+    // Updates the survey with the latest filter structure
+    this.contextService.filterStructure$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.initSurvey();
+      });
+
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -140,7 +145,6 @@ export class DashboardFilterComponent
       this.setFilterContainerDimensions();
     }
     if (changes.dashboard) {
-      this.surveyStructure = this.dashboard?.filter?.structure || '';
       this.initSurvey();
     }
   }

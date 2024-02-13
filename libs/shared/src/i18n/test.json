@@ -1689,6 +1689,9 @@
 							"title": "******"
 						}
 					},
+					"help": {
+						"geographicExtent": "******"
+					},
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
@@ -1799,7 +1802,13 @@
 							"longitude": "******",
 							"zoom": "******"
 						},
-						"geographicExtent": "****** {{context}} ****** {{filter}} ******"
+						"geographicExtent": {
+							"add": "******",
+							"admin0": "******",
+							"region": "******",
+							"remove": "******",
+							"value": "****** {{context}} ****** {{filter}} ******"
+						}
 					}
 				},
 				"style": {

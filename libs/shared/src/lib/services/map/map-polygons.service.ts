@@ -3,8 +3,9 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject, first } from 'rxjs';
 import { EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
 import set from 'lodash/set';
-import { flattenDeep, get, isNil, isObject, uniq } from 'lodash';
+import { flattenDeep, get, isArray, isNil, isObject, uniq } from 'lodash';
 import * as L from 'leaflet';
+import REGIONS from './regions';
 
 /** Available admin identifiers */
 type AdminIdentifier = 'admin0.iso2code' | 'admin0.iso3code' | 'admin0.id';
@@ -115,35 +116,91 @@ export class MapPolygonsService {
    * Fit bounds & zoom on country
    *
    * @param geographicExtentValue geographic extent value
-   * @param geographicExtent geographic extent (admin0)
    * @param map leaflet map
    */
   public zoomOn(
-    geographicExtentValue: string,
-    geographicExtent: string,
+    geographicExtentValue: { extent: string; value: string | string[] }[],
     map: L.Map
   ): void {
-    // Only admin0 is available so far
-    if (geographicExtent === 'admin0') {
-      this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
-        const admin0 = this.admin0s.find(
-          (data) =>
-            data.iso2code === geographicExtentValue ||
-            data.iso3code === geographicExtentValue ||
-            data.name === geographicExtentValue
-        );
-        if (admin0) {
-          const layer = L.geoJSON({
-            type: 'Feature',
-            geometry: admin0.polygons,
-            properties: {},
-          } as any);
-          // Timeout seems to be needed for first load of the map.
-          setTimeout(() => {
-            map.fitBounds(layer.getBounds());
-          }, 500);
+    this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
+      // let layer: L.GeoJSON | undefined = undefined;
+      const geoJSON: any = {
+        type: 'FeatureCollection',
+        features: [],
+      };
+      geographicExtentValue.forEach((x) => {
+        switch (x.extent) {
+          case 'admin0': {
+            if (isArray(x.value)) {
+              const admin0s = this.admin0s.filter(
+                (data) =>
+                  x.value.includes(data.iso2code) ||
+                  x.value.includes(data.iso3code) ||
+                  x.value.includes(data.name)
+              );
+              if (admin0s.length > 0) {
+                geoJSON.features.push({
+                  type: 'FeatureCollection',
+                  features: admin0s.map((x: any) => ({
+                    type: 'Feature',
+                    geometry: x.polygons,
+                    properties: {},
+                  })),
+                });
+              }
+            } else {
+              const admin0 = this.admin0s.find(
+                (data) =>
+                  data.iso2code === x.value ||
+                  data.iso3code === x.value ||
+                  data.name === x.value
+              );
+              if (admin0) {
+                geoJSON.features.push({
+                  type: 'Feature',
+                  geometry: admin0.polygons,
+                  properties: {},
+                });
+              }
+            }
+            break;
+          }
+          case 'region': {
+            if (isArray(x.value)) {
+              const regions = REGIONS.filter((data) =>
+                x.value.includes(data.name)
+              );
+              if (regions.length > 0) {
+                geoJSON.features.push({
+                  type: 'FeatureCollection',
+                  features: regions.map((x) => ({
+                    type: 'Feature',
+                    geometry: x.geometry,
+                    properties: {},
+                  })),
+                });
+              }
+            } else {
+              const region = REGIONS.find((data) => data.name === x.value);
+              if (region) {
+                geoJSON.features.push({
+                  type: 'Feature',
+                  geometry: region.geometry,
+                  properties: {},
+                });
+              }
+            }
+            break;
+          }
         }
       });
-    }
+
+      if (geoJSON.features.length > 0) {
+        // Timeout seems to be needed for first load of the map.
+        setTimeout(() => {
+          map.fitBounds(L.geoJSON(geoJSON).getBounds());
+        }, 500);
+      }
+    });
   }
 }

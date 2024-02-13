@@ -16,6 +16,7 @@ import {
   ContextService,
   DataTemplateService,
   WorkflowService,
+  MapLayersService,
 } from '@oort-front/shared';
 import { debounceTime } from 'rxjs';
 import { isEmpty } from 'lodash';
@@ -35,6 +36,7 @@ import { Router } from '@angular/router';
     WorkflowService,
     ContextService,
     DataTemplateService,
+    MapLayersService,
   ],
 })
 export class AppWidgetComponent
@@ -104,6 +106,7 @@ export class AppWidgetComponent
     private router: Router,
     private shadowDomService: ShadowDomService
   ) {
+    console.log('DEBUG: build from 02/02/2023');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
     this.contextService.filter$

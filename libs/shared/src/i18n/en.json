@@ -1689,6 +1689,9 @@
 							"title": "Layer styles"
 						}
 					},
+					"help": {
+						"geographicExtent": "Use filter and / or page context to zoom on the map"
+					},
 					"layers": {
 						"add": "Add new layer",
 						"chooseLayer": "Choose a layer",
@@ -1799,7 +1802,13 @@
 							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
 						},
-						"geographicExtent": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
+						"geographicExtent": {
+							"add": "Add new geographic extent",
+							"admin0": "Use either iso2code, iso3code or country name",
+							"region": "Use region name",
+							"remove": "Remove geographic extent",
+							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
+						}
 					}
 				},
 				"style": {
