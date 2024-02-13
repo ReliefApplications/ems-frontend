@@ -186,7 +186,7 @@ export class SummaryCardItemContentComponent
     if (!resetButtonIsClicked) {
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
       while (
-        currentNode.localName !== 'shared-editor' &&
+        currentNode.localName !== 'shared-summary-card-item-content' &&
         !resetButtonIsClicked
       ) {
         currentNode = this.renderer.parentNode(currentNode);
