@@ -49,6 +49,8 @@ import { GET_RECORD_BY_ID } from './graphql/queries';
 export class ContextService {
   /** To update/keep the current filter */
   public filter = new BehaviorSubject<Record<string, any>>({});
+  /** To update/keep the current filter structure  */
+  public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<{
     position: FilterPosition;
@@ -174,6 +176,7 @@ export class ContextService {
   public setFilter(dashboard?: Dashboard) {
     {
       if (dashboard && dashboard.id) {
+        this.filterStructure.next(dashboard.filter?.structure);
         localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
             this.filterPosition.next({
@@ -190,6 +193,7 @@ export class ContextService {
           }
         });
       } else {
+        this.filterStructure.next(null);
         this.filterPosition.next(null);
       }
     }
@@ -400,8 +404,12 @@ export class ContextService {
       });
       dialogRef.closed.subscribe((newStructure) => {
         if (newStructure) {
-          this.initSurvey();
+          if (dashboard && dashboard.filter) {
+            dashboard.filter.structure = newStructure;
+          }
+          this.initSurvey(dashboard);
           this.saveFilter(dashboard);
+          this.filterStructure.next(newStructure);
         }
       });
     });

@@ -52,7 +52,7 @@ export class DashboardFilterComponent
   @Input() opened = false;
   /** Is closable */
   @Input() closable = true;
-  /** Is closable */
+  /** Current dashboard */
   @Input() dashboard?: Dashboard;
   /** Current position of filter */
   public position!: FilterPosition;
@@ -129,15 +129,12 @@ export class DashboardFilterComponent
         }
       );
     // Updates the survey with the latest filter structure
-    // console.log(this.dashboard);
-    if (this.dashboard?.filter?.structure) {
-      this.dashboard.filter?.structure
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.initSurvey();
-        });
-    }
-    this.initSurvey();
+
+    this.contextService.filterStructure
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.initSurvey();
+      });
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -197,7 +194,7 @@ export class DashboardFilterComponent
 
   /** Render the survey using the saved structure */
   private initSurvey(): void {
-    this.survey = this.contextService.initSurvey();
+    this.survey = this.contextService.initSurvey(this.dashboard);
 
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
