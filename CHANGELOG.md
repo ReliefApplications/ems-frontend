@@ -1,3 +1,12 @@
+## [2.8.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.1...v2.8.2) (2024-02-12)
+
+
+### Bug Fixes
+
+* clicking on workflow link when workflow already opened would redirect to blank page ([ae97b33](https://github.com/ReliefApplications/ems-frontend/commit/ae97b333ee0bcce928a310a7bb990c0f777dc3bf))
+* context service would transform some strings in filter into booleans or integers when not needed ([44942b3](https://github.com/ReliefApplications/ems-frontend/commit/44942b3e5492c02ef596bd81732a196fbdf0eed3))
+* links in editor & summary card widgets could not be opened in new tabs ([7c40994](https://github.com/ReliefApplications/ems-frontend/commit/7c40994bac914c30cedd7324a287d08c0c614bf5))
+
 ## [2.8.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.0...v2.8.1) (2024-02-07)
 
 
