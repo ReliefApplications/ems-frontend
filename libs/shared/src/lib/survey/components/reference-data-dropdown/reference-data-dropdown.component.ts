@@ -78,6 +78,12 @@ export class ReferenceDataDropdownComponent
     }
   }
 
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   /**
    * Reset control value if there is a value previously to avoid triggering
    * not necessary actions
@@ -89,11 +95,5 @@ export class ReferenceDataDropdownComponent
       this.control.setValue(null);
     }
     event.stopPropagation();
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -82,64 +82,20 @@ export class ReferenceDataService {
     referenceDataID: string,
     displayField: string,
     storePrimitiveValue: boolean = true,
-    filter?: {
-      foreignReferenceData: string;
-      foreignField: string;
-      foreignValue: any;
-      localField: string;
-      operator: string;
-    }
+    graphQLVariables?: any
   ): Promise<{ value: string | number; text: string }[]> {
     const sortByDisplayField = (a: any, b: any) =>
       a[displayField] > b[displayField] ? 1 : -1;
 
     // get items
-    const { items, referenceData } = await this.cacheItems(referenceDataID);
+    const { items, referenceData } = await this.cacheItems(
+      referenceDataID,
+      graphQLVariables && graphQLVariables
+    );
     const valueField = referenceData?.valueField || '';
 
     // sort items by displayField
     items.sort(sortByDisplayField);
-    const foreignIsMultiselect = Array.isArray(filter?.foreignValue);
-    // if we ask to filter and there is a value in foreign field
-    if (
-      filter &&
-      ((foreignIsMultiselect && filter.foreignValue.length) ||
-        (!foreignIsMultiselect && !!filter.foreignValue))
-    ) {
-      const cache = (await localForage.getItem(
-        filter.foreignReferenceData
-      )) as CachedItems;
-      if (!cache) {
-        return [];
-      }
-      const { items: foreignItems, valueField: foreignValueField } = cache;
-      let selectedForeignValue: any | any[];
-      // Retrieve foreign field items for multiselect or single select
-      if (foreignIsMultiselect) {
-        selectedForeignValue = filter.foreignValue.map(
-          (value: any) =>
-            foreignItems.find((item) => item[foreignValueField] === value)[
-              filter.foreignField
-            ]
-        );
-      } else {
-        selectedForeignValue = foreignItems.find(
-          (item) => get(item, foreignValueField) === filter.foreignValue
-        )[filter.foreignField];
-      }
-      return items
-        .filter((item) =>
-          this.operate(
-            selectedForeignValue,
-            filter.operator,
-            item[filter.localField]
-          )
-        )
-        .map((item) => ({
-          value: storePrimitiveValue ? item[valueField] : item,
-          text: item[displayField],
-        }));
-    }
     // if we don't have to filter
     return items.map((item) => ({
       value: storePrimitiveValue ? item[valueField] : item,

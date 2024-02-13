@@ -5,12 +5,12 @@ import {
   JsonMetadata,
   Serializer,
   SurveyModel,
-  surveyLocalization,
+  // surveyLocalization,
 } from 'survey-core';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
-import { isEqual, isNil, omit } from 'lodash';
+import { get, isEqual, isNil, omit } from 'lodash';
 
 /**
  * Sets the choices on the default value modal editor for a reference data dropdown
@@ -82,6 +82,23 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       CustomPropertyGridComponentTypes.referenceDataDropdown
     );
 
+    // add properties
+    serializer.addProperty(type, {
+      displayName: 'GraphQL variables',
+      name: 'referenceDataVariableMapping',
+      category: 'Choices from Reference data',
+      type: CustomPropertyGridComponentTypes.codeEditor,
+      visibleIndex: 1,
+      dependsOn: 'referenceData',
+      visibleIf: (obj: null | QuestionSelectBase): boolean => {
+        console.log(obj);
+        console.log(get(obj, '_referenceData.type'));
+        return Boolean(obj?.referenceData);
+      },
+    });
+
+    registerCustomPropertyEditor(CustomPropertyGridComponentTypes.codeEditor);
+
     serializer.addProperty(type, {
       displayName: 'Display field',
       name: 'referenceDataDisplayField',
@@ -119,119 +136,119 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       default: true,
     });
 
-    serializer.addProperty(type, {
-      displayName: 'Filter from question',
-      name: 'referenceDataFilterFilterFromQuestion',
-      type: 'dropdown',
-      category: 'Choices from Reference data',
-      dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceData),
-      visibleIndex: 3,
-      choices: (
-        obj: null | QuestionSelectBase,
-        choicesCallback: (choices: any[]) => void
-      ) => {
-        const defaultOption = new ItemValue(
-          '',
-          surveyLocalization.getString('pe.conditionSelectQuestion')
-        );
-        const survey = obj?.survey as SurveyModel;
-        if (!survey) return choicesCallback([defaultOption]);
-        const questions = survey
-          .getAllQuestions()
-          .filter((question) => isSelectQuestion(question) && question !== obj)
-          .map((question) => question as QuestionSelectBase)
-          .filter((question) => question.referenceData);
-        const qItems = questions.map((q) => {
-          const text = q.locTitle.renderedHtml || q.name;
-          return new ItemValue(q.name, text);
-        });
-        qItems.sort((el1, el2) => el1.text.localeCompare(el2.text));
-        qItems.unshift(defaultOption);
-        choicesCallback(qItems);
-      },
-    });
+    // serializer.addProperty(type, {
+    //   displayName: 'Filter from question',
+    //   name: 'referenceDataFilterFilterFromQuestion',
+    //   type: 'dropdown',
+    //   category: 'Choices from Reference data',
+    //   dependsOn: 'referenceData',
+    //   visibleIf: (obj: null | QuestionSelectBase): boolean =>
+    //     Boolean(obj?.referenceData),
+    //   visibleIndex: 3,
+    //   choices: (
+    //     obj: null | QuestionSelectBase,
+    //     choicesCallback: (choices: any[]) => void
+    //   ) => {
+    //     const defaultOption = new ItemValue(
+    //       '',
+    //       surveyLocalization.getString('pe.conditionSelectQuestion')
+    //     );
+    //     const survey = obj?.survey as SurveyModel;
+    //     if (!survey) return choicesCallback([defaultOption]);
+    //     const questions = survey
+    //       .getAllQuestions()
+    //       .filter((question) => isSelectQuestion(question) && question !== obj)
+    //       .map((question) => question as QuestionSelectBase)
+    //       .filter((question) => question.referenceData);
+    //     const qItems = questions.map((q) => {
+    //       const text = q.locTitle.renderedHtml || q.name;
+    //       return new ItemValue(q.name, text);
+    //     });
+    //     qItems.sort((el1, el2) => el1.text.localeCompare(el2.text));
+    //     qItems.unshift(defaultOption);
+    //     choicesCallback(qItems);
+    //   },
+    // });
 
-    serializer.addProperty(type, {
-      displayName: 'Foreign field',
-      name: 'referenceDataFilterForeignField',
-      category: 'Choices from Reference data',
-      required: true,
-      dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceDataFilterFilterFromQuestion),
-      visibleIndex: 4,
-      choices: (
-        obj: null | QuestionSelectBase,
-        choicesCallback: (choices: any[]) => void
-      ) => {
-        if (obj?.referenceDataFilterFilterFromQuestion) {
-          const foreignQuestion = (obj.survey as SurveyModel)
-            .getAllQuestions()
-            .find(
-              (q) => q.name === obj.referenceDataFilterFilterFromQuestion
-            ) as QuestionSelectBase | undefined;
-          if (foreignQuestion?.referenceData) {
-            referenceDataService
-              .loadReferenceData(foreignQuestion.referenceData)
-              .then((referenceData) =>
-                choicesCallback(
-                  referenceData.fields?.map((x) => x?.name ?? x) || []
-                )
-              );
-          }
-        }
-      },
-    });
+    // serializer.addProperty(type, {
+    //   displayName: 'Foreign field',
+    //   name: 'referenceDataFilterForeignField',
+    //   category: 'Choices from Reference data',
+    //   required: true,
+    //   dependsOn: 'referenceDataFilterFilterFromQuestion',
+    //   visibleIf: (obj: null | QuestionSelectBase): boolean =>
+    //     Boolean(obj?.referenceDataFilterFilterFromQuestion),
+    //   visibleIndex: 4,
+    //   choices: (
+    //     obj: null | QuestionSelectBase,
+    //     choicesCallback: (choices: any[]) => void
+    //   ) => {
+    //     if (obj?.referenceDataFilterFilterFromQuestion) {
+    //       const foreignQuestion = (obj.survey as SurveyModel)
+    //         .getAllQuestions()
+    //         .find(
+    //           (q) => q.name === obj.referenceDataFilterFilterFromQuestion
+    //         ) as QuestionSelectBase | undefined;
+    //       if (foreignQuestion?.referenceData) {
+    //         referenceDataService
+    //           .loadReferenceData(foreignQuestion.referenceData)
+    //           .then((referenceData) =>
+    //             choicesCallback(
+    //               referenceData.fields?.map((x) => x?.name ?? x) || []
+    //             )
+    //           );
+    //       }
+    //     }
+    //   },
+    // });
 
-    serializer.addProperty(type, {
-      displayName: 'Filter condition',
-      name: 'referenceDataFilterFilterCondition',
-      category: 'Choices from Reference data',
-      required: true,
-      dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceDataFilterFilterFromQuestion),
-      visibleIndex: 5,
-      choices: [
-        { value: 'eq', text: '==' },
-        { value: 'neq', text: '!=' },
-        { value: 'gte', text: '>=' },
-        { value: 'gt', text: '>' },
-        { value: 'lte', text: '<=' },
-        { value: 'lt', text: '<' },
-        { value: 'contains', text: 'contains' },
-        { value: 'doesnotcontain', text: 'does not contain' },
-        { value: 'iscontained', text: 'is contained in' },
-        { value: 'isnotcontained', text: 'is not contained in' },
-      ],
-    });
+    // serializer.addProperty(type, {
+    //   displayName: 'Filter condition',
+    //   name: 'referenceDataFilterFilterCondition',
+    //   category: 'Choices from Reference data',
+    //   required: true,
+    //   dependsOn: 'referenceDataFilterFilterFromQuestion',
+    //   visibleIf: (obj: null | QuestionSelectBase): boolean =>
+    //     Boolean(obj?.referenceDataFilterFilterFromQuestion),
+    //   visibleIndex: 5,
+    //   choices: [
+    //     { value: 'eq', text: '==' },
+    //     { value: 'neq', text: '!=' },
+    //     { value: 'gte', text: '>=' },
+    //     { value: 'gt', text: '>' },
+    //     { value: 'lte', text: '<=' },
+    //     { value: 'lt', text: '<' },
+    //     { value: 'contains', text: 'contains' },
+    //     { value: 'doesnotcontain', text: 'does not contain' },
+    //     { value: 'iscontained', text: 'is contained in' },
+    //     { value: 'isnotcontained', text: 'is not contained in' },
+    //   ],
+    // });
 
-    serializer.addProperty(type, {
-      displayName: 'Local field',
-      name: 'referenceDataFilterLocalField',
-      category: 'Choices from Reference data',
-      required: true,
-      dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceDataFilterFilterFromQuestion),
-      visibleIndex: 6,
-      choices: (
-        obj: null | QuestionSelectBase,
-        choicesCallback: (choices: any[]) => void
-      ) => {
-        if (obj?.referenceData) {
-          referenceDataService
-            .loadReferenceData(obj.referenceData)
-            .then((referenceData) =>
-              choicesCallback(
-                referenceData.fields?.map((x) => x?.name ?? x) || []
-              )
-            );
-        }
-      },
-    });
+    // serializer.addProperty(type, {
+    //   displayName: 'Local field',
+    //   name: 'referenceDataFilterLocalField',
+    //   category: 'Choices from Reference data',
+    //   required: true,
+    //   dependsOn: 'referenceDataFilterFilterFromQuestion',
+    //   visibleIf: (obj: null | QuestionSelectBase): boolean =>
+    //     Boolean(obj?.referenceDataFilterFilterFromQuestion),
+    //   visibleIndex: 6,
+    //   choices: (
+    //     obj: null | QuestionSelectBase,
+    //     choicesCallback: (choices: any[]) => void
+    //   ) => {
+    //     if (obj?.referenceData) {
+    //       referenceDataService
+    //         .loadReferenceData(obj.referenceData)
+    //         .then((referenceData) =>
+    //           choicesCallback(
+    //             referenceData.fields?.map((x) => x?.name ?? x) || []
+    //           )
+    //         );
+    //     }
+    //   },
+    // });
   }
 };
 
@@ -250,36 +267,13 @@ export const render = (
 
     const updateChoices = () => {
       if (question.referenceData && question.referenceDataDisplayField) {
-        let filter;
-        // create a filter object if all required properties for filtering are set
-        if (
-          question.referenceDataFilterFilterFromQuestion &&
-          question.referenceDataFilterForeignField &&
-          question.referenceDataFilterFilterCondition &&
-          question.referenceDataFilterLocalField
-        ) {
-          const foreign = (question.survey as SurveyModel)
-            .getAllQuestions()
-            .find(
-              (x: any) =>
-                x.name === question.referenceDataFilterFilterFromQuestion
-            ) as QuestionSelectBase;
-          if (foreign.referenceData && !!foreign.value) {
-            filter = {
-              foreignReferenceData: foreign.referenceData,
-              foreignField: question.referenceDataFilterForeignField,
-              foreignValue: foreign.value,
-              localField: question.referenceDataFilterLocalField,
-              operator: question.referenceDataFilterFilterCondition,
-            };
-          }
-        }
         referenceDataService
           .getChoices(
             question.referenceData,
             question.referenceDataDisplayField,
             question.isPrimitiveValue,
-            filter
+            question.referenceDataVariableMapping &&
+              JSON.parse(question.referenceDataVariableMapping)
           )
           .then((choices) => {
             // this is to avoid that the choices appear on the 'choices' tab
@@ -318,8 +312,14 @@ export const render = (
 
     // init the choices
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
+      console.log(typeof question.referenceDataVariableMapping);
       referenceDataService
-        .cacheItems(question.referenceData)
+        .cacheItems(
+          question.referenceData,
+          question.referenceDataVariableMapping &&
+            JSON.parse(question.referenceDataVariableMapping)
+          // {}
+        )
         .then(() => updateChoices());
       question.referenceDataChoicesLoaded = true;
     }
