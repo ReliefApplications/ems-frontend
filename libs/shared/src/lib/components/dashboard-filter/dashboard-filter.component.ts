@@ -130,11 +130,12 @@ export class DashboardFilterComponent
       );
     // Updates the survey with the latest filter structure
 
-    this.contextService.filterStructure
+    this.contextService.filterChanged
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.initSurvey();
       });
+
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -149,12 +150,12 @@ export class DashboardFilterComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.resizeObserver.disconnect();
+  /**
+   * Call context service onEditFilter method.
+   */
+  public onEditStructure() {
+    this.contextService.onEditFilter(this.dashboard);
   }
-
-  // add ngOnChanges there
 
   /**
    * Set the drawer height and width on resize
@@ -192,7 +193,7 @@ export class DashboardFilterComponent
     });
   }
 
-  /** Render the survey using the saved structure */
+  /** Render the survey using the saved structure*/
   private initSurvey(): void {
     this.survey = this.contextService.initSurvey(this.dashboard);
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter, map, pairwise } from 'rxjs';
+import { BehaviorSubject, Subject, filter, map, pairwise } from 'rxjs';
 import localForage from 'localforage';
 import {
   CompositeFilterDescriptor,
@@ -49,8 +49,6 @@ import { GET_RECORD_BY_ID } from './graphql/queries';
 export class ContextService {
   /** To update/keep the current filter */
   public filter = new BehaviorSubject<Record<string, any>>({});
-  /** To update/keep the current filter structure  */
-  public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<{
     position: FilterPosition;
@@ -58,6 +56,8 @@ export class ContextService {
   } | null>(null);
   /** To keep the history of previous dashboard filter values */
   public filterValues = new BehaviorSubject<any>(null);
+  /** Shows components that the filter has changed */
+  public filterChanged = new Subject<void>();
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
@@ -176,7 +176,6 @@ export class ContextService {
   public setFilter(dashboard?: Dashboard) {
     {
       if (dashboard && dashboard.id) {
-        this.filterStructure.next(dashboard.filter?.structure);
         localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
             this.filterPosition.next({
@@ -193,7 +192,6 @@ export class ContextService {
           }
         });
       } else {
-        this.filterStructure.next(null);
         this.filterPosition.next(null);
       }
     }
@@ -406,10 +404,10 @@ export class ContextService {
         if (newStructure) {
           if (dashboard && dashboard.filter) {
             dashboard.filter.structure = newStructure;
+            this.filterChanged.next();
           }
           this.initSurvey(dashboard);
           this.saveFilter(dashboard);
-          this.filterStructure.next(newStructure);
         }
       });
     });
