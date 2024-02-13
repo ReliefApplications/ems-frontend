@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get } from 'lodash';
+import { isArray, isEqual, get, isNil } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -117,14 +117,14 @@ export class ReferenceDataService {
         selectedForeignValue = filter.foreignValue.map((value: any) => {
           return foreignItems.find(
             (item) => item[foreignValueField] === value.value[foreignValueField]
-          )[filter.foreignField];
+          )?.[filter.foreignField];
         });
       } else {
         selectedForeignValue = foreignItems.find(
           (item) =>
             get(item, foreignValueField) ===
             filter.foreignValue[foreignValueField]
-        )[filter.foreignField];
+        )?.[filter.foreignField];
       }
       return items
         .filter((item) =>
@@ -386,7 +386,7 @@ export class ReferenceDataService {
       case 'lt':
         return foreignValue < localValue;
       case 'contains':
-        if (foreignValue === null) return false;
+        if (isNil(foreignValue) || !isArray(foreignValue)) return false;
         if (isArray(localValue)) {
           for (const itemValue of localValue) {
             if (!foreignValue.includes(itemValue)) {
