@@ -180,6 +180,35 @@ export class SummaryCardItemContentComponent
         }
       });
     }
+
+    let resetButtonIsClicked = !!event.target.dataset.filterReset;
+    currentNode = event.target;
+    if (!resetButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-editor' &&
+        !resetButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        resetButtonIsClicked = !!currentNode.dataset.filterReset;
+      }
+    }
+    if (resetButtonIsClicked) {
+      // Get all the fields that need to be cleared
+      const resetList = currentNode.dataset.filterReset
+        .split(';')
+        .map((item: any) => item.trim());
+      const updatedFilter: any = {};
+      for (const [key, value] of Object.entries(
+        this.contextService.filter.getValue()
+      )) {
+        // If key is not in list of fields that need to be cleared, add to updated Filter
+        if (!resetList.includes(key)) {
+          updatedFilter[key] = value;
+        }
+      }
+      this.contextService.filter.next(updatedFilter);
+    }
   }
 
   /**
