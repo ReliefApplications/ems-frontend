@@ -93,9 +93,10 @@ export class DashboardFilterSettingsComponent
         this.onEdit(value);
       });
 
-    this.dashboard.filter?.structure.subscribe((value: unknown) => {
-      this.formGroup.controls.structure.setValue(value, { emitEvent: false });
-    });
+    this.formGroup.controls.structure.setValue(
+      this.dashboard.filter?.structure,
+      { emitEvent: false }
+    );
   }
 
   /**
