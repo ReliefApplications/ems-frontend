@@ -219,7 +219,6 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
             const textElement = editor.selection.getNode();
             textElement.setAttribute('data-filter-field', data.filterField);
             textElement.setAttribute('data-filter-value', data.filterValue);
-            textElement.setAttribute('data-filter-reset', '');
             api.close();
           },
           buttons: [
@@ -238,11 +237,65 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
         });
       },
     });
-    editor.ui.registry.addContextToolbar('contextfilter', {
+
+    // Reset context filters
+    const iconResetFilters = createFontAwesomeIcon(
+      {
+        icon: 'broom',
+        color: 'none',
+        opacity: 1,
+        size: 21,
+      },
+      (editor.editorManager as any).DOM.doc
+    );
+
+    editor.ui.registry.addIcon('reset-icon', iconResetFilters.innerHTML);
+    editor.ui.registry.addButton('resetFilters', {
+      icon: 'reset-icon',
+      tooltip: 'Reset context filters',
+      onAction: async () => {
+        editor.windowManager.open({
+          title: 'Context filters to reset',
+          body: {
+            type: 'panel',
+            items: [
+              {
+                type: 'input',
+                name: 'filtersList',
+                label: 'Context filters list',
+                placeholder: 'name;type;date',
+              },
+            ],
+          },
+          initialData: {
+            filtersList: '',
+          },
+          onSubmit: (api) => {
+            const data = api.getData();
+            const textElement = editor.selection.getNode();
+            textElement.setAttribute('data-filter-reset', data.filtersList);
+            api.close();
+          },
+          buttons: [
+            {
+              text: 'Close',
+              type: 'cancel',
+            },
+            {
+              text: 'Save',
+              type: 'submit',
+              name: 'submit',
+              primary: true,
+            },
+          ],
+        });
+      },
+    });
+    editor.ui.registry.addContextToolbar('filters', {
       predicate: () => editor.selection.getContent()?.length > 0,
       scope: 'node',
       position: 'selection',
-      items: 'contextfilter',
+      items: 'contextFilter resetFilters',
     });
   },
 };
