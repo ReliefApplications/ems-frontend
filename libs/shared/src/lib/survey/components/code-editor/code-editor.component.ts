@@ -12,7 +12,6 @@ import { GraphqlVariablesMappingComponent } from '../../../components/widgets/co
 import { FormControl } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ReferenceData } from '../../../models/reference-data.model';
-import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 
 @Component({
   selector: 'shared-code-editor',
@@ -34,13 +33,13 @@ export class CodeEditorComponent
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
-    viewContainerRef: ViewContainerRef,
-    private referenceDataService: ReferenceDataService
+    viewContainerRef: ViewContainerRef
   ) {
     super(changeDetectorRef, viewContainerRef);
   }
 
   override ngOnInit(): void {
+    console.log('init');
     super.ngOnInit();
     this.control.setValue(this.model.value);
     this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
@@ -49,12 +48,7 @@ export class CodeEditorComponent
         this.model.value = value;
       },
     });
-    this.referenceDataService
-      .loadReferenceData(this.model.obj.referenceData)
-      .then((referenceData) => {
-        this.referenceData = referenceData;
-        this.changeDetectorRef.detectChanges();
-      });
+    this.referenceData = this.model.obj._referenceData;
   }
 
   override ngOnDestroy(): void {

@@ -6,6 +6,7 @@ import {
   Serializer,
   SvgRegistry,
   DropdownMultiSelectListModel,
+  SurveyModel,
 } from 'survey-core';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
@@ -107,6 +108,15 @@ export const init = (
         question.value = value;
       });
 
+      (question.survey as SurveyModel).onValueChanged.add(
+        (survey, { name, question, value }) => {
+          if (name === question.name) {
+            console.log(value);
+            tagboxInstance.value = value;
+          }
+        }
+      );
+
       // We subscribe to whatever you write on the field so we can filter the data accordingly
       tagboxInstance.filterChange
         .pipe(
@@ -118,6 +128,8 @@ export const init = (
           currentSearchValue = searchValue;
           updateChoices(tagboxInstance, question, searchValue);
         });
+
+      question._instance = tagboxInstance;
 
       question._propertyValueChangedVirtual = () => {
         updateChoices(tagboxInstance, question, currentSearchValue);
@@ -135,6 +147,9 @@ export const init = (
           question.defaultValue = null;
         }
       );
+      question.registerFunctionOnPropertyValueChanged('value', () => {
+        console.log(question.value);
+      });
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',
         (value: boolean) => {
@@ -155,6 +170,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };
