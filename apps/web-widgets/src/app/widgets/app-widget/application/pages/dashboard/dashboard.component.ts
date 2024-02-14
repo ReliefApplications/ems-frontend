@@ -34,7 +34,7 @@ import { cloneDeep } from 'lodash';
  * Dashboard page.
  */
 @Component({
-  selector: 'oort-app-dashboard',
+  selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
