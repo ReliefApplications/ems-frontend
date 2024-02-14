@@ -59,8 +59,6 @@ export const GET_RESOURCE_AGGREGATION_DATA = gql`
   query GetResourceAggregationData(
     $resource: ID!
     $aggregation: JSON!
-    $sourceFields: JSON
-    $pipeline: JSON
     $mapping: JSON
     $first: Int
     $skip: Int
@@ -72,8 +70,6 @@ export const GET_RESOURCE_AGGREGATION_DATA = gql`
     recordsAggregation(
       resource: $resource
       aggregation: $aggregation
-      sourceFields: $sourceFields
-      pipeline: $pipeline
       mapping: $mapping
       first: $first
       skip: $skip
@@ -90,8 +86,6 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
   query GetReferenceDataAggregationData(
     $referenceData: ID!
     $aggregation: JSON!
-    $sourceFields: JSON
-    $pipeline: JSON
     $mapping: JSON
     $first: Int
     $skip: Int
@@ -104,8 +98,6 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
     referenceDataAggregation(
       referenceData: $referenceData
       aggregation: $aggregation
-      sourceFields: $sourceFields
-      pipeline: $pipeline
       mapping: $mapping
       first: $first
       skip: $skip
