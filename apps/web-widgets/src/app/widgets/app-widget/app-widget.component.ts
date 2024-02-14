@@ -27,7 +27,7 @@ import { Router } from '@angular/router';
  * Application as Web Widget.
  */
 @Component({
-  selector: 'oort-application-widget',
+  selector: 'app-application-widget',
   templateUrl: './app-widget.component.html',
   styleUrls: ['./app-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
@@ -106,7 +106,7 @@ export class AppWidgetComponent
     private router: Router,
     private shadowDomService: ShadowDomService
   ) {
-    console.log('DEBUG: build from 02/02/2023');
+    console.log('DEBUG: build from 02/14/2023');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
     this.contextService.filter$

@@ -137,7 +137,6 @@ export class DashboardFilterComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes ??');
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
