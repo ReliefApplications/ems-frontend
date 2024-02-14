@@ -186,7 +186,7 @@
 <!-- Modern template -->
 <ng-template #modernTmpl>
   <div
-    class="-mt-8 -ml-6 -mr-6 mb-3"
+    class="-mt-4 -ml-6 -mr-6 mb-3"
     [ngClass]="opened || !closable ? 'flex' : 'hidden'"
     [style.width.px]="containerWidth"
   >
@@ -195,7 +195,7 @@
       class="flex bg-white w-full border-gray-300 border-b px-6 py-2 z-10"
     >
       <survey class="flex-1 self-center pr-5" [model]="survey"></survey>
-      <div class="flex flex-col">
+      <div class="flex flex-col justify-center">
         <ng-container
           *ngIf="editable"
           [ngTemplateOutlet]="editTmpl"
@@ -215,25 +215,25 @@
   </div>
 </ng-template>
 
-<!-- Clear fields -->
-<ui-button
-  [variant]="variant"
-  [isIcon]="true"
-  (click)="clearFields()"
-  icon="backspace"
-  [uiTooltip]="'components.application.dashboard.clearFields' | translate"
-  class="h-fit"
->
-  <!-- Edit button template -->
-  <ng-template #editTmpl let-variant="variant">
-    <ui-button
-      [variant]="variant"
-      [isIcon]="true"
-      icon="edit"
-      (click)="contextService.onEditFilter(dashboard)"
-      [uiTooltip]="'components.application.dashboard.editFilter' | translate"
-      class="h-fit"
-    >
-    </ui-button>
-  </ng-template>
-</ui-button>
+<ng-template #editTmpl let-variant="variant">
+  <!-- Clear fields -->
+  <ui-button
+    [variant]="variant"
+    [isIcon]="true"
+    (click)="clearFields()"
+    icon="backspace"
+    [uiTooltip]="'components.application.dashboard.clearFields' | translate"
+    class="h-fit"
+  >
+  </ui-button>
+  <!-- Edit filters -->
+  <ui-button
+    [variant]="variant"
+    [isIcon]="true"
+    icon="edit"
+    (click)="contextService.onEditFilter(dashboard)"
+    [uiTooltip]="'components.application.dashboard.editFilter' | translate"
+    class="h-fit"
+  >
+  </ui-button>
+</ng-template>
