@@ -2092,7 +2092,8 @@
 			"of": "sur",
 			"page": "Page",
 			"pageNumberInputTitle": "Numéro de page",
-			"previousPage": "Aller à la page précédente"
+			"previousPage": "Aller à la page précédente",
+			"selectPage": "Sélectionez la page"
 		},
 		"tilelayout": {
 			"component": {

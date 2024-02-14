@@ -21,5 +21,18 @@
     [info]="true"
     (pageChange)="onPageChange($event)"
   >
+    <!-- For some unknown reasons we need to write the messages, otherwise it would display only the keys in web elements mode. -->
+    <kendo-datapager-messages
+      [firstPage]="'kendo.pager.firstPage' | translate"
+      [items]="'kendo.pager.items' | translate"
+      [itemsPerPage]="'kendo.pager.itemsPerPage' | translate"
+      [lastPage]="'kendo.pager.lastPage' | translate"
+      [nextPage]="'kendo.pager.nextPage' | translate"
+      [of]="'kendo.pager.of' | translate"
+      [page]="'kendo.pager.page' | translate"
+      [pageNumberInputTitle]="'kendo.pager.pageNumberInputTitle' | translate"
+      [previousPage]="'kendo.pager.previousPage' | translate"
+      [selectPage]="'kendo.pager.selectPage' | translate"
+    ></kendo-datapager-messages>
   </kendo-datapager>
 </div>

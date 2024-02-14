@@ -213,7 +213,7 @@ export const getBaseHref = () => {
     ResizeBatchService,
     DatePipe,
     { provide: APP_BASE_HREF, useFactory: getBaseHref },
-    { provide: L10N_PREFIX, useValue: ' ' },
+    { provide: L10N_PREFIX, useValue: '' },
   ],
 })
 export class AppModule implements DoBootstrap {

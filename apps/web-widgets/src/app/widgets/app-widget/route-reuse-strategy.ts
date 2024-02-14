@@ -11,9 +11,23 @@ import {
  * @returns url
  */
 function getResolvedUrl(route: ActivatedRouteSnapshot): string {
-  return route.pathFromRoot
+  let url = route.pathFromRoot
     .map((v) => v.url.map((segment) => segment.toString()).join('/'))
     .join('/');
+  const queryParam = route.queryParamMap;
+  if (queryParam.keys.length > 0) {
+    url +=
+      '?' +
+      queryParam.keys
+        .map((key) =>
+          queryParam
+            .getAll(key)
+            .map((value) => key + '=' + value)
+            .join('&')
+        )
+        .join('&');
+  }
+  return url;
 }
 
 /**
