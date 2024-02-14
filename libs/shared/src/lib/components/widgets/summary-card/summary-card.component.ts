@@ -148,6 +148,8 @@ export class SummaryCardComponent
   private scrollEventBindTimeout!: NodeJS.Timeout;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Timeout for DOM synchronization */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -526,6 +528,7 @@ export class SummaryCardComponent
         );
         this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
         this.pageInfo.length = this.sortedCachedCards.length;
+        this.checkDataLengthForScrolling();
       }
     }
   }
@@ -566,8 +569,11 @@ export class SummaryCardComponent
     }
 
     // update card list and scroll behavior according to the card items display
+    this.cards =
+      this.scrolling && !this.triggerRefreshCardList
+        ? [...this.cards, ...newCards]
+        : newCards;
 
-    this.cards = newCards;
     if (
       this.settings.widgetDisplay?.usePagination ||
       this.triggerRefreshCardList
@@ -588,6 +594,7 @@ export class SummaryCardComponent
     this.scrolling = false;
     this.triggerRefreshCardList = false;
     this.loading = res.loading;
+    this.checkDataLengthForScrolling();
   }
 
   /**
@@ -718,6 +725,7 @@ export class SummaryCardComponent
 
     this.scrolling = false;
     this.loading = false;
+    this.checkDataLengthForScrolling();
   }
 
   /**
@@ -964,15 +972,32 @@ export class SummaryCardComponent
   }
 
   /**
+   * Load more items on init to enable scrolling behavior
+   */
+  checkDataLengthForScrolling() {
+    if (this.settings.widgetDisplay?.usePagination) return;
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+    this.timeoutListener = setTimeout(() => {
+      const element = this.summaryCardGrid.nativeElement;
+      if (element.scrollHeight === element.clientHeight) {
+        this.loadOnScroll(null, true);
+      }
+    }, 0); // timeout to get the new container size
+  }
+
+  /**
    * Load more items on scroll.
    *
    * @param e scroll event
    */
-  private loadOnScroll(e: any): void {
+  private loadOnScroll(e: any, initLoad: boolean = false): void {
     /** If scroll is reaching bottom of scrolling height, trigger card load */
     const isScrollNearBottom =
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50;
-    if (isScrollNearBottom) {
+      e?.target.scrollHeight - (e?.target.clientHeight + e?.target.scrollTop) <
+      50;
+    if (isScrollNearBottom || initLoad) {
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
         this.cards.length;
         this.scrolling = true;
@@ -982,6 +1007,7 @@ export class SummaryCardComponent
             const end = start + this.pageInfo.pageSize;
             this.cards.push(...this.sortedCachedCards.slice(start, end));
             this.scrolling = false;
+            this.checkDataLengthForScrolling();
           } else {
             this.onPage({
               pageSize: this.pageInfo.pageSize,
@@ -1000,7 +1026,7 @@ export class SummaryCardComponent
             })
           )
             .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-            .subscribe(() => this.updateRecordCards.bind(this));
+            .subscribe((res) => this.updateRecordCards.bind(this)(res));
         }
       }
     }
