@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, filter, map, pairwise } from 'rxjs';
+import { BehaviorSubject, filter, map, pairwise } from 'rxjs';
 import localForage from 'localforage';
 import {
   CompositeFilterDescriptor,
@@ -56,8 +56,6 @@ export class ContextService {
   } | null>(null);
   /** To keep the history of previous dashboard filter values */
   public filterValues = new BehaviorSubject<any>(null);
-  /** Shows components that the filter has changed */
-  public filterChanged = new Subject<void>();
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Regex used to allow widget refresh */
@@ -392,7 +390,7 @@ export class ContextService {
    *
    * @param dashboard Current dashboard
    */
-  public onEditFilter(dashboard?: Dashboard) {
+  public onEditFilter(dashboard: Dashboard) {
     import(
       '../../components/dashboard-filter/filter-builder-modal/filter-builder-modal.component'
     ).then(({ FilterBuilderModalComponent }) => {
@@ -404,9 +402,7 @@ export class ContextService {
         if (newStructure) {
           if (dashboard && dashboard.filter) {
             dashboard.filter.structure = newStructure;
-            this.filterChanged.next();
           }
-          this.initSurvey(dashboard);
           this.saveFilter(dashboard);
         }
       });
@@ -416,12 +412,11 @@ export class ContextService {
   /**
    * Render the survey using the saved structure
    *
-   * @param dashboard Current dashboard
+   * @param structure Filter structure
    * @returns survey model created from the structure
    */
-  public initSurvey(dashboard?: Dashboard): SurveyModel {
-    const surveyStructure = dashboard?.filter?.structure;
-    const survey = this.formBuilderService.createSurvey(surveyStructure);
+  public initSurvey(structure: any): SurveyModel {
+    const survey = this.formBuilderService.createSurvey(structure);
 
     // set each question value manually otherwise the defaultValueExpression is not loaded
     forEach(this.filterValues.getValue(), (value, key) => {
@@ -548,7 +543,7 @@ export class ContextService {
    *
    * @param dashboard Current dashboard
    */
-  private saveFilter(dashboard?: Dashboard): void {
+  private saveFilter(dashboard: Dashboard): void {
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD_FILTER,
@@ -594,6 +589,7 @@ export class ContextService {
         });
       } else {
         if (dashboard && dashboard.filter) {
+          console.log('ici');
           dashboard.filter.structure = data.editDashboard.filter?.structure;
         }
       }

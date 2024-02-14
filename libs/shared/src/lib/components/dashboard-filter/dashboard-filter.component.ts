@@ -54,6 +54,8 @@ export class DashboardFilterComponent
   @Input() closable = true;
   /** Current dashboard */
   @Input() dashboard?: Dashboard;
+  /** Filter structure */
+  @Input() structure: any;
   /** Current position of filter */
   public position!: FilterPosition;
   /** Either left, right, top or bottom */
@@ -128,13 +130,6 @@ export class DashboardFilterComponent
           this.setFilterContainerDimensions();
         }
       );
-    // Updates the survey with the latest filter structure
-
-    this.contextService.filterChanged
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.initSurvey();
-      });
 
     if (!this.variant) {
       this.variant = 'default';
@@ -142,10 +137,11 @@ export class DashboardFilterComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('changes ??');
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
-    if (changes.dashboard) {
+    if (changes.structure) {
       this.initSurvey();
     }
   }
@@ -154,7 +150,9 @@ export class DashboardFilterComponent
    * Call context service onEditFilter method.
    */
   public onEditStructure() {
-    this.contextService.onEditFilter(this.dashboard);
+    if (this.dashboard) {
+      this.contextService.onEditFilter(this.dashboard);
+    }
   }
 
   /**
@@ -195,7 +193,7 @@ export class DashboardFilterComponent
 
   /** Render the survey using the saved structure*/
   private initSurvey(): void {
-    this.survey = this.contextService.initSurvey(this.dashboard);
+    this.survey = this.contextService.initSurvey(this.structure);
 
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
