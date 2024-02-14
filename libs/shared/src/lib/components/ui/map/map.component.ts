@@ -55,7 +55,15 @@ import {
   pick,
   clone,
 } from 'lodash';
-import { Subject, debounceTime, filter, from, merge, switchMap, takeUntil } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  filter,
+  from,
+  merge,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
