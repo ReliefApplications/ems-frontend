@@ -525,6 +525,7 @@
 			},
 			"customStyling": "******",
 			"dashboard": {
+				"denied": "******",
 				"editFilter": "******",
 				"empty": "******",
 				"enterEditMode": "******",
