@@ -2079,7 +2079,8 @@
 			"of": "of",
 			"page": "Page",
 			"pageNumberInputTitle": "Page Number",
-			"previousPage": "Go to the previous page"
+			"previousPage": "Go to the previous page",
+			"selectPage": "Select page"
 		},
 		"tilelayout": {
 			"component": {

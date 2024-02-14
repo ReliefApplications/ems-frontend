@@ -2079,7 +2079,8 @@
 			"of": "******",
 			"page": "******",
 			"pageNumberInputTitle": "******",
-			"previousPage": "******"
+			"previousPage": "******",
+			"selectPage": "******"
 		},
 		"tilelayout": {
 			"component": {
