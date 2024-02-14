@@ -9,7 +9,7 @@
         icon="download"
         category="secondary"
         variant="primary"
-        uiTooltip="Upload Email List"
+        uiTooltip="Download Template"
         (click)="downloadDistributionListTemplate()"
       >
       {{'components.email.distributionList.import.download' | translate}}
@@ -20,7 +20,7 @@
         icon="cloud_download"
         category="secondary"
         variant="primary"
-        uiTooltip="Download Template"
+        uiTooltip="Upload Email List"
         (click)="fileUpload.click()"
       >
       {{'components.email.distributionList.import.name' | translate}}
@@ -42,7 +42,7 @@
           {{'components.email.distributionList.duplicate' | translate}}
         </div>
             </div>
-    <div class="text-gray-700 text-xs gap-1 flex items-end" style="font-weight: 500;">
+    <div class="text-gray-700 text-xs gap-1 flex items-end" *ngIf="false" style="font-weight: 500;">
       <input id="Alert_me" type="checkbox">
       <label for="Alert_me">
         {{'components.select.distribution.alertMe' | translate}}
@@ -146,7 +146,7 @@
     <p (click)="showExistingDistributionList = !showExistingDistributionList" >Or Create New</p>
   </div>
 </div>
-<div class="validation-note" *ngIf="recipients?.distributionListName?.length === 0 || recipients?.To?.length === 0">
- Please fill <strong *ngIf="recipients?.distributionListName?.length === 0"> Distribution List name,</strong> <strong *ngIf="recipients?.To?.length === 0">at least one To email address </strong> to proceed
-</div>
+<ui-alert class="mb-4" variant="warning" *ngIf="recipients?.distributionListName?.length === 0 || recipients?.To?.length === 0">
+  To proceed, please enter <strong *ngIf="recipients?.distributionListName?.length === 0"> a distribution list name</strong> <strong *ngIf="recipients?.To?.length === 0 && recipients?.distributionListName?.length === 0"> and </strong><strong *ngIf="recipients?.To?.length === 0">at least one recipient email address</strong>.
+</ui-alert>
 

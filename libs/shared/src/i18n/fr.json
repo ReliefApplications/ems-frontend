@@ -778,7 +778,8 @@
 			"notification": {
 				"create": "Créer une notification",
 				"list": "Liste des notifications",
-				"type": "Type d'alerte"
+				"type": "Type d'alerte",
+				"validTitle": "Veuillez saisir un titre"
 			},
 			"preview": {
 				"subject": "Sujet:"

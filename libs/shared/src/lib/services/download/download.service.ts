@@ -209,7 +209,9 @@ export class DownloadService {
   /**
    * to import the distribution list
    *
-   * @param file
+   * @param file selected file to be imported
+   *
+   * @returns observable of file import operation
    */
   importDistributionList(file: File): Observable<any> {
     const formData = new FormData();

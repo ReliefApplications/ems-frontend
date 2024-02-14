@@ -18,29 +18,48 @@ import { RestService } from '../../services/rest/rest.service';
   providedIn: 'root',
 })
 export class EmailService {
+  /** EMAIL NOTIFICATION DATA */
   public datasetsForm!: FormGroup;
+  /** EMAIL RESOURCE NAME ID */
   public resourcesNameId!: {
     name: string | undefined;
     id: string | undefined;
   }[];
+  /** SELECTED DATASET */
   public selectedDataSet: any;
+  /** EMAIL TO FILTER FORM GROUP */
   public toEmailFilter!: FormGroup | any;
+  /** EMAIL Cc FILTER FORM GROUP */
   public ccEmailFilter!: FormGroup | any;
+  /** EMAIL Bcc FILTER FORM GROUP */
   public bccEmailFilter!: FormGroup | any;
+  /** EMAIL PREVIEW DATA */
   public allPreviewData: any[] = [];
+  /** EMAIL TYPE */
   public notificationTypes: string[] = ['email', 'alert', 'push notification'];
+  /** EMAIL LAYOUT DATA + STYLES */
   public emailLayout!: any;
   /** EMAIL STYLES DATA */
   public headerBackgroundColor = '#00205C';
+  /** EMAIL TEXT COLOR DATA */
   public headerTextColor = '#FFFFFF';
+  /** EMAIL BODY BACKGROUND COLOR DATA */
   public bodyBackgroundColor = '#FFFFFF';
+  /** EMAIL BODY TEXT COLOR DATA */
   public bodyTextColor = '#000000';
+  /** EMAIL FOOTER BACKGROUND COLOR DATA */
   public footerBackgroundColor = '#FFFFFF';
+  /** EMAIL FOOTER TEXT COLOR DATA */
   public footerTextColor = '#000000';
+  /** EMAIL SAVE EMITTER */
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
+  /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
+  /** UI STEPPER DISABLED CHECKER */
   public stepperDisable = new BehaviorSubject<any>('');
+  /** DISTRIBUTION LIST CHECKER */
   public showExistingDistributionList = false;
+  /** DISTRIBUTION LIST DATA */
   public recipients: {
     distributionListName: string;
     To: string[];
@@ -52,6 +71,7 @@ export class EmailService {
     Cc: [],
     Bcc: [],
   };
+  /** BLOCK TABS LIST */
   public tabs: any[] = [
     {
       title: `Block 1`,
@@ -60,10 +80,12 @@ export class EmailService {
       index: 0,
     },
   ];
+  /** UI STEPPER DISABLED CHECKER */
   public disableFormSteps = new BehaviorSubject({
     stepperIndex: 0,
     disableAction: false,
   });
+  /** UI STEPPER ENABLE ALL STEPS CHECKER */
   public enableAllSteps = new BehaviorSubject<boolean>(false);
   /** EMAIL LAYOUT DATA */
   public allLayoutdata: any = {
@@ -109,19 +131,31 @@ export class EmailService {
     trStyle: '',
     tdStyle: '',
   };
+  /** IS EXISTING DISTRIBUTION LIST */
   isExisting = true;
-
+  /** EMAIL NOTIFICATION ID */
   public configId: string | undefined;
+  /** DATALIST */
   public dataList!: { [key: string]: any }[];
+  /** EMAIL DATASET FIELDS */
   public dataSetFields!: string[];
+  /** EMAIL DISTRIBUTION LIST NAMES */
   public distributionListNames: string[] = [];
+  /** EMAIL NOTIFICATION LIST NAMES */
   public emailNotificationNames: string[] = [];
+  /** EMAIL NOTIFICATION EDIT ID */
   public editId = '';
+  /** NAVIGATE TO PREVIEW EMITTER */
   @Output() navigateToPreview: EventEmitter<any> = new EventEmitter();
+  /** CURRENT STEP */
   stepperStep = 0;
+  /** IS EDIT MODE CHECKER */
   public isEdit = false;
+  /** IS PREVIEW MODE CHECKER */
   public isPreview = false;
+  /** STEPPER LINEAR MODE CHECKER */
   public isLinear = true;
+  /** EMAIL LIST LOADING CHECKER */
   public emailListLoading = true;
 
   /**

@@ -36,38 +36,84 @@ let ITEMS_PER_PAGE = 0;
   styleUrls: ['./dataset-filter.component.scss'],
 })
 export class DatasetFilterComponent implements OnInit, OnDestroy {
+  /** Active tab in the component. */
   @Input() activeTab: any;
+
+  /** Array of tabs in the component. */
   @Input() tabs: any;
-  /** Filter and Fields Form */
+
+  /** Query FormGroup used for filtering. */
   @Input() query: FormGroup | any;
+
+  /** Value of the query FormGroup. */
   @Input() queryValue: FormGroup | any;
+
+  /** Flag to control the visibility of the preview. */
   showPreview = false;
+
+  /** Subscription to dataset saving. */
   private datasetSaveSubscription?: Subscription;
+
+  /** GraphQL query reference for fetching resources. */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+
+  /** Method to fetch data sets. */
   public fetchDataSet: any = this.emailService.fetchDataSet;
-  /** FIELD VARIABLES */
+
+  /** Selected resource. */
   public resource!: Resource;
+
+  /** Metadata of the selected resource. */
   public metaData!: any;
+
+  /** Response of the data set. */
   public dataSetResponse: any;
+
+  /** Fields of the data set. */
   public dataSetFields!: any[];
+
+  /** Selected resource ID. */
   public selectedResourceId!: string;
+
+  /** List of data. */
   public dataList!: { [key: string]: any }[];
-  /** FILTER VARIABLES */
+
+  /** Selected search field. */
   public searchSelectedField = '';
+
+  /** Available search field. */
   public searchAvailableField = '';
+
+  /** Filtered fields for search. */
   public filteredFields: any[] = [];
+
+  /** Selected fields for filtering. */
   public selectedFields!: { name: string; type: string }[];
+
+  /** Fields for filtering. */
   public filterFields!: { name: string; type: string }[];
+
+  /** Available fields for filtering. */
   public availableFields!: { name: string; type: string }[];
+
+  /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
+
+  /** Flag to show the dataset limit warning. */
   public showDatasetLimitWarning = false;
+
+  /** Total number of matching records. */
   public totalMatchingRecords = 0;
-  /** FIELD TAB */
+
+  /** Current tab index. */
   public currentTabIndex = 0;
-  /**  Changes from date picker to text expression */
+
+  /** Flag to switch between date picker and text expression. */
   public useExpression = false;
+  /** FILTER OPERATORS FROM FILTER CONSTANT */
   filterOperators = FILTER_OPERATORS;
-  /** IN THE LAST TIME UNITS */
+
+  /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
     { value: 'days', label: 'Days' },
@@ -76,12 +122,25 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     { value: 'years', label: 'Years' },
   ];
 
+  /** Dataset preview ViewChild. */
   @ViewChild('datasetPreview') datasetPreview: any;
+
+  /** Event emitter for changing the main tab. */
   @Output() changeMainTab: EventEmitter<any> = new EventEmitter();
+  /** NAVIGATE TO DATASET PREVIEW SCREEN EMITTER */
+
+  /** Event emitter for navigating to the preview. */
   @Output() navigateToPreview: EventEmitter<any> = new EventEmitter();
+
+  /** Loading status. */
   public loading = false;
+
+  /** Field options. */
   fieldOptions: any;
+
+  /** Current field name. */
   currentFieldName: any;
+  /** VALIDATION ERROR MESSAGE */
   showErrorMessage: any = '';
 
   /**
@@ -796,6 +855,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   );
                   this.loading = false;
                   this.navigateToPreview.emit(allPreviewData);
+                  console.log(allPreviewData);
                   this.emailService.setAllPreviewData(allPreviewData);
                 }
               }

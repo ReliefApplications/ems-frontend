@@ -49,27 +49,60 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
       this.emailService.showExistingDistributionList;
   }
 
+  /** Flag indicating whether the email template is shown. */
   public showEmailTemplate = false;
+
+  /** Type of email template. */
   public templateFor = '';
+
+  /** Filter form group for TO email. */
   public toEmailFilter!: FormGroup | any;
+
+  /** Filter form group for CC email. */
   public ccEmailFilter!: FormGroup | any;
+
+  /** Filter form group for BCC email. */
   public bccEmailFilter!: FormGroup | any;
+
+  /** Flag indicating whether existing distribution list is shown. */
   public showExistingDistributionList = false;
+
+  /** Cached distribution list data. */
   cacheDistributionList: any = [];
+
+  /** Distribution lists data. */
   public distributionLists: any = [];
+
+  /** Columns for distribution list. */
   public distributionColumn = ['name', 'createdBy', 'email'];
+
+  /** ID of selected distribution list. */
   public distributionListId = '';
+
+  /** Pagination information for distribution list. */
   public distributionPageInfo = {
     pageIndex: 0,
     pageSize: DISTRIBUTION_PAGE_SIZE,
     length: 0,
     endCursor: '',
   };
+
+  /** Data for filter template. */
   filterTemplateData: any = [];
+
+  /** Actual data for template. */
   templateActualData: any = [];
+
+  /** Flag indicating loading state. */
   public loading = true;
+
+  /** Application ID. */
   public applicationId = '';
+
+  /** Email notifications data. */
   public emailNotifications: any = [];
+
+  /** Pagination information for general page. */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -78,6 +111,8 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     skip: 0,
     limit: DEFAULT_PAGE_SIZE,
   };
+
+  /** Recipients data. */
   public recipients: {
     distributionListName: string;
     To: string[];
@@ -89,12 +124,23 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     Cc: [],
     Bcc: [],
   };
+
+  /** Flag indicating loading state. */
   public isLoading = false;
+
+  /** Cached data. */
   public cachedData: any = {};
+
+  /** Flag indicating whether the TO template is shown. */
   public showToTemplate = false;
+
+  /** Flag indicating whether the CC template is shown. */
   public showCCTemplate = false;
+
+  /** Flag indicating whether the BCC template is shown. */
   public showBccTemplate = false;
 
+  /** Reference to file upload element. */
   @ViewChild('fileUpload', { static: true }) fileElement:
     | ElementRef
     | undefined;
@@ -284,7 +330,9 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param event file selection Event
    */
   fileSelectionHandler(event: any): void {
-    this.showEmailTemplate = false;
+    this.showToTemplate = false;
+    this.showCCTemplate = false;
+    this.showBccTemplate = false;
     const file: File = event.target.files[0];
     if (file) {
       this.downloadService.importDistributionList(file).subscribe((res) => {
@@ -298,7 +346,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
         this.recipients.Bcc = [
           ...new Set([...this.recipients.Bcc, ...res.Bcc]),
         ];
-        this.showEmailTemplate = true;
+        this.showToTemplate = true;
         this.templateFor = 'to';
         this.validateDistributionList();
         if (this.fileElement) this.fileElement.nativeElement.value = '';

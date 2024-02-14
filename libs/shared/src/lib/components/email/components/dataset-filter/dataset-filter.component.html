@@ -65,6 +65,7 @@
         {{ 'components.queryBuilder.filter.title' | translate }}
       </ng-template>
       <ng-template kendoTabContent>
+        <ng-container class="mt-2" *ngTemplateOutlet="datasetAlert"></ng-container>
         <ng-container *ngIf="resource?.fields?.length">
           <div class="flex gap-4 mt-2">
             <div class="mt-2">
@@ -337,6 +338,7 @@
         {{ 'components.queryBuilder.fields.title' | translate }}
       </ng-template>
       <ng-template kendoTabContent>
+        <ng-container class="mt-2" *ngTemplateOutlet="datasetAlert"></ng-container>
         <ng-container>
           <div class="flex gap-5">
             <!-- Available Fields -->
@@ -747,8 +749,10 @@
   </div>
 
 </form>
-<div class="max-limit-note" *ngIf="showDatasetLimitWarning">
-  At this moment, we are limited to fetch only 50 records.
-  Based on the provided filter conditions there are <strong>{{totalMatchingRecords}}</strong> matching records.
-  Kindly add some additional filters to bring the record count less than or equals to 50.
-</div>
+<ng-template #datasetAlert>
+  <ui-alert variant="warning" *ngIf="showDatasetLimitWarning">
+    At this moment, we are limited to fetch only 50 records.
+    Based on the provided filter conditions there are <strong>{{totalMatchingRecords}}</strong> matching records.
+    Kindly add some additional filters to bring the record count less than or equals to 50.
+  </ui-alert>
+</ng-template>

@@ -772,7 +772,8 @@
 			"notification": {
 				"create": "******",
 				"list": "******",
-				"type": "******"
+				"type": "******",
+				"validTitle": "******"
 			},
 			"preview": {
 				"subject": "******"

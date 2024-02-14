@@ -9,5 +9,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./schedule-alert.component.scss'],
 })
 export class ScheduleAlertComponent {
+  /** Flag indicating whether schedule alert is enabled. */
   schedule_alert = true;
 }

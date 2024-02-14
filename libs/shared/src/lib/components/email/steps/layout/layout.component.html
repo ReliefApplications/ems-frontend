@@ -14,7 +14,7 @@
         <label for="fieldSelect" class="block text-gray-700 text-sm">
           {{'common.notifications.email.field.selectTitle' | translate}}
         </label>
-        <select id="fieldSelect" (change)="insertSubjectFieldToken($event)" placeholder="Field Select" uiTooltip="First Row of first created block" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
+        <select id="fieldSelect" (change)="insertSubjectFieldToken($event)" placeholder="Field Select" uiTooltip="First row of first created block" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
           <option value="" disabled selected>{{'common.notifications.email.field.selectPlaceholder' | translate}}</option>
           <option *ngFor="let field of firstBlockFields" [value]="'{{' + field + '}}'">{{ this.emailService.replaceUnderscores(field) | titlecase }}</option>
         </select>
@@ -54,7 +54,7 @@
     <div class="text-md font-semibold text-left text-[#1D2939] mb-2">{{'common.notifications.email.header.style' | translate}}</div>
     <div class="flex-grow px-2">
       <label for="inTheLastDropdown" class="block text-gray-700 text-sm">{{'common.notifications.email.field.filtered' | translate}}</label>
-      <select id="inTheLastDropdown" (change)="insertTokenAtCursor($event)" uiTooltip="Date Fields filtered by within the last" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
+      <select id="inTheLastDropdown" (change)="insertTokenAtCursor($event)" uiTooltip="Date fields filtered by within the last" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
         <option value="" selected>{{'common.notifications.email.dropdown.inTheLast' | translate}}</option>
         <option *ngFor="let control of inTheLastDropdown.controls" [value]="control.value">{{ control.value }}</option>
       </select>

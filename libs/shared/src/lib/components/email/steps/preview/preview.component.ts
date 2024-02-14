@@ -12,19 +12,33 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./preview.component.scss'],
 })
 export class PreviewComponent implements OnInit, OnDestroy {
+  /** Selected resource ID. -TO DELETE? */
   public selectedResourceId: string | undefined = '653642baa37293bb1706506e';
+
+  /** List of data items. -TO DELETE? */
   public dataList!: { [key: string]: string }[];
+
+  /** List of keys for data items. -TO DELETE? */
   public dataListKey!: { [key: string]: string }[];
+  /** HEADER LOGO FILE SRC STRING */
   public headerLogo: string | ArrayBuffer | null = null;
+  /** BANNER IMAGE FILE SRC STRING */
   public bannerImage: string | ArrayBuffer | null = null;
+  /** FOOTER LOGO FILE SRC STRING */
   public footerLogo: string | ArrayBuffer | null = null;
+  /** SUBJECT STRING */
   public subjectString: string | any =
     this.emailService.allLayoutdata.txtSubject;
+  /** BODY HTML STRING */
   public bodyString: string | any = this.emailService.allLayoutdata.bodyHtml;
+  /** HEADER HTML STRING */
   public headerString: string | any =
     this.emailService.allLayoutdata.headerhtml;
+  /** FOOTER HTML STRING */
   public footerString: string | any =
     this.emailService.allLayoutdata.footerHtml;
+
+  /** Subscription for query. */
   private querySubscription: Subscription | null = null;
 
   /**

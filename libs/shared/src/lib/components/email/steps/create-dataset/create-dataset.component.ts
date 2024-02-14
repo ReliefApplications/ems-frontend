@@ -17,33 +17,74 @@ import { EmailService } from '../../email.service';
   styleUrls: ['./create-dataset.component.scss'],
 })
 export class CreateDatasetComponent implements OnInit {
+  /** Tab index for filtering. */
   public tabIndex = 'filter';
+
+  /** GraphQL query reference for fetching resources. */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+
+  /** Observable for available queries. */
   public availableQueries!: Observable<any[]>;
+
+  /** Selected resource. */
   public resource!: Resource;
+
+  /** Form array for filter fields. */
   public filterFields: FormArray | any = new FormArray([]);
+
+  /** Cached elements. */
   public cachedElements: Resource[] = [];
+
+  /** Selected resource ID. */
   public selectedResourceId: string | undefined;
+
+  /** Operators for filtering. */
   public operators!: { value: string; label: string }[];
+
+  /** Notification types for email service. */
   public notificationTypes: string[] = this.emailService.notificationTypes;
+
+  /** Form group for data set. */
   public dataSetFormGroup: FormGroup | any = this.emailService.datasetsForm;
+
+  /** Form group for data set group. */
   public dataSetGroup: FormGroup | any =
     this.emailService.createNewDataSetGroup();
+
+  /** Tabs configuration. */
   public tabs: {
     title: string;
     content: string;
     active: boolean;
     index: number;
   }[] = this.emailService.tabs;
+
+  /** Search query. */
   public searchQuery = '';
+
+  /** Selected search field. */
   public searchSelectedField = '';
+
+  /** Filtered fields for search. */
   public filteredFields: any[] = [];
+
+  /** Active tab. */
   public activeTab: any =
     this.emailService.tabs[this.emailService.tabs.length - 1];
+
+  /** List of data. */
   public dataList!: { [key: string]: string }[];
+
+  /** Selected fields. */
   public selectedFields!: { name: string; type: string }[];
+
+  /** Preview data for all elements. */
   public allPreviewData: any = {};
+
+  /** Flag to control the visibility of preview. */
   public showPreview = false;
+
+  /** View child for Kendo Strip. */
   @ViewChild('kendoStrip') kendoStrip: any;
 
   /**

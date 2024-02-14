@@ -16,41 +16,85 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent implements OnInit, OnDestroy {
+  /** Reference to the body editor component. */
   @ViewChild('bodyEditor', { static: false })
   bodyEditor: EditorComponent | null = null;
+
+  /** Reference to the header editor component. */
   @ViewChild('headerEditor', { static: false })
   headerEditor: EditorComponent | null = null;
+
+  /** Reference to the header logo input element. */
   @ViewChild('headerLogoInput', { static: false })
   headerLogoInput?: ElementRef;
+
+  /** Reference to the footer logo input element. */
   @ViewChild('footerLogoInput', { static: false })
   footerLogoInput?: ElementRef;
+
+  /** Reference to the banner input element. */
   @ViewChild('bannerInput', { static: false })
   bannerInput?: ElementRef;
+
+  /** Flag indicating whether body validation is shown. */
   showBodyValidator = false;
+
+  /** Flag indicating whether subject validation is shown. */
   showSubjectValidator = false;
-  /** Tinymce editor configuration */
+
+  /** Configuration object for the Tinymce editor. */
   public editor: any = EMAIL_LAYOUT_CONFIG;
+
+  /** HTML content for the body. */
   bodyHtml: any = '';
+
+  /** HTML content for the header. */
   headerHtml: any = '';
+
+  /** HTML content for the footer. */
   footerHtml: any = '';
+
+  /** Text subject for the email. */
   txtSubject: any = '';
-  /** Validation */
+
+  /** Flag indicating whether banner size is invalid. */
   showInvalidBannerSizeMessage = false;
+
+  /** Flag indicating whether header size is invalid. */
   showInvalidHeaderSizeMessage = false;
+
+  /** Flag indicating whether footer size is invalid. */
   showInvalidFooterSizeMessage = false;
+
+  /** Flag indicating whether inputs should be disabled. */
   shouldDisable = false;
-  /** Layout Logos */
+
+  /** Image data for the email header. */
   headerLogo: string | ArrayBuffer | null = null;
+
+  /** Image data for the email banner. */
   bannerImage: string | ArrayBuffer | null = null;
+
+  /** Image data for the email footer. */
   footerLogo: string | ArrayBuffer | null = null;
+
+  /** Flag indicating whether dropdown is shown. */
   showDropdown = false;
-  /** First block fields */
+
+  /** List of fields for the first block. */
   firstBlockFields: string[] = [];
+
+  /** Options for time in the email. */
   timeOptions = [
     { value: '{{today.date}}', label: "Today's Date" },
     { value: '{{now.time}}', label: 'Current Time' },
     { value: '{{now.datetime}}', label: 'Date and Time' },
   ];
+
+  /** Flag indicating whether layout validation is set. */
+  @Input() setLayoutValidation = false;
+
+  /** Form array for 'in the last' dropdown. */
   public inTheLastDropdown = new FormArray<FormControl>([]);
 
   /**
@@ -554,6 +598,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
    * patch the data in service file.
    */
   ngOnDestroy(): void {
+    this.getColors();
     this.emailService.patchEmailLayout();
   }
 }

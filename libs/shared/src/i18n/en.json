@@ -245,27 +245,27 @@
 			"email": {
 				"banner": {
 					"image": "Banner Image",
-					"removeTooltip": "Remove Banner Image"
+					"removeTooltip": "Remove banner image"
 				},
 				"body": {
 					"title": "Body"
 				},
 				"dropdown": {
-					"inTheLast": "Select Timestamp from filters...",
+					"inTheLast": "Select timestamp from filters...",
 					"selectBlock": "Select a block",
 					"timestamp": "Select a timestamp"
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
-					"noSubject": "Please Enter a Subject",
+					"noSubject": "Please enter a subject",
 					"noTemplate": "Something went wrong during the email sending: no template found"
 				},
 				"field": {
 					"filtered": "Select Filtered Field",
 					"noBlocks": "No blocks configured",
 					"selectBlock": "Block Select",
-					"selectPlaceholder": "Select Block Field",
+					"selectPlaceholder": "Select block field",
 					"selectTitle": "Field Select"
 				},
 				"footer": {
@@ -739,7 +739,7 @@
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
 			},
 			"edit": {
-				"name": "Distribution list name",
+				"name": "Distribution List Name",
 				"new": "New distribution list",
 				"update": "Edit distribution list"
 			},
@@ -755,7 +755,7 @@
 		},
 		"email": {
 			"distributionList": {
-				"duplicate": "Name already exists",
+				"duplicate": "Title already exists",
 				"import": {
 					"download": "Download Template",
 					"loading": "Importing file...",
@@ -772,7 +772,8 @@
 			"notification": {
 				"create": "Create Notification",
 				"list": "Notification List",
-				"type": "Alert Type"
+				"type": "Alert Type",
+				"validTitle": "Please enter a title"
 			},
 			"preview": {
 				"subject": "Subject:"
@@ -1031,7 +1032,7 @@
 			},
 			"dataset": {
 				"select": "Select a dataset",
-				"title": "Data set"
+				"title": "Dataset"
 			},
 			"errors": {
 				"field": {
@@ -1286,11 +1287,11 @@
 		},
 		"select": {
 			"distribution": {
-				"SelectFromList": "Select from List",
+				"SelectFromList": "Select from list",
 				"alertMe": "Alert me",
 				"bcc": "bcc",
 				"cc": "cc",
-				"createFilterLogic": "Create Filter Logic",
+				"createFilterLogic": "Create filter logic",
 				"email": "Email",
 				"label": "Distribution List Name*",
 				"to": "To"
@@ -2462,10 +2463,10 @@
 			},
 			"settings": {
 				"actions": "Actions",
-				"emailCreated": "New Email Notification Created",
-				"emailEdited": "Email Notification Edited Successfully",
-				"emailFailMsg": "Ooop!... Something is wrong while sending an email",
-				"emailSent": "Email Notification has Successfully been Saved and Sent"
+				"emailCreated": "New email notification created",
+				"emailEdited": "Email notification edited successfully",
+				"emailFailMsg": "Oops!... Something went wrong while sending the email",
+				"emailSent": "Email notification has successfully been saved and sent"
 			}
 		},
 		"applications": {

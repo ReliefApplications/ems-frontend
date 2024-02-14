@@ -28,49 +28,110 @@ import { Apollo } from 'apollo-angular';
   styleUrls: ['./email-template.component.scss'],
 })
 export class EmailTemplateComponent implements OnInit, OnDestroy {
+  /** Data set containing emails and records. */
   public dataSet?: {
     emails: string[];
     records: any[];
   };
+
+  /** List of data items. */
   public dataList!: any[];
+
+  /** List of emails. */
   public emails: string[] = [];
+
+  /** Selected resource. */
   public resource!: any;
+
+  /** Selected value. */
   public selectedValue!: string;
+
+  /** Cache for filter data. */
   public cacheFilterData!: string;
+
+  /** Selected dataset. */
   public selectedDataset: any | undefined = '';
+
+  /** Emails in the data set. */
   public dataSetEmails!: string[];
+
+  /** Fields in the data set. */
   public dataSetFields!: string[];
+
+  /** Form group for filter query. */
   public filterQuery: FormGroup | any | undefined;
+
+  /** Selected emails. */
   public selectedEmails: string[] | any = [];
+
+  /** Filter operators. */
   public filterOperators = FILTER_OPERATORS;
+
+  /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
+
+  /** Form array for filter fields. */
   public filterFields: FormArray | any = new FormArray([]);
+
+  /** Form group for datasets. */
   public datasetsForm: FormGroup | any = this.emailService.datasetsForm;
+
+  /** Function to filter data. */
   public filterData = this.emailService.filterData;
+
+  /** Flag to control dropdown visibility. */
   public isDropdownVisible = false;
+
+  /** List of data sets. */
   public dataSets: any;
-  /**  Changes from date picker to text expression */
+
+  /** Flag to switch between date picker and text expression. */
   public useExpression = false;
+
+  /** Selected field. */
   public selectField = '';
+
+  /** Error message for email validation. */
   public emailValidationError = '';
+
+  /** Event emitter for loading emails. */
   @Output() emailLoad = new EventEmitter<{
     emails: string[];
     emailFilter: any;
   }>();
+
+  /** List of emails for back loading. */
   @Input() emailBackLoad: string[] | undefined;
+
+  /** Email filter form group. */
   @Input() emailFilter: FormGroup | undefined;
+
+  /** Event emitter for list change. */
   @Output() listChange = new EventEmitter<void>();
+
+  /** Existing ID. */
   @Input() existingId = '';
+
+  /** Index of active segment. */
   public activeSegmentIndex = 0;
+
+  /** Segment buttons for selection. */
   public segmentButtons = [
     'Add Manually',
     'Select From List',
     'Select With Filter',
   ];
+
+  /** List of selected item indexes. */
   public selectedItemIndexes: number[] | any[] = [];
+
+  /** Flag to indicate if all items are selected. */
   public isAllSelected = false;
+
+  /** Loading status. */
   public loading = false;
-  /** IN THE LAST TIME UNITS */
+
+  /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
     { value: 'days', label: 'Days' },

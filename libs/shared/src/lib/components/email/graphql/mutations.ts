@@ -14,7 +14,7 @@ export const ADD_LAYOUT = gql`
 `;
 
 /**
- *
+ * GraphQL mutation to add configuration.
  */
 export const ADD_CONFIGURATION = gql`
   mutation addConfiguration($resource: ID) {

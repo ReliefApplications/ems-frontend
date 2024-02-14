@@ -31,12 +31,22 @@ const DISTRIBUTION_PAGE_SIZE = 5;
   styleUrls: ['./email.component.scss'],
 })
 export class EmailComponent extends UnsubscribeComponent implements OnInit {
+  /** Data for filtering templates. */
   filterTemplateData: any = [];
+
+  /** Actual data for templates. */
   templateActualData: any = [];
-  // public loading = true;
+
+  /** Application ID. */
   public applicationId = '';
+
+  /** Distribution lists. */
   public distributionLists: any = [];
+
+  /** Email notifications. */
   public emailNotifications: any = [];
+
+  /** Page information for pagination. */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -45,16 +55,25 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     skip: 0,
     limit: DEFAULT_PAGE_SIZE,
   };
-  /** DISPLAYED COLUMNS */
+
+  /** Displayed columns in the table. */
   public displayedColumns = ['name', 'alerttype', 'createdby', 'actions'];
+
+  /** Columns for distribution. */
   public distributionColumn = ['name'];
+
+  /** Cached API configurations. */
   public cachedApiConfigurations: ApiConfiguration[] = [];
+
+  /** Page information for distribution pagination. */
   public distributionPageInfo = {
     pageIndex: 0,
     pageSize: DISTRIBUTION_PAGE_SIZE,
     length: 0,
     endCursor: '',
   };
+
+  /** Cached distribution list. */
   cacheDistributionList: any = [];
 
   /**
@@ -136,6 +155,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((res: any) => {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
+        if (res?.data?.emailNotifications?.edges?.length === 0) {
+          this.emailService.emailListLoading = false;
+        }
         res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.emailService.emailListLoading = false;
           if (
