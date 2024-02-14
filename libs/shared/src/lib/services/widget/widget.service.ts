@@ -44,21 +44,27 @@ export class WidgetService {
         // Compile to css ( we store style as scss )
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
-          .subscribe((css) => {
-            const customStyle = this.document.createElement('style');
-            customStyle.appendChild(this.document.createTextNode(css));
-            if (this.shadowDomService.isShadowRoot) {
-              // Add it to shadow root
-              this.shadowDomService.currentHost.appendChild(customStyle);
-            } else {
-              // Add to head of document
-              const head = this.document.getElementsByTagName('head')[0];
-              head.appendChild(customStyle);
-            }
-            resolve(customStyle);
+          .subscribe({
+            next: (css) => {
+              const customStyle = this.document.createElement('style');
+              customStyle.appendChild(this.document.createTextNode(css));
+              if (this.shadowDomService.isShadowRoot) {
+                // Add it to shadow root
+                this.shadowDomService.currentHost.appendChild(customStyle);
+              } else {
+                // Add to head of document
+                const head = this.document.getElementsByTagName('head')[0];
+                head.appendChild(customStyle);
+              }
+              resolve(customStyle);
+            },
+            error: () => {
+              resolve();
+            },
           });
+      } else {
+        resolve();
       }
-      resolve();
     });
   }
 }
