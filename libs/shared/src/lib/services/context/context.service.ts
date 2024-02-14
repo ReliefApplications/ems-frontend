@@ -589,7 +589,6 @@ export class ContextService {
         });
       } else {
         if (dashboard && dashboard.filter) {
-          console.log('ici');
           dashboard.filter.structure = data.editDashboard.filter?.structure;
         }
       }
