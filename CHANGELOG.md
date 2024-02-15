@@ -1,3 +1,11 @@
+## [2.8.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.2...v2.8.3) (2024-02-15)
+
+
+### Bug Fixes
+
+* editor data filter reset not working as expected ([#2383](https://github.com/ReliefApplications/ems-frontend/issues/2383)) ([b1da90b](https://github.com/ReliefApplications/ems-frontend/commit/b1da90b56b164b97ba558e6b8a2d7bfe7359b7db))
+* img tag in widget editor should now be correctly parsed ([#2390](https://github.com/ReliefApplications/ems-frontend/issues/2390)) ([d78e9d9](https://github.com/ReliefApplications/ems-frontend/commit/d78e9d9d3e6a77e2e9f188b09d417c8a2e79d02a))
+
 ## [2.8.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.1...v2.8.2) (2024-02-12)
 
 

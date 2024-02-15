@@ -1990,6 +1990,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "Drop files here to select",
+			"invalidMaxFileSize": "File size too large.",
 			"select": "Select files..."
 		},
 		"grid": {
@@ -2079,7 +2080,8 @@
 			"of": "of",
 			"page": "Page",
 			"pageNumberInputTitle": "Page Number",
-			"previousPage": "Go to the previous page"
+			"previousPage": "Go to the previous page",
+			"selectPage": "Select page"
 		},
 		"tilelayout": {
 			"component": {
