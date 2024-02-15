@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
  * Role summary page
  */
 @Component({
-  selector: 'oort-app-role-summary',
+  selector: 'app-role-summary',
   templateUrl: './role-summary.component.html',
   styleUrls: ['./role-summary.component.scss'],
 })
