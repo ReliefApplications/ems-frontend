@@ -17,7 +17,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   imagetools_cors_hosts: ['picsum.photos'],
   menubar: 'edit view insert format tools table help',
   toolbar:
-    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor | code',
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor',
   toolbar_sticky: true,
   image_advtab: true,
   importcss_append: true,
