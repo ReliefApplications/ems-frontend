@@ -192,6 +192,15 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       }
     }
+    const deactivatingFields = get(node, 'dataset.filterDeactivate');
+    if (deactivatingFields) {
+      deactivatingFields.split(' ').forEach((field: any) => {
+        const filterFieldValue = get(filterValue, field);
+        if (isNil(filterFieldValue)) {
+          node.dataset.filterActive = false;
+        }
+      });
+    }
     for (let i = 0; i < node.childNodes.length; i++) {
       const child = node.childNodes[i];
       this.toggleActiveFilters(filterValue, child);
