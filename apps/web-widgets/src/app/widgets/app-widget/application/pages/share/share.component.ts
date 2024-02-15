@@ -15,7 +15,7 @@ import { SnackbarService } from '@oort-front/ui';
  * Share URL access component.
  */
 @Component({
-  selector: 'oort-app-share',
+  selector: 'app-share',
   templateUrl: './share.component.html',
   styleUrls: ['./share.component.scss'],
 })

@@ -170,6 +170,28 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param node HTML element
    */
   private toggleActiveFilters = (filterValue: any, node: any) => {
+    /**
+     * Should activate or deactivate the active status of the field, based on other filter fields
+     * If other field fields are set, then, deactivate the field
+     *
+     * @param node html node
+     */
+    const shouldActivate = (node: any): void => {
+      const deactivatingFields = get(node, 'dataset.filterDeactivate');
+      if (deactivatingFields) {
+        if (
+          deactivatingFields
+            .split(';')
+            .map((item: any) => item.trim())
+            .some((field: any) => !isNil(get(filterValue, field)))
+        ) {
+          node.dataset.filterActive = false;
+          return;
+        }
+      }
+      node.dataset.filterActive = true;
+    };
+
     if (get(node, 'dataset.filterField')) {
       const value = get(node, 'dataset.filterValue');
       const filterFieldValue = get(filterValue, node.dataset.filterField);
@@ -178,7 +200,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         isEqual(value, filterFieldValue) ||
         (isNilOrEmpty(value) && isNilOrEmpty(filterFieldValue))
       ) {
-        node.dataset.filterActive = true;
+        shouldActivate(node);
       } else {
         node.dataset.filterActive = false;
       }
@@ -186,12 +208,13 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       // Handle empty filters. Need to leave filter field empty.
       if (get(node, 'dataset.filterField') === '') {
         if (!filterValue || isEmpty(filterValue)) {
-          node.dataset.filterActive = true;
+          shouldActivate(node);
         } else {
           node.dataset.filterActive = false;
         }
       }
     }
+
     for (let i = 0; i < node.childNodes.length; i++) {
       const child = node.childNodes[i];
       this.toggleActiveFilters(filterValue, child);
@@ -440,10 +463,24 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     }
-    // Handle data-filter-reset event
-    if (event.target.dataset.filterReset) {
+
+    let resetButtonIsClicked = !!event.target.dataset.filterReset;
+    currentNode = event.target;
+    if (!resetButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-editor' &&
+        !resetButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        resetButtonIsClicked = !!currentNode.dataset.filterReset;
+      }
+    }
+    if (resetButtonIsClicked) {
       // Get all the fields that need to be cleared
-      const resetList = event.target.dataset.filterReset.split(';');
+      const resetList = currentNode.dataset.filterReset
+        .split(';')
+        .map((item: any) => item.trim());
       const updatedFilter: any = {};
       for (const [key, value] of Object.entries(
         this.contextService.filter.getValue()

@@ -16,7 +16,7 @@ import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extende
 
 /** Form web widget component */
 @Component({
-  selector: 'oort-form-widget',
+  selector: 'app-form-widget',
   templateUrl: './form-widget.component.html',
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,

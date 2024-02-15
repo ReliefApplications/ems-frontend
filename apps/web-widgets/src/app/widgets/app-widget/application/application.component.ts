@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
  * Front-office Application component.
  */
 @Component({
-  selector: 'oort-app-application',
+  selector: 'app-application',
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
