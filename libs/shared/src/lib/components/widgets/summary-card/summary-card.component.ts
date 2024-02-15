@@ -383,10 +383,11 @@ export class SummaryCardComponent
         // On switching views, summary card element ref is destroyed
         // and all events attached to it are not working as they are bind to
         // previous element, therefor we have to set them again
-        this.scrollEventBindTimeout = setTimeout(
-          () => this.bindCardsScrollListener(),
-          0
-        );
+        this.scrollEventBindTimeout = setTimeout(() => {
+          this.scrolling = false;
+          this.bindCardsScrollListener();
+          this.checkDataLengthForScrolling();
+        }, 0);
       } else {
         // Clean previously attached scroll listener as the element ref is destroyed
         if (this.scrollEventListener) {
