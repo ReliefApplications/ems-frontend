@@ -51,6 +51,7 @@
         class="mb-4"
         [multiple]="true"
         formControlName="files"
+        [restrictions]="fileRestrictions"
       ></kendo-fileselect>
       <editor [init]="editor" formControlName="html"></editor>
     </form>

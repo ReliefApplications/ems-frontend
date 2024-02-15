@@ -2003,6 +2003,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "Déposez les fichiers ici pour les sélectionner",
+			"invalidMaxFileSize": "Taille du fichier trop grande.",
 			"select": "Choisir des fichiers..."
 		},
 		"grid": {

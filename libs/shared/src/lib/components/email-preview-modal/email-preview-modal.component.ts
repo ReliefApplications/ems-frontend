@@ -23,7 +23,10 @@ import {
   ErrorMessageModule,
   FormWrapperModule,
 } from '@oort-front/ui';
-import { UploadsModule } from '@progress/kendo-angular-upload';
+import {
+  FileRestrictions,
+  UploadsModule,
+} from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 /** Interface of Email Preview Modal Data */
@@ -81,6 +84,10 @@ export class EmailPreviewModalComponent implements OnDestroy {
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   /** Tinymce editor configuration */
   public editor: any = EMAIL_EDITOR_CONFIG;
+  /** File restrictions */
+  public fileRestrictions: FileRestrictions = {
+    maxFileSize: 7 * 1024 * 1024, // should represent 7MB
+  };
 
   /** Timeout */
   private timeoutListener!: NodeJS.Timeout;
