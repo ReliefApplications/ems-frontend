@@ -364,6 +364,9 @@ export class SummaryCardComponent
     if (this.scrollEventBindTimeout) {
       clearTimeout(this.scrollEventListener);
     }
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
   }
 
   /**
@@ -975,7 +978,7 @@ export class SummaryCardComponent
   /**
    * Load more items on init to enable scrolling behavior
    */
-  checkDataLengthForScrolling() {
+  private checkDataLengthForScrolling() {
     if (this.settings.widgetDisplay?.usePagination) return;
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
@@ -992,6 +995,7 @@ export class SummaryCardComponent
    * Load more items on scroll.
    *
    * @param e scroll event
+   * @param initLoad used on init to enable scrolling behavior
    */
   private loadOnScroll(e: any, initLoad: boolean = false): void {
     /** If scroll is reaching bottom of scrolling height, trigger card load */
