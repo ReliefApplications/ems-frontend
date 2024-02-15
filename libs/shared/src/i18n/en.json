@@ -1990,6 +1990,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "Drop files here to select",
+			"invalidMaxFileSize": "File size too large.",
 			"select": "Select files..."
 		},
 		"grid": {
