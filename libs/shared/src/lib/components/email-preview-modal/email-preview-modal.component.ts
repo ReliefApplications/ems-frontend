@@ -35,6 +35,8 @@ interface DialogData {
   html: string;
   subject: string;
   to: string[];
+  // Provided by service
+  onSubmit: any;
 }
 
 /** Regex pattern for email */
@@ -133,6 +135,12 @@ export class EmailPreviewModalComponent implements OnDestroy {
     this.editor.language = editorService.language;
   }
 
+  ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
+  }
+
   /**
    * Add the inputs emails to the distribution list
    *
@@ -189,9 +197,10 @@ export class EmailPreviewModalComponent implements OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
-    }
+  /**
+   * Submit email.
+   */
+  onSubmit() {
+    this.data.onSubmit(this.emailForm.value).then(() => this.dialogRef.close());
   }
 }
