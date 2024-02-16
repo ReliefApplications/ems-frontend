@@ -1,11 +1,7 @@
 import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
-import {
-  CustomWidgetCollection,
-  QuestionDropdownModel,
-  SurveyModel,
-} from 'survey-core';
+import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
 import { has, isArray, isEqual, isObject } from 'lodash';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
@@ -91,13 +87,6 @@ export const init = (
           question.defaultValue = null;
         }
       );
-      (question.survey as SurveyModel).onValueChanged.add(
-        (survey, { name, question, value }) => {
-          if (name === question.name) {
-            dropdownInstance.value = value;
-          }
-        }
-      );
       question.registerFunctionOnPropertyValueChanged('value', () => {
         console.log('change');
         // We need this line for resource select
@@ -127,6 +116,7 @@ export const init = (
       if (question.visibleChoices.length) {
         updateChoices(dropdownInstance, question, currentSearchValue);
       }
+      question._instance = dropdownInstance;
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
@@ -137,6 +127,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };

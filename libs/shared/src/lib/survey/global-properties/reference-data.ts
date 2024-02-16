@@ -256,6 +256,14 @@ export const render = (
       }
     };
 
+    const getReferenceDataFilterKey = () => {
+      const regExKey = new RegExp(/(?<={{).+?(?=}})/, 'gi');
+      const filterKey = regExKey.exec(
+        question.referenceDataVariableMapping ?? ''
+      );
+      return filterKey?.[0];
+    };
+
     const updateChoices = () => {
       if (question.referenceData && question.referenceDataDisplayField) {
         referenceDataService
@@ -295,43 +303,59 @@ export const render = (
               );
             }
             if (question.getType() === 'tagbox') {
-              if (question.isPrimitiveValue) {
-                console.log(question.name);
-                console.log(question.value);
-                // question.setPropertyValue(
-                //   'value',
-                //   choiceItems
-                //     .filter((choice) =>
-                //       question.value.find((x: any) => isEqual(choice.id, x))
-                //     )
-                //     .map((x) => x.id)
-                // );
-                question.value = choiceItems
-                  .filter((choice) =>
-                    question.value.find((x: any) => isEqual(choice.id, x))
-                  )
-                  .map((x) => x.id);
-                // question.value = choiceItems
-                //   .filter((choice) =>
-                //     question.value.find((x: any) => isEqual(choice.id, x))
-                //   )
-                //   .map((x) => x.id);
-                console.log(
-                  'Et voila : ',
-                  choiceItems
+              if (question.referenceDataVariableMapping) {
+                const filterKey = getReferenceDataFilterKey();
+                if (filterKey) {
+                  const data = get(question, 'survey.data');
+                  if (data[filterKey]) {
+                    if (question.isPrimitiveValue) {
+                      question.value = choiceItems
+                        .filter((choice) =>
+                          question.value.find((x: any) => isEqual(choice.id, x))
+                        )
+                        .map((x) => x.id);
+                    }
+                  } else {
+                    if (question.value && question.value.length) {
+                      question.value = [];
+                      question._instance.clearAll();
+                    }
+                  }
+                }
+              } else {
+                if (question.isPrimitiveValue) {
+                  question.value = choiceItems
                     .filter((choice) =>
                       question.value.find((x: any) => isEqual(choice.id, x))
                     )
-                    .map((x) => x.id)
-                );
+                    .map((x) => x.id);
+                }
               }
             }
             if (question.getType() === 'dropdown') {
-              if (question.isPrimitiveValue) {
-                console.log(question.name);
-                question.value = choiceItems.find((choice) =>
-                  isEqual(choice.id, question.value)
-                )?.id;
+              if (question.referenceDataVariableMapping) {
+                const filterKey = getReferenceDataFilterKey();
+                if (filterKey) {
+                  const data = get(question, 'survey.data');
+                  if (data[filterKey]) {
+                    if (question.isPrimitiveValue) {
+                      question.value = choiceItems.find((choice) =>
+                        isEqual(choice.id, question.value)
+                      )?.id;
+                    }
+                  } else {
+                    if (question.value) {
+                      question.value = null;
+                      question._instance.clearValue();
+                    }
+                  }
+                }
+              } else {
+                if (question.isPrimitiveValue) {
+                  question.value = choiceItems.find((choice) =>
+                    isEqual(choice.id, question.value)
+                  )?.id;
+                }
               }
             }
           });
@@ -376,7 +400,6 @@ export const render = (
     );
 
     (question.survey as SurveyModel).onValueChanged.add(() => {
-      console.log('survey value is changing');
       if (question.referenceDataVariableMapping) {
         updateChoices();
       }
