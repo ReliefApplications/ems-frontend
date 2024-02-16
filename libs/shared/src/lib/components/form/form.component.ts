@@ -21,7 +21,10 @@ import {
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
-import { FormBuilderService } from '../../services/form-builder/form-builder.service';
+import {
+  FormBuilderService,
+  TemporaryFilesStorage,
+} from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -55,7 +58,7 @@ export class FormComponent
   /** Indicates whether the search is active */
   public surveyActive = true;
   /** Temporary storage for files */
-  public temporaryFilesStorage: Record<string, Array<File>> = {};
+  public temporaryFilesStorage: TemporaryFilesStorage = new Map();
   /** Reference to the form container element */
   @ViewChild('formContainer') formContainer!: ElementRef;
   /** Date when the form was last modified */
@@ -196,9 +199,7 @@ export class FormComponent
    */
   public reset(): void {
     this.survey.clear();
-    this.formHelpersService.clearTemporaryFilesStorage(
-      this.temporaryFilesStorage
-    );
+    this.temporaryFilesStorage.clear();
     /** Reset custom variables */
     this.formHelpersService.addUserVariables(this.survey);
     /** Force reload of the survey so default value are being applied */
@@ -252,7 +253,6 @@ export class FormComponent
     //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
     await this.formHelpersService.uploadFiles(
-      this.survey,
       this.temporaryFilesStorage,
       this.form?.id
     );
@@ -334,9 +334,7 @@ export class FormComponent
     } else {
       this.survey.clear();
     }
-    this.formHelpersService.clearTemporaryFilesStorage(
-      this.temporaryFilesStorage
-    );
+    this.temporaryFilesStorage.clear();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;

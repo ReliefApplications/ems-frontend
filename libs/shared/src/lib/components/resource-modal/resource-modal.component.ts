@@ -61,7 +61,6 @@ export class ResourceModalComponent extends FormModalComponent {
     } else {
       if (this.data.recordId) {
         await this.formHelpersService.uploadFiles(
-          survey,
           this.temporaryFilesStorage,
           this.form?.id
         );
@@ -72,7 +71,6 @@ export class ResourceModalComponent extends FormModalComponent {
         }
       } else {
         await this.formHelpersService.uploadFiles(
-          survey,
           this.temporaryFilesStorage,
           this.form?.id
         );
