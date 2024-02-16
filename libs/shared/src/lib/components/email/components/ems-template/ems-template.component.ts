@@ -25,21 +25,27 @@ import { Subscription, first } from 'rxjs';
   styleUrls: ['./ems-template.component.scss'],
 })
 export class EmsTemplateComponent implements OnInit, OnDestroy {
+  /** STEPPER */
   @ViewChild('stepper', { static: true })
   public stepper: StepperComponent | undefined;
+  /** RETRIEVES NEW EMAIL NOTIFICATION */
   public addEmailnotification = this.emailService.addEmailNotification;
-
+  /** CURRENT STEP */
   @Input() currentStep = 0;
+  /** NAVIGATE TO MAIN EMAIL LIST SCREEN */
   @Output() navigateToEms: EventEmitter<any> = new EventEmitter();
+  /** DISABLE ACTION BUTTON */
   public disableActionButton = false;
   /** Email Subject Subscription */
   private disableSub!: Subscription;
-
+  /** SUBMIT BUTTON STATUS */
   private submitted = false;
-
+  /** STEPPER ARRAY */
   public steps: any[];
+  /** LAYOUT PAGE VALIDATION */
   setLayoutValidation = false;
 
+  /** DUMMY FORM */
   public form = new FormGroup({
     accountDetails: new FormGroup({
       userName: new FormControl('', Validators.required),
@@ -49,10 +55,21 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     }),
   });
 
+  /**
+   * Step Valid checker
+   *
+   * @param index step index
+   * @returns true if step is valid
+   */
   private isStepValid = (index: number): boolean => {
     return this.getGroupAt(index).valid;
   };
 
+  /**
+   * Checks if form should be validated
+   *
+   * @returns true if form should be validated
+   */
   private shouldValidate = (): boolean => {
     return this.submitted === true;
   };

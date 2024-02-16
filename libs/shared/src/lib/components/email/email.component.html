@@ -13,13 +13,13 @@
 </div>
 <div *ngIf="emailService.isExisting">
   <div class="mt-4">
-    <h2>{{'components.email.notification.list' | translate}}</h2>
+    <h1>{{'components.email.notification.list' | translate}}</h1>
     <input
       id="exampleSelect"
       type="text"
       (input)="searchTemplate($event)"
       placeholder="Search"
-      class="mt-1 block w-64 py-1 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      class="w-64 relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center"
     />
   </div>
 

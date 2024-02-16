@@ -497,7 +497,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       filter: this.getFilterGroup(ele.filter),
       fields: ele.fields,
       cacheData: {},
+      blockType: 'table', // Either Table or Text
       tableStyle: this.emailService.getTableStyles(),
+      textStyle: null,
     });
     tempData.controls.fields.setValue(ele.fields);
     return tempData;

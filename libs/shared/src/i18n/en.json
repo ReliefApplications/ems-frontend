@@ -270,12 +270,12 @@
 				},
 				"footer": {
 					"logo": "Footer Logo",
-					"removeTooltip": "Remove Footer Logo",
+					"removeTooltip": "Remove footer logo",
 					"style": "Footer Style"
 				},
 				"header": {
 					"logo": "Header Logo",
-					"removeTooltip": "Remove Header Logo",
+					"removeTooltip": "Remove header logo",
 					"style": "Header Style"
 				},
 				"processing": "Sending email...",

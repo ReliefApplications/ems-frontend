@@ -112,6 +112,8 @@ export const ADD_EMAIL_NOTIFICATION = gql`
         filter
         fields
         tableStyle
+        blockType
+        textStyle
       }
       modifiedAt
       schedule
@@ -162,6 +164,8 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
           name
         }
         tableStyle
+        blockType
+        textStyle
       }
       id
       name

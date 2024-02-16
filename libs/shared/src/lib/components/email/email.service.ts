@@ -175,6 +175,11 @@ export class EmailService {
       fields: [],
       cacheData: {},
       tableStyle: this.defaultTableStyle,
+      blockType: 'table', // Either Table or Text
+      textStyle: this.formBuilder.group({
+        fields: new FormArray([]),
+        blockStyle: '',
+      }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
     });
   }
 
@@ -829,6 +834,7 @@ export class EmailService {
     if (emailData?.dataSets?.length == 0) {
       this.emailListLoading = false;
     }
+    console.log(allPreviewData);
   }
 
   /**

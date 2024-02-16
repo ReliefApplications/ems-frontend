@@ -14,7 +14,7 @@
         <label for="fieldSelect" class="block text-gray-700 text-sm">
           {{'common.notifications.email.field.selectTitle' | translate}}
         </label>
-        <select id="fieldSelect" (change)="insertSubjectFieldToken($event)" placeholder="Field Select" uiTooltip="First row of first created block" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
+        <select id="fieldSelect" (change)="insertSubjectFieldToken($event)" placeholder="Field Select" uiTooltip="First row of first created block" class="block focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 pl-2 bg-white items-center w-full py-1.5 px-2">
           <option value="" disabled selected>{{'common.notifications.email.field.selectPlaceholder' | translate}}</option>
           <option *ngFor="let field of firstBlockFields" [value]="'{{' + field + '}}'">{{ this.emailService.replaceUnderscores(field) | titlecase }}</option>
         </select>
@@ -23,7 +23,7 @@
         <label for="timeInput" class="block text-gray-700 text-sm">
           {{'common.notifications.email.timestamp' | translate}}
         </label>
-        <select id="timeInput" (change)="insertSubjectFieldToken($event)" placeholder="Timestamp" class="block w-full mt-1 text-sm py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm">
+        <select id="timeInput" (change)="insertSubjectFieldToken($event)" placeholder="Timestamp" class="relative flex focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 pl-2 bg-white items-center w-full py-1.5 px-2">
           <option value="" disabled selected>{{'common.notifications.email.dropdown.timestamp' | translate}}</option>
           <option *ngFor="let option of timeOptions" [value]="option.value">{{ option.label }}</option>
         </select>
@@ -39,7 +39,7 @@
         id="subjectInput"
         name="subjectInput"
         type="text"
-        class="mt-1 text-sm text-left block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm"
+        class="mt-1 block py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         placeholder="Enter Value"
         [(ngModel)]="emailService.allLayoutdata.txtSubject"
         (ngModelChange)="onTxtSubjectChange()"
@@ -82,18 +82,22 @@
       <!-- Color Picker for Header Background Color -->
       <div class="w-1/6">
         <label for="headerBackgroundColor" class="block text-gray-700 text-sm">{{'common.notifications.email.style.background' | translate}}</label>
-        <input type="color" id="headerBackgroundColor" name="headerBackgroundColor" value="#00205C"
-          class="h-10 w-full rounded-md"
-          style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-        >
+        <div [ngClass]="{'mt-3 mb-2': headerLogo}" class="color-picker-container">
+          <input type="color" id="headerBackgroundColor" name="headerBackgroundColor" value="#00205C"
+            class="h-10 w-full rounded-md"
+            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+          >
+        </div>
       </div>
       <!-- Color Picker for Header Text Color -->
       <div class="w-1/6">
         <label for="headerColor" class="block text-gray-700 text-sm">{{'common.notifications.email.style.text' | translate}}</label>
-        <input type="color" id="headerColor" name="headerColor" value="#FFFFFF"
-          class="h-10 w-full rounded-md"
-          style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-        >
+        <div [ngClass]="{'mt-3 mb-2': headerLogo}">
+          <input type="color" id="headerColor" name="headerColor" value="#FFFFFF"
+            class="h-10 w-full rounded-md"
+            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+          >
+        </div>
       </div>
     </div>
     <editor #headerEditor [(ngModel)]="emailService.allLayoutdata.headerHtml" [ngModelOptions]="{ standalone: true }" [init]="editor"></editor>
@@ -133,7 +137,7 @@
       </div>
     </div>
     <!-- Body Text Editor -->
-    <editor [ngClass]="{'form-error': showBodyValidator}" #bodyEditor [(ngModel)]="emailService.allLayoutdata.bodyHtml" [init]="editor" (onChange)="onEditorContentChange()"></editor>
+    <editor class="rounded" [ngClass]="{'form-error': showBodyValidator}" #bodyEditor [(ngModel)]="emailService.allLayoutdata.bodyHtml" [init]="editor" (onChange)="onEditorContentChange()"></editor>
   </div>
   <!-- Banner Image -->
   <div class="mb-4 bg-[#F5FAFF] flex items-center p-5">
@@ -184,18 +188,22 @@
       <!-- Color Picker for Footer Background Color -->
       <div class="w-1/6">
         <label for="footerBackgroundColor" class="block text-gray-700 text-sm">{{'common.notifications.email.style.background' | translate}}</label>
-        <input type="color" id="footerBackgroundColor" name="footerBackgroundColor" value="#FFFFFF"
-          class="h-10 w-full rounded-md"
-          style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-        >
+        <div [ngClass]="{'mt-3 mb-2': footerLogo}" class="color-picker-container">
+          <input type="color" id="footerBackgroundColor" name="footerBackgroundColor" value="#FFFFFF"
+            class="h-10 w-full rounded-md"
+            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+          >
+        </div>
       </div>
       <!-- Color Picker for Footer Text Color -->
       <div class="w-1/6">
         <label for="footerColor" class="block text-gray-700 text-sm">{{'common.notifications.email.style.text' | translate}}</label>
-        <input type="color" id="footerColor" name="footerColor" value="#000000"
-          class="h-10 w-full rounded-md"
-          style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-        >
+        <div [ngClass]="{'mt-3 mb-2': footerLogo}">
+          <input type="color" id="footerColor" name="footerColor" value="#000000"
+            class="h-10 w-full rounded-md"
+            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+          >
+        </div>
       </div>
     </div>
     <editor #footerEditor [(ngModel)]="emailService.allLayoutdata.footerHtml" [ngModelOptions]="{ standalone: true }" [init]="editor"></editor>

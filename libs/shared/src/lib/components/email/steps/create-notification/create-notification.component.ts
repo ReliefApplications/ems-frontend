@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { EmailService } from '../../email.service';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * create notification page component.
@@ -24,8 +26,14 @@ export class CreateNotificationComponent implements OnInit {
    * initializing Email Service
    *
    * @param emailService helper functions
+   * @param snackBar snackbar helper function
+   * @param translate translate helper function
    */
-  constructor(public emailService: EmailService) {}
+  constructor(
+    public emailService: EmailService,
+    public snackBar: SnackbarService,
+    public translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     if (this.emailService.notificationTypes.length > 0) {
@@ -73,5 +81,26 @@ export class CreateNotificationComponent implements OnInit {
     this.emailService.setDatasetForm();
     this.emailService.isExisting = !this.emailService.isExisting;
     this.navigateToListScreen.emit();
+  }
+
+  /**
+   * Sends alert if name is duplicate or invalid.
+   */
+  nameAlert() {
+    if (this.isNameDuplicate()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('components.email.distributionList.duplicate'),
+        { error: true }
+      );
+    }
+    if (
+      !this.dataSetFormGroup.controls['name'].valid &&
+      this.dataSetFormGroup.controls['name'].touched
+    ) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('components.email.notification.validTitle'),
+        { error: true }
+      );
+    }
   }
 }
