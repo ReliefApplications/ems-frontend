@@ -363,7 +363,7 @@ export class ChartComponent
             // Check if we got any data back
             this.emptyDataset =
               Array.isArray(aggregationData) && aggregationData.length === 0;
-
+            this.settings.widgetDisplay.isEmpty = this.emptyDataset;
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
@@ -408,6 +408,7 @@ export class ChartComponent
             this.emptyDataset =
               Array.isArray(this.series.value) &&
               this.series.value.length === 0;
+            this.settings.widgetDisplay.isEmpty = this.emptyDataset;
           }
           this.loading = loading;
         }

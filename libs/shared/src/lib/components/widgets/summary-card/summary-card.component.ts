@@ -568,6 +568,9 @@ export class SummaryCardComponent
     // update card list and scroll behavior according to the card items display
 
     this.cards = newCards;
+    this.widget.settings.widgetDisplay.isEmpty = this.cards.length
+      ? false
+      : true;
     if (
       this.settings.widgetDisplay?.usePagination ||
       this.triggerRefreshCardList
@@ -711,6 +714,10 @@ export class SummaryCardComponent
         this.pageInfo.skip + this.pageInfo.pageSize
       );
     }
+
+    this.widget.settings.widgetDisplay.isEmpty = this.cards.length
+      ? false
+      : true;
 
     if (!isPaginated) {
       this.pageInfo.length = this.sortedCachedCards.length;

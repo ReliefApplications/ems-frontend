@@ -2304,6 +2304,7 @@
 				"border": "Show widget border",
 				"expand": "Show button to expand widget",
 				"header": "Show widget header",
+				"hideEmpty": "Hide if widget with no data",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
@@ -2332,6 +2333,7 @@
 					"help": "Only appears in front-office or in preview mode",
 					"restore": "Restore default"
 				},
+				"hideEmpty": "Only hides in front-office or in preview mode",
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"

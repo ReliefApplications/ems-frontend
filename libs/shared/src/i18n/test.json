@@ -2304,6 +2304,7 @@
 				"border": "******",
 				"expand": "******",
 				"header": "******",
+				"hideEmpty": "******",
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
@@ -2332,6 +2333,7 @@
 					"help": "******",
 					"restore": "******"
 				},
+				"hideEmpty": "******",
 				"selector": {
 					"collapse": "******",
 					"expand": "******"

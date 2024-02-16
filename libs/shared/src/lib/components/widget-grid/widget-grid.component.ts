@@ -55,6 +55,8 @@ export class WidgetGridComponent
   @Input() widgets: any[] = [];
   /** Update permission */
   @Input() canUpdate = false;
+  /** If can hide widgets with no data that allows this */
+  @Input() canHide = false;
   /** Additional grid configuration */
   @Input() options?: GridsterConfig;
   /** Delete event emitter */
@@ -105,6 +107,21 @@ export class WidgetGridComponent
   get maxCols(): number {
     const cols = this.widgets.map((x) => x.cols);
     return Math.max(...cols);
+  }
+
+  /** @returns visible widgets to display */
+  get visibleWidgets(): any[] {
+    if (this.canHide) {
+      return this.widgets.filter(
+        (widget: any) =>
+          !(
+            widget.settings.widgetDisplay.hideEmpty &&
+            widget.settings.widgetDisplay.isEmpty
+          )
+      );
+    } else {
+      return this.widgets;
+    }
   }
 
   /**
