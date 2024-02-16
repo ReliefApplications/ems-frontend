@@ -21,6 +21,7 @@ import { Question } from '../../survey/types';
 import { WorkflowService } from '../workflow/workflow.service';
 import { ApplicationService } from '../application/application.service';
 import { DomService } from '../dom/dom.service';
+import { TemporaryFilesStorage } from '../form-builder/form-builder.service';
 
 /**
  * Applies custom logic to survey data values.
@@ -151,55 +152,32 @@ export class FormHelpersService {
   /**
    * Upload asynchronously files to create questions in the form
    *
-   * @param survey The form in which the files will be updated
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    * @param formId Form where to upload the files
    */
   async uploadFiles(
-    survey: SurveyModel,
-    temporaryFilesStorage: any,
+    temporaryFilesStorage: TemporaryFilesStorage,
     formId: string | undefined
   ): Promise<void> {
     if (!formId) {
       throw new Error('Form id is not defined');
     }
 
-    const data = survey.data;
-    const questionsToUpload = Object.keys(temporaryFilesStorage);
-    for (const name of questionsToUpload) {
-      const files = temporaryFilesStorage[name];
-      for (const [index, file] of files.entries()) {
-        const path = await this.downloadService.uploadBlob(
-          file,
-          BlobType.RECORD_FILE,
-          formId
-        );
-        if (path) {
-          const fileContent = data[name][index].content;
-          data[name][index].content = path;
+    for (const [question, files] of temporaryFilesStorage) {
+      const paths = await Promise.all(
+        files.map((file) =>
+          this.downloadService.uploadBlob(file, BlobType.RECORD_FILE, formId)
+        )
+      );
 
-          // Check if any other question is using the same file
-          survey.getAllQuestions().forEach((question) => {
-            const questionType = question.getType();
-            if (
-              questionType !== 'file' ||
-              // Only change files that are not in the temporary storage
-              // meaning their values came from the default values
-              !!temporaryFilesStorage[question.name]
-            )
-              return;
+      // Maps the files array, replacing the content with the path from the blob storage
+      const mappedFiles = ((question.value as any[]) || []).map((f, idx) => ({
+        ...f,
+        content: paths[idx],
+      }));
 
-            const files = data[question.name] ?? [];
-            files.forEach((file: any) => {
-              if (file && file.content === fileContent) {
-                file.content = path;
-              }
-            });
-          });
-        }
-      }
+      question.value = mappedFiles;
     }
-    survey.data = cloneDeep(data);
   }
 
   /**
@@ -490,19 +468,6 @@ export class FormHelpersService {
     // After the workflow context is set, we clear it
     this.workflowService.setContext([]);
   };
-
-  /**
-   * Clears the temporary files storage
-   *
-   * @param storage Storage to clear
-   */
-  public clearTemporaryFilesStorage(
-    storage: Record<string, Array<File>>
-  ): void {
-    Object.keys(storage).forEach((key) => {
-      delete storage[key];
-    });
-  }
 
   /**
    * Add tooltip to the survey question if exists
