@@ -113,6 +113,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'readOnly',
   'isRequired',
   'placeHolder',
+  'useSummaryTagMode',
   'enableIf',
   'visibleIf',
   'tooltip',
