@@ -498,7 +498,9 @@ export class GridWidgetComponent
             },
             this.grid.sortField || undefined,
             this.grid.sortOrder || undefined,
-            options.export
+            options.export,
+            this.settings.resource,
+            Intl.DateTimeFormat().resolvedOptions().timeZone
           );
         }
       }

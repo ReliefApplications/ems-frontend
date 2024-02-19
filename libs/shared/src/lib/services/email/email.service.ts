@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
+import { Resource } from 'tinymce';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 1000;
@@ -176,6 +177,8 @@ export class EmailService {
    * @param sortOrder Sort order (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
    * or not (optional).
+   * @param resource Resource for the email.
+   * @param timezone Timezone for the email.
    */
   public async previewMail(
     recipient: string[],
@@ -188,7 +191,9 @@ export class EmailService {
     },
     sortField?: string,
     sortOrder?: string,
-    attachment?: boolean
+    attachment?: boolean,
+    resource?: Resource,
+    timezone?: string
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SnackbarSpinnerComponent,
@@ -219,6 +224,8 @@ export class EmailService {
           sortField,
           sortOrder,
           attachment,
+          resource,
+          timezone,
         },
         { headers }
       )
