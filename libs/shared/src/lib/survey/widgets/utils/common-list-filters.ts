@@ -63,6 +63,5 @@ function updateChoices(
 
   widget.loading = false;
   widget.disabled = surveyQuestion.isReadOnly;
-  widget.wrapper.nativeElement.click();
 }
 export default updateChoices;

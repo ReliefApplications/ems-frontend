@@ -163,15 +163,15 @@ export const init = (
               // https://www.telerik.com/kendo-angular-ui/components/dateinputs/api/DatePickerComponent/#toc-valuechange
               button.classList.remove('hidden');
             }
-            if (question.min) {
+            if (el.querySelector('input')?.min) {
               pickerInstance.min = getDateDisplay(
-                question.min,
+                el.querySelector('input')?.min,
                 question.inputType
               );
             }
-            if (question.max) {
+            if (el.querySelector('input')?.max) {
               pickerInstance.max = getDateDisplay(
-                question.max,
+                el.querySelector('input')?.max,
                 question.inputType
               );
             }
