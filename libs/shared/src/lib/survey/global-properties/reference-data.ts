@@ -142,6 +142,19 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     });
 
     serializer.addProperty(type, {
+      displayName: 'Keep selected choices',
+      name: 'selectedChoicesNotAffectedByVisibleChoices',
+      category: 'Choices from Reference data',
+      type: 'boolean',
+      dependsOn: '_referenceData',
+      visibleIndex: 4,
+      visibleIf: (obj: null | QuestionSelectBase): boolean => {
+        return Boolean(obj?._referenceData);
+      },
+      default: true,
+    });
+
+    serializer.addProperty(type, {
       displayName: 'GraphQL variables',
       name: 'referenceDataVariableMapping',
       category: 'Choices from Reference data',
@@ -245,14 +258,50 @@ export const render = (
 
     const graphQLVariables = () => {
       try {
-        console.log(question.referenceDataVariableMapping);
         let mapping = JSON.parse(question.referenceDataVariableMapping || '');
-        console.log(get(question, 'survey.data'));
         mapping = replaceValues(mapping, get(question, 'survey.data'));
         removeEmptyPlaceholders(mapping);
         return mapping;
       } catch {
         return {};
+      }
+    };
+
+    const updateChoices = async () => {
+      if (question.referenceData && question.referenceDataDisplayField) {
+        const choices = await referenceDataService.getChoices(
+          question.referenceData,
+          question.referenceDataDisplayField,
+          question.isPrimitiveValue,
+          graphQLVariables()
+        );
+        // this is to avoid that the choices appear on the 'choices' tab
+        // and also to avoid the choices being sent to the server
+        question.choices = [];
+
+        const choiceItems = choices.map((choice) => new ItemValue(choice));
+        question.setPropertyValue('visibleChoices', choiceItems);
+        // manually set the selected option (not done by default)
+        // only affects dropdown questions (only one option selected) with reference data and non primitive values
+        if (!question.isPrimitiveValue && question.getType() === 'dropdown') {
+          // When using dashboard filters, the question.value object is truncated
+          if (isEqual(question.value, question.defaultValue?.value)) {
+            return (question.value = question.defaultValue);
+          }
+
+          // First, if no value, we try to get the default value
+          question.value = question.value ?? question.defaultValue;
+
+          // We then create an ItemValue from the value
+          const valueItem = new ItemValue(question.value);
+
+          // Then, we try to find the value in the choices by comparing the ids
+          question.value = choiceItems.find((choice) =>
+            isEqual(choice.id, omit(valueItem.id as any, 'pos'))
+          );
+        }
+      } else {
+        question.choices = [];
       }
     };
 
@@ -264,103 +313,63 @@ export const render = (
       return filterKey?.[0];
     };
 
-    const updateChoices = () => {
-      if (question.referenceData && question.referenceDataDisplayField) {
-        referenceDataService
-          .getChoices(
-            question.referenceData,
-            question.referenceDataDisplayField,
-            question.isPrimitiveValue,
-            graphQLVariables()
-          )
-          .then((choices) => {
-            // this is to avoid that the choices appear on the 'choices' tab
-            // and also to avoid the choices being sent to the server
-            question.choices = [];
-
-            const choiceItems = choices.map((choice) => new ItemValue(choice));
-            question.setPropertyValue('visibleChoices', choiceItems);
-            // manually set the selected option (not done by default)
-            // only affects dropdown questions (only one option selected) with reference data and non primitive values
-            if (
-              !question.isPrimitiveValue &&
-              question.getType() === 'dropdown'
-            ) {
-              // When using dashboard filters, the question.value object is truncated
-              if (isEqual(question.value, question.defaultValue?.value)) {
-                return (question.value = question.defaultValue);
+    const updateSelectedChoices = () => {
+      const choiceItems: ItemValue[] = question.visibleChoices;
+      if (question.getType() === 'tagbox') {
+        if (question.referenceDataVariableMapping) {
+          const filterKey = getReferenceDataFilterKey();
+          if (filterKey) {
+            const data = get(question, 'survey.data');
+            if (data[filterKey]) {
+              if (question.isPrimitiveValue) {
+                question.value = choiceItems
+                  .filter((choice) =>
+                    question.value.find((x: any) => isEqual(choice.id, x))
+                  )
+                  .map((x) => x.id);
               }
-
-              // First, if no value, we try to get the default value
-              question.value = question.value ?? question.defaultValue;
-
-              // We then create an ItemValue from the value
-              const valueItem = new ItemValue(question.value);
-
-              // Then, we try to find the value in the choices by comparing the ids
-              question.value = choiceItems.find((choice) =>
-                isEqual(choice.id, omit(valueItem.id as any, 'pos'))
-              );
-            }
-            if (question.getType() === 'tagbox') {
-              if (question.referenceDataVariableMapping) {
-                const filterKey = getReferenceDataFilterKey();
-                if (filterKey) {
-                  const data = get(question, 'survey.data');
-                  if (data[filterKey]) {
-                    if (question.isPrimitiveValue) {
-                      question.value = choiceItems
-                        .filter((choice) =>
-                          question.value.find((x: any) => isEqual(choice.id, x))
-                        )
-                        .map((x) => x.id);
-                    }
-                  } else {
-                    if (question.value && question.value.length) {
-                      question.value = [];
-                      question._instance.clearAll();
-                    }
-                  }
-                }
-              } else {
-                if (question.isPrimitiveValue) {
-                  question.value = choiceItems
-                    .filter((choice) =>
-                      question.value.find((x: any) => isEqual(choice.id, x))
-                    )
-                    .map((x) => x.id);
-                }
+            } else {
+              if (question.value && question.value.length) {
+                question.value = [];
+                question._instance.clearAll();
               }
             }
-            if (question.getType() === 'dropdown') {
-              if (question.referenceDataVariableMapping) {
-                const filterKey = getReferenceDataFilterKey();
-                if (filterKey) {
-                  const data = get(question, 'survey.data');
-                  if (data[filterKey]) {
-                    if (question.isPrimitiveValue) {
-                      question.value = choiceItems.find((choice) =>
-                        isEqual(choice.id, question.value)
-                      )?.id;
-                    }
-                  } else {
-                    if (question.value) {
-                      question.value = null;
-                      question._instance.clearValue();
-                    }
-                  }
-                }
-              } else {
-                if (question.isPrimitiveValue) {
-                  question.value = choiceItems.find((choice) =>
-                    isEqual(choice.id, question.value)
-                  )?.id;
-                }
+          }
+        } else {
+          if (question.isPrimitiveValue) {
+            question.value = choiceItems
+              .filter((choice) =>
+                question.value.find((x: any) => isEqual(choice.id, x))
+              )
+              .map((x) => x.id);
+          }
+        }
+      }
+      if (question.getType() === 'dropdown') {
+        if (question.referenceDataVariableMapping) {
+          const filterKey = getReferenceDataFilterKey();
+          if (filterKey) {
+            const data = get(question, 'survey.data');
+            if (data[filterKey]) {
+              if (question.isPrimitiveValue) {
+                question.value = choiceItems.find((choice) =>
+                  isEqual(choice.id, question.value)
+                )?.id;
+              }
+            } else {
+              if (question.value) {
+                question.value = null;
+                question._instance.clearValue();
               }
             }
-          });
-      } else {
-        question.choices = [];
+          }
+        } else {
+          if (question.isPrimitiveValue) {
+            question.value = choiceItems.find((choice) =>
+              isEqual(choice.id, question.value)
+            )?.id;
+          }
+        }
       }
     };
 
@@ -398,11 +407,46 @@ export const render = (
       'referenceDataDisplayField',
       updateChoices
     );
-
-    (question.survey as SurveyModel).onValueChanged.add(() => {
-      if (question.referenceDataVariableMapping) {
-        updateChoices();
-      }
+    // We register the reference data question that has a new value in order to not trigger the choices and selected choices update to avoid additional checks
+    question.registerFunctionOnPropertyValueChanged('value', () => {
+      question.isChangeSource = true;
     });
+    // Init linked reference data questions update inside the survey if those question types exists
+    const containsLinkedReferenceDataQuestions = (
+      question.survey as SurveyModel
+    )
+      .getAllQuestions()
+      .find((qu) => qu.referenceDataVariableMapping);
+    if (containsLinkedReferenceDataQuestions) {
+      (question.survey as SurveyModel).onValueChanged.add(async () => {
+        // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
+        //
+        // 1. The available choices(visibleChoices property). This has to be updated if the reference data question that it's dependant on has a new value set
+        // 2. The selected choices in the question. If the question's selected choices should be updated/cleared if the dependant reference data question changes it's value.
+        //
+        // As this two update methods could work on their own specific terms, we have one property for each action to handle:
+        // 1. => referenceDataVariableMapping
+        // 2. => selectedChoicesNotAffectedByVisibleChoices
+
+        // If the question is not the source of the change event, then update choices and selected choices if needed
+        if (!question.isChangeSource) {
+          if (
+            question.referenceDataVariableMapping &&
+            question.referenceDataVariableMapping != '{}'
+          ) {
+            question._instance.loading = true;
+            question._instance.disabled = true;
+            await updateChoices();
+            question._instance.loading = false;
+            question._instance.disabled = false;
+          }
+          if (!question.selectedChoicesNotAffectedByVisibleChoices) {
+            updateSelectedChoices();
+          }
+        } else {
+          question.isChangeSource = false;
+        }
+      });
+    }
   }
 };

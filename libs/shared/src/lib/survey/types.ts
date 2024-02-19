@@ -43,6 +43,7 @@ export interface QuestionSelectBase
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
   referenceDataVariableMapping?: string;
+  selectedChoicesNotAffectedByVisibleChoices?: boolean;
 }
 
 // TYPES FOR CUSTOM QUESTIONS
