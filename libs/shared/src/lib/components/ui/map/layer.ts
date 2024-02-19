@@ -206,6 +206,8 @@ export class Layer implements LayerModel {
   private zoomListener!: L.LeafletEventHandlerFn;
   /** Array of listeners */
   private listeners: any[] = [];
+  /** Should refresh layer */
+  public shouldRefresh = false;
 
   /**
    * Get layer children. Await for sub-layers to be loaded first.

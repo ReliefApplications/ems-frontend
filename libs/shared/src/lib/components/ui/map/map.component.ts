@@ -247,15 +247,17 @@ export class MapComponent
       this.contextService.filter$
         .pipe(
           debounceTime(500),
-          filter(({ previous, current }) =>
-            this.contextService.shouldRefresh(
-              this.layers.map((layer) => {
-                return pick(layer, ['datasource', 'contextFilters', 'at']);
-              }),
-              previous,
-              current
-            )
-          ),
+          filter(({ previous, current }) => {
+            // Update each layer, indicating if refetch is required
+            this.layers.forEach((layer) => {
+              layer.shouldRefresh = this.contextService.shouldRefresh(
+                pick(layer, ['datasource', 'contextFilters', 'at']),
+                previous,
+                current
+              );
+            });
+            return this.layers.some((layer) => layer.shouldRefresh);
+          }),
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
@@ -523,6 +525,7 @@ export class MapComponent
       this.layerIds = settings.layers ?? [];
       if (settings.layers?.length || reset) {
         this.resetLayers();
+        this.layers = [];
         if (settings.layers?.length) {
           promises.push(this.getLayers(settings.layers));
         }
@@ -660,11 +663,16 @@ export class MapComponent
     layers: L.Control.Layers.TreeObject[]
   ) {
     if (!this.layerControlButtons || !this.layerControlButtons._map) {
+      // Create a new layer control instance
       this.layerControlButtons = this.mapControlsService.getLayerControl(
         this,
         basemaps,
         layers
       );
+    } else {
+      // Else, update it
+      this.layerControlButtons._component.layersTree = layers;
+      this.layerControlButtons._component.loading = false;
     }
   }
 
@@ -689,10 +697,13 @@ export class MapComponent
       leafletLayer?: L.Layer,
       displayLayers = true
     ): Promise<OverlayLayerTree> => {
-      // Add to the layers array if not already added
-      if (this.layers.find((l) => l.id === layer.id)) return {} as any;
-
-      this.layers.push(layer);
+      const index = this.layers.findIndex((l) => l.id === layer.id);
+      // Replace the layer in the array if it exists
+      if (index >= 0) {
+        this.layers[index] = layer;
+      } else {
+        this.layers.push(layer);
+      }
 
       if (layer.type === 'GroupLayer') {
         const children = layer.getChildren();
@@ -737,11 +748,16 @@ export class MapComponent
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
       const layerPromises = layerIds.map((id) => {
-        return this.mapLayersService
-          .createLayersFromId(id, this.injector)
-          .then((layer) => {
-            return parseTreeNode(layer, undefined, displayLayers);
-          });
+        const existingLayer = this.layers.find((layer) => layer.id === id);
+        if (!existingLayer || existingLayer?.shouldRefresh) {
+          return this.mapLayersService
+            .createLayersFromId(id, this.injector)
+            .then((layer) => {
+              return parseTreeNode(layer, undefined, displayLayers);
+            });
+        } else {
+          return parseTreeNode(existingLayer, undefined, displayLayers);
+        }
       });
 
       Promise.all(layerPromises).then((layersTree: any) => {
@@ -812,6 +828,7 @@ export class MapComponent
     }
     // Reset related properties
     this.resetLayers();
+    this.layers = [];
   }
   //   /**
   //  * Function used to apply options
@@ -1029,9 +1046,13 @@ export class MapComponent
 
   /** Set the new layers based on the filter value */
   private async filterLayers() {
-    this.document.getElementById('layer-control-button-close')?.click();
     this.cancelRefresh$.next();
     const { layers: layersToGet, controls } = this.extractSettings();
+
+    if (controls.layer) {
+      this.document.getElementById('layer-control-button-close')?.click();
+      this.layerControlButtons._component.loading = true;
+    }
 
     const shouldDisplayStatuses: Record<string, boolean> = {};
 
@@ -1045,15 +1066,19 @@ export class MapComponent
       .forEach((x) => {
         // Store visibility status of the layer
         const shouldDisplay = (x.layer as any).shouldDisplay;
+        const id = (x.layer as any).id;
         if (!isNil(shouldDisplay)) {
-          shouldDisplayStatuses[(x.layer as any).id] = shouldDisplay;
+          shouldDisplayStatuses[id] = shouldDisplay;
         }
-        (x.layer as any).deleted = true;
-        (x.layer as L.Layer).remove();
+        const existingLayer = this.layers.find((layer) => layer.id === id);
+        if (!existingLayer || existingLayer.shouldRefresh) {
+          (x.layer as any).deleted = true;
+          (x.layer as L.Layer).remove();
+        }
       });
 
     // get new layers, with filters applied
-    this.resetLayers();
+    this.resetLayers(this.layers.filter((x) => x.shouldRefresh));
     from(this.getLayers(layersToGet ?? [], false))
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe((res) => {
@@ -1076,11 +1101,7 @@ export class MapComponent
         );
 
         if (controls.layer) {
-          // remove current layer controls
-          this.layerControlButtons.remove();
-          this.layerControlButtons = null;
-
-          // create new layer controls, from newly created layers
+          // update layer controls, from newly created layers
           this.setLayersControl(
             flatten(this.basemapTree),
             flatten(this.overlaysTree)
@@ -1091,12 +1112,13 @@ export class MapComponent
 
   /**
    * Reset current saved layers and remove all attached listeners of those Layer instances
+   *
+   * @param layers Layers to reset ( by default, all of them )
    */
-  resetLayers() {
-    this.layers.forEach(async (layer) => {
+  resetLayers(layers: Layer[] = this.layers) {
+    layers.forEach(async (layer) => {
       await layer.removeAllListeners(this.map);
     });
-    this.layers = [];
   }
 
   /**
