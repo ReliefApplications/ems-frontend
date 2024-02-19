@@ -15,13 +15,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  UnsubscribeComponent,
   WidgetGridComponent,
   ConfirmService,
   ButtonActionT,
   ContextService,
   DashboardQueryResponse,
   Record,
+  DashboardComponent as SharedDashboardComponent,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
@@ -37,9 +37,15 @@ import { cloneDeep } from 'lodash';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  providers: [
+    {
+      provide: SharedDashboardComponent,
+      useExisting: DashboardComponent,
+    },
+  ],
 })
 export class DashboardComponent
-  extends UnsubscribeComponent
+  extends SharedDashboardComponent
   implements OnInit, OnDestroy
 {
   /** Change step event ( in workflow ) */
@@ -255,6 +261,7 @@ export class DashboardComponent
    */
   public onAttach() {
     console.log('Dashboard will attach');
+    this.active = true;
   }
 
   /**
@@ -262,5 +269,6 @@ export class DashboardComponent
    */
   public onDetach() {
     console.log('Dashboard will detach');
+    this.active = false;
   }
 }

@@ -45,6 +45,7 @@ import { ListFilterComponent } from './components/list-filter/list-filter.compon
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
 import { PayloadModalComponent } from './components/payload-modal/payload-modal.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 /** Main module for the shared project */
 @NgModule({
@@ -78,6 +79,7 @@ import { PayloadModalComponent } from './components/payload-modal/payload-modal.
     MapModule,
     DashboardFilterModule,
     DashboardFilterIconComponent,
+    DashboardComponent,
     ButtonActionModule,
     WidgetChoiceModule,
     TabsSettingsModule,
@@ -105,6 +107,7 @@ import { PayloadModalComponent } from './components/payload-modal/payload-modal.
     ListFilterComponent,
     StatusOptionsComponent,
     DashboardFilterIconComponent,
+    DashboardComponent,
     PayloadModalComponent,
   ],
 })

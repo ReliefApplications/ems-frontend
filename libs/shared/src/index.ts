@@ -93,6 +93,7 @@ export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
+export * from './lib/components/dashboard/dashboard.component';
 
 // Export of controls
 export * from './lib/components/controls/public-api';

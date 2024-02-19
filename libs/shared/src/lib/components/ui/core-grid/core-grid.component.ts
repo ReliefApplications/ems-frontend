@@ -5,6 +5,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  Optional,
   Output,
   SimpleChanges,
   ViewChild,
@@ -55,6 +56,7 @@ import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { DashboardComponent } from '../../dashboard/dashboard.component';
 
 /**
  * Default file name when exporting grid data.
@@ -362,19 +364,25 @@ export class CoreGridComponent
     private applicationService: ApplicationService,
     private contextService: ContextService,
     private router: Router,
-    private el: ElementRef
+    private el: ElementRef,
+    @Optional() private parentDashboard: DashboardComponent
   ) {
     super();
     this.environment = environment;
     contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(({ previous, current }) => {
-        if (contextService.filterRegex.test(this.settings.contextFilters)) {
-          if (
-            this.contextService.shouldRefresh(this.widget, previous, current)
-          ) {
-            if (this.dataQuery) this.reloadData();
+        if (this.parentDashboard.active) {
+          console.log('Grid : parent is active');
+          if (contextService.filterRegex.test(this.settings.contextFilters)) {
+            if (
+              this.contextService.shouldRefresh(this.widget, previous, current)
+            ) {
+              if (this.dataQuery) this.reloadData();
+            }
           }
+        } else {
+          console.log('Grid : parent is not active');
         }
       });
   }

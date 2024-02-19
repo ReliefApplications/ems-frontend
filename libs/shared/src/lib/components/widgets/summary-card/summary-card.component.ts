@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
   Renderer2,
   TemplateRef,
   ViewChild,
@@ -51,6 +52,7 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { DashboardComponent } from '../../dashboard/dashboard.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -278,7 +280,8 @@ export class SummaryCardComponent
     private elementRef: ElementRef,
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    @Optional() private parentDashboard: DashboardComponent
   ) {
     super();
   }
@@ -313,10 +316,15 @@ export class SummaryCardComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(({ previous, current }) => {
-          if (
-            this.contextService.shouldRefresh(this.widget, previous, current)
-          ) {
-            this.refresh();
+          if (this.parentDashboard.active) {
+            console.log('Summary card : parent is active');
+            if (
+              this.contextService.shouldRefresh(this.widget, previous, current)
+            ) {
+              this.refresh();
+            }
+          } else {
+            console.log('Summary card : parent is not active');
           }
         });
     }

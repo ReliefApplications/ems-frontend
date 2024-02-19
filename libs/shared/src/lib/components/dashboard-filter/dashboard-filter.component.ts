@@ -23,6 +23,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
 import { Dashboard } from '../../models/dashboard.model';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 
 /**
  * Interface for quick filters
@@ -95,7 +96,8 @@ export class DashboardFilterComponent
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
     @Inject(DOCUMENT) private document: Document,
-    @Optional() private _host: SidenavContainerComponent
+    @Optional() private _host: SidenavContainerComponent,
+    @Optional() private parentDashboard: DashboardComponent
   ) {
     super();
   }
@@ -111,7 +113,12 @@ export class DashboardFilterComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(({ current }) => {
-        this.survey.data = current;
+        if (this.parentDashboard.active) {
+          console.log('Filter : parent is active');
+          this.survey.data = current;
+        } else {
+          console.log('Filter : parent is not active');
+        }
       });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))

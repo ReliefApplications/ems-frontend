@@ -8,6 +8,7 @@ import {
   OnInit,
   TemplateRef,
   OnDestroy,
+  Optional,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -21,6 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { DashboardComponent } from '../../dashboard/dashboard.component';
 
 /**
  * Default file name for chart exports
@@ -161,12 +163,14 @@ export class ChartComponent
    * @param translate Angular translate service
    * @param contextService Shared context service
    * @param document document
+   * @param parentDashboard Parent dashboard component
    */
   constructor(
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    @Optional() private parentDashboard: DashboardComponent
   ) {
     super();
   }
@@ -176,19 +180,30 @@ export class ChartComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(({ previous, current }) => {
-        if (
-          this.contextService.filterRegex.test(this.settings.contextFilters) ||
-          this.contextService.filterRegex.test(
-            this.settings.referenceDataVariableMapping
-          )
-        ) {
+        if (this.parentDashboard.active) {
+          console.log('Chart : parent is active');
           if (
-            this.contextService.shouldRefresh(this.settings, previous, current)
+            this.contextService.filterRegex.test(
+              this.settings.contextFilters
+            ) ||
+            this.contextService.filterRegex.test(
+              this.settings.referenceDataVariableMapping
+            )
           ) {
-            this.series.next([]);
-            this.loadChart();
-            this.getOptions();
+            if (
+              this.contextService.shouldRefresh(
+                this.settings,
+                previous,
+                current
+              )
+            ) {
+              this.series.next([]);
+              this.loadChart();
+              this.getOptions();
+            }
           }
+        } else {
+          console.log('Chart : parent is not active');
         }
       });
   }

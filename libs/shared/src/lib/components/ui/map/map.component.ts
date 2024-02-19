@@ -10,6 +10,7 @@ import {
   OnDestroy,
   Injector,
   ElementRef,
+  Optional,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -62,6 +63,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { DashboardComponent } from '../../dashboard/dashboard.component';
 
 /** Component for the map widget */
 @Component({
@@ -195,7 +197,8 @@ export class MapComponent
     public injector: Injector,
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
-    private mapPolygonsService: MapPolygonsService
+    private mapPolygonsService: MapPolygonsService,
+    @Optional() private parentDashboard: DashboardComponent
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -248,15 +251,21 @@ export class MapComponent
         .pipe(
           debounceTime(500),
           filter(({ previous, current }) => {
-            // Update each layer, indicating if refetch is required
-            this.layers.forEach((layer) => {
-              layer.shouldRefresh = this.contextService.shouldRefresh(
-                pick(layer, ['datasource', 'contextFilters', 'at']),
-                previous,
-                current
-              );
-            });
-            return this.layers.some((layer) => layer.shouldRefresh);
+            if (this.parentDashboard.active) {
+              console.log('Map : parent is active');
+              // Update each layer, indicating if refetch is required
+              this.layers.forEach((layer) => {
+                layer.shouldRefresh = this.contextService.shouldRefresh(
+                  pick(layer, ['datasource', 'contextFilters', 'at']),
+                  previous,
+                  current
+                );
+              });
+              return this.layers.some((layer) => layer.shouldRefresh);
+            } else {
+              console.log('Map : parent is not active');
+              return false;
+            }
           }),
           takeUntil(this.destroy$)
         )
@@ -480,7 +489,12 @@ export class MapComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
-          this.zoomOn();
+          if (this.parentDashboard.active) {
+            console.log('Map can zoom');
+            this.zoomOn();
+          } else {
+            console.log('Map will not zoom');
+          }
         });
     }
   }

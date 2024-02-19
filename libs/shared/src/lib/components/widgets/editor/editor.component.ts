@@ -7,6 +7,7 @@ import {
   HostListener,
   Renderer2,
   ElementRef,
+  Optional,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -30,6 +31,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { ContextService } from '../../../services/context/context.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { Router } from '@angular/router';
+import { DashboardComponent } from '../../dashboard/dashboard.component';
 
 /**
  * Text widget component using Tinymce.
@@ -123,7 +125,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private renderer: Renderer2,
     private aggregationService: AggregationService,
     private el: ElementRef,
-    private router: Router
+    private router: Router,
+    @Optional() private parentDashboard: DashboardComponent
   ) {
     super();
   }
@@ -143,23 +146,32 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(({ previous, current }) => {
-        if (
-          this.contextService.filterRegex.test(
-            allContextFilters + allGraphQLVariables
-          )
-        ) {
+        if (this.parentDashboard.active) {
+          console.log('Editor : parent is active');
           if (
-            this.contextService.shouldRefresh(this.settings, previous, current)
+            this.contextService.filterRegex.test(
+              allContextFilters + allGraphQLVariables
+            )
           ) {
-            this.cancelRefresh$.next();
-            this.loading = true;
-            this.setHtml();
+            if (
+              this.contextService.shouldRefresh(
+                this.settings,
+                previous,
+                current
+              )
+            ) {
+              this.cancelRefresh$.next();
+              this.loading = true;
+              this.setHtml();
+            }
           }
+          this.toggleActiveFilters(
+            current,
+            this.htmlContentComponent?.el.nativeElement
+          );
+        } else {
+          console.log('Editor : parent is not active');
         }
-        this.toggleActiveFilters(
-          current,
-          this.htmlContentComponent?.el.nativeElement
-        );
       });
   }
 

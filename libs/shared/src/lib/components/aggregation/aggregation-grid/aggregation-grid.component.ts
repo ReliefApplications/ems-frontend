@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Optional } from '@angular/core';
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -18,6 +18,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { cloneDeep } from 'lodash';
+import { DashboardComponent } from '../../dashboard/dashboard.component';
 
 /**
  * Shared aggregation grid component.
@@ -107,7 +108,8 @@ export class AggregationGridComponent
     private gridService: GridService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    @Optional() private parentDashboard: DashboardComponent
   ) {
     super();
   }
@@ -118,10 +120,15 @@ export class AggregationGridComponent
       this.contextService.filter$
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(({ previous, current }) => {
-          if (
-            this.contextService.shouldRefresh(this.widget, previous, current)
-          ) {
-            this.getAggregationData();
+          if (this.parentDashboard.active) {
+            console.log('Aggregation grid : parent is active');
+            if (
+              this.contextService.shouldRefresh(this.widget, previous, current)
+            ) {
+              this.getAggregationData();
+            }
+          } else {
+            console.log('Aggregation grid : parent is not active');
           }
         });
     }
