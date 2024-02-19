@@ -432,4 +432,30 @@ export class LayoutComponent
     }
     return language;
   }
+
+  /**
+   * On attach component ( only used in web elements, with reuse strategy )
+   *
+   * @param e attach event
+   */
+  onAttach(e: any) {
+    console.log('should attach');
+    console.log(e);
+    if (e.onAttach) {
+      e.onAttach();
+    }
+  }
+
+  /**
+   * On detach component ( only used in web elements, with reuse strategy )
+   *
+   * @param e detach event
+   */
+  onDetach(e: any) {
+    console.log('should detach');
+    console.log(e);
+    if (e.onDetach) {
+      e.onDetach();
+    }
+  }
 }

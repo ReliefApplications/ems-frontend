@@ -249,4 +249,18 @@ export class DashboardComponent
     };
     this.contextService.initContext(this.dashboard as Dashboard, callback);
   }
+
+  /**
+   * Attaching component ( reuse strategy )
+   */
+  public onAttach() {
+    console.log('Dashboard will attach');
+  }
+
+  /**
+   * Detaching component ( reuse strategy )
+   */
+  public onDetach() {
+    console.log('Dashboard will detach');
+  }
 }

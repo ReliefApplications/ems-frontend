@@ -199,6 +199,6 @@
       *ngIf="breadcrumbs.length > 1"
       [breadcrumbs]="breadcrumbs"
     ></ui-breadcrumbs>
-    <router-outlet></router-outlet>
+    <router-outlet (attach)="onAttach($event)" (detach)="onDetach($event)"></router-outlet>
   </ng-container>
 </ui-sidenav-container>
