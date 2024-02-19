@@ -50,12 +50,14 @@
         }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-summary-card
-          id="widgetPreview"
-          [settings]="widgetFormGroup.value"
-          [widget]="widget"
-        >
-        </shared-summary-card>
+        <div class="max-h-[80vh]">
+          <shared-summary-card
+            id="widgetPreview"
+            [settings]="widgetFormGroup.value"
+            [widget]="widget"
+          >
+          </shared-summary-card>
+        </div>
       </ng-template>
     </ui-tab>
     <!-- Available actions -->
