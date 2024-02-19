@@ -197,7 +197,7 @@ export class RecordModalComponent
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
-      {}
+      new Map()
     );
     this.survey.data = this.record.data;
 
@@ -215,7 +215,7 @@ export class RecordModalComponent
       this.formBuilderService.addEventsCallBacksToSurvey(
         this.surveyNext,
         this.selectedPageIndex,
-        {}
+        new Map()
       );
 
       // Set list of updated questions

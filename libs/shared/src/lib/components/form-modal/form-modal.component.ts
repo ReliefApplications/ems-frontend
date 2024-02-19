@@ -24,7 +24,10 @@ import {
 import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
-import { FormBuilderService } from '../../services/form-builder/form-builder.service';
+import {
+  FormBuilderService,
+  TemporaryFilesStorage,
+} from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
@@ -117,7 +120,7 @@ export class FormModalComponent
   /** Is multi edition of records enabled ( for grid actions ) */
   protected isMultiEdition = false;
   /** Temporary storage of files */
-  protected temporaryFilesStorage: any = {};
+  protected temporaryFilesStorage: TemporaryFilesStorage = new Map();
   /** Stored merged data */
   private storedMergedData: any;
 
@@ -387,9 +390,7 @@ export class FormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    // const promises = this.formHelpersService.uploadTemporaryRecords(survey);
     await this.formHelpersService.uploadFiles(
-      survey,
       this.temporaryFilesStorage,
       this.form?.id
     );

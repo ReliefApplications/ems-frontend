@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings, IPanel, Question } from 'survey-core';
+import {
+  Model,
+  Question,
+  QuestionFileModel,
+  SurveyModel,
+  settings,
+  IPanel,
+} from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -17,6 +24,9 @@ import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
 import { cloneDeep, difference } from 'lodash';
 import { Form } from '../../models/form.model';
+
+/** Type for the temporary file storage */
+export type TemporaryFilesStorage = Map<Question, File[]>;
 
 /**
  * Applies custom logic to survey data values.
@@ -301,7 +311,7 @@ export class FormBuilderService {
   public addEventsCallBacksToSurvey(
     survey: SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
-    temporaryFilesStorage: Record<string, Array<File>>
+    temporaryFilesStorage: TemporaryFilesStorage
   ) {
     survey.onAfterRenderSurvey.add(() => {
       // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
@@ -358,12 +368,13 @@ export class FormBuilderService {
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    * @param options Options regarding the upload
    */
-  private onUploadFiles(temporaryFilesStorage: any, options: any): void {
-    if (temporaryFilesStorage[options.name] !== undefined) {
-      temporaryFilesStorage[options.name].concat(options.files);
-    } else {
-      temporaryFilesStorage[options.name] = options.files;
-    }
+  private onUploadFiles(
+    temporaryFilesStorage: TemporaryFilesStorage,
+    options: any
+  ): void {
+    const question = options.question as QuestionFileModel;
+    temporaryFilesStorage.set(question, options.files);
+
     let content: any[] = [];
     options.files.forEach((file: any) => {
       const fileReader = new FileReader();

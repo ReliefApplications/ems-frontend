@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable, Inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
@@ -303,39 +303,55 @@ export class DownloadService {
    * @param entity ID of the entity the file is related to
    * @returns The path of the uploaded file
    */
-  uploadBlob(file: any, type: BlobType, entity: string): Promise<string> {
-    const snackBarRef = this.createLoadingSnackbarRef(
-      'common.notifications.file.upload.processing'
+  public async uploadBlob(
+    file: any,
+    type: BlobType,
+    entity: string
+  ): Promise<string> {
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant(
+            'common.notifications.file.upload.processing'
+          ),
+          loading: true,
+        },
+      }
     );
-    const path = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+    const uploadPath = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     });
     const formData = new FormData();
     formData.append('file', file, file.name);
-    return new Promise((resolve, reject) => {
-      this.restService
-        .post(path, formData, { headers })
-        .subscribe((res: { path: string }) => {
-          const { path } = res ?? {};
-          if (path) {
-            snackBarRef.instance.message = this.translate.instant(
-              'common.notifications.file.upload.ready'
-            );
-            snackBarRef.instance.loading = false;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-            resolve(path);
-          } else {
-            snackBarRef.instance.message = this.translate.instant(
-              'common.notifications.file.upload.error'
-            );
-            snackBarRef.instance.loading = false;
-            snackBarRef.instance.error = true;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-            reject();
-          }
-        });
+
+    const data: { path: string } = await firstValueFrom(
+      this.restService.post(uploadPath, formData, { headers })
+    ).catch(() => {
+      snackBarSpinner.instance.message = this.translate.instant(
+        'common.notifications.file.upload.error'
+      );
+      snackBarSpinner.instance.loading = false;
+      snackBarSpinner.instance.error = true;
+      setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+      throw new Error(snackBarSpinner.instance.message);
     });
+
+    const { path } = data ?? {};
+    if (path) {
+      snackBarSpinner.instance.message = this.translate.instant(
+        'common.notifications.file.upload.ready'
+      );
+      snackBarSpinner.instance.loading = false;
+
+      setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+    }
+
+    return path;
   }
 }

@@ -57,9 +57,11 @@ export class ResourceModalComponent extends FormModalComponent {
    * @param survey current survey
    */
   public override async onUpdate(survey: any): Promise<void> {
-    if (this.data.recordId) {
+    // If question propriety alwaysCreateRecord set to true, don't use override method and create new record
+    if (this.data.alwaysCreateRecord) {
+      super.onUpdate(survey);
+    } else if (this.data.recordId) {
       await this.formHelpersService.uploadFiles(
-        survey,
         this.temporaryFilesStorage,
         this.form?.id
       );
@@ -75,7 +77,7 @@ export class ResourceModalComponent extends FormModalComponent {
             template: this.data.template,
             data: {
               id: details.id,
-              data: survey.data,
+              data: survey.parsedData ?? survey.data,
             },
           } as any);
         });
