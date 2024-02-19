@@ -249,7 +249,28 @@ export const render = (
       const toString = JSON.stringify(objectAsJSON);
       const replaced = toString.replace(new RegExp(regex, 'g'), (match) => {
         const field = match.replace(/["']?\{\{/, '').replace(/\}\}["']?/, '');
-        const fieldValue = get(data, field);
+        // Default value get
+        let fieldValue = get(data, field);
+        // Check if the filter set in the graphql variables is a nested property by splitting the value in the {{}} by dots
+        const recursiveField = field.split('.');
+        if (recursiveField.length > 1) {
+          // Get the actual non primitive value using the first position, related to the question name, e.g. countries
+          fieldValue = get(data, recursiveField[0]);
+          // Then build the nested path to the needed primitive data using all the other fields in the previous array except the first one, needed only to select the question data from the survey
+          // taking in account that the ItemValue object is a {text, value} object type, e.g. value.id
+          const dataPath = `value.${recursiveField.slice(1).join('.')}`;
+          // If it's an array(tagbox), we collect all primitives and build an array
+          if (Array.isArray(fieldValue)) {
+            const valueHelper: any[] = [];
+            fieldValue.forEach((value) => {
+              const primitive = get(value, dataPath);
+              valueHelper.push(primitive);
+            });
+            fieldValue = valueHelper;
+          } else {
+            fieldValue = get(fieldValue, dataPath);
+          }
+        }
         return isNil(fieldValue) ? match : JSON.stringify(fieldValue);
       });
       const parsed = JSON.parse(replaced);
