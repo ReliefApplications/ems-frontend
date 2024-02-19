@@ -70,12 +70,7 @@ export class ReferenceDataService {
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
    * @param storePrimitiveValue Whether to store the whole item or only the primitive value given the displayField
-   * @param filter The filter object
-   * @param filter.foreignReferenceData The reference data name of the foreign question
-   * @param filter.foreignField The field name for the foreign question
-   * @param filter.foreignValue The value to filter on for the foreign field
-   * @param filter.localField The field to filter on on the local reference data
-   * @param filter.operator The operator to filter
+   * @param graphQLVariables optional graphql variables, built from form value
    * @returns Promised choices.
    */
   public async getChoices(

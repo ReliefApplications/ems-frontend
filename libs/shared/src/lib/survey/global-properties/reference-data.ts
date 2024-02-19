@@ -32,7 +32,6 @@ import {
 export const updateModalChoicesAndValue = (sender: any, options: any) => {
   if (options.obj.visibleChoices?.length > 0) {
     // Populate editor choices from actual question choices
-    console.log(options.popupEditor);
     options.popupEditor.question.setPropertyValue(
       'choices',
       options.obj.visibleChoices
@@ -104,6 +103,13 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     });
 
     serializer.addProperty(type, {
+      name: '_graphQLVariables',
+      category: 'Choices from Reference data',
+      visible: false,
+      isSerializable: false,
+    });
+
+    serializer.addProperty(type, {
       displayName: 'Display field',
       name: 'referenceDataDisplayField',
       category: 'Choices from Reference data',
@@ -138,19 +144,6 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
       visibleIndex: 3,
-      default: true,
-    });
-
-    serializer.addProperty(type, {
-      displayName: 'Keep selected choices',
-      name: 'selectedChoicesNotAffectedByVisibleChoices',
-      category: 'Choices from Reference data',
-      type: 'boolean',
-      dependsOn: '_referenceData',
-      visibleIndex: 4,
-      visibleIf: (obj: null | QuestionSelectBase): boolean => {
-        return Boolean(obj?._referenceData);
-      },
       default: true,
     });
 
@@ -296,6 +289,7 @@ export const render = (
           question.isPrimitiveValue,
           graphQLVariables()
         );
+        question.setPropertyValue('_graphQLVariables', graphQLVariables());
         // this is to avoid that the choices appear on the 'choices' tab
         // and also to avoid the choices being sent to the server
         question.choices = [];
@@ -326,70 +320,47 @@ export const render = (
       }
     };
 
-    const getReferenceDataFilterKey = () => {
-      const regExKey = new RegExp(/(?<={{).+?(?=}})/, 'gi');
-      const filterKey = regExKey.exec(
-        question.referenceDataVariableMapping ?? ''
-      );
-      return filterKey?.[0];
-    };
-
     const updateSelectedChoices = () => {
+      const valueField = question._referenceData.valueField;
       const choiceItems: ItemValue[] = question.visibleChoices;
-      if (question.getType() === 'tagbox') {
-        if (question.referenceDataVariableMapping) {
-          const filterKey = getReferenceDataFilterKey();
-          if (filterKey) {
-            const data = get(question, 'survey.data');
-            if (data[filterKey]) {
-              if (question.isPrimitiveValue) {
-                question.value = choiceItems
-                  .filter((choice) =>
-                    question.value.find((x: any) => isEqual(choice.id, x))
-                  )
-                  .map((x) => x.id);
-              }
-            } else {
-              if (question.value && question.value.length) {
-                question.value = [];
-                question._instance.clearAll();
-              }
-            }
-          }
+      // Handle tagbox changes
+      if (question.getType() === 'tagbox' && isArray(question.value)) {
+        if (question.isPrimitiveValue) {
+          question.value = choiceItems
+            .filter((choice) =>
+              question.value.find((x: any) => isEqual(choice.value, x))
+            )
+            .map((x) => x.value);
         } else {
-          if (question.isPrimitiveValue) {
-            question.value = choiceItems
-              .filter((choice) =>
-                question.value.find((x: any) => isEqual(choice.id, x))
+          question.value = choiceItems
+            .filter((choice) =>
+              question.value.find((x: any) =>
+                isEqual(choice.value[valueField], x.value[valueField])
               )
-              .map((x) => x.id);
-          }
+            )
+            .map((choice) => ({
+              text: choice.text,
+              value: choice.value,
+            }));
         }
+        question._instance.value = question.value;
       }
-      if (question.getType() === 'dropdown') {
-        if (question.referenceDataVariableMapping) {
-          const filterKey = getReferenceDataFilterKey();
-          if (filterKey) {
-            const data = get(question, 'survey.data');
-            if (data[filterKey]) {
-              if (question.isPrimitiveValue) {
-                question.value = choiceItems.find((choice) =>
-                  isEqual(choice.id, question.value)
-                )?.id;
-              }
-            } else {
-              if (question.value) {
-                question.value = null;
-                question._instance.clearValue();
-              }
-            }
-          }
+      // Handle dropdown changes
+      if (question.getType() === 'dropdown' && question.value) {
+        if (question.isPrimitiveValue) {
+          question.value = choiceItems.find((choice) =>
+            isEqual(choice.value, question.value)
+          )?.value;
         } else {
-          if (question.isPrimitiveValue) {
-            question.value = choiceItems.find((choice) =>
-              isEqual(choice.id, question.value)
-            )?.id;
-          }
+          const choice = choiceItems.find((choice) =>
+            isEqual(
+              choice.value[valueField],
+              get(question.value, `value.${valueField}`)
+            )
+          );
+          question.value = choice
+            ? { text: choice.text, value: choice.value }
+            : undefined;
         }
       }
     };
@@ -397,8 +368,13 @@ export const render = (
     // init the choices
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
       referenceDataService
-        .cacheItems(question.referenceData, graphQLVariables())
-        .then(() => updateChoices());
+        .loadReferenceData(question.referenceData)
+        .then((referenceData) => {
+          question.setPropertyValue('_referenceData', referenceData);
+          referenceDataService
+            .cacheItems(referenceData, graphQLVariables())
+            .then(() => updateChoices());
+        });
       question.referenceDataChoicesLoaded = true;
     }
     // Prevent selected choices to be removed when sending the value
@@ -428,10 +404,6 @@ export const render = (
       'referenceDataDisplayField',
       updateChoices
     );
-    // We register the reference data question that has a new value in order to not trigger the choices and selected choices update to avoid additional checks
-    question.registerFunctionOnPropertyValueChanged('value', () => {
-      question.isChangeSource = true;
-    });
     // Init linked reference data questions update inside the survey if those question types exists
     const containsLinkedReferenceDataQuestions = (
       question.survey as SurveyModel
@@ -446,26 +418,20 @@ export const render = (
         // 2. The selected choices in the question. If the question's selected choices should be updated/cleared if the dependant reference data question changes it's value.
         //
         // As this two update methods could work on their own specific terms, we have one property for each action to handle:
-        // 1. => referenceDataVariableMapping
-        // 2. => selectedChoicesNotAffectedByVisibleChoices
+        // - referenceDataVariableMapping
 
-        // If the question is not the source of the change event, then update choices and selected choices if needed
-        if (!question.isChangeSource) {
-          if (
-            question.referenceDataVariableMapping &&
-            question.referenceDataVariableMapping != '{}'
-          ) {
-            question._instance.loading = true;
-            question._instance.disabled = true;
-            await updateChoices();
-            question._instance.loading = false;
-            question._instance.disabled = false;
-          }
-          if (!question.selectedChoicesNotAffectedByVisibleChoices) {
-            updateSelectedChoices();
-          }
-        } else {
-          question.isChangeSource = false;
+        if (
+          question.referenceDataVariableMapping &&
+          question.referenceDataVariableMapping != '{}' &&
+          !isEqual(question._graphQLVariables, graphQLVariables())
+        ) {
+          question.setPropertyValue('_graphQLVariables', graphQLVariables());
+          question._instance.loading = true;
+          question._instance.disabled = true;
+          await updateChoices();
+          question._instance.loading = false;
+          question._instance.disabled = question.readOnly;
+          updateSelectedChoices();
         }
       });
     }

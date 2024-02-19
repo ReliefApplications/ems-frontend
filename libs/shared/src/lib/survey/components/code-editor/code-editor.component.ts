@@ -13,6 +13,11 @@ import { FormControl } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ReferenceData } from '../../../models/reference-data.model';
 
+/**
+ * Code editor component for Form Builder.
+ * Enables to use Monaco Editor as property.
+ * Purpose is to be able to build graphql variables.
+ */
 @Component({
   selector: 'shared-code-editor',
   standalone: true,
@@ -31,6 +36,14 @@ export class CodeEditorComponent
   /** Selected reference data */
   public referenceData: ReferenceData | null = null;
 
+  /**
+   * Code editor component for Form Builder.
+   * Enables to use Monaco Editor as property.
+   * Purpose is to be able to build graphql variables.
+   *
+   * @param changeDetectorRef Change detector ref
+   * @param viewContainerRef View container ref
+   */
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     viewContainerRef: ViewContainerRef
@@ -39,12 +52,10 @@ export class CodeEditorComponent
   }
 
   override ngOnInit(): void {
-    console.log('init');
     super.ngOnInit();
     this.control.setValue(this.model.value);
     this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
       next: (value: any) => {
-        console.log('change change');
         this.model.value = value;
       },
     });
