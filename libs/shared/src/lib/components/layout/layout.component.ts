@@ -6,6 +6,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   TemplateRef,
@@ -39,7 +40,7 @@ import { isEqual } from 'lodash';
 })
 export class LayoutComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit, OnChanges, OnDestroy
 {
   /** Page title ( name of application ) */
   @Input() title = '';
@@ -148,6 +149,9 @@ export class LayoutComponent
   /** Breadcrumbs */
   public breadcrumbs: Breadcrumb[] = [];
 
+  /** Timeout listeners */
+  private attachViewFilterTriggerListener!: NodeJS.Timeout;
+
   /**
    * Gets URI of the other office
    *
@@ -206,6 +210,7 @@ export class LayoutComponent
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
+   * @param contextService Shared breadcrumb service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -442,13 +447,22 @@ export class LayoutComponent
    * @param e Event thrown in the attach event of the router outlet containing the lastStateOfContextFilters when it was detached
    */
   onAttach(e: any) {
+    console.log('attached: ', e);
+    this.contextService.triggerRefreshForWebComponent = !isEqual(
+      e.lastStateOfContextFilters,
+      this.contextService.filter.value
+    );
     // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
     if (
       this.contextService.shadowDomService.isShadowRoot &&
-      !isEqual(e.lastStateOfContextFilters, this.contextService.filter.value)
+      this.contextService.triggerRefreshForWebComponent
     ) {
-      this.contextService.triggerRefreshForWebComponent = true;
-      this.contextService.filter.next(this.contextService.filter.value);
+      if (this.attachViewFilterTriggerListener) {
+        clearTimeout(this.attachViewFilterTriggerListener);
+      }
+      this.attachViewFilterTriggerListener = setTimeout(() => {
+        this.contextService.filter.next(this.contextService.filter.value);
+      }, 0);
     }
   }
 
@@ -458,14 +472,16 @@ export class LayoutComponent
    * @param e Event thrown in the detach event of the router outlet where we set lastStateOfContextFilters value for next attach to update context filter trigger
    */
   onDetach(e: any) {
+    console.log('detached: ', e);
     if (this.contextService.shadowDomService.isShadowRoot) {
-      // If detached view context filter state and current context filter state is the same we set the force trigger refresh to false
-      if (
-        isEqual(e.lastStateOfContextFilters, this.contextService.filter.value)
-      ) {
-        this.contextService.triggerRefreshForWebComponent = false;
-      }
       e.lastStateOfContextFilters = this.contextService.filter.value;
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.attachViewFilterTriggerListener) {
+      clearTimeout(this.attachViewFilterTriggerListener);
     }
   }
 }
