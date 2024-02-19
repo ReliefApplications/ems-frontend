@@ -183,6 +183,7 @@ export class MapComponent
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference,
    * @param mapPolygonsService Shared map polygons service
+   * @param parentDashboard Parent dashboard component
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,

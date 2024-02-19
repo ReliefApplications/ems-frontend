@@ -267,6 +267,7 @@ export class SummaryCardComponent
    * @param gridService grid service
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
+   * @param parentDashboard Parent dashboard component
    */
   constructor(
     private apollo: Apollo,

@@ -348,6 +348,7 @@ export class CoreGridComponent
    * @param contextService Shared context service
    * @param router Angular Router
    * @param el Element reference
+   * @param parentDashboard Parent dashboard component
    */
   constructor(
     @Inject('environment') environment: any,

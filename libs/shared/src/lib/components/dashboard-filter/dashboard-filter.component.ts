@@ -88,6 +88,7 @@ export class DashboardFilterComponent
    * @param dateTranslate Service used for date formatting
    * @param document Document
    * @param _host sidenav container host
+   * @param parentDashboard Parent dashboard component
    */
   constructor(
     public contextService: ContextService,
