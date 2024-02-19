@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Inject,
   Input,
@@ -14,7 +15,7 @@ import {
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Model, SurveyModel } from 'survey-core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { takeUntil, debounceTime, filter } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
@@ -85,6 +86,7 @@ export class DashboardFilterComponent
    * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
    * @param dateTranslate Service used for date formatting
+   * @param {ElementRef} el Current components element ref in the DOM
    * @param document Document
    * @param _host sidenav container host
    */
@@ -94,6 +96,7 @@ export class DashboardFilterComponent
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
+    private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     @Optional() private _host: SidenavContainerComponent
   ) {
@@ -109,7 +112,19 @@ export class DashboardFilterComponent
     }
     // Can listen to changes made from widget ( editor & summary cards sending updated filters )
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
       .subscribe(({ current }) => {
         this.survey.data = current;
       });

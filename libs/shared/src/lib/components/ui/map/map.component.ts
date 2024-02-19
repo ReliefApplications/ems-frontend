@@ -246,6 +246,13 @@ export class MapComponent
     ) {
       this.contextService.filter$
         .pipe(
+          filter(() =>
+            this.contextService.shadowDomService.isShadowRoot
+              ? this.contextService.shadowDomService.currentHost.contains(
+                  this.el.nativeElement
+                )
+              : true
+          ),
           debounceTime(500),
           filter(({ previous, current }) => {
             // Update each layer, indicating if refetch is required
@@ -478,7 +485,19 @@ export class MapComponent
     if (fieldValue) {
       // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
       this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .pipe(
+          // On working with web components we want to send filter value if this current element is in the DOM
+          // Otherwise send value always
+          filter(() =>
+            this.contextService.shadowDomService.isShadowRoot
+              ? this.contextService.shadowDomService.currentHost.contains(
+                  this.el.nativeElement
+                )
+              : true
+          ),
+          debounceTime(500),
+          takeUntil(this.destroy$)
+        )
         .subscribe(() => {
           this.zoomOn();
         });
