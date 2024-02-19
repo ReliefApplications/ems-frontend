@@ -118,7 +118,6 @@ export const init = (
           currentSearchValue = searchValue;
           updateChoices(tagboxInstance, question, searchValue);
         });
-
       question._propertyValueChangedVirtual = () => {
         updateChoices(tagboxInstance, question, currentSearchValue);
       };
@@ -145,6 +144,7 @@ export const init = (
       if (question.visibleChoices.length) {
         updateChoices(tagboxInstance, question, currentSearchValue);
       }
+      question._instance = tagboxInstance;
       el.parentElement?.appendChild(tagboxDiv);
     },
     willUnmount: (question: any): void => {
@@ -155,6 +155,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };
