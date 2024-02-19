@@ -88,6 +88,7 @@ export const init = (
         }
       );
       question.registerFunctionOnPropertyValueChanged('value', () => {
+        console.log('change');
         // We need this line for resource select
         if (question.isPrimitiveValue) {
           dropdownInstance.value = question.value;
@@ -115,6 +116,7 @@ export const init = (
       if (question.visibleChoices.length) {
         updateChoices(dropdownInstance, question, currentSearchValue);
       }
+      question._instance = dropdownInstance;
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
@@ -125,6 +127,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };

@@ -42,6 +42,7 @@ export interface QuestionSelectBase
   referenceDataFilterFilterCondition?: string;
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
+  referenceDataVariableMapping?: string;
 }
 
 // TYPES FOR CUSTOM QUESTIONS
