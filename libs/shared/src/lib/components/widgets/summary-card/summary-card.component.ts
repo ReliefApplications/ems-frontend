@@ -51,6 +51,7 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -265,6 +266,7 @@ export class SummaryCardComponent
    * @param gridService grid service
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -278,7 +280,8 @@ export class SummaryCardComponent
     private elementRef: ElementRef,
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -568,9 +571,13 @@ export class SummaryCardComponent
     // update card list and scroll behavior according to the card items display
 
     this.cards = newCards;
-    this.widget.settings.widgetDisplay.isEmpty = this.cards.length
-      ? false
-      : true;
+    if (this.widget.settings.widgetDisplay.hideEmpty) {
+      // Listen to cards data changes to know when widget is empty and will be hidden
+      this.widget.settings.widgetDisplay.isEmpty = this.cards.length
+        ? false
+        : true;
+      this.dashboardService.widgetContentRefreshed.next(null);
+    }
     if (
       this.settings.widgetDisplay?.usePagination ||
       this.triggerRefreshCardList
@@ -714,10 +721,13 @@ export class SummaryCardComponent
         this.pageInfo.skip + this.pageInfo.pageSize
       );
     }
-
-    this.widget.settings.widgetDisplay.isEmpty = this.cards.length
-      ? false
-      : true;
+    if (this.widget.settings.widgetDisplay.hideEmpty) {
+      // Listen to cards data changes to know when widget is empty and will be hidden
+      this.widget.settings.widgetDisplay.isEmpty = this.cards.length
+        ? false
+        : true;
+      this.dashboardService.widgetContentRefreshed.next(null);
+    }
 
     if (!isPaginated) {
       this.pageInfo.length = this.sortedCachedCards.length;

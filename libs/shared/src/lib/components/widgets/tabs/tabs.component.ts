@@ -36,6 +36,8 @@ export class TabsComponent
   @Input() canUpdate = false;
   /** Should show padding */
   @Input() usePadding = true;
+  /** If can hide widgets with no data that allows this */
+  @Input() canHide = false;
   /** Widget edit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Header template reference */

@@ -28,6 +28,7 @@ import {
 } from 'angular-gridster2';
 import { cloneDeep } from 'lodash';
 import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
+import { ContextService } from '../../services/context/context.service';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -85,6 +86,8 @@ export class WidgetGridComponent
   public gridOptions!: GridsterConfig;
   /** Detect structure changes */
   public structureChanges = new Subject<boolean>();
+  /** Visible widgets */
+  public visibleWidgets: any[] = [];
   /** Set grid options timeout, to enable events that can save dashboard */
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
@@ -105,23 +108,8 @@ export class WidgetGridComponent
 
   /** @returns maximum number of columns of widgets in the grid */
   get maxCols(): number {
-    const cols = this.widgets.map((x) => x.cols);
+    const cols = this.visibleWidgets.map((x) => x.cols);
     return Math.max(...cols);
-  }
-
-  /** @returns visible widgets to display */
-  get visibleWidgets(): any[] {
-    if (this.canHide) {
-      return this.widgets.filter(
-        (widget: any) =>
-          !(
-            widget.settings.widgetDisplay.hideEmpty &&
-            widget.settings.widgetDisplay.isEmpty
-          )
-      );
-    } else {
-      return this.widgets;
-    }
   }
 
   /**
@@ -130,11 +118,13 @@ export class WidgetGridComponent
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    * @param _host host element ref
+   * @param contextService Shared context service
    */
   constructor(
     public dialog: Dialog,
     private dashboardService: DashboardService,
-    private _host: ElementRef
+    private _host: ElementRef,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -158,6 +148,47 @@ export class WidgetGridComponent
     this.gridOptions.gridSizeChangedCallback = (grid) =>
       this.enableMinHeight(grid);
     this.enableMinHeight();
+
+    this.dashboardService.widgetContentRefreshed$
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setVisibleWidgets();
+      });
+    // Listen to dashboard filters changes if it is necessary
+    // So when hiding empty widgets, we can re-display them on filter change
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(({ previous, current }) => {
+        if (this.canHide) {
+          const hideWidgetWithFilters = this.widgets.filter(
+            (widget: any) =>
+              widget.settings.widgetDisplay.hideEmpty &&
+              widget.settings.widgetDisplay.isEmpty &&
+              (this.contextService.filterRegex.test(
+                widget.settings.contextFilters
+              ) ||
+                this.contextService.filterRegex.test(
+                  widget.settings.referenceDataVariableMapping
+                ))
+          );
+          let refreshVisibleWidgets = false;
+          hideWidgetWithFilters.forEach((widget: any) => {
+            if (
+              this.contextService.shouldRefresh(
+                widget.settings,
+                previous,
+                current
+              )
+            ) {
+              widget.settings.widgetDisplay.isEmpty = false;
+              refreshVisibleWidgets = true;
+            }
+          });
+          if (refreshVisibleWidgets) {
+            this.setVisibleWidgets();
+          }
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -466,7 +497,7 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
-    this.widgets.forEach((widget: GridsterItem) => {
+    this.visibleWidgets.forEach((widget: GridsterItem) => {
       widget.cols = widget.cols ?? widget.defaultCols;
       widget.rows = widget.rows ?? widget.defaultRows;
       widget.minItemRows = widget.minItemRows ?? widget.minRow;
@@ -485,12 +516,30 @@ export class WidgetGridComponent
           this.sortWidgets();
         }
       });
+    this.setVisibleWidgets();
   }
 
   /**
    * Sort widgets by their position in the grid
    */
   private sortWidgets() {
-    this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
+    this.visibleWidgets.sort((a, b) => a.y - b.y || a.x - b.x);
+  }
+
+  /**
+   * Filter widgets list to display only visible widgets.
+   */
+  private setVisibleWidgets(): void {
+    if (this.canHide) {
+      this.visibleWidgets = this.widgets.filter(
+        (widget: any) =>
+          !(
+            widget.settings.widgetDisplay.hideEmpty &&
+            widget.settings.widgetDisplay.isEmpty
+          )
+      );
+    } else {
+      this.visibleWidgets = this.widgets;
+    }
   }
 }

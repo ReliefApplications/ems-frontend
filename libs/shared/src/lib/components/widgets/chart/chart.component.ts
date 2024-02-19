@@ -21,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /**
  * Default file name for chart exports
@@ -163,12 +164,14 @@ export class ChartComponent
    * @param translate Angular translate service
    * @param contextService Shared context service
    * @param document document
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -193,6 +196,12 @@ export class ChartComponent
           }
         }
       });
+    // Listen to series data changes to know when widget is empty and will be hidden
+    if (this.settings.widgetDisplay.hideEmpty) {
+      this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        this.dashboardService.widgetContentRefreshed.next(null);
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
