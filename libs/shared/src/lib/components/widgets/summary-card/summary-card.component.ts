@@ -175,7 +175,10 @@ export class SummaryCardComponent
         filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return filter;
+    return {
+      logic: 'and',
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
+    };
   }
 
   /** @returns does the card use resource aggregation */
@@ -493,9 +496,6 @@ export class SummaryCardComponent
           skip: 0,
           first: this.pageInfo.pageSize,
           filter: this.queryFilter,
-          contextFilters: this.contextService.injectContext(
-            this.contextFilters
-          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           ...(this.settings.at && {
@@ -653,35 +653,37 @@ export class SummaryCardComponent
       })) as CardT[])
     );
 
+    // Client side filtering
+    const contextFilters = this.contextService.injectContext(
+      this.contextFilters
+    );
+
+    if (contextFilters.filters.length) {
+      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
+        filterReferenceData(x.rawValue, contextFilters)
+      );
+    } else {
+      this.sortedCachedCards = cloneDeep(this.cachedCards);
+    }
+
+    if (this.searchControl.value) {
+      this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
+        return (
+          JSON.stringify(card.rawValue)
+            .replace(/("\w+":)/g, '')
+            .toLowerCase()
+            .indexOf((this.searchControl.value as string).toLowerCase()) !== -1
+        );
+      });
+    }
+
     const isPaginated = !!strategy && !!pageInfo;
     if (isPaginated) {
       // If using pagination, set the page size and total count
       // according to the response of the first page
       this.setPaginationInfo(pageInfo);
-      this.sortedCachedCards = cloneDeep(this.cachedCards);
       this.checkIfFinalPage(totalCountConfigured, items);
     } else {
-      // Client side filtering
-      const contextFilters = this.contextService.injectContext(
-        this.contextFilters
-      );
-
-      this.sortedCachedCards = cloneDeep(this.cachedCards).filter((x) =>
-        filterReferenceData(x.rawValue, contextFilters)
-      );
-
-      if (this.searchControl.value) {
-        this.sortedCachedCards = this.sortedCachedCards.filter((card: any) => {
-          return (
-            JSON.stringify(card.rawValue)
-              .replace(/("\w+":)/g, '')
-              .toLowerCase()
-              .indexOf((this.searchControl.value as string).toLowerCase()) !==
-            -1
-          );
-        });
-      }
-
       // If not, all the items are already loaded
       this.pageInfo.length = this.cachedCards.length;
     }
@@ -826,9 +828,6 @@ export class SummaryCardComponent
               variables: {
                 first: this.pageInfo.pageSize,
                 filter: this.queryFilter,
-                contextFilters: this.contextService.injectContext(
-                  this.contextFilters
-                ),
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
@@ -1024,9 +1023,6 @@ export class SummaryCardComponent
           first: this.pageInfo.pageSize,
           skip: event.skip,
           filter: this.queryFilter,
-          contextFilters: this.contextService.injectContext(
-            this.contextFilters
-          ),
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
@@ -1134,9 +1130,6 @@ export class SummaryCardComponent
           this.dataQuery.refetch({
             first: this.pageInfo.pageSize,
             filter: this.queryFilter,
-            contextFilters: this.contextService.injectContext(
-              this.contextFilters
-            ),
             sortField: this.sortOptions.field,
             sortOrder: this.sortOptions.order,
             ...(this.settings.at && {
