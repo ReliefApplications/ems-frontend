@@ -10,6 +10,7 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
+  WorkflowService,
 } from '@oort-front/shared';
 import {
   GET_FORM_BY_ID,

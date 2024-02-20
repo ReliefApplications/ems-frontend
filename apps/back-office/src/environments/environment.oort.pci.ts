@@ -8,9 +8,8 @@ import { Environment } from './environment.type';
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id.oortcloud.tech/auth/realms/oort',
-  redirectUri: 'https://pcistafrontend01.z28.web.core.windows.net/',
-  postLogoutRedirectUri:
-    'https://pcistafrontend01.z28.web.core.windows.net/auth/',
+  redirectUri: 'https://pci.oortcloud.tech/admin/',
+  postLogoutRedirectUri: 'https://pci.oortcloud.tech/admin/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -24,10 +23,10 @@ export const environment: Environment = {
   ...sharedEnvironment,
 
   production: true,
-  apiUrl: 'https://pci-apiwebapp.azurewebsites.net/',
-  subscriptionApiUrl: 'wss://pci-apiwebapp.azurewebsites.net/',
-  frontOfficeUri: 'https://pcistafrontend01.z28.web.core.windows.net/',
-  backOfficeUri: 'https://pcistafrontend01.z28.web.core.windows.net/',
+  apiUrl: 'https://pci.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://pci.oortcloud.tech/api',
+  frontOfficeUri: 'https://pci.oortcloud.tech',
+  backOfficeUri: 'https://pci.oortcloud.tech/admin/',
   module: 'backoffice',
   availableLanguages: ['en'],
   authConfig,

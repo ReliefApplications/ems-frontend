@@ -26,7 +26,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, Variant } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 import { cloneDeep } from 'lodash';
 
@@ -64,7 +64,7 @@ export class DashboardComponent
   /** Show dashboard filter */
   public showFilter!: boolean;
   /** Current style variant */
-  public variant!: string;
+  public variant!: Variant;
   /** hide / show the close icon on the right */
   public closable = true;
   /** Dashboard button actions */

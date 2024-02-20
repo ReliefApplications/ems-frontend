@@ -1,15 +1,4 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import {
-  GeofieldsListboxComponent,
-  ApplicationDropdownComponent,
-  ReferenceDataDropdownComponent,
-  ResourceAvailableFieldsComponent,
-  ResourceCustomFiltersComponent,
-  ResourceDropdownComponent,
-  ResourceSelectTextComponent,
-  TestServiceDropdownComponent,
-  AuthService,
-} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 import {

@@ -736,7 +736,17 @@ export const init = (
         }
       }
       actionsButtons.appendChild(searchBtn);
-      parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+
+      const header = el.querySelector('.sd-question__header') as HTMLDivElement;
+      // make header flex to align buttons
+      if (header) {
+        header.appendChild(actionsButtons);
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'flex-end';
+      } else if (parentElement) {
+        parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+      }
       question.registerFunctionOnPropertyValueChanged('resource', () => {
         if (question.resource && question.canSearch) {
           searchBtn.style.display = 'block';

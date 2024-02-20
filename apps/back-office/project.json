@@ -340,7 +340,7 @@
               "maximumError": "14kb"
             }
           ],
-          "baseHref": "/",
+          "baseHref": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/pci"]

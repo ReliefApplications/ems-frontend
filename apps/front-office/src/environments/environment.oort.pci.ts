@@ -6,8 +6,8 @@ import { Environment } from './environment.type';
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
   issuer: 'https://id.oortcloud.tech/auth/realms/oort',
-  redirectUri: 'https://alimentaide-973-guyane.oortcloud.tech/',
-  postLogoutRedirectUri: 'https://alimentaide-973-guyane.oortcloud.tech/auth/',
+  redirectUri: 'https://pci.oortcloud.tech/',
+  postLogoutRedirectUri: 'https://pci.oortcloud.tech/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -18,13 +18,11 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
-  apiUrl: 'https://alimentaide-973-guyane.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://alimentaide-973-guyane.oortcloud.tech/api',
-  frontOfficeUri: 'https://alimentaide-973-guyane.oortcloud.tech',
-  backOfficeUri: 'https://alimentaide-973-guyane.oortcloud.tech/admin/',
-  availableLanguages: ['fr'],
+  apiUrl: 'https://pci.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://pci.oortcloud.tech/api',
+  frontOfficeUri: 'https://pci.oortcloud.tech',
+  backOfficeUri: 'https://pci.oortcloud.tech/admin/',
+  availableLanguages: ['en'],
   authConfig,
-  esriApiKey:
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
 };
