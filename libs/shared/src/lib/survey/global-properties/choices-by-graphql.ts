@@ -109,6 +109,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         questionElement,
         `${prefix}variableMapping`
       );
+      // Transform variables to make sure JSON can be passed
       transformGraphQLVariables(
         get(questionElement, `${prefix}query`),
         variables
