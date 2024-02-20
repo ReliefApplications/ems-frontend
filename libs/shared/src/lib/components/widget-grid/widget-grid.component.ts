@@ -96,6 +96,8 @@ export class WidgetGridComponent
   public isMinHeightEnabled?: boolean;
   /** Timeout listener */
   private setFullscreenTimeoutListener!: NodeJS.Timeout;
+  /** Instance of widgets (to save the original x and y values) */
+  private initialWidgets: any[] = [];
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -152,7 +154,8 @@ export class WidgetGridComponent
     this.dashboardService.widgetContentRefreshed$
       .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.setVisibleWidgets();
+        // sending 'false' to prevent triggering this function infinitely due to cloning
+        this.setVisibleWidgets(false);
       });
     // Listen to dashboard filters changes if it is necessary
     // So when hiding empty widgets, we can re-display them on filter change
@@ -194,6 +197,7 @@ export class WidgetGridComponent
   ngOnChanges(changes: SimpleChanges): void {
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
     if (changes['widgets']) {
+      this.initialWidgets = cloneDeep(this.widgets);
       this.setLayout();
     }
     if (changes['options']) {
@@ -501,8 +505,6 @@ export class WidgetGridComponent
       widget.cols = widget.cols ?? widget.defaultCols;
       widget.rows = widget.rows ?? widget.defaultRows;
       widget.minItemRows = widget.minItemRows ?? widget.minRow;
-      widget.resizeEnabled = this.canUpdate;
-      widget.dragEnabled = this.canUpdate;
       delete widget.defaultCols;
       delete widget.defaultRows;
       delete widget.minItemRows;
@@ -529,7 +531,21 @@ export class WidgetGridComponent
   /**
    * Filter widgets list to display only visible widgets.
    */
-  private setVisibleWidgets(): void {
+  private setVisibleWidgets(needCloning = true): void {
+    // reset the initial position of the widgets
+    if (needCloning) {
+      // creating a clone to stop auto-positioning done by gridster
+      const clonedWidgets = cloneDeep(this.widgets).map(
+        (widget: any, index: number) => {
+          widget.x = this.initialWidgets[index].x;
+          widget.y = this.initialWidgets[index].y;
+          return widget;
+        }
+      );
+      // reactivate synchronization
+      this.widgets = clonedWidgets;
+    }
+
     if (this.canHide) {
       this.visibleWidgets = this.widgets.filter(
         (widget: any) =>
