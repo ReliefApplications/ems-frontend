@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Injector,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewEncapsulation,
@@ -18,7 +19,7 @@ import {
   WorkflowService,
   MapLayersService,
 } from '@oort-front/shared';
-import { debounceTime } from 'rxjs';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
 import { Router } from '@angular/router';
@@ -41,7 +42,7 @@ import { Router } from '@angular/router';
 })
 export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Application Id */
   @Input()
@@ -87,6 +88,8 @@ export class AppWidgetComponent
   /** Available pages */
   @Output()
   pages = new EventEmitter<any[]>();
+  /** Trigger subscription teardown on component destruction */
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * Application as Web Widget.
@@ -115,8 +118,9 @@ export class AppWidgetComponent
         this.filterActive$.emit(!isEmpty(current));
         this.filter$.emit(current);
       });
-    this.applicationService.application$.subscribe(
-      (application: Application | null) => {
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
         if (application) {
           const pages = application.pages
             ?.filter((x) => x.content)
@@ -134,8 +138,7 @@ export class AppWidgetComponent
         } else {
           this.pages.emit([]);
         }
-      }
-    );
+      });
   }
 
   /**
@@ -195,5 +198,10 @@ export class AppWidgetComponent
       default:
         return 'dashboard';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
