@@ -127,6 +127,18 @@ export class DashboardFilterComponent
       )
       .subscribe(({ current }) => {
         this.survey.data = current;
+        // If dashboard filter used in web components
+        if (this.contextService.shadowDomService.isShadowRoot) {
+          this.survey
+            .getAllQuestions()
+            .filter(
+              (qu) => qu.getType() === 'dropdown' || qu.getType() === 'tagbox'
+            )
+            .forEach((qu) => {
+              // Simply update all the related instances with the current correct question value
+              qu._instance.value = qu.value;
+            });
+        }
       });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))
