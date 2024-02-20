@@ -447,7 +447,6 @@ export class LayoutComponent
    * @param e Event thrown in the attach event of the router outlet containing the lastStateOfContextFilters when it was detached
    */
   onAttach(e: any) {
-    console.log('attached: ', e);
     this.contextService.triggerRefreshForWebComponent = !isEqual(
       e.lastStateOfContextFilters,
       this.contextService.filter.value
@@ -472,7 +471,6 @@ export class LayoutComponent
    * @param e Event thrown in the detach event of the router outlet where we set lastStateOfContextFilters value for next attach to update context filter trigger
    */
   onDetach(e: any) {
-    console.log('detached: ', e);
     if (this.contextService.shadowDomService.isShadowRoot) {
       e.lastStateOfContextFilters = this.contextService.filter.value;
     }

@@ -93,7 +93,7 @@ export class ContextService {
       // On using web components we want to bypass this sending the same filter value as it's used for a different application view(because of route reuse strategy)
       filter(
         ([prev, curr]: [Record<string, any>, Record<string, any>]) =>
-          !isEqual(prev, curr) || this.shadowDomService.isShadowRoot
+          !isEqual(prev, curr) || this.triggerRefreshForWebComponent
       ),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       map(([prev, curr]: [Record<string, any>, Record<string, any>]) => ({
