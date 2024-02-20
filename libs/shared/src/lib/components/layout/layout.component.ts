@@ -447,21 +447,20 @@ export class LayoutComponent
    * @param e Event thrown in the attach event of the router outlet containing the lastStateOfContextFilters when it was detached
    */
   onAttach(e: any) {
-    this.contextService.triggerRefreshForWebComponent = !isEqual(
-      e.lastStateOfContextFilters,
-      this.contextService.filter.value
-    );
-    // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
-    if (
-      this.contextService.shadowDomService.isShadowRoot &&
-      this.contextService.triggerRefreshForWebComponent
-    ) {
-      if (this.attachViewFilterTriggerListener) {
-        clearTimeout(this.attachViewFilterTriggerListener);
+    if (this.contextService.shadowDomService.isShadowRoot) {
+      this.contextService.triggerRefreshForWebComponent = !isEqual(
+        e.lastStateOfContextFilters,
+        this.contextService.filter.value
+      );
+      // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
+      if (this.contextService.triggerRefreshForWebComponent) {
+        if (this.attachViewFilterTriggerListener) {
+          clearTimeout(this.attachViewFilterTriggerListener);
+        }
+        this.attachViewFilterTriggerListener = setTimeout(() => {
+          this.contextService.filter.next(this.contextService.filter.value);
+        }, 0);
       }
-      this.attachViewFilterTriggerListener = setTimeout(() => {
-        this.contextService.filter.next(this.contextService.filter.value);
-      }, 0);
     }
   }
 
