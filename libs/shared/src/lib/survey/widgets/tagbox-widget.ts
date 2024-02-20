@@ -43,30 +43,44 @@ export const init = (
       return question.getType() === componentName;
     },
     init: () => {
-      if (Serializer.findClass(componentName)) return;
-      Serializer.addClass(
-        componentName,
-        [
-          { name: 'hasOther:boolean', visible: false },
-          { name: 'hasSelectAll:boolean', visible: false },
-          { name: 'hasNone:boolean', visible: false },
-          { name: 'otherText', visible: false },
-          { name: 'selectAllText', visible: false },
-          { name: 'noneText', visible: false },
-        ],
-        () => null,
-        'checkbox'
-      );
-      Serializer.addProperty(componentName, {
-        name: 'placeholder',
-        category: 'general',
-        default: '',
-      });
-      Serializer.addProperty(componentName, {
-        name: 'allowAddNewTag:boolean',
-        category: 'general',
-        default: false,
-      });
+      if (Serializer.findClass(componentName)) {
+        Serializer.addProperty(componentName, {
+          name: 'useSummaryTagMode',
+          type: 'boolean',
+          category: 'general',
+          default: false,
+        });
+      } else {
+        Serializer.addClass(
+          componentName,
+          [
+            { name: 'hasOther:boolean', visible: false },
+            { name: 'hasSelectAll:boolean', visible: false },
+            { name: 'hasNone:boolean', visible: false },
+            { name: 'otherText', visible: false },
+            { name: 'selectAllText', visible: false },
+            { name: 'noneText', visible: false },
+          ],
+          () => null,
+          'checkbox'
+        );
+        Serializer.addProperty(componentName, {
+          name: 'placeholder',
+          category: 'general',
+          default: '',
+        });
+        Serializer.addProperty(componentName, {
+          name: 'useSummaryTagMode',
+          type: 'boolean',
+          category: 'general',
+          default: false,
+        });
+        Serializer.addProperty(componentName, {
+          name: 'allowAddNewTag:boolean',
+          category: 'general',
+          default: false,
+        });
+      }
     },
     isDefaultRender: false,
     afterRender: (question: any, el: HTMLElement): void => {
@@ -118,7 +132,6 @@ export const init = (
           currentSearchValue = searchValue;
           updateChoices(tagboxInstance, question, searchValue);
         });
-
       question._propertyValueChangedVirtual = () => {
         updateChoices(tagboxInstance, question, currentSearchValue);
       };
@@ -142,9 +155,22 @@ export const init = (
           tagboxInstance.disabled = value;
         }
       );
+      question.registerFunctionOnPropertyValueChanged(
+        'useSummaryTagMode',
+        (value: boolean) => {
+          if (value) {
+            tagboxInstance.tagMapper = (tags: any[]) => {
+              return tags.length < 2 ? tags : [tags];
+            };
+          } else {
+            tagboxInstance.tagMapper = () => null;
+          }
+        }
+      );
       if (question.visibleChoices.length) {
         updateChoices(tagboxInstance, question, currentSearchValue);
       }
+      question._instance = tagboxInstance;
       el.parentElement?.appendChild(tagboxDiv);
     },
     willUnmount: (question: any): void => {
@@ -155,6 +181,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };
@@ -186,9 +213,12 @@ export const init = (
     tagboxInstance.valueField = 'value';
     tagboxInstance.popupSettings = { appendTo: 'component' };
     tagboxInstance.fillMode = 'none';
-    tagboxInstance.tagMapper = (tags: any[]) => {
-      return tags.length < 2 ? tags : [tags];
-    };
+    if (question.useSummaryTagMode) {
+      tagboxInstance.tagMapper = (tags: any[]) => {
+        return tags.length < 2 ? tags : [tags];
+      };
+    }
+
     return tagboxInstance;
   };
   // ⚠ danger ⚠

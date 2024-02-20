@@ -111,6 +111,7 @@ export * from './lib/survey/components/resource-custom-filters/resource-custom-f
 export * from './lib/survey/components/resource-dropdown/resource-dropdown.component';
 export * from './lib/survey/components/resource-select-text/resource-select-text.component';
 export * from './lib/survey/components/test-service-dropdown/test-service-dropdown.component';
+export * from './lib/survey/components/code-editor/code-editor.component';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
