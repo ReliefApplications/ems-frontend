@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
  * User Summary page component.
  */
 @Component({
-  selector: 'oort-app-user-summary',
+  selector: 'app-user-summary',
   templateUrl: './user-summary.component.html',
   styleUrls: ['./user-summary.component.scss'],
 })

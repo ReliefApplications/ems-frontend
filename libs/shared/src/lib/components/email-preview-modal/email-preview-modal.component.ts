@@ -23,7 +23,10 @@ import {
   ErrorMessageModule,
   FormWrapperModule,
 } from '@oort-front/ui';
-import { UploadsModule } from '@progress/kendo-angular-upload';
+import {
+  FileRestrictions,
+  UploadsModule,
+} from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 /** Interface of Email Preview Modal Data */
@@ -32,6 +35,8 @@ interface DialogData {
   html: string;
   subject: string;
   to: string[];
+  // Provided by service
+  onSubmit: any;
 }
 
 /** Regex pattern for email */
@@ -81,6 +86,10 @@ export class EmailPreviewModalComponent implements OnDestroy {
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   /** Tinymce editor configuration */
   public editor: any = EMAIL_EDITOR_CONFIG;
+  /** File restrictions */
+  public fileRestrictions: FileRestrictions = {
+    maxFileSize: 7 * 1024 * 1024, // should represent 7MB
+  };
 
   /** Timeout */
   private timeoutListener!: NodeJS.Timeout;
@@ -124,6 +133,12 @@ export class EmailPreviewModalComponent implements OnDestroy {
     this.editor.base_url = editorService.url;
     // Set the editor language
     this.editor.language = editorService.language;
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
   }
 
   /**
@@ -182,9 +197,10 @@ export class EmailPreviewModalComponent implements OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.timeoutListener) {
-      clearTimeout(this.timeoutListener);
-    }
+  /**
+   * Submit email.
+   */
+  onSubmit() {
+    this.data.onSubmit(this.emailForm.value).then(() => this.dialogRef.close());
   }
 }

@@ -1991,6 +1991,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "******",
+			"invalidMaxFileSize": "******",
 			"select": "******"
 		},
 		"grid": {
@@ -2080,7 +2081,8 @@
 			"of": "******",
 			"page": "******",
 			"pageNumberInputTitle": "******",
-			"previousPage": "******"
+			"previousPage": "******",
+			"selectPage": "******"
 		},
 		"tilelayout": {
 			"component": {

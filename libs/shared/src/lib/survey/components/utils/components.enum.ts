@@ -35,6 +35,8 @@ import {
   QuestionDateTypeDisplayerModel,
   DateTypeDisplayerComponent,
 } from '../date-type-displayer/public-api';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
+import { CodeEditorModel } from '../code-editor/code-editor.model';
 
 /**
  * Custom component types for the survey creator property grid editor
@@ -49,6 +51,7 @@ export enum CustomPropertyGridComponentTypes {
   resourcesDropdown = 'resourcesDropdown',
   resourceSelectText = 'selectResourceText',
   resourceTestService = 'resourceTestService',
+  codeEditor = 'code-editor',
 }
 
 /**
@@ -93,5 +96,9 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.resourceTestService]: {
     component: TestServiceDropdownComponent,
     model: QuestionTestServiceDropdownModel,
+  },
+  [CustomPropertyGridComponentTypes.codeEditor]: {
+    component: CodeEditorComponent,
+    model: CodeEditorModel,
   },
 };

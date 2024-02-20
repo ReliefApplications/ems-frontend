@@ -102,6 +102,7 @@ export class MapControlsService {
       mapSidenavControlsComponent.instance.layersTree = layers;
       mapSidenavControlsComponent.instance.mapComponent = mapComponent;
       mapSidenavControlsComponent.instance.basemaps = basemaps;
+      (layerControl as any)._component = mapSidenavControlsComponent.instance;
       return container;
     };
     layerControl.onRemove = () => {

@@ -4,6 +4,7 @@
   [variant]="variant"
   [closable]="closable"
   [dashboard]="dashboard"
+  [structure]="dashboard?.filter?.structure"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div
@@ -16,6 +17,7 @@
     [variant]="variant"
     [closable]="closable"
     [dashboard]="dashboard"
+    [structure]="dashboard?.filter?.structure"
   ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen
