@@ -44,6 +44,7 @@ import { ApplicationsArchiveModule } from './components/applications-archive/app
 import { ReferenceDataDropdownModule } from './survey/components/reference-data-dropdown/reference-data-dropdown.module';
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
+import { FormSettingsModule } from './components/widgets/form/form-settings.module';
 
 /** Main module for the shared project */
 @NgModule({
@@ -79,6 +80,7 @@ import { StatusOptionsComponent } from './components/status-options/status-optio
     ButtonActionModule,
     WidgetChoiceModule,
     TabsSettingsModule,
+    FormSettingsModule,
     ReferenceDataDropdownModule,
     StatusOptionsComponent,
     // === Pipes ===

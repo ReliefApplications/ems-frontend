@@ -1,0 +1,21 @@
+<ui-tabs class="grow" [vertical]="true">
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="settings" [size]="24" uiTooltip="Tabs"> </ui-icon>
+      <span>{{ 'common.general' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-main [formGroup]="widgetForm"></shared-tab-main>
+    </ng-template>
+  </ui-tab>
+  <!-- Context filter settings -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_list" [size]="24"></ui-icon>
+      <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-contextual-filters-settings [form]="widgetForm"></shared-contextual-filters-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>

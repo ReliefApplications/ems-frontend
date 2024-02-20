@@ -30,6 +30,7 @@ export const environment: Environment = {
   authConfig,
   theme,
   availableWidgets: [
+    'form',
     'donut-chart',
     'line-chart',
     'bar-chart',

@@ -7,6 +7,7 @@ import { EditorSettingsComponent } from '../components/widgets/editor-settings/e
 import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
+import { FormSettingsComponent } from '../components/widgets/form/form-settings.component';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -18,6 +19,21 @@ export interface IWidgetType {
 
 /** List of Widget types with their properties */
 export const WIDGET_TYPES = [
+  {
+    id: 'form',
+    name: 'Form',
+    icon: '/assets/form.svg',
+    color: '#F6C481',
+    settings: {
+      title: 'Text widget',
+      text: 'Enter a content',
+    },
+    defaultCols: 3,
+    defaultRows: 3,
+    minRow: 1,
+    component: 'editor',
+    settingsTemplate: FormSettingsComponent,
+  },
   {
     id: 'donut-chart',
     name: 'Donut chart',

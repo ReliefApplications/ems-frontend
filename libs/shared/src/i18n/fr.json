@@ -1052,6 +1052,7 @@
 		},
 		"records": {
 			"active": "Enregistrements actifs",
+			"archive": "Archiver",
 			"archived": "Enregistrements archivés",
 			"editAs": "Editer en tant que",
 			"paginator": {
