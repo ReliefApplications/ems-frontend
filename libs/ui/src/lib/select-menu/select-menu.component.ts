@@ -232,7 +232,7 @@ export class SelectMenuComponent
         },
       });
       // Initialize any selected values
-      if (this.selectedValues.includes(option.value)) {
+      if (this.selectedValues.find((selVal) => selVal == option.value)) {
         option.selected = true;
       } else {
         option.selected = false;
@@ -366,7 +366,7 @@ export class SelectMenuComponent
    */
   getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((val: any) => {
-      if (selectedValues.includes(val.value)) {
+      if (selectedValues.find((selVal) => val.value == selVal)) {
         return val;
       }
     });
