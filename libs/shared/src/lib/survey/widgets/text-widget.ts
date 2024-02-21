@@ -6,6 +6,7 @@ import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
 import {
   CustomWidgetCollection,
+  ItemValue,
   JsonMetadata,
   Serializer,
   SurveyModel,
@@ -20,6 +21,7 @@ import {
 } from '../components/utils/create-picker-instance';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSearchTableComponent } from '../components/field-search-table/field-search-table.component';
+import { cloneDeep } from 'lodash';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -41,6 +43,13 @@ export const init = (
     isFit: (question: Question): boolean => question.getType() === 'text',
     init: (): void => {
       const serializer: JsonMetadata = Serializer;
+      // add que isUnique property to the text question
+      serializer.addProperty('text', {
+        name: 'unique:boolean',
+        category: 'general',
+        default: false,
+        visibleIndex: 7,
+      });
       // hide the min and max property for date, datetime and time types
       serializer.getProperty('text', 'min').visibleIf = (obj: QuestionText) =>
         ['number', 'month', 'week'].includes(obj.inputType || '');

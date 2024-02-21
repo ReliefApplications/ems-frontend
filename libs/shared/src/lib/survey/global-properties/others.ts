@@ -1,5 +1,6 @@
 import {
   ChoicesRestful,
+  ItemValue,
   JsonMetadata,
   QuestionFileModel,
   QuestionPanelDynamicModel,
@@ -261,6 +262,34 @@ export const init = (environment: any): void => {
       surveyLocalization.defaultLocale = newValue || 'en';
       survey.setPropertyValue('defaultLanguage', newValue || 'en');
     },
+  });
+
+  // The field that will be used when importing data from a excel file
+  serializer.addProperty('survey', {
+    name: 'importField:dropdown',
+    category: 'Records',
+    visibleIndex: 0,
+    required: true,
+    choices: (
+      survey: SurveyModel,
+      choicesCallback: (choices: ItemValue[]) => void
+    ) => {
+      if (!survey || !survey.getAllQuestions) {
+        return;
+      }
+
+      const choices =
+        survey
+          ?.getAllQuestions()
+          .filter((q) => q.unique)
+          .map((q) => new ItemValue(q.name, q.title)) ?? [];
+
+      choicesCallback([
+        new ItemValue('incrementalId', 'Incremental ID'),
+        ...choices,
+      ]);
+    },
+    default: 'incrementalId',
   });
 
   // Add ability to conditionally allow dynamic panel add new panel
