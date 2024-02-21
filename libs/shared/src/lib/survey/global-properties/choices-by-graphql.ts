@@ -12,7 +12,7 @@ import get from 'lodash/get';
 import { firstValueFrom } from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
-import { isEqual } from 'lodash';
+import { isArray, isEqual } from 'lodash';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
 
 /** Question Settings category */
@@ -103,6 +103,7 @@ export const init = (): void => {
 export const render = (questionElement: Question, http: HttpClient): void => {
   if (isSelectQuestion(questionElement)) {
     const updateChoices = async () => {
+      console.log('updating choices');
       const valueName = get(questionElement, `${prefix}valueName`);
       const titleName = get(questionElement, `${prefix}titleName`);
       const variables = graphQLVariables(
@@ -114,7 +115,6 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         get(questionElement, `${prefix}query`),
         variables
       );
-      console.log(variables);
       firstValueFrom(
         http.post(get(questionElement, `${prefix}url`), {
           query: get(questionElement, `${prefix}query`),
@@ -136,6 +136,21 @@ export const render = (questionElement: Question, http: HttpClient): void => {
           }));
         const choiceItems = choices.map((choice) => new ItemValue(choice));
         questionElement.setPropertyValue('visibleChoices', choiceItems);
+        console.log('will filter choices');
+        console.log(questionElement.value);
+        console.log(choiceItems);
+        if (questionElement.getType() === 'tabgox') {
+          const value = questionElement.value;
+          if (isArray(value)) {
+            const updatedValue = choices.filter((choice) =>
+              value.find(choice.value)
+            );
+            questionElement.setPropertyValue('value', updatedValue);
+          }
+        }
+        if (questionElement.getType() === 'dropdown') {
+          console.log('missing implementation');
+        }
       });
     };
 
@@ -161,8 +176,10 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         //
         // As this two update methods could work on their own specific terms, we have one property for each action to handle:
         // - [`${prefix}variableMapping`]
-
+        // Added a few other checks, making sure that the question exists
         if (
+          questionElement.visible &&
+          questionElement._instance &&
           questionElement[`${prefix}variableMapping`] &&
           questionElement[`${prefix}variableMapping`] != '{}' &&
           !isEqual(
