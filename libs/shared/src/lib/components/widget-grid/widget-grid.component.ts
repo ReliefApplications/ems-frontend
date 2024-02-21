@@ -96,8 +96,6 @@ export class WidgetGridComponent
   public isMinHeightEnabled?: boolean;
   /** Timeout listener */
   private setFullscreenTimeoutListener!: NodeJS.Timeout;
-  /** Instance of widgets (to save the original x and y values) */
-  private initialWidgets: any[] = [];
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -197,7 +195,6 @@ export class WidgetGridComponent
   ngOnChanges(changes: SimpleChanges): void {
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
     if (changes['widgets']) {
-      this.initialWidgets = cloneDeep(this.widgets);
       this.setLayout();
     }
     if (changes['options']) {
@@ -532,22 +529,26 @@ export class WidgetGridComponent
    * Filter widgets list to display only visible widgets.
    */
   private setVisibleWidgets(needCloning = true): void {
-    // reset the initial position of the widgets
-    if (needCloning) {
-      // creating a clone to stop auto-positioning done by gridster
-      const clonedWidgets = cloneDeep(this.widgets).map(
-        (widget: any, index: number) => {
-          widget.x = this.initialWidgets[index].x;
-          widget.y = this.initialWidgets[index].y;
-          return widget;
-        }
-      );
-      // reactivate synchronization
-      this.widgets = clonedWidgets;
-    }
-
     if (this.canHide) {
-      this.visibleWidgets = this.widgets.filter(
+      let nextWidgets = [];
+      if (needCloning) {
+        // cloning to reset coordinates and prevent Gridster from changing the order
+        nextWidgets = cloneDeep(this.widgets);
+        // adding the index to find the widget again (since there is no id)
+        nextWidgets.map((widget: any, index: number) => (widget.index = index));
+      } else {
+        // goes here when a widget triggers the event
+        nextWidgets = this.visibleWidgets;
+        // manual synchronization as the global widgets have been cloned
+        // used to limit the number of refreshes when context filters change
+        nextWidgets.map(
+          (widget: any, index: number) =>
+            (this.widgets[index].settings.widgetDisplay.isEmpty =
+              widget.settings.widgetDisplay.isEmpty)
+        );
+      }
+
+      this.visibleWidgets = nextWidgets.filter(
         (widget: any) =>
           !(
             widget.settings.widgetDisplay.hideEmpty &&
