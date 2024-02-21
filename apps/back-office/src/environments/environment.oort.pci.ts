@@ -28,7 +28,7 @@ export const environment: Environment = {
   frontOfficeUri: 'https://pci.oortcloud.tech',
   backOfficeUri: 'https://pci.oortcloud.tech/admin/',
   module: 'backoffice',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'fr'],
   authConfig,
   theme,
   availableWidgets: [

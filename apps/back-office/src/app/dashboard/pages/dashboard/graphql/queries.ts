@@ -3,8 +3,16 @@ import { gql } from 'apollo-angular';
 // === GET DASHBOARD BY ID ===
 /** Graphql query for getting a dashboard by its id */
 export const GET_DASHBOARD_BY_ID = gql`
-  query GetDashboardById($id: ID!, $contextEl: JSON) {
-    dashboard(id: $id, contextEl: $contextEl, createIfMissing: true) {
+  query GetDashboardById(
+    $id: ID!
+    $contextEl: JSON
+    $createIfMissing: Boolean
+  ) {
+    dashboard(
+      id: $id
+      contextEl: $contextEl
+      createIfMissing: $createIfMissing
+    ) {
       id
       name
       createdAt

@@ -22,7 +22,7 @@ export const environment: Environment = {
   subscriptionApiUrl: 'wss://pci.oortcloud.tech/api',
   frontOfficeUri: 'https://pci.oortcloud.tech',
   backOfficeUri: 'https://pci.oortcloud.tech/admin/',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'fr'],
   authConfig,
   theme,
 };
