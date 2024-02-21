@@ -2,7 +2,8 @@
   *ngIf="!loading && showFilter && !isFullScreen"
   [isFullScreen]="isFullScreen"
   variant="modern"
-  [opened]="true"
+  [opened]="$any(dashboard?.filter?.show)"
+  [closable]="$any(dashboard?.filter?.closable)"
   [dashboard]="dashboard"
   [structure]="dashboard?.filter?.structure"
 ></shared-dashboard-filter>
@@ -17,7 +18,8 @@
     *ngIf="!loading && showFilter && isFullScreen"
     [editable]="true"
     [isFullScreen]="isFullScreen"
-    [opened]="true"
+    [opened]="$any(dashboard?.filter?.show)"
+    [closable]="$any(dashboard?.filter?.closable)"
     [dashboard]="dashboard"
     [structure]="dashboard?.filter?.structure"
   ></shared-dashboard-filter>

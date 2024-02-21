@@ -8,6 +8,7 @@ import {
   OnInit,
   TemplateRef,
   OnDestroy,
+  ElementRef,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -15,7 +16,7 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
@@ -163,6 +164,7 @@ export class ChartComponent
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
+   * @param {ElementRef} el Current components element ref in the DOM
    * @param document document
    * @param dashboardService Shared dashboard service
    */
@@ -170,6 +172,7 @@ export class ChartComponent
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
+    private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private dashboardService: DashboardService
   ) {
@@ -179,7 +182,19 @@ export class ChartComponent
   ngOnInit(): void {
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
       .subscribe(({ previous, current }) => {
         if (
           this.contextService.filterRegex.test(this.settings.contextFilters) ||

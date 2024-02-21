@@ -29,4 +29,6 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
+  tinymceBaseUrl: 'https://ems2-test.who.int/app-builder/tinymce',
+  i18nUrl: 'https://ems2-test.who.int/app-builder/i18n/',
 };

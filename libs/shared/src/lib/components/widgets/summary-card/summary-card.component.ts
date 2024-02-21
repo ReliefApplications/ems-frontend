@@ -15,6 +15,7 @@ import {
   Subject,
   debounceTime,
   distinctUntilChanged,
+  filter,
   firstValueFrom,
   from,
   merge,
@@ -314,7 +315,19 @@ export class SummaryCardComponent
       )
     ) {
       this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .pipe(
+          // On working with web components we want to send filter value if this current element is in the DOM
+          // Otherwise send value always
+          filter(() =>
+            this.contextService.shadowDomService.isShadowRoot
+              ? this.contextService.shadowDomService.currentHost.contains(
+                  this.elementRef.nativeElement
+                )
+              : true
+          ),
+          debounceTime(500),
+          takeUntil(this.destroy$)
+        )
         .subscribe(({ previous, current }) => {
           if (
             this.contextService.shouldRefresh(this.widget, previous, current)
