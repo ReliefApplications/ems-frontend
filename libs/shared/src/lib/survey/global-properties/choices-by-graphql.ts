@@ -46,14 +46,14 @@ export const init = (): void => {
   let visibleIndex = 0;
 
   serializer.addProperty(questionType, {
-    name: `${prefix}url:string`,
+    name: `${prefix}Url:string`,
     displayName: 'Service URL',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}query`,
+    name: `${prefix}Query`,
     displayName: 'GraphQL Query',
     category,
     type: CustomPropertyGridComponentTypes.queryEditor,
@@ -63,28 +63,28 @@ export const init = (): void => {
   registerCustomPropertyEditor(CustomPropertyGridComponentTypes.queryEditor);
 
   serializer.addProperty(questionType, {
-    name: `${prefix}path:string`,
+    name: `${prefix}Path:string`,
     displayName: 'Path to data within the service',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}valueName:string`,
+    name: `${prefix}ValueName:string`,
     displayName: 'Get values from the following JSON field',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}titleName:string`,
+    name: `${prefix}TitleName:string`,
     displayName: 'Get display texts from the following JSON field',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}variableMapping`,
+    name: `${prefix}VariableMapping`,
     displayName: 'GraphQL variables',
     category,
     type: CustomPropertyGridComponentTypes.jsonEditor,
@@ -103,49 +103,46 @@ export const init = (): void => {
 export const render = (questionElement: Question, http: HttpClient): void => {
   if (isSelectQuestion(questionElement)) {
     const updateChoices = async () => {
-      console.log('updating choices');
-      const valueName = get(questionElement, `${prefix}valueName`);
-      const titleName = get(questionElement, `${prefix}titleName`);
+      const valueName = get(questionElement, `${prefix}ValueName`);
+      const titleName = get(questionElement, `${prefix}TitleName`);
       const variables = graphQLVariables(
         questionElement,
-        `${prefix}variableMapping`
+        `${prefix}VariableMapping`
       );
       // Transform variables to make sure JSON can be passed
       transformGraphQLVariables(
-        get(questionElement, `${prefix}query`),
+        get(questionElement, `${prefix}Query`),
         variables
       );
       firstValueFrom(
-        http.post(get(questionElement, `${prefix}url`), {
-          query: get(questionElement, `${prefix}query`),
+        http.post(get(questionElement, `${prefix}Url`), {
+          query: get(questionElement, `${prefix}Query`),
           variables,
         })
       ).then((result) => {
         questionElement.setPropertyValue(
           '_graphQLVariables',
-          graphQLVariables(questionElement, `${prefix}variableMapping`)
+          graphQLVariables(questionElement, `${prefix}VariableMapping`)
         );
         // this is to avoid that the choices appear on the 'choices' tab
         // and also to avoid the choices being sent to the server
         questionElement.choices = [];
         const choices = jsonpath
-          .query(result, get(questionElement, `${prefix}path`))
+          .query(result, get(questionElement, `${prefix}Path`))
           .map((x) => ({
             value: get(x, valueName),
             text: get(x, titleName),
           }));
         const choiceItems = choices.map((choice) => new ItemValue(choice));
         questionElement.setPropertyValue('visibleChoices', choiceItems);
-        console.log('will filter choices');
-        console.log(questionElement.value);
-        console.log(choiceItems);
-        if (questionElement.getType() === 'tabgox') {
+        if (questionElement.getType() === 'tagbox') {
           const value = questionElement.value;
           if (isArray(value)) {
-            const updatedValue = choices.filter((choice) =>
-              value.find(choice.value)
-            );
-            questionElement.setPropertyValue('value', updatedValue);
+            const updatedValue = choices
+              .filter((choice) => value.find((x) => isEqual(x, choice.value)))
+              .map((choice) => choice.value);
+            questionElement.value = updatedValue;
+            questionElement._instance.value = updatedValue;
           }
         }
         if (questionElement.getType() === 'dropdown') {
@@ -155,8 +152,8 @@ export const render = (questionElement: Question, http: HttpClient): void => {
     };
 
     if (
-      get(questionElement, `${prefix}url`) &&
-      get(questionElement, `${prefix}query`)
+      get(questionElement, `${prefix}Url`) &&
+      get(questionElement, `${prefix}Query`)
     ) {
       updateChoices();
     }
@@ -166,7 +163,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
       questionElement.survey as SurveyModel
     )
       .getAllQuestions()
-      .find((qu) => qu[`${prefix}variableMapping`]);
+      .find((qu) => qu[`${prefix}VariableMapping`]);
     if (containsLinkedReferenceDataQuestions) {
       (questionElement.survey as SurveyModel).onValueChanged.add(async () => {
         // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
@@ -180,16 +177,16 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         if (
           questionElement.visible &&
           questionElement._instance &&
-          questionElement[`${prefix}variableMapping`] &&
-          questionElement[`${prefix}variableMapping`] != '{}' &&
+          questionElement[`${prefix}VariableMapping`] &&
+          questionElement[`${prefix}VariableMapping`] != '{}' &&
           !isEqual(
             questionElement._graphQLVariables,
-            graphQLVariables(questionElement, `${prefix}variableMapping`)
+            graphQLVariables(questionElement, `${prefix}VariableMapping`)
           )
         ) {
           questionElement.setPropertyValue(
             '_graphQLVariables',
-            graphQLVariables(questionElement, `${prefix}variableMapping`)
+            graphQLVariables(questionElement, `${prefix}VariableMapping`)
           );
           questionElement._instance.loading = true;
           questionElement._instance.disabled = true;

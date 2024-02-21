@@ -13,28 +13,21 @@ export const transformGraphQLVariables = (
   query: string,
   variables: any = {}
 ) => {
-  console.log(variables);
   const graphQLQuery = gql(query);
   const definition = graphQLQuery.definitions?.[0];
   if (definition?.kind !== 'OperationDefinition') {
-    console.log('ici');
     return variables;
   }
   (definition.variableDefinitions ?? []).forEach((definition) => {
-    console.log(definition);
     if (
       get(definition, 'type.name.value') === 'JSON' &&
       get(variables, definition.variable.name.value)
     ) {
-      console.log(
-        JSON.stringify(get(variables, definition.variable.name.value))
-      );
       set(
         variables,
         definition.variable.name.value,
         JSON.stringify(get(variables, definition.variable.name.value))
       );
-      console.log(variables);
     }
   });
 };
