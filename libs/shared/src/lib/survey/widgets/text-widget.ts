@@ -163,18 +163,34 @@ export const init = (
               // https://www.telerik.com/kendo-angular-ui/components/dateinputs/api/DatePickerComponent/#toc-valuechange
               button.classList.remove('hidden');
             }
-            if (el.querySelector('input')?.min) {
-              pickerInstance.min = getDateDisplay(
-                el.querySelector('input')?.min,
-                question.inputType
-              );
+            const originalInput = el.querySelector('input');
+            if (originalInput) {
+              const updatePickerInstance = (attribute: string) => {
+                if ((originalInput as any)[attribute]) {
+                  (pickerInstance as any)[attribute] = getDateDisplay(
+                    (originalInput as any)[attribute],
+                    question.inputType
+                  );
+                } else {
+                  (pickerInstance as any)[attribute] = null;
+                }
+              };
+
+              updatePickerInstance('min');
+              updatePickerInstance('max');
+
+              const observer = new MutationObserver((mutationsList) => {
+                mutationsList
+                  .filter((mutation) =>
+                    ['min', 'max'].includes(mutation.attributeName || '')
+                  )
+                  .forEach((mutation) => {
+                    updatePickerInstance(mutation.attributeName || '');
+                  });
+              });
+              observer.observe(originalInput, { attributes: true });
             }
-            if (el.querySelector('input')?.max) {
-              pickerInstance.max = getDateDisplay(
-                el.querySelector('input')?.max,
-                question.inputType
-              );
-            }
+
             pickerInstance.readonly = question.isReadOnly;
             pickerInstance.disabled = question.isReadOnly;
 
