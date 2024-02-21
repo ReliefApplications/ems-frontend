@@ -162,6 +162,12 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md). -->
 
+If you need to upload files to the blob storage where we store shared assets, you can use the az commands.
+First, build the front-office in production mode ( any environment, but same version ).
+Then, run:
+
+az storage blob upload-batch --destination {container} --account-name {accountname} --destination-path {path-to-folder-in-container} --source {path-to-folder-locally}
+
 # Common issues
 
 ## Javascript heap out of memory
