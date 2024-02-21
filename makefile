@@ -16,5 +16,8 @@ serve-widgets:
 bundle-widgets:
 	NODE_OPTIONS="--max-old-space-size=4096" npm run bundle:widgets
 
+build-widgets:
+	node .scripts/build-widgets.js
+
 prettify:
 	npx prettier --write "**/*.{scss,html}"
