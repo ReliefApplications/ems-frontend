@@ -165,15 +165,10 @@ export const init = (
             }
             const originalInput = el.querySelector('input');
             if (originalInput) {
-              const updatePickerInstance = (attribute: string) => {
-                if ((originalInput as any)[attribute]) {
-                  (pickerInstance as any)[attribute] = getDateDisplay(
-                    (originalInput as any)[attribute],
-                    question.inputType
-                  );
-                } else {
-                  (pickerInstance as any)[attribute] = null;
-                }
+              const updatePickerInstance = (attribute: 'min' | 'max') => {
+                (pickerInstance as any)[attribute] = originalInput[attribute]
+                  ? getDateDisplay(originalInput[attribute], question.inputType)
+                  : null; //using as any because otherwise we cannot set to null
               };
 
               updatePickerInstance('min');
@@ -185,7 +180,9 @@ export const init = (
                     ['min', 'max'].includes(mutation.attributeName || '')
                   )
                   .forEach((mutation) => {
-                    updatePickerInstance(mutation.attributeName || '');
+                    updatePickerInstance(
+                      mutation.attributeName as 'min' | 'max'
+                    );
                   });
               });
               observer.observe(originalInput, { attributes: true });
