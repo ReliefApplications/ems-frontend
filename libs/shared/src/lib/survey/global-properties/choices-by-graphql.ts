@@ -12,7 +12,7 @@ import get from 'lodash/get';
 import { firstValueFrom } from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
-import { isArray, isEqual } from 'lodash';
+import { isArray, isEqual, isNil } from 'lodash';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
 
 /** Question Settings category */
@@ -135,8 +135,8 @@ export const render = (questionElement: Question, http: HttpClient): void => {
           }));
         const choiceItems = choices.map((choice) => new ItemValue(choice));
         questionElement.setPropertyValue('visibleChoices', choiceItems);
+        const value = questionElement.value;
         if (questionElement.getType() === 'tagbox') {
-          const value = questionElement.value;
           if (isArray(value)) {
             const updatedValue = choices
               .filter((choice) => value.find((x) => isEqual(x, choice.value)))
@@ -146,7 +146,16 @@ export const render = (questionElement: Question, http: HttpClient): void => {
           }
         }
         if (questionElement.getType() === 'dropdown') {
-          console.log('missing implementation');
+          if (value) {
+            const updatedValue = choices.find((choice) =>
+              isEqual(value, choice.value)
+            )?.value;
+            if (!isNil(updatedValue)) {
+              questionElement.value = updatedValue;
+            } else {
+              questionElement.value = undefined;
+            }
+          }
         }
       });
     };
