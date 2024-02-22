@@ -39,6 +39,10 @@ export const init = (
       question._primitiveValueChangeCallback
     );
     question.unRegisterFunctionOnPropertyValueChanged(
+      'value',
+      question._valueChangeCallback
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
       'readOnly',
       question._readOnlyChangeCallback
     );
@@ -168,6 +172,15 @@ export const init = (
       question.registerFunctionOnPropertyValueChanged(
         'isPrimitiveValue',
         question._primitiveValueChangeCallback
+      );
+
+      question._valueChangeCallback = () => {
+        tagboxInstance.value = question.value;
+        updateChoices(tagboxInstance, question, currentSearchValue);
+      };
+      question.registerFunctionOnPropertyValueChanged(
+        'value',
+        question._valueChangeCallback
       );
 
       question._readOnlyChangeCallback = (value: boolean) => {
