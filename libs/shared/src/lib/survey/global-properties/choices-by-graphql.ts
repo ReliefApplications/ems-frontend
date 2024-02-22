@@ -165,8 +165,13 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         })
         .finally(() => {
           if (questionElement._instance) {
+            const isDisplay =
+              (questionElement.survey as SurveyModel).mode === 'display';
             questionElement._instance.loading = false;
-            questionElement._instance.disabled = questionElement.readOnly;
+            questionElement._instance.readonly =
+              isDisplay || questionElement.readOnly;
+            questionElement._instance.disabled =
+              isDisplay || questionElement.readOnly;
           }
         });
     };
@@ -208,7 +213,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
             '_graphQLVariables',
             graphQLVariables(questionElement, `${prefix}VariableMapping`)
           );
-          await updateChoices();
+          updateChoices();
         }
       });
     }
