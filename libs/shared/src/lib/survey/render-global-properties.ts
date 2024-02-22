@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
  * multiple widgets
  *
  * @param referenceDataService The reference data service
+ * @param http Http client
  * @returns A function which takes the survey instance and some options as args
  */
 export const renderGlobalProperties =

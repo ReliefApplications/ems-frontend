@@ -90,6 +90,7 @@ export class DashboardFilterComponent
    * @param {ElementRef} el Current components element ref in the DOM
    * @param document Document
    * @param _host sidenav container host
+   * @param http Http client
    */
   constructor(
     public contextService: ContextService,

@@ -144,6 +144,7 @@ export class FormBuilderComponent
    * @param referenceDataService Reference data service
    * @param formHelpersService Shared form helper service.
    * @param document document
+   * @param http Http client
    */
   constructor(
     public dialog: Dialog,
