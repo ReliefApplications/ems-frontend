@@ -470,7 +470,10 @@ export class LayoutComponent
         ((!Array.isArray(qu.value) && qu.value) ||
           (Array.isArray(qu.value) && qu.value.length))
       ) {
-        newFilterValues[qu.name] = qu.value;
+        // Values as array contains properties from survey question that if not casted to array spread, will make the tagbox or any question using array values to not trigger the survey value change
+        newFilterValues[qu.name] = Array.isArray(qu.value)
+          ? [...qu.value]
+          : qu.value;
       }
     });
     return newFilterValues;
