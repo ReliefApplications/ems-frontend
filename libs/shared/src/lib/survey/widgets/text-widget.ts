@@ -31,6 +31,8 @@ export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
+  let dateRangeObserver!: MutationObserver;
+  let currentQuestionElementId!: string;
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
@@ -91,8 +93,18 @@ export const init = (
     isDefaultRender: true,
     afterRender: (question: QuestionText, el: HTMLInputElement): void => {
       let pickerDiv: HTMLDivElement | null = null;
+      currentQuestionElementId = el.id;
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
+        // Stop any previous observer if exist as it may not be used again in the new input type selected
+        dateRangeObserver?.disconnect();
+        if (question._dateDisplayCallback) {
+          // Unregister any previous date display callback associated to the question as it may not be used again in the new input type selected
+          question.unRegisterFunctionOnPropertyValueChanged(
+            'value',
+            question._dateDisplayCallback
+          );
+        }
         el.parentElement?.querySelector('.k-input')?.parentElement?.remove(); // .k-input class is shared by the 3 types of picker
         // Remove the picker div whenever we switch question type, so it is not duplicated
         if (pickerDiv) {
@@ -163,18 +175,31 @@ export const init = (
               // https://www.telerik.com/kendo-angular-ui/components/dateinputs/api/DatePickerComponent/#toc-valuechange
               button.classList.remove('hidden');
             }
-            if (el.querySelector('input')?.min) {
-              pickerInstance.min = getDateDisplay(
-                el.querySelector('input')?.min,
-                question.inputType
-              );
+            const originalInput = el.querySelector('input');
+            if (originalInput) {
+              const updatePickerInstance = (attribute: 'min' | 'max') => {
+                (pickerInstance as any)[attribute] = originalInput[attribute]
+                  ? getDateDisplay(originalInput[attribute], question.inputType)
+                  : null; //using as any because otherwise we cannot set to null
+              };
+
+              updatePickerInstance('min');
+              updatePickerInstance('max');
+
+              dateRangeObserver = new MutationObserver((mutationsList) => {
+                mutationsList
+                  .filter((mutation) =>
+                    ['min', 'max'].includes(mutation.attributeName || '')
+                  )
+                  .forEach((mutation) => {
+                    updatePickerInstance(
+                      mutation.attributeName as 'min' | 'max'
+                    );
+                  });
+              });
+              dateRangeObserver.observe(originalInput, { attributes: true });
             }
-            if (el.querySelector('input')?.max) {
-              pickerInstance.max = getDateDisplay(
-                el.querySelector('input')?.max,
-                question.inputType
-              );
-            }
+
             pickerInstance.readonly = question.isReadOnly;
             pickerInstance.disabled = question.isReadOnly;
 
@@ -191,7 +216,7 @@ export const init = (
             // Positioning the button inside the picker
             el.parentElement?.classList.add('relative');
             button.classList.add('absolute', 'right-7', 'z-10');
-            question.registerFunctionOnPropertyValueChanged('value', () => {
+            question._dateDisplayCallback = () => {
               if (question.value) {
                 pickerInstance.writeValue(
                   getDateDisplay(question.value, question.inputType)
@@ -199,7 +224,11 @@ export const init = (
               } else {
                 pickerInstance.writeValue(null as any);
               }
-            });
+            };
+            question.registerFunctionOnPropertyValueChanged(
+              'value',
+              question._dateDisplayCallback
+            );
             question.registerFunctionOnPropertyValueChanged(
               'readOnly',
               (value: boolean) => {
@@ -216,7 +245,7 @@ export const init = (
       question.registerFunctionOnPropertyValueChanged(
         'inputType',
         updateTextInput,
-        el.id // a unique key to distinguish fields
+        currentQuestionElementId // a unique key to distinguish fields
       );
       // Init
       updateTextInput();
@@ -296,6 +325,21 @@ export const init = (
           });
         }
       }
+    },
+    willUnmount: (question: QuestionText): void => {
+      if (question) {
+        if (question._dateDisplayCallback) {
+          question.unRegisterFunctionOnPropertyValueChanged(
+            'value',
+            question._dateDisplayCallback
+          );
+        }
+        question.unRegisterFunctionOnPropertyValueChanged(
+          'inputType',
+          currentQuestionElementId
+        );
+      }
+      dateRangeObserver?.disconnect();
     },
   };
 

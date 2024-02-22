@@ -17,6 +17,7 @@ import { Apollo } from 'apollo-angular';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RESOURCE_FIELDS } from './graphql/queries';
 import { map } from 'rxjs';
+import jsonpath from 'jsonpath';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -27,6 +28,27 @@ const DISABLED_FIELDS = [
   'form',
   'lastUpdateForm',
 ];
+
+/** Interface of field meta */
+interface IMeta {
+  choicesByUrl?: {
+    url?: string;
+    path?: string;
+    value?: string;
+    text?: string;
+    hasOther?: boolean;
+    otherText?: string;
+  };
+  choicesByGraphQL?: {
+    url?: string;
+    path?: string;
+    value?: string;
+    text?: string;
+    query?: string;
+    hasOther?: boolean;
+    otherText?: string;
+  };
+}
 
 /**
  * Shared grid service for the dashboards.
@@ -279,39 +301,65 @@ export class GridService {
     const promises: Promise<any>[] = [];
     const cachedKeys = await getListOfKeys();
     /**
-     * Fetches choices from URL, cache them and set meta.
+     * Fetches choices, cache them and set meta.
      *
-     * @param url URL to target.
      * @param fieldName Field name to update meta.
      * @param meta Meta to expand. Corresponding to fieldName.
+     * @param key cache key
      * @returns A promise to execute everything.
      */
     const fetchChoicesAndSetMeta = (
-      url: string,
       fieldName: string,
-      meta: any
-    ): Promise<void> =>
-      this.apiProxyService
-        .promisedRequestWithHeaders(url)
-        .then((value: any) => {
-          const choices = this.extractChoices(value, meta.choicesByUrl);
-          setWithExpiry(url, choices);
-          metaFields[fieldName] = {
-            ...meta,
-            choices,
-          };
-        });
+      meta: IMeta,
+      key: string
+    ): Promise<void> => {
+      if (meta.choicesByGraphQL) {
+        return this.apiProxyService
+          .buildPostRequest(meta.choicesByGraphQL.url || '', {
+            query: meta.choicesByGraphQL.query,
+          })
+          .then((value: any) => {
+            const choices = this.extractChoices(value, meta);
+            setWithExpiry(key, choices);
+            metaFields[fieldName] = {
+              ...meta,
+              choices,
+            };
+          });
+      }
+      if (meta.choicesByUrl) {
+        return this.apiProxyService
+          .promisedRequestWithHeaders(meta.choicesByUrl.url || '')
+          .then((value: any) => {
+            const choices = this.extractChoices(value, meta);
+            setWithExpiry(key, choices);
+            metaFields[fieldName] = {
+              ...meta,
+              choices,
+            };
+          });
+      }
+      return Promise.resolve();
+    };
 
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
-      if (meta.choicesByUrl) {
-        const url: string = meta.choicesByUrl.url;
-        if (cachedKeys.includes(url)) {
+      if (meta.choicesByUrl || meta.choicesByGraphQL) {
+        let url: string;
+        let key: string;
+        if (meta.choicesByGraphQL) {
+          url = meta.choicesByGraphQL.url;
+          key = `${url}:${meta.choicesByGraphQL.query || ''}`;
+        } else {
+          url = meta.choicesByUrl.url;
+          key = url;
+        }
+        if (cachedKeys.includes(key)) {
           promises.push(
-            getWithExpiry(url).then(
+            getWithExpiry(key).then(
               (choices: { value: string; text: string }[] | null) => {
                 if (choices === null) {
-                  return fetchChoicesAndSetMeta(url, fieldName, meta);
+                  return fetchChoicesAndSetMeta(fieldName, meta, key);
                 } else {
                   metaFields[fieldName] = {
                     ...meta,
@@ -323,7 +371,7 @@ export class GridService {
             )
           );
         } else {
-          promises.push(fetchChoicesAndSetMeta(url, fieldName, meta));
+          promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
         }
       }
       if (meta.choices) {
@@ -346,45 +394,52 @@ export class GridService {
    * Extracts choices using choicesByUrl properties
    *
    * @param res Result of http request.
-   * @param choicesByUrl Choices By Url property.
-   * @param choicesByUrl.path The path of the url to fetch
-   * @param choicesByUrl.value The key for values in the response
-   * @param choicesByUrl.text The key for labels in the response
-   * @param choicesByUrl.hasOther If the "other" option is enabled
-   * @param choicesByUrl.otherText Label fot the "other" option if enabled
+   * @param meta field meta
    * @returns list of choices.
    */
   private extractChoices(
     res: any,
-    choicesByUrl: {
-      path?: string;
-      value?: string;
-      text?: string;
-      hasOther?: boolean;
-      otherText?: string;
-    }
+    meta: IMeta
   ): { value: string; text: string }[] {
-    let choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    let choices: any[] = [];
+    let valueField: string | null = '';
+    let textField: string | null = '';
+    if (meta.choicesByUrl) {
+      valueField = meta.choicesByUrl.value || null;
+      textField = meta.choicesByUrl.text || null;
+      choices = meta.choicesByUrl.path
+        ? [...res[meta.choicesByUrl.path]]
+        : [...res];
+    } else if (meta.choicesByGraphQL) {
+      valueField = meta.choicesByGraphQL.value || null;
+      textField = meta.choicesByGraphQL.text || null;
+      choices = jsonpath.query(res, meta.choicesByGraphQL.path || '');
+    } else {
+      return choices;
+    }
     choices = choices
       ? choices
           .map((x: any) => {
-            const value = (
-              choicesByUrl.value ? get(x, choicesByUrl.value) : x
-            )?.toString();
+            const value = valueField ? get(x, valueField) : x;
             return {
               value,
-              text: (choicesByUrl.text && get(x, choicesByUrl.text)) || value,
+              text: (textField && get(x, textField)) || value,
             };
           })
           .filter((x) => !isNil(x.text))
       : [];
-    if (choicesByUrl.hasOther) {
+    if (meta.choicesByUrl?.hasOther || meta.choicesByGraphQL?.hasOther) {
+      const otherText = meta.choicesByUrl
+        ? meta.choicesByUrl.otherText
+        : meta.choicesByGraphQL?.otherText;
       choices.push({
         value: 'other',
-        text: choicesByUrl.otherText ? choicesByUrl.otherText : 'Other',
+        text: otherText ? otherText : 'Other',
       });
     }
-    choices.sort((a: any, b: any) => a.text.localeCompare(b.text));
+    choices.sort((a: any, b: any) =>
+      a.text.toString().localeCompare(b.text.toString())
+    );
     return choices;
   }
 

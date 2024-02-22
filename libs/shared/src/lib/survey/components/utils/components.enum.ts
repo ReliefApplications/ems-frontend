@@ -35,8 +35,18 @@ import {
   QuestionDateTypeDisplayerModel,
   DateTypeDisplayerComponent,
 } from '../date-type-displayer/public-api';
-import { CodeEditorComponent } from '../code-editor/code-editor.component';
-import { CodeEditorModel } from '../code-editor/code-editor.model';
+import {
+  CodeEditorComponent,
+  CodeEditorModel,
+} from '../code-editor/public-api';
+import {
+  QueryEditorModel,
+  QueryEditorComponent,
+} from '../query-editor/public-api';
+import {
+  JSONEditorComponent,
+  JSONEditorModel,
+} from '../json-editor/public-api';
 
 /**
  * Custom component types for the survey creator property grid editor
@@ -52,6 +62,8 @@ export enum CustomPropertyGridComponentTypes {
   resourceSelectText = 'selectResourceText',
   resourceTestService = 'resourceTestService',
   codeEditor = 'code-editor',
+  queryEditor = 'query-editor',
+  jsonEditor = 'json-editor',
 }
 
 /**
@@ -100,5 +112,13 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.codeEditor]: {
     component: CodeEditorComponent,
     model: CodeEditorModel,
+  },
+  [CustomPropertyGridComponentTypes.queryEditor]: {
+    component: QueryEditorComponent,
+    model: QueryEditorModel,
+  },
+  [CustomPropertyGridComponentTypes.jsonEditor]: {
+    component: JSONEditorComponent,
+    model: JSONEditorModel,
   },
 };

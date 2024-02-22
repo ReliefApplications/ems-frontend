@@ -25,6 +25,7 @@ import {
   SurveyCustomJSONEditorPlugin,
 } from '../../form-builder/custom-json-editor/custom-json-editor.component';
 import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
+import { HttpClient } from '@angular/common/http';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -178,6 +179,7 @@ export class FilterBuilderModalComponent
    * @param referenceDataService reference data service
    * @param formHelpersService Shared form helper service.
    * @param snackBar Service that will be used to display the snackbar.
+   * @param http Http client
    */
   constructor(
     private formService: FormService,
@@ -185,7 +187,8 @@ export class FilterBuilderModalComponent
     @Inject(DIALOG_DATA) public data: DialogData,
     private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -243,12 +246,12 @@ export class FilterBuilderModalComponent
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService) as any
+      renderGlobalProperties(this.referenceDataService, this.http) as any
     );
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, opt: any) =>
         opt.survey.onAfterRenderQuestion.add(
-          renderGlobalProperties(this.referenceDataService)
+          renderGlobalProperties(this.referenceDataService, this.http)
         )
     );
 

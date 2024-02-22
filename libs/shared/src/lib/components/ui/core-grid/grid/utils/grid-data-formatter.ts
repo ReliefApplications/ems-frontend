@@ -300,23 +300,15 @@ function getPropertyValue(
           value = value.map((x) => get(x, meta.graphQLFieldName as string));
         }
       }
-      const text = meta.choices
-        .filter((x) => x.value)
-        .reduce(
-          (acc: string[], x: any) =>
-            value.includes(x.value) ? acc.concat([x.text]) : acc,
-          []
-        );
-      if (text.length < value.length) {
-        return value;
-      } else {
-        return text;
-      }
+      const choices = (meta.choices || []).filter((x) => !isNil(x.value));
+      return value.map(
+        (x: any) => choices.find((choice) => choice.value == x)?.text || x
+      );
     } else {
       if (parent) {
         value = get(item, field.name);
       }
-      return meta.choices.find((x: any) => x.value === value)?.text || value;
+      return meta.choices.find((x: any) => x.value == value)?.text || value;
     }
   } else {
     if (meta.type === 'geospatial') {
