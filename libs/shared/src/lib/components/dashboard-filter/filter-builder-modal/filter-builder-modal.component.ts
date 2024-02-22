@@ -136,6 +136,27 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 ];
 
 /**
+ * Navigation tab properties (will be disabled).
+ */
+const NAVIGATION_PROPERTIES = [
+  'showPreviewBeforeComplete',
+  'pagePrevText',
+  'pageNextText',
+  'completeText',
+  'previewText',
+  'editText',
+  'startSurveyText',
+  'showNavigationButtons',
+  'showPrevButton',
+  'firstPageIsStarted',
+  'goNextPageAutomatic',
+  'showProgressBar',
+  'progressBarType',
+  'questionsOnPageMode',
+  'showTOC',
+];
+
+/**
  * Filter builder component
  */
 @Component({
@@ -213,6 +234,11 @@ export class FilterBuilderModalComponent
 
     // Block core fields edition
     this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {
+      // Disable navigation properties
+      if (NAVIGATION_PROPERTIES.includes(opt.property.name)) {
+        opt.canShow = false;
+      }
+
       // opt: { obj: any, property: Survey.JsonObjectProperty, canShow: boolean and more...}
       const obj = opt.obj;
       if (!obj || !obj.page) {
@@ -224,6 +250,8 @@ export class FilterBuilderModalComponent
         opt.canShow = false;
       }
     });
+    // Reset property grid to let it handle onShowingProperty event (cf doc)
+    this.surveyCreator.JSON = {};
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
