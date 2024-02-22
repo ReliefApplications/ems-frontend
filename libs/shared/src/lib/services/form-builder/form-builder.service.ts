@@ -15,6 +15,7 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Shared form builder service.
@@ -41,7 +42,8 @@ export class FormBuilderService {
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private restService: RestService,
-    private formHelpersService: FormHelpersService
+    private formHelpersService: FormHelpersService,
+    private http: HttpClient
   ) {}
 
   /**
@@ -62,7 +64,7 @@ export class FormBuilderService {
     const survey = new Model(structure);
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService, this.http)
     );
     //Add tooltips to questions if exist
     survey.onAfterRenderQuestion.add(

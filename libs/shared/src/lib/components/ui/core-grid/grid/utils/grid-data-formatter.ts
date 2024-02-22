@@ -1,4 +1,4 @@
-import { get, isNil } from 'lodash';
+import { get, isEqual, isNil } from 'lodash';
 import { applyLayoutFormat } from '../../../../../utils/parser/utils';
 import { DatePipe } from '../../../../../pipes/date/date.pipe';
 import { ICON_EXTENSIONS } from '../grid.constants';
@@ -300,18 +300,12 @@ function getPropertyValue(
           value = value.map((x) => get(x, meta.graphQLFieldName as string));
         }
       }
-      const text = meta.choices
-        .filter((x) => x.value)
-        .reduce(
-          (acc: string[], x: any) =>
-            value.includes(x.value) ? acc.concat([x.text]) : acc,
-          []
-        );
-      if (text.length < value.length) {
-        return value;
-      } else {
-        return text;
-      }
+      const choices = (meta.choices || []).filter((x) => x.value);
+      const text = value.map(
+        (x: any) =>
+          choices.find((choice) => isEqual(choice.value, x))?.text || x
+      );
+      return text;
     } else {
       if (parent) {
         value = get(item, field.name);
