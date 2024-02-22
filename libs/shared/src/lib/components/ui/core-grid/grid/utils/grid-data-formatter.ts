@@ -1,4 +1,4 @@
-import { get, isEqual, isNil } from 'lodash';
+import { get, isNil } from 'lodash';
 import { applyLayoutFormat } from '../../../../../utils/parser/utils';
 import { DatePipe } from '../../../../../pipes/date/date.pipe';
 import { ICON_EXTENSIONS } from '../grid.constants';
@@ -300,17 +300,15 @@ function getPropertyValue(
           value = value.map((x) => get(x, meta.graphQLFieldName as string));
         }
       }
-      const choices = (meta.choices || []).filter((x) => x.value);
-      const text = value.map(
-        (x: any) =>
-          choices.find((choice) => isEqual(choice.value, x))?.text || x
+      const choices = (meta.choices || []).filter((x) => !isNil(x.value));
+      return value.map(
+        (x: any) => choices.find((choice) => choice.value == x)?.text || x
       );
-      return text;
     } else {
       if (parent) {
         value = get(item, field.name);
       }
-      return meta.choices.find((x: any) => x.value === value)?.text || value;
+      return meta.choices.find((x: any) => x.value == value)?.text || value;
     }
   } else {
     if (meta.type === 'geospatial') {
