@@ -32,7 +32,7 @@ import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
 import { Apollo } from 'apollo-angular';
 import { ShadowDomService, SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { SurveyModel } from 'survey-core';
+import { Model, SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../form-builder/form-builder.service';
 import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -60,6 +60,8 @@ export class ContextService {
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Trigger filter refresh for web component cases */
   public triggerRefreshForWebComponent = false;
+  /** Web component filter surveys */
+  webComponentsFilterSurvey: Model[] = [];
   /** Regex used to allow widget refresh */
   public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
@@ -422,7 +424,6 @@ export class ContextService {
    */
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
-
     // set each question value manually otherwise the defaultValueExpression is not loaded
     forEach(this.filterValues.getValue(), (value, key) => {
       if (survey.getQuestionByName(key)) {
@@ -438,7 +439,9 @@ export class ContextService {
     };
 
     survey.onValueChanged.add(handleValueChanged);
-
+    if (this.shadowDomService.isShadowRoot) {
+      this.webComponentsFilterSurvey.push(survey);
+    }
     return survey;
   }
 
