@@ -29,6 +29,24 @@ export const init = (
     'tagbox',
     '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g><path d="M15,11H0V5h15V11z M1,10h13V6H1V10z"/></g><rect x="2" y="7" width="4" height="2"/><rect x="7" y="7" width="4" height="2"/></svg>'
   );
+  const unRegisterRelatedPropertyChangeCallbacks = (question: any) => {
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'visibleChoices',
+      question._propertyValueChangedVirtual
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'isPrimitiveValue',
+      question._primitiveValueChangeCallback
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'readOnly',
+      question._readOnlyChangeCallback
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'useSummaryTagMode',
+      question._useSummaryTagModeChangeCallback
+    );
+  };
   const componentName = 'tagbox';
   const widget = {
     name: 'tagbox',
@@ -84,6 +102,7 @@ export const init = (
     },
     isDefaultRender: false,
     afterRender: (question: any, el: HTMLElement): void => {
+      unRegisterRelatedPropertyChangeCallbacks(question);
       let currentSearchValue = '';
       const defaultTagbox = el.querySelector('sv-ng-tagbox-question');
       if (defaultTagbox) {
@@ -139,34 +158,40 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._primitiveValueChangeCallback = (newValue: boolean) => {
+        tagboxInstance.clearAll();
+        tagboxInstance.valuePrimitive = newValue;
+        question.value = null;
+        question.defaultValue = null;
+      };
       question.registerFunctionOnPropertyValueChanged(
         'isPrimitiveValue',
-        (newValue: boolean) => {
-          tagboxInstance.clearAll();
-          tagboxInstance.valuePrimitive = newValue;
-          question.value = null;
-          question.defaultValue = null;
-        }
+        question._primitiveValueChangeCallback
       );
+
+      question._readOnlyChangeCallback = (value: boolean) => {
+        tagboxInstance.readonly = value;
+        tagboxInstance.disabled = value;
+      };
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',
-        (value: boolean) => {
-          tagboxInstance.readonly = value;
-          tagboxInstance.disabled = value;
-        }
+        question._readOnlyChangeCallback
       );
+
+      question._useSummaryTagModeChangeCallback = (value: boolean) => {
+        if (value) {
+          tagboxInstance.tagMapper = (tags: any[]) => {
+            return tags.length < 2 ? tags : [tags];
+          };
+        } else {
+          tagboxInstance.tagMapper = () => null;
+        }
+      };
       question.registerFunctionOnPropertyValueChanged(
         'useSummaryTagMode',
-        (value: boolean) => {
-          if (value) {
-            tagboxInstance.tagMapper = (tags: any[]) => {
-              return tags.length < 2 ? tags : [tags];
-            };
-          } else {
-            tagboxInstance.tagMapper = () => null;
-          }
-        }
+        question._useSummaryTagModeChangeCallback
       );
+
       if (question.visibleChoices.length) {
         updateChoices(tagboxInstance, question, currentSearchValue);
       }
@@ -181,6 +206,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      unRegisterRelatedPropertyChangeCallbacks(question);
       question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
