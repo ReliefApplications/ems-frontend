@@ -179,6 +179,7 @@ export class FilterBuilderModalComponent
    * @param referenceDataService reference data service
    * @param formHelpersService Shared form helper service.
    * @param snackBar Service that will be used to display the snackbar.
+   * @param http Http client
    */
   constructor(
     private formService: FormService,

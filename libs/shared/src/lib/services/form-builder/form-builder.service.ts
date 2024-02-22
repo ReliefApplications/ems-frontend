@@ -35,6 +35,7 @@ export class FormBuilderService {
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
    * @param formHelpersService Shared form helper service.
+   * @param http Http client
    */
   constructor(
     private referenceDataService: ReferenceDataService,
