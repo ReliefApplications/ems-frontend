@@ -128,6 +128,7 @@ export const init = (
       // Make sure the value is valid
       try {
         tagboxInstance.value = question.value;
+        tagboxInstance.setState(question.value);
         tagboxInstance.verifySettings();
       } catch (err) {
         console.error(err);

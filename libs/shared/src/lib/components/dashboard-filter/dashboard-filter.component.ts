@@ -24,6 +24,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
 import { Dashboard } from '../../models/dashboard.model';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Interface for quick filters
@@ -98,7 +99,8 @@ export class DashboardFilterComponent
     private dateTranslate: DateTranslateService,
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    @Optional() private _host: SidenavContainerComponent
+    @Optional() private _host: SidenavContainerComponent,
+    private http: HttpClient
   ) {
     super();
   }
@@ -220,7 +222,7 @@ export class DashboardFilterComponent
       if (parent) {
         parent.style['min-width'] = '0px';
       }
-      renderGlobalProperties(this.referenceDataService);
+      renderGlobalProperties(this.referenceDataService, this.http);
     });
     this.onValueChange();
   }

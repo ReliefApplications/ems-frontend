@@ -88,7 +88,6 @@ export const init = (
         }
       );
       question.registerFunctionOnPropertyValueChanged('value', () => {
-        console.log('change');
         // We need this line for resource select
         if (question.isPrimitiveValue) {
           dropdownInstance.value = question.value;

@@ -18,6 +18,7 @@ import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
+import * as ChoicesByGraphQLProperties from './global-properties/choices-by-graphql';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
@@ -126,6 +127,7 @@ export const initCustomSurvey = (
   }
 
   // load global properties
+  ChoicesByGraphQLProperties.init();
   ReferenceDataProperties.init(referenceDataService);
   TooltipProperty.init();
   OtherProperties.init(environment);

@@ -29,6 +29,7 @@ import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Array containing the different types of questions.
@@ -150,7 +151,8 @@ export class FormBuilderComponent
     private translate: TranslateService,
     private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private http: HttpClient
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -192,7 +194,7 @@ export class FormBuilderComponent
 
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService) as any
+        renderGlobalProperties(this.referenceDataService, this.http) as any
       );
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         this.formHelpersService.addQuestionTooltips
@@ -324,7 +326,7 @@ export class FormBuilderComponent
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService) as any
+      renderGlobalProperties(this.referenceDataService, this.http) as any
     );
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       this.formHelpersService.addQuestionTooltips as any
@@ -333,7 +335,7 @@ export class FormBuilderComponent
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, options: any) =>
         options.survey.onAfterRenderQuestion.add(
-          renderGlobalProperties(this.referenceDataService)
+          renderGlobalProperties(this.referenceDataService, this.http)
         )
     );
 
