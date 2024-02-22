@@ -451,7 +451,9 @@ export class LayoutComponent
    * @returns object with merged values from
    */
   private getViewFilterValue(survey: Model): { [key: string]: any } {
-    const newFilterValues: { [key: string]: any } = {};
+    const newFilterValues: { [key: string]: any } = {
+      ...this.contextService.filter.value,
+    };
     const filterKeys = Object.keys(this.contextService.filter.value);
     const currentSurveyQuestions = survey.getAllQuestions();
     // Include by default all the filter values that are present as questions in the current activated survey
@@ -489,18 +491,20 @@ export class LayoutComponent
       const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
         e.linkedSurvey
       );
-      this.contextService.triggerRefreshForWebComponent = !isEqual(
-        e.lastStateOfContextFilters,
-        newFilterValues
-      );
       // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
-      if (this.contextService.triggerRefreshForWebComponent) {
+      if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
         if (this.attachViewFilterTriggerListener) {
           clearTimeout(this.attachViewFilterTriggerListener);
         }
         this.attachViewFilterTriggerListener = setTimeout(() => {
+          console.log(e.lastStateOfContextFilters);
+          this.contextService.filter.next(e.lastStateOfContextFilters);
           this.contextService.filter.next(newFilterValues);
         }, 0);
+      } else {
+        console.log('no update');
+        console.log(e.lastStateOfContextFilters);
+        console.log(newFilterValues);
       }
     }
   }
