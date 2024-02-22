@@ -318,10 +318,27 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         });
         //For email notification edit operation.
         if (this.emailService.isEdit) {
-          queryData.emailLayout.header.headerLogo =
-            this.emailService.allLayoutdata.headerLogo;
-          queryData.emailLayout.footer.footerLogo =
-            this.emailService.allLayoutdata.footerLogo;
+          if (
+            this.emailService.allLayoutdata.headerLogo &&
+            !queryData.emailLayout.header.headerLogo
+          ) {
+            queryData.emailLayout.header.headerLogo =
+              this.emailService.allLayoutdata.headerLogo;
+          }
+          if (
+            this.emailService.allLayoutdata.footerLogo &&
+            !queryData.emailLayout.footer.footerLogo
+          ) {
+            queryData.emailLayout.footer.footerLogo =
+              this.emailService.allLayoutdata.footerLogo;
+          }
+          if (
+            this.emailService.allLayoutdata.footerLogo &&
+            !queryData.emailLayout.banner.bannerImage
+          ) {
+            queryData.emailLayout.banner.bannerImage =
+              this.emailService.allLayoutdata.bannerImage;
+          }
           this.emailService
             .editEmailNotification(this.emailService.editId, queryData)
             .subscribe((res) => {
@@ -360,6 +377,27 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       });
       // For email notification edit operation.
       if (this.emailService.isEdit) {
+        if (
+          this.emailService.allLayoutdata.headerLogo &&
+          !queryData.emailLayout.header.headerLogo
+        ) {
+          queryData.emailLayout.header.headerLogo =
+            this.emailService.allLayoutdata.headerLogo;
+        }
+        if (
+          this.emailService.allLayoutdata.footerLogo &&
+          !queryData.emailLayout.footer.footerLogo
+        ) {
+          queryData.emailLayout.footer.footerLogo =
+            this.emailService.allLayoutdata.footerLogo;
+        }
+        if (
+          this.emailService.allLayoutdata.footerLogo &&
+          !queryData.emailLayout.banner.bannerImage
+        ) {
+          queryData.emailLayout.banner.bannerImage =
+            this.emailService.allLayoutdata.bannerImage;
+        }
         this.emailService
           .editEmailNotification(this.emailService.editId, queryData)
           .subscribe((res: any) => {

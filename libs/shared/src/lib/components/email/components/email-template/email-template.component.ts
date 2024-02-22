@@ -154,29 +154,15 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.selectedDataset = this.emailService.getSelectedDataSet();
-    if (
-      this.selectedDataset &&
-      Object.keys(this.selectedDataset?.cacheData).length &&
-      this.selectedDataset?.cacheData?.dataSetResponse
-    ) {
-      const { dataList, resource, dataSetFields, dataSetResponse } =
-        this.selectedDataset.cacheData;
-      this.dataList = dataList;
-      this.resource = resource;
-      this.dataSetFields = dataSetFields;
-      this.dataSet = dataSetResponse;
-      this.dataSetEmails = dataSetResponse?.records
-        ?.map((record: { email: string }) => record.email)
-        ?.filter(Boolean)
-        ?.flat();
-      this.emails = [...this.dataSetEmails];
-    }
+    this.datasetsForm?.value?.dataSets?.forEach((eleDataset: any) => {
+      eleDataset.cacheData = {};
+    });
+
     this.selectedEmails = this.emailBackLoad;
     this.dataSets = this.datasetsForm.value.dataSets;
     this.dataSets?.forEach((ele: any) => {
-      ele.blockName = ele.name;
-      ele.name = ele.resource.name;
+      ele.blockName = ele.resource.name;
+      // ele.name = ele.resource.name;
     });
     this.prepareDatasetFilters();
     if (this.emailFilter) {
@@ -287,11 +273,13 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       dataSet?.cacheData.dataSetResponse
     ) {
       this.loading = true;
-      const { dataList, resource, dataSetFields, dataSetResponse } =
-        dataSet.cacheData;
+      // const { dataList, resource, dataSetFields, dataSetResponse } =
+      //   dataSet.cacheData;
+
+      const { dataList, resource, dataSetResponse } = dataSet.cacheData;
       this.dataList = dataList;
       this.resource = resource;
-      this.dataSetFields = dataSetFields;
+      this.dataSetFields = dataSet.fields.map((ele: any) => ele.name); //dataSetFields;
       this.dataSet = dataSetResponse;
       this.dataSetEmails = dataSetResponse?.records
         ?.map((record: { email: string }) => record.email)
@@ -324,6 +312,17 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
                 dataSet.cacheData.dataList = this.dataList;
                 dataSet.cacheData.dataSetFields = this.dataSetFields;
                 dataSet.cacheData.resource = this.resource;
+
+                //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
+                if (
+                  this.datasetsForm.value?.dataSets?.filter(
+                    (x: any) => x.name === dataSet.name
+                  )?.length > 0
+                ) {
+                  this.datasetsForm.value.dataSets.filter(
+                    (x: any) => x.name === dataSet.name
+                  )[0].cacheData = dataSet.cacheData;
+                }
                 this.emailService.setSelectedDataSet(dataSet);
               }
               this.loading = false;

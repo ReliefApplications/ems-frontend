@@ -19,7 +19,7 @@
                 {{ 'components.queryBuilder.dataset.title' | translate }}*
             </label>
             <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset"  [ngModelOptions]="{ standalone: true }"
-                [items]="dataSets" bindLabel="name" [searchable]="true"  [virtualScroll]="true"
+                [items]="dataSets" bindLabel="blockName" [searchable]="true"  [virtualScroll]="true"
                 (clear)="clearDatasetSelection()"
                 (change)="bindDataSetDetails($event)" placeholder="{{
                     'components.queryBuilder.dataset.select' | translate}}">
@@ -27,7 +27,7 @@
                     <span></span>
                 </ng-template>
                 <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                    <span>{{ this.emailService.replaceUnderscores(item.name || '') | titlecase }}</span>
+                    <span>{{ this.emailService.replaceUnderscores(item.blockName || '') | titlecase }}</span>
                 </ng-template>
             </ng-select>
         </div>
@@ -70,7 +70,7 @@
                 {{ 'components.queryBuilder.dataset.title' | translate }}*
             </label>
             <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset" [ngModelOptions]="{ standalone: true }"
-                [items]="dataSets" bindLabel="name" [searchable]="true"  [virtualScroll]="true"
+                [items]="dataSets" bindLabel="blockName" [searchable]="true"  [virtualScroll]="true"
                 (clear)="clearDatasetSelection()"
                 (change)="bindDataSetDetails($event)" placeholder="{{
                     'components.queryBuilder.dataset.select' | translate}}">
@@ -78,14 +78,14 @@
                     <span></span>
                 </ng-template>
                 <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                    <span>{{ this.emailService.replaceUnderscores(item.name || '') | titlecase }}</span>
+                    <span>{{ this.emailService.replaceUnderscores(item.blockName || '') | titlecase }}</span>
                 </ng-template>
             </ng-select>
         </div>
         <div>
-            <div [formGroup]="filterQuery">
+            <div [formGroup]="filterQuery" *ngIf="selectedDataset?.fields?.length && !this.loading">
                 <div class="flex-row gap-4 mt-6">
-                    <div class="flex gap-4" *ngIf="selectedDataset?.fields?.length && !this.loading">
+                    <div class="flex gap-4">
                       <div class="flex gap-4 mt-2">
                         <div class="mt-2">
                           <!-- Label for Filter Logic -->
