@@ -10,7 +10,14 @@ import {
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { Subject, debounceTime, firstValueFrom, from, takeUntil } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  filter,
+  firstValueFrom,
+  from,
+  takeUntil,
+} from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
@@ -141,7 +148,19 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       .join('');
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
       .subscribe(({ previous, current }) => {
         if (
           this.contextService.filterRegex.test(
@@ -170,6 +189,28 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param node HTML element
    */
   private toggleActiveFilters = (filterValue: any, node: any) => {
+    /**
+     * Should activate or deactivate the active status of the field, based on other filter fields
+     * If other field fields are set, then, deactivate the field
+     *
+     * @param node html node
+     */
+    const shouldActivate = (node: any): void => {
+      const deactivatingFields = get(node, 'dataset.filterDeactivate');
+      if (deactivatingFields) {
+        if (
+          deactivatingFields
+            .split(';')
+            .map((item: any) => item.trim())
+            .some((field: any) => !isNil(get(filterValue, field)))
+        ) {
+          node.dataset.filterActive = false;
+          return;
+        }
+      }
+      node.dataset.filterActive = true;
+    };
+
     if (get(node, 'dataset.filterField')) {
       const value = get(node, 'dataset.filterValue');
       const filterFieldValue = get(filterValue, node.dataset.filterField);
@@ -178,7 +219,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         isEqual(value, filterFieldValue) ||
         (isNilOrEmpty(value) && isNilOrEmpty(filterFieldValue))
       ) {
-        node.dataset.filterActive = true;
+        shouldActivate(node);
       } else {
         node.dataset.filterActive = false;
       }
@@ -186,12 +227,13 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       // Handle empty filters. Need to leave filter field empty.
       if (get(node, 'dataset.filterField') === '') {
         if (!filterValue || isEmpty(filterValue)) {
-          node.dataset.filterActive = true;
+          shouldActivate(node);
         } else {
           node.dataset.filterActive = false;
         }
       }
     }
+
     for (let i = 0; i < node.childNodes.length; i++) {
       const child = node.childNodes[i];
       this.toggleActiveFilters(filterValue, child);

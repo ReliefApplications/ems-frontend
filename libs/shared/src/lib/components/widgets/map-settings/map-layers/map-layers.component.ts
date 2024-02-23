@@ -85,7 +85,10 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
     const { EditLayerModalComponent } = await import(
       '../edit-layer-modal/edit-layer-modal.component'
     );
-    this.mapComponent?.resetLayers();
+    if (this.mapComponent) {
+      this.mapComponent.resetLayers();
+      this.mapComponent.layers = [];
+    }
     const dialogRef = this.dialog.open(EditLayerModalComponent, {
       disableClose: true,
       autoFocus: false,
@@ -143,7 +146,10 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
         const { EditLayerModalComponent } = await import(
           '../edit-layer-modal/edit-layer-modal.component'
         );
-        this.mapComponent?.resetLayers();
+        if (this.mapComponent) {
+          this.mapComponent.resetLayers();
+          this.mapComponent.layers = [];
+        }
         const dialogRef = this.dialog.open(EditLayerModalComponent, {
           disableClose: true,
           autoFocus: false,

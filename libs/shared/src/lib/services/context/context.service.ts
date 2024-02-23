@@ -30,9 +30,9 @@ import { FilterPosition } from '../../components/dashboard-filter/enums/dashboar
 import { Dialog } from '@angular/cdk/dialog';
 import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
 import { Apollo } from 'apollo-angular';
-import { SnackbarService } from '@oort-front/ui';
+import { ShadowDomService, SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { SurveyModel } from 'survey-core';
+import { Model, SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../form-builder/form-builder.service';
 import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -58,6 +58,8 @@ export class ContextService {
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
+  /** Web component filter surveys */
+  webComponentsFilterSurvey: Model[] = [];
   /** Regex used to allow widget refresh */
   public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
@@ -88,6 +90,7 @@ export class ContextService {
     return this.filter.pipe(
       pairwise(),
       // We only emit a filter value if filter value changes and we send back the actual(curr) value
+      // On using web components we want to bypass this sending the same filter value as it's used for a different application view(because of route reuse strategy)
       filter(
         ([prev, curr]: [Record<string, any>, Record<string, any>]) =>
           !isEqual(prev, curr)
@@ -138,6 +141,7 @@ export class ContextService {
    * @param formBuilderService Form builder service
    * @param applicationService Shared application service
    * @param router Angular router
+   * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    */
   constructor(
     private dialog: Dialog,
@@ -146,7 +150,8 @@ export class ContextService {
     private translate: TranslateService,
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
-    private router: Router
+    private router: Router,
+    public shadowDomService: ShadowDomService
   ) {
     this.filterPosition$.subscribe(
       (value: { position: FilterPosition; dashboardId: string } | null) => {
@@ -417,7 +422,6 @@ export class ContextService {
    */
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
-
     // set each question value manually otherwise the defaultValueExpression is not loaded
     forEach(this.filterValues.getValue(), (value, key) => {
       if (survey.getQuestionByName(key)) {
@@ -433,7 +437,9 @@ export class ContextService {
     };
 
     survey.onValueChanged.add(handleValueChanged);
-
+    if (this.shadowDomService.isShadowRoot) {
+      this.webComponentsFilterSurvey.push(survey);
+    }
     return survey;
   }
 
