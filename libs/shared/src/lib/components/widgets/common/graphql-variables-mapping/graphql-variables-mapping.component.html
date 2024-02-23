@@ -31,7 +31,7 @@
     'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.help'
       | translate
   }}</ui-alert>
-  <ui-alert variant="danger" *ngIf="!control.valid">{{
+  <ui-alert variant="danger" *ngIf="control.errors?.invalidJSON">{{
     'common.errors.invalidJson' | translate
   }}</ui-alert>
   <div
