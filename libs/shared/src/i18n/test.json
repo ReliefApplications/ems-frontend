@@ -1688,6 +1688,9 @@
 							"title": "******"
 						}
 					},
+					"help": {
+						"geographicExtent": "******"
+					},
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
@@ -1798,7 +1801,13 @@
 							"longitude": "******",
 							"zoom": "******"
 						},
-						"geographicExtent": "****** {{context}} ****** {{filter}} ******"
+						"geographicExtent": {
+							"add": "******",
+							"admin0": "******",
+							"region": "******",
+							"remove": "******",
+							"value": "****** {{context}} ****** {{filter}} ******"
+						}
 					}
 				},
 				"style": {
@@ -1981,6 +1990,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "******",
+			"invalidMaxFileSize": "******",
 			"select": "******"
 		},
 		"grid": {
@@ -2070,7 +2080,8 @@
 			"of": "******",
 			"page": "******",
 			"pageNumberInputTitle": "******",
-			"previousPage": "******"
+			"previousPage": "******",
+			"selectPage": "******"
 		},
 		"tilelayout": {
 			"component": {

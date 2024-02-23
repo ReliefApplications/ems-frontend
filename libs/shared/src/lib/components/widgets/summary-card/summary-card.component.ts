@@ -12,9 +12,13 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
+  Subject,
   debounceTime,
   distinctUntilChanged,
+  filter,
   firstValueFrom,
+  from,
+  merge,
   takeUntil,
 } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -143,6 +147,8 @@ export class SummaryCardComponent
   private scrollEventListener!: any;
   /** Timeout listener for summary card scroll bind set on view switch */
   private scrollEventBindTimeout!: NodeJS.Timeout;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -306,7 +312,19 @@ export class SummaryCardComponent
       )
     ) {
       this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .pipe(
+          // On working with web components we want to send filter value if this current element is in the DOM
+          // Otherwise send value always
+          filter(() =>
+            this.contextService.shadowDomService.isShadowRoot
+              ? this.contextService.shadowDomService.currentHost.contains(
+                  this.elementRef.nativeElement
+                )
+              : true
+          ),
+          debounceTime(500),
+          takeUntil(this.destroy$)
+        )
         .subscribe(({ previous, current }) => {
           if (
             this.contextService.shouldRefresh(this.widget, previous, current)
@@ -441,13 +459,16 @@ export class SummaryCardComponent
         this.pageInfo.pageSize = 0;
       }
       const variables = this.queryPaginationVariables();
-
-      const { items, pageInfo } = await this.referenceDataService.cacheItems(
-        this.refData,
-        { ...variables, ...(this.graphqlVariables ?? {}) }
-      );
-
-      this.updateReferenceDataCards(items, pageInfo);
+      from(
+        this.referenceDataService.cacheItems(this.refData, {
+          ...variables,
+          ...(this.graphqlVariables ?? {}),
+        })
+      )
+        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .subscribe(({ items, pageInfo }) =>
+          this.updateReferenceDataCards(items, pageInfo)
+        );
     }
   }
 
@@ -480,8 +501,8 @@ export class SummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     } else if (this.useLayout) {
       this.loading = true;
-      this.dataQuery
-        ?.refetch({
+      from(
+        this.dataQuery?.refetch({
           skip: 0,
           first: this.pageInfo.pageSize,
           filter: this.queryFilter,
@@ -494,7 +515,9 @@ export class SummaryCardComponent
             at: this.contextService.atArgumentValue(this.settings.at),
           }),
         })
-        .then(this.updateRecordCards.bind(this));
+      )
+        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .subscribe(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData) {
       if (this.refData?.pageInfo?.strategy) {
         this.refresh();
@@ -982,13 +1005,15 @@ export class SummaryCardComponent
             });
           }
         } else {
-          this.dataQuery
-            ?.fetchMore({
+          from(
+            this.dataQuery?.fetchMore({
               variables: {
                 skip: this.cards.length,
               },
             })
-            .then(this.updateRecordCards.bind(this));
+          )
+            .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+            .subscribe(() => this.updateRecordCards.bind(this));
         }
       }
     }
@@ -1007,8 +1032,8 @@ export class SummaryCardComponent
     if (this.dataQuery) {
       this.loading = true;
       const layoutQuery = this.layout?.query;
-      this.dataQuery
-        .refetch({
+      from(
+        this.dataQuery.refetch({
           first: this.pageInfo.pageSize,
           skip: event.skip,
           filter: this.queryFilter,
@@ -1022,18 +1047,22 @@ export class SummaryCardComponent
             at: this.contextService.atArgumentValue(this.settings.at),
           }),
         })
-        .then(this.updateRecordCards.bind(this));
+      )
+        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .subscribe(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData && this.refData) {
       // Only set loading state if using pagination, not infinite scroll
       this.loading = !this.scrolling;
       const variables = this.queryPaginationVariables(event.pageIndex);
 
-      this.referenceDataService
-        .cacheItems(this.refData, {
+      from(
+        this.referenceDataService.cacheItems(this.refData, {
           ...variables,
           ...(this.graphqlVariables ?? {}),
         })
-        .then(({ items, pageInfo }) => {
+      )
+        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .subscribe(({ items, pageInfo }) => {
           this.updateReferenceDataCards(items, pageInfo);
           this.loading = false;
         });
@@ -1044,6 +1073,7 @@ export class SummaryCardComponent
    * Refresh view
    */
   public refresh() {
+    this.cancelRefresh$.next();
     this.cards = [];
     this.sortedCachedCards = [];
     this.cachedCards = [];
@@ -1095,6 +1125,7 @@ export class SummaryCardComponent
    * @param e Selected sort option.
    */
   public onSort(e: any) {
+    this.cancelRefresh$.next();
     if (e) {
       this.sortOptions = { field: e.field, order: e.order };
     } else {
@@ -1112,8 +1143,8 @@ export class SummaryCardComponent
         if (!this.dataQuery) {
           return;
         }
-        this.dataQuery
-          .refetch({
+        from(
+          this.dataQuery.refetch({
             first: this.pageInfo.pageSize,
             filter: this.queryFilter,
             contextFilters: this.contextService.injectContext(
@@ -1125,7 +1156,9 @@ export class SummaryCardComponent
               at: this.contextService.atArgumentValue(this.settings.at),
             }),
           })
-          .then(() => (this.loading = false));
+        )
+          .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+          .subscribe(() => (this.loading = false));
       } else if (this.useReferenceData) {
         if (this.refData?.pageInfo?.strategy) {
           this.refresh();
@@ -1185,12 +1218,10 @@ export class SummaryCardComponent
     }
 
     // Replace search
-    const search = this.searchControl.value;
-    if (search) {
-      object = JSON.parse(
-        JSON.stringify(object).replace(/{{widget.search}}/g, search)
-      );
-    }
+    const search = this.searchControl.value || '';
+    object = JSON.parse(
+      JSON.stringify(object).replace(/{{widget.search}}/g, search)
+    );
     return object;
   }
 

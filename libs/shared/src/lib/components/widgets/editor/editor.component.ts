@@ -6,10 +6,18 @@ import {
   ViewChild,
   HostListener,
   Renderer2,
+  ElementRef,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { Subject, debounceTime, firstValueFrom, from, takeUntil } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  filter,
+  firstValueFrom,
+  from,
+  takeUntil,
+} from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
@@ -28,6 +36,7 @@ import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-w
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ContextService } from '../../../services/context/context.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { Router } from '@angular/router';
 
 /**
  * Text widget component using Tinymce.
@@ -69,8 +78,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public aggregationsData: any = {};
   /** Loading indicator */
   public loading = true;
-  /** Refresh subject, emit a value when refresh needed */
-  public refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
 
@@ -105,6 +114,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param contextService Context service
    * @param renderer Angular renderer2 service
    * @param aggregationService Shared aggregation service
+   * @param el Element ref
+   * @param router Angular router
    */
   constructor(
     private apollo: Apollo,
@@ -117,7 +128,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private referenceDataService: ReferenceDataService,
     private contextService: ContextService,
     private renderer: Renderer2,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private el: ElementRef,
+    private router: Router
   ) {
     super();
   }
@@ -135,7 +148,19 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       .join('');
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
       .subscribe(({ previous, current }) => {
         if (
           this.contextService.filterRegex.test(
@@ -145,7 +170,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           if (
             this.contextService.shouldRefresh(this.settings, previous, current)
           ) {
-            this.refresh$.next(true);
+            this.cancelRefresh$.next();
             this.loading = true;
             this.setHtml();
           }
@@ -164,6 +189,28 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param node HTML element
    */
   private toggleActiveFilters = (filterValue: any, node: any) => {
+    /**
+     * Should activate or deactivate the active status of the field, based on other filter fields
+     * If other field fields are set, then, deactivate the field
+     *
+     * @param node html node
+     */
+    const shouldActivate = (node: any): void => {
+      const deactivatingFields = get(node, 'dataset.filterDeactivate');
+      if (deactivatingFields) {
+        if (
+          deactivatingFields
+            .split(';')
+            .map((item: any) => item.trim())
+            .some((field: any) => !isNil(get(filterValue, field)))
+        ) {
+          node.dataset.filterActive = false;
+          return;
+        }
+      }
+      node.dataset.filterActive = true;
+    };
+
     if (get(node, 'dataset.filterField')) {
       const value = get(node, 'dataset.filterValue');
       const filterFieldValue = get(filterValue, node.dataset.filterField);
@@ -172,7 +219,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         isEqual(value, filterFieldValue) ||
         (isNilOrEmpty(value) && isNilOrEmpty(filterFieldValue))
       ) {
-        node.dataset.filterActive = true;
+        shouldActivate(node);
       } else {
         node.dataset.filterActive = false;
       }
@@ -180,12 +227,13 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       // Handle empty filters. Need to leave filter field empty.
       if (get(node, 'dataset.filterField') === '') {
         if (!filterValue || isEmpty(filterValue)) {
-          node.dataset.filterActive = true;
+          shouldActivate(node);
         } else {
           node.dataset.filterActive = false;
         }
       }
     }
+
     for (let i = 0; i < node.childNodes.length; i++) {
       const child = node.childNodes[i];
       this.toggleActiveFilters(filterValue, child);
@@ -224,6 +272,30 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.contextService.filter.getValue(),
           this.htmlContentComponent.el.nativeElement
         );
+        const anchorElements = this.el.nativeElement.querySelectorAll('a');
+        anchorElements.forEach((anchor: HTMLElement) => {
+          this.renderer.listen(anchor, 'click', (event: Event) => {
+            // Prevent the default behavior of the anchor tag
+            event.preventDefault();
+            // Use the Angular Router to navigate to the desired route ( if needed )
+            const href = anchor.getAttribute('href');
+            const target = anchor.getAttribute('target');
+            if (href) {
+              if (target === '_blank') {
+                // Open link in a new tab, don't use Angular router
+                window.open(href, '_blank');
+              } else {
+                if (href?.startsWith('./')) {
+                  // Navigation inside the app builder
+                  this.router.navigateByUrl(href.substring(1));
+                } else {
+                  // Default navigation
+                  window.location.href = href;
+                }
+              }
+            }
+          });
+        });
       }, 500);
     };
     if (this.settings.record && this.settings.resource) {
@@ -237,7 +309,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedStyle = this.dataTemplateService.renderStyle(
             this.settings.wholeCardStyles || false,
@@ -289,7 +361,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
@@ -304,7 +376,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
@@ -410,10 +482,24 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     }
-    // Handle data-filter-reset event
-    if (event.target.dataset.filterReset) {
+
+    let resetButtonIsClicked = !!event.target.dataset.filterReset;
+    currentNode = event.target;
+    if (!resetButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-editor' &&
+        !resetButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        resetButtonIsClicked = !!currentNode.dataset.filterReset;
+      }
+    }
+    if (resetButtonIsClicked) {
       // Get all the fields that need to be cleared
-      const resetList = event.target.dataset.filterReset.split(';');
+      const resetList = currentNode.dataset.filterReset
+        .split(';')
+        .map((item: any) => item.trim());
       const updatedFilter: any = {};
       for (const [key, value] of Object.entries(
         this.contextService.filter.getValue()

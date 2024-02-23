@@ -9,7 +9,7 @@ import { GET_SHORT_FORM_BY_ID } from '../graphql/queries';
 
 /** Form component */
 @Component({
-  selector: 'oort-app-form',
+  selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })

@@ -11,6 +11,88 @@
   row-gap: 6px;
 }
 
+::ng-deep .leaflet-popup-pan {
+  z-index: 1000;
+}
+
+::ng-deep .bottom-popup,
+::ng-deep .left-popup,
+::ng-deep .right-popup {
+  /* Clear default properties to use transform correctly */
+  .leaflet-popup {
+    left: unset !important;
+    bottom: unset !important;
+    margin: 0 !important;
+  }
+}
+
+::ng-deep .bottom-popup {
+  .leaflet-popup {
+    transform: translate(-50%, 25px) !important;
+  }
+
+  .leaflet-popup-tip-container {
+    margin-top: 0;
+    top: 0;
+    transform: rotateX(180deg) translateY(100%);
+  }
+
+  .leaflet-popup-tip {
+    background-color: #008dc9;
+  }
+}
+
+::ng-deep .left-popup {
+  .leaflet-popup {
+    transform: translate(calc(-100% - 25px), -50%) !important;
+  }
+
+  &.top-popup .leaflet-popup {
+    transform: translate(calc(-100% - 15px), calc(-100% - 15px)) !important;
+  }
+
+  &.bottom-popup .leaflet-popup {
+    transform: translate(calc(-100% - 15px), 15px) !important;
+  }
+
+  &.top-popup .leaflet-popup-tip-container,
+  &.bottom-popup .leaflet-popup-tip-container {
+    display: none;
+  }
+
+  .leaflet-popup-tip-container {
+    margin-left: 0;
+    left: 100%;
+    top: 50%;
+    transform: rotate(-90deg) translate(25%, -50%);
+  }
+}
+
+::ng-deep .right-popup {
+  .leaflet-popup {
+    transform: translate(25px, -50%) !important;
+  }
+
+  &.top-popup .leaflet-popup {
+    transform: translate(15px, calc(-100% - 15px)) !important;
+  }
+
+  &.bottom-popup .leaflet-popup {
+    transform: translate(15px, 15px) !important;
+  }
+
+  &.top-popup .leaflet-popup-tip-container,
+  &.bottom-popup .leaflet-popup-tip-container {
+    display: none;
+  }
+
+  .leaflet-popup-tip-container {
+    left: 0;
+    top: 50%;
+    transform: rotate(90deg) translate(-25%, 50%);
+  }
+}
+
 .shared-popup-header {
   background: #008dc9;
   color: white;

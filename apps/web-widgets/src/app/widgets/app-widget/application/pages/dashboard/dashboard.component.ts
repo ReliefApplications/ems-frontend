@@ -11,7 +11,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
@@ -24,7 +24,7 @@ import {
   Record,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
@@ -34,7 +34,7 @@ import { cloneDeep } from 'lodash';
  * Dashboard page.
  */
 @Component({
-  selector: 'oort-app-dashboard',
+  selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -103,36 +103,27 @@ export class DashboardComponent
    * Subscribes to the route to load the dashboard accordingly.
    */
   ngOnInit(): void {
-    /** Listen to router events navigation end, to get last version of params & queryParams. */
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        startWith(this.router), // initialize
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.loading = true;
-        // Reset scroll when changing page
-        const pageContainer = this.document.getElementById('appPageContainer');
-        if (pageContainer) {
-          pageContainer.scrollTop = 0;
-        }
-        /** Extract main dashboard id */
-        const id = this.route.snapshot.paramMap.get('id');
-        /** Extract query id to load template */
-        const queryId = this.route.snapshot.queryParamMap.get('id');
-        if (id) {
-          if (queryId) {
-            // Using template
-            this.showName = true;
-          } else {
-            this.showName = false;
-          }
-          this.loadDashboard(id, queryId?.trim()).then(
-            () => (this.loading = false)
-          );
-        }
-      });
+    this.loading = true;
+    // Reset scroll when changing page
+    const pageContainer = this.document.getElementById('appPageContainer');
+    if (pageContainer) {
+      pageContainer.scrollTop = 0;
+    }
+    /** Extract main dashboard id */
+    const id = this.route.snapshot.paramMap.get('id');
+    /** Extract query id to load template */
+    const queryId = this.route.snapshot.queryParamMap.get('id');
+    if (id) {
+      if (queryId) {
+        // Using template
+        this.showName = true;
+      } else {
+        this.showName = false;
+      }
+      this.loadDashboard(id, queryId?.trim()).then(
+        () => (this.loading = false)
+      );
+    }
   }
 
   /** Sets up the widgets from the dashboard structure */
@@ -141,9 +132,7 @@ export class DashboardComponent
       this.dashboard?.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
-          const contextData = this.dashboard?.contextData;
-          this.contextService.context = contextData || null;
-          if (!contextData) {
+          if (!this.contextService.context) {
             return widget;
           }
           const { settings, originalSettings } =
@@ -192,6 +181,7 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.contextService.context = this.dashboard?.contextData || null;
           this.initContext();
           this.setWidgets();
           this.buttonActions = this.dashboard.buttons || [];

@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Injector,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewEncapsulation,
@@ -16,8 +17,9 @@ import {
   ContextService,
   DataTemplateService,
   WorkflowService,
+  MapLayersService,
 } from '@oort-front/shared';
-import { debounceTime } from 'rxjs';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
 import { Router } from '@angular/router';
@@ -26,7 +28,7 @@ import { Router } from '@angular/router';
  * Application as Web Widget.
  */
 @Component({
-  selector: 'oort-application-widget',
+  selector: 'app-application-widget',
   templateUrl: './app-widget.component.html',
   styleUrls: ['./app-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
@@ -35,11 +37,12 @@ import { Router } from '@angular/router';
     WorkflowService,
     ContextService,
     DataTemplateService,
+    MapLayersService,
   ],
 })
 export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Application Id */
   @Input()
@@ -85,6 +88,8 @@ export class AppWidgetComponent
   /** Available pages */
   @Output()
   pages = new EventEmitter<any[]>();
+  /** Trigger subscription teardown on component destruction */
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * Application as Web Widget.
@@ -104,6 +109,7 @@ export class AppWidgetComponent
     private router: Router,
     private shadowDomService: ShadowDomService
   ) {
+    console.log('DEBUG: build from 02/22/2023');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
     this.contextService.filter$
@@ -112,8 +118,9 @@ export class AppWidgetComponent
         this.filterActive$.emit(!isEmpty(current));
         this.filter$.emit(current);
       });
-    this.applicationService.application$.subscribe(
-      (application: Application | null) => {
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
         if (application) {
           const pages = application.pages
             ?.filter((x) => x.content)
@@ -131,8 +138,7 @@ export class AppWidgetComponent
         } else {
           this.pages.emit([]);
         }
-      }
-    );
+      });
   }
 
   /**
@@ -192,5 +198,10 @@ export class AppWidgetComponent
       default:
         return 'dashboard';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -115,6 +115,7 @@ export const init = (
       if (question.visibleChoices.length) {
         updateChoices(dropdownInstance, question, currentSearchValue);
       }
+      question._instance = dropdownInstance;
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
@@ -125,6 +126,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };

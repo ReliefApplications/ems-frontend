@@ -24,6 +24,7 @@ export * from './lib/services/context/context.service';
 export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/rest/rest.service';
+export * from './lib/services/map/map-layers.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -110,6 +111,7 @@ export * from './lib/survey/components/resource-custom-filters/resource-custom-f
 export * from './lib/survey/components/resource-dropdown/resource-dropdown.component';
 export * from './lib/survey/components/resource-select-text/resource-select-text.component';
 export * from './lib/survey/components/test-service-dropdown/test-service-dropdown.component';
+export * from './lib/survey/components/code-editor/code-editor.component';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';

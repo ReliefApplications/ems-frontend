@@ -29,6 +29,28 @@ export const init = (
     'tagbox',
     '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g><path d="M15,11H0V5h15V11z M1,10h13V6H1V10z"/></g><rect x="2" y="7" width="4" height="2"/><rect x="7" y="7" width="4" height="2"/></svg>'
   );
+  const unRegisterRelatedPropertyChangeCallbacks = (question: any) => {
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'visibleChoices',
+      question._propertyValueChangedVirtual
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'isPrimitiveValue',
+      question._primitiveValueChangeCallback
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'value',
+      question._valueChangeCallback
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'readOnly',
+      question._readOnlyChangeCallback
+    );
+    question.unRegisterFunctionOnPropertyValueChanged(
+      'useSummaryTagMode',
+      question._useSummaryTagModeChangeCallback
+    );
+  };
   const componentName = 'tagbox';
   const widget = {
     name: 'tagbox',
@@ -43,33 +65,48 @@ export const init = (
       return question.getType() === componentName;
     },
     init: () => {
-      if (Serializer.findClass(componentName)) return;
-      Serializer.addClass(
-        componentName,
-        [
-          { name: 'hasOther:boolean', visible: false },
-          { name: 'hasSelectAll:boolean', visible: false },
-          { name: 'hasNone:boolean', visible: false },
-          { name: 'otherText', visible: false },
-          { name: 'selectAllText', visible: false },
-          { name: 'noneText', visible: false },
-        ],
-        () => null,
-        'checkbox'
-      );
-      Serializer.addProperty(componentName, {
-        name: 'placeholder',
-        category: 'general',
-        default: '',
-      });
-      Serializer.addProperty(componentName, {
-        name: 'allowAddNewTag:boolean',
-        category: 'general',
-        default: false,
-      });
+      if (Serializer.findClass(componentName)) {
+        Serializer.addProperty(componentName, {
+          name: 'useSummaryTagMode',
+          type: 'boolean',
+          category: 'general',
+          default: false,
+        });
+      } else {
+        Serializer.addClass(
+          componentName,
+          [
+            { name: 'hasOther:boolean', visible: false },
+            { name: 'hasSelectAll:boolean', visible: false },
+            { name: 'hasNone:boolean', visible: false },
+            { name: 'otherText', visible: false },
+            { name: 'selectAllText', visible: false },
+            { name: 'noneText', visible: false },
+          ],
+          () => null,
+          'checkbox'
+        );
+        Serializer.addProperty(componentName, {
+          name: 'placeholder',
+          category: 'general',
+          default: '',
+        });
+        Serializer.addProperty(componentName, {
+          name: 'useSummaryTagMode',
+          type: 'boolean',
+          category: 'general',
+          default: false,
+        });
+        Serializer.addProperty(componentName, {
+          name: 'allowAddNewTag:boolean',
+          category: 'general',
+          default: false,
+        });
+      }
     },
     isDefaultRender: false,
     afterRender: (question: any, el: HTMLElement): void => {
+      unRegisterRelatedPropertyChangeCallbacks(question);
       let currentSearchValue = '';
       const defaultTagbox = el.querySelector('sv-ng-tagbox-question');
       if (defaultTagbox) {
@@ -95,6 +132,7 @@ export const init = (
       // Make sure the value is valid
       try {
         tagboxInstance.value = question.value;
+        tagboxInstance.setState(question.value);
         tagboxInstance.verifySettings();
       } catch (err) {
         console.error(err);
@@ -104,6 +142,8 @@ export const init = (
       tagboxInstance.placeholder = question.placeholder;
       tagboxInstance.readonly = question.isReadOnly;
       tagboxInstance.registerOnChange((value: any) => {
+        console.log('on update');
+        console.log(value);
         question.value = value;
       });
 
@@ -118,7 +158,6 @@ export const init = (
           currentSearchValue = searchValue;
           updateChoices(tagboxInstance, question, searchValue);
         });
-
       question._propertyValueChangedVirtual = () => {
         updateChoices(tagboxInstance, question, currentSearchValue);
       };
@@ -126,25 +165,55 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._primitiveValueChangeCallback = (newValue: boolean) => {
+        tagboxInstance.clearAll();
+        tagboxInstance.valuePrimitive = newValue;
+        question.value = null;
+        question.defaultValue = null;
+      };
       question.registerFunctionOnPropertyValueChanged(
         'isPrimitiveValue',
-        (newValue: boolean) => {
-          tagboxInstance.clearAll();
-          tagboxInstance.valuePrimitive = newValue;
-          question.value = null;
-          question.defaultValue = null;
-        }
+        question._primitiveValueChangeCallback
       );
+
+      question._valueChangeCallback = () => {
+        if (!question.isPrimitiveValue) {
+          tagboxInstance.value = question.value;
+          updateChoices(tagboxInstance, question, currentSearchValue);
+        }
+      };
+      question.registerFunctionOnPropertyValueChanged(
+        'value',
+        question._valueChangeCallback
+      );
+
+      question._readOnlyChangeCallback = (value: boolean) => {
+        tagboxInstance.readonly = value;
+        tagboxInstance.disabled = value;
+      };
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',
-        (value: boolean) => {
-          tagboxInstance.readonly = value;
-          tagboxInstance.disabled = value;
-        }
+        question._readOnlyChangeCallback
       );
+
+      question._useSummaryTagModeChangeCallback = (value: boolean) => {
+        if (value) {
+          tagboxInstance.tagMapper = (tags: any[]) => {
+            return tags.length < 2 ? tags : [tags];
+          };
+        } else {
+          tagboxInstance.tagMapper = () => null;
+        }
+      };
+      question.registerFunctionOnPropertyValueChanged(
+        'useSummaryTagMode',
+        question._useSummaryTagModeChangeCallback
+      );
+
       if (question.visibleChoices.length) {
         updateChoices(tagboxInstance, question, currentSearchValue);
       }
+      question._instance = tagboxInstance;
       el.parentElement?.appendChild(tagboxDiv);
     },
     willUnmount: (question: any): void => {
@@ -155,6 +224,8 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      unRegisterRelatedPropertyChangeCallbacks(question);
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };
@@ -186,9 +257,12 @@ export const init = (
     tagboxInstance.valueField = 'value';
     tagboxInstance.popupSettings = { appendTo: 'component' };
     tagboxInstance.fillMode = 'none';
-    tagboxInstance.tagMapper = (tags: any[]) => {
-      return tags.length < 2 ? tags : [tags];
-    };
+    if (question.useSummaryTagMode) {
+      tagboxInstance.tagMapper = (tags: any[]) => {
+        return tags.length < 2 ? tags : [tags];
+      };
+    }
+
     return tagboxInstance;
   };
   // ⚠ danger ⚠

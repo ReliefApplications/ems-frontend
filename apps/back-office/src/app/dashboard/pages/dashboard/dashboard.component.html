@@ -5,10 +5,11 @@
   [variant]="dashboard?.filter?.variant ?? 'default'"
   [closable]="dashboard?.filter?.closable ?? false"
   [dashboard]="dashboard"
+  [structure]="dashboard?.filter?.structure"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div
-  class="h-full flex flex-col"
+  class="grow flex flex-col"
   [ngClass]="{
     'py-8 px-6 bg-white overflow-y-auto overflow-x-hidden': isFullScreen
   }"
@@ -20,6 +21,7 @@
     [variant]="dashboard?.filter?.variant ?? 'default'"
     [closable]="dashboard?.filter?.closable ?? false"
     [dashboard]="dashboard"
+    [structure]="dashboard?.filter?.structure"
   ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen

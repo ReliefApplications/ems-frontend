@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Inject,
   Input,
@@ -14,7 +15,7 @@ import {
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Model, SurveyModel } from 'survey-core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { takeUntil, debounceTime, filter } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
@@ -23,6 +24,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
 import { Dashboard } from '../../models/dashboard.model';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Interface for quick filters
@@ -52,8 +54,10 @@ export class DashboardFilterComponent
   @Input() opened = false;
   /** Is closable */
   @Input() closable = true;
-  /** Is closable */
+  /** Current dashboard */
   @Input() dashboard?: Dashboard;
+  /** Filter structure */
+  @Input() structure: any;
   /** Current position of filter */
   public position!: FilterPosition;
   /** Either left, right, top or bottom */
@@ -68,8 +72,6 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   /** Filter template */
   public survey: Model = new Model();
-  /** Filter template structure */
-  public surveyStructure: any = {};
   /** Quick filter display */
   public quickFilters: QuickFilter[] = [];
   /** Indicate empty status of filter */
@@ -85,8 +87,10 @@ export class DashboardFilterComponent
    * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
    * @param dateTranslate Service used for date formatting
+   * @param {ElementRef} el Current components element ref in the DOM
    * @param document Document
    * @param _host sidenav container host
+   * @param http Http client
    */
   constructor(
     public contextService: ContextService,
@@ -94,8 +98,10 @@ export class DashboardFilterComponent
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
+    private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    @Optional() private _host: SidenavContainerComponent
+    @Optional() private _host: SidenavContainerComponent,
+    private http: HttpClient
   ) {
     super();
   }
@@ -109,7 +115,19 @@ export class DashboardFilterComponent
     }
     // Can listen to changes made from widget ( editor & summary cards sending updated filters )
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
       .subscribe(({ current }) => {
         this.survey.data = current;
       });
@@ -117,12 +135,6 @@ export class DashboardFilterComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.opened = value;
-      });
-    this.contextService.filterStructure$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.surveyStructure = value || '';
-        this.initSurvey();
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
@@ -136,6 +148,7 @@ export class DashboardFilterComponent
           this.setFilterContainerDimensions();
         }
       );
+
     if (!this.variant) {
       this.variant = 'default';
     }
@@ -145,14 +158,19 @@ export class DashboardFilterComponent
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
+    if (changes.structure) {
+      this.initSurvey();
+    }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.resizeObserver.disconnect();
+  /**
+   * Call context service onEditFilter method.
+   */
+  public onEditStructure() {
+    if (this.dashboard) {
+      this.contextService.onEditFilter(this.dashboard);
+    }
   }
-
-  // add ngOnChanges there
 
   /**
    * Set the drawer height and width on resize
@@ -190,9 +208,9 @@ export class DashboardFilterComponent
     });
   }
 
-  /** Render the survey using the saved structure */
+  /** Render the survey using the saved structure*/
   private initSurvey(): void {
-    this.survey = this.contextService.initSurvey();
+    this.survey = this.contextService.initSurvey(this.structure);
 
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
@@ -205,7 +223,7 @@ export class DashboardFilterComponent
       if (parent) {
         parent.style['min-width'] = '0px';
       }
-      renderGlobalProperties(this.referenceDataService);
+      renderGlobalProperties(this.referenceDataService, this.http);
     });
     this.onValueChange();
   }

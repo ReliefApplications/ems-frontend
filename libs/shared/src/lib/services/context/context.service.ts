@@ -30,9 +30,9 @@ import { FilterPosition } from '../../components/dashboard-filter/enums/dashboar
 import { Dialog } from '@angular/cdk/dialog';
 import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
 import { Apollo } from 'apollo-angular';
-import { SnackbarService } from '@oort-front/ui';
+import { ShadowDomService, SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { SurveyModel } from 'survey-core';
+import { Model, SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../form-builder/form-builder.service';
 import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -49,8 +49,6 @@ import { GET_RECORD_BY_ID } from './graphql/queries';
 export class ContextService {
   /** To update/keep the current filter */
   public filter = new BehaviorSubject<Record<string, any>>({});
-  /** To update/keep the current filter structure  */
-  public filterStructure = new BehaviorSubject<any>(null);
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<{
     position: FilterPosition;
@@ -60,6 +58,8 @@ export class ContextService {
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
+  /** Web component filter surveys */
+  webComponentsFilterSurvey: Model[] = [];
   /** Regex used to allow widget refresh */
   public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
@@ -90,6 +90,7 @@ export class ContextService {
     return this.filter.pipe(
       pairwise(),
       // We only emit a filter value if filter value changes and we send back the actual(curr) value
+      // On using web components we want to bypass this sending the same filter value as it's used for a different application view(because of route reuse strategy)
       filter(
         ([prev, curr]: [Record<string, any>, Record<string, any>]) =>
           !isEqual(prev, curr)
@@ -100,11 +101,6 @@ export class ContextService {
         current: curr,
       }))
     );
-  }
-
-  /** @returns filterStructure value as observable */
-  get filterStructure$() {
-    return this.filterStructure.asObservable();
   }
 
   /** @returns filterPosition value as observable */
@@ -145,6 +141,7 @@ export class ContextService {
    * @param formBuilderService Form builder service
    * @param applicationService Shared application service
    * @param router Angular router
+   * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    */
   constructor(
     private dialog: Dialog,
@@ -153,7 +150,8 @@ export class ContextService {
     private translate: TranslateService,
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
-    private router: Router
+    private router: Router,
+    public shadowDomService: ShadowDomService
   ) {
     this.filterPosition$.subscribe(
       (value: { position: FilterPosition; dashboardId: string } | null) => {
@@ -181,7 +179,6 @@ export class ContextService {
   public setFilter(dashboard?: Dashboard) {
     {
       if (dashboard && dashboard.id) {
-        this.filterStructure.next(dashboard.filter?.structure);
         localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
           if (position) {
             this.filterPosition.next({
@@ -198,7 +195,6 @@ export class ContextService {
           }
         });
       } else {
-        this.filterStructure.next(null);
         this.filterPosition.next(null);
       }
     }
@@ -243,14 +239,20 @@ export class ContextService {
    * @returns object, where string properties that can be transformed to objects, are returned as objects
    */
   private parseJSONValues(obj: any): any {
+    if (isArray(obj)) {
+      return obj.map((element: any) => this.parseJSONValues(element));
+    }
     return mapValues(obj, (value: any) => {
       if (isString(value)) {
         try {
-          return JSON.parse(value);
+          return isObject(JSON.parse(value)) ? JSON.parse(value) : value;
         } catch (error) {
           // If parsing fails, return the original string value
           return value;
         }
+      } else if (isArray(value)) {
+        // If the value is an array, recursively parse each element
+        return value.map((element: any) => this.parseJSONValues(element));
       } else if (isObject(value)) {
         // If the value is an object, recursively parse it
         return this.parseJSONValues(value);
@@ -285,7 +287,7 @@ export class ContextService {
           .replace(/["']?\{\{filter\./, '')
           .replace(/\}\}["']?/, '');
         const fieldValue = get(filter, field);
-        return fieldValue ? JSON.stringify(fieldValue) : match;
+        return isNil(fieldValue) ? match : JSON.stringify(fieldValue);
       }
     );
     const parsed = JSON.parse(replaced);
@@ -300,11 +302,19 @@ export class ContextService {
   public removeEmptyPlaceholders(obj: any) {
     for (const key in obj) {
       if (has(obj, key)) {
-        if (typeof obj[key] === 'object') {
+        if (isArray(obj[key])) {
+          // If the value is an array, recursively parse each element
+          obj[key].forEach((element: any) => {
+            this.removeEmptyPlaceholders(element);
+          });
+          obj[key] = obj[key].filter((element: any) =>
+            isObject(element) ? !isEmpty(element) : true
+          );
+        } else if (isObject(obj[key])) {
           // Recursively call the function for nested objects
           this.removeEmptyPlaceholders(obj[key]);
         } else if (
-          typeof obj[key] === 'string' &&
+          isString(obj[key]) &&
           obj[key].startsWith('{{') &&
           obj[key].endsWith('}}')
         ) {
@@ -385,18 +395,19 @@ export class ContextService {
    *
    * @param dashboard Current dashboard
    */
-  public onEditFilter(dashboard?: Dashboard) {
+  public onEditFilter(dashboard: Dashboard) {
     import(
       '../../components/dashboard-filter/filter-builder-modal/filter-builder-modal.component'
     ).then(({ FilterBuilderModalComponent }) => {
       const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
-        data: { surveyStructure: this.filterStructure.getValue() },
+        data: { surveyStructure: dashboard?.filter?.structure },
         autoFocus: false,
       });
       dialogRef.closed.subscribe((newStructure) => {
         if (newStructure) {
-          this.filterStructure.next(newStructure);
-          this.initSurvey();
+          if (dashboard && dashboard.filter) {
+            dashboard.filter.structure = newStructure;
+          }
           this.saveFilter(dashboard);
         }
       });
@@ -406,12 +417,11 @@ export class ContextService {
   /**
    * Render the survey using the saved structure
    *
+   * @param structure Filter structure
    * @returns survey model created from the structure
    */
-  public initSurvey(): SurveyModel {
-    const surveyStructure = this.filterStructure.getValue();
-    const survey = this.formBuilderService.createSurvey(surveyStructure);
-
+  public initSurvey(structure: any): SurveyModel {
+    const survey = this.formBuilderService.createSurvey(structure);
     // set each question value manually otherwise the defaultValueExpression is not loaded
     forEach(this.filterValues.getValue(), (value, key) => {
       if (survey.getQuestionByName(key)) {
@@ -427,7 +437,9 @@ export class ContextService {
     };
 
     survey.onValueChanged.add(handleValueChanged);
-
+    if (this.shadowDomService.isShadowRoot) {
+      this.webComponentsFilterSurvey.push(survey);
+    }
     return survey;
   }
 
@@ -537,7 +549,7 @@ export class ContextService {
    *
    * @param dashboard Current dashboard
    */
-  private saveFilter(dashboard?: Dashboard): void {
+  private saveFilter(dashboard: Dashboard): void {
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD_FILTER,
@@ -545,7 +557,7 @@ export class ContextService {
           id: dashboard?.id,
           filter: {
             ...dashboard?.filter,
-            structure: this.filterStructure.getValue(),
+            structure: dashboard?.filter?.structure,
           },
         },
       })
@@ -582,7 +594,9 @@ export class ContextService {
           dashboardId: dashboard.id ?? '',
         });
       } else {
-        this.filterStructure.next(data.editDashboard.filter?.structure);
+        if (dashboard && dashboard.filter) {
+          dashboard.filter.structure = data.editDashboard.filter?.structure;
+        }
       }
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectUpdated', {

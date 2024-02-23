@@ -17,7 +17,7 @@ import { SnackbarService } from '@oort-front/ui';
  * Workflow page.
  */
 @Component({
-  selector: 'oort-app-workflow',
+  selector: 'app-workflow',
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })

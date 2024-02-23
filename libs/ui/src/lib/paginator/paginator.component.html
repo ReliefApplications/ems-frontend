@@ -6,55 +6,33 @@
   ></div>
   <kendo-datapager
     class="!border-none"
+    [ngClass]="{ 
+      'hide-first-last': hideFirstLastButtons,
+      'hide-info': !showTotalItems,
+    }"
     [attr.aria-label]="ariaLabel"
     [attr.aria-controls]="paginatorId"
     [style.width.%]="100"
     [pageSize]="pageSize"
     [skip]="skip"
     [total]="totalItems"
+    [buttonCount]="buttonCount"
+    [pageSizeValues]="showPageSizes && pageSizeOptions"
+    [info]="true"
     (pageChange)="onPageChange($event)"
   >
-    <ng-template
-      kendoDataPagerTemplate
-      let-totalPages="totalPages"
-      let-currentPage="currentPage"
-    >
-      <div class="w-full flex justify-between">
-        <div class="hidden sm:flex" *ngIf="showTotalItems">
-          <!-- Page info -->
-          <kendo-datapager-messages
-            page="{{ 'components.paginator.page' | translate }}"
-            of="{{ 'components.paginator.of' | translate }}"
-            items="{{ 'components.paginator.items' | translate }}"
-            itemsPerPage="{{ 'components.paginator.itemsPerPage' | translate }}"
-          >
-          </kendo-datapager-messages>
-          <kendo-datapager-info></kendo-datapager-info>
-        </div>
-        <div class="flex w-full sm:w-auto ml-auto">
-          <!-- Page size -->
-          <kendo-datapager-page-sizes
-            class="hidden sm:flex text-gray-700"
-            *ngIf="showPageSizes"
-            [pageSizes]="pageSizeOptions"
-          ></kendo-datapager-page-sizes>
-          <!-- Page buttons -->
-          <div
-            class="border shadow-sm k-pager-numbers-wrap rounded-md ml-auto sm:ml-4"
-          >
-            <kendo-datapager-prev-buttons
-              [class.hide-first]="hideFirstLastButtons"
-            ></kendo-datapager-prev-buttons>
-            <kendo-datapager-numeric-buttons
-              *ngIf="displayedPageNumbers"
-              [buttonCount]="displayedPageNumbers"
-            ></kendo-datapager-numeric-buttons>
-            <kendo-datapager-next-buttons
-              [class.hide-last]="hideFirstLastButtons"
-            ></kendo-datapager-next-buttons>
-          </div>
-        </div>
-      </div>
-    </ng-template>
+    <!-- For some unknown reasons we need to write the messages, otherwise it would display only the keys in web elements mode. -->
+    <kendo-datapager-messages
+      [firstPage]="'kendo.pager.firstPage' | translate"
+      [items]="'kendo.pager.items' | translate"
+      [itemsPerPage]="'kendo.pager.itemsPerPage' | translate"
+      [lastPage]="'kendo.pager.lastPage' | translate"
+      [nextPage]="'kendo.pager.nextPage' | translate"
+      [of]="'kendo.pager.of' | translate"
+      [page]="'kendo.pager.page' | translate"
+      [pageNumberInputTitle]="'kendo.pager.pageNumberInputTitle' | translate"
+      [previousPage]="'kendo.pager.previousPage' | translate"
+      [selectPage]="'kendo.pager.selectPage' | translate"
+    ></kendo-datapager-messages>
   </kendo-datapager>
 </div>

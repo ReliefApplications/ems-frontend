@@ -1,3 +1,33 @@
+## [2.8.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.2...v2.8.3) (2024-02-15)
+
+
+### Bug Fixes
+
+* editor data filter reset not working as expected ([#2383](https://github.com/ReliefApplications/ems-frontend/issues/2383)) ([b1da90b](https://github.com/ReliefApplications/ems-frontend/commit/b1da90b56b164b97ba558e6b8a2d7bfe7359b7db))
+* img tag in widget editor should now be correctly parsed ([#2390](https://github.com/ReliefApplications/ems-frontend/issues/2390)) ([d78e9d9](https://github.com/ReliefApplications/ems-frontend/commit/d78e9d9d3e6a77e2e9f188b09d417c8a2e79d02a))
+
+## [2.8.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.1...v2.8.2) (2024-02-12)
+
+
+### Bug Fixes
+
+* clicking on workflow link when workflow already opened would redirect to blank page ([ae97b33](https://github.com/ReliefApplications/ems-frontend/commit/ae97b333ee0bcce928a310a7bb990c0f777dc3bf))
+* context service would transform some strings in filter into booleans or integers when not needed ([44942b3](https://github.com/ReliefApplications/ems-frontend/commit/44942b3e5492c02ef596bd81732a196fbdf0eed3))
+* links in editor & summary card widgets could not be opened in new tabs ([7c40994](https://github.com/ReliefApplications/ems-frontend/commit/7c40994bac914c30cedd7324a287d08c0c614bf5))
+
+## [2.8.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.0...v2.8.1) (2024-02-07)
+
+
+### Bug Fixes
+
+* arrays not correctly transformed in context filters [#84646](https://github.com/ReliefApplications/ems-frontend/issues/84646) ([#2361](https://github.com/ReliefApplications/ems-frontend/issues/2361)) ([284f295](https://github.com/ReliefApplications/ems-frontend/commit/284f295b966862613a7d266efa366ae1887ce989))
+* form number questions dont accept 0 as answer ([#2367](https://github.com/ReliefApplications/ems-frontend/issues/2367)) ([9af9eda](https://github.com/ReliefApplications/ems-frontend/commit/9af9eda4eff6938d7407f35c5d419cf5b1b78cae))
+* fullscreen doesnt trigger changes in widget display ([#2357](https://github.com/ReliefApplications/ems-frontend/issues/2357)) ([c863f7e](https://github.com/ReliefApplications/ems-frontend/commit/c863f7e09eed82cd36ed745675d72af05838d66c))
+* grid inline edition info icon partially hidden ([#2214](https://github.com/ReliefApplications/ems-frontend/issues/2214)) ([2b824be](https://github.com/ReliefApplications/ems-frontend/commit/2b824be0dc651d10b867cd4e5e5691f8eedde3e0))
+* issue with web elements not using dedicated instance of map layers service per instance ([319d284](https://github.com/ReliefApplications/ems-frontend/commit/319d2845b0e3b47faf87d5dd77bea9746d3e17c7))
+* some array filters would not work fine ([ccae634](https://github.com/ReliefApplications/ems-frontend/commit/ccae6344a4dddfb2ba4fbb9b4fabf5acc6869c4f))
+* update filter survey with latest filter structure ([#2368](https://github.com/ReliefApplications/ems-frontend/issues/2368)) ([33e5394](https://github.com/ReliefApplications/ems-frontend/commit/33e53948ce8ec88a282cc12fd9c06a772d321ea1))
+
 # [2.8.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.7.0...v2.8.0) (2024-02-01)
 
 
