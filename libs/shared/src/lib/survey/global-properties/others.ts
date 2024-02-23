@@ -140,6 +140,16 @@ export const init = (environment: any): void => {
     }
     return newValue;
   };
+  // Adds valueExpression to questions, that when set pretty much transforms it into an expression question
+  // whilst still keeping normal question behaviors
+  Serializer.addProperty('question', {
+    name: 'valueExpression:expression',
+    category: 'logic',
+    onExecuteExpression: (obj: Question, res: any) => {
+      obj.readOnly = true;
+      obj.value = res;
+    },
+  });
 
   // Adds property that clears the value when condition is met
   serializer.addProperty('question', {
