@@ -112,6 +112,8 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   /** Existing ID. */
   @Input() existingId = '';
 
+  public segmentForm!: FormGroup;
+
   /** Index of active segment. */
   public activeSegmentIndex = 0;
 
@@ -130,6 +132,13 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
   /** Loading status. */
   public loading = false;
+
+  /** List of display types */
+  public segmentList = [
+    'Add Manually',
+    'Select From List',
+    'Select With Filter',
+  ];
 
   /** Time units for filtering. */
   public timeUnits = [
@@ -154,6 +163,11 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.segmentForm = this.fb.group({
+      segment: [this.segmentList[0]], // Set the initial value to the first display type
+      datasetSelect: '',
+    });
+
     this.datasetsForm?.value?.dataSets?.forEach((eleDataset: any) => {
       eleDataset.cacheData = {};
     });
@@ -347,6 +361,17 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     } else {
       filterData.get('hideEditor').setValue(false);
     }
+  }
+
+  /**
+   * Handles on display change event to set index
+   *
+   * @param event What is being displayed
+   */
+  onSegmentChange(event: any): void {
+    const segment = event?.target?.value || event;
+    this.activeSegmentIndex = this.segmentList.indexOf(segment);
+    console.log(this.activeSegmentIndex);
   }
 
   /**

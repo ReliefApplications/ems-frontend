@@ -244,13 +244,14 @@
 			"dataRecovered": "The data has been recovered",
 			"email": {
 				"banner": {
-					"image": "Banner Image",
+					"image": "Banner image",
 					"removeTooltip": "Remove banner image"
 				},
 				"body": {
 					"title": "Body"
 				},
 				"dropdown": {
+					"emailInput": "Email input",
 					"inTheLast": "Select timestamp from filters...",
 					"selectBlock": "Select a block",
 					"timestamp": "Select a timestamp"
@@ -261,32 +262,33 @@
 					"noSubject": "Please enter a subject",
 					"noTemplate": "Something went wrong during the email sending: no template found"
 				},
+				"existing": "Or use existing",
 				"field": {
-					"filtered": "Select Filtered Field",
+					"filtered": "Select filtered field",
 					"noBlocks": "No blocks configured",
-					"selectBlock": "Block Select",
+					"selectBlock": "Block select",
 					"selectPlaceholder": "Select block field",
-					"selectTitle": "Field Select"
+					"selectTitle": "Field select"
 				},
 				"footer": {
-					"logo": "Footer Logo",
+					"logo": "Footer logo",
 					"removeTooltip": "Remove footer logo",
-					"style": "Footer Style"
+					"style": "Footer style"
 				},
 				"header": {
-					"logo": "Header Logo",
+					"logo": "Header logo",
 					"removeTooltip": "Remove header logo",
-					"style": "Header Style"
+					"style": "Header style"
 				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
 				"sent": "Email sent",
 				"style": {
-					"background": "Background Color",
-					"text": "Text Color"
+					"background": "Background color",
+					"text": "Text color"
 				},
 				"subject": {
-					"textTitle": "Subject Text*",
+					"textTitle": "Subject text*",
 					"title": "Subject*"
 				},
 				"timestamp": "Timestamp"
@@ -979,6 +981,11 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"email": {
+				"dropdown": {
+					"emailInput": "Email input"
+				}
+			},
 			"paginator": {
 				"ariaLabel": "Select page of notifications"
 			},
@@ -1027,7 +1034,7 @@
 		"queryBuilder": {
 			"apply": "Apply filter",
 			"block": {
-				"label": "Block Title",
+				"label": "Block title",
 				"title": "Block"
 			},
 			"dataset": {
@@ -1289,11 +1296,12 @@
 			"distribution": {
 				"SelectFromList": "Select from list",
 				"alertMe": "Alert me",
-				"bcc": "bcc",
-				"cc": "cc",
+				"bcc": "BCC",
+				"cc": "CC",
 				"createFilterLogic": "Create filter logic",
 				"email": "Email",
 				"label": "Distribution List Name*",
+				"separateEmail": "Send separate email",
 				"to": "To"
 			}
 		},

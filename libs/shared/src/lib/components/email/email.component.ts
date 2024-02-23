@@ -387,7 +387,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.dataSets.length; index++) {
       //Adding Tabs detail
-      dataArray.push(this.createNewDataSetGroup(emailData.dataSets[index]));
+      dataArray.push(
+        this.createNewDataSetGroup(emailData.dataSets[index], index)
+      );
       if (index === 0) {
         this.emailService.tabs[0].title = emailData.dataSets[index].name;
         this.emailService.tabs[0].content = emailData.dataSets[index].name;
@@ -489,7 +491,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param ele The element to create the dataset group from.
    * @returns The newly created dataset group.
    */
-  createNewDataSetGroup(ele: any): FormGroup {
+  createNewDataSetGroup(ele: any, index: number): FormGroup {
     const tempData = this.formBuilder.group({
       resource: ele.resource,
       name: ele.name,
@@ -500,7 +502,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       blockType: 'table', // Either Table or Text
       tableStyle: this.emailService.getTableStyles(),
       textStyle: null,
+      individualEmail: ele.individualEmail,
     });
+    this.emailService.setSeperateEmail(ele.individualEmail, index);
     tempData.controls.fields.setValue(ele.fields);
     return tempData;
   }

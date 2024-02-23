@@ -157,6 +157,7 @@ export class EmailService {
   public isLinear = true;
   /** EMAIL LIST LOADING CHECKER */
   public emailListLoading = true;
+  public separateEmail = [];
 
   /**
    * To replace all special characters with space
@@ -180,6 +181,7 @@ export class EmailService {
         fields: new FormArray([]),
         blockStyle: '',
       }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
+      individualEmail: false,
     });
   }
 
@@ -758,11 +760,61 @@ export class EmailService {
    *
    * @param configId id of the config.
    * @param emailData data to be send.
+   * @param separateEmail trigger for sending individual emails
    * @returns rest post to end point.
    */
-  sendEmail(configId: string | undefined, emailData: any): Observable<any> {
-    const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
-    return this.http.post<any>(urlWithConfigId, emailData);
+  sendEmail(
+    configId: string | undefined,
+    emailData: any,
+    separateEmail: boolean
+  ): Observable<any> {
+    if (separateEmail) {
+      const urlWithConfigId = `${this.restService.apiUrl}/notification/send-individual-email/${configId}`;
+      console.log('separate');
+      return this.http.post<any>(urlWithConfigId, emailData);
+    } else {
+      const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
+      return this.http.post<any>(urlWithConfigId, emailData);
+    }
+  }
+
+  /**
+   * persisting the state of the boolean variable for sending separete emails
+   *
+   * @param index - dataset index
+   * @returns binded variable between service and dist list component
+   */
+  updateSeparateEmail(index: number): boolean {
+    const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
+    const isSeparate = datasetArray?.at(index)?.get('individualEmail')?.value;
+    return isSeparate;
+  }
+
+  /**
+   * persisting the state of the boolean variable for sending separete emails
+   *
+   * @param seperateEmail - boolean value for checkbox
+   * @param index - dataset index
+   */
+  setSeperateEmail(seperateEmail: boolean, index: number): void {
+    const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
+    datasetArray?.at(index)?.get('individualEmail')?.setValue(seperateEmail);
+  }
+
+  /**
+   * method for checking whether any of the datasets have had the checkbox for induvidual emails ticked
+   *
+   * @returns boolean for triggering endpoints
+   */
+  sendSeperateEmail(): boolean {
+    let seperateEmail = false;
+    const datasetArray = this.datasetsForm.get('dataSets') as FormArray;
+    datasetArray.controls.forEach((datasetControl: any) => {
+      if (datasetControl.get('individualEmail')?.value === true) {
+        seperateEmail = true;
+      }
+    });
+    return seperateEmail;
   }
 
   /**

@@ -256,7 +256,11 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       };
 
       this.emailService
-        .sendEmail(this.emailService.configId, emailData)
+        .sendEmail(
+          this.emailService.configId,
+          emailData,
+          this.emailService.sendSeperateEmail()
+        )
         .subscribe(
           (response) => {
             console.log('Email sent successfully:', response);

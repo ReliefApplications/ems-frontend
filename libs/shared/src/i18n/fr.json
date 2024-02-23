@@ -251,6 +251,7 @@
 					"title": "Corps"
 				},
 				"dropdown": {
+					"emailInput": "Type de saisie d'e-mail",
 					"inTheLast": "Select Horodatage from filters...",
 					"selectBlock": "Select a block",
 					"timestamp": "Select a timestamp"
@@ -261,6 +262,7 @@
 					"noSubject": "Veuillez entrer un sujet",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
 				},
+				"existing": "Ou utilisez l'existant",
 				"field": {
 					"filtered": "Select Filtered Field",
 					"noBlocks": "No blocks configured",
@@ -990,6 +992,11 @@
 			"value": "Valeur"
 		},
 		"notifications": {
+			"email": {
+				"dropdown": {
+					"emailInput": "Type de saisie d'e-mail"
+				}
+			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de notifications"
 			},
@@ -1305,6 +1312,7 @@
 				"createFilterLogic": "Créer une logique de filtre",
 				"email": "Email",
 				"label": "Nom de la liste de distribution*",
+				"separateEmail": "Envoyer un e-mail séparé",
 				"to": "À"
 			}
 		},

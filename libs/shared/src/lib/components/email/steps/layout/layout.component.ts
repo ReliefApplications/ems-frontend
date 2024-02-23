@@ -7,6 +7,7 @@ import { ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { NgSelectComponent } from '@ng-select/ng-select';
 /**
  * layout page component.
  */
@@ -19,83 +20,74 @@ export class LayoutComponent implements OnInit, OnDestroy {
   /** Reference to the body editor component. */
   @ViewChild('bodyEditor', { static: false })
   bodyEditor: EditorComponent | null = null;
-
   /** Reference to the header editor component. */
   @ViewChild('headerEditor', { static: false })
   headerEditor: EditorComponent | null = null;
-
   /** Reference to the header logo input element. */
   @ViewChild('headerLogoInput', { static: false })
   headerLogoInput?: ElementRef;
-
   /** Reference to the footer logo input element. */
   @ViewChild('footerLogoInput', { static: false })
   footerLogoInput?: ElementRef;
-
   /** Reference to the banner input element. */
   @ViewChild('bannerInput', { static: false })
   bannerInput?: ElementRef;
-
   /** Flag indicating whether body validation is shown. */
   showBodyValidator = false;
-
   /** Flag indicating whether subject validation is shown. */
   showSubjectValidator = false;
-
   /** Configuration object for the Tinymce editor. */
   public editor: any = EMAIL_LAYOUT_CONFIG;
-
   /** HTML content for the body. */
   bodyHtml: any = '';
-
   /** HTML content for the header. */
   headerHtml: any = '';
-
   /** HTML content for the footer. */
   footerHtml: any = '';
-
   /** Text subject for the email. */
   txtSubject: any = '';
-
-  /** Flag indicating whether banner size is invalid. */
+  /** Message indicating whether banner size is invalid. */
   showInvalidBannerSizeMessage = false;
-
-  /** Flag indicating whether header size is invalid. */
+  /** Message indicating whether header size is invalid. */
   showInvalidHeaderSizeMessage = false;
-
-  /** Flag indicating whether footer size is invalid. */
+  /** Message indicating whether footer logo size is invalid. */
   showInvalidFooterSizeMessage = false;
-
-  /** Flag indicating whether inputs should be disabled. */
+  /** Flag indicating whether save and proceed buttion should be disabled. */
   shouldDisable = false;
-
   /** Image data for the email header. */
   headerLogo: string | ArrayBuffer | null = null;
-
   /** Image data for the email banner. */
   bannerImage: string | ArrayBuffer | null = null;
-
   /** Image data for the email footer. */
   footerLogo: string | ArrayBuffer | null = null;
-
   /** Flag indicating whether dropdown is shown. */
   showDropdown = false;
-
   /** List of fields for the first block. */
   firstBlockFields: string[] = [];
-
   /** Options for time in the email. */
   timeOptions = [
     { value: '{{today.date}}', label: "Today's Date" },
     { value: '{{now.time}}', label: 'Current Time' },
     { value: '{{now.datetime}}', label: 'Date and Time' },
   ];
-
   /** Flag indicating whether layout validation is set. */
   @Input() setLayoutValidation = false;
-
   /** Form array for 'in the last' dropdown. */
   public inTheLastDropdown = new FormArray<FormControl>([]);
+  /** NgSelect component */
+  @ViewChild('ngSelectComponent', { static: false })
+  ngSelectComponent!: NgSelectComponent;
+  /** Timestamp NgSelect component */
+  @ViewChild('ngTimestampComponent', { static: false })
+  ngTimestampComponent!: NgSelectComponent;
+  /** Filtered Field NgSelect component */
+  @ViewChild('ngFilteredFieldComponent', { static: false })
+  ngFilteredFieldComponent!: NgSelectComponent;
+  /** Field NgSelect component */
+  @ViewChild('ngFieldComponent', { static: false })
+  ngFieldComponent!: NgSelectComponent;
+  /** DATASETS LIST GREATER THAN 1 CHECK */
+  public datasetOverflow = false;
 
   /**
    * Component used for the selection of fields to display the fields in tabs.
@@ -120,6 +112,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.datasetOverflow =
+      this.emailService.allPreviewData.length > 1 ||
+      this.emailService.allPreviewData.length === 0;
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();
     if (this.emailService.allLayoutdata.headerLogo) {
@@ -264,26 +259,28 @@ export class LayoutComponent implements OnInit, OnDestroy {
    *
    * @param event The position to insert the token.
    */
-  insertTokenAtCursor(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const selectedOptionText =
-      selectElement.options[selectElement.selectedIndex].text;
-    const [blockName, fieldWithInLast] = selectedOptionText.split(', ');
-    const [field, inTheLastText] = fieldWithInLast.split(' - last ');
-    const [numberString, unit] = inTheLastText.split(' ');
+  insertTokenAtCursor(event: any): void {
+    const selectElement = event?.value ? event.value : ''; //event.target as HTMLSelectElement;
+    if (selectElement !== '') {
+      const selectedOptionText = selectElement;
+      const [blockName, fieldWithInLast] = selectedOptionText.split(', ');
+      const [field, inTheLastText] = fieldWithInLast.split(' - last ');
+      const [numberString, unit] = inTheLastText.split(' ');
 
-    const unitInMinutes = this.emailService.convertToMinutes(
-      +numberString,
-      unit
-    );
+      const unitInMinutes = this.emailService.convertToMinutes(
+        +numberString,
+        unit
+      );
 
-    const token = `{{${blockName}.${field}.${unitInMinutes}}}`;
+      const token = `{{${blockName}.${field}.${unitInMinutes}}}`;
 
-    if (this.headerEditor && this.headerEditor.editor) {
-      this.headerEditor.editor.insertContent(token);
-    } else {
-      console.error('Header TinyMCE editor is not initialised');
+      if (this.headerEditor && this.headerEditor.editor) {
+        this.headerEditor.editor.insertContent(token);
+      } else {
+        console.error('Header TinyMCE editor is not initialised');
+      }
     }
+    this.ngFilteredFieldComponent.handleClearClick();
   }
 
   /**
@@ -479,18 +476,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
    * @param tabName The name of the tab to insert the dataset token for.
    */
   insertDataSetToBodyHtmlByTabName(tabName: any): void {
-    const token = `{{${tabName.target.value}}}`;
+    const token = `{{${tabName.tabName}}}`;
 
-    if (
-      this.bodyEditor &&
-      this.bodyEditor.editor &&
-      tabName.target.value !== ''
-    ) {
+    if (this.bodyEditor && this.bodyEditor.editor && tabName.tabName !== '') {
       this.bodyEditor.editor.insertContent(token);
       this.onEditorContentChange();
     } else {
       console.error('Body TinyMCE editor is not initialised');
     }
+    this.ngFieldComponent.handleClearClick();
   }
 
   /**
@@ -535,6 +529,38 @@ export class LayoutComponent implements OnInit, OnDestroy {
         subjectInput.dispatchEvent(inputEvent);
         selectElement.value = '';
       }
+    }
+  }
+
+  /**
+   *
+   * @param event
+   */
+  insertSubjectFieldToken_New(event: any) {
+    let selectElement = event?.value ? event?.value : '{{' + event + '}}';
+    const value = selectElement;
+    if (event && value) {
+      const subjectInput = document.getElementById(
+        'subjectInput'
+      ) as HTMLInputElement;
+      if (subjectInput) {
+        const cursorPos =
+          subjectInput.selectionStart ?? subjectInput.value.length;
+        const textBefore = subjectInput.value.substring(0, cursorPos);
+        const textAfter = subjectInput.value.substring(cursorPos);
+        subjectInput.value = textBefore + value + textAfter;
+
+        // Trigger the input event to ensure ngModel updates
+        const inputEvent = new Event('input', { bubbles: true });
+        subjectInput.dispatchEvent(inputEvent);
+        selectElement = '';
+      }
+      event?.value
+        ? this.ngTimestampComponent.clearModel()
+        : this.ngSelectComponent.clearModel();
+      return true;
+    } else {
+      return false;
     }
   }
 

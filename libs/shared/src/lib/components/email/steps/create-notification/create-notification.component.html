@@ -3,7 +3,7 @@
 <div *ngIf="!emailService.isExisting">
   <div class="flex gap-5" [formGroup]="dataSetFormGroup">
     <div class="mt-4 w-1/3">
-      <label htmlFor="exampleSelect" class="block text-gray-700 text-sm">
+      <label htmlFor="exampleSelect" class="block text-sm font-medium leading-6 text-gray-900 mb-1">
         {{ 'common.title' | translate }}*
       </label>
       <input
@@ -23,7 +23,7 @@
     <div class="mt-4 w-1/3">
       <label
         htmlFor="notification__type"
-        class="block text-gray-700 text-sm mb-1"
+        class="block text-sm font-medium leading-6 text-gray-900 mb-1"
       >
         {{ 'models.customNotification.type' | translate }}
       </label>
@@ -55,14 +55,14 @@
     class="font-semibold text-blue-700 py-2 px-4 rounded-md"
     (click)="toggle()"
   >
-    or Use Existing
+    {{ 'common.notifications.email.existing' | translate}}
   </button>
 </div>
 <div *ngIf="emailService.isExisting">
   <div class="mt-4">
     <label
       htmlFor="exampleSelect"
-      class="block text-gray-700 text-sm font-bold mb-2"
+      class="block text-sm font-medium leading-6 text-gray-900 mb-2"
     >
     </label>
     <select

@@ -113,6 +113,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   /** FILTER OPERATORS FROM FILTER CONSTANT */
   filterOperators = FILTER_OPERATORS;
 
+  /** Flag for sending indivuial emails */
+  public separateEmail = false;
+
   /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
@@ -159,6 +162,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.separateEmail = this.emailService.updateSeparateEmail(
+      this.activeTab.index
+    );
     if (this.query.value.name == null) {
       const name = 'Block ' + (this.activeTab.index + 1);
       this.query.controls['name'].setValue(name);
@@ -909,5 +915,15 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     }
 
     return result;
+  }
+
+  /**
+   * Updating the separate email boolean flag on change
+   */
+  onChangeSeparateEmail() {
+    this.emailService.setSeperateEmail(
+      this.separateEmail,
+      this.activeTab.index
+    );
   }
 }

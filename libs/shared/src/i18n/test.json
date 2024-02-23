@@ -251,6 +251,7 @@
 					"title": "******"
 				},
 				"dropdown": {
+					"emailInput": "******",
 					"inTheLast": "******",
 					"selectBlock": "******",
 					"timestamp": "******"
@@ -261,6 +262,7 @@
 					"noSubject": "******",
 					"noTemplate": "******"
 				},
+				"existing": "******",
 				"field": {
 					"filtered": "******",
 					"noBlocks": "******",
@@ -979,6 +981,11 @@
 			"value": "******"
 		},
 		"notifications": {
+			"email": {
+				"dropdown": {
+					"emailInput": "******"
+				}
+			},
 			"paginator": {
 				"ariaLabel": "******"
 			},
@@ -1294,6 +1301,7 @@
 				"createFilterLogic": "******",
 				"email": "******",
 				"label": "******",
+				"separateEmail": "******",
 				"to": "******"
 			}
 		},

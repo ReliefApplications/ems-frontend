@@ -29,7 +29,7 @@
   </div>
   <div class="flex gap-4" *ngIf="!showExistingDistributionList">
     <div class="mt-4 w-1/3">
-      <label htmlFor="exampleSelect" class="block text-gray-700 text-sm">
+      <label htmlFor="exampleSelect" class="block text-sm font-medium leading-6 text-gray-900 mb-1">
         {{'components.select.distribution.label' | translate}}
       </label>
       <input
@@ -50,7 +50,7 @@
     </div>
   </div>
   <div class="use-existing"  *ngIf="!showExistingDistributionList">
-    <p (click)="toggleExistingDistributionList()">Or Use Existing</p>
+    <p (click)="toggleExistingDistributionList()">{{ 'common.notifications.email.existing' | translate}}</p>
   </div>
   <!-- Existing Distribution List -->
   <div *ngIf="showExistingDistributionList">
