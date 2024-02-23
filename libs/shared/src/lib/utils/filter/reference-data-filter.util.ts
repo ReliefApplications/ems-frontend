@@ -1,4 +1,4 @@
-import { eq, get, isNil } from 'lodash';
+import { eq, get, isArray, isNil, isString } from 'lodash';
 
 /**
  * Apply filter on item
@@ -56,9 +56,9 @@ export const filterReferenceData = (item: any, filter: any) => {
       case 'endswith':
         return !isNil(value) && value.endsWith(filter.value);
       case 'contains':
-        if (typeof filter.value === 'string') {
+        if (isString(filter.value)) {
           const regex = new RegExp(filter.value, 'i');
-          if (typeof value === 'string') {
+          if (isString(value)) {
             return !isNil(value) && regex.test(value);
           } else {
             return !isNil(value) && value.includes(filter.value);
@@ -67,15 +67,37 @@ export const filterReferenceData = (item: any, filter: any) => {
           return !isNil(value) && value.includes(filter.value);
         }
       case 'doesnotcontain':
-        if (typeof filter.value === 'string') {
+        if (isString(filter.value)) {
           const regex = new RegExp(filter.value, 'i');
-          if (typeof value === 'string') {
+          if (isString(value)) {
             return isNil(value) || !regex.test(value);
           } else {
             return isNil(value) || !value.includes(filter.value);
           }
         } else {
           return isNil(value) || !value.includes(filter.value);
+        }
+      case 'in':
+        if (isString(value)) {
+          if (isArray(filter.value)) {
+            return !isNil(filter.value) && filter.value.includes(value);
+          } else {
+            const regex = new RegExp(value, 'i');
+            return !isNil(filter.value) && regex.test(filter.value);
+          }
+        } else {
+          return !isNil(filter.value) && filter.value.includes(value);
+        }
+      case 'notint':
+        if (isString(value)) {
+          if (isArray(filter.value)) {
+            return isNil(filter.value) || !filter.value.includes(value);
+          } else {
+            const regex = new RegExp(value, 'i');
+            return isNil(filter.value) || !regex.test(filter.value);
+          }
+        } else {
+          return isNil(filter.value) || !filter.value.includes(value);
         }
       default:
         return false;
