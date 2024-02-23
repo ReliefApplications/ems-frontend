@@ -4,7 +4,6 @@ import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { v4 as uuidv4 } from 'uuid';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
-import { validJson } from '../../../utils/validators/validJson.validator';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -35,7 +34,6 @@ export const createTemplateAggregationForm = (value: any) => {
       at: get<string>(value, 'at', ''),
       referenceDataVariableMapping: [
         get(value, 'referenceDataVariableMapping', null),
-        validJson(),
       ],
     },
     {

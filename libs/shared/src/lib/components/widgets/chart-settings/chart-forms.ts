@@ -5,7 +5,6 @@ import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
-import { validJson } from '../../../utils/validators/validJson.validator';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -351,7 +350,6 @@ export const createChartWidgetForm = (id: any, value: any) => {
       referenceData: [get(value, 'referenceData', null)],
       referenceDataVariableMapping: [
         get(value, 'referenceDataVariableMapping', null),
-        validJson(),
       ],
       contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
       filters: fb.array(

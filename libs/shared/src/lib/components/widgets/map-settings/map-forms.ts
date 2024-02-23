@@ -25,7 +25,6 @@ import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
-import { validJson } from '../../../utils/validators/validJson.validator';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -146,7 +145,6 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
       refData: [get(value, 'refData', null)],
       referenceDataVariableMapping: [
         get<string | null>(value, 'referenceDataVariableMapping', null),
-        validJson(),
       ],
       geoField: [
         {

@@ -10,7 +10,6 @@ import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import isNil from 'lodash/isNil';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
-import { validJson } from '../../../utils/validators/validJson.validator';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -128,7 +127,6 @@ const createCardForm = (value?: any) => {
       referenceData: get<string | null>(value, 'referenceData', null),
       referenceDataVariableMapping: [
         get<string | null>(value, 'referenceDataVariableMapping', null),
-        validJson(),
       ],
       resource: get<string | null>(value, 'resource', null),
       template: get<string | null>(value, 'template', null),

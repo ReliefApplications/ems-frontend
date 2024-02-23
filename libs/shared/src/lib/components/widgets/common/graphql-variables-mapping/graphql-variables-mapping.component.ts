@@ -1,4 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -14,6 +20,7 @@ import { gql } from '@apollo/client';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
 import isEqual from 'lodash/isEqual';
+import { validJson } from '../../../../utils/validators/validJson.validator';
 
 /**
  * Graphql variables mapping, for widgets using graphql reference data.
@@ -37,7 +44,7 @@ import isEqual from 'lodash/isEqual';
   templateUrl: './graphql-variables-mapping.component.html',
   styleUrls: ['./graphql-variables-mapping.component.scss'],
 })
-export class GraphqlVariablesMappingComponent implements OnChanges {
+export class GraphqlVariablesMappingComponent implements OnInit, OnChanges {
   /** Reference data */
   @Input() referenceData!: ReferenceData;
   /** Form control storing variables mapping */
@@ -54,6 +61,10 @@ export class GraphqlVariablesMappingComponent implements OnChanges {
   };
   /** size style of editor */
   public style: any = {};
+
+  ngOnInit() {
+    this.control.setValidators(validJson());
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     // if the mapping is already loaded
