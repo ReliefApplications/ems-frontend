@@ -9,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  Renderer2,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
@@ -226,7 +227,8 @@ export class LayoutComponent
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private breadcrumbService: BreadcrumbService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private renderer: Renderer2
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -487,10 +489,14 @@ export class LayoutComponent
    * @param e Event thrown in the attach event of the router outlet containing the lastStateOfContextFilters when it was detached
    */
   onAttach(e: any) {
+    console.log('attach: ', e);
     if (this.contextService.shadowDomService.isShadowRoot) {
       const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
         e.linkedSurvey
       );
+      if (e.mapCanvases) {
+        e.mapCanvases[0]?.restoreContext();
+      }
       // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
       if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
         if (this.attachViewFilterTriggerListener) {
@@ -547,6 +553,35 @@ export class LayoutComponent
         });
         this.surveySharedQuestions = Array.from(new Set(surveyQuestions));
       }
+      if (!e.mapCanvases) {
+        const mapCanvases =
+          (Array.from(
+            this.contextService.shadowDomService.shadowRoot?.querySelectorAll(
+              'canvas.maplibregl-canvas.mapboxgl-canvas.leaflet-image-layer.leaflet-zoom-animated'
+            ) as any
+          ) as HTMLCanvasElement[]) ?? [];
+        mapCanvases.forEach((mapCanvas: HTMLCanvasElement) => {
+          this.renderer.listen(mapCanvas, 'webglcontextlost', (event) => {
+            console.log('lose context', event);
+            event.preventDefault();
+          });
+          this.renderer.listen(mapCanvas, 'webglcontextrestored', (event) => {
+            console.log('context restored', event);
+            e.widgets
+              .filter((w: any) => w.component == 'map')
+              .forEach(
+                (map: any) =>
+                  (map.settings = { ...map.settings, contextLost: true })
+              );
+          });
+        });
+        e.mapCanvases = mapCanvases.map((mapCanvas: HTMLCanvasElement) =>
+          mapCanvas.getContext('webgl')?.getExtension('WEBGL_lose_context')
+        );
+      }
+      e.mapCanvases?.forEach((mapCanvas: WEBGL_lose_context) => {
+        mapCanvas.loseContext();
+      });
       const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
         e.linkedSurvey
       );

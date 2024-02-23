@@ -92,7 +92,17 @@ export class MapComponent
     if (settings) {
       this.mapSettingsValue = settings;
       if (this.map) {
-        this.drawMap(false);
+        if (settings.contextLost) {
+          // Get layers
+          const { layers, controls, arcGisWebMap, basemap } =
+            this.extractSettings();
+          this.setupMapLayers(
+            { layers, controls, arcGisWebMap, basemap },
+            true
+          );
+        } else {
+          this.drawMap(false);
+        }
       }
     }
   }
