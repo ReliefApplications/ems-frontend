@@ -155,6 +155,8 @@ export class LayoutComponent
   private attachViewFilterTriggerListener!: NodeJS.Timeout;
   /** Survey shared questions names on web component to track shared values when switching views */
   private surveySharedQuestions!: string[];
+  /** context listeners storage on using dashboard in web components */
+  private contextListeners: any[] = [];
 
   /**
    * Gets URI of the other office
@@ -215,6 +217,7 @@ export class LayoutComponent
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
    * @param contextService Shared breadcrumb service
+   * @param renderer Angular renderer2
    */
   constructor(
     @Inject('environment') environment: any,
@@ -561,19 +564,29 @@ export class LayoutComponent
             ) as any
           ) as HTMLCanvasElement[]) ?? [];
         mapCanvases.forEach((mapCanvas: HTMLCanvasElement) => {
-          this.renderer.listen(mapCanvas, 'webglcontextlost', (event) => {
-            console.log('lose context', event);
-            event.preventDefault();
-          });
-          this.renderer.listen(mapCanvas, 'webglcontextrestored', (event) => {
-            console.log('context restored', event);
-            e.widgets
-              .filter((w: any) => w.component == 'map')
-              .forEach(
-                (map: any) =>
-                  (map.settings = { ...map.settings, contextLost: true })
-              );
-          });
+          const loseContextListener = this.renderer.listen(
+            mapCanvas,
+            'webglcontextlost',
+            (event) => {
+              console.log('lose context', event);
+              event.preventDefault();
+            }
+          );
+          this.contextListeners.push(loseContextListener);
+          const restoreContextListener = this.renderer.listen(
+            mapCanvas,
+            'webglcontextrestored',
+            (event) => {
+              console.log('context restored', event);
+              e.widgets
+                .filter((w: any) => w.component == 'map')
+                .forEach(
+                  (map: any) =>
+                    (map.settings = { ...map.settings, contextLost: true })
+                );
+            }
+          );
+          this.contextListeners.push(restoreContextListener);
         });
         e.mapCanvases = mapCanvases.map((mapCanvas: HTMLCanvasElement) =>
           mapCanvas.getContext('webgl')?.getExtension('WEBGL_lose_context')
@@ -595,5 +608,10 @@ export class LayoutComponent
     if (this.attachViewFilterTriggerListener) {
       clearTimeout(this.attachViewFilterTriggerListener);
     }
+    this.contextListeners.forEach((listener) => {
+      if (listener) {
+        listener();
+      }
+    });
   }
 }
