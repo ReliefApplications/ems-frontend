@@ -527,6 +527,8 @@ export class WidgetGridComponent
 
   /**
    * Filter widgets list to display only visible widgets.
+   *
+   * @param needCloning should clone widgets
    */
   private setVisibleWidgets(needCloning = true): void {
     if (this.canHide) {
