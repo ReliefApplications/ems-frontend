@@ -21,6 +21,7 @@ import getListByProp from './getListByProp';
 import filter from './filter';
 import sum from './sum';
 import getCurrentYearAids from './getCurrentYearAids';
+import todayDate from './todayDate';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -45,6 +46,7 @@ export const functions = [
   { fn: getListByProp, name: 'getListByProp' },
   { fn: filter, name: 'filter' },
   { fn: sum, name: 'sum' },
+  { fn: todayDate, name: 'todayDate' },
 ];
 
 /** Generators for each async custom function available  */

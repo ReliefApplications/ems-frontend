@@ -8,7 +8,7 @@ import { GlobalOptions } from '../types';
  */
 const addTime = (params: any[]) => {
   const [dateStr, num, paramUnit] = params;
-  const unit = paramUnit.toLowerCase() || 'days';
+  const unit = paramUnit?.toLowerCase() || 'days';
   if (!dateStr) {
     return null;
   }

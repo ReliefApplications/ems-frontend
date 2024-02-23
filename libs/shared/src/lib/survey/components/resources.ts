@@ -239,14 +239,6 @@ export const init = (
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
       });
       Serializer.addProperty('resources', {
-        name: 'valueExpression:expression',
-        category: 'logic',
-        onExecuteExpression: (obj: QuestionResource, res: any[]) => {
-          obj.readOnly = true;
-          obj.value = res;
-        },
-      });
-      Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
         displayName: 'Delete records',
         category: 'Custom Questions',
