@@ -143,6 +143,9 @@ export const createPickerInstance = (
  * @returns formatted date
  */
 export const getDateDisplay = (value: any, inputType: string): Date => {
+  if (value instanceof Date) {
+    return value;
+  }
   const date = new Date(value);
   if (inputType === 'time') {
     return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
