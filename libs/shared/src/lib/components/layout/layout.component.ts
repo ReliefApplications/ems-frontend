@@ -497,14 +497,9 @@ export class LayoutComponent
           clearTimeout(this.attachViewFilterTriggerListener);
         }
         this.attachViewFilterTriggerListener = setTimeout(() => {
-          console.log(e.lastStateOfContextFilters);
           this.contextService.filter.next(e.lastStateOfContextFilters);
           this.contextService.filter.next(newFilterValues);
         }, 0);
-      } else {
-        console.log('no update');
-        console.log(e.lastStateOfContextFilters);
-        console.log(newFilterValues);
       }
     }
   }

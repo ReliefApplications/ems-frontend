@@ -9,7 +9,7 @@ import { CustomPropertyGridComponentTypes } from '../components/utils/components
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { HttpClient } from '@angular/common/http';
 import get from 'lodash/get';
-import { firstValueFrom } from 'rxjs';
+import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
@@ -101,8 +101,14 @@ export const init = (): void => {
  * @param http Http client
  */
 export const render = (questionElement: Question, http: HttpClient): void => {
+  // Create a new subject in the question
+  // Subject will close the http post request when choices are fetched, to prevent wrong choices to be visible
+  if (!questionElement.refresh$) {
+    questionElement.refresh$ = new Subject();
+  }
   if (isSelectQuestion(questionElement)) {
     const updateChoices = async () => {
+      questionElement.refresh$.next();
       if (questionElement._instance) {
         questionElement._instance.loading = true;
         questionElement._instance.disabled = true;
@@ -119,10 +125,13 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         variables
       );
       firstValueFrom(
-        http.post(get(questionElement, `${prefix}Url`), {
-          query: get(questionElement, `${prefix}Query`),
-          variables,
-        })
+        http
+          .post(get(questionElement, `${prefix}Url`), {
+            query: get(questionElement, `${prefix}Query`),
+            variables,
+          })
+          // Cancel the request when refreshing
+          .pipe(takeUntil(questionElement.refresh$))
       )
         .then((result) => {
           questionElement.setPropertyValue(

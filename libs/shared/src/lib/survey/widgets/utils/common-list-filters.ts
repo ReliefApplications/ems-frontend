@@ -53,7 +53,10 @@ function updateChoices(
   // Tricky workaround because of how multi-select works.
   // Selection of elements in popup is done based on object reference ( if non primitive )
   // This is why we need to reset multi-select value based on the available choices of the multi-select itself
-  if (widget instanceof MultiSelectComponent) {
+  if (
+    widget instanceof MultiSelectComponent &&
+    !surveyQuestion.isPrimitiveValue
+  ) {
     const initialValue = widget.value || [];
     const value = choices.filter((x: any) =>
       initialValue.find((y) => isEqual(x, y))
