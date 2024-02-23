@@ -63,7 +63,8 @@ export class GraphqlVariablesMappingComponent implements OnInit, OnChanges {
   public style: any = {};
 
   ngOnInit() {
-    this.control.setValidators(validJson());
+    this.control.addValidators(validJson());
+    this.control.updateValueAndValidity();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
