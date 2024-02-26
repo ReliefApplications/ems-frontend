@@ -20,7 +20,7 @@ import { gql } from '@apollo/client';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
 import isEqual from 'lodash/isEqual';
-import { validJson } from '../../../../utils/validators/validJson.validator';
+import { JSONValidator } from '../../../../utils/validators/json.validator';
 
 /**
  * Graphql variables mapping, for widgets using graphql reference data.
@@ -63,7 +63,7 @@ export class GraphqlVariablesMappingComponent implements OnInit, OnChanges {
   public style: any = {};
 
   ngOnInit() {
-    this.control.addValidators(validJson());
+    this.control.addValidators(JSONValidator());
     this.control.updateValueAndValidity();
   }
 
