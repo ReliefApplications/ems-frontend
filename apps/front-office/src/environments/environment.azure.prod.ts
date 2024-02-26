@@ -32,4 +32,9 @@ export const environment: Environment = {
   user: {
     attributes: ['country', 'region', 'location'],
   },
+  noAccessMessage: {
+    title: (pageName: string) =>
+      `Your user account does not have access to ${pageName}`,
+    subtitle: 'Please contact ems2@who.int for more information',
+  },
 };

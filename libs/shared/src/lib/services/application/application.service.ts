@@ -1994,10 +1994,13 @@ export class ApplicationService {
       })
       .catch((err) => {
         console.error(err);
-        this.snackBar.openSnackBar(
-          this.translate.instant('models.application.errors.style.notFound'),
-          { error: true }
-        );
+        // If it's inside shadow root, means is web component, therefor do not display any ui snackbar
+        if (!this.shadowDomService.isShadowRoot) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('models.application.errors.style.notFound'),
+            { error: true }
+          );
+        }
       })
       .finally(() => (this.customStyleEdited = false));
   }

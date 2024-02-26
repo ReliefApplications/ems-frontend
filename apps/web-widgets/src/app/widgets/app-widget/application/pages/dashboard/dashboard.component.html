@@ -65,12 +65,23 @@
         </div>
       </ng-container>
     </ng-container>
-    <shared-widget-grid
-      class="flex-1"
-      [loading]="loading"
-      [widgets]="widgets"
-      [options]="dashboard?.gridOptions"
-      (changeStep)="changeStep.emit($event)"
-    ></shared-widget-grid>
+    <ng-template #widgetGridTmpl>
+      <shared-widget-grid
+        class="flex-1"
+        [loading]="loading"
+        [widgets]="widgets"
+        [options]="dashboard?.gridOptions"
+        (changeStep)="changeStep.emit($event)"
+      ></shared-widget-grid>
+    </ng-template>
+    <ng-container *ngIf="!dashboard && title; else widgetGridTmpl">
+      <div class="m-auto">
+        <shared-empty
+          [icon]="error ? 'circle-exclamation' : 'lock'"
+          [title]="title"
+          [subtitle]="subtitle"
+        ></shared-empty>
+      </div>
+    </ng-container>
   </ng-container>
 </div>

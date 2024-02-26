@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /** Authentication configuration */
 const authConfig: AuthConfig = {
@@ -18,7 +19,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://ems-safe-test.who.int/api',
@@ -31,4 +32,9 @@ export const environment = {
   theme,
   tinymceBaseUrl: 'https://ems2-test.who.int/app-builder/tinymce',
   i18nUrl: 'https://ems2-test.who.int/app-builder/i18n/',
+  noAccessMessage: {
+    title: (pageName: string) =>
+      `Your user account does not have access to ${pageName}`,
+    subtitle: 'Please contact ems2@who.int for more information',
+  },
 };

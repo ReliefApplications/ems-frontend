@@ -11,7 +11,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
@@ -26,9 +26,9 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, Location } from '@angular/common';
 import { cloneDeep } from 'lodash';
+import { Environment } from '../../../../../../environments/environment.type';
 
 /**
  * Dashboard page.
@@ -67,34 +67,40 @@ export class DashboardComponent
   public showName = false;
   /** button actions */
   public buttonActions: ButtonActionT[] = [];
+  /** Title for empty component */
+  public title!: string;
+  /** Subtitle for empty component */
+  public subtitle!: string;
+  /** Error in order to display error message using empty component */
+  public error = false;
 
   /**
    * Dashboard page.
    *
    * @param apollo Apollo client
    * @param route Angular current page
-   * @param router Angular router service
    * @param dialog Dialog service
-   * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
-   * @param document Document
    * @param contextService Dashboard context service
+   * @param location Angular Location used to fetch the hashtag name from the url
+   * @param document Document
+   * @param environment Environment properties needed for the current web widget instance
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router,
     public dialog: Dialog,
-    private snackBar: SnackbarService,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
+    private contextService: ContextService,
+    private location: Location,
     @Inject(DOCUMENT) private document: Document,
-    private contextService: ContextService
+    @Inject('environment') private environment: Environment
   ) {
     super();
   }
@@ -120,9 +126,7 @@ export class DashboardComponent
       } else {
         this.showName = false;
       }
-      this.loadDashboard(id, queryId?.trim()).then(
-        () => (this.loading = false)
-      );
+      this.loadDashboard(id, queryId?.trim());
     }
   }
 
@@ -167,6 +171,7 @@ export class DashboardComponent
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
+    this.title = '';
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
@@ -177,6 +182,7 @@ export class DashboardComponent
       })
     )
       .then(({ data }) => {
+        this.error = false;
         if (data.dashboard) {
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
@@ -189,24 +195,23 @@ export class DashboardComponent
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.setFilter(this.dashboard);
         } else {
+          // Get current url's hash to get the tab name and pass it to the no access message
+          let currentPageName =
+            this.location.path(true).match(/(?<=#).*/gi)?.[0] ?? 'current page';
+          currentPageName =
+            currentPageName[0].toLocaleUpperCase() + currentPageName.slice(1);
+          this.title = this.environment.noAccessMessage.title(currentPageName);
+          this.subtitle = this.environment.noAccessMessage.subtitle;
           this.contextService.isFilterEnabled.next(false);
           this.contextService.setFilter();
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.accessNotProvided', {
-              type: this.translate
-                .instant('common.dashboard.one')
-                .toLowerCase(),
-              error: '',
-            }),
-            { error: true }
-          );
-          this.router.navigate(['/applications']);
         }
       })
       .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
-      });
+        this.title = err.message;
+        this.subtitle = '';
+        this.error = true;
+      })
+      .finally(() => (this.loading = false));
   }
 
   /**

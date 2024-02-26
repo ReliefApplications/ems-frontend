@@ -12,7 +12,6 @@ interface UserConfiguration {
  */
 export interface Environment {
   module: string;
-  version: any;
   production: boolean;
   apiUrl: string;
   subscriptionApiUrl: string;
@@ -25,5 +24,7 @@ export interface Environment {
   sentry?: any;
   maxFileSize?: number;
   user?: UserConfiguration;
+  tinymceBaseUrl: string;
+  i18nUrl: string;
   noAccessMessage: { title: (pageName: string) => string; subtitle: string };
 }

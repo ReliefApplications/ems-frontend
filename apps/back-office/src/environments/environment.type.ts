@@ -26,4 +26,5 @@ export interface Environment {
   sentry?: any;
   maxFileSize?: number;
   user?: UserConfiguration;
+  noAccessMessage: { title: (pageName: string) => string; subtitle: string };
 }

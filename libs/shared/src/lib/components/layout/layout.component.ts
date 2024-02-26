@@ -454,30 +454,32 @@ export class LayoutComponent
     const newFilterValues: { [key: string]: any } = {
       ...this.contextService.filter.value,
     };
-    const filterKeys = Object.keys(this.contextService.filter.value);
-    const currentSurveyQuestions = survey.getAllQuestions();
-    // Include by default all the filter values that are present as questions in the current activated survey
-    // But context filter values have priority over any value in the survey(shared question value changed from other dashboard)
-    filterKeys
-      .filter((fk) => currentSurveyQuestions.find((sq) => sq.name === fk))
-      .forEach((filterKey) => {
-        newFilterValues[filterKey] =
-          this.contextService.filter.value[filterKey];
+    if (survey) {
+      const filterKeys = Object.keys(this.contextService.filter.value);
+      const currentSurveyQuestions = survey.getAllQuestions();
+      // Include by default all the filter values that are present as questions in the current activated survey
+      // But context filter values have priority over any value in the survey(shared question value changed from other dashboard)
+      filterKeys
+        .filter((fk) => currentSurveyQuestions.find((sq) => sq.name === fk))
+        .forEach((filterKey) => {
+          newFilterValues[filterKey] =
+            this.contextService.filter.value[filterKey];
+        });
+      // Include all the survey question values that are not shared, not present in the current context filter value and contains a value to be set
+      currentSurveyQuestions.forEach((qu: any) => {
+        if (
+          !this.surveySharedQuestions.includes(qu.name) &&
+          !filterKeys.includes(qu.name) &&
+          ((!Array.isArray(qu.value) && qu.value) ||
+            (Array.isArray(qu.value) && qu.value.length))
+        ) {
+          // Values as array contains properties from survey question that if not casted to array spread, will make the tagbox or any question using array values to not trigger the survey value change
+          newFilterValues[qu.name] = Array.isArray(qu.value)
+            ? [...qu.value]
+            : qu.value;
+        }
       });
-    // Include all the survey question values that are not shared, not present in the current context filter value and contains a value to be set
-    currentSurveyQuestions.forEach((qu: any) => {
-      if (
-        !this.surveySharedQuestions.includes(qu.name) &&
-        !filterKeys.includes(qu.name) &&
-        ((!Array.isArray(qu.value) && qu.value) ||
-          (Array.isArray(qu.value) && qu.value.length))
-      ) {
-        // Values as array contains properties from survey question that if not casted to array spread, will make the tagbox or any question using array values to not trigger the survey value change
-        newFilterValues[qu.name] = Array.isArray(qu.value)
-          ? [...qu.value]
-          : qu.value;
-      }
-    });
+    }
     return newFilterValues;
   }
 

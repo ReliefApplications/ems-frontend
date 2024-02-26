@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard.component';
 import {
   ButtonActionModule,
   DashboardFilterModule,
+  EmptyModule,
   FullScreenModule,
   SkeletonModule,
   WidgetGridModule,
@@ -29,6 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TooltipModule,
     TranslateModule,
     ButtonActionModule,
+    EmptyModule,
   ],
   exports: [DashboardComponent],
 })

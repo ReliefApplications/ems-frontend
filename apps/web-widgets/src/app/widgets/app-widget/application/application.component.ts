@@ -142,6 +142,7 @@ export class ApplicationComponent
           this.hideMenu = this.application?.hideMenu ?? false;
         } else {
           this.title = '';
+          this.loading = false;
         }
       });
   }
