@@ -56,15 +56,11 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
 
   ngOnInit(): void {
     this.fields$
-      .pipe(
-        combineLatestWith(this.metaFields$, this.filterFields$),
-        takeUntil(this.destroy$)
-      )
+      .pipe(combineLatestWith(this.metaFields$), takeUntil(this.destroy$))
       .subscribe({
-        next: ([fields, metaFields, filterFields]) => {
+        next: ([fields, metaFields]) => {
           this.initialFields = [...fields];
           this.metaFields = metaFields;
-          this.filterFields = filterFields;
           this.fieldsPerStage = [];
           this.updateFieldsPerStage(this.pipelineForm.value);
         },
