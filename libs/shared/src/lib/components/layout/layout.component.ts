@@ -29,6 +29,7 @@ import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { ContextService } from '../../services/context/context.service';
 import { isEqual } from 'lodash';
+import { Model } from 'survey-core';
 
 /**
  * Component for the main layout of the platform
@@ -151,6 +152,8 @@ export class LayoutComponent
 
   /** Timeout listeners */
   private attachViewFilterTriggerListener!: NodeJS.Timeout;
+  /** Survey shared questions names on web component to track shared values when switching views */
+  private surveySharedQuestions!: string[];
 
   /**
    * Gets URI of the other office
@@ -442,23 +445,60 @@ export class LayoutComponent
   }
 
   /**
+   * Merge context service filter shared values across all survey filter with the actual filter survey questions containing any value
+   *
+   * @param survey Current active filter survey in the SUI
+   * @returns object with merged values from
+   */
+  private getViewFilterValue(survey: Model): { [key: string]: any } {
+    const newFilterValues: { [key: string]: any } = {
+      ...this.contextService.filter.value,
+    };
+    const filterKeys = Object.keys(this.contextService.filter.value);
+    const currentSurveyQuestions = survey.getAllQuestions();
+    // Include by default all the filter values that are present as questions in the current activated survey
+    // But context filter values have priority over any value in the survey(shared question value changed from other dashboard)
+    filterKeys
+      .filter((fk) => currentSurveyQuestions.find((sq) => sq.name === fk))
+      .forEach((filterKey) => {
+        newFilterValues[filterKey] =
+          this.contextService.filter.value[filterKey];
+      });
+    // Include all the survey question values that are not shared, not present in the current context filter value and contains a value to be set
+    currentSurveyQuestions.forEach((qu: any) => {
+      if (
+        !this.surveySharedQuestions.includes(qu.name) &&
+        !filterKeys.includes(qu.name) &&
+        ((!Array.isArray(qu.value) && qu.value) ||
+          (Array.isArray(qu.value) && qu.value.length))
+      ) {
+        // Values as array contains properties from survey question that if not casted to array spread, will make the tagbox or any question using array values to not trigger the survey value change
+        newFilterValues[qu.name] = Array.isArray(qu.value)
+          ? [...qu.value]
+          : qu.value;
+      }
+    });
+    return newFilterValues;
+  }
+
+  /**
    * On attach component ( only used in web elements, with reuse strategy )
    *
    * @param e Event thrown in the attach event of the router outlet containing the lastStateOfContextFilters when it was detached
    */
   onAttach(e: any) {
     if (this.contextService.shadowDomService.isShadowRoot) {
-      this.contextService.triggerRefreshForWebComponent = !isEqual(
-        e.lastStateOfContextFilters,
-        this.contextService.filter.value
+      const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
+        e.linkedSurvey
       );
       // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
-      if (this.contextService.triggerRefreshForWebComponent) {
+      if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
         if (this.attachViewFilterTriggerListener) {
           clearTimeout(this.attachViewFilterTriggerListener);
         }
         this.attachViewFilterTriggerListener = setTimeout(() => {
-          this.contextService.filter.next(this.contextService.filter.value);
+          this.contextService.filter.next(e.lastStateOfContextFilters);
+          this.contextService.filter.next(newFilterValues);
         }, 0);
       }
     }
@@ -471,7 +511,47 @@ export class LayoutComponent
    */
   onDetach(e: any) {
     if (this.contextService.shadowDomService.isShadowRoot) {
-      e.lastStateOfContextFilters = this.contextService.filter.value;
+      // If no linked survey to the view is set, it means it's first view load
+      if (!e.linkedSurvey) {
+        e.linkedSurvey =
+          this.contextService.webComponentsFilterSurvey[
+            this.contextService.webComponentsFilterSurvey.length - 1
+          ];
+        // Any time a new view is set, we update the surveySharedQuestions value with the questions from the new survey
+        const surveyQuestions: string[] = [];
+        this.contextService.webComponentsFilterSurvey.forEach((survey) => {
+          const otherSurveys =
+            this.contextService.webComponentsFilterSurvey.filter(
+              (sur) => !isEqual(sur, survey)
+            );
+          survey
+            .getAllQuestions()
+            // Get all questions from the survey to check that their question is not already set in the shared questions property
+            .filter((qu) => !surveyQuestions.includes(qu.name))
+            .forEach((qu) => {
+              let isFoundQuestion = false;
+              otherSurveys.forEach((sur) => {
+                if (
+                  sur
+                    .getAllQuestions()
+                    .find((question) => question.name === qu.name)
+                ) {
+                  isFoundQuestion = true;
+                  return;
+                }
+              });
+              if (isFoundQuestion) {
+                surveyQuestions.push(qu.name);
+              }
+            });
+        });
+        this.surveySharedQuestions = Array.from(new Set(surveyQuestions));
+      }
+      const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
+        e.linkedSurvey
+      );
+      e.currentStateOfContextFilters = newFilterValues;
+      e.lastStateOfContextFilters = e.currentStateOfContextFilters;
     }
   }
 

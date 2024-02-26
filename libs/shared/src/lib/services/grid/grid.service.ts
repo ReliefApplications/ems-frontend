@@ -45,6 +45,8 @@ interface IMeta {
     value?: string;
     text?: string;
     query?: string;
+    hasOther?: boolean;
+    otherText?: string;
   };
 }
 
@@ -426,12 +428,13 @@ export class GridService {
           })
           .filter((x) => !isNil(x.text))
       : [];
-    if (meta.choicesByUrl?.hasOther) {
+    if (meta.choicesByUrl?.hasOther || meta.choicesByGraphQL?.hasOther) {
+      const otherText = meta.choicesByUrl
+        ? meta.choicesByUrl.otherText
+        : meta.choicesByGraphQL?.otherText;
       choices.push({
         value: 'other',
-        text: meta.choicesByUrl.otherText
-          ? meta.choicesByUrl.otherText
-          : 'Other',
+        text: otherText ? otherText : 'Other',
       });
     }
     choices.sort((a: any, b: any) =>
