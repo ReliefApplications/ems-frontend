@@ -463,7 +463,7 @@ export class SummaryCardComponent
       }
       const variables = this.queryPaginationVariables();
       from(
-        this.referenceDataService.cacheItems(this.refData, {
+        this.referenceDataService.fetchItems(this.refData, {
           ...variables,
           ...(this.graphqlVariables ?? {}),
         })
@@ -622,7 +622,7 @@ export class SummaryCardComponent
   private async updateReferenceDataCards(
     items: any[],
     pageInfo: Awaited<
-      ReturnType<typeof this.referenceDataService.cacheItems>
+      ReturnType<typeof this.referenceDataService.fetchItems>
     >['pageInfo']
   ) {
     if (!this.refData) {
@@ -1073,7 +1073,7 @@ export class SummaryCardComponent
       const variables = this.queryPaginationVariables(event.pageIndex);
 
       from(
-        this.referenceDataService.cacheItems(this.refData, {
+        this.referenceDataService.fetchItems(this.refData, {
           ...variables,
           ...(this.graphqlVariables ?? {}),
         })

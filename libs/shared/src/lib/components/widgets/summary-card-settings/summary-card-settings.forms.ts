@@ -125,11 +125,9 @@ const createCardForm = (value?: any) => {
     {
       title: get<string>(value, 'title', 'New Card'),
       referenceData: get<string | null>(value, 'referenceData', null),
-      referenceDataVariableMapping: get<string | null>(
-        value,
-        'referenceDataVariableMapping',
-        null
-      ),
+      referenceDataVariableMapping: [
+        get<string | null>(value, 'referenceDataVariableMapping', null),
+      ],
       resource: get<string | null>(value, 'resource', null),
       template: get<string | null>(value, 'template', null),
       layout: get<string | null>(value, 'layout', null),

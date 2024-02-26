@@ -31,6 +31,9 @@
     'components.widget.settings.summaryCard.card.dataSource.layoutStyles.queryFilters.help'
       | translate
   }}</ui-alert>
+  <ui-alert variant="danger" *ngIf="control.errors?.invalidJSON">{{
+    'common.errors.invalidJson' | translate
+  }}</ui-alert>
   <div
     *ngIf="availableQueryVariables.length > 0"
     mwlResizable
