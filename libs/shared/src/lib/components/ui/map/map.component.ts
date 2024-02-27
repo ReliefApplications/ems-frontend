@@ -92,17 +92,7 @@ export class MapComponent
     if (settings) {
       this.mapSettingsValue = settings;
       if (this.map) {
-        if (settings.contextLost) {
-          // Get layers
-          const { layers, controls, arcGisWebMap, basemap } =
-            this.extractSettings();
-          this.setupMapLayers(
-            { layers, controls, arcGisWebMap, basemap },
-            true
-          );
-        } else {
-          this.drawMap(false);
-        }
+        this.drawMap(false);
       }
     }
   }
@@ -214,6 +204,56 @@ export class MapComponent
 
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
+    if (this.shadowDomService.isShadowRoot) {
+      this.contextService.detachMaps
+        .pipe(
+          filter(
+            (detachMaps: boolean) =>
+              detachMaps &&
+              !isNil(this.map) &&
+              !this.shadowDomService.currentHost.contains(this.el.nativeElement)
+          ),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          this.removeAllControls();
+          this.map.off();
+          this.map.remove();
+          this.map = null as any;
+          this.resizeObserver?.disconnect();
+          if (this.firstLoadEmitTimeoutListener) {
+            clearTimeout(this.firstLoadEmitTimeoutListener);
+          }
+        });
+      this.contextService.triggerRedrawOfMap
+        .pipe(
+          filter(
+            (triggerRedraw: any) =>
+              triggerRedraw &&
+              isNil(this.map) &&
+              this.shadowDomService.currentHost.contains(this.el.nativeElement)
+          ),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((redrawSettings) => {
+          if (typeof redrawSettings !== 'boolean') {
+            this.mapSettingsValue = redrawSettings;
+          }
+          this.drawMap();
+          this.setUpMapListeners();
+          this.firstLoadEmitTimeoutListener = setTimeout(() => {
+            this.map.invalidateSize();
+            this.mapEvent.emit({
+              type: MapEventType.FIRST_LOAD,
+              content: {
+                bounds: this.map.getBounds(),
+                center: this.map.getCenter(),
+                zoom: this.map.getZoom(),
+              },
+            });
+          }, 1000);
+        });
+    }
     // Creates the map and adds all the controls we use.
     this.drawMap();
     this.setUpMapListeners();
@@ -484,7 +524,7 @@ export class MapComponent
     // Close layers/bookmarks menu
     this.document.getElementById('layer-control-button-close')?.click();
 
-    this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
+    this.setupMapLayers({ layers, controls, arcGisWebMap, basemap }, true);
     this.setMapControls(controls, initMap);
 
     // To zoom on getGeographicExtentValue, if necessary
@@ -1229,5 +1269,26 @@ export class MapComponent
     const { center, zoom } = this.extractSettings().initialState.viewpoint;
     this.currentZoom = zoom;
     this.map.setView([center.latitude, center.longitude], zoom);
+  }
+
+  /**
+   * Remove all controls from the current map
+   */
+  private removeAllControls() {
+    this.zoomControl?.remove();
+    this.zoomControl = undefined;
+    this.lastUpdateControl?.remove();
+    this.lastUpdateControl = undefined;
+    this.mapControlsService.getLegendControl(this.map, false);
+    this.mapControlsService.getDownloadControl(this.map, false);
+    this.mapControlsService.getMeasureControl(this.map, false);
+    this.mapControlsService.getLayerControl(this, [], [], false);
+    this.layerControlButtons?.remove();
+    this.layerControlButtons = undefined;
+    this.searchControl = this.mapControlsService.getSearchbarControl(
+      this.map,
+      this.esriApiKey,
+      false
+    );
   }
 }

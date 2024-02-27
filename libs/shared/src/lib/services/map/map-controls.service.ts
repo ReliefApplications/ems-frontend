@@ -45,6 +45,10 @@ export class MapControlsService {
   private downloadControl!: L.Control | null;
   /** Active legend control */
   private legendControl!: L.Control | null;
+  /** Sidenav layers control */
+  private layerControl!: L.Control | null;
+  /** Search bar control */
+  private searchBarControl!: L.Control | null;
   /** Angular renderer */
   private renderer!: Renderer2;
   /** Listener on sidenav control click */
@@ -85,62 +89,71 @@ export class MapControlsService {
    * @param mapComponent map component
    * @param basemaps basemaps of the map
    * @param layers layers used to create the layers tree
+   * @param addControl If the control should be added or removed
    * @returns A button to activate/deactivate the layers
    */
   public getLayerControl(
     mapComponent: MapComponent,
     basemaps: L.Control.Layers.TreeObject[],
-    layers: L.Control.Layers.TreeObject[]
+    layers: L.Control.Layers.TreeObject[],
+    addControl = true
   ): void {
-    const layerControl = new L.Control({ position: 'topright' });
-    layerControl.onAdd = () => {
-      const container = L.DomUtil.create('div');
-      const mapSidenavControlsComponent = this.domService.appendComponentToBody(
-        MapSidenavControlsComponent,
-        container
-      );
-      mapSidenavControlsComponent.instance.layersTree = layers;
-      mapSidenavControlsComponent.instance.mapComponent = mapComponent;
-      mapSidenavControlsComponent.instance.basemaps = basemaps;
-      (layerControl as any)._component = mapSidenavControlsComponent.instance;
-      return container;
-    };
-    layerControl.onRemove = () => {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-        this.sidenavControlClickListener = null;
-      }
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-        this.sidenavControlWheelListener = null;
-      }
-    };
-    const container = layerControl.getContainer();
-    if (container) {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-      }
-      // prevent click events from propagating to the map
-      this.sidenavControlClickListener = this.renderer.listen(
-        container,
-        'click',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
+    if (addControl) {
+      const layerControl = new L.Control({ position: 'topright' });
+      layerControl.onAdd = () => {
+        const container = L.DomUtil.create('div');
+        const mapSidenavControlsComponent =
+          this.domService.appendComponentToBody(
+            MapSidenavControlsComponent,
+            container
+          );
+        mapSidenavControlsComponent.instance.layersTree = layers;
+        mapSidenavControlsComponent.instance.mapComponent = mapComponent;
+        mapSidenavControlsComponent.instance.basemaps = basemaps;
+        (layerControl as any)._component = mapSidenavControlsComponent.instance;
+        return container;
+      };
+      layerControl.onRemove = () => {
+        if (this.sidenavControlClickListener) {
+          this.sidenavControlClickListener();
+          this.sidenavControlClickListener = null;
         }
-      );
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-      }
-      // prevent mouse wheel events from propagating to the map
-      this.sidenavControlWheelListener = this.renderer.listen(
-        container,
-        'wheel',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
+        if (this.sidenavControlWheelListener) {
+          this.sidenavControlWheelListener();
+          this.sidenavControlWheelListener = null;
         }
-      );
+      };
+      const container = layerControl.getContainer();
+      if (container) {
+        if (this.sidenavControlClickListener) {
+          this.sidenavControlClickListener();
+        }
+        // prevent click events from propagating to the map
+        this.sidenavControlClickListener = this.renderer.listen(
+          container,
+          'click',
+          (e: any) => {
+            L.DomEvent.stopPropagation(e);
+          }
+        );
+        if (this.sidenavControlWheelListener) {
+          this.sidenavControlWheelListener();
+        }
+        // prevent mouse wheel events from propagating to the map
+        this.sidenavControlWheelListener = this.renderer.listen(
+          container,
+          'wheel',
+          (e: any) => {
+            L.DomEvent.stopPropagation(e);
+          }
+        );
+      }
+      this.layerControl = layerControl;
+      return (layerControl as any)?.addTo(mapComponent.map);
+    } else {
+      this.layerControl?.remove();
+      this.layerControl = null;
     }
-    return (layerControl as any)?.addTo(mapComponent.map);
   }
 
   /**
@@ -150,53 +163,60 @@ export class MapControlsService {
    * @param apiKey arcgis api key
    * @returns searchbar control
    */
-  public getSearchbarControl(map: L.Map, apiKey: string) {
-    const control = Geocoding.geosearch({
-      position: 'topleft',
-      // todo: translate
-      placeholder: this.translate.instant('common.placeholder.address'), // 'Enter an address or place e.g. 1 York St'
-      useMapBounds: false,
-      providers: [
-        Geocoding.arcgisOnlineProvider({
-          apikey: apiKey,
-          nearby: {
-            lat: -33.8688,
-            lng: 151.2093,
-          },
-        }),
-      ],
-    });
-    (control as any)?.on('results', (data: any) => {
-      // results.clearLayers();
-      if ((data.results || []).length > 0) {
-        for (let i = data.results.length - 1; i >= 0; i--) {
-          // if (this.useGeomanTools) {
-          //   updateGeoManLayerPosition(map, data.results[i]);
-          // }
-          const coordinates = L.latLng(data.results[i].latlng);
-          const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
-          circle.addTo(map);
-          const popup = L.popup()
-            .setLatLng(coordinates)
-            .setContent(
-              `
-                  <p>${data.results[i].properties.ShortLabel}</br>
-                  <b>${'latitude: '}</b>${coordinates.lat}</br>
-                  <b>${'longitude: '}</b>${coordinates.lng}</p>`
-            );
-          circle.bindPopup(popup);
-          popup.on('remove', () => map.removeLayer(circle));
-          circle.openPopup();
-          // Use setTimeout to prevent the marker to be removed while
-          // the map moves to the searched address and is re-centred
-          setTimeout(() => {
-            this.addressMarker = circle;
-          }, 1000);
+  public getSearchbarControl(map: L.Map, apiKey: string, addControl = true) {
+    if (addControl) {
+      const control = Geocoding.geosearch({
+        position: 'topleft',
+        // todo: translate
+        placeholder: this.translate.instant('common.placeholder.address'), // 'Enter an address or place e.g. 1 York St'
+        useMapBounds: false,
+        providers: [
+          Geocoding.arcgisOnlineProvider({
+            apikey: apiKey,
+            nearby: {
+              lat: -33.8688,
+              lng: 151.2093,
+            },
+          }),
+        ],
+      });
+      (control as any)?.on('results', (data: any) => {
+        // results.clearLayers();
+        if ((data.results || []).length > 0) {
+          for (let i = data.results.length - 1; i >= 0; i--) {
+            // if (this.useGeomanTools) {
+            //   updateGeoManLayerPosition(map, data.results[i]);
+            // }
+            const coordinates = L.latLng(data.results[i].latlng);
+            const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
+            circle.addTo(map);
+            const popup = L.popup()
+              .setLatLng(coordinates)
+              .setContent(
+                `
+                    <p>${data.results[i].properties.ShortLabel}</br>
+                    <b>${'latitude: '}</b>${coordinates.lat}</br>
+                    <b>${'longitude: '}</b>${coordinates.lng}</p>`
+              );
+            circle.bindPopup(popup);
+            popup.on('remove', () => map.removeLayer(circle));
+            circle.openPopup();
+            // Use setTimeout to prevent the marker to be removed while
+            // the map moves to the searched address and is re-centred
+            setTimeout(() => {
+              this.addressMarker = circle;
+            }, 1000);
+          }
         }
-      }
-    });
-    (control as any)?.addTo(map);
-    return control;
+      });
+      this.searchBarControl = control;
+      (control as any)?.addTo(map);
+      return control;
+    } else {
+      this.searchBarControl?.remove();
+      this.searchBarControl = null;
+      return null;
+    }
   }
 
   /**

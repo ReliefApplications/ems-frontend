@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter, map, pairwise } from 'rxjs';
+import { BehaviorSubject, Subject, filter, map, pairwise } from 'rxjs';
 import localForage from 'localforage';
 import {
   CompositeFilterDescriptor,
@@ -84,6 +84,10 @@ export class ContextService {
     [FilterPosition.RIGHT]:
       'components.application.dashboard.filter.filterPosition.right',
   };
+  /** Detach map signal for detach views containing maps in web components */
+  public detachMaps = new Subject<boolean>();
+  /** Re draw map signal for attach views containing maps in web components */
+  public triggerRedrawOfMap = new Subject<any>();
 
   /** @returns filter value as observable */
   get filter$() {
