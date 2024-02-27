@@ -175,7 +175,22 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
   );
   const extendedForm = extendWidgetForm(
     formGroup,
-    configuration?.widgetDisplay
+    configuration?.widgetDisplay,
+    {
+      showSingleActionAsButton: new FormControl(
+        get<boolean>(
+          configuration,
+          'widgetDisplay.showSingleActionAsButton',
+          false
+        )
+      ),
+      enableActionsTitle: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.enableActionsTitle', false)
+      ),
+      actionsTitle: new FormControl(
+        get<string>(configuration, 'widgetDisplay.actionsTitle', '')
+      ),
+    }
   );
   return extendedForm;
 };

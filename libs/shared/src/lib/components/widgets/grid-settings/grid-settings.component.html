@@ -111,7 +111,6 @@
       <shared-display-settings [formGroup]="widgetFormGroup">
         <!-- Display single action as own button -->
         <ui-toggle
-          *ngIf="widgetFormGroup.get('widgetDisplay.showSingleActionAsButton')"
           [formControl]="
             $any(widgetFormGroup.get('widgetDisplay.showSingleActionAsButton'))
           "
@@ -126,7 +125,6 @@
         <!-- Display actions title -->
         <div class="flex gap-2 items-center">
           <ui-toggle
-            *ngIf="widgetFormGroup.get('widgetDisplay.enableActionsTitle')"
             [formControl]="
               $any(widgetFormGroup.get('widgetDisplay.enableActionsTitle'))
             "
@@ -139,13 +137,7 @@
             </ng-container>
           </ui-toggle>
           <!-- Actions title input -->
-          <div
-            class="!mb-0"
-            uiFormFieldDirective
-            *ngIf="
-              widgetFormGroup.get('widgetDisplay.enableActionsTitle')?.value
-            "
-          >
+          <div class="!mb-0" uiFormFieldDirective>
             <input
               type="string"
               [formControl]="

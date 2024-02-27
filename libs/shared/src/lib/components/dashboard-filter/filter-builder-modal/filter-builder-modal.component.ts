@@ -20,6 +20,7 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
 import 'survey-core/survey.i18n.min.js';
+import { CustomQuestionTypes } from '../../../survey/custom-question-types';
 import {
   CustomJSONEditorComponent,
   SurveyCustomJSONEditorPlugin,
@@ -138,6 +139,37 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueName',
   'inputType',
   'html',
+  'resource',
+  'displayField',
+  'test service',
+  'addRecordText',
+  'canSearch',
+  'searchButtonText',
+  'canOnlyCreateRecords',
+  'alwaysCreateRecord',
+  'prefillWithCurrentRecord',
+  'selectQuestion',
+  'staticValue',
+  'filterBy',
+  'filterCondition',
+  'selectResourceText',
+  'gridFieldsSettings',
+  'customFilterEl',
+  'customFilter',
+  'newCreatedRecords',
+  'afterRecordCreation',
+  'afterRecordSelection',
+  'afterRecordDeselection',
+  'displayAsGrid',
+  'valueExpression',
+  'canDelete',
+  'history',
+  'convert',
+  'update',
+  'inlineEdition',
+  'export',
+  'canDeselectRecords',
+  'autoSaveChanges',
 ];
 
 /**
@@ -189,8 +221,13 @@ export class FilterBuilderModalComponent
   ) {}
 
   ngOnInit(): void {
-    // Initialize survey creator instance without custom questions
-    this.formService.initialize({ customQuestions: false });
+    // Initialize survey creator instance with selected custom questions
+    this.formService.initialize({
+      customQuestions: [
+        CustomQuestionTypes.RESOURCE,
+        CustomQuestionTypes.RESOURCES,
+      ],
+    });
   }
 
   ngAfterViewInit(): void {
