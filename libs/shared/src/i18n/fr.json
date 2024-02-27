@@ -2309,6 +2309,11 @@
 		},
 		"widget": {
 			"add": "Ajouter un widget",
+			"api": {
+				"add": "Ajouter une API",
+				"empty": "Aucun API de tri défini",
+				"title": "API configuration"
+			},
 			"chart": {
 				"defaultTitle": "Widget Graphique"
 			},

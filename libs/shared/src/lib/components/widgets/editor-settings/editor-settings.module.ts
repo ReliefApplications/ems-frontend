@@ -30,6 +30,7 @@ import {
   ResourceSelectComponent,
 } from '../../controls/public-api';
 import { TemplateAggregationsComponent } from '../common/template-aggregations/template-aggregations.component';
+import { TabApiComponent } from '../common/tab-api/tab-api.component';
 
 /**
  * Module for the EditorSetting component
@@ -60,6 +61,7 @@ import { TemplateAggregationsComponent } from '../common/template-aggregations/t
     ReferenceDataSelectComponent,
     SpinnerModule,
     TemplateAggregationsComponent,
+    TabApiComponent,
   ],
   exports: [EditorSettingsComponent],
   providers: [

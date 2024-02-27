@@ -2295,6 +2295,11 @@
 		},
 		"widget": {
 			"add": "Add a Widget",
+			"api": {
+				"add": "Add API configuration",
+				"empty": "No API configuration set",
+				"title": "API configuration"
+			},
 			"chart": {
 				"defaultTitle": "Chart Widget"
 			},

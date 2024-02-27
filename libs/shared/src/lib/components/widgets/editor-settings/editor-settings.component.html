@@ -124,5 +124,16 @@
         </div>
       </ng-template>
     </ui-tab>
+    <!-- Widget API options -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="filter_alt" [size]="24" [uiTooltip]="'API'"></ui-icon>
+        <span>API</span>
+      </ng-container>
+
+      <ng-template uiTabContent>
+        <shared-tab-api></shared-tab-api>
+      </ng-template>
+    </ui-tab>
   </ui-tabs>
 </ng-container>
