@@ -5,10 +5,9 @@ import { GlobalOptions } from '../types';
  *
  * @returns The date string
  */
-const todayDate = () => {
-  const now = new Date();
-
+export const todayDate = () => {
   const padded = (num: number) => num.toString().padStart(2, '0');
+  const now = new Date();
 
   return `${now.getFullYear()}-${padded(now.getMonth() + 1)}-${padded(
     now.getDate()
