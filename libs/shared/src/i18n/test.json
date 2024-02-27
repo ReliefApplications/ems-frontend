@@ -2295,9 +2295,16 @@
 		},
 		"widget": {
 			"add": "******",
-			"api": {
+			"automation": {
 				"add": "******",
+				"addName": "******",
+				"create": "******",
+				"delete": "******",
+				"edit": "******",
 				"empty": "******",
+				"name": "******",
+				"rules": "******",
+				"target": "******",
 				"title": "******"
 			},
 			"chart": {

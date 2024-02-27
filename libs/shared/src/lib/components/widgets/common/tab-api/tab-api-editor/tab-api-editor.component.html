@@ -1,0 +1,62 @@
+<ui-dialog size="big">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        (data
+          ? 'models.widget.automation.edit'
+          : 'models.widget.automation.create'
+        ) | translate
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="automationRuleForm" class="flex flex-col">
+      <div uiFormFieldDirective>
+        <label>{{ 'models.widget.automation.name' | translate }}</label>
+        <input
+          formControlName="name"
+          type="text"
+          [placeholder]="'models.widget.automation.addName' | translate"
+        />
+      </div>
+      <div uiFormFieldDirective class="!m-0">
+        <label>{{ 'models.widget.automation.target' | translate }}</label>
+        <ui-select-menu formControlName="targetWidget">
+          <ui-select-option *ngFor="let option of widgets" [value]="option">
+            {{ option.name }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- <ng-container
+        *ngIf="
+          automationRuleForm.get('targetWidget')?.value && widgetLayers.length
+        "
+      > -->
+      <div uiFormFieldDirective class="!m-0">
+        <ui-select-menu formControlName="event">
+          <ui-select-option
+            *ngFor="let option of widgetLayers"
+            [value]="option"
+          >
+            {{ option }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- </ng-container> -->
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="automationRuleForm.value"
+      cdkFocusInitial
+      [disabled]="!automationRuleForm.valid"
+    >
+      {{ (data ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

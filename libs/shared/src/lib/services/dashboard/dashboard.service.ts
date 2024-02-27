@@ -10,7 +10,7 @@ import {
   EditPageContextMutationResponse,
   PageContextT,
 } from '../../models/page.model';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
@@ -25,6 +25,11 @@ import { GraphQLError } from 'graphql';
 export class DashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
+  /** Shared property to keep track of current loaded dashboard */
+  public currentDashboard: BehaviorSubject<Dashboard | null> =
+    new BehaviorSubject<Dashboard | null>(null);
+  /** Observable of current loaded dashboard */
+  public currentDashboard$ = this.currentDashboard.asObservable();
 
   /**
    * Shared dashboard service. Handles dashboard events.

@@ -2309,10 +2309,17 @@
 		},
 		"widget": {
 			"add": "Ajouter un widget",
-			"api": {
-				"add": "Ajouter une API",
-				"empty": "Aucun API de tri défini",
-				"title": "API configuration"
+			"automation": {
+				"add": "Ajouter une règle",
+				"addName": "Ajouter un nom pour la règlee",
+				"create": "Créer une règle",
+				"delete": "Supprimer la règle",
+				"edit": "Modifier le règle",
+				"empty": "Aucun règles de tri défini",
+				"name": "Nom",
+				"rules": "Règles",
+				"target": "Widget cible de la règle",
+				"title": "Automatisation"
 			},
 			"chart": {
 				"defaultTitle": "Widget Graphique"

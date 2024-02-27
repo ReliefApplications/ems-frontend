@@ -2295,10 +2295,17 @@
 		},
 		"widget": {
 			"add": "Add a Widget",
-			"api": {
-				"add": "Add API configuration",
-				"empty": "No API configuration set",
-				"title": "API configuration"
+			"automation": {
+				"add": "Add rule",
+				"addName": "Add a name for the rule",
+				"create": "Create rule",
+				"delete": "Delete rule",
+				"edit": "Edit rule",
+				"empty": "No rules set",
+				"name": "Name",
+				"rules": "Rules",
+				"target": "Target widget of the rule",
+				"title": "Automation"
 			},
 			"chart": {
 				"defaultTitle": "Chart Widget"

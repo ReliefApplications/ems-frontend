@@ -20,6 +20,21 @@ const DEFAULT_CONTEXT_FILTER = `{
  * @param value previous value, if any
  * @returns form group
  */
+export const createAutomationRulesForm = (value: any) => {
+  return fb.group({
+    id: get<string>(value, 'id', uuidv4()),
+    name: get<string>(value, 'name', ''),
+    targetWidget: get<string>(value, 'targetWidget', ''),
+    event: get<string>(value, 'event', ''),
+  });
+};
+
+/**
+ * Create a new template aggregation form
+ *
+ * @param value previous value, if any
+ * @returns form group
+ */
 export const createTemplateAggregationForm = (value: any) => {
   return fb.group(
     {
@@ -72,6 +87,11 @@ export const createEditorForm = (id: string, value: any) => {
           disabled: !isNil(get<string | null>(value, 'referenceData', null)),
         },
       ],
+      automationRules: fb.array(
+        get<any[]>(value, 'automationRules', []).map((automationRule: any) =>
+          createAutomationRulesForm(automationRule)
+        )
+      ),
       // Style
       useStyles: get<boolean>(value, 'useStyles', true),
       wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),

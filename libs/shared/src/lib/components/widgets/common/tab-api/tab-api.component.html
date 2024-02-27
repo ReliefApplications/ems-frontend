@@ -1,107 +1,73 @@
 <div class="flex justify-between">
-  <h2>{{ 'models.widget.api.title' | translate }}</h2>
+  <h2>{{ 'models.widget.automation.rules' | translate }}</h2>
 
   <ui-button
     class="mb-6"
     category="secondary"
     variant="primary"
-    (click)="addRow()"
+    (click)="addEditRule()"
   >
-    {{ 'models.widget.api.add' | translate }}
+    {{ 'models.widget.automation.add' | translate }}
   </ui-button>
 </div>
-
-<shared-empty
-  *ngIf="formGroup.get('sortFields')!.value.length === 0"
-  [title]="'models.widget.api.empty' | translate"
-></shared-empty>
-
-<form
-  [formGroup]="formGroup"
-  *ngIf="formGroup.get('sortFields')!.value.length > 0"
+<ng-template #emptyTmpl>
+  <shared-empty
+    [title]="'models.widget.automation.empty' | translate"
+  ></shared-empty>
+</ng-template>
+<ng-container
+  *ngIf="formGroup.get('automationRules')!.value.length > 0; else emptyTmpl"
 >
-  <table
-    cdk-table
-    uiTableWrapper
-    [dataSource]="data"
-    formArrayName="sortFields"
-  >
-    <ng-container cdkColumnDef="field">
-      <th uiCellHeader *cdkHeaderCellDef>
-        {{ 'models.widget.sorting.field' | translate }}
-      </th>
-      <td
-        uiCell
-        *cdkCellDef="let element; let rowIndex = index"
-        [formGroupName]="rowIndex"
-      >
-        <div uiFormFieldDirective class="!m-0">
-          <ui-select-menu formControlName="field">
-            <ui-select-option
-              *ngFor="let option of widgets"
-              [value]="option.name"
+  <form [formGroup]="formGroup">
+    <table
+      cdk-table
+      uiTableWrapper
+      [dataSource]="data"
+      formArrayName="automationRules"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef>
+          {{ 'models.widget.automation.name' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element; let rowIndex = index"
+          [formGroupName]="rowIndex"
+        >
+          <div uiFormFieldDirective class="!m-0">
+            <input [disabled]="true" formControlName="name" />
+          </div>
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="actions">
+        <th uiCellHeader *cdkHeaderCellDef></th>
+        <td uiCell *cdkCellDef="let element; let rowIndex = index">
+          <div class="flex gap-2 text-neutral-500 justify-end">
+            <ui-button
+              variant="danger"
+              [isIcon]="true"
+              icon="delete"
+              (click)="removeRow(rowIndex)"
+              [uiTooltip]="'models.widget.automation.delete' | translate"
             >
-              {{ option.name }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="order">
-      <th uiCellHeader *cdkHeaderCellDef>
-        {{ 'models.widget.sorting.order' | translate }}
-      </th>
-      <td
-        uiCell
-        *cdkCellDef="let element; let rowIndex = index"
-        [formGroupName]="rowIndex"
-      >
-        <div uiFormFieldDirective class="!m-0">
-          <ui-select-menu formControlName="order">
-            <ui-select-option
-              *ngFor="let option of orderList"
-              [value]="option.value"
-            >
-              {{ option.text }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="label">
-      <th uiCellHeader *cdkHeaderCellDef>
-        {{ 'models.widget.sorting.label' | translate }}
-      </th>
-      <td
-        uiCell
-        *cdkCellDef="let element; let rowIndex = index"
-        [formGroupName]="rowIndex"
-      >
-        <div uiFormFieldDirective class="!m-0">
-          <input formControlName="label" />
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="actions">
-      <th uiCellHeader *cdkHeaderCellDef></th>
-      <td uiCell *cdkCellDef="let element; let rowIndex = index">
-        <div class="flex gap-2 text-neutral-500 justify-end">
-          <ui-button
-            variant="danger"
-            [isIcon]="true"
-            icon="delete"
-            (click)="removeRow(rowIndex)"
-            [uiTooltip]="'models.widget.sorting.delete' | translate"
-          >
-          </ui-button>
-        </div>
-      </td>
-    </ng-container>
-    <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsApps"></tr>
-    <tr
-      cdk-row
-      *cdkRowDef="let row; columns: displayedColumnsApps"
-      class="bg-white"
-    ></tr>
-  </table>
-</form>
+            </ui-button>
+            <ui-button
+              uiSuffix
+              variant="primary"
+              [isIcon]="true"
+              icon="edit"
+              (click)="addEditRule(rowIndex)"
+              [uiTooltip]="'common.edit' | translate"
+            ></ui-button>
+          </div>
+        </td>
+      </ng-container>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsApps"></tr>
+      <tr
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumnsApps"
+        class="bg-white"
+      ></tr>
+    </table>
+  </form>
+</ng-container>

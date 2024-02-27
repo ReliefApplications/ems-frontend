@@ -244,6 +244,7 @@ export class DashboardComponent
     )
       .then(({ data }) => {
         if (data.dashboard) {
+          this.dashboardService.currentDashboard.next(data.dashboard);
           this.id = data.dashboard.id || id;
           this.dashboard = data.dashboard;
           this.gridOptions = {
@@ -476,6 +477,7 @@ export class DashboardComponent
         widgets.push(contextContentCleanWidget);
       });
     }
+    this.dashboardService.currentDashboard.next(this.dashboard as Dashboard);
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,

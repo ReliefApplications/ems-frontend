@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ButtonModule,
@@ -9,7 +9,7 @@ import {
   TableModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   AbstractControl,
   FormArray,
@@ -17,12 +17,14 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { CdkTableModule } from '@angular/cdk/table';
 import { EmptyModule } from '../../../ui/empty/empty.module';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * API settings for the widget
@@ -49,45 +51,29 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './tab-api.component.html',
   styleUrls: ['./tab-api.component.scss'],
 })
-export class TabApiComponent {
-  /** Available widgets */
-  @Input() widgets: any;
+export class TabApiComponent extends UnsubscribeComponent implements OnInit {
   /** Sorting fields form array */
   @Input() formArray!: FormArray;
   /** Widget settings form group */
   @Input() formGroup!: FormGroup;
 
   /** Displayed columns of table */
-  public displayedColumnsApps = ['field', 'order', 'label', 'actions'];
+  public displayedColumnsApps = ['name', 'actions'];
   /** To make drag and drop work with table */
   public data!: BehaviorSubject<AbstractControl[]>;
-
-  /** Available ordering */
-  public orderList = [
-    { value: 'asc', text: this.translate.instant('common.asc') },
-    { value: 'desc', text: this.translate.instant('common.desc') },
-  ];
 
   /**
    * Constructor for the widget API settings tab
    *
    * @param fb Angular form builder
-   * @param translate Translate service
+   * @param dialog Angular CDK Dialog service
    */
-  constructor(private fb: FormBuilder, private translate: TranslateService) {}
+  constructor(private fb: FormBuilder, private dialog: Dialog) {
+    super();
+  }
 
-  /**
-   * Adds row to the table
-   *
-   */
-  addRow(): void {
-    const row = this.fb.group({
-      field: [this.widgets[0]?.name ?? '', Validators.required],
-      order: [this.orderList[0].value, Validators.required],
-      label: ['', Validators.required],
-    });
-    this.formArray.push(row);
-    this.updateView();
+  ngOnInit() {
+    this.data = new BehaviorSubject<AbstractControl[]>(this.formArray.controls);
   }
 
   /**
@@ -98,6 +84,40 @@ export class TabApiComponent {
   removeRow(itemIndex: number): void {
     this.formArray.removeAt(itemIndex);
     this.updateView();
+  }
+
+  /**
+   * Removes row to the table
+   *
+   * @param itemIndex item index
+   */
+  async addEditRule(itemIndex?: number): Promise<void> {
+    let selectedRule = null;
+    if (itemIndex) {
+      selectedRule = this.formArray.at(itemIndex);
+    }
+    const { TabApiEditorComponent } = await import(
+      './tab-api-editor/tab-api-editor.component'
+    );
+    const dialogRef = this.dialog.open(TabApiEditorComponent, {
+      data: selectedRule,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        if (itemIndex) {
+          this.formArray.at(itemIndex).setValue(value);
+        } else {
+          const row = this.fb.group({
+            name: [value.name],
+            id: [uuidv4()],
+            targetWidget: [value.targetWidget],
+            event: [value.event],
+          });
+          this.formArray.push(row);
+        }
+        this.updateView();
+      }
+    });
   }
 
   /**
