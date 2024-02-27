@@ -7,6 +7,7 @@ import { Apollo } from 'apollo-angular';
 import { AuthService } from '../auth/auth.service';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
+import { CustomQuestionTypes } from '../../survey/custom-question-types';
 
 /**
  * Shared survey service.
@@ -52,11 +53,13 @@ export class FormService {
    * Initialize custom widgets / components we added on top of the form builder library.
    *
    * @param additionalQuestions Object narrowing the question types that the survey has to have
-   * @param additionalQuestions.customQuestions If the survey creator should contain custom questions
+   * @param additionalQuestions.customQuestions List of custom questions to load
    */
   initialize(
-    additionalQuestions: { customQuestions: boolean } = {
-      customQuestions: true,
+    additionalQuestions: {
+      customQuestions: Array<CustomQuestionTypes>;
+    } = {
+      customQuestions: Object.values(CustomQuestionTypes), // all questions by default
     }
   ) {
     initCustomSurvey(
