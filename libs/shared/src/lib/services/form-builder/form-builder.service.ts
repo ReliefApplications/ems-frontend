@@ -293,6 +293,9 @@ export class FormBuilderService {
       }
     }
 
+    // Set query params as variables
+    this.formHelpersService.addQueryParamsVariables(survey);
+
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;

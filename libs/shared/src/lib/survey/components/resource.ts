@@ -480,6 +480,11 @@ export const init = (
      * @param question The current resource question
      */
     onLoaded(question: QuestionResource): void {
+      (question.survey as any)?.onValueChanged.add((_: any, options: any) => {
+        if (options.name === question.name) {
+          question.value = options.value;
+        }
+      });
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }

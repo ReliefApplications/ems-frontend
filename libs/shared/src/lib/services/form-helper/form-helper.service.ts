@@ -31,6 +31,7 @@ import { WorkflowService } from '../workflow/workflow.service';
 import { ApplicationService } from '../application/application.service';
 import { DomService } from '../dom/dom.service';
 import { TemporaryFilesStorage } from '../form-builder/form-builder.service';
+import { Router } from '@angular/router';
 
 /**
  * Applies custom logic to survey data values.
@@ -93,6 +94,7 @@ export class FormHelpersService {
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
    * @param domService Shared dom service
+   * @param router Angular router service.
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -104,7 +106,8 @@ export class FormHelpersService {
     private downloadService: DownloadService,
     private workflowService: WorkflowService,
     private applicationService: ApplicationService,
-    private domService: DomService
+    private domService: DomService,
+    private router: Router
   ) {}
 
   /**
@@ -691,5 +694,19 @@ export class FormHelpersService {
 
     // After the workflow context is set, we clear it
     this.workflowService.setContext([]);
+  };
+
+  /**
+   * Adds any query parameters to the survey variables
+   * These variables are accessible using the variables {queryParam.<paramName>}
+   *
+   * @param survey Survey instance
+   */
+  public addQueryParamsVariables = (survey: SurveyModel) => {
+    const queryParams = this.router.parseUrl(this.router.url).queryParams;
+
+    Object.keys(queryParams).forEach((key) => {
+      survey.setVariable(`param.${key}`, queryParams[key]);
+    });
   };
 }
