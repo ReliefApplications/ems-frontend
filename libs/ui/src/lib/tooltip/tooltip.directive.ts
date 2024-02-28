@@ -46,6 +46,7 @@ export class TooltipDirective implements OnDestroy {
     'absolute',
     'z-[9999]',
     'break-words',
+    'pointer-events-none',
   ] as const;
   /** ShadowDomService current host */
   private currentHost!: any;
@@ -133,6 +134,15 @@ export class TooltipDirective implements OnDestroy {
     // set by the TooltipPositionDirective
     this.position =
       this.elementRef.nativeElement.dataset.tooltipPosition ?? 'bottom';
+
+    // Change the position to the left if it overflows at the bottom
+    if (
+      hostPos.bottom + tooltipHeight + this.tooltipSeparation >
+        window.innerHeight &&
+      this.position === 'bottom'
+    ) {
+      this.position = 'left';
+    }
 
     switch (this.position) {
       case 'top': {
