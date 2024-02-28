@@ -501,6 +501,9 @@ export class LayoutComponent
         }, 0);
       }
     }
+    if (e.onAttach) {
+      e.onAttach();
+    }
   }
 
   /**
@@ -551,6 +554,9 @@ export class LayoutComponent
       );
       e.currentStateOfContextFilters = newFilterValues;
       e.lastStateOfContextFilters = e.currentStateOfContextFilters;
+    }
+    if (e.onDetach) {
+      e.onDetach();
     }
   }
 

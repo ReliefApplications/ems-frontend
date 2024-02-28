@@ -336,7 +336,7 @@ export class MapComponent
    *
    * @returns cleaned settings
    */
-  private extractSettings(): MapConstructorSettings {
+  public extractSettings(): MapConstructorSettings {
     const mapSettings = omitBy(this.mapSettingsValue, isNil);
     // Settings initialization
     const initialState = get(mapSettings, 'initialState', {
