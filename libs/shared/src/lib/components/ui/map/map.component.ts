@@ -429,6 +429,7 @@ export class MapComponent
         ),
         initialState.viewpoint.zoom
       );
+      this.map.attributionControl.setPrefix('Leaflet');
 
       this.currentZoom = initialState.viewpoint.zoom;
       this.mapControlsService.addControlPlaceholders(this.map);
