@@ -26,7 +26,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { v4 as uuidv4 } from 'uuid';
 import { isNil } from 'lodash';
-import { WidgetAutomationEvent } from 'libs/shared/src/lib/models/automation.model';
+import { WidgetAutomationEvent } from '../../../../models/automation.model';
 
 /**
  * API settings for the widget
