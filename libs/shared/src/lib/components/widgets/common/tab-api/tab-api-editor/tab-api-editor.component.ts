@@ -17,7 +17,7 @@ import { WidgetAutomation } from '../../../../../models/automation.model';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { of, switchMap, takeUntil, tap } from 'rxjs';
 import { DashboardService } from '../../../../../services/dashboard/dashboard.service';
-import { MapLayersService } from 'libs/shared/src/lib/services/map/map-layers.service';
+import { MapLayersService } from '../../../../../services/map/map-layers.service';
 
 /**
  * Tab API editor dialog component
@@ -56,7 +56,7 @@ export class TabApiEditorComponent
   private availableEvents = ['expand', 'collapse', 'open', 'close', 'hide'];
   /** Events available for the current selected widget */
   currentEventsToSelect: string[] = [];
-  //
+  /** Current selected widget properties */
   selectedWidget!: any;
 
   /**

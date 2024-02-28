@@ -2302,7 +2302,7 @@
 				"delete": "Delete rule",
 				"edit": "Edit rule",
 				"empty": "No rules set",
-				"events": "Events",
+				"event": "Event",
 				"mapLayer": "Target layer of the selected map",
 				"name": "Name",
 				"rules": "Rules",
