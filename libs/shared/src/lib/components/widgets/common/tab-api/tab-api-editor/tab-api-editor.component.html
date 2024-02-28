@@ -19,30 +19,41 @@
           [placeholder]="'models.widget.automation.addName' | translate"
         />
       </div>
-      <div uiFormFieldDirective class="!m-0">
+      <div uiFormFieldDirective>
         <label>{{ 'models.widget.automation.target' | translate }}</label>
         <ui-select-menu formControlName="targetWidget">
-          <ui-select-option *ngFor="let option of widgets" [value]="option">
+          <ui-select-option *ngFor="let option of widgets" [value]="option.id">
             {{ option.name }}
           </ui-select-option>
         </ui-select-menu>
       </div>
-      <!-- <ng-container
-        *ngIf="
-          automationRuleForm.get('targetWidget')?.value && widgetLayers.length
-        "
-      > -->
-      <div uiFormFieldDirective class="!m-0">
+      <div [ngSwitch]="selectedWidget?.component">
+        <!-- Selection of type of content -->
+        <ng-container *ngSwitchCase="'map'">
+          <div uiFormFieldDirective>
+            <label>{{ 'models.widget.automation.mapLayer' | translate }}</label>
+            <ui-select-menu formControlName="layers">
+              <ui-select-option
+                *ngFor="let option of widgetLayers"
+                [value]="option.id"
+              >
+                {{ option.name }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </ng-container>
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'models.widget.automation.events' | translate }}</label>
         <ui-select-menu formControlName="event">
           <ui-select-option
-            *ngFor="let option of widgetLayers"
+            *ngFor="let option of currentEventsToSelect"
             [value]="option"
           >
             {{ option }}
           </ui-select-option>
         </ui-select-menu>
       </div>
-      <!-- </ng-container> -->
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

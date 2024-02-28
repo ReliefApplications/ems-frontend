@@ -25,6 +25,7 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { v4 as uuidv4 } from 'uuid';
+import { isNil } from 'lodash';
 
 /**
  * API settings for the widget
@@ -49,10 +50,9 @@ import { v4 as uuidv4 } from 'uuid';
     EmptyModule,
   ],
   templateUrl: './tab-api.component.html',
-  styleUrls: ['./tab-api.component.scss'],
 })
 export class TabApiComponent extends UnsubscribeComponent implements OnInit {
-  /** Sorting fields form array */
+  /** Rules form array */
   @Input() formArray!: FormArray;
   /** Widget settings form group */
   @Input() formGroup!: FormGroup;
@@ -93,24 +93,25 @@ export class TabApiComponent extends UnsubscribeComponent implements OnInit {
    */
   async addEditRule(itemIndex?: number): Promise<void> {
     let selectedRule = null;
-    if (itemIndex) {
+    if (!isNil(itemIndex)) {
       selectedRule = this.formArray.at(itemIndex);
     }
     const { TabApiEditorComponent } = await import(
       './tab-api-editor/tab-api-editor.component'
     );
     const dialogRef = this.dialog.open(TabApiEditorComponent, {
-      data: selectedRule,
+      data: selectedRule?.value,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        if (itemIndex) {
+        if (!isNil(itemIndex)) {
           this.formArray.at(itemIndex).setValue(value);
         } else {
           const row = this.fb.group({
             name: [value.name],
             id: [uuidv4()],
             targetWidget: [value.targetWidget],
+            layers: [value.layers],
             event: [value.event],
           });
           this.formArray.push(row);

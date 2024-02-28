@@ -2316,6 +2316,8 @@
 				"delete": "Supprimer la règle",
 				"edit": "Modifier le règle",
 				"empty": "Aucun règles de tri défini",
+				"events": "Evénements",
+				"mapLayer": "Couche cible de la carte sélectionnée",
 				"name": "Nom",
 				"rules": "Règles",
 				"target": "Widget cible de la règle",

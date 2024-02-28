@@ -2302,6 +2302,8 @@
 				"delete": "Delete rule",
 				"edit": "Edit rule",
 				"empty": "No rules set",
+				"events": "Events",
+				"mapLayer": "Target layer of the selected map",
 				"name": "Name",
 				"rules": "Rules",
 				"target": "Target widget of the rule",

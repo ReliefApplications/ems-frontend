@@ -25,11 +25,12 @@ import { GraphQLError } from 'graphql';
 export class DashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
-  /** Shared property to keep track of current loaded dashboard */
-  public currentDashboard: BehaviorSubject<Dashboard | null> =
-    new BehaviorSubject<Dashboard | null>(null);
-  /** Observable of current loaded dashboard */
-  public currentDashboard$ = this.currentDashboard.asObservable();
+  /** Shared property to keep track of current loaded dashboard widgets */
+  public currentDashboardWidgets: BehaviorSubject<any[]> = new BehaviorSubject<
+    any[]
+  >([]);
+  /** Observable of current loaded dashboard widgets */
+  public currentDashboardWidgets$ = this.currentDashboardWidgets.asObservable();
 
   /**
    * Shared dashboard service. Handles dashboard events.

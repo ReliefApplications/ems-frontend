@@ -34,9 +34,9 @@
           *cdkCellDef="let element; let rowIndex = index"
           [formGroupName]="rowIndex"
         >
-          <div uiFormFieldDirective class="!m-0">
-            <input [disabled]="true" formControlName="name" />
-          </div>
+          <p>
+            {{ formArray.at(rowIndex)!.get('name')?.value }}
+          </p>
         </td>
       </ng-container>
       <ng-container cdkColumnDef="actions">

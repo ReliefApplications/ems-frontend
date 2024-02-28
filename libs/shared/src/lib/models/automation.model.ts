@@ -3,5 +3,6 @@ export interface WidgetAutomation {
   id?: string;
   name?: string;
   targetWidget: string;
+  layers?: string[];
   event: any;
 }

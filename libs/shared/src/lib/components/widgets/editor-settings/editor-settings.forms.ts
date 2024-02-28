@@ -25,6 +25,7 @@ export const createAutomationRulesForm = (value: any) => {
     id: get<string>(value, 'id', uuidv4()),
     name: get<string>(value, 'name', ''),
     targetWidget: get<string>(value, 'targetWidget', ''),
+    layers: get<string[]>(value, 'layers', []),
     event: get<string>(value, 'event', ''),
   });
 };
