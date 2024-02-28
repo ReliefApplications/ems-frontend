@@ -183,7 +183,7 @@ export const init = (
               updatePickerInstance('min');
               updatePickerInstance('max');
 
-              const dateRangeObserver = new MutationObserver(
+              question._dateRangeObserver = new MutationObserver(
                 (mutationsList) => {
                   mutationsList
                     .filter((mutation) =>
@@ -196,7 +196,9 @@ export const init = (
                     });
                 }
               );
-              dateRangeObserver.observe(originalInput, { attributes: true });
+              question._dateRangeObserver.observe(originalInput, {
+                attributes: true,
+              });
             }
 
             pickerInstance.readonly = question.isReadOnly;
@@ -337,6 +339,9 @@ export const init = (
           'inputType',
           currentQuestionElementId
         );
+        if (question._dateRangeObserver) {
+          question._dateRangeObserver.disconnect();
+        }
       }
     },
   };
