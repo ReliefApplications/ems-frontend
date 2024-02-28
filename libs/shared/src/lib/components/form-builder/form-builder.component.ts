@@ -88,6 +88,27 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 ];
 
 /**
+ * Navigation tab properties (will be disabled).
+ */
+const NAVIGATION_PROPERTIES = [
+  'showPreviewBeforeComplete',
+  'pagePrevText',
+  'pageNextText',
+  'completeText',
+  'previewText',
+  'editText',
+  'startSurveyText',
+  'showNavigationButtons',
+  'showPrevButton',
+  'firstPageIsStarted',
+  'goNextPageAutomatic',
+  'showProgressBar',
+  'progressBarType',
+  'questionsOnPageMode',
+  'showTOC',
+];
+
+/**
  * Class name to add to core field question.
  */
 const CORE_FIELD_CLASS = 'core-question';
@@ -227,6 +248,15 @@ export class FormBuilderComponent
     };
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
+    // Disable navigation properties
+    this.surveyCreator.onShowingProperty.add(function (sender, options) {
+      if (NAVIGATION_PROPERTIES.includes(options.property.name)) {
+        options.canShow = false;
+      }
+    });
+    // Reset property grid to let it handle onShowingProperty event (cf doc)
+    this.surveyCreator.JSON = {};
 
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (_: any, options: any) => {
