@@ -1,3 +1,20 @@
+# [2.9.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.3...v2.9.0) (2024-02-23)
+
+
+### Bug Fixes
+
+* button action would redirect to incorrect page on web element ([8faadb2](https://github.com/ReliefApplications/ems-frontend/commit/8faadb2aeae26aef64895a79480b15c3b9d6dfbb))
+* dashboard context value select could sometimes display empty value ([#2405](https://github.com/ReliefApplications/ems-frontend/issues/2405)) ([2bb449f](https://github.com/ReliefApplications/ems-frontend/commit/2bb449fc4438784ac0ee69f36aa5cb479e753271))
+* min and max dates not taken into account in forms ([#2396](https://github.com/ReliefApplications/ems-frontend/issues/2396)) ([bb03549](https://github.com/ReliefApplications/ems-frontend/commit/bb03549698e216d1b0cc2dd4e330f3e4cdfc1aee))
+* ref data focus on form builder init ([#2397](https://github.com/ReliefApplications/ems-frontend/issues/2397)) ([6672ba3](https://github.com/ReliefApplications/ems-frontend/commit/6672ba3fa0e414f6d848c0759c8b83a6c878b3f3))
+* tagbox would not correctly indicate values, when value passed from another element ([d4a603b](https://github.com/ReliefApplications/ems-frontend/commit/d4a603b6ff550645694f0e93701c82ec4a764c6c))
+
+
+### Features
+
+* allow questions using reference data to be depending between themselves ([#2384](https://github.com/ReliefApplications/ems-frontend/issues/2384)) ([89ce3f7](https://github.com/ReliefApplications/ems-frontend/commit/89ce3f78994b6b74745fa8ca3011064051009e6d))
+* implementation of choicesByGraphQL questions ([#2407](https://github.com/ReliefApplications/ems-frontend/issues/2407)) ([56c75f6](https://github.com/ReliefApplications/ems-frontend/commit/56c75f6c8cb11c1a678a0938473bdba273169735))
+
 ## [2.8.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.2...v2.8.3) (2024-02-15)
 
 

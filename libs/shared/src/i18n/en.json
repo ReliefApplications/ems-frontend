@@ -174,7 +174,7 @@
 		},
 		"errors": {
 			"few": "Errors",
-			"invalidJson": "Invalid JSON",
+			"invalidJson": "Please provide a valid JSON",
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
 		"exitFullscreen": "Exit Fullscreen",

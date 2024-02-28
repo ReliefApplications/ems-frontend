@@ -40,6 +40,7 @@ export class ReferenceDataDropdownComponent
    * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
    * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
    * @param {Apollo} apollo - Apollo - This is the Apollo service that we'll use to make our GraphQL queries.
+   * @param {ReferenceDataService} referenceDataService Shared reference data service
    */
   constructor(
     changeDetectorRef: ChangeDetectorRef,

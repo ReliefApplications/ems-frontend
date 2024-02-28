@@ -9,7 +9,7 @@ import { CustomPropertyGridComponentTypes } from '../components/utils/components
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { HttpClient } from '@angular/common/http';
 import get from 'lodash/get';
-import { firstValueFrom } from 'rxjs';
+import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
@@ -101,8 +101,18 @@ export const init = (): void => {
  * @param http Http client
  */
 export const render = (questionElement: Question, http: HttpClient): void => {
+  // Create a new subject in the question
+  // Subject will close the http post request when choices are fetched, to prevent wrong choices to be visible
+  if (!questionElement.refresh$) {
+    questionElement.refresh$ = new Subject();
+  }
   if (isSelectQuestion(questionElement)) {
     const updateChoices = async () => {
+      questionElement.refresh$.next();
+      if (questionElement._instance) {
+        questionElement._instance.loading = true;
+        questionElement._instance.disabled = true;
+      }
       const valueName = get(questionElement, `${prefix}ValueName`);
       const titleName = get(questionElement, `${prefix}TitleName`);
       const variables = graphQLVariables(
@@ -115,49 +125,64 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         variables
       );
       firstValueFrom(
-        http.post(get(questionElement, `${prefix}Url`), {
-          query: get(questionElement, `${prefix}Query`),
-          variables,
-        })
-      ).then((result) => {
-        questionElement.setPropertyValue(
-          '_graphQLVariables',
-          graphQLVariables(questionElement, `${prefix}VariableMapping`)
-        );
-        // this is to avoid that the choices appear on the 'choices' tab
-        // and also to avoid the choices being sent to the server
-        questionElement.choices = [];
-        const choices = jsonpath
-          .query(result, get(questionElement, `${prefix}Path`))
-          .map((x) => ({
-            value: get(x, valueName),
-            text: get(x, titleName),
-          }));
-        const choiceItems = choices.map((choice) => new ItemValue(choice));
-        questionElement.setPropertyValue('visibleChoices', choiceItems);
-        const value = questionElement.value;
-        if (questionElement.getType() === 'tagbox') {
-          if (isArray(value)) {
-            const updatedValue = choices
-              .filter((choice) => value.find((x) => isEqual(x, choice.value)))
-              .map((choice) => choice.value);
-            questionElement.value = updatedValue;
-            questionElement._instance.value = updatedValue;
-          }
-        }
-        if (questionElement.getType() === 'dropdown') {
-          if (value) {
-            const updatedValue = choices.find((choice) =>
-              isEqual(value, choice.value)
-            )?.value;
-            if (!isNil(updatedValue)) {
+        http
+          .post(get(questionElement, `${prefix}Url`), {
+            query: get(questionElement, `${prefix}Query`),
+            variables,
+          })
+          // Cancel the request when refreshing
+          .pipe(takeUntil(questionElement.refresh$))
+      )
+        .then((result) => {
+          questionElement.setPropertyValue(
+            '_graphQLVariables',
+            graphQLVariables(questionElement, `${prefix}VariableMapping`)
+          );
+          // this is to avoid that the choices appear on the 'choices' tab
+          // and also to avoid the choices being sent to the server
+          questionElement.choices = [];
+          const choices = jsonpath
+            .query(result, get(questionElement, `${prefix}Path`))
+            .map((x) => ({
+              value: get(x, valueName),
+              text: get(x, titleName),
+            }));
+          const choiceItems = choices.map((choice) => new ItemValue(choice));
+          questionElement.setPropertyValue('visibleChoices', choiceItems);
+          const value = questionElement.value;
+          if (questionElement.getType() === 'tagbox') {
+            if (isArray(value)) {
+              const updatedValue = choices
+                .filter((choice) => value.find((x) => isEqual(x, choice.value)))
+                .map((choice) => choice.value);
               questionElement.value = updatedValue;
-            } else {
-              questionElement.value = undefined;
+              questionElement._instance.value = updatedValue;
             }
           }
-        }
-      });
+          if (questionElement.getType() === 'dropdown') {
+            if (value) {
+              const updatedValue = choices.find((choice) =>
+                isEqual(value, choice.value)
+              )?.value;
+              if (!isNil(updatedValue)) {
+                questionElement.value = updatedValue;
+              } else {
+                questionElement.value = undefined;
+              }
+            }
+          }
+        })
+        .finally(() => {
+          if (questionElement._instance) {
+            const isDisplay =
+              (questionElement.survey as SurveyModel).mode === 'display';
+            questionElement._instance.loading = false;
+            questionElement._instance.readonly =
+              isDisplay || questionElement.readOnly;
+            questionElement._instance.disabled =
+              isDisplay || questionElement.readOnly;
+          }
+        });
     };
 
     if (
@@ -197,12 +222,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
             '_graphQLVariables',
             graphQLVariables(questionElement, `${prefix}VariableMapping`)
           );
-          questionElement._instance.loading = true;
-          questionElement._instance.disabled = true;
-          await updateChoices();
-          questionElement._instance.loading = false;
-          questionElement._instance.disabled = questionElement.readOnly;
-          // updateSelectedChoices();
+          updateChoices();
         }
       });
     }
