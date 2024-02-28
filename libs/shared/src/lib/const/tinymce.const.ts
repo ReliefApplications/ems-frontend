@@ -1,5 +1,6 @@
 import { RawEditorSettings } from 'tinymce';
 import { createFontAwesomeIcon } from '../components/ui/map/utils/create-div-icon';
+import { WidgetAutomation } from '../models/automation.model';
 
 /** Language tinymce keys paired with the default ones */
 export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
@@ -296,6 +297,76 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
       scope: 'node',
       position: 'selection',
       items: 'contextFilter resetFilters',
+    });
+
+    // API rule set
+    const iconAPI = createFontAwesomeIcon(
+      {
+        icon: 'plug',
+        color: 'none',
+        opacity: 1,
+        size: 21,
+      },
+      (editor.editorManager as any).DOM.doc
+    );
+    editor.ui.registry.addIcon('api-icon', iconAPI.innerHTML);
+    editor.ui.registry.addButton('apiRule', {
+      icon: 'api-icon',
+      tooltip: 'Add automation rule',
+      onAction: async () => {
+        editor.windowManager.open({
+          title: 'Set rule',
+          body: {
+            type: 'panel',
+            items: [
+              {
+                type: 'listbox',
+                name: 'selectedRule',
+                label: 'Rule',
+                items: editor.settings.rule_list.map(
+                  (event: WidgetAutomation) => ({
+                    text: event.name,
+                    value: event.id,
+                  })
+                ),
+              },
+            ],
+          },
+          initialData: {
+            selectedRule: '',
+          },
+          onSubmit: (api) => {
+            const data = api.getData();
+            const selectedRule = editor.settings.rule_list.filter(
+              (event: WidgetAutomation) => event.id === data.selectedRule
+            )?.[0];
+            if (selectedRule) {
+              const selectedContent = editor.selection.getNode();
+              selectedContent.setAttribute('data-rule-target', selectedRule.id);
+            }
+            api.close();
+          },
+          buttons: [
+            {
+              text: 'Close',
+              type: 'cancel',
+            },
+            {
+              text: 'Insert',
+              type: 'submit',
+              name: 'submit',
+              primary: true,
+            },
+          ],
+        });
+      },
+    });
+
+    editor.ui.registry.addContextToolbar('api', {
+      predicate: () => editor.selection.getContent()?.length > 0,
+      scope: 'node',
+      position: 'selection',
+      items: 'apiRule',
     });
   },
 };

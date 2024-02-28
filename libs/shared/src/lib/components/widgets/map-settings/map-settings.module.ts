@@ -16,7 +16,6 @@ import {
 import { TooltipModule } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { PortalModule } from '@angular/cdk/portal';
-import { TabApiComponent } from '../common/tab-api/tab-api.component';
 
 /** Module for map settings component */
 @NgModule({
@@ -41,7 +40,6 @@ import { TabApiComponent } from '../common/tab-api/tab-api.component';
     TooltipModule,
     DisplaySettingsComponent,
     PortalModule,
-    TabApiComponent,
   ],
   exports: [MapSettingsComponent],
 })

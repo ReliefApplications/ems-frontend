@@ -102,6 +102,9 @@ export class EditorSettingsComponent
       this.buildSettingsForm();
     }
 
+    this.editor.rule_list =
+      this.widgetFormGroup?.get('automationRules')?.value ?? [];
+
     // Initialize the selected resource, layout and record from the form
     const resourceID = this.widgetFormGroup?.get('resource')?.value;
     const layoutID = this.widgetFormGroup?.get('layout')?.value;
@@ -165,6 +168,12 @@ export class EditorSettingsComponent
       .subscribe((aggregations) => {
         this.widget.settings.aggregations = aggregations;
         this.updateFields();
+      });
+    // Refresh editor rule list whenever automation rules changes
+    this.widgetFormGroup.controls.automationRules.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((automationRules) => {
+        this.editor.rule_list = automationRules ?? [];
       });
   }
 

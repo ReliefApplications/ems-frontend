@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabMainModule } from './tab-main/tab-main.module';
-import { TabApiComponent } from '../common/tab-api/tab-api.component';
 
 /**
  * Tabs widget settings module.
@@ -23,7 +22,6 @@ import { TabApiComponent } from '../common/tab-api/tab-api.component';
     ReactiveFormsModule,
     TabsModule,
     TabMainModule,
-    TabApiComponent,
   ],
   exports: [TabsSettingsComponent],
 })
