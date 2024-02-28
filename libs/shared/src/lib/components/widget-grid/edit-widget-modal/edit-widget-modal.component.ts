@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+import { takeUntil } from 'rxjs';
 import {
   Component,
   Inject,
@@ -10,11 +12,10 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { WidgetSettingsType } from '../../../models/dashboard.model';
 
 /** Model for dialog data */
@@ -72,6 +73,11 @@ export class EditWidgetModalComponent
         environmentInjector: this.environmentInjector,
       }
     );
+
+    // Sets the widget id if not set
+    if (!this.data.widget.id) {
+      this.data.widget.id = `widget-${uuidv4()}`;
+    }
     /** Set current widget data and build up settings form in order to be ready once view is added to the DOM */
     this.componentRef.instance.widget = this.data.widget;
     this.componentRef.instance.buildSettingsForm();
