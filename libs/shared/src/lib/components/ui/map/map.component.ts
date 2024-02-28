@@ -1054,14 +1054,19 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
+   * @param options additional options
+   * @param options.skipDefaultView skip default view ( map won't change zoom / bounds )
    * @returns loaded basemaps and layers as Promise
    */
-  public setWebmap(webmap: any): Promise<{
+  public setWebmap(
+    webmap: any,
+    options?: { skipDefaultView: boolean }
+  ): Promise<{
     basemaps: TreeObject[];
     layers: TreeObject[];
   }> {
     this.arcGisWebMap = webmap;
-    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
   }
 
   /** Set the new layers based on the filter value */

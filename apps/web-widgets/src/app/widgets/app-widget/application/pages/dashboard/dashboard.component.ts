@@ -269,7 +269,9 @@ export class DashboardComponent
         });
         if (glLayersCount > 0) {
           const settings = content.mapComponent.extractSettings();
-          content.mapComponent.setWebmap(settings.arcGisWebMap);
+          content.mapComponent.setWebmap(settings.arcGisWebMap, {
+            skipDefaultView: true,
+          });
         }
       }
     });
