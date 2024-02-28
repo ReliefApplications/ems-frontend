@@ -2311,16 +2311,19 @@
 			"add": "Ajouter un widget",
 			"automation": {
 				"add": "Ajouter une règle",
+				"addEvent": "Add evénement",
 				"addName": "Ajouter un nom pour la règlee",
 				"create": "Créer une règle",
 				"delete": "Supprimer la règle",
+				"deleteEvent": "Supprimer l'evénement",
 				"edit": "Modifier le règle",
 				"empty": "Aucun règles de tri défini",
 				"event": "Evénement",
+				"events": "Evénements",
 				"mapLayer": "Couche cible de la carte sélectionnée",
 				"name": "Nom",
 				"rules": "Règles",
-				"target": "Widget cible de la règle",
+				"target": "Widget cible de l'evénement",
 				"title": "Automatisation"
 			},
 			"chart": {

@@ -26,6 +26,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { v4 as uuidv4 } from 'uuid';
 import { isNil } from 'lodash';
+import { WidgetAutomationEvent } from 'libs/shared/src/lib/models/automation.model';
 
 /**
  * API settings for the widget
@@ -104,16 +105,23 @@ export class TabApiComponent extends UnsubscribeComponent implements OnInit {
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
+        const row = this.fb.group({
+          name: [value.name],
+          id: [!isNil(itemIndex) ? value.id : uuidv4()],
+          events: this.fb.array(
+            value.events.map((event: WidgetAutomationEvent) =>
+              this.fb.group({
+                targetWidget: [event.targetWidget],
+                layers: [event.layers],
+                event: [event.event],
+              })
+            )
+          ),
+        });
         if (!isNil(itemIndex)) {
-          this.formArray.at(itemIndex).setValue(value);
+          this.formArray.removeAt(itemIndex);
+          this.formArray.insert(itemIndex, row);
         } else {
-          const row = this.fb.group({
-            name: [value.name],
-            id: [uuidv4()],
-            targetWidget: [value.targetWidget],
-            layers: [value.layers],
-            event: [value.event],
-          });
           this.formArray.push(row);
         }
         this.updateView();

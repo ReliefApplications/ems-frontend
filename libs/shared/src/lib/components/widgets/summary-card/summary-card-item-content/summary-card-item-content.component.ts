@@ -19,6 +19,8 @@ import { takeUntil } from 'rxjs';
 import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
 import { ContextService } from '../../../../services/context/context.service';
 import { Router } from '@angular/router';
+import { WidgetAutomationRule } from '../../../../models/automation.model';
+import { WidgetService } from '../../../../services/widget/widget.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -44,6 +46,8 @@ export class SummaryCardItemContentComponent
   @Input() styles: any[] = [];
   /** Should style apply to whole card */
   @Input() wholeCardStyles = false;
+  /** Automation rules set for the summary cads widget */
+  @Input() automationRules: any[] = [];
   /** Reference to html content component */
   @ViewChild(HtmlWidgetContentComponent)
   htmlContentComponent!: HtmlWidgetContentComponent;
@@ -55,6 +59,101 @@ export class SummaryCardItemContentComponent
   private timeoutListener!: NodeJS.Timeout;
 
   /**
+   * Listen to click events from host element, if record editor is clicked, open record editor modal
+   *
+   * @param event Click event from host element
+   */
+  @HostListener('click', ['$event'])
+  onContentClick(event: any) {
+    let filterButtonIsClicked = !!event.target.dataset.filterField;
+    let ruleButtonIsClicked = !!event.target.dataset.ruleTarget;
+    let currentNode = event.target;
+    if (!filterButtonIsClicked && !ruleButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-summary-card-item-content' &&
+        !filterButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        filterButtonIsClicked = !!currentNode.dataset.filterField;
+      }
+    }
+    // If filter button is not found and rule button neither, try to find rule button
+    if (!filterButtonIsClicked && !ruleButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-summary-card-item-content' &&
+        !ruleButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        ruleButtonIsClicked = !!currentNode.dataset.ruleTarget;
+      }
+    }
+    if (filterButtonIsClicked) {
+      const { filterField, filterValue } = currentNode.dataset;
+      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
+      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
+      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
+      const currentFilters = { ...this.contextService.filter.getValue() };
+      // If current filters contains the field but there is no value set, delete it
+      if (filterField in currentFilters && !cleanFilterValue) {
+        delete currentFilters[filterField];
+      }
+      // Update filter object with existing fields and values
+      const updatedFilters = {
+        ...(currentFilters && { ...currentFilters }),
+        ...(cleanFilterValue && {
+          [filterField]: cleanFilterValue,
+        }),
+      };
+      this.contextService.filter.next(updatedFilters);
+    } else if (ruleButtonIsClicked) {
+      const { ruleTarget } = currentNode.dataset;
+      const selectedAutomationRule = this.automationRules.find(
+        (ar: WidgetAutomationRule) => ar.id === ruleTarget
+      );
+      this.widgetService.widgetRuleEvent.next(selectedAutomationRule);
+    } else {
+      const content = this.htmlContentComponent.el.nativeElement;
+      const editorTriggers = content.querySelectorAll('.record-editor');
+      editorTriggers.forEach((recordEditor: HTMLElement) => {
+        if (recordEditor.contains(event.target)) {
+          this.openEditRecordModal();
+        }
+      });
+    }
+
+    let resetButtonIsClicked = !!event.target.dataset.filterReset;
+    currentNode = event.target;
+    if (!resetButtonIsClicked) {
+      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
+      while (
+        currentNode.localName !== 'shared-summary-card-item-content' &&
+        !resetButtonIsClicked
+      ) {
+        currentNode = this.renderer.parentNode(currentNode);
+        resetButtonIsClicked = !!currentNode.dataset.filterReset;
+      }
+    }
+    if (resetButtonIsClicked) {
+      // Get all the fields that need to be cleared
+      const resetList = currentNode.dataset.filterReset
+        .split(';')
+        .map((item: any) => item.trim());
+      const updatedFilter: any = {};
+      for (const [key, value] of Object.entries(
+        this.contextService.filter.getValue()
+      )) {
+        // If key is not in list of fields that need to be cleared, add to updated Filter
+        if (!resetList.includes(key)) {
+          updatedFilter[key] = value;
+        }
+      }
+      this.contextService.filter.next(updatedFilter);
+    }
+  }
+
+  /**
    * Content component of Single Item of Summary Card.
    *
    * @param dataTemplateService Shared data template service, used to render content from template
@@ -64,6 +163,7 @@ export class SummaryCardItemContentComponent
    * @param renderer Angular renderer2 service
    * @param el Element ref
    * @param router Angular router
+   * @param widgetService Widget service
    */
   constructor(
     private dataTemplateService: DataTemplateService,
@@ -72,7 +172,8 @@ export class SummaryCardItemContentComponent
     private contextService: ContextService,
     private renderer: Renderer2,
     private el: ElementRef,
-    private router: Router
+    private router: Router,
+    private widgetService: WidgetService
   ) {
     super();
   }
@@ -132,83 +233,6 @@ export class SummaryCardItemContentComponent
         });
       });
     }, 500);
-  }
-
-  /**
-   * Listen to click events from host element, if record editor is clicked, open record editor modal
-   *
-   * @param event Click event from host element
-   */
-  @HostListener('click', ['$event'])
-  onContentClick(event: any) {
-    let filterButtonIsClicked = !!event.target.dataset.filterField;
-    let currentNode = event.target;
-    if (!filterButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-summary-card-item-content' &&
-        !filterButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        filterButtonIsClicked = !!currentNode.dataset.filterField;
-      }
-    }
-    if (filterButtonIsClicked) {
-      const { filterField, filterValue } = currentNode.dataset;
-      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
-      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
-      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
-      const currentFilters = { ...this.contextService.filter.getValue() };
-      // If current filters contains the field but there is no value set, delete it
-      if (filterField in currentFilters && !cleanFilterValue) {
-        delete currentFilters[filterField];
-      }
-      // Update filter object with existing fields and values
-      const updatedFilters = {
-        ...(currentFilters && { ...currentFilters }),
-        ...(cleanFilterValue && {
-          [filterField]: cleanFilterValue,
-        }),
-      };
-      this.contextService.filter.next(updatedFilters);
-    } else {
-      const content = this.htmlContentComponent.el.nativeElement;
-      const editorTriggers = content.querySelectorAll('.record-editor');
-      editorTriggers.forEach((recordEditor: HTMLElement) => {
-        if (recordEditor.contains(event.target)) {
-          this.openEditRecordModal();
-        }
-      });
-    }
-
-    let resetButtonIsClicked = !!event.target.dataset.filterReset;
-    currentNode = event.target;
-    if (!resetButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-summary-card-item-content' &&
-        !resetButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        resetButtonIsClicked = !!currentNode.dataset.filterReset;
-      }
-    }
-    if (resetButtonIsClicked) {
-      // Get all the fields that need to be cleared
-      const resetList = currentNode.dataset.filterReset
-        .split(';')
-        .map((item: any) => item.trim());
-      const updatedFilter: any = {};
-      for (const [key, value] of Object.entries(
-        this.contextService.filter.getValue()
-      )) {
-        // If key is not in list of fields that need to be cleared, add to updated Filter
-        if (!resetList.includes(key)) {
-          updatedFilter[key] = value;
-        }
-      }
-      this.contextService.filter.next(updatedFilter);
-    }
   }
 
   /**

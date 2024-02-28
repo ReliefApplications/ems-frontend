@@ -2297,16 +2297,19 @@
 			"add": "Add a Widget",
 			"automation": {
 				"add": "Add rule",
+				"addEvent": "Add event",
 				"addName": "Add a name for the rule",
 				"create": "Create rule",
 				"delete": "Delete rule",
+				"deleteEvent": "Delete event",
 				"edit": "Edit rule",
 				"empty": "No rules set",
 				"event": "Event",
+				"events": "Events",
 				"mapLayer": "Target layer of the selected map",
 				"name": "Name",
 				"rules": "Rules",
-				"target": "Target widget of the rule",
+				"target": "Target widget of the event",
 				"title": "Automation"
 			},
 			"chart": {

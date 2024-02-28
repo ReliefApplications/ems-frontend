@@ -3,6 +3,8 @@ import get from 'lodash/get';
 import { RestService } from '../rest/rest.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { Subject } from 'rxjs';
+import { WidgetAutomationRule } from '../../models/automation.model';
 
 /**
  * Shared widget service.
@@ -13,6 +15,11 @@ import { ShadowDomService } from '@oort-front/ui';
   providedIn: 'root',
 })
 export class WidgetService {
+  /** Widget rule event trigger */
+  public widgetRuleEvent = new Subject<WidgetAutomationRule>();
+  /** Widget rule event observable */
+  public widgetRuleEvent$ = this.widgetRuleEvent.asObservable();
+
   /**
    * Shared widget service.
    *

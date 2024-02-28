@@ -139,6 +139,20 @@ const createCardForm = (value?: any) => {
           disabled: !isNil(get<string | null>(value, 'referenceData', null)),
         },
       ],
+      automationRules: fb.array(
+        get<any[]>(value, 'automationRules', []).map((automationRule: any) => {
+          return fb.group({
+            name: get<any[]>(automationRule, 'name', []),
+            id: get<any[]>(automationRule, 'id', []),
+            events: fb.array(
+              get<any[]>(automationRule, 'events', []).map(
+                (automationRule: any) =>
+                  createAutomationRulesForm(automationRule)
+              )
+            ),
+          });
+        })
+      ),
       useStyles: get<boolean>(value, 'useStyles', true),
       wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),
       usePadding: get<boolean>(value, 'usePadding', true),
@@ -179,4 +193,18 @@ const createCardForm = (value?: any) => {
     formGroup.updateValueAndValidity();
   });
   return formGroup;
+};
+
+/**
+ * Create a new template aggregation form
+ *
+ * @param value previous value, if any
+ * @returns form group
+ */
+const createAutomationRulesForm = (value: any) => {
+  return fb.group({
+    targetWidget: get<string>(value, 'targetWidget', ''),
+    layers: get<string[]>(value, 'layers', []),
+    event: get<string>(value, 'event', ''),
+  });
 };

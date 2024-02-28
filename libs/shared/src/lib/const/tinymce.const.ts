@@ -1,6 +1,6 @@
 import { RawEditorSettings } from 'tinymce';
 import { createFontAwesomeIcon } from '../components/ui/map/utils/create-div-icon';
-import { WidgetAutomation } from '../models/automation.model';
+import { WidgetAutomationRule } from '../models/automation.model';
 
 /** Language tinymce keys paired with the default ones */
 export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
@@ -324,7 +324,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
                 name: 'selectedRule',
                 label: 'Rule',
                 items: editor.settings.rule_list.map(
-                  (event: WidgetAutomation) => ({
+                  (event: WidgetAutomationRule) => ({
                     text: event.name,
                     value: event.id,
                   })
@@ -337,12 +337,12 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           },
           onSubmit: (api) => {
             const data = api.getData();
-            const selectedRule = editor.settings.rule_list.filter(
-              (event: WidgetAutomation) => event.id === data.selectedRule
-            )?.[0];
-            if (selectedRule) {
+            if (data.selectedRule) {
               const selectedContent = editor.selection.getNode();
-              selectedContent.setAttribute('data-rule-target', selectedRule.id);
+              selectedContent.setAttribute(
+                'data-rule-target',
+                data.selectedRule
+              );
             }
             api.close();
           },

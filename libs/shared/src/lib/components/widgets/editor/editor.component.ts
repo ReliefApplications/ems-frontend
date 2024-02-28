@@ -37,7 +37,8 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { ContextService } from '../../../services/context/context.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { Router } from '@angular/router';
-import { WidgetAutomation } from '../../../models/automation.model';
+import { WidgetAutomationRule } from '../../../models/automation.model';
+import { WidgetService } from '../../../services/widget/widget.service';
 
 /**
  * Text widget component using Tinymce.
@@ -152,10 +153,10 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       this.contextService.filter.next(updatedFilters);
     } else if (ruleButtonIsClicked) {
       const { ruleTarget } = currentNode.dataset;
-      const selectedAutomationRule = this.settings.automationRules.filter(
-        (ar: WidgetAutomation) => ar.id === ruleTarget
+      const selectedAutomationRule = this.settings.automationRules.find(
+        (ar: WidgetAutomationRule) => ar.id === ruleTarget
       );
-      console.log('selected: ', selectedAutomationRule);
+      this.widgetService.widgetRuleEvent.next(selectedAutomationRule);
     } else {
       const content = this.htmlContentComponent.el.nativeElement;
       const editorTriggers = content.querySelectorAll('.record-editor');
@@ -212,6 +213,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param aggregationService Shared aggregation service
    * @param el Element ref
    * @param router Angular router
+   * @param widgetService Widget service
    */
   constructor(
     private apollo: Apollo,
@@ -226,7 +228,8 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private renderer: Renderer2,
     private aggregationService: AggregationService,
     private el: ElementRef,
-    private router: Router
+    private router: Router,
+    private widgetService: WidgetService
   ) {
     super();
   }

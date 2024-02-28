@@ -20,10 +20,8 @@ const DEFAULT_CONTEXT_FILTER = `{
  * @param value previous value, if any
  * @returns form group
  */
-export const createAutomationRulesForm = (value: any) => {
+const createAutomationRulesForm = (value: any) => {
   return fb.group({
-    id: get<string>(value, 'id', uuidv4()),
-    name: get<string>(value, 'name', ''),
     targetWidget: get<string>(value, 'targetWidget', ''),
     layers: get<string[]>(value, 'layers', []),
     event: get<string>(value, 'event', ''),
@@ -89,9 +87,18 @@ export const createEditorForm = (id: string, value: any) => {
         },
       ],
       automationRules: fb.array(
-        get<any[]>(value, 'automationRules', []).map((automationRule: any) =>
-          createAutomationRulesForm(automationRule)
-        )
+        get<any[]>(value, 'automationRules', []).map((automationRule: any) => {
+          return fb.group({
+            name: get<any[]>(automationRule, 'name', []),
+            id: get<any[]>(automationRule, 'id', []),
+            events: fb.array(
+              get<any[]>(automationRule, 'events', []).map(
+                (automationRule: any) =>
+                  createAutomationRulesForm(automationRule)
+              )
+            ),
+          });
+        })
       ),
       // Style
       useStyles: get<boolean>(value, 'useStyles', true),

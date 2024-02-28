@@ -22,6 +22,11 @@ import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 import { WidgetService } from '../../services/widget/widget.service';
+import { filter, map } from 'rxjs';
+import {
+  WidgetAutomationEvent,
+  WidgetAutomationRule,
+} from '../../models/automation.model';
 
 /** Component for the widgets */
 @Component({
@@ -131,6 +136,46 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         }
       })
       .finally(() => (this.loading = false));
+    this.widgetService.widgetRuleEvent$
+      .pipe(
+        filter((event: WidgetAutomationRule) => {
+          // If one of the events in the rule targets this widget, continue
+          return event.events.some(
+            (eventItem) => eventItem.targetWidget === this.widget.settings.id
+          );
+        }),
+        map((event: WidgetAutomationRule) => {
+          return {
+            ...event,
+            events: event.events.filter(
+              (eventItem) => eventItem.targetWidget === this.widget.settings.id
+            ),
+          };
+        })
+      )
+      .subscribe((event: WidgetAutomationRule) => {
+        console.log(event);
+        event.events.forEach((eventItem: WidgetAutomationEvent) => {
+          switch (eventItem.event) {
+            case 'expand':
+              if (this.expandable && !this.expanded) {
+                this.onResize();
+              }
+              break;
+            case 'collapse':
+              if (this.expandable && this.expanded) {
+                this.onResize();
+              }
+              break;
+            case 'show':
+              break;
+            case 'hide':
+              break;
+            default:
+              break;
+          }
+        });
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

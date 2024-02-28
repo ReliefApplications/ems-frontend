@@ -1,61 +1,101 @@
 <ui-dialog size="big">
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">
-      {{
-        (data
-          ? 'models.widget.automation.edit'
-          : 'models.widget.automation.create'
-        ) | translate
-      }}
-    </h3>
+    <div uiFormFieldDirective>
+      <label>{{ 'models.widget.automation.name' | translate }}</label>
+      <input
+        [formControl]="automationRuleForm.controls.name"
+        type="text"
+        [placeholder]="'models.widget.automation.addName' | translate"
+      />
+    </div>
+    <div class="flex justify-between">
+      <h3 class="font-semibold">
+        {{ 'models.widget.automation.events' | translate }}
+      </h3>
+      <ui-button
+        class="mb-6"
+        category="secondary"
+        variant="primary"
+        (click)="addEvent()"
+      >
+        {{ 'models.widget.automation.addEvent' | translate }}
+      </ui-button>
+    </div>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form [formGroup]="automationRuleForm" class="flex flex-col">
-      <div uiFormFieldDirective>
-        <label>{{ 'models.widget.automation.name' | translate }}</label>
-        <input
-          formControlName="name"
-          type="text"
-          [placeholder]="'models.widget.automation.addName' | translate"
-        />
-      </div>
-      <div uiFormFieldDirective>
-        <label>{{ 'models.widget.automation.target' | translate }}</label>
-        <ui-select-menu formControlName="targetWidget">
-          <ui-select-option *ngFor="let option of widgets" [value]="option.id">
-            {{ option.name }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
-      <div [ngSwitch]="selectedWidget?.component">
-        <!-- Selection of type of content -->
-        <ng-container *ngSwitchCase="'map'">
+    <ng-container
+      *ngFor="
+        let event of automationRuleForm.controls?.events?.controls ?? [];
+        let i = index
+      "
+    >
+      <ui-expansion-panel [index]="i">
+        <ng-container ngProjectAs="title">
+          {{ event.get('name')?.value }}
+        </ng-container>
+        <div class="flex justify-end">
+          <ui-button
+            variant="danger"
+            [isIcon]="true"
+            icon="delete"
+            (click)="deleteEvent(i)"
+            [uiTooltip]="'models.widget.automation.deleteEvent' | translate"
+          >
+          </ui-button>
+        </div>
+        <form [formGroup]="event" class="flex flex-col">
+          <!-- <div uiFormFieldDirective>
+              <label>{{ 'models.widget.automation.name' | translate }}</label>
+              <input
+                formControlName="name"
+                type="text"
+                [placeholder]="'models.widget.automation.addName' | translate"
+              />
+            </div> -->
           <div uiFormFieldDirective>
-            <label>{{ 'models.widget.automation.mapLayer' | translate }}</label>
-            <ui-select-menu formControlName="layers">
+            <label>{{ 'models.widget.automation.target' | translate }}</label>
+            <ui-select-menu formControlName="targetWidget">
               <ui-select-option
-                *ngFor="let option of widgetLayers"
+                *ngFor="let option of widgets"
                 [value]="option.id"
               >
                 {{ option.name }}
               </ui-select-option>
             </ui-select-menu>
           </div>
-        </ng-container>
-      </div>
-      <div uiFormFieldDirective>
-        <label>{{ 'models.widget.automation.event' | translate }}</label>
-        <ui-select-menu formControlName="event">
-          <ui-select-option
-            *ngFor="let option of currentEventsToSelect"
-            [value]="option"
-          >
-            {{ option }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
-    </form>
+          <div [ngSwitch]="selectedWidgets[i]?.component">
+            <ng-container *ngSwitchCase="'map'">
+              <div uiFormFieldDirective>
+                <label>{{
+                  'models.widget.automation.mapLayer' | translate
+                }}</label>
+                <ui-select-menu formControlName="layers">
+                  <ui-select-option
+                    *ngFor="let option of widgetLayers[i]"
+                    [value]="option.id"
+                  >
+                    {{ option.name }}
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
+            </ng-container>
+          </div>
+          <div uiFormFieldDirective>
+            <label>{{ 'models.widget.automation.event' | translate }}</label>
+            <ui-select-menu formControlName="event">
+              <ui-select-option
+                *ngFor="let option of currentEventsToSelect[i]"
+                [value]="option"
+              >
+                {{ option }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </form>
+      </ui-expansion-panel>
+    </ng-container>
   </ng-container>
+
   <ng-container ngProjectAs="actions">
     <ui-button [uiDialogClose] variant="default">{{
       'common.close' | translate
@@ -63,7 +103,7 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [uiDialogClose]="automationRuleForm.value"
+      [uiDialogClose]="automationRuleForm.getRawValue()"
       cdkFocusInitial
       [disabled]="!automationRuleForm.valid"
     >
