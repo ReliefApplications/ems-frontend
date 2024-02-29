@@ -8,16 +8,15 @@ import {
   Optional,
   Output,
   SimpleChanges,
-  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { DomPortal } from '@angular/cdk/portal';
 import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
 import { WidgetComponent } from '../../widget/widget.component';
 import { cloneDeep } from 'lodash';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /**
  * Tabs widget component.
@@ -28,7 +27,7 @@ import { cloneDeep } from 'lodash';
   styleUrls: ['./tabs.component.scss'],
 })
 export class TabsComponent
-  extends UnsubscribeComponent
+  extends BaseWidgetComponent
   implements AfterViewInit, OnChanges
 {
   /** Widget settings */
@@ -41,8 +40,6 @@ export class TabsComponent
   @Input() usePadding = true;
   /** Widget edit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  /** Header template reference */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to ui tab group */
   @ViewChild(UiTabsComponent)
   tabGroup?: UiTabsComponent;

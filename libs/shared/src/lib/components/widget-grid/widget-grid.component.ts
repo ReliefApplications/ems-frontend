@@ -26,8 +26,9 @@ import {
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set } from 'lodash';
 import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
+import { ContextService } from '../../services/context/context.service';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -83,6 +84,8 @@ export class WidgetGridComponent
   public gridOptions!: GridsterConfig;
   /** Detect structure changes */
   public structureChanges = new Subject<boolean>();
+  /** Visible widgets */
+  public visibleWidgets: any[] = [];
   /** Set grid options timeout, to enable events that can save dashboard */
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
   /** Subscribe to structure changes */
@@ -91,6 +94,8 @@ export class WidgetGridComponent
   public isMinHeightEnabled?: boolean;
   /** Timeout listener */
   private setFullscreenTimeoutListener!: NodeJS.Timeout;
+  /** Stored widgets, not affected by visibility changes */
+  private _widgets: any[] = [];
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -113,11 +118,13 @@ export class WidgetGridComponent
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    * @param _host host element ref
+   * @param contextService Shared context service
    */
   constructor(
     public dialog: Dialog,
     private dashboardService: DashboardService,
-    private _host: ElementRef
+    private _host: ElementRef,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -141,6 +148,22 @@ export class WidgetGridComponent
     this.gridOptions.gridSizeChangedCallback = (grid) =>
       this.enableMinHeight(grid);
     this.enableMinHeight();
+
+    this.dashboardService.widgetContentRefreshed$
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .subscribe(() => {
+        // sending 'false' to prevent triggering this function infinitely due to cloning
+        this.setVisibleWidgets(false);
+      });
+    // Listen to dashboard filters changes if it is necessary
+    // So when hiding empty widgets, we can re-display them on filter change
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (!this.canUpdate) {
+          this.setVisibleWidgets();
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -453,8 +476,8 @@ export class WidgetGridComponent
       widget.cols = widget.cols ?? widget.defaultCols;
       widget.rows = widget.rows ?? widget.defaultRows;
       widget.minItemRows = widget.minItemRows ?? widget.minRow;
-      widget.resizeEnabled = this.canUpdate;
-      widget.dragEnabled = this.canUpdate;
+      widget._x = widget.x;
+      widget._y = widget.y;
       delete widget.defaultCols;
       delete widget.defaultRows;
       delete widget.minItemRows;
@@ -468,6 +491,8 @@ export class WidgetGridComponent
           this.sortWidgets();
         }
       });
+    this._widgets = cloneDeep(this.widgets);
+    this.setVisibleWidgets();
   }
 
   /**
@@ -475,5 +500,37 @@ export class WidgetGridComponent
    */
   private sortWidgets() {
     this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
+  }
+
+  /**
+   * Filter widgets list to display only visible widgets.
+   *
+   * @param needCloning should clone widgets
+   */
+  private setVisibleWidgets(needCloning = true): void {
+    if (!this.canUpdate) {
+      if (needCloning) {
+        // TODO: Reset positions
+        this._widgets.forEach((widget) => {
+          set(widget, 'x', widget._x);
+          set(widget, 'y', widget._y);
+        });
+        this.visibleWidgets = this._widgets;
+      } else {
+        this.visibleWidgets = this.widgetComponents
+          .filter(
+            (item) =>
+              // couldn't initialize content yet
+              !item.widgetContentComponent ||
+              !(
+                item.widget.settings.widgetDisplay.hideEmpty &&
+                item.widgetContentComponent.isEmpty
+              )
+          )
+          .map((x) => x.widget);
+      }
+    } else {
+      this.visibleWidgets = this.widgets;
+    }
   }
 }

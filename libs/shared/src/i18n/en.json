@@ -229,6 +229,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noData": "No data available",
 		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
@@ -2332,6 +2333,7 @@
 				"border": "Show widget border",
 				"expand": "Show button to expand widget",
 				"header": "Show widget header",
+				"hideEmpty": "Hide widget when empty",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
@@ -2360,6 +2362,7 @@
 					"help": "Only appears in front-office or in preview mode",
 					"restore": "Restore default"
 				},
+				"hideEmpty": "Only hides in front-office or in preview mode",
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"

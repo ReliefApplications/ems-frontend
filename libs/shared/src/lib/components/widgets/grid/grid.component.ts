@@ -18,7 +18,6 @@ import {
   Input,
   Output,
   EventEmitter,
-  TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { EmailService } from '../../../services/email/email.service';
@@ -36,7 +35,6 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
 import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
 import {
   EditRecordMutationResponse,
@@ -50,6 +48,7 @@ import {
 import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /** Component for the grid widget */
 @Component({
@@ -58,10 +57,7 @@ import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/referen
   styleUrls: ['./grid.component.scss'],
 })
 /** Grid widget using KendoUI. */
-export class GridWidgetComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   /** Template reference */
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
@@ -74,8 +70,6 @@ export class GridWidgetComponent
   /** Reference to reference data grid */
   @ViewChild(ReferenceDataGridComponent)
   referenceDataGridComponent?: ReferenceDataGridComponent;
-  /** Header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   /** Data */
   @Input() widget: any;

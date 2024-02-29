@@ -229,6 +229,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noData": "******",
 		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -2332,6 +2333,7 @@
 				"border": "******",
 				"expand": "******",
 				"header": "******",
+				"hideEmpty": "******",
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
@@ -2360,6 +2362,7 @@
 					"help": "******",
 					"restore": "******"
 				},
+				"hideEmpty": "******",
 				"selector": {
 					"collapse": "******",
 					"expand": "******"
