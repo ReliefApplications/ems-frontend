@@ -14,19 +14,24 @@ function getResolvedUrl(route: ActivatedRouteSnapshot): string {
   let url = route.pathFromRoot
     .map((v) => v.url.map((segment) => segment.toString()).join('/'))
     .join('/');
-  const queryParam = route.queryParamMap;
-  if (queryParam.keys.length > 0) {
-    url +=
-      '?' +
-      queryParam.keys
-        .map((key) =>
-          queryParam
-            .getAll(key)
-            .map((value) => key + '=' + value)
-            .join('&')
-        )
-        .join('&');
+  // Make sure to only include query params when the route is the last piece of the url
+  // Otherwise, it could create duplicate layouts
+  if (route.children.length === 0) {
+    const queryParam = route.queryParamMap;
+    if (queryParam.keys.length > 0) {
+      url +=
+        '?' +
+        queryParam.keys
+          .map((key) =>
+            queryParam
+              .getAll(key)
+              .map((value) => key + '=' + value)
+              .join('&')
+          )
+          .join('&');
+    }
   }
+
   return url;
 }
 
