@@ -137,7 +137,10 @@
         <span>{{ 'models.widget.display.title' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-display-settings [formGroup]="widgetFormGroup">
+        <shared-display-settings
+          [formGroup]="widgetFormGroup"
+          [showHideOption]="true"
+        >
           <!-- Specific settings for summary card -->
           <ui-toggle
             *ngIf="widgetFormGroup.get('widgetDisplay.searchable')?.enabled"

@@ -10,7 +10,7 @@ import {
   EditPageContextMutationResponse,
   PageContextT,
 } from '../../models/page.model';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
@@ -25,6 +25,13 @@ import { GraphQLError } from 'graphql';
 export class DashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
+  /** If dashboard content should be updated and empty widgets hidden */
+  public widgetContentRefreshed = new BehaviorSubject<any>(null);
+
+  /** @returns To listen when dashboard widgets that can be hidden refreshes its contents */
+  get widgetContentRefreshed$(): Observable<any> {
+    return this.widgetContentRefreshed.asObservable();
+  }
 
   /**
    * Shared dashboard service. Handles dashboard events.

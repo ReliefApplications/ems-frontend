@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ComponentRef,
   Input,
   ViewChild,
   ViewContainerRef,
@@ -26,6 +27,8 @@ export class TabComponent implements AfterViewInit {
   /** Reference to content view container */
   @ViewChild('content', { read: ViewContainerRef })
   content!: ViewContainerRef;
+  /** Component WidgetGridComponent created */
+  public componentRef!: ComponentRef<WidgetGridComponent>;
 
   /** @returns Additional grid configuration */
   get gridOptions(): GridsterConfig {
@@ -36,10 +39,10 @@ export class TabComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const componentRef = this.content.createComponent(WidgetGridComponent);
-    componentRef.setInput('widgets', this.structure);
-    componentRef.setInput('options', this.gridOptions);
+    this.componentRef = this.content.createComponent(WidgetGridComponent);
+    this.componentRef.setInput('widgets', this.structure);
+    this.componentRef.setInput('options', this.gridOptions);
     /** To use angular hooks */
-    componentRef.changeDetectorRef.detectChanges();
+    this.componentRef.changeDetectorRef.detectChanges();
   }
 }
