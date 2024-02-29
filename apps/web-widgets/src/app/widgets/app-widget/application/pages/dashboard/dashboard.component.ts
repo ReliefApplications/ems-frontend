@@ -8,21 +8,19 @@ import {
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  WidgetGridComponent,
   ConfirmService,
   ButtonActionT,
   ContextService,
   DashboardQueryResponse,
   Record,
   MapWidgetComponent,
-  UnsubscribeComponent,
+  DashboardComponent as SharedDashboardComponent,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
@@ -38,16 +36,19 @@ import { cloneDeep, get } from 'lodash';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  providers: [
+    {
+      provide: SharedDashboardComponent,
+      useClass: DashboardComponent,
+    },
+  ],
 })
 export class DashboardComponent
-  extends UnsubscribeComponent
+  extends SharedDashboardComponent
   implements OnInit, OnDestroy
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** Widget grid reference */
-  @ViewChild(WidgetGridComponent)
-  widgetGridComponent!: WidgetGridComponent;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -58,8 +59,6 @@ export class DashboardComponent
   public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
-  /** List of widgets */
-  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Show dashboard filter */

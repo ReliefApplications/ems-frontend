@@ -9,7 +9,6 @@ import {
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
@@ -18,8 +17,6 @@ import {
   WorkflowService,
   DashboardService,
   Application,
-  UnsubscribeComponent,
-  WidgetGridComponent,
   ConfirmService,
   ReferenceDataService,
   Record,
@@ -27,6 +24,7 @@ import {
   ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
+  DashboardComponent as SharedDashboardComponent,
 } from '@oort-front/shared';
 import { EDIT_DASHBOARD } from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
@@ -61,16 +59,19 @@ const ITEMS_PER_PAGE = 10;
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  providers: [
+    {
+      provide: SharedDashboardComponent,
+      useClass: DashboardComponent,
+    },
+  ],
 })
 export class DashboardComponent
-  extends UnsubscribeComponent
+  extends SharedDashboardComponent
   implements OnInit, OnDestroy
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** Widget grid reference */
-  @ViewChild(WidgetGridComponent)
-  widgetGridComponent!: WidgetGridComponent;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -79,8 +80,6 @@ export class DashboardComponent
   public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
-  /** List of widgets */
-  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Show dashboard filter */
@@ -277,6 +276,7 @@ export class DashboardComponent
                 return widget;
               }) || []
           );
+          this.dashboardService.widgets.next(this.widgets);
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
@@ -486,10 +486,14 @@ export class DashboardComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          this.applicationService.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.dashboard.one')
-          );
+          if (errors) {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.dashboard.one')
+            );
+          } else {
+            this.dashboardService.widgets.next(this.widgets);
+          }
         },
         complete: () => (this.loading = false),
       });

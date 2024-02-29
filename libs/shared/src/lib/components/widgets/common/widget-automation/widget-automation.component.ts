@@ -58,8 +58,20 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
     });
   }
 
-  public onEditComponent(index: number) {
+  public async onEditComponent(index: number) {
     console.log('edit at index:', index);
+    const { EditAutomationComponentComponent } = await import(
+      './edit-automation-component/edit-automation-component.component'
+    );
+    const dialogRef = this.dialog.open(EditAutomationComponentComponent, {
+      data: this.components.at(index).value,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.components.removeAt(index);
+        this.components.insert(index, createAutomationComponentForm(value));
+      }
+    });
   }
 
   public onDeleteComponent(index: number) {

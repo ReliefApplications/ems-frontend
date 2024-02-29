@@ -16,12 +16,31 @@ export const createAutomationForm = (value?: any) => {
   });
 };
 
+export const createAutomationActionComponentForm = (
+  type: string,
+  value: any
+) => {
+  switch (type) {
+    case 'add.layer':
+    case 'remove.layer': {
+      return fb.group({
+        widget: [get(value, 'widget', null), Validators.required],
+        layers: [get(value, 'layers', null), Validators.required],
+      });
+    }
+    default: {
+      return fb.group({});
+    }
+  }
+};
+
 export const createAutomationComponentForm = (value: any) => {
   switch (value.component) {
     case 'trigger': {
       return fb.group({
         component: 'trigger',
         type: [get(value, 'type', null), Validators.required],
+        value: fb.group({}),
       });
     }
     case 'action':
@@ -30,6 +49,10 @@ export const createAutomationComponentForm = (value: any) => {
       return fb.group({
         component: 'action',
         type: [get(value, 'type', null), Validators.required],
+        value: createAutomationActionComponentForm(
+          get(value, 'type', null),
+          get(value, 'value', null)
+        ),
       });
     }
   }

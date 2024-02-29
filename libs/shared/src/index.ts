@@ -94,6 +94,7 @@ export * from './lib/components/editable-text/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
 export * from './lib/components/widgets/map/public-api';
+export * from './lib/components/dashboard/public-api';
 
 // Export of controls
 export * from './lib/components/controls/public-api';
