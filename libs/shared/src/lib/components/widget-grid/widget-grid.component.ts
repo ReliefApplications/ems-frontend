@@ -26,7 +26,7 @@ import {
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set } from 'lodash';
 import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
 import { ContextService } from '../../services/context/context.service';
 
@@ -56,8 +56,6 @@ export class WidgetGridComponent
   @Input() widgets: any[] = [];
   /** Update permission */
   @Input() canUpdate = false;
-  /** If can hide widgets with no data that allows this */
-  @Input() canHide = false;
   /** Additional grid configuration */
   @Input() options?: GridsterConfig;
   /** Delete event emitter */
@@ -96,6 +94,8 @@ export class WidgetGridComponent
   public isMinHeightEnabled?: boolean;
   /** Timeout listener */
   private setFullscreenTimeoutListener!: NodeJS.Timeout;
+  /** Stored widgets, not affected by visibility changes */
+  private _widgets: any[] = [];
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -108,7 +108,7 @@ export class WidgetGridComponent
 
   /** @returns maximum number of columns of widgets in the grid */
   get maxCols(): number {
-    const cols = this.visibleWidgets.map((x) => x.cols);
+    const cols = this.widgets.map((x) => x.cols);
     return Math.max(...cols);
   }
 
@@ -159,35 +159,9 @@ export class WidgetGridComponent
     // So when hiding empty widgets, we can re-display them on filter change
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(({ previous, current }) => {
-        if (this.canHide) {
-          const hideWidgetWithFilters = this.widgets.filter(
-            (widget: any) =>
-              widget.settings.widgetDisplay.hideEmpty &&
-              widget.settings.widgetDisplay.isEmpty &&
-              (this.contextService.filterRegex.test(
-                widget.settings.contextFilters
-              ) ||
-                this.contextService.filterRegex.test(
-                  widget.settings.referenceDataVariableMapping
-                ))
-          );
-          let refreshVisibleWidgets = false;
-          hideWidgetWithFilters.forEach((widget: any) => {
-            if (
-              this.contextService.shouldRefresh(
-                widget.settings,
-                previous,
-                current
-              )
-            ) {
-              widget.settings.widgetDisplay.isEmpty = false;
-              refreshVisibleWidgets = true;
-            }
-          });
-          if (refreshVisibleWidgets) {
-            this.setVisibleWidgets();
-          }
+      .subscribe(() => {
+        if (!this.canUpdate) {
+          this.setVisibleWidgets();
         }
       });
   }
@@ -498,10 +472,12 @@ export class WidgetGridComponent
     if (this.changesSubscription) {
       this.changesSubscription.unsubscribe();
     }
-    this.visibleWidgets.forEach((widget: GridsterItem) => {
+    this.widgets.forEach((widget: GridsterItem) => {
       widget.cols = widget.cols ?? widget.defaultCols;
       widget.rows = widget.rows ?? widget.defaultRows;
       widget.minItemRows = widget.minItemRows ?? widget.minRow;
+      widget._x = widget.x;
+      widget._y = widget.y;
       delete widget.defaultCols;
       delete widget.defaultRows;
       delete widget.minItemRows;
@@ -515,6 +491,7 @@ export class WidgetGridComponent
           this.sortWidgets();
         }
       });
+    this._widgets = cloneDeep(this.widgets);
     this.setVisibleWidgets();
   }
 
@@ -522,7 +499,7 @@ export class WidgetGridComponent
    * Sort widgets by their position in the grid
    */
   private sortWidgets() {
-    this.visibleWidgets.sort((a, b) => a.y - b.y || a.x - b.x);
+    this.widgets.sort((a, b) => a.y - b.y || a.x - b.x);
   }
 
   /**
@@ -531,32 +508,27 @@ export class WidgetGridComponent
    * @param needCloning should clone widgets
    */
   private setVisibleWidgets(needCloning = true): void {
-    if (this.canHide) {
-      let nextWidgets = [];
+    if (!this.canUpdate) {
       if (needCloning) {
-        // cloning to reset coordinates and prevent Gridster from changing the order
-        nextWidgets = cloneDeep(this.widgets);
-        // adding the index to find the widget again (since there is no id)
-        nextWidgets.map((widget: any, index: number) => (widget.index = index));
+        // TODO: Reset positions
+        this._widgets.forEach((widget) => {
+          set(widget, 'x', widget._x);
+          set(widget, 'y', widget._y);
+        });
+        this.visibleWidgets = this._widgets;
       } else {
-        // goes here when a widget triggers the event
-        nextWidgets = this.visibleWidgets;
-        // manual synchronization as the global widgets have been cloned
-        // used to limit the number of refreshes when context filters change
-        nextWidgets.map(
-          (widget: any, index: number) =>
-            (this.widgets[index].settings.widgetDisplay.isEmpty =
-              widget.settings.widgetDisplay.isEmpty)
-        );
-      }
-
-      this.visibleWidgets = nextWidgets.filter(
-        (widget: any) =>
-          !(
-            widget.settings.widgetDisplay.hideEmpty &&
-            widget.settings.widgetDisplay.isEmpty
+        this.visibleWidgets = this.widgetComponents
+          .filter(
+            (item) =>
+              // couldn't initialize content yet
+              !item.widgetContentComponent ||
+              !(
+                item.widget.settings.widgetDisplay.hideEmpty &&
+                item.widgetContentComponent.isEmpty
+              )
           )
-      );
+          .map((x) => x.widget);
+      }
     } else {
       this.visibleWidgets = this.widgets;
     }

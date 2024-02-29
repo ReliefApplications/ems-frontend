@@ -6,7 +6,6 @@ import {
   ViewChild,
   Inject,
   OnInit,
-  TemplateRef,
   OnDestroy,
   ElementRef,
 } from '@angular/core';
@@ -15,7 +14,6 @@ import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donu
 import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
 import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,6 +21,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /**
  * Default file name for chart exports
@@ -66,15 +65,13 @@ const joinFilters = (
   styleUrls: ['./chart.component.scss'],
 })
 export class ChartComponent
-  extends UnsubscribeComponent
+  extends BaseWidgetComponent
   implements OnInit, OnChanges, OnDestroy
 {
   /** Can chart be exported */
   @Input() export = true;
   /** Widget settings */
   @Input() settings: any = null;
-  /** Widget header template reference */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Chart component reference */
   @ViewChild('chartWrapper')
   private chartWrapper?:
@@ -95,8 +92,6 @@ export class ChartComponent
   public lastUpdate = '';
   /** Is aggregation broken */
   public hasError = false;
-  /** If had an empty response */
-  public emptyDataset = false;
   /** Selected predefined filter */
   public selectedFilter: CompositeFilterDescriptor | null = null;
   /** Aggregation id */
@@ -385,9 +380,8 @@ export class ChartComponent
             );
 
             // Check if we got any data back
-            this.emptyDataset =
+            this.isEmpty =
               Array.isArray(aggregationData) && aggregationData.length === 0;
-            this.settings.widgetDisplay.isEmpty = this.emptyDataset;
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
@@ -429,10 +423,9 @@ export class ChartComponent
                 : data.referenceData
             );
 
-            this.emptyDataset =
+            this.isEmpty =
               Array.isArray(this.series.value) &&
               this.series.value.length === 0;
-            this.settings.widgetDisplay.isEmpty = this.emptyDataset;
           }
           this.loading = loading;
         }

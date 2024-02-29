@@ -42,8 +42,6 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   @Input() headerRightTemplate?: TemplateRef<any>;
   /** Is fullscreen mode activated */
   @Input() fullscreen = false;
-  /** If can hide widgets with no data that allows this */
-  @Input() canHide = false;
   /** Edit widget event emitter */
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Change step workflow event emitter */

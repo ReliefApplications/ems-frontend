@@ -92,7 +92,7 @@
   *ngIf="loading"
 ></ui-spinner>
 <div
-  *ngIf="!loading && !hasError && emptyDataset"
+  *ngIf="!loading && !hasError && isEmpty"
   class="absolute inset-0 grid place-items-center"
 >
   <shared-empty icon="find_in_page" [title]="'common.noData' | translate" />

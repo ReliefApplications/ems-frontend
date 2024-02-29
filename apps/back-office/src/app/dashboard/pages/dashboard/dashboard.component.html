@@ -198,7 +198,6 @@
     [widgets]="widgets"
     [options]="gridOptions"
     [canUpdate]="(canUpdate && editionActive) || false"
-    [canHide]="!editionActive"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
     (style)="onStyleTile($event)"

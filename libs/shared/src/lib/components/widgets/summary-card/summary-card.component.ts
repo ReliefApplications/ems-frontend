@@ -6,7 +6,6 @@ import {
   OnDestroy,
   OnInit,
   Renderer2,
-  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -26,7 +25,6 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GET_RESOURCE_METADATA } from './graphql/queries';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
 
@@ -53,6 +51,7 @@ import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 import { ReferenceData } from '../../../models/reference-data.model';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -69,7 +68,7 @@ const DEFAULT_PAGE_SIZE = 25;
   styleUrls: ['./summary-card.component.scss'],
 })
 export class SummaryCardComponent
-  extends UnsubscribeComponent
+  extends BaseWidgetComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   /** Widget definition */
@@ -78,8 +77,6 @@ export class SummaryCardComponent
   @Input() settings!: SummaryCardFormT['value'];
   /** Should show padding */
   @Input() usePadding = true;
-  /** Reference to header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to summary card grid */
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   /** Reference to pdf */
@@ -586,9 +583,7 @@ export class SummaryCardComponent
     this.cards = newCards;
     if (this.widget.settings.widgetDisplay.hideEmpty) {
       // Listen to cards data changes to know when widget is empty and will be hidden
-      this.widget.settings.widgetDisplay.isEmpty = this.cards.length
-        ? false
-        : true;
+      this.isEmpty = this.cards.length ? false : true;
       this.dashboardService.widgetContentRefreshed.next(null);
     }
     if (
@@ -736,9 +731,7 @@ export class SummaryCardComponent
     }
     if (this.widget.settings.widgetDisplay.hideEmpty) {
       // Listen to cards data changes to know when widget is empty and will be hidden
-      this.widget.settings.widgetDisplay.isEmpty = this.cards.length
-        ? false
-        : true;
+      this.isEmpty = this.cards.length ? false : true;
       this.dashboardService.widgetContentRefreshed.next(null);
     }
 
