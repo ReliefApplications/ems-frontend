@@ -796,6 +796,15 @@ export class MapComponent
   }
 
   /**
+   * Removes a layer to the map
+   *
+   * @param layer layer to be removed to the map
+   */
+  public async removeLayer(layer: Layer): Promise<void> {
+    (await layer.getLayer()).removeFrom(this.map);
+  }
+
+  /**
    * Draw given layers and adds the related controls
    *
    * @param layers Layers to draw

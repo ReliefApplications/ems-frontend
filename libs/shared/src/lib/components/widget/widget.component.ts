@@ -28,6 +28,7 @@ import {
   WidgetAutomationRule,
 } from '../../models/automation.model';
 import { TabsComponent } from '../widgets/tabs/tabs.component';
+import { Layer } from '../ui/map/layer';
 
 /** Component for the widgets */
 @Component({
@@ -197,13 +198,16 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
                 this.widget.component === 'map' &&
                 this.widgetContentComponent instanceof MapWidgetComponent
               ) {
-                const layers = this.widget.settings.layers.filter(
-                  (layer: string) => eventItem.subItems?.includes(layer)
-                );
-                this.widgetContentComponent.settings = {
-                  ...this.widget.settings,
-                  layers,
-                };
+                const layers =
+                  this.widgetContentComponent.mapComponent.layers.filter(
+                    (layer: Layer) => eventItem.subItems?.includes(layer.id)
+                  );
+                layers.forEach((layer) => {
+                  (layer as any).shouldDisplay = true;
+                  (
+                    this.widgetContentComponent as MapWidgetComponent
+                  ).mapComponent.addLayer(layer);
+                });
               }
               break;
             case 'hide':
@@ -211,13 +215,16 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
                 this.widget.component === 'map' &&
                 this.widgetContentComponent instanceof MapWidgetComponent
               ) {
-                const layers = this.widget.settings.layers.filter(
-                  (layer: string) => !eventItem.subItems?.includes(layer)
-                );
-                this.widgetContentComponent.settings = {
-                  ...this.widget.settings,
-                  layers,
-                };
+                const layers =
+                  this.widgetContentComponent.mapComponent.layers.filter(
+                    (layer: Layer) => eventItem.subItems?.includes(layer.id)
+                  );
+                layers.forEach((layer) => {
+                  (layer as any).shouldDisplay = false;
+                  (
+                    this.widgetContentComponent as MapWidgetComponent
+                  ).mapComponent.removeLayer(layer);
+                });
               }
               break;
             case 'open':
