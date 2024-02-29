@@ -2305,6 +2305,12 @@
 				"edit": "Edit rule",
 				"empty": "No rules set",
 				"event": "Event",
+				"eventTypes": {
+					"collapse": "Collapse",
+					"expand": "Expand",
+					"hide": "Hide",
+					"show": "Show"
+				},
 				"events": "Events",
 				"mapLayer": "Target layer of the selected map",
 				"name": "Name",

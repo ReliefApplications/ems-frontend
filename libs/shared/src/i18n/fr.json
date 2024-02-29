@@ -2319,6 +2319,12 @@
 				"edit": "Modifier le règle",
 				"empty": "Aucun règles de tri défini",
 				"event": "Evénement",
+				"eventTypes": {
+					"collapse": "Effondrement",
+					"expand": "Développer",
+					"hide": "Cacher",
+					"show": "Montrer"
+				},
 				"events": "Evénements",
 				"mapLayer": "Couche cible de la carte sélectionnée",
 				"name": "Nom",

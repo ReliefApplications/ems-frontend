@@ -85,9 +85,9 @@
             <ui-select-menu formControlName="event">
               <ui-select-option
                 *ngFor="let option of currentEventsToSelect[i]"
-                [value]="option"
+                [value]="option.value"
               >
-                {{ option }}
+                {{ option.text }}
               </ui-select-option>
             </ui-select-menu>
           </div>

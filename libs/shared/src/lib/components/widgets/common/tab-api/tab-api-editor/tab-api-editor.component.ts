@@ -18,13 +18,16 @@ import {
   Validators,
 } from '@angular/forms';
 import {
+  AutomationEvents,
   WidgetAutomationEvent,
   WidgetAutomationRule,
 } from '../../../../../models/automation.model';
+import { LayerModel } from '../../../../../models/layer.model';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { of, switchMap, takeUntil, tap } from 'rxjs';
 import { DashboardService } from '../../../../../services/dashboard/dashboard.service';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Tab API editor dialog component
@@ -68,11 +71,33 @@ export class TabApiEditorComponent
   /** Current dashboard widgets */
   widgets: any[] = [];
   /** Selected widget map available layers */
-  widgetLayers: any[] = [];
+  widgetLayers: Array<LayerModel[]> = [];
   /** Available events automation */
-  private availableEvents = ['expand', 'collapse', 'show', 'hide'];
+  private availableEvents = [
+    {
+      value: 'expand',
+      text: this.translate.instant(
+        'models.widget.automation.eventTypes.expand'
+      ),
+    },
+    {
+      value: 'collapse',
+      text: this.translate.instant(
+        'models.widget.automation.eventTypes.collapse'
+      ),
+    },
+    {
+      value: 'show',
+      text: this.translate.instant('models.widget.automation.eventTypes.show'),
+    },
+    {
+      value: 'hide',
+      text: this.translate.instant('models.widget.automation.eventTypes.hide'),
+    },
+  ];
   /** Events available for the current selected widget */
-  currentEventsToSelect: Array<string[]> = [];
+  currentEventsToSelect: Array<{ value: AutomationEvents; text: string }[]> =
+    [];
   /** Current selected widget properties */
   selectedWidgets: any[] = [];
   /** Form even listeners */
@@ -86,6 +111,7 @@ export class TabApiEditorComponent
    * @param dialogRef Dialog ref
    * @param dashboardService DashboardService
    * @param mapLayersService Map layers service
+   * @param translate Translate service
    * @param data Injected dialog data
    */
   constructor(
@@ -93,6 +119,7 @@ export class TabApiEditorComponent
     public dialogRef: DialogRef<TabApiEditorComponent>,
     private dashboardService: DashboardService,
     private mapLayersService: MapLayersService,
+    private translate: TranslateService,
     @Optional()
     @Inject(DIALOG_DATA)
     public data: WidgetAutomationRule
@@ -151,12 +178,12 @@ export class TabApiEditorComponent
           switch (this.selectedWidgets[index].component) {
             case 'map':
               this.currentEventsToSelect[index] = this.availableEvents.filter(
-                (event) => event == 'open' || event == 'close'
+                (event) => event.value == 'show' || event.value == 'hide'
               );
               break;
             default:
               this.currentEventsToSelect[index] = this.availableEvents.filter(
-                (event) => event != 'open' && event != 'close'
+                (event) => event.value != 'show' && event.value != 'hide'
               );
               break;
           }

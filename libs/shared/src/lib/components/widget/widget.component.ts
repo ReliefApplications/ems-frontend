@@ -27,6 +27,7 @@ import {
   WidgetAutomationEvent,
   WidgetAutomationRule,
 } from '../../models/automation.model';
+import { TabsComponent } from '../widgets/tabs/tabs.component';
 
 /** Component for the widgets */
 @Component({
@@ -61,7 +62,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     | GridWidgetComponent
     | MapWidgetComponent
     | EditorComponent
-    | SummaryCardComponent;
+    | SummaryCardComponent
+    | TabsComponent;
   /** Expanded state of the widget */
   public expanded = false;
   /** Loading state of the widget */
@@ -155,6 +157,7 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
       )
       .subscribe((event: WidgetAutomationRule) => {
         console.log(event);
+        console.log(this.widget);
         event.events.forEach((eventItem: WidgetAutomationEvent) => {
           switch (eventItem.event) {
             case 'expand':
@@ -168,8 +171,42 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
               }
               break;
             case 'show':
+              if (
+                this.widget.component === 'map' &&
+                this.widgetContentComponent instanceof MapWidgetComponent
+              ) {
+                const layers = this.widget.settings.layers.filter(
+                  (layer: string) => eventItem.layers?.includes(layer)
+                );
+                this.widgetContentComponent.settings = {
+                  ...this.widget.settings,
+                  layers,
+                };
+              } else if (
+                this.widget.component === 'tabs' &&
+                this.widgetContentComponent instanceof TabsComponent
+              ) {
+                // this.widgetContentComponent.settings
+              }
               break;
             case 'hide':
+              if (
+                this.widget.component === 'map' &&
+                this.widgetContentComponent instanceof MapWidgetComponent
+              ) {
+                const layers = this.widget.settings.layers.filter(
+                  (layer: string) => !eventItem.layers?.includes(layer)
+                );
+                this.widgetContentComponent.settings = {
+                  ...this.widget.settings,
+                  layers,
+                };
+              } else if (
+                this.widget.component === 'tabs' &&
+                this.widgetContentComponent instanceof TabsComponent
+              ) {
+                // this.widgetContentComponent.settings
+              }
               break;
             default:
               break;
