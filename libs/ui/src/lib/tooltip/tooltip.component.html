@@ -1,10 +1,5 @@
-<!-- TEST ELEMENT FOR STORYBOOK-->
-<div [ngClass]="resolvePositionCases">
-  <button
-    [ngClass]="resolveButtonCases"
-    [uiTooltip]="hint"
-    class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md"
-  >
-    Random content
-  </button>
-</div>
+<span
+  #tooltip
+  class="opacity-85 transition-opacity delay-300 bg-gray-800 p-2 max-w-xs whitespace-pre-wrap text-xs text-gray-100 rounded-md absolute z-[9999] break-words pointer-events-none"
+  >{{ uiTooltip }}</span
+>

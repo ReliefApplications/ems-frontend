@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { TooltipExamplesPosition } from './types/tooltip-example-positions';
 
 /**
@@ -13,6 +13,10 @@ export class TooltipComponent {
   @Input() position!: TooltipExamplesPosition;
   /** Hint text displayed in the tooltip. */
   @Input() hint = '';
+  /** Tooltip text */
+  @Input() uiTooltip!: string;
+  /** tooltip span element */
+  @ViewChild('tooltip') tooltip!: TemplateRef<any>;
 
   /**
    * Returns resolved wrapper classes by position
