@@ -39,6 +39,19 @@
           </ui-slider>
         </div>
       </div>
+      <!-- Marker size based on field value -->
+      <div uiFormFieldDirective *ngIf="(scalarFields$ | async)?.length">
+        <label>{{
+          'components.widget.settings.map.edit.style.fieldForSize' | translate
+        }}</label>
+        <ui-select-menu formControlName="fieldForSize">
+          <ui-select-option
+            *ngFor="let field of scalarFields$ | async"
+            [value]="field.name"
+            >{{ field.label }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
     </div>
   </div>
 </ng-template>

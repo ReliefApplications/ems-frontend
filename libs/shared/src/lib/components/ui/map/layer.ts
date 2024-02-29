@@ -451,100 +451,131 @@ export class Layer implements LayerModel {
     );
 
     // options used for parsing geojson to leaflet layer
-    const geoJSONopts: L.GeoJSONOptions<any> = {
-      ...(geometryType === 'Point' && {
-        pointToLayer: (feature, latlng) => {
-          if (rendererType === 'uniqueValue') {
-            const fieldValue = get(
-              feature,
-              `properties.${uniqueValueField}`,
-              null
-            );
-            const uniqueValueSymbol =
-              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
-            return new L.Marker(latlng).setIcon(
-              createCustomDivIcon({
-                icon: uniqueValueSymbol.style,
-                color: uniqueValueSymbol.color,
-                size: uniqueValueSymbol.size,
-                opacity: this.opacity,
-              })
-            );
-          } else {
-            return new L.Marker(latlng).setIcon(
-              createCustomDivIcon({
-                icon: symbol.style,
-                color: symbol.color,
-                size: symbol.size,
-                opacity: this.opacity,
-              })
-            );
+    const geoJSONopts = (fieldForSize?: string): L.GeoJSONOptions<any> => {
+      // Find min and max values of selected propriety
+      let minValue = Number.POSITIVE_INFINITY;
+      let maxValue = Number.NEGATIVE_INFINITY;
+      if (fieldForSize) {
+        (data as any).features.forEach((feature: any) => {
+          const value = get(feature, `properties.${fieldForSize}`, 0);
+          if (value < minValue) {
+            minValue = value;
           }
-        },
-      }),
-      ...(geometryType === 'Polygon' && {
-        style: (feature) => {
-          if (rendererType === 'uniqueValue') {
-            const fieldValue = get(
-              feature,
-              `properties.${uniqueValueField}`,
-              null
-            );
-            const uniqueValueSymbol =
-              uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
-            return {
-              fillColor: uniqueValueSymbol.color,
-              color: uniqueValueSymbol.outline?.color,
-              weight: uniqueValueSymbol.outline?.width,
-              fillOpacity: this.opacity,
-              opacity: this.opacity,
-            };
-          } else {
-            return {
-              fillColor: symbol.color,
-              color: symbol.outline?.color,
-              weight: symbol.outline?.width,
-              fillOpacity: this.opacity,
-              opacity: this.opacity,
-            };
+          if (value > maxValue) {
+            maxValue = value;
           }
-        },
-      }),
-      onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
-        // Add popup on click because we destroy popup component each time we remove it
-        // In order to destroy all event subscriptions and avoid memory leak
-        const setPopupListener = () => {
-          const center = centroid(feature);
-          // bind this to the popup service
-          this.popupService.setPopUp(
-            [feature],
-            L.latLng({
-              lat: center.geometry.coordinates[1],
-              lng: center.geometry.coordinates[0],
-            }),
-            this.popupInfo,
-            layer
+        });
+      }
+      const calculateMarkerSize = (value: number): number => {
+        const minSize = 15; // Minimum size of the marker
+        const maxSize = 50; // Maximum size of the marker
+        const scaledSize =
+          minSize +
+          ((maxSize - minSize) * (value - minValue)) / (maxValue - minValue);
+        return scaledSize;
+      };
+      return {
+        ...(geometryType === 'Point' && {
+          pointToLayer: (feature, latlng) => {
+            if (rendererType === 'uniqueValue') {
+              const fieldValue = get(
+                feature,
+                `properties.${uniqueValueField}`,
+                null
+              );
+              const uniqueValueSymbol =
+                uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+                uniqueValueDefaultSymbol;
+              return new L.Marker(latlng).setIcon(
+                createCustomDivIcon({
+                  icon: uniqueValueSymbol.style,
+                  color: uniqueValueSymbol.color,
+                  size: fieldForSize
+                    ? calculateMarkerSize(feature.properties[fieldForSize])
+                    : uniqueValueSymbol.size,
+                  opacity: this.opacity,
+                })
+              );
+            } else {
+              return new L.Marker(latlng).setIcon(
+                createCustomDivIcon({
+                  icon: symbol.style,
+                  color: symbol.color,
+                  size: fieldForSize
+                    ? calculateMarkerSize(feature.properties[fieldForSize])
+                    : symbol.size,
+                  opacity: this.opacity,
+                })
+              );
+            }
+          },
+        }),
+        ...(geometryType === 'Polygon' && {
+          style: (feature) => {
+            if (rendererType === 'uniqueValue') {
+              const fieldValue = get(
+                feature,
+                `properties.${uniqueValueField}`,
+                null
+              );
+              const uniqueValueSymbol =
+                uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
+                uniqueValueDefaultSymbol;
+              return {
+                fillColor: uniqueValueSymbol.color,
+                color: uniqueValueSymbol.outline?.color,
+                weight: uniqueValueSymbol.outline?.width,
+                fillOpacity: this.opacity,
+                opacity: this.opacity,
+              };
+            } else {
+              return {
+                fillColor: symbol.color,
+                color: symbol.outline?.color,
+                weight: symbol.outline?.width,
+                fillOpacity: this.opacity,
+                opacity: this.opacity,
+              };
+            }
+          },
+        }),
+        onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
+          // Add popup on click because we destroy popup component each time we remove it
+          // In order to destroy all event subscriptions and avoid memory leak
+          const setPopupListener = () => {
+            const center = centroid(feature);
+            // bind this to the popup service
+            this.popupService.setPopUp(
+              [feature],
+              L.latLng({
+                lat: center.geometry.coordinates[1],
+                lng: center.geometry.coordinates[0],
+              }),
+              this.popupInfo,
+              layer
+            );
+          };
+          const listener = this.renderer.listen(
+            layer,
+            'click',
+            setPopupListener
           );
-        };
-        const listener = this.renderer.listen(layer, 'click', setPopupListener);
-        this.listeners.push(listener);
-      },
-      // style: (feature: Feature<Geometry> | undefined) => {
-      //   if (!feature) return {};
-      //   // const style = this.getFeatureStyle(feature);
+          this.listeners.push(listener);
+        },
+        // style: (feature: Feature<Geometry> | undefined) => {
+        //   if (!feature) return {};
+        //   // const style = this.getFeatureStyle(feature);
 
-      //   return {
-      //     // fillColor: style.symbol.color,
-      //     // fillOpacity: style.fillOpacity,
-      //     // color: style.borderColor,
-      //     // opacity: style.borderOpacity,
-      //     // weight: style.borderWidth,
-      //   };
-      // },
+        //   return {
+        //     // fillColor: style.symbol.color,
+        //     // fillOpacity: style.fillOpacity,
+        //     // color: style.borderColor,
+        //     // opacity: style.borderOpacity,
+        //     // weight: style.borderWidth,
+        //   };
+        // },
+      };
     };
-
     switch (this.type) {
       case 'GroupLayer':
         const ChildrenIds = this.getChildren();
@@ -782,7 +813,7 @@ export class Layer implements LayerModel {
                   );
                 });
 
-                const clusterLayer = L.geoJSON(data, geoJSONopts);
+                const clusterLayer = L.geoJSON(data, geoJSONopts());
                 clusterLayer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
                   this.onAddLayer(map, clusterLayer);
@@ -799,7 +830,13 @@ export class Layer implements LayerModel {
                 (this.layer as any).id = this.id;
                 return this.layer;
               default:
-                const layer = L.geoJSON(data, geoJSONopts);
+                const layer = L.geoJSON(
+                  data,
+                  geoJSONopts(
+                    this.layerDefinition?.drawingInfo?.renderer?.symbol
+                      ?.fieldForSize
+                  )
+                );
 
                 layer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(layer, map);

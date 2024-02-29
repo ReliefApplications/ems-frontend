@@ -37,6 +37,7 @@ export const GET_LAYER_BY_ID = gql`
               symbol {
                 color
                 size
+                fieldForSize
                 style
               }
             }
@@ -48,6 +49,7 @@ export const GET_LAYER_BY_ID = gql`
             symbol {
               color
               size
+              fieldForSize
               style
               outline {
                 color

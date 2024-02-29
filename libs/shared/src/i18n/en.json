@@ -1703,6 +1703,7 @@
 						},
 						"style": {
 							"color": "Color",
+							"fieldForSize": "Size based on field",
 							"icon": "Icon",
 							"size": "Size",
 							"stylingType": "{{layerType}} styling"

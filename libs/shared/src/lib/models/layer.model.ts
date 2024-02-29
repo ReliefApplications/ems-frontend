@@ -17,6 +17,7 @@ export type LayerSymbolOutline = {
 export type LayerSymbol = {
   color: string;
   size: number;
+  fieldForSize?: string;
   style: FaIconName;
   outline?: LayerSymbolOutline;
 };

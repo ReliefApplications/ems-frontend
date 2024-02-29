@@ -328,6 +328,7 @@ export const createSymbolForm = (
       Validators.required,
     ],
     size: [get(value, 'size', 24)],
+    fieldForSize: [get(value, 'fieldForSize', null)],
     style: new FormControl<FaIconName>(styleFinalValue),
     ...(geometryType === 'Polygon' && {
       outline: fb.group({
