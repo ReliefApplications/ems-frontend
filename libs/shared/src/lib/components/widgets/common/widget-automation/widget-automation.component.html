@@ -1,1 +1,40 @@
-<p>widget-automation works!</p>
+<ui-dialog size="big">
+  <ng-container ngProjectAs="header" [formGroup]="formGroup">
+    <div uiFormFieldDirective>
+      <label>{{ 'models.widget.automation.name' | translate }}</label>
+      <input
+        formControlName="name"
+        type="text"
+        [placeholder]="'models.widget.automation.addName' | translate"
+      />
+    </div>
+    <div class="flex justify-between">
+      <h3 class="font-semibold">
+        {{ 'models.widget.automation.events' | translate }}
+      </h3>
+      <ui-button
+        class="mb-6"
+        category="secondary"
+        variant="primary"
+        (click)="addComponent()"
+      >
+        {{ 'models.widget.automation.addEvent' | translate }}
+      </ui-button>
+    </div>
+  </ng-container>
+
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="formGroup.getRawValue()"
+      cdkFocusInitial
+      [disabled]="!formGroup.valid"
+    >
+      {{ (data ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

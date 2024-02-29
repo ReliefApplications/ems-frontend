@@ -124,5 +124,22 @@
         </div>
       </ng-template>
     </ui-tab>
+    <!-- Widget API options -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="settings_input_composite"
+          [size]="24"
+          [uiTooltip]="'models.widget.automation.title' | translate"
+        ></ui-icon>
+        <span>{{ 'models.widget.automation.title' | translate }}</span>
+      </ng-container>
+
+      <ng-template uiTabContent>
+        <shared-tab-widget-automations
+          [formArray]="widgetFormGroup.controls.automationRules"
+        ></shared-tab-widget-automations>
+      </ng-template>
+    </ui-tab>
   </ui-tabs>
 </ng-container>

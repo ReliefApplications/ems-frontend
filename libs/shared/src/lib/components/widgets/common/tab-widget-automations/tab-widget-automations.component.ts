@@ -4,7 +4,6 @@ import { CdkTableModule } from '@angular/cdk/table';
 import {
   FormArray,
   FormBuilder,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
@@ -24,7 +23,7 @@ import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { isNil } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+import { createAutomationForm } from '../../../../forms/automation.forms';
 
 @Component({
   selector: 'shared-tab-widget-automations',
@@ -53,9 +52,7 @@ export class TabWidgetAutomationsComponent
   implements OnInit
 {
   /** Rules form array */
-  @Input() formArray!: FormArray;
-  /** Widget settings form group */
-  @Input() formGroup!: FormGroup;
+  @Input() formArray!: FormArray<ReturnType<typeof createAutomationForm>>;
 
   /** Displayed columns of table */
   public displayedColumnsApps = ['name', 'id', 'actions'];
@@ -108,25 +105,11 @@ export class TabWidgetAutomationsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        const row = this.fb.group({
-          name: [value.name],
-          id: [!isNil(itemIndex) ? value.id : uuidv4()],
-          // todo: finish
-          // components: this.fb.array(
-          //   value.events.map((event: any) =>
-          //     this.fb.group({
-          //       targetWidget: [event.targetWidget],
-          //       subItems: [event.subItems],
-          //       event: [event.event],
-          //     })
-          //   )
-          // ),
-        });
         if (!isNil(itemIndex)) {
           this.formArray.removeAt(itemIndex);
-          this.formArray.insert(itemIndex, row);
+          this.formArray.insert(itemIndex, createAutomationForm(value));
         } else {
-          this.formArray.push(row);
+          this.formArray.push(createAutomationForm(value));
         }
         this.updateRuleList();
       }
