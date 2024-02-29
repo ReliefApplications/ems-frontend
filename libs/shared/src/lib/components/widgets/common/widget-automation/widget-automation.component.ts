@@ -15,6 +15,9 @@ import {
 } from '../../../../forms/automation.forms';
 import { takeUntil } from 'rxjs';
 
+/**
+ * Widget automation edition.
+ */
 @Component({
   selector: 'shared-widget-automation',
   standalone: true,
@@ -30,12 +33,20 @@ import { takeUntil } from 'rxjs';
   styleUrls: ['./widget-automation.component.scss'],
 })
 export class WidgetAutomationComponent extends UnsubscribeComponent {
+  /** Widget automation rule form group */
   public formGroup!: ReturnType<typeof createAutomationForm>;
 
+  /** @returns list of rule components as form array */
   get components() {
     return this.formGroup.controls.components;
   }
 
+  /**
+   * Widget automation edition.
+   *
+   * @param data dialog data, automation rule ( empty if new )
+   * @param dialog Angular dialog
+   */
   constructor(@Inject(DIALOG_DATA) public data: any, private dialog: Dialog) {
     super();
     if (data) {
@@ -45,8 +56,10 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
     }
   }
 
+  /**
+   * Add a new component.
+   */
   public async onAddComponent(): Promise<void> {
-    console.log('add component');
     const { AutomationComponentSelectorComponent } = await import(
       './automation-component-selector/automation-component-selector.component'
     );
@@ -58,8 +71,13 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
     });
   }
 
+  /**
+   * Edit a component
+   * Display a dialog
+   *
+   * @param index index of component to edit
+   */
   public async onEditComponent(index: number) {
-    console.log('edit at index:', index);
     const { EditAutomationComponentComponent } = await import(
       './edit-automation-component/edit-automation-component.component'
     );
@@ -74,6 +92,11 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
     });
   }
 
+  /**
+   * Delete component at index
+   *
+   * @param index index of component to delete
+   */
   public onDeleteComponent(index: number) {
     this.components.removeAt(index);
   }

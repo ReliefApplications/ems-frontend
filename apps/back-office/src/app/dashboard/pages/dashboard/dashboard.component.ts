@@ -25,6 +25,7 @@ import {
   DashboardQueryResponse,
   EditDashboardMutationResponse,
   DashboardComponent as SharedDashboardComponent,
+  DashboardAutomationService,
 } from '@oort-front/shared';
 import { EDIT_DASHBOARD } from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
@@ -64,6 +65,7 @@ const ITEMS_PER_PAGE = 10;
       provide: SharedDashboardComponent,
       useClass: DashboardComponent,
     },
+    DashboardAutomationService,
   ],
 })
 export class DashboardComponent
@@ -149,6 +151,7 @@ export class DashboardComponent
    * @param layoutService Shared layout service
    * @param document Document
    * @param clipboard Angular clipboard service
+   * @param dashboardAutomationService Dashboard automation service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -167,9 +170,11 @@ export class DashboardComponent
     private elementRef: ElementRef,
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
+    this.dashboardAutomationService.dashboard = this;
   }
 
   ngOnInit(): void {

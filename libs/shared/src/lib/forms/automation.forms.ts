@@ -2,8 +2,15 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { get } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
+/** Form builder */
 const fb = new FormBuilder();
 
+/**
+ * Create a new automation rule form
+ *
+ * @param value value of automation rule
+ * @returns form group
+ */
 export const createAutomationForm = (value?: any) => {
   return fb.group({
     id: [get(value, 'id', uuidv4()), Validators.required],
@@ -16,6 +23,13 @@ export const createAutomationForm = (value?: any) => {
   });
 };
 
+/**
+ * Create a new automation action component form
+ *
+ * @param type type of action
+ * @param value automation component value
+ * @returns form group
+ */
 export const createAutomationActionComponentForm = (
   type: string,
   value: any
@@ -34,6 +48,12 @@ export const createAutomationActionComponentForm = (
   }
 };
 
+/**
+ * Create a new automation component form
+ *
+ * @param value value of automation component
+ * @returns form group
+ */
 export const createAutomationComponentForm = (value: any) => {
   switch (value.component) {
     case 'trigger': {

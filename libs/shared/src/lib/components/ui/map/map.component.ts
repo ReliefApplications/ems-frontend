@@ -255,6 +255,7 @@ export class MapComponent
           ),
           debounceTime(500),
           filter(({ previous, current }) => {
+            console.log('filtering');
             // Update each layer, indicating if refetch is required
             this.layers.forEach((layer) => {
               layer.shouldRefresh = this.contextService.shouldRefresh(
@@ -794,6 +795,15 @@ export class MapComponent
    */
   public async addLayer(layer: Layer): Promise<void> {
     (await layer.getLayer()).addTo(this.map);
+  }
+
+  /**
+   * Removes a layer to the map
+   *
+   * @param layer layer to be removed to the map
+   */
+  public async removeLayer(layer: Layer): Promise<void> {
+    (await layer.getLayer()).removeFrom(this.map);
   }
 
   /**

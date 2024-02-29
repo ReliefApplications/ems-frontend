@@ -4,6 +4,7 @@ import { ButtonModule, DialogModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef } from '@angular/cdk/dialog';
 
+/** Available action components */
 const ACTION_COMPONENTS = [
   {
     component: 'action',
@@ -23,6 +24,9 @@ const ACTION_COMPONENTS = [
   },
 ];
 
+/**
+ * Selection of automation component.
+ */
 @Component({
   selector: 'shared-automation-component-selector',
   standalone: true,
@@ -31,14 +35,24 @@ const ACTION_COMPONENTS = [
   styleUrls: ['./automation-component-selector.component.scss'],
 })
 export class AutomationComponentSelectorComponent {
+  /** Available action components */
   public actionComponents = ACTION_COMPONENTS;
 
+  /**
+   * Selection of automation component.
+   *
+   * @param dialogRef Dialog ref
+   */
   constructor(
     private dialogRef: DialogRef<AutomationComponentSelectorComponent>
   ) {}
 
-  onSelect(action: any) {
-    console.log(action);
-    this.dialogRef.close(action);
+  /**
+   * Select the component.
+   *
+   * @param component component to use
+   */
+  onSelect(component: any) {
+    this.dialogRef.close(component);
   }
 }

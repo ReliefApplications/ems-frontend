@@ -25,6 +25,9 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { isNil } from 'lodash';
 import { createAutomationForm } from '../../../../forms/automation.forms';
 
+/**
+ * Tab for widget automation rules.
+ */
 @Component({
   selector: 'shared-tab-widget-automations',
   standalone: true,
@@ -60,7 +63,7 @@ export class TabWidgetAutomationsComponent
   public data: any[] = [];
 
   /**
-   * Tab for widget automation
+   * Tab for widget automation rules.
    *
    * @param fb Angular form builder
    * @param dialog Angular CDK Dialog service
@@ -73,6 +76,9 @@ export class TabWidgetAutomationsComponent
     this.updateRuleList();
   }
 
+  /**
+   * Update list of automation rules.
+   */
   private updateRuleList() {
     this.data = this.formArray.value;
   }

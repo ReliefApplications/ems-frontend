@@ -16,6 +16,9 @@ import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { get } from 'lodash';
 
+/**
+ * Edition of automation component.
+ */
 @Component({
   selector: 'shared-edit-automation-component',
   standalone: true,
@@ -35,11 +38,13 @@ export class EditAutomationComponentComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Automation component form */
   public formGroup!: ReturnType<typeof createAutomationComponentForm>;
+  /** Available widgets */
   public widgets = new BehaviorSubject<any[]>([]);
-
+  /** Current editor */
   public editor: any;
-
+  /** Available editors */
   public editors = [
     {
       component: 'action',
@@ -78,7 +83,6 @@ export class EditAutomationComponentComponent
                     value: layer.id,
                     text: layer.name,
                   }));
-                  console.log(this.editor);
                 });
             } else {
               this.editor.properties.layer.choices = [];
@@ -99,7 +103,6 @@ export class EditAutomationComponentComponent
                     value: layer.id,
                     text: layer.name,
                   }));
-                  console.log(this.editor);
                 });
             } else {
               this.editor.properties.layer.choices = [];
@@ -154,7 +157,6 @@ export class EditAutomationComponentComponent
                     value: layer.id,
                     text: layer.name,
                   }));
-                  console.log(this.editor);
                 });
             } else {
               this.editor.properties.layer.choices = [];
@@ -175,7 +177,6 @@ export class EditAutomationComponentComponent
                     value: layer.id,
                     text: layer.name,
                   }));
-                  console.log(this.editor);
                 });
             } else {
               this.editor.properties.layer.choices = [];
@@ -195,6 +196,13 @@ export class EditAutomationComponentComponent
     },
   ];
 
+  /**
+   * Edition of automation component.
+   *
+   * @param dashboardService Dashboard service
+   * @param mapLayersService Map layers service
+   * @param data Dialog data, automation component to edit
+   */
   constructor(
     private dashboardService: DashboardService,
     private mapLayersService: MapLayersService,
