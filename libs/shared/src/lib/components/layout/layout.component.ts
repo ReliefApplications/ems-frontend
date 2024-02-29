@@ -278,7 +278,6 @@ export class LayoutComponent
               componentRef.instance[key] = value;
             }
           }
-
           componentRef.instance.cancel.subscribe(() => {
             componentRef.destroy();
             this.layoutService.setRightSidenav(null);
@@ -502,6 +501,9 @@ export class LayoutComponent
         }, 0);
       }
     }
+    if (e.onAttach) {
+      e.onAttach();
+    }
   }
 
   /**
@@ -552,6 +554,9 @@ export class LayoutComponent
       );
       e.currentStateOfContextFilters = newFilterValues;
       e.lastStateOfContextFilters = e.currentStateOfContextFilters;
+    }
+    if (e.onDetach) {
+      e.onDetach();
     }
   }
 

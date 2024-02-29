@@ -80,7 +80,7 @@
     "esri-leaflet-geocoder": "^3.1.4",
     "esri-leaflet-heatmap": "^2.0.1",
     "esri-leaflet-renderers": "^3.0.0",
-    "esri-leaflet-vector": "^4.1.0",
+    "esri-leaflet-vector": "^4.2.3",
     "extract-files": "^13.0.0",
     "geojson": "^0.5.0",
     "graphql": "^16",

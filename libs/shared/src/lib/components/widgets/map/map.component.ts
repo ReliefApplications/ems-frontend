@@ -1,4 +1,5 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { MapComponent } from '../../ui/map';
 
 /** Component for the map widget */
 @Component({
@@ -7,12 +8,10 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
   styleUrls: ['./map.component.scss'],
 })
 export class MapWidgetComponent {
-  /**
-   * Settings
-   */
+  /** Map settings */
   @Input() settings: any;
-  /**
-   * Data
-   */
+  /** Reference to header template */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
+  /** Reference to map component */
+  @ViewChild(MapComponent) mapComponent!: MapComponent;
 }
