@@ -204,7 +204,7 @@ const createCardForm = (value?: any) => {
 const createAutomationRulesForm = (value: any) => {
   return fb.group({
     targetWidget: get<string>(value, 'targetWidget', ''),
-    layers: get<string[]>(value, 'layers', []),
+    subItems: get<string[]>(value, 'subItems', []),
     event: get<string>(value, 'event', ''),
   });
 };

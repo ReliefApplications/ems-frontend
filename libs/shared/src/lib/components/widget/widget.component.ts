@@ -138,6 +138,29 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         }
       })
       .finally(() => (this.loading = false));
+    this.setAPIWidgetsListener();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['canUpdate']) {
+      // Reset size of the widget to default one, if admin enters edit mode
+      if (changes['canUpdate'].previousValue === false && this.expanded) {
+        this.onResize();
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.customStyle) {
+      const parentNode = this.customStyle.parentNode;
+      parentNode?.removeChild(this.customStyle);
+    }
+  }
+
+  /**
+   * Set listeners for widget APIs between them
+   */
+  private setAPIWidgetsListener() {
     this.widgetService.widgetRuleEvent$
       .pipe(
         filter((event: WidgetAutomationRule) => {
@@ -147,6 +170,7 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
           );
         }),
         map((event: WidgetAutomationRule) => {
+          // Return only the events associated to the current widget
           return {
             ...event,
             events: event.events.filter(
@@ -156,8 +180,6 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         })
       )
       .subscribe((event: WidgetAutomationRule) => {
-        console.log(event);
-        console.log(this.widget);
         event.events.forEach((eventItem: WidgetAutomationEvent) => {
           switch (eventItem.event) {
             case 'expand':
@@ -176,17 +198,12 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
                 this.widgetContentComponent instanceof MapWidgetComponent
               ) {
                 const layers = this.widget.settings.layers.filter(
-                  (layer: string) => eventItem.layers?.includes(layer)
+                  (layer: string) => eventItem.subItems?.includes(layer)
                 );
                 this.widgetContentComponent.settings = {
                   ...this.widget.settings,
                   layers,
                 };
-              } else if (
-                this.widget.component === 'tabs' &&
-                this.widgetContentComponent instanceof TabsComponent
-              ) {
-                // this.widgetContentComponent.settings
               }
               break;
             case 'hide':
@@ -195,17 +212,28 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
                 this.widgetContentComponent instanceof MapWidgetComponent
               ) {
                 const layers = this.widget.settings.layers.filter(
-                  (layer: string) => !eventItem.layers?.includes(layer)
+                  (layer: string) => !eventItem.subItems?.includes(layer)
                 );
                 this.widgetContentComponent.settings = {
                   ...this.widget.settings,
                   layers,
                 };
-              } else if (
+              }
+              break;
+            case 'open':
+              if (
                 this.widget.component === 'tabs' &&
                 this.widgetContentComponent instanceof TabsComponent
               ) {
-                // this.widgetContentComponent.settings
+                this.widgetContentComponent.tabGroup?.tabs.forEach((tab) => {
+                  if (
+                    tab.button.textContent &&
+                    eventItem.subItems?.includes(tab.button.textContent.trim())
+                  ) {
+                    tab.openTab.emit();
+                    return;
+                  }
+                });
               }
               break;
             default:
@@ -213,22 +241,6 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
           }
         });
       });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['canUpdate']) {
-      // Reset size of the widget to default one, if admin enters edit mode
-      if (changes['canUpdate'].previousValue === false && this.expanded) {
-        this.onResize();
-      }
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.customStyle) {
-      const parentNode = this.customStyle.parentNode;
-      parentNode?.removeChild(this.customStyle);
-    }
   }
 
   /** Resize widget, by button click. */

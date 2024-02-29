@@ -112,7 +112,7 @@ export class TabApiComponent extends UnsubscribeComponent implements OnInit {
             value.events.map((event: WidgetAutomationEvent) =>
               this.fb.group({
                 targetWidget: [event.targetWidget],
-                layers: [event.layers],
+                subItems: [event.subItems],
                 event: [event.event],
               })
             )

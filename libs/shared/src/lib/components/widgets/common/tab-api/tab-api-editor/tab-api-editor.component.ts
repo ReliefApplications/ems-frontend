@@ -22,7 +22,6 @@ import {
   WidgetAutomationEvent,
   WidgetAutomationRule,
 } from '../../../../../models/automation.model';
-import { LayerModel } from '../../../../../models/layer.model';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { of, switchMap, takeUntil, tap } from 'rxjs';
 import { DashboardService } from '../../../../../services/dashboard/dashboard.service';
@@ -62,7 +61,7 @@ export class TabApiEditorComponent
     events: new FormArray([
       this.fb.group({
         targetWidget: [null],
-        layers: [[]],
+        subItems: [[]],
         event: [null],
       }),
     ]),
@@ -71,7 +70,7 @@ export class TabApiEditorComponent
   /** Current dashboard widgets */
   widgets: any[] = [];
   /** Selected widget map available layers */
-  widgetLayers: Array<LayerModel[]> = [];
+  widgetOptions: Array<{ id: string; name: string }[]> = [];
   /** Available events automation */
   private availableEvents = [
     {
@@ -85,6 +84,10 @@ export class TabApiEditorComponent
       text: this.translate.instant(
         'models.widget.automation.eventTypes.collapse'
       ),
+    },
+    {
+      value: 'open',
+      text: this.translate.instant('models.widget.automation.eventTypes.open'),
     },
     {
       value: 'show',
@@ -132,7 +135,7 @@ export class TabApiEditorComponent
         (data.events ?? []).map((event: WidgetAutomationEvent) => {
           return this.fb.group({
             targetWidget: [event?.targetWidget ?? null],
-            layers: [event?.layers ?? []],
+            subItems: [event?.subItems ?? []],
             event: [event?.event ?? null],
           });
         })
@@ -157,7 +160,13 @@ export class TabApiEditorComponent
       if (selectedWidget.component === 'map') {
         this.mapLayersService
           .getLayers(selectedWidget.settings?.layers ?? [])
-          .subscribe((layers) => (this.widgetLayers[index] = layers));
+          .subscribe((layers) => (this.widgetOptions[index] = layers));
+      } else if (selectedWidget.component == 'tabs') {
+        this.widgetOptions[index] = selectedWidget.settings.tabs.map(
+          (tab: any) => {
+            return { id: tab.label, name: tab.label };
+          }
+        );
       }
     });
   }
@@ -210,11 +219,17 @@ export class TabApiEditorComponent
             return this.mapLayersService.getLayers(
               this.selectedWidgets[eventIndex].settings?.layers ?? []
             );
+          } else if (this.selectedWidgets[eventIndex]?.component === 'tabs') {
+            return of(
+              this.selectedWidgets[eventIndex].settings.tabs.map((tab: any) => {
+                return { id: tab.label, name: tab.label };
+              })
+            );
           } else {
             return of([]);
           }
         }),
-        tap((layers) => (this.widgetLayers[eventIndex] = layers)),
+        tap((subItems) => (this.widgetOptions[eventIndex] = subItems)),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
@@ -228,7 +243,7 @@ export class TabApiEditorComponent
   addEvent() {
     const eventForm = this.fb.group({
       targetWidget: [null],
-      layers: [[]],
+      subItems: [[]],
       event: [null],
     });
     this.setEventFormListeners(

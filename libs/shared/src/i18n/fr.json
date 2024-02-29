@@ -2323,13 +2323,15 @@
 					"collapse": "Effondrement",
 					"expand": "Développer",
 					"hide": "Cacher",
+					"open": "Ouvrir",
 					"show": "Montrer"
 				},
 				"events": "Evénements",
-				"mapLayer": "Couche cible de la carte sélectionnée",
 				"name": "Nom",
 				"rules": "Règles",
 				"target": "Widget cible de l'evénement",
+				"targetLayer": "Couche cible de la carte sélectionnée",
+				"targetTab": "Onglet cible des onglets sélectionnés",
 				"title": "Automatisation"
 			},
 			"chart": {

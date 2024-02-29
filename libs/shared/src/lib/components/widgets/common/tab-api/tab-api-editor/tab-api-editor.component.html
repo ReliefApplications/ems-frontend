@@ -63,23 +63,29 @@
               </ui-select-option>
             </ui-select-menu>
           </div>
-          <div [ngSwitch]="selectedWidgets[i]?.component">
-            <ng-container *ngSwitchCase="'map'">
-              <div uiFormFieldDirective>
-                <label>{{
-                  'models.widget.automation.mapLayer' | translate
-                }}</label>
-                <ui-select-menu formControlName="layers">
-                  <ui-select-option
-                    *ngFor="let option of widgetLayers[i]"
-                    [value]="option.id"
-                  >
-                    {{ option.name }}
-                  </ui-select-option>
-                </ui-select-menu>
-              </div>
-            </ng-container>
-          </div>
+          <ng-container
+            *ngIf="
+              selectedWidgets[i]?.component === 'map' ||
+              selectedWidgets[i]?.component === 'tabs'
+            "
+          >
+            <div uiFormFieldDirective>
+              <label>{{
+                (selectedWidgets[i]?.component === 'map'
+                  ? 'models.widget.automation.targetLayer'
+                  : 'models.widget.automation.targetTab'
+                ) | translate
+              }}</label>
+              <ui-select-menu [multiselect]="true" formControlName="subItems">
+                <ui-select-option
+                  *ngFor="let option of widgetOptions[i]"
+                  [value]="option.id"
+                >
+                  {{ option.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+          </ng-container>
           <div uiFormFieldDirective>
             <label>{{ 'models.widget.automation.event' | translate }}</label>
             <ui-select-menu formControlName="event">

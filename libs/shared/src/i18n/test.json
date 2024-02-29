@@ -2309,13 +2309,15 @@
 					"collapse": "******",
 					"expand": "******",
 					"hide": "******",
+					"open": "******",
 					"show": "******"
 				},
 				"events": "******",
-				"mapLayer": "******",
 				"name": "******",
 				"rules": "******",
 				"target": "******",
+				"targetLayer": "******",
+				"targetTab": "******",
 				"title": "******"
 			},
 			"chart": {

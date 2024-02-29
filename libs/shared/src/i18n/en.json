@@ -2309,13 +2309,15 @@
 					"collapse": "Collapse",
 					"expand": "Expand",
 					"hide": "Hide",
+					"open": "Open",
 					"show": "Show"
 				},
 				"events": "Events",
-				"mapLayer": "Target layer of the selected map",
 				"name": "Name",
 				"rules": "Rules",
 				"target": "Target widget of the event",
+				"targetLayer": "Target layer of the selected map",
+				"targetTab": "Target tab of the selected tabs",
 				"title": "Automation"
 			},
 			"chart": {
