@@ -26,12 +26,12 @@ import { TabContentDirective } from '../../directives/tab-content.directive';
 export class TabComponent implements AfterContentChecked, AfterContentInit {
   /** Whether the tab is enabled or not */
   @Input() disabled = false;
-  /** Button reference */
-  @ViewChild('button')
-  button!: ElementRef;
 
   /** Output decorator for tab opening */
   @Output() openTab: EventEmitter<void> = new EventEmitter();
+
+  /** Button reference */
+  button!: HTMLButtonElement;
 
   /** @returns content portal of the tab */
   get content(): TemplatePortal | null {
@@ -63,15 +63,20 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
   /**
    * UI tab component
    *
+   * @param el Current tab's host element
    * @param viewContainerRef Angular view container reference
    */
-  constructor(private viewContainerRef: ViewContainerRef) {}
+  constructor(
+    private el: ElementRef,
+    private viewContainerRef: ViewContainerRef
+  ) {}
 
   ngAfterContentInit(): void {
     this.contentPortal = new TemplatePortal(
       this.explicitContent || this.implicitContent,
       this.viewContainerRef
     );
+    this.button = this.el.nativeElement?.querySelector('button');
   }
 
   ngAfterContentChecked(): void {
