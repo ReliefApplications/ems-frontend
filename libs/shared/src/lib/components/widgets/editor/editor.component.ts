@@ -112,6 +112,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     let filterButtonIsClicked = !!event.target.dataset.filterField;
     let ruleButtonIsClicked = !!event.target.dataset.ruleTarget;
     let currentNode = event.target;
+    let filterField, filterValue, ruleTarget: string;
     if (!filterButtonIsClicked && !ruleButtonIsClicked) {
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
       while (
@@ -122,8 +123,12 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         filterButtonIsClicked = !!currentNode.dataset.filterField;
       }
     }
-    // If filter button is not found and rule button neither, try to find rule button
-    if (!filterButtonIsClicked && !ruleButtonIsClicked) {
+    if (filterButtonIsClicked) {
+      filterField = currentNode.dataset.filterField;
+      filterValue = currentNode.dataset.filterValue;
+    }
+    if (!ruleButtonIsClicked) {
+      currentNode = event.target;
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
       while (
         currentNode.localName !== 'shared-editor' &&
@@ -133,30 +138,34 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         ruleButtonIsClicked = !!currentNode.dataset.ruleTarget;
       }
     }
-    if (filterButtonIsClicked) {
-      const { filterField, filterValue } = currentNode.dataset;
-      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
-      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
-      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
-      const currentFilters = { ...this.contextService.filter.getValue() };
-      // If current filters contains the field but there is no value set, delete it
-      if (filterField in currentFilters && !cleanFilterValue) {
-        delete currentFilters[filterField];
+    if (ruleButtonIsClicked) {
+      ruleTarget = currentNode.dataset.ruleTarget;
+    }
+    if (filterButtonIsClicked || ruleButtonIsClicked) {
+      if (filterButtonIsClicked) {
+        // Cleanup filter value from the span set by default in the tinymce calculated field if exists
+        const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
+        const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
+        const currentFilters = { ...this.contextService.filter.getValue() };
+        // If current filters contains the field but there is no value set, delete it
+        if (filterField in currentFilters && !cleanFilterValue) {
+          delete currentFilters[filterField];
+        }
+        // Update filter object with existing fields and values
+        const updatedFilters = {
+          ...(currentFilters && { ...currentFilters }),
+          ...(cleanFilterValue && {
+            [filterField]: cleanFilterValue,
+          }),
+        };
+        this.contextService.filter.next(updatedFilters);
       }
-      // Update filter object with existing fields and values
-      const updatedFilters = {
-        ...(currentFilters && { ...currentFilters }),
-        ...(cleanFilterValue && {
-          [filterField]: cleanFilterValue,
-        }),
-      };
-      this.contextService.filter.next(updatedFilters);
-    } else if (ruleButtonIsClicked) {
-      const { ruleTarget } = currentNode.dataset;
-      const selectedAutomationRule = this.settings.automationRules.find(
-        (ar: WidgetAutomationRule) => ar.id === ruleTarget
-      );
-      this.widgetService.widgetRuleEvent.next(selectedAutomationRule);
+      if (ruleButtonIsClicked) {
+        const selectedAutomationRule = this.settings.automationRules.find(
+          (ar: WidgetAutomationRule) => ar.id === ruleTarget
+        );
+        this.widgetService.widgetRuleEvent.next(selectedAutomationRule);
+      }
     } else {
       const content = this.htmlContentComponent.el.nativeElement;
       const editorTriggers = content.querySelectorAll('.record-editor');
