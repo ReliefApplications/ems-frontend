@@ -216,6 +216,17 @@ export class MapControlsService {
       },
     });
     this.fullscreenControl?.addTo(map);
+    map.on('fullscreenchange', function () {
+      if (map.isFullscreen()) {
+        console.log('entered fullscreen');
+        setTimeout(
+          () => map.toggleFullscreen({ pseudoFullscreen: false }),
+          1500
+        );
+      } else {
+        console.log('exited fullscreen');
+      }
+    });
   }
 
   /**
