@@ -59,7 +59,13 @@ const isSelectQuestion = (question: Question): boolean =>
 export const init = (referenceDataService: ReferenceDataService): void => {
   // declare the serializer
   const serializer: JsonMetadata = Serializer;
-
+  // Property used to trigger value changes across tabs in web components for reference data
+  serializer.addProperty('survey', {
+    name: 'dataHasChanged',
+    default: true,
+    category: 'general',
+    visibleIndex: 0,
+  });
   // Hide the choices from the property grid if choices from reference data is used
   serializer.getProperty('selectbase', 'choices').visibleIf = (
     obj: Question
@@ -301,8 +307,8 @@ export const render = (
     )
       .getAllQuestions()
       .find((qu) => qu.referenceDataVariableMapping);
-    if (containsLinkedReferenceDataQuestions) {
-      (question.survey as SurveyModel).onValueChanged.add(async () => {
+    const updateReferenceDataChoicesFunc = async (prop: any) => {
+      if ((typeof prop === 'boolean' && prop) || typeof prop !== 'boolean') {
         // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
         //
         // 1. The available choices(visibleChoices property). This has to be updated if the reference data question that it's dependant on has a new value set
@@ -330,7 +336,16 @@ export const render = (
           question._instance.disabled = question.readOnly;
           updateSelectedChoices();
         }
-      });
+      }
+    };
+    if (containsLinkedReferenceDataQuestions) {
+      (question.survey as SurveyModel).onValueChanged.add(
+        updateReferenceDataChoicesFunc
+      );
+      (question.survey as SurveyModel).registerFunctionOnPropertyValueChanged(
+        'dataHasChanged',
+        updateReferenceDataChoicesFunc
+      );
     }
   }
 };
