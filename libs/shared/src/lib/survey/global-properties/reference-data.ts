@@ -61,7 +61,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
   const serializer: JsonMetadata = Serializer;
   // Property used to trigger value changes across tabs in web components for reference data
   serializer.addProperty('survey', {
-    name: 'dataHasChanged',
+    name: 'refreshData',
     default: true,
     category: 'general',
     visibleIndex: 0,
@@ -343,7 +343,7 @@ export const render = (
         updateReferenceDataChoicesFunc
       );
       (question.survey as SurveyModel).registerFunctionOnPropertyValueChanged(
-        'dataHasChanged',
+        'refreshData',
         updateReferenceDataChoicesFunc
       );
     }
