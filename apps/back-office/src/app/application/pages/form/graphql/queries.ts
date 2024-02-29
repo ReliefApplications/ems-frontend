@@ -94,6 +94,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
       fields
       status
       queryName
+      allowUploadRecords
       canCreateRecords
       uniqueRecord {
         id

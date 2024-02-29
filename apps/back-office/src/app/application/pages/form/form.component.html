@@ -25,7 +25,14 @@
       ></ui-button>
     </div>
     <!-- Page actions -->
-    <div class="flex items-center" *ngIf="!formActive">
+    <div class="flex items-center gap-2" *ngIf="!formActive">
+      <!-- Upload records -->
+      <shared-upload-records
+        [id]="form.id ?? ''"
+        [name]="form.name ?? ''"
+        [path]="'form'"
+        *ngIf="form.allowUploadRecords"
+      ></shared-upload-records>
       <!-- Edit name -->
       <ui-button
         icon="edit"

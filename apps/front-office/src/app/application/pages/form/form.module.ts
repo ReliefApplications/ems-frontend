@@ -2,7 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
-import { FormModule as SharedFormModule } from '@oort-front/shared';
+import {
+  FormModule as SharedFormModule,
+  UploadRecordsModule,
+} from '@oort-front/shared';
 import { ButtonModule, SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -18,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ButtonModule,
     TranslateModule,
     SpinnerModule,
+    UploadRecordsModule,
   ],
   exports: [FormComponent],
 })

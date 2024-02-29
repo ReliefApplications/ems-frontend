@@ -1,5 +1,12 @@
 <ng-container *ngIf="loading"><ui-spinner></ui-spinner></ng-container>
 <ng-container *ngIf="!loading && form && canCreateRecords">
+  <shared-upload-records
+    [id]="form.id ?? ''"
+    [name]="form.name ?? ''"
+    [path]="'form'"
+    *ngIf="form.allowUploadRecords"
+    class="flex w-full justify-end"
+  ></shared-upload-records>
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
     <ui-button class="ml-auto w-fit" category="secondary" (click)="clearForm()">

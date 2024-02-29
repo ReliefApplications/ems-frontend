@@ -36,31 +36,12 @@
         <button uiMenuItem (click)="onDownload('csv')">.csv</button>
         <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
       </ui-menu>
-      <ui-button
-        icon="file_upload"
-        category="secondary"
-        variant="primary"
-        [uiTooltip]="'components.records.upload.hint' | translate"
-        (click)="showUpload = !showUpload"
-        cdkOverlayOrigin
-        #uploadTrigger="cdkOverlayOrigin"
-      >
-        {{
-          'common.uploadObject'
-            | translate : { name: 'common.record.few' | translate }
-        }}
-      </ui-button>
-      <ng-template
-        cdkConnectedOverlay
-        [cdkConnectedOverlayOrigin]="uploadTrigger"
-        [cdkConnectedOverlayOpen]="showUpload"
-      >
-        <app-upload-menu
-          (close)="showUpload = false"
-          (upload)="uploadFileData($event)"
-          (download)="onDownloadTemplate()"
-        ></app-upload-menu>
-      </ng-template>
+      <shared-upload-records
+        [id]="resource.id ?? ''"
+        [name]="resource.name ?? ''"
+        [path]="'resource'"
+        (uploaded)="fetchRecords(true)"
+      ></shared-upload-records>
     </div>
   </div>
   <ng-container *ngIf="!empty; else emptyTmpl">

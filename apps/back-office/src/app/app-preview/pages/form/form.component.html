@@ -1,4 +1,11 @@
 <ng-container *ngIf="!loading && form">
+  <shared-upload-records
+    [id]="form.id ?? ''"
+    [name]="form.name ?? ''"
+    [path]="'form'"
+    *ngIf="form.allowUploadRecords"
+    class="flex w-full justify-end"
+  ></shared-upload-records>
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
     <ui-button category="secondary" (click)="clearForm()">{{

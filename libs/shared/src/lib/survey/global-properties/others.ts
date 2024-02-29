@@ -302,6 +302,15 @@ export const init = (environment: any): void => {
     default: 'incrementalId',
   });
 
+  // Adds property to display in the form component the upload records button
+  serializer.addProperty('survey', {
+    name: 'allowUploadRecords',
+    category: 'Records',
+    type: 'boolean',
+    default: false,
+    visibleIndex: 2,
+  });
+
   // Add ability to conditionally allow dynamic panel add new panel
   serializer.addProperty('paneldynamic', {
     name: 'AllowNewPanelsExpression:expression',

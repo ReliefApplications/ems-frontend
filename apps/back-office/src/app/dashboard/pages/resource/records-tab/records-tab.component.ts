@@ -87,10 +87,6 @@ export class RecordsTabComponent
    * Loading state.
    */
   public loading = true;
-  /**
-   * Upload state.
-   */
-  public showUpload = false;
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {
@@ -324,43 +320,6 @@ export class RecordsTabComponent
   }
 
   /**
-   * Get the records template, for upload.
-   */
-  onDownloadTemplate(): void {
-    const path = `download/resource/records/${this.resource.id}`;
-    const queryString = new URLSearchParams({
-      type: 'xlsx',
-      template: 'true',
-    }).toString();
-    this.downloadService.getFile(
-      `${path}?${queryString}`,
-      `text/xlsx;charset=utf-8;`,
-      `${this.resource.name}_template.xlsx`
-    );
-  }
-
-  /**
-   * Calls rest endpoint to upload new records for the resource.
-   *
-   * @param file File to upload.
-   */
-  uploadFileData(file: any): void {
-    const path = `upload/resource/records/${this.resource.id}`;
-    this.downloadService.uploadFile(path, file).subscribe({
-      next: (res) => {
-        if (res.status === 'OK') {
-          this.fetchRecords(true);
-          this.showUpload = false;
-        }
-      },
-      error: () => {
-        // The error message has already been handled in DownloadService
-        this.showUpload = false;
-      },
-    });
-  }
-
-  /**
    * Toggle archive / active view.
    *
    * @param e click event.
@@ -418,7 +377,7 @@ export class RecordsTabComponent
    *
    * @param refetch rebuild query
    */
-  private fetchRecords(refetch?: boolean): void {
+  fetchRecords(refetch?: boolean): void {
     this.loading = true;
     const variables = {
       first: this.pageInfo.pageSize,

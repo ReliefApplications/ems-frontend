@@ -99,8 +99,6 @@ export class FormRecordsComponent
    * File input
    */
   @ViewChild('xlsxFile') xlsxFile: any;
-  /** Show upload option */
-  public showUpload = false;
 
   /**
    * Forms records page component
@@ -178,7 +176,7 @@ export class FormRecordsComponent
    *
    * @param refetch erase previous query results
    */
-  private fetchRecordsData(refetch?: boolean): void {
+  fetchRecordsData(refetch?: boolean): void {
     this.loading = true;
     this.updating = true;
     const variables = {
@@ -434,48 +432,6 @@ export class FormRecordsComponent
       `text/${type};charset=utf-8;`,
       fileName
     );
-  }
-
-  /**
-   * Get the records template, for upload.
-   */
-  onDownloadTemplate(): void {
-    const path = `download/form/records/${this.id}`;
-    const queryString = new URLSearchParams({
-      type: 'xlsx',
-      template: 'true',
-    }).toString();
-    this.downloadService.getFile(
-      `${path}?${queryString}`,
-      `text/xlsx;charset=utf-8;`,
-      `${this.form.name}_template.xlsx`
-    );
-  }
-
-  /**
-   * Upload file and indicate status of request.
-   *
-   * @param file file to upload.
-   */
-  uploadFileData(file: any): void {
-    const path = `upload/form/records/${this.id}`;
-    this.downloadService.uploadFile(path, file).subscribe({
-      next: (res) => {
-        if (res.status === 'OK') {
-          this.snackBar.openSnackBar(
-            this.translate.instant(
-              'models.record.notifications.uploadSuccessful'
-            )
-          );
-          this.fetchRecordsData(true);
-          this.showUpload = false;
-        }
-      },
-      error: () => {
-        // The error message has already been handled in DownloadService
-        this.showUpload = false;
-      },
-    });
   }
 
   /**
