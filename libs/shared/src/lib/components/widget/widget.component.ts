@@ -73,6 +73,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   private customStyle?: HTMLStyleElement;
   /** Previous position of the widget ( cols / x )  */
   private previousPosition?: { cols: number; x: number };
+  /** Open tab api widget event timeout listener */
+  private openTabEventTimeoutListener!: NodeJS.Timeout;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -156,6 +158,9 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
       const parentNode = this.customStyle.parentNode;
       parentNode?.removeChild(this.customStyle);
     }
+    if (this.openTabEventTimeoutListener) {
+      clearTimeout(this.openTabEventTimeoutListener);
+    }
   }
 
   /**
@@ -208,6 +213,15 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
                     this.widgetContentComponent as MapWidgetComponent
                   ).mapComponent.addLayer(layer);
                 });
+              } else if (
+                this.widget.component === 'tabs' &&
+                this.widgetContentComponent instanceof TabsComponent
+              ) {
+                this.widgetContentComponent.tabs.forEach((tab) => {
+                  if (eventItem.subItems?.includes(tab.label.trim())) {
+                    tab.showTab = true;
+                  }
+                });
               }
               break;
             case 'hide':
@@ -225,6 +239,32 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
                     this.widgetContentComponent as MapWidgetComponent
                   ).mapComponent.removeLayer(layer);
                 });
+              } else if (
+                this.widget.component === 'tabs' &&
+                this.widgetContentComponent instanceof TabsComponent
+              ) {
+                const tabQueryItem = (
+                  this.widgetContentComponent as TabsComponent
+                ).tabGroup?.tabs.find(
+                  (tab) =>
+                    eventItem.subItems?.includes(
+                      tab.button?.textContent?.trim() as string
+                    ) ?? false
+                );
+                this.widgetContentComponent.tabs.forEach((tab) => {
+                  if (eventItem.subItems?.includes(tab.label.trim())) {
+                    // If now hidden tab was selected, select the first tab found that is not current tab in the list by default
+                    if (tabQueryItem?.selected) {
+                      const autoSelectedTab = (
+                        this.widgetContentComponent as TabsComponent
+                      ).tabGroup?.tabs.find(
+                        (tab) => tab.index !== tabQueryItem.index
+                      );
+                      autoSelectedTab?.openTab.emit();
+                    }
+                    tab.showTab = false;
+                  }
+                });
               }
               break;
             case 'open':
@@ -232,15 +272,24 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
                 this.widget.component === 'tabs' &&
                 this.widgetContentComponent instanceof TabsComponent
               ) {
-                this.widgetContentComponent.tabGroup?.tabs.forEach((tab) => {
-                  if (
-                    tab.button.textContent &&
-                    eventItem.subItems?.includes(tab.button.textContent.trim())
-                  ) {
-                    tab.openTab.emit();
-                    return;
-                  }
-                });
+                if (this.openTabEventTimeoutListener) {
+                  clearTimeout(this.openTabEventTimeoutListener);
+                }
+                this.openTabEventTimeoutListener = setTimeout(() => {
+                  (
+                    this.widgetContentComponent as TabsComponent
+                  ).tabGroup?.tabs.forEach((tab) => {
+                    if (
+                      tab.button.textContent &&
+                      eventItem.subItems?.includes(
+                        tab.button.textContent.trim()
+                      )
+                    ) {
+                      tab.openTab.emit();
+                      return;
+                    }
+                  });
+                }, 0);
               }
               break;
             default:

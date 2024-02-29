@@ -4,8 +4,10 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Optional,
   Output,
+  SimpleChanges,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
@@ -15,6 +17,7 @@ import { takeUntil } from 'rxjs';
 import { DomPortal } from '@angular/cdk/portal';
 import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
 import { WidgetComponent } from '../../widget/widget.component';
+import { cloneDeep } from 'lodash';
 
 /**
  * Tabs widget component.
@@ -26,7 +29,7 @@ import { WidgetComponent } from '../../widget/widget.component';
 })
 export class TabsComponent
   extends UnsubscribeComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnChanges
 {
   /** Widget settings */
   @Input() settings: any;
@@ -47,6 +50,8 @@ export class TabsComponent
   portal?: DomPortal;
   /** Selected tab index */
   selectedIndex = 0;
+  /** Current tabs */
+  tabs: any[] = [];
 
   /**
    * Tabs widget component.
@@ -66,6 +71,12 @@ export class TabsComponent
   ngAfterViewInit(): void {
     /** Take part of the tab group element to display it in the header template */
     this.portal = new DomPortal(this.tabGroup?.tabList);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['settings']?.currentValue) {
+      this.tabs = cloneDeep(changes['settings'].currentValue.tabs);
+    }
   }
 
   /**

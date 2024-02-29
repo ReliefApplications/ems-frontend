@@ -1898,7 +1898,8 @@
 				},
 				"tabs": {
 					"addNewTab": "Ajouter un nouvel onglet",
-					"deleteTab": "Supprimer l'onglet"
+					"deleteTab": "Supprimer l'onglet",
+					"showTab": "Afficher l'onglet"
 				}
 			},
 			"styling": "Modifier le style",

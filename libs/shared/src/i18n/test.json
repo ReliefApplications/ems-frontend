@@ -1885,7 +1885,8 @@
 				},
 				"tabs": {
 					"addNewTab": "******",
-					"deleteTab": "******"
+					"deleteTab": "******",
+					"showTab": "******"
 				}
 			},
 			"styling": "******",

@@ -197,10 +197,8 @@ export class TabApiEditorComponent
                   event.value !== 'open'
               );
             }
-          } else if (this.selectedWidgets[index].component === 'tabs') {
-            this.currentEventsToSelect[index] = this.availableEvents.filter(
-              (event) => event.value !== 'show' && event.value !== 'hide'
-            );
+          } else {
+            this.currentEventsToSelect[index] = this.availableEvents;
           }
         }
       }

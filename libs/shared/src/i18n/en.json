@@ -1885,7 +1885,8 @@
 				},
 				"tabs": {
 					"addNewTab": "Add a new tab",
-					"deleteTab": "Delete tab"
+					"deleteTab": "Delete tab",
+					"showTab": "Show tab"
 				}
 			},
 			"styling": "Edit styling",

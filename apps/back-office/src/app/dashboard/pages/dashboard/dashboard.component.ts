@@ -265,6 +265,18 @@ export class DashboardComponent
             data.dashboard.structure
               ?.filter((x: any) => x !== null)
               .map((widget: any) => {
+                // Check for previous widgets containing tabs to be shown by default
+                // Otherwise user has to open tabs settings and save content to make previous tabs visible
+                if (widget.component === 'tabs') {
+                  const hasShowTab = widget.settings.tabs.every(
+                    (tab: any) => 'showTab' in tab
+                  );
+                  if (!hasShowTab) {
+                    widget.settings.tabs.forEach((tab: any) => {
+                      tab.showTab = true;
+                    });
+                  }
+                }
                 const contextData = this.dashboard?.contextData;
                 this.contextService.context = contextData || null;
                 if (!contextData) {
