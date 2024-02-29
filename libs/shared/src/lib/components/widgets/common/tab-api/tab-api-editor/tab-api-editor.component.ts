@@ -184,17 +184,23 @@ export class TabApiEditorComponent
           this.currentEventsToSelect[index] = [];
         } else {
           this.selectedWidgets[index] = selectedWidget;
-          switch (this.selectedWidgets[index].component) {
-            case 'map':
+          if (this.selectedWidgets[index].component !== 'tabs') {
+            if (this.selectedWidgets[index].component === 'map') {
               this.currentEventsToSelect[index] = this.availableEvents.filter(
-                (event) => event.value == 'show' || event.value == 'hide'
+                (event) => event.value !== 'open'
               );
-              break;
-            default:
+            } else {
               this.currentEventsToSelect[index] = this.availableEvents.filter(
-                (event) => event.value != 'show' && event.value != 'hide'
+                (event) =>
+                  event.value !== 'show' &&
+                  event.value !== 'hide' &&
+                  event.value !== 'open'
               );
-              break;
+            }
+          } else if (this.selectedWidgets[index].component === 'tabs') {
+            this.currentEventsToSelect[index] = this.availableEvents.filter(
+              (event) => event.value !== 'show' && event.value !== 'hide'
+            );
           }
         }
       }
