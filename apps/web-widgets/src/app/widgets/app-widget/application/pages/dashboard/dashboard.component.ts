@@ -15,20 +15,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  UnsubscribeComponent,
   WidgetGridComponent,
   ConfirmService,
   ButtonActionT,
   ContextService,
   DashboardQueryResponse,
   Record,
+  MapWidgetComponent,
+  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 
 /**
  * Dashboard page.
@@ -248,5 +249,31 @@ export class DashboardComponent
       );
     };
     this.contextService.initContext(this.dashboard as Dashboard, callback);
+  }
+
+  /**
+   * Called when attaching component ( reuse strategy ).
+   * Loop through all map widgets, and redraw them when needed.
+   */
+  onAttach(): void {
+    this.widgetGridComponent.widgetComponents.forEach((widget) => {
+      const content = widget.widgetContentComponent;
+      if (content instanceof MapWidgetComponent) {
+        let glLayersCount = 0;
+        content.mapComponent.map.eachLayer((l) => {
+          const glMap = get(l, '_maplibreGL._glMap') as any;
+          if (glMap) {
+            l.remove();
+            glLayersCount += 1;
+          }
+        });
+        if (glLayersCount > 0) {
+          const settings = content.mapComponent.extractSettings();
+          content.mapComponent.setWebmap(settings.arcGisWebMap, {
+            skipDefaultView: true,
+          });
+        }
+      }
+    });
   }
 }

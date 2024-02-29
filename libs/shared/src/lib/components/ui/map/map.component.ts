@@ -336,7 +336,7 @@ export class MapComponent
    *
    * @returns cleaned settings
    */
-  private extractSettings(): MapConstructorSettings {
+  public extractSettings(): MapConstructorSettings {
     const mapSettings = omitBy(this.mapSettingsValue, isNil);
     // Settings initialization
     const initialState = get(mapSettings, 'initialState', {
@@ -429,6 +429,7 @@ export class MapComponent
         ),
         initialState.viewpoint.zoom
       );
+      this.map.attributionControl.setPrefix(false);
 
       this.currentZoom = initialState.viewpoint.zoom;
       this.mapControlsService.addControlPlaceholders(this.map);
@@ -1062,14 +1063,19 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
+   * @param options additional options
+   * @param options.skipDefaultView skip default view ( map won't change zoom / bounds )
    * @returns loaded basemaps and layers as Promise
    */
-  public setWebmap(webmap: any): Promise<{
+  public setWebmap(
+    webmap: any,
+    options?: { skipDefaultView: boolean }
+  ): Promise<{
     basemaps: TreeObject[];
     layers: TreeObject[];
   }> {
     this.arcGisWebMap = webmap;
-    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
   }
 
   /** Set the new layers based on the filter value */
