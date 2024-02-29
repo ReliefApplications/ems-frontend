@@ -549,6 +549,8 @@ export class LayoutComponent
         });
         this.surveySharedQuestions = Array.from(new Set(surveyQuestions));
       }
+      // Reset data change trigger on component detach
+      e.linkedSurvey?.setPropertyValue('refreshData', false);
       const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
         e.linkedSurvey
       );
