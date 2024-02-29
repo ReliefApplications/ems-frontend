@@ -1,26 +1,53 @@
 <ui-dialog size="big">
   <ng-container ngProjectAs="header" [formGroup]="formGroup">
     <div uiFormFieldDirective>
-      <label>{{ 'models.widget.automation.name' | translate }}</label>
-      <input
-        formControlName="name"
-        type="text"
-        [placeholder]="'models.widget.automation.addName' | translate"
-      />
+      <label>Name of automation rule</label>
+      <input formControlName="name" type="text" placeholder="Type a name..." />
     </div>
     <div class="flex justify-between">
-      <h3 class="font-semibold">
-        {{ 'models.widget.automation.events' | translate }}
-      </h3>
+      <h3 class="font-semibold">Components</h3>
       <ui-button
         class="mb-6"
         category="secondary"
         variant="primary"
-        (click)="addComponent()"
+        (click)="onAddComponent()"
       >
-        {{ 'models.widget.automation.addEvent' | translate }}
+        Add a new component
       </ui-button>
     </div>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <ul>
+      <li *ngFor="let action of components.controls; let i = index">
+        <div class="relative pb-8">
+          <span
+            *ngIf="i < components.length - 1"
+            class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
+          ></span>
+          <div
+            class="relative flex flex-row justify-between bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center pl-2"
+          >
+            <h4 class="!m-0">{{ action.value.type }}</h4>
+            <div class="flex flex-row gap-1">
+              <ui-button
+                [isIcon]="true"
+                icon="edit"
+                (click)="onEditComponent(i)"
+                uiTooltip="Edit"
+              ></ui-button>
+              <ui-button
+                [isIcon]="true"
+                icon="delete"
+                variant="danger"
+                (click)="onDeleteComponent(i)"
+                uiTooltip="Delete"
+              ></ui-button>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
   </ng-container>
 
   <ng-container ngProjectAs="actions">

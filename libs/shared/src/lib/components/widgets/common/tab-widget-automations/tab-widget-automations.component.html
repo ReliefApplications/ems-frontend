@@ -1,26 +1,19 @@
 <div class="flex justify-between">
-  <h2>{{ 'models.widget.automation.rules' | translate }}</h2>
-
+  <h2>Automation rules</h2>
   <ui-button
     class="mb-6"
     category="secondary"
     variant="primary"
     (click)="addEditRule()"
   >
-    {{ 'models.widget.automation.add' | translate }}
+    Add a new automation rule
   </ui-button>
 </div>
 <ng-template #emptyTmpl>
-  <shared-empty
-    [title]="'models.widget.automation.empty' | translate"
-  ></shared-empty>
+  <shared-empty title="No automation rules"></shared-empty>
 </ng-template>
 <ng-container *ngIf="data.length; else emptyTmpl">
-  <table
-    cdk-table
-    uiTableWrapper
-    [dataSource]="data"
-  >
+  <table cdk-table uiTableWrapper [dataSource]="data">
     <ng-container cdkColumnDef="name">
       <th uiCellHeader *cdkHeaderCellDef>
         {{ 'common.name' | translate }}
@@ -50,7 +43,7 @@
             [isIcon]="true"
             icon="delete"
             (click)="removeRow(i)"
-            [uiTooltip]="'models.widget.automation.delete' | translate"
+            [uiTooltip]="'common.delete' | translate"
           >
           </ui-button>
           <ui-button
