@@ -2,7 +2,6 @@ import {
   Component,
   OnInit,
   Input,
-  TemplateRef,
   ViewChild,
   HostListener,
   Renderer2,
@@ -33,10 +32,10 @@ import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { ReferenceData } from '../../../models/reference-data.model';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ContextService } from '../../../services/context/context.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { Router } from '@angular/router';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /**
  * Text widget component using Tinymce.
@@ -46,13 +45,11 @@ import { Router } from '@angular/router';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent extends UnsubscribeComponent implements OnInit {
+export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /** Widget settings */
   @Input() settings: any;
   /** Should show padding */
   @Input() usePadding = true;
-  /** Reference to header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to html content component */
   @ViewChild(HtmlWidgetContentComponent)
   htmlContentComponent!: HtmlWidgetContentComponent;
