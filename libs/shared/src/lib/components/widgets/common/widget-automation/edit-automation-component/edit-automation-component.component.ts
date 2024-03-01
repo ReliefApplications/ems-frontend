@@ -85,7 +85,9 @@ export class EditAutomationComponentComponent
                   }));
                 });
             } else {
-              this.editor.properties.layer.choices = [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'layers'
+              ).choices = [];
             }
           },
           onInit: (value: any) => {
@@ -105,7 +107,9 @@ export class EditAutomationComponentComponent
                   }));
                 });
             } else {
-              this.editor.properties.layer.choices = [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'layers'
+              ).choices = [];
             }
           },
         },
@@ -159,7 +163,9 @@ export class EditAutomationComponentComponent
                   }));
                 });
             } else {
-              this.editor.properties.layer.choices = [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'layers'
+              ).choices = [];
             }
           },
           onInit: (value: any) => {
@@ -179,7 +185,9 @@ export class EditAutomationComponentComponent
                   }));
                 });
             } else {
-              this.editor.properties.layer.choices = [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'layers'
+              ).choices = [];
             }
           },
         },
@@ -229,7 +237,7 @@ export class EditAutomationComponentComponent
         (this.formGroup as any)
           .get(`value.${property.name}`)
           ?.valueChanges.pipe(takeUntil(this.destroy$))
-          .subscribe((value: any) => property.onValueChanged(value).bind(this));
+          .subscribe((value: any) => property.onValueChanged(value));
       }
       if (property.onInit) {
         property.onInit(
