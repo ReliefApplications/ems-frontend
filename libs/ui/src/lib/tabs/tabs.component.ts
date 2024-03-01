@@ -129,6 +129,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedIndex']) {
+      console.log('set selected tab');
       this.setSelectedTab();
     }
   }
@@ -162,7 +163,9 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
    * Update select state of all the tabs
    */
   public setSelectedTab() {
+    console.log(this.selectedIndex);
     this.tabs?.forEach((tab) => {
+      console.log(tab.index);
       if (tab.index === this.selectedIndex) {
         tab.selected = true;
       } else {

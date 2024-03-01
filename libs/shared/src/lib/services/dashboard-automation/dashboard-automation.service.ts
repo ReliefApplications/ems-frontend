@@ -186,7 +186,15 @@ export class DashboardAutomationService {
                     .filter((x) => !x.hide)
                     .findIndex((x) => x.id === tabId);
                   if (index > -1) {
-                    widget.widgetContentComponent.selectedIndex = index;
+                    const tab =
+                      widget.widgetContentComponent.tabGroup?.tabs.find(
+                        (tab) => tab.id === tabId
+                      );
+                    if (tab) {
+                      widget.widgetContentComponent.tabGroup?.showContent(tab);
+                    } else {
+                      widget.widgetContentComponent.selectedIndex = index;
+                    }
                   }
                 }
                 break;

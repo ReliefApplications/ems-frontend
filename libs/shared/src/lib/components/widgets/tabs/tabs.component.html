@@ -7,7 +7,7 @@
   >
     <ng-container *ngFor="let tab of tabs">
       <ng-container *ngIf="!tab.hide">
-        <ui-tab>
+        <ui-tab [id]="tab.id">
           <ng-container ngProjectAs="label">{{ tab.label }}</ng-container>
           <ng-template uiTabContent>
             <shared-tab

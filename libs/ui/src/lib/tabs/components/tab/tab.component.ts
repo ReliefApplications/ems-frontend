@@ -14,6 +14,7 @@ import {
 import { Variant } from '../../../types/variant';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { TabContentDirective } from '../../directives/tab-content.directive';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * UI Tab component
@@ -24,6 +25,8 @@ import { TabContentDirective } from '../../directives/tab-content.directive';
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent implements AfterContentChecked, AfterContentInit {
+  /** Unique tab id */
+  @Input() id = uuidv4();
   /** Whether the tab is enabled or not */
   @Input() disabled = false;
   /** Button reference */
