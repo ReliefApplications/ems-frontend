@@ -20,6 +20,7 @@ import {
   DashboardQueryResponse,
   Record,
   DashboardComponent as SharedDashboardComponent,
+  DashboardAutomationService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -40,6 +41,7 @@ import { cloneDeep } from 'lodash';
       provide: SharedDashboardComponent,
       useClass: DashboardComponent,
     },
+    DashboardAutomationService,
   ],
 })
 export class DashboardComponent
@@ -83,6 +85,7 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param document Document
    * @param contextService Dashboard context service
+   * @param dashboardAutomationService Dashboard automation service
    */
   constructor(
     private apollo: Apollo,
@@ -95,9 +98,11 @@ export class DashboardComponent
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
+    this.dashboardAutomationService.dashboard = this;
   }
 
   /**

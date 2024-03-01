@@ -10,6 +10,7 @@ import {
   OnDestroy,
   Injector,
   ElementRef,
+  Optional,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -182,7 +183,7 @@ export class MapComponent
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference,
    * @param mapPolygonsService Shared map polygons service
-   * @param dashboardAutomationService Shared dashboard automation service
+   * @param dashboardAutomationService Shared dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -198,7 +199,7 @@ export class MapComponent
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
     private mapPolygonsService: MapPolygonsService,
-    private dashboardAutomationService: DashboardAutomationService
+    @Optional() private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -321,7 +322,7 @@ export class MapComponent
           trigger.type === 'map.click'
         ) {
           this.map.on('click', (e) => {
-            this.dashboardAutomationService.executeAutomationRule(rule, e);
+            this.dashboardAutomationService?.executeAutomationRule(rule, e);
           });
         }
       }

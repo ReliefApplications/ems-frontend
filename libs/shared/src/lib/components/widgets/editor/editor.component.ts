@@ -6,6 +6,7 @@ import {
   HostListener,
   Renderer2,
   ElementRef,
+  Optional,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -157,7 +158,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         (rule: any) => rule.id === ruleTarget
       );
       if (rule) {
-        this.dashboardAutomationService.executeAutomationRule(rule);
+        this.dashboardAutomationService?.executeAutomationRule(rule);
       }
     }
 
@@ -216,7 +217,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param aggregationService Shared aggregation service
    * @param el Element ref
    * @param router Angular router
-   * @param dashboardAutomationService Dashboard automation service
+   * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
     private apollo: Apollo,
@@ -232,7 +233,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private aggregationService: AggregationService,
     private el: ElementRef,
     private router: Router,
-    private dashboardAutomationService: DashboardAutomationService
+    @Optional() private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
   }
