@@ -28,6 +28,13 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
+    type: 'set.context',
+    value: {
+      mapping: '',
+    },
+  },
+  {
+    component: 'action',
     type: 'map.get.country',
   },
 ];

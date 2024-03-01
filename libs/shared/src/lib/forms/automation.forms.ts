@@ -35,6 +35,11 @@ export const createAutomationActionComponentForm = (
   value: any
 ) => {
   switch (type) {
+    case 'set.context': {
+      return fb.group({
+        mapping: [get(value, 'mapping', ''), Validators.required],
+      });
+    }
     case 'add.layer':
     case 'remove.layer': {
       return fb.group({

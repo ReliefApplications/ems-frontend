@@ -1,9 +1,20 @@
 import { Injectable } from '@angular/core';
 import { DashboardComponent } from '../../components/dashboard/dashboard.component';
-import { eq, get, set } from 'lodash';
+import {
+  eq,
+  get,
+  isArray,
+  isEmpty,
+  isNil,
+  isObject,
+  isString,
+  mapValues,
+  set,
+} from 'lodash';
 import { MapWidgetComponent } from '../../components/widgets/map/map.component';
 import { MapPolygonsService } from '../map/map-polygons.service';
 import { first, firstValueFrom } from 'rxjs';
+import { ContextService } from '../context/context.service';
 
 /**
  * Dashboard automation services.
@@ -14,6 +25,8 @@ import { first, firstValueFrom } from 'rxjs';
 export class DashboardAutomationService {
   /** Reference to the current dashboard ( unique per service instance ) */
   public dashboard!: DashboardComponent;
+  /** Regex used to replace values in rule components */
+  public automationRegex = /["']?{{automation\.(.*?)}}["']?/;
 
   /**
    * Dashboard automation services.
@@ -21,8 +34,12 @@ export class DashboardAutomationService {
    * To be injected in dashboard components.
    *
    * @param mapPolygonsService Map Polygons service
+   * @param contextService Shared context service
    */
-  constructor(private mapPolygonsService: MapPolygonsService) {}
+  constructor(
+    private mapPolygonsService: MapPolygonsService,
+    private contextService: ContextService
+  ) {}
 
   /**
    * Execute an automation rule.
@@ -98,6 +115,34 @@ export class DashboardAutomationService {
                 });
                 break;
               }
+              case 'set.context': {
+                const mapping = get(component, 'value.mapping', '');
+                console.log(typeof mapping);
+                console.log(mapping);
+                const mappingAsJSON = this.parseJSONValues(JSON.parse(mapping));
+                console.log(mappingAsJSON);
+                const toString = JSON.stringify(mappingAsJSON);
+                console.log(toString);
+                const replaced = toString.replace(
+                  new RegExp(this.automationRegex, 'g'),
+                  (match) => {
+                    const field = match
+                      .replace(/["']?\{\{automation\./, '')
+                      .replace(/\}\}["']?/, '');
+                    const fieldValue = get(context, field);
+                    return isNil(fieldValue)
+                      ? match
+                      : JSON.stringify(fieldValue);
+                  }
+                );
+                const parsed = JSON.parse(replaced);
+                this.contextService.removeEmptyPlaceholders(parsed);
+                if (!isEmpty(parsed)) {
+                  this.contextService.context = parsed;
+                  console.log(this.contextService.context);
+                }
+                break;
+              }
               default: {
                 break;
               }
@@ -121,5 +166,36 @@ export class DashboardAutomationService {
     return this.dashboard.widgetGridComponent.widgetComponents.find((x) =>
       eq(get(x, 'widget.id'), id)
     );
+  }
+
+  /**
+   * Parse JSON values of object.
+   *
+   * @param obj object to transform
+   * @returns object, where string properties that can be transformed to objects, are returned as objects
+   */
+  private parseJSONValues(obj: any): any {
+    if (isArray(obj)) {
+      return obj.map((element: any) => this.parseJSONValues(element));
+    }
+    return mapValues(obj, (value: any) => {
+      if (isString(value)) {
+        try {
+          return isObject(JSON.parse(value)) ? JSON.parse(value) : value;
+        } catch (error) {
+          // If parsing fails, return the original string value
+          return value;
+        }
+      } else if (isArray(value)) {
+        // If the value is an array, recursively parse each element
+        return value.map((element: any) => this.parseJSONValues(element));
+      } else if (isObject(value)) {
+        // If the value is an object, recursively parse it
+        return this.parseJSONValues(value);
+      } else {
+        // If the value is neither a string nor an object, return it as is
+        return value;
+      }
+    });
   }
 }

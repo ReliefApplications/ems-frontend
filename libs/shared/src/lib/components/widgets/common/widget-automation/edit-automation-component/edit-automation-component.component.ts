@@ -15,6 +15,7 @@ import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.
 import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { get } from 'lodash';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /**
  * Edition of automation component.
@@ -30,6 +31,7 @@ import { get } from 'lodash';
     ReactiveFormsModule,
     FormWrapperModule,
     SelectMenuModule,
+    MonacoEditorModule,
   ],
   templateUrl: './edit-automation-component.component.html',
   styleUrls: ['./edit-automation-component.component.scss'],
@@ -60,7 +62,6 @@ export class EditAutomationComponentComponent
       properties: [
         {
           name: 'widget',
-          type: 'widget',
           required: true,
           editor: 'select',
           multiselect: false,
@@ -123,7 +124,6 @@ export class EditAutomationComponentComponent
         },
         {
           name: 'layers',
-          type: 'layer',
           required: true,
           editor: 'select',
           multiselect: true,
@@ -138,7 +138,6 @@ export class EditAutomationComponentComponent
       properties: [
         {
           name: 'widget',
-          type: 'widget',
           required: true,
           editor: 'select',
           multiselect: false,
@@ -201,12 +200,29 @@ export class EditAutomationComponentComponent
         },
         {
           name: 'layers',
-          type: 'layer',
           required: true,
           editor: 'select',
           multiselect: true,
           async: false,
           choices: [],
+        },
+      ],
+    },
+    {
+      component: 'action',
+      type: 'set.context',
+      properties: [
+        {
+          name: 'mapping',
+          type: 'json',
+          editor: 'json',
+          options: {
+            theme: 'vs-dark',
+            language: 'json',
+            fixedOverflowWidgets: true,
+            formatOnPaste: true,
+            automaticLayout: true,
+          },
         },
       ],
     },
