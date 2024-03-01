@@ -216,7 +216,6 @@ export class MapControlsService {
     const viewScreenText = this.translate.instant(
       'components.map.controls.fullScreen.viewFullscreen'
     );
-
     const exitScreenText = this.translate.instant(
       'components.map.controls.fullScreen.exitFullscreen'
     );
@@ -242,7 +241,7 @@ export class MapControlsService {
       );
       const container = L.DomUtil.create('div');
       this.renderer.addClass(container, 'fullscreen-control');
-      this.renderer.setProperty(container, 'title', 'View Fullscreen');
+      this.renderer.setProperty(container, 'title', viewScreenText);
       container?.appendChild(expandIcon);
       if (this.fullscreenControlClickListener) {
         this.fullscreenControlClickListener();
