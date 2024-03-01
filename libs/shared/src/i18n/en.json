@@ -921,6 +921,10 @@
 						"all": "Map",
 						"current": "Current view"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "Exit Fullscreen",
+					"viewFullscreen": "View Fullscreen"
 				}
 			}
 		},

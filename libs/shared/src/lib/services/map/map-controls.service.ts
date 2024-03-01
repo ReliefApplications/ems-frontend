@@ -235,6 +235,7 @@ export class MapControlsService {
       );
       const container = L.DomUtil.create('div');
       this.renderer.addClass(container, 'fullscreen-control');
+      this.renderer.setProperty(container, 'title', 'View Fullscreen');
       container?.appendChild(expandIcon);
       if (this.fullscreenControlClickListener) {
         this.fullscreenControlClickListener();
@@ -247,11 +248,25 @@ export class MapControlsService {
           L.DomEvent.stopPropagation(e);
           if (!this.document.fullscreenElement) {
             mapContainer?.requestFullscreen();
+            this.renderer.setProperty(
+              container,
+              'title',
+              this.translate.instant(
+                'components.map.controls.fullScreen.exitFullscreen'
+              )
+            );
             container?.removeChild(expandIcon);
             container?.appendChild(compressIcon);
           } else {
             if (this.document.fullscreenElement) {
               this.document.exitFullscreen();
+              this.renderer.setProperty(
+                container,
+                'title',
+                this.translate.instant(
+                  'components.map.controls.fullScreen.viewFullscreen'
+                )
+              );
               container?.appendChild(expandIcon);
               container?.removeChild(compressIcon);
             }
@@ -268,6 +283,13 @@ export class MapControlsService {
           if (!this.document.fullscreenElement) {
             container?.appendChild(expandIcon);
             container?.removeChild(compressIcon);
+            this.renderer.setProperty(
+              container,
+              'title',
+              this.translate.instant(
+                'components.map.controls.fullScreen.viewFullscreen'
+              )
+            );
           }
         }
       );

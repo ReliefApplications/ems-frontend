@@ -921,6 +921,10 @@
 						"all": "******",
 						"current": "******"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "******",
+					"viewFullscreen": "******"
 				}
 			}
 		},
