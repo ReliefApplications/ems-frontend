@@ -213,6 +213,14 @@ export class MapControlsService {
       map.removeControl(this.fullscreenControl);
     }
     this.fullscreenControl = new L.Control({ position: 'topleft' });
+    const viewScreenText = this.translate.instant(
+      'components.map.controls.fullScreen.viewFullscreen'
+    );
+
+    const exitScreenText = this.translate.instant(
+      'components.map.controls.fullScreen.exitFullscreen'
+    );
+    console.log(exitScreenText);
     this.fullscreenControl.onAdd = () => {
       const mapContainer = map.getContainer();
       const expandIcon = createFontAwesomeIcon(
@@ -240,33 +248,26 @@ export class MapControlsService {
       if (this.fullscreenControlClickListener) {
         this.fullscreenControlClickListener();
       }
+      let triggerElementUpdate = false;
       this.fullscreenControlClickListener = this.renderer.listen(
         container,
         'click',
         (e: any) => {
+          console.log(viewScreenText);
+          console.log(exitScreenText);
           // prevent click events from propagating to the map
           L.DomEvent.stopPropagation(e);
           if (!this.document.fullscreenElement) {
+            triggerElementUpdate = true;
             mapContainer?.requestFullscreen();
-            this.renderer.setProperty(
-              container,
-              'title',
-              this.translate.instant(
-                'components.map.controls.fullScreen.exitFullscreen'
-              )
-            );
+            this.renderer.setProperty(container, 'title', exitScreenText);
             container?.removeChild(expandIcon);
             container?.appendChild(compressIcon);
           } else {
             if (this.document.fullscreenElement) {
+              triggerElementUpdate = false;
               this.document.exitFullscreen();
-              this.renderer.setProperty(
-                container,
-                'title',
-                this.translate.instant(
-                  'components.map.controls.fullScreen.viewFullscreen'
-                )
-              );
+              this.renderer.setProperty(container, 'title', viewScreenText);
               container?.appendChild(expandIcon);
               container?.removeChild(compressIcon);
             }
@@ -280,16 +281,11 @@ export class MapControlsService {
         mapContainer,
         'fullscreenchange',
         () => {
-          if (!this.document.fullscreenElement) {
+          if (triggerElementUpdate && !this.document.fullscreenElement) {
+            triggerElementUpdate = false;
             container?.appendChild(expandIcon);
             container?.removeChild(compressIcon);
-            this.renderer.setProperty(
-              container,
-              'title',
-              this.translate.instant(
-                'components.map.controls.fullScreen.viewFullscreen'
-              )
-            );
+            this.renderer.setProperty(container, 'title', viewScreenText);
           }
         }
       );
