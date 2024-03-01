@@ -205,6 +205,12 @@ export class MapPolygonsService {
     });
   }
 
+  /**
+   * Find country from latlng
+   *
+   * @param latlng lat lng point
+   * @returns Country ( if any )
+   */
   public findCountryFromPoint(latlng: L.LatLng) {
     const point = [latlng.lng, latlng.lat];
     return this.admin0s.find((x) => booleanPointInPolygon(point, x.polygons));
