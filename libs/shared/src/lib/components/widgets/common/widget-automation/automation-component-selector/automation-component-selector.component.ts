@@ -7,6 +7,10 @@ import { DialogRef } from '@angular/cdk/dialog';
 /** Available action components */
 const ACTION_COMPONENTS = [
   {
+    component: 'trigger',
+    type: 'map.click',
+  },
+  {
     component: 'action',
     type: 'add.layer',
     value: {
@@ -21,6 +25,10 @@ const ACTION_COMPONENTS = [
       widget: null,
       layer: null,
     },
+  },
+  {
+    component: 'action',
+    type: 'map.get.country',
   },
 ];
 

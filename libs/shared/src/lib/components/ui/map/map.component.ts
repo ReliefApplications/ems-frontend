@@ -62,6 +62,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 /** Component for the map widget */
 @Component({
@@ -181,6 +182,7 @@ export class MapComponent
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference,
    * @param mapPolygonsService Shared map polygons service
+   * @param dashboardAutomationService Shared dashboard automation service
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -195,7 +197,8 @@ export class MapComponent
     public injector: Injector,
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
-    private mapPolygonsService: MapPolygonsService
+    private mapPolygonsService: MapPolygonsService,
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -310,6 +313,21 @@ export class MapComponent
       });
     });
 
+    if (this.mapSettingsValue.automationRules) {
+      for (const rule of this.mapSettingsValue.automationRules) {
+        const trigger = get(rule, 'components[0]');
+        if (
+          trigger &&
+          trigger.component === 'trigger' &&
+          trigger.type === 'map.click'
+        ) {
+          this.map.on('click', (e) => {
+            this.dashboardAutomationService.executeAutomationRule(rule, e);
+          });
+        }
+      }
+    }
+
     // The scroll jump issue only happens on chrome client browser
     // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
     if (this.platform.WEBKIT || this.platform.BLINK) {
@@ -362,6 +380,7 @@ export class MapComponent
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
     const geographicExtents = get(mapSettings, 'geographicExtents', []);
     const layers = get(mapSettings, 'layers', []);
+    const automationRules = get(mapSettings, 'automationRules', []);
 
     return {
       initialState,
@@ -375,6 +394,7 @@ export class MapComponent
       controls,
       arcGisWebMap,
       geographicExtents,
+      automationRules,
     };
   }
 

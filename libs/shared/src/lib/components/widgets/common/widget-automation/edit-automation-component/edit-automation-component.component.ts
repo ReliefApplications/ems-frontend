@@ -47,6 +47,14 @@ export class EditAutomationComponentComponent
   /** Available editors */
   public editors = [
     {
+      component: 'trigger',
+      type: 'map.click',
+    },
+    {
+      component: 'action',
+      type: 'map.get.country',
+    },
+    {
       component: 'action',
       type: 'add.layer',
       properties: [

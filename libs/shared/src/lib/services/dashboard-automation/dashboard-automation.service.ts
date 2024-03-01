@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DashboardComponent } from '../../components/dashboard/dashboard.component';
-import { eq, get } from 'lodash';
+import { eq, get, set } from 'lodash';
 import { MapWidgetComponent } from '../../components/widgets/map/map.component';
+import { MapPolygonsService } from '../map/map-polygons.service';
+import { first, firstValueFrom } from 'rxjs';
 
 /**
  * Dashboard automation services.
@@ -14,11 +16,23 @@ export class DashboardAutomationService {
   public dashboard!: DashboardComponent;
 
   /**
+   * Dashboard automation services.
+   * Runs operations defined in widgets, in automation tab.
+   * To be injected in dashboard components.
+   *
+   * @param mapPolygonsService Map Polygons service
+   */
+  constructor(private mapPolygonsService: MapPolygonsService) {}
+
+  /**
    * Execute an automation rule.
    *
    * @param rule Rule to be executed.
+   * @param value initial value ( trigger action result )
    */
-  public async executeAutomationRule(rule: any) {
+  public async executeAutomationRule(rule: any, value?: any) {
+    // Automation context
+    const context = {};
     try {
       for (const component of rule.components) {
         switch (component.component) {
@@ -70,6 +84,20 @@ export class DashboardAutomationService {
                 }
                 break;
               }
+              case 'map.get.country': {
+                await firstValueFrom(
+                  this.mapPolygonsService.admin0sReady$.pipe(first((v) => v))
+                ).then(() => {
+                  if (value.latlng) {
+                    const country =
+                      this.mapPolygonsService.findCountryFromPoint(
+                        value.latlng
+                      );
+                    set(context, 'admin0', country);
+                  }
+                });
+                break;
+              }
               default: {
                 break;
               }
@@ -77,7 +105,8 @@ export class DashboardAutomationService {
           }
         }
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       console.error('Fail to execute automation rule');
     }
   }
