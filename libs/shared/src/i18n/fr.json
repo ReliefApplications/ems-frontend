@@ -932,6 +932,10 @@
 						"all": "Toute la carte",
 						"current": "Vue actuelle"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "Quitter le mode plein écran",
+					"viewFullscreen": "Voir en plein écran"
 				}
 			}
 		},
