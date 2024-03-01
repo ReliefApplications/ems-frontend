@@ -64,6 +64,7 @@
     "@sentry/angular-ivy": "^7.60.0",
     "@storybook/addon-console": "^1.2.3",
     "@tinymce/tinymce-angular": "^7.0.0",
+    "@turf/boolean-point-in-polygon": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "angular-gridster2": "^15.0.4",
     "angular-oauth2-oidc": "~13.0.1",

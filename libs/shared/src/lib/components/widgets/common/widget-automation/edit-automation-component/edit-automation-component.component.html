@@ -1,0 +1,68 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3>{{ data.type }}</h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <ng-container *ngIf="editor" [formGroup]="formGroup.controls.value">
+      <ng-container *ngFor="let property of editor.properties">
+        <ng-container [ngSwitch]="property.editor">
+          <!-- Select property -->
+          <ng-container *ngSwitchCase="'select'">
+            <div uiFormFieldDirective>
+              <label>{{ property.name }}</label>
+              <!-- Async select -->
+              <ui-select-menu
+                *ngIf="property.async"
+                [formControlName]="property.name"
+                [multiselect]="property.multiselect"
+              >
+                <ui-select-option
+                  *ngFor="let choice of property.choices | async"
+                  [value]="choice.value"
+                >
+                  {{ choice.text }}
+                </ui-select-option>
+              </ui-select-menu>
+              <!-- Sync select -->
+              <ui-select-menu
+                *ngIf="!property.async"
+                [formControlName]="property.name"
+                [multiselect]="property.multiselect"
+              >
+                <ui-select-option
+                  *ngFor="let choice of property.choices"
+                  [value]="choice.value"
+                >
+                  {{ choice.text }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+          </ng-container>
+          <!-- JSON -->
+          <ng-container *ngSwitchCase="'json'">
+            <div class="h-[300px]">
+              <ngx-monaco-editor
+                class="!h-full !w-full min-w-[200px]"
+                [formControlName]="property.name"
+                [options]="property.options"
+              ></ngx-monaco-editor>
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="formGroup.value"
+      [disabled]="!formGroup.valid"
+    >
+      {{ 'common.update' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

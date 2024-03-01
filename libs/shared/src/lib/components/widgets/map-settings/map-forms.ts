@@ -25,6 +25,7 @@ import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { createAutomationForm } from '../../../forms/automation.forms';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -581,6 +582,12 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
       get(value, 'controls', DEFAULT_MAP.controls)
     ),
     arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
+    // Automation
+    automationRules: fb.array<ReturnType<typeof createAutomationForm>>(
+      get(value, 'automationRules', []).map((rule: any) =>
+        createAutomationForm(rule)
+      )
+    ),
   });
   if (formGroup.get('arcGisWebMap')?.value) {
     formGroup.get('basemap')?.disable({ emitEvent: false });

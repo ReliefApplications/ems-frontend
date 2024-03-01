@@ -27,6 +27,10 @@ export class DashboardService {
   public availableWidgets = WIDGET_TYPES;
   /** If dashboard content should be updated and empty widgets hidden */
   public widgetContentRefreshed = new BehaviorSubject<any>(null);
+  /** Shared property to keep track of current loaded dashboard widgets */
+  public widgets: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  /** Observable of current loaded dashboard widgets */
+  public widgets$ = this.widgets.asObservable();
 
   /** @returns To listen when dashboard widgets that can be hidden refreshes its contents */
   get widgetContentRefreshed$(): Observable<any> {
