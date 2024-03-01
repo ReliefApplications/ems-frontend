@@ -163,6 +163,8 @@ export class MapComponent
   private geographicExtentValue: any;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Should use context zoom */
+  private useContextZoom = false;
 
   /**
    * Map widget component
@@ -565,7 +567,11 @@ export class MapComponent
       // Get arcgis layers
       if (settings.arcGisWebMap) {
         // Load arcgis webmap
-        promises.push(this.setWebmap(settings.arcGisWebMap));
+        promises.push(
+          this.setWebmap(settings.arcGisWebMap, {
+            skipDefaultView: this.useContextZoom,
+          })
+        );
       } else {
         this.arcGisWebMap = undefined;
         // else, load basemap ( default to osm )
@@ -1210,6 +1216,7 @@ export class MapComponent
         geographicExtentValue &&
         geographicExtentValue.some((x: any) => x.value)
       ) {
+        this.useContextZoom = true;
         this.mapPolygonsService.zoomOn(geographicExtentValue, this.map);
       } else {
         this.setDefaultZoom();
