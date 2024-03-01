@@ -23,6 +23,7 @@ const DEFAULT_GRID_OPTIONS = {
 export const createTabFormGroup = (value?: any) => {
   const formGroup = fb.group({
     label: fb.nonNullable.control<string>(value?.label, Validators.required),
+    hide: fb.control<boolean>(value?.hide ?? false),
     gridOptions: fb.group({
       minCols: fb.control(
         get<number>(value.gridOptions, 'minCols', DEFAULT_GRID_OPTIONS.minCols),
