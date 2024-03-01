@@ -107,7 +107,6 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
     let filterButtonIsClicked = !!event.target.dataset.filterField;
-    let ruleButtonIsClicked = !!event.target.dataset.ruleTarget;
     let currentNode = event.target;
     // Check for filter fields
     if (!filterButtonIsClicked) {
@@ -141,6 +140,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     }
 
     // Check for automation rules
+    let ruleButtonIsClicked = !!event.target.dataset.ruleTarget;
     currentNode = event.target; // reset the node
     if (!ruleButtonIsClicked) {
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
