@@ -300,6 +300,10 @@ export class MapControlsService {
         this.fullscreenControlClickListener();
         this.fullscreenControlClickListener = null;
       }
+      if (this.fullScreenChangeListener) {
+        this.fullScreenChangeListener();
+        this.fullScreenChangeListener = null;
+      }
     };
     this.fullscreenControl?.addTo(map);
   }
