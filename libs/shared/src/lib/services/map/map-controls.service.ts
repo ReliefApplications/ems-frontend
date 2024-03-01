@@ -220,7 +220,6 @@ export class MapControlsService {
     const exitScreenText = this.translate.instant(
       'components.map.controls.fullScreen.exitFullscreen'
     );
-    console.log(exitScreenText);
     this.fullscreenControl.onAdd = () => {
       const mapContainer = map.getContainer();
       const expandIcon = createFontAwesomeIcon(
@@ -253,8 +252,6 @@ export class MapControlsService {
         container,
         'click',
         (e: any) => {
-          console.log(viewScreenText);
-          console.log(exitScreenText);
           // prevent click events from propagating to the map
           L.DomEvent.stopPropagation(e);
           if (!this.document.fullscreenElement) {
