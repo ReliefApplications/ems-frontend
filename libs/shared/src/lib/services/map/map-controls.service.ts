@@ -95,6 +95,9 @@ export class MapControlsService {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const container = L.DomUtil.create('div');
+      L.DomEvent.disableScrollPropagation(container).disableClickPropagation(
+        container
+      );
       const mapSidenavControlsComponent = this.domService.appendComponentToBody(
         MapSidenavControlsComponent,
         container
@@ -105,41 +108,6 @@ export class MapControlsService {
       (layerControl as any)._component = mapSidenavControlsComponent.instance;
       return container;
     };
-    layerControl.onRemove = () => {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-        this.sidenavControlClickListener = null;
-      }
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-        this.sidenavControlWheelListener = null;
-      }
-    };
-    const container = layerControl.getContainer();
-    if (container) {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-      }
-      // prevent click events from propagating to the map
-      this.sidenavControlClickListener = this.renderer.listen(
-        container,
-        'click',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        }
-      );
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-      }
-      // prevent mouse wheel events from propagating to the map
-      this.sidenavControlWheelListener = this.renderer.listen(
-        container,
-        'wheel',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        }
-      );
-    }
     return (layerControl as any)?.addTo(mapComponent.map);
   }
 
