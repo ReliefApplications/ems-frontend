@@ -47,6 +47,13 @@ export const createAutomationActionComponentForm = (
         layers: [get(value, 'layers', null), Validators.required],
       });
     }
+    case 'add.tab':
+    case 'remove.tab': {
+      return fb.group({
+        widget: [get(value, 'widget', null), Validators.required],
+        tabs: [get(value, 'tabs', null), Validators.required],
+      });
+    }
     default: {
       return fb.group({});
     }

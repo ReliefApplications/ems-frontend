@@ -15,6 +15,7 @@ import { MapWidgetComponent } from '../../components/widgets/map/map.component';
 import { MapPolygonsService } from '../map/map-polygons.service';
 import { first, firstValueFrom } from 'rxjs';
 import { ContextService } from '../context/context.service';
+import { TabsComponent } from '../../components/widgets/tabs/tabs.component';
 
 /**
  * Dashboard automation services.
@@ -143,7 +144,44 @@ export class DashboardAutomationService {
                 }
                 break;
               }
+              case 'add.tab': {
+                const widget = this.findWidget(component.value.widget);
+                const tabIds = component.value.tabs;
+                if (
+                  widget &&
+                  widget.widgetContentComponent instanceof TabsComponent
+                ) {
+                  for (const id of tabIds) {
+                    const tab = widget.widgetContentComponent.tabs.find(
+                      (x) => x.id === id
+                    );
+                    if (tab) {
+                      tab.hide = false;
+                    }
+                  }
+                }
+                break;
+              }
+              case 'remove.tab': {
+                const widget = this.findWidget(component.value.widget);
+                const tabIds = component.value.tabs;
+                if (
+                  widget &&
+                  widget.widgetContentComponent instanceof TabsComponent
+                ) {
+                  for (const id of tabIds) {
+                    const tab = widget.widgetContentComponent.tabs.find(
+                      (x) => x.id === id
+                    );
+                    if (tab) {
+                      tab.hide = true;
+                    }
+                  }
+                }
+                break;
+              }
               default: {
+                console.log(component);
                 break;
               }
             }

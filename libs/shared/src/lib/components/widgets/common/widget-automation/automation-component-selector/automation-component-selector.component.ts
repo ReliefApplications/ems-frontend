@@ -15,7 +15,7 @@ const ACTION_COMPONENTS = [
     type: 'add.layer',
     value: {
       widget: null,
-      layer: null,
+      layers: null,
     },
   },
   {
@@ -23,7 +23,23 @@ const ACTION_COMPONENTS = [
     type: 'remove.layer',
     value: {
       widget: null,
-      layer: null,
+      layers: null,
+    },
+  },
+  {
+    component: 'action',
+    type: 'add.tab',
+    value: {
+      widget: null,
+      tabs: null,
+    },
+  },
+  {
+    component: 'action',
+    type: 'remove.tab',
+    value: {
+      widget: null,
+      tabs: null,
     },
   },
   {

@@ -210,6 +210,142 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
+      type: 'add.tab',
+      properties: [
+        {
+          name: 'widget',
+          required: true,
+          editor: 'select',
+          multiselect: false,
+          async: true,
+          choices: this.widgets.pipe(
+            takeUntil(this.destroy$),
+            map((widgets) => {
+              return widgets
+                .filter((widget) => widget.component === 'tabs')
+                .map((x) => ({
+                  value: x.id,
+                  text: x.name || `Widget #${x.id}`,
+                }));
+            })
+          ),
+          onValueChanged: (value: any) => {
+            const widget = this.widgets
+              .getValue()
+              .find((widget) => widget.id === value);
+            if (widget) {
+              const tabs: any[] = get(widget, 'settings.tabs') || [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = tabs.map((tab: any, index) => ({
+                value: tab.id,
+                text: tab.label || `Tab ${index}`,
+              }));
+            } else {
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = [];
+            }
+          },
+          onInit: (value: any) => {
+            const widget = this.widgets
+              .getValue()
+              .find((widget) => widget.id === value);
+            if (widget) {
+              const tabs: any[] = get(widget, 'settings.tabs') || [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = tabs.map((tab: any, index) => ({
+                value: tab.id,
+                text: tab.label || `Tab ${index}`,
+              }));
+            } else {
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = [];
+            }
+          },
+        },
+        {
+          name: 'tabs',
+          required: true,
+          editor: 'select',
+          multiselect: true,
+          async: false,
+          choices: [],
+        },
+      ],
+    },
+    {
+      component: 'action',
+      type: 'remove.tab',
+      properties: [
+        {
+          name: 'widget',
+          required: true,
+          editor: 'select',
+          multiselect: false,
+          async: true,
+          choices: this.widgets.pipe(
+            takeUntil(this.destroy$),
+            map((widgets) => {
+              return widgets
+                .filter((widget) => widget.component === 'tabs')
+                .map((x) => ({
+                  value: x.id,
+                  text: x.name || `Widget #${x.id}`,
+                }));
+            })
+          ),
+          onValueChanged: (value: any) => {
+            const widget = this.widgets
+              .getValue()
+              .find((widget) => widget.id === value);
+            if (widget) {
+              const tabs: any[] = get(widget, 'settings.tabs') || [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = tabs.map((tab: any, index) => ({
+                value: tab.id,
+                text: tab.label || `Tab ${index}`,
+              }));
+            } else {
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = [];
+            }
+          },
+          onInit: (value: any) => {
+            const widget = this.widgets
+              .getValue()
+              .find((widget) => widget.id === value);
+            if (widget) {
+              const tabs: any[] = get(widget, 'settings.tabs') || [];
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = tabs.map((tab: any, index) => ({
+                value: tab.id,
+                text: tab.label || `Tab ${index}`,
+              }));
+            } else {
+              this.editor.properties.find(
+                (x: any) => x.name === 'tabs'
+              ).choices = [];
+            }
+          },
+        },
+        {
+          name: 'tabs',
+          required: true,
+          editor: 'select',
+          multiselect: true,
+          async: false,
+          choices: [],
+        },
+      ],
+    },
+    {
+      component: 'action',
       type: 'set.context',
       properties: [
         {
