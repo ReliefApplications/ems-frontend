@@ -16,7 +16,6 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
-import 'leaflet-fullscreen';
 import 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
