@@ -36,6 +36,14 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
+    type: 'open.tab',
+    value: {
+      widget: null,
+      tab: null,
+    },
+  },
+  {
+    component: 'action',
     type: 'remove.tab',
     value: {
       widget: null,

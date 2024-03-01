@@ -180,6 +180,22 @@ export class DashboardAutomationService {
                 }
                 break;
               }
+              case 'open.tab': {
+                const widget = this.findWidget(component.value.widget);
+                const tabId = component.value.tab;
+                if (
+                  widget &&
+                  widget.widgetContentComponent instanceof TabsComponent
+                ) {
+                  const index = widget.widgetContentComponent.tabs
+                    .filter((x) => !x.hide)
+                    .findIndex((x) => x.id === tabId);
+                  if (index > -1) {
+                    widget.widgetContentComponent.selectedIndex = index;
+                  }
+                }
+                break;
+              }
               default: {
                 console.log(component);
                 break;

@@ -54,6 +54,12 @@ export const createAutomationActionComponentForm = (
         tabs: [get(value, 'tabs', null), Validators.required],
       });
     }
+    case 'open.tab': {
+      return fb.group({
+        widget: [get(value, 'widget', null), Validators.required],
+        tab: [get(value, 'tab', null), Validators.required],
+      });
+    }
     default: {
       return fb.group({});
     }
