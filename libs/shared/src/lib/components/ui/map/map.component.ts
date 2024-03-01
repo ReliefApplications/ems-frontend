@@ -62,6 +62,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { booleanPointInPolygon, point, polygon } from '@turf/turf';
 
 /** Component for the map widget */
 @Component({
@@ -327,6 +328,36 @@ export class MapComponent
             this.extractSettings().controls.measure
           );
           this.mapControlsService.getFullScreenControl(this.map);
+        }
+      });
+
+    this.mapPolygonsService.admin0sReady$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isAdmin0Ready) => {
+        if (isAdmin0Ready) {
+          this.map.on('click', (event) => {
+            // filter country by country clicked
+            const clickedCountry: any = this.mapPolygonsService.admin0s.find(
+              (layer: any) => {
+                if (layer.polygons) {
+                  return (
+                    booleanPointInPolygon(
+                      point([event.latlng.lng, event.latlng.lat]),
+                      polygon([layer.polygons.coordinates])
+                    ) ?? false
+                  );
+                }
+                return false;
+              }
+            );
+            if (clickedCountry) {
+              this.mapEvent.emit({
+                type: MapEventType.CLICK,
+                content: { country: clickedCountry },
+              });
+            }
+            console.log(clickedCountry);
+          });
         }
       });
   }

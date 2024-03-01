@@ -8,7 +8,9 @@
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets",
     "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci",
-    "bundle:widgets": "npx nx build web-widgets --configuration=azure-dev  && node .scripts/build-widgets.js"
+    "bundle:widgets": "npx nx build web-widgets --configuration=azure-dev  && node .scripts/build-widgets.js",
+    "back-office:local": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx serve back-office --configuration=oort-local",
+    "back-office:dev": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx serve back-office --configuration=oort-dev"
   },
   "private": true,
   "dependencies": {
@@ -64,7 +66,7 @@
     "@sentry/angular-ivy": "^7.60.0",
     "@storybook/addon-console": "^1.2.3",
     "@tinymce/tinymce-angular": "^7.0.0",
-    "@turf/centroid": "^6.5.0",
+    "@turf/turf": "^6.5.0",
     "angular-gridster2": "^15.0.4",
     "angular-oauth2-oidc": "~13.0.1",
     "angular-resizable-element": "^7.0.2",

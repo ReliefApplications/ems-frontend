@@ -48,7 +48,24 @@ export class MapPolygonsService {
       .get(`${this.restService.apiUrl}/gis/admin0`)
       .subscribe((value) => {
         if (value) {
-          this.admin0s = value;
+          this.admin0s = value.map((layer: any) => {
+            const newLayer = {
+              ...layer,
+              polygons: {
+                ...layer.polygons,
+                coordinates: layer.polygons.coordinates.map(
+                  (coordinate: any) => {
+                    return coordinate.map((points: number[]) => {
+                      return points.map((point) => {
+                        return Number(point.toFixed(2));
+                      });
+                    });
+                  }
+                ),
+              },
+            };
+            return newLayer;
+          });
           this.admin0sReady.next(true);
         }
       });
