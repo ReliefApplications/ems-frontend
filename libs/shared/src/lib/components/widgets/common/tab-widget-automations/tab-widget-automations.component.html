@@ -1,0 +1,67 @@
+<div class="flex justify-between">
+  <h2>Automation rules</h2>
+  <ui-button
+    class="mb-6"
+    category="secondary"
+    variant="primary"
+    (click)="addEditRule()"
+  >
+    Add a new automation rule
+  </ui-button>
+</div>
+<ng-template #emptyTmpl>
+  <shared-empty title="No automation rules"></shared-empty>
+</ng-template>
+<ng-container *ngIf="data.length; else emptyTmpl">
+  <table cdk-table uiTableWrapper [dataSource]="data">
+    <ng-container cdkColumnDef="name">
+      <th uiCellHeader *cdkHeaderCellDef>
+        {{ 'common.name' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw]"
+      >
+        {{ element.name }}
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="id">
+      <th uiCellHeader *cdkHeaderCellDef>
+        {{ 'common.id' | translate }}
+      </th>
+      <td uiCell *cdkCellDef="let element">
+        {{ element.id }}
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="actions">
+      <th uiCellHeader *cdkHeaderCellDef></th>
+      <td uiCell *cdkCellDef="let element; let i = index">
+        <div class="flex gap-2 text-neutral-500 justify-end">
+          <ui-button
+            variant="danger"
+            [isIcon]="true"
+            icon="delete"
+            (click)="removeRow(i)"
+            [uiTooltip]="'common.delete' | translate"
+          >
+          </ui-button>
+          <ui-button
+            uiSuffix
+            variant="primary"
+            [isIcon]="true"
+            icon="edit"
+            (click)="addEditRule(i)"
+            [uiTooltip]="'common.edit' | translate"
+          ></ui-button>
+        </div>
+      </td>
+    </ng-container>
+    <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsApps"></tr>
+    <tr
+      cdk-row
+      *cdkRowDef="let row; columns: displayedColumnsApps"
+      class="bg-white"
+    ></tr>
+  </table>
+</ng-container>

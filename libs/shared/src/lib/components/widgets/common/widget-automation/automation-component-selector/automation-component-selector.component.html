@@ -1,0 +1,19 @@
+<ui-dialog>
+  <ng-container ngProjectAs="header">Select a component</ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="flex gap-2 flex-wrap flex-row">
+      <div
+        *ngFor="let action of actionComponents"
+        (click)="onSelect(action)"
+        class="relative flex flex-row justify-between bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center p-2"
+      >
+        <h3 class="!m-0">{{ action.type }}</h3>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+  </ng-container>
+</ui-dialog>

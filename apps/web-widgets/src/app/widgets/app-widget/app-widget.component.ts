@@ -109,7 +109,7 @@ export class AppWidgetComponent
     private router: Router,
     private shadowDomService: ShadowDomService
   ) {
-    console.log('DEBUG: build from 02/22/2023');
+    console.log('DEBUG: build from 03/01/2023');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
     this.contextService.filter$

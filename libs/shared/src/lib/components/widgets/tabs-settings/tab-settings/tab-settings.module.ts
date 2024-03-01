@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TabSettingsComponent } from './tab-settings.component';
 import { WidgetGridModule } from '../../../widget-grid/widget-grid.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule, ToggleModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -19,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
     FormWrapperModule,
     ButtonModule,
     TranslateModule,
+    ToggleModule,
   ],
   exports: [TabSettingsComponent],
 })

@@ -130,6 +130,7 @@ export class DashboardFilterComponent
       )
       .subscribe(({ current }) => {
         this.survey.data = current;
+        this.survey.setPropertyValue('refreshData', true);
       });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))

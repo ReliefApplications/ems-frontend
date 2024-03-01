@@ -1,19 +1,9 @@
 // Application specific styles for leaflet
-@use "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css" as leafletfullscreen;
-@use "node_modules/leaflet-measure/dist/leaflet-measure.css" as leaftletmeasure;
-@use "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css" as leafletgeocoder;
-@use "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css" as leafletgeoman;
-
-/** Overwrite images from leaflet package, as by default assets would be searched at the root of the url where the components are used */
-.leaflet-control-fullscreen a {
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAA0CAYAAACU7CiIAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACoSURBVFiF7ZZhDoAgCIWxdbF3suxkHM3+1FaOmNqyIr6fiHuJTyKklKgHQxcVF7rCKAUBiA5h5tCSR/T0iTakL9PWz05IZNEM3YSCt6BvCgFI2ps4Q9v3k9Ldgdrr8nrX9LYc7wwu5EIu9KCQT6rq+r8mVbV0ewBEIpqy8MzMsWR/8f+oxmES9u7olZPqLKQeYtqkWuy61V2xND/H3h35pNqMPTPYE1oAnZZStKN8jj8AAAAASUVORK5CYII=);
-}
-
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .leaflet-control-fullscreen a {
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAABoCAYAAAC+NNNnAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAbrwAAG68BXhqRHAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEhSURBVHic7dpBDoIwFADRj/FiPRlwsh4NN5CoiVKg1Ukzb43ApKK1dliWJXpy+/cN1GYQnUF0BtEZRHcvPTCldGhKkXMefnm+TXcjZBBd8TP0rvQ9ffb1R5+xTXcjZBCdQXQG0Q2u+sAZRGcQnUF0p9cUrv4eanW97kbIIDqD6AyiO70ut7du1mrdbU93I2QQnWsKdAbRGURnEJ1BdAbRGURnEJ1BdAbRueeUziA695zSGURnEN3pT7lvUkpTRIw7h80556n2tauPUGFMRMS4HltV9f+HWs3RSnX3DBlEZxCdQXQt9pzOUfbFuh179Xovqo/QOp35eKNPmkx9mszl1hudWpx7T3fPkEF0BtG555TOIDr3nNIZRGcQnUF0BtE9AF5WX48h7QeZAAAAAElFTkSuQmCC);
-  }
-}
+@use 'node_modules/leaflet-measure/dist/leaflet-measure.css' as leaftletmeasure;
+@use 'node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css' as
+  leafletgeocoder;
+@use 'node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css' as
+  leafletgeoman;
 
 // https://github.com/Esri/esri-leaflet-geocoder/blob/master/src/esri-leaflet-geocoder.css
 .geocoder-control-input {
@@ -29,9 +19,9 @@
 }
 
 @media only screen and (min--moz-device-pixel-ratio: 2),
-only screen and (-o-min-device-pixel-ratio: 2/1),
-only screen and (-webkit-min-device-pixel-ratio: 2),
-only screen and (min-device-pixel-ratio: 2) {
+  only screen and (-o-min-device-pixel-ratio: 2/1),
+  only screen and (-webkit-min-device-pixel-ratio: 2),
+  only screen and (min-device-pixel-ratio: 2) {
   .geocoder-control-input {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAqZJREFUeNrsmV1IFFEUx3etyIoyqUyKqIdks5fQHsS0DyoKgkgTxHqtQPp4kBAFP6Ke8kGUvigQArOMgt6iRAgJEhQherE2QqGISLMo1ASr7X/gDBwuM7qzLu4ZuQd+cO+ZubP8Z+6955y74VgsFlpIlhZaYGYFWUFWkBVkBVlBVlASbXGiAyORiNelpWA/yAOrwFcwDLrBhN/fiUaj8yPIxVaDenCGhZg2Be6DBvBF+5TbDd6Cix5iyNLBKfAOlGoWVAC6QLbh/wj6wQfDT4IfgxKNgtaCJ2CZ8D0EuWAzi83h9i3wj+9ZBNr5mipBdWCD6FeBEzytzK91DlSAv+xbCZo0CcoElaLfBlpnGUNT7bLo07TbpkXQYV7oIX7rjXGOawbfuR0Gx7QIyhftPh9b8STHJMfytAjKEu0hn2OHRXu9FkG/RHu5z7Hpov1Ti6DPHtMvHtvp8ZyUCuoV7S3gQJzjaFfbJfovtAh6ZWQB10DGLGOWgNscWJ3p1qVFEEX9S6K/HTydYZE7Kc9e4WsB4yrKB7ZOUAaOc7+Iv9od8IzXRxZPx7OcKjn2GlxNdqYQTvQoWNRDKziuFPp8BL2El2AsmfVQMrJtKtoOghvgj49x1/kLHtVYD1H0vwB2gJvgk3H9G+gAR8RGspGr27tgk5Y1ZNogOM+s44yaFv2IuIdqpK2ivwY8APtEJq7ykGSUU6KRGdIex4qNLDxQpz601T938dfyWgycIJpWJ10SWgq29+aarKbqXO4Hb9uThj+bS/O0oAkiewNOu/gPgZogCnIyjRYX/xUjgQ2MILJq0OMSTtq5RA+cINokyl2CcWYicVLLYf0obxJT3H/PgXY61ZnCXGwA7OEy5BH4Pa/Ztlazf3hZQVaQFWQFWUFWkBXkbf8FGABdAnx0Z6IKoQAAAABJRU5ErkJggg==);
   }
@@ -43,6 +33,5 @@ only screen and (min-device-pixel-ratio: 2) {
   }
 }
 
-
 // Shared ui styles
-@import "ui.scss";
+@import 'ui.scss';

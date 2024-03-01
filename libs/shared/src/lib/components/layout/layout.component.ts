@@ -278,7 +278,6 @@ export class LayoutComponent
               componentRef.instance[key] = value;
             }
           }
-
           componentRef.instance.cancel.subscribe(() => {
             componentRef.destroy();
             this.layoutService.setRightSidenav(null);
@@ -502,6 +501,9 @@ export class LayoutComponent
         }, 0);
       }
     }
+    if (e.onAttach) {
+      e.onAttach();
+    }
   }
 
   /**
@@ -547,11 +549,16 @@ export class LayoutComponent
         });
         this.surveySharedQuestions = Array.from(new Set(surveyQuestions));
       }
+      // Reset data change trigger on component detach
+      e.linkedSurvey?.setPropertyValue('refreshData', false);
       const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
         e.linkedSurvey
       );
       e.currentStateOfContextFilters = newFilterValues;
       e.lastStateOfContextFilters = e.currentStateOfContextFilters;
+    }
+    if (e.onDetach) {
+      e.onDetach();
     }
   }
 

@@ -10,13 +10,13 @@ import {
   OnDestroy,
   Injector,
   ElementRef,
+  Optional,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
-import 'leaflet-fullscreen';
 import 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
@@ -62,6 +62,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 /** Component for the map widget */
 @Component({
@@ -164,6 +165,8 @@ export class MapComponent
   private geographicExtentValue: any;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Should use context zoom */
+  private useContextZoom = false;
 
   /**
    * Map widget component
@@ -181,6 +184,7 @@ export class MapComponent
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference,
    * @param mapPolygonsService Shared map polygons service
+   * @param dashboardAutomationService Shared dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -195,7 +199,8 @@ export class MapComponent
     public injector: Injector,
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
-    private mapPolygonsService: MapPolygonsService
+    private mapPolygonsService: MapPolygonsService,
+    @Optional() private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -309,6 +314,27 @@ export class MapComponent
       });
     });
 
+    if (this.mapSettingsValue.automationRules) {
+      for (const rule of this.mapSettingsValue.automationRules) {
+        const trigger = get(rule, 'components[0]');
+        if (
+          trigger &&
+          trigger.component === 'trigger' &&
+          trigger.type === 'map.click'
+        ) {
+          // Save rule in map object to populate to all layers attached to it
+          if ((this.map as any)._rules) {
+            (this.map as any)._rules.push(rule);
+          } else {
+            (this.map as any)._rules = [rule];
+          }
+          this.map.on('click', (e) => {
+            this.dashboardAutomationService?.executeAutomationRule(rule, e);
+          });
+        }
+      }
+    }
+
     // The scroll jump issue only happens on chrome client browser
     // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
     if (this.platform.WEBKIT || this.platform.BLINK) {
@@ -336,7 +362,7 @@ export class MapComponent
    *
    * @returns cleaned settings
    */
-  private extractSettings(): MapConstructorSettings {
+  public extractSettings(): MapConstructorSettings {
     const mapSettings = omitBy(this.mapSettingsValue, isNil);
     // Settings initialization
     const initialState = get(mapSettings, 'initialState', {
@@ -361,6 +387,7 @@ export class MapComponent
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
     const geographicExtents = get(mapSettings, 'geographicExtents', []);
     const layers = get(mapSettings, 'layers', []);
+    const automationRules = get(mapSettings, 'automationRules', []);
 
     return {
       initialState,
@@ -374,6 +401,7 @@ export class MapComponent
       controls,
       arcGisWebMap,
       geographicExtents,
+      automationRules,
     };
   }
 
@@ -429,6 +457,7 @@ export class MapComponent
         ),
         initialState.viewpoint.zoom
       );
+      this.map.attributionControl.setPrefix(false);
 
       this.currentZoom = initialState.viewpoint.zoom;
       this.mapControlsService.addControlPlaceholders(this.map);
@@ -565,7 +594,11 @@ export class MapComponent
       // Get arcgis layers
       if (settings.arcGisWebMap) {
         // Load arcgis webmap
-        promises.push(this.setWebmap(settings.arcGisWebMap));
+        promises.push(
+          this.setWebmap(settings.arcGisWebMap, {
+            skipDefaultView: this.useContextZoom,
+          })
+        );
       } else {
         this.arcGisWebMap = undefined;
         // else, load basemap ( default to osm )
@@ -793,6 +826,15 @@ export class MapComponent
    */
   public async addLayer(layer: Layer): Promise<void> {
     (await layer.getLayer()).addTo(this.map);
+  }
+
+  /**
+   * Removes a layer to the map
+   *
+   * @param layer layer to be removed to the map
+   */
+  public async removeLayer(layer: Layer): Promise<void> {
+    (await layer.getLayer()).removeFrom(this.map);
   }
 
   /**
@@ -1053,14 +1095,19 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
+   * @param options additional options
+   * @param options.skipDefaultView skip default view ( map won't change zoom / bounds )
    * @returns loaded basemaps and layers as Promise
    */
-  public setWebmap(webmap: any): Promise<{
+  public setWebmap(
+    webmap: any,
+    options?: { skipDefaultView: boolean }
+  ): Promise<{
     basemaps: TreeObject[];
     layers: TreeObject[];
   }> {
     this.arcGisWebMap = webmap;
-    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
   }
 
   /** Set the new layers based on the filter value */
@@ -1205,6 +1252,7 @@ export class MapComponent
         geographicExtentValue &&
         geographicExtentValue.some((x: any) => x.value)
       ) {
+        this.useContextZoom = true;
         this.mapPolygonsService.zoomOn(geographicExtentValue, this.map);
       } else {
         this.setDefaultZoom();

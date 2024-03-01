@@ -25,4 +25,8 @@ export class DisplaySettingsComponent {
    * Form group
    */
   @Input() formGroup!: FormGroup;
+  /**
+   * If should show hide empty widget options
+   */
+  @Input() showHideOption = false;
 }
