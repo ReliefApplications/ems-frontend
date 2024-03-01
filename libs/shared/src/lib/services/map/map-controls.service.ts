@@ -188,7 +188,7 @@ export class MapControlsService {
       'components.map.controls.fullScreen.exitFullscreen'
     );
     this.fullscreenControl.onAdd = () => {
-      const mapContainer = map.getContainer();
+      const mapContainer = map.getContainer()?.parentElement;
       const expandIcon = createFontAwesomeIcon(
         {
           icon: 'expand',
