@@ -8,7 +8,7 @@ import { SummaryCardSettingsComponent } from '../components/widgets/summary-card
 import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
 import { EventEmitter } from '@angular/core';
-import { FormSettingsComponent } from '../components/widgets/form/form-settings.component';
+import { FormSettingsComponent } from '../components/widgets/form-settings/form-settings.component';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -52,15 +52,14 @@ export const WIDGET_TYPES = [
     id: 'form',
     name: 'Form',
     icon: '/assets/form.svg',
-    color: '#F6C481',
+    color: '#C5D3FC',
     settings: {
-      title: 'Text widget',
-      text: 'Enter a content',
+      title: 'Form widget',
     },
-    defaultCols: 3,
-    defaultRows: 3,
+    defaultCols: 4,
+    defaultRows: 4,
     minRow: 1,
-    component: 'editor',
+    component: 'form',
     settingsTemplate: FormSettingsComponent,
   },
   {
