@@ -118,12 +118,8 @@ export class DashboardAutomationService {
               }
               case 'set.context': {
                 const mapping = get(component, 'value.mapping', '');
-                console.log(typeof mapping);
-                console.log(mapping);
                 const mappingAsJSON = this.parseJSONValues(JSON.parse(mapping));
-                console.log(mappingAsJSON);
                 const toString = JSON.stringify(mappingAsJSON);
-                console.log(toString);
                 const replaced = toString.replace(
                   new RegExp(this.automationRegex, 'g'),
                   (match) => {
@@ -140,7 +136,6 @@ export class DashboardAutomationService {
                 this.contextService.removeEmptyPlaceholders(parsed);
                 if (!isEmpty(parsed)) {
                   this.contextService.context = parsed;
-                  console.log(this.contextService.context);
                 }
                 break;
               }
@@ -196,8 +191,21 @@ export class DashboardAutomationService {
                 }
                 break;
               }
+              case 'display.collapse': {
+                const widget = this.findWidget(component.value.widget);
+                if (widget && widget.showExpand && widget.expanded) {
+                  widget.onResize();
+                }
+                break;
+              }
+              case 'display.expand': {
+                const widget = this.findWidget(component.value.widget);
+                if (widget && widget.showExpand && !widget.expanded) {
+                  widget.onResize();
+                }
+                break;
+              }
               default: {
-                console.log(component);
                 break;
               }
             }

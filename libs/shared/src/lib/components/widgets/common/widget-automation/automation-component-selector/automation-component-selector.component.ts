@@ -52,6 +52,20 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
+    type: 'display.collapse',
+    value: {
+      widget: null,
+    },
+  },
+  {
+    component: 'action',
+    type: 'display.expand',
+    value: {
+      widget: null,
+    },
+  },
+  {
+    component: 'action',
     type: 'set.context',
     value: {
       mapping: '',

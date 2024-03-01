@@ -258,7 +258,6 @@ export class MapComponent
           ),
           debounceTime(500),
           filter(({ previous, current }) => {
-            console.log('filtering');
             // Update each layer, indicating if refetch is required
             this.layers.forEach((layer) => {
               layer.shouldRefresh = this.contextService.shouldRefresh(

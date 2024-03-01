@@ -414,6 +414,50 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
+      type: 'display.collapse',
+      properties: [
+        {
+          name: 'widget',
+          required: true,
+          editor: 'select',
+          multiselect: false,
+          async: true,
+          choices: this.widgets.pipe(
+            takeUntil(this.destroy$),
+            map((widgets) => {
+              return widgets.map((x) => ({
+                value: x.id,
+                text: x.name || `Widget #${x.id}`,
+              }));
+            })
+          ),
+        },
+      ],
+    },
+    {
+      component: 'action',
+      type: 'display.expand',
+      properties: [
+        {
+          name: 'widget',
+          required: true,
+          editor: 'select',
+          multiselect: false,
+          async: true,
+          choices: this.widgets.pipe(
+            takeUntil(this.destroy$),
+            map((widgets) => {
+              return widgets.map((x) => ({
+                value: x.id,
+                text: x.name || `Widget #${x.id}`,
+              }));
+            })
+          ),
+        },
+      ],
+    },
+    {
+      component: 'action',
       type: 'set.context',
       properties: [
         {

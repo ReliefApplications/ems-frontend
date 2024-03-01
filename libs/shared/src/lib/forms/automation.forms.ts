@@ -60,6 +60,12 @@ export const createAutomationActionComponentForm = (
         tab: [get(value, 'tab', null), Validators.required],
       });
     }
+    case 'display.collapse':
+    case 'display.expand': {
+      return fb.group({
+        widget: [get(value, 'widget', null), Validators.required],
+      });
+    }
     default: {
       return fb.group({});
     }
