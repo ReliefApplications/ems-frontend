@@ -22,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 import { WidgetService } from '../../services/widget/widget.service';
+import { TabsComponent } from '../widgets/tabs/tabs.component';
 
 /** Component for the widgets */
 @Component({
@@ -56,7 +57,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     | GridWidgetComponent
     | MapWidgetComponent
     | EditorComponent
-    | SummaryCardComponent;
+    | SummaryCardComponent
+    | TabsComponent;
   /** Expanded state of the widget */
   public expanded = false;
   /** Loading state of the widget */

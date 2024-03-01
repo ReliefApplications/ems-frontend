@@ -28,6 +28,7 @@ export interface MapConstructorSettings {
   controls: MapControls;
   arcGisWebMap?: string;
   geographicExtents?: { value: string; extent: string }[];
+  automationRules?: any[];
 }
 
 /** Available leaflet event types. */
