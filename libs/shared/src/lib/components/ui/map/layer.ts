@@ -34,6 +34,7 @@ import {
   icon as iconCreator,
 } from '@fortawesome/fontawesome-svg-core';
 import { getIconDefinition } from '@oort-front/ui';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -141,6 +142,8 @@ export class Layer implements LayerModel {
   private popupService!: MapPopupService;
   /** Map layer service */
   private layerService!: MapLayersService;
+  /** Dashboar automation service */
+  private dashboardAutomationService!: DashboardAutomationService;
   /** Map renderer */
   private renderer!: Renderer2;
 
@@ -204,6 +207,8 @@ export class Layer implements LayerModel {
   // Declare variables to store the event listeners
   /** Event listener for zoom event */
   private zoomListener!: L.LeafletEventHandlerFn;
+  /** Event listener for rule event from map */
+  private ruleListener!: L.LeafletEventHandlerFn;
   /** Array of listeners */
   private listeners: any[] = [];
   /** Should refresh layer */
@@ -268,6 +273,9 @@ export class Layer implements LayerModel {
     if (options) {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
+      this.dashboardAutomationService = injector.get(
+        DashboardAutomationService
+      );
       this.renderer = injector.get(Renderer2);
       this.setConfig(options);
     } else {
@@ -835,6 +843,19 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
+    if (this.ruleListener) {
+      layer.off('click', this.ruleListener);
+      layer.off('clusterclick', this.ruleListener);
+    }
+    this.ruleListener = (e) =>
+      this.dashboardAutomationService.executeAutomationRule(
+        (map as any)._rule,
+        e
+      );
+    if (map.hasEventListeners('click') && (map as any)._rule) {
+      layer.on('click', this.ruleListener);
+      layer.on('clusterclick', this.ruleListener);
+    }
     // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
     if (!isNil((layer as any).shouldDisplay)) {
       this.visibility = (layer as any).shouldDisplay;
@@ -913,6 +934,10 @@ export class Layer implements LayerModel {
       // Ensure that we do not subscribe multiple times to zoom event
       if (this.zoomListener) {
         map.off('zoomend', this.zoomListener);
+      }
+      if (this.ruleListener) {
+        layer.off('click', this.ruleListener);
+        layer.off('clusterclick', this.ruleListener);
       }
     }
     // map.off('zoomend', this.zoomListener);
@@ -1123,6 +1148,10 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
+    if (this.layer && this.ruleListener) {
+      this.layer.off('click', this.ruleListener);
+      this.layer.off('clusterclick', this.ruleListener);
+    }
     const children = this.getChildren();
     if (children.length) {
       const removeAllListenersLayerPromises = children.map((layer) => {
@@ -1135,6 +1164,7 @@ export class Layer implements LayerModel {
       await Promise.all(removeAllListenersLayerPromises);
     }
     this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
+    this.ruleListener = null as unknown as L.LeafletEventHandlerFn;
     this.listeners.forEach((listener) => {
       listener();
     });
