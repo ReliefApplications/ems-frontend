@@ -323,7 +323,11 @@ export class MapComponent
           trigger.type === 'map.click'
         ) {
           // Save rule in map object to populate to all layers attached to it
-          (this.map as any)._rule = rule;
+          if ((this.map as any)._rules) {
+            (this.map as any)._rules.push(rule);
+          } else {
+            (this.map as any)._rules = [rule];
+          }
           this.map.on('click', (e) => {
             this.dashboardAutomationService?.executeAutomationRule(rule, e);
           });

@@ -105,15 +105,17 @@ export class DashboardAutomationService {
               case 'map.get.country': {
                 await firstValueFrom(
                   this.mapPolygonsService.admin0sReady$.pipe(first((v) => v))
-                ).then(() => {
-                  if (value.latlng) {
-                    const country =
-                      this.mapPolygonsService.findCountryFromPoint(
-                        value.latlng
-                      );
+                );
+                if (value.latlng) {
+                  const country = this.mapPolygonsService.findCountryFromPoint(
+                    value.latlng
+                  );
+                  if (country) {
                     set(context, 'admin0', country);
+                  } else {
+                    return;
                   }
-                });
+                }
                 break;
               }
               case 'set.context': {
