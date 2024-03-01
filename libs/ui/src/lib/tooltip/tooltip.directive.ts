@@ -46,6 +46,7 @@ export class TooltipDirective implements OnDestroy {
     'absolute',
     'z-[9999]',
     'break-words',
+    'pointer-events-none',
   ] as const;
   /** ShadowDomService current host */
   private currentHost!: any;
