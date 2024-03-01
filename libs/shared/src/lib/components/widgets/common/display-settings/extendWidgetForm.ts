@@ -7,9 +7,9 @@ import { get } from 'lodash';
  * @param form widget form
  * @param settings settings to apply
  * @param settings.showBorder show border setting
- * @param settings.showTooltip show tooltip setting
- * @param settings.tooltip custom tooltip to show in widget
+ * @param settings.showHeader show border header
  * @param settings.style custom style of the widget
+ * @param settings.expandable show expand button
  * @param specificControls specific controls to add to the form, on a widget basis
  * @returns form with the common fields
  */
@@ -20,16 +20,16 @@ export const extendWidgetForm = <
   form: FormGroup<T>,
   settings?: {
     showBorder?: boolean;
-    showTooltip?: boolean;
-    tooltip?: string;
+    showHeader?: boolean;
+    expandable: boolean;
     style?: string;
   },
   specificControls?: T2
 ) => {
   const controls = {
     showBorder: new FormControl(get(settings, 'showBorder', true)),
-    showTooltip: new FormControl(get(settings, 'showTooltip', false)),
-    tooltip: new FormControl(get(settings, 'tooltip', '')),
+    showHeader: new FormControl(get(settings, 'showHeader', true)),
+    expandable: new FormControl(get(settings, 'expandable', false)),
     style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
@@ -40,8 +40,8 @@ export const extendWidgetForm = <
       widgetDisplay: FormGroup<
         {
           showBorder: FormControl<boolean>;
-          showTooltip: FormControl<boolean>;
-          tooltip: FormControl<string>;
+          showHeader: FormControl<boolean>;
+          expandable: FormControl<boolean>;
           style: FormControl<string>;
         } & T2
       >;

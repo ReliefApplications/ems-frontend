@@ -82,14 +82,6 @@
                 </ng-container>
               </div>
             </ng-container>
-            <!-- Features available only for step -->
-            <ng-container *ngIf="data.type === 'step'">
-              <ui-toggle formControlName="nextStepOnSave">
-                <ng-container ngProjectAs="label">
-                  {{ 'components.application.pages.settings.goNextStepOnSave' | translate }}
-                </ng-container>
-              </ui-toggle>
-            </ng-container> 
           </div>
         </ui-tab>
         <!-- Access (visibility) settings -->
@@ -108,6 +100,235 @@
             <shared-edit-access
               (updateAccess)="onUpdateAccess($event)"
             ></shared-edit-access>
+          </div>
+        </ui-tab>
+        <!-- Grid layout style settings -->
+        <ui-tab *ngIf="dashboard">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="style"
+              [size]="18"
+              uiTooltip="{{
+                'components.application.dashboard.settings.gridOptions'
+                  | translate
+              }}"
+            ></ui-icon>
+            <span>{{
+              'components.application.dashboard.settings.gridOptions'
+                | translate
+            }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex gap-4 flex-col" formGroupName="gridOptions">
+            <!-- Number of columns -->
+            <div class="flex flex-col">
+              <div uiFormFieldDirective>
+                <label class="flex items-center gap-1">
+                  {{
+                    'components.application.dashboard.settings.minCols'
+                      | translate
+                  }}
+                  <ui-icon
+                    class="cursor-help self-center"
+                    icon="info_outline"
+                    variant="grey"
+                    [size]="18"
+                    [uiTooltip]="
+                      'components.application.dashboard.settings.tooltip.minCols'
+                        | translate
+                    "
+                  ></ui-icon>
+                </label>
+                <input
+                  type="number"
+                  formControlName="minCols"
+                  min="4"
+                  max="24"
+                />
+                <ui-icon
+                  uiSuffix
+                  class="cursor-pointer"
+                  icon="restart_alt"
+                  variant="grey"
+                  (click)="
+                    settingsForm
+                      .get('gridOptions.minCols')
+                      ?.setValue(defaultGridOptions.minCols)
+                  "
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.reset'
+                      | translate
+                  "
+                ></ui-icon>
+              </div>
+              <ui-alert>{{
+                'components.application.dashboard.settings.help.minCols'
+                  | translate
+              }}</ui-alert>
+            </div>
+            <!-- Select the grid type -->
+            <div uiFormFieldDirective [outline]="false">
+              <label>{{
+                'components.application.dashboard.settings.gridType.title'
+                  | translate
+              }}</label>
+              <ui-select-menu
+                formControlName="gridType"
+                [placeholder]="
+                  'components.application.dashboard.settings.gridType.placeholder'
+                    | translate
+                "
+              >
+                <ui-select-option [value]="gridType.VerticalFixed">
+                  {{
+                    'components.application.dashboard.settings.gridType.verticalFixed'
+                      | translate
+                  }}
+                </ui-select-option>
+                <ui-select-option [value]="gridType.Fit">
+                  {{
+                    'components.application.dashboard.settings.gridType.fit'
+                      | translate
+                  }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <!-- Change default size of rows -->
+            <div
+              uiFormFieldDirective
+              [outline]="false"
+              *ngIf="
+                settingsForm.get('gridOptions.gridType')?.value !== gridType.Fit
+              "
+            >
+              <label class="flex items-center gap-1">
+                {{
+                  'components.application.dashboard.settings.fixedRowHeight'
+                    | translate
+                }}
+                <!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.fixedRowHeight'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="fixedRowHeight" min="50" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="restart_alt"
+                variant="grey"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.fixedRowHeight')
+                    ?.setValue(defaultGridOptions.fixedRowHeight)
+                "
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltip.reset'
+                    | translate
+                "
+              ></ui-icon>
+            </div>
+            <!-- Change the minimum height of the container -->
+            <div
+              uiFormFieldDirective
+              [outline]="false"
+              *ngIf="
+                settingsForm.get('gridOptions.gridType')?.value === gridType.Fit
+              "
+            >
+              <label class="flex items-center gap-1">
+                {{
+                  'components.application.dashboard.settings.minimumHeight'
+                    | translate
+                }}
+                <!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.minimumHeight'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="minimumHeight" min="0" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="restart_alt"
+                variant="grey"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.minimumHeight')
+                    ?.setValue(defaultGridOptions.minimumHeight)
+                "
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltip.reset'
+                    | translate
+                "
+              ></ui-icon>
+            </div>
+            <!-- Specify inner gap -->
+            <div uiFormFieldDirective>
+              <label class="flex items-center gap-1"
+                >{{
+                  'components.application.dashboard.settings.margin'
+                    | translate
+                }}<!-- Tooltip -->
+                <ui-icon
+                  class="cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.application.dashboard.settings.tooltip.margin'
+                      | translate
+                  "
+                ></ui-icon>
+              </label>
+              <input type="number" formControlName="margin" min="0" />
+              <ui-icon
+                uiSuffix
+                class="cursor-pointer"
+                icon="restart_alt"
+                variant="grey"
+                (click)="
+                  settingsForm
+                    .get('gridOptions.margin')
+                    ?.setValue(defaultGridOptions.margin)
+                "
+                [uiTooltip]="
+                  'components.application.dashboard.settings.tooltip.reset'
+                    | translate
+                "
+              ></ui-icon>
+            </div>
+          </div>
+        </ui-tab>
+        <!-- Dashboard filter -->
+        <ui-tab *ngIf="dashboard">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="filter_list"
+              [size]="18"
+              uiTooltip="{{ 'common.filter.one' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.filter.one' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex flex-col">
+            <app-dashboard-filter-settings
+              [dashboard]="dashboard"
+            ></app-dashboard-filter-settings>
           </div>
         </ui-tab>
       </ui-tabs>

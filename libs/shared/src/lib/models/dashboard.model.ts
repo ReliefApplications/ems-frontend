@@ -7,6 +7,7 @@ import { EditorSettingsComponent } from '../components/widgets/editor-settings/e
 import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
+import { EventEmitter } from '@angular/core';
 import { FormSettingsComponent } from '../components/widgets/form/form-settings.component';
 
 /** Model for IWidgetType object */
@@ -15,6 +16,34 @@ export interface IWidgetType {
   name: string;
   icon: string;
   color: string;
+}
+
+/** Model for the dashboard filter */
+export interface DashboardFilter {
+  variant?: Variant;
+  show?: boolean;
+  closable?: boolean;
+  structure?: any;
+  position?: string;
+}
+
+/** Widget settings types */
+export type WidgetSettingsType = WidgetSettings<any>;
+
+/**
+ * Extended class of all widget settings components
+ *
+ * Implement this class for any widget settings class component that is created
+ */
+export abstract class WidgetSettings<T extends (...args: any[]) => any> {
+  /** Change event emitted on widget settings form group value change */
+  public formChange!: EventEmitter<ReturnType<T>>;
+  /** Related widget property */
+  public widget: any;
+  /** Widget settings form group */
+  public widgetFormGroup!: ReturnType<T>;
+  /** Build settings form for the given widget type */
+  public buildSettingsForm!: () => void;
 }
 
 /** List of Widget types with their properties */
@@ -45,9 +74,9 @@ export const WIDGET_TYPES = [
         type: 'donut',
       },
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'chart',
     settingsTemplate: ChartSettingsComponent,
   },
@@ -62,9 +91,9 @@ export const WIDGET_TYPES = [
         type: 'column',
       },
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'chart',
     settingsTemplate: ChartSettingsComponent,
   },
@@ -79,9 +108,9 @@ export const WIDGET_TYPES = [
         type: 'line',
       },
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'chart',
     settingsTemplate: ChartSettingsComponent,
   },
@@ -96,9 +125,9 @@ export const WIDGET_TYPES = [
         type: 'pie',
       },
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'chart',
     settingsTemplate: ChartSettingsComponent,
   },
@@ -113,9 +142,9 @@ export const WIDGET_TYPES = [
         type: 'polar',
       },
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'chart',
     settingsTemplate: ChartSettingsComponent,
   },
@@ -130,9 +159,9 @@ export const WIDGET_TYPES = [
         type: 'bar',
       },
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'chart',
     settingsTemplate: ChartSettingsComponent,
   },
@@ -147,9 +176,9 @@ export const WIDGET_TYPES = [
         type: 'radar',
       },
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'chart',
     settingsTemplate: ChartSettingsComponent,
   },
@@ -168,9 +197,9 @@ export const WIDGET_TYPES = [
       toolbar: false,
       canAdd: false,
     },
-    defaultCols: 8,
-    defaultRows: 4,
-    minRow: 2,
+    cols: 8,
+    rows: 4,
+    minItemRows: 2,
     component: 'grid',
     settingsTemplate: GridSettingsComponent,
   },
@@ -182,9 +211,9 @@ export const WIDGET_TYPES = [
     settings: {
       title: 'Map widget',
     },
-    defaultCols: 4,
-    defaultRows: 4,
-    minRow: 1,
+    cols: 4,
+    rows: 4,
+    minItemRows: 1,
     component: 'map',
     settingsTemplate: MapSettingsComponent,
   },
@@ -197,9 +226,9 @@ export const WIDGET_TYPES = [
       title: 'Text widget',
       text: 'Enter a content',
     },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'editor',
     settingsTemplate: EditorSettingsComponent,
   },
@@ -209,21 +238,21 @@ export const WIDGET_TYPES = [
     icon: '/assets/summary-card.svg',
     color: '#99CBEF',
     settings: { title: 'Summary Card' },
-    defaultCols: 3,
-    defaultRows: 3,
-    minRow: 1,
+    cols: 3,
+    rows: 3,
+    minItemRows: 1,
     component: 'summaryCard',
     settingsTemplate: SummaryCardSettingsComponent,
   },
   {
     id: 'tabs',
     name: 'Tabs',
-    icon: '/assets/summary-card.svg',
-    color: '#99CBEF',
+    icon: '/assets/tab.svg',
+    color: '#D5B38C',
     settings: { title: 'Tabs' },
-    defaultCols: 8,
-    defaultRows: 4,
-    minRow: 2,
+    cols: 8,
+    rows: 4,
+    minItemRows: 2,
     component: 'tabs',
     settingsTemplate: TabsSettingsComponent,
   },
@@ -242,7 +271,9 @@ export interface Dashboard {
   canDelete?: boolean;
   page?: Page;
   step?: Step;
-  showFilter?: boolean;
+  contextData?: {
+    [key: string]: any;
+  };
   buttons?: {
     text: string;
     href: string;
@@ -250,6 +281,33 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
+  filter?: DashboardFilter;
+  gridOptions?: any;
+}
+
+/** Model for dashboard graphql query response */
+export interface DashboardQueryResponse {
+  dashboard: Dashboard;
+}
+
+/** Model for add dashboard graphql mutation response */
+export interface AddDashboardMutationResponse {
+  addDashboard: Dashboard;
+}
+
+/** Model for edit dashboard graphql mutation response */
+export interface EditDashboardMutationResponse {
+  editDashboard: Dashboard;
+}
+
+/** Model for delete dashboard graphql mutation response */
+export interface DeleteDashboardMutationResponse {
+  deleteDashboard: Dashboard;
+}
+
+/** Model for dashboards graphql query response */
+export interface DashboardsQueryResponse {
+  dashboards: Dashboard[];
 }
 
 /** Model for dashboard graphql query response */

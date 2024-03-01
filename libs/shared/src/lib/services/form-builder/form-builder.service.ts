@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings } from 'survey-core';
+import {
+  Model,
+  Question,
+  QuestionFileModel,
+  SurveyModel,
+  settings,
+  IPanel,
+} from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -14,12 +21,53 @@ import { Metadata } from '../../models/metadata.model';
 import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
-import {
-  FormHelpersService,
-  transformSurveyData,
-} from '../form-helper/form-helper.service';
-import { difference } from 'lodash';
+import { FormHelpersService } from '../form-helper/form-helper.service';
+import { cloneDeep, difference } from 'lodash';
 import { Form } from '../../models/form.model';
+
+/** Type for the temporary file storage */
+export type TemporaryFilesStorage = Map<Question, File[]>;
+
+/**
+ * Applies custom logic to survey data values.
+ *
+ * @param survey Survey instance
+ * @returns Transformed survey data
+ */
+export const transformSurveyData = (survey: SurveyModel) => {
+  // Cloning data to avoid mutating the original survey data
+  const data = cloneDeep(survey.data) ?? {};
+
+  Object.keys(data).forEach((filed) => {
+    const question = survey.getQuestionByName(filed);
+    // Removes data that isn't in the structure, that might've come from prefilling data
+    if (!question) {
+      delete data[filed];
+    } else {
+      const isQuestionVisible = (question: Question | IPanel): boolean => {
+        // If question is not visible, return false
+        if (!question.isVisible || !question) {
+          return false;
+        }
+
+        // If it is, check if its parent is visible
+        if (question.parent) {
+          return isQuestionVisible(question.parent);
+        }
+
+        // If we're in the root and it's visible, return true
+        return true;
+      };
+
+      // Removes null values for invisible questions (or pages)
+      if (!isQuestionVisible(question) && data[filed] === null) {
+        delete data[filed];
+      }
+    }
+  });
+
+  return data;
+};
 
 /**
  * Gets the payload for the update mutation
@@ -245,6 +293,9 @@ export class FormBuilderService {
       }
     }
 
+    // Set query params as variables
+    this.formHelpersService.addQueryParamsVariables(survey);
+
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
@@ -263,7 +314,7 @@ export class FormBuilderService {
   public addEventsCallBacksToSurvey(
     survey: SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
-    temporaryFilesStorage: Record<string, Array<File>>
+    temporaryFilesStorage: TemporaryFilesStorage
   ) {
     survey.onAfterRenderSurvey.add(() => {
       // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
@@ -320,12 +371,13 @@ export class FormBuilderService {
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    * @param options Options regarding the upload
    */
-  private onUploadFiles(temporaryFilesStorage: any, options: any): void {
-    if (temporaryFilesStorage[options.name] !== undefined) {
-      temporaryFilesStorage[options.name].concat(options.files);
-    } else {
-      temporaryFilesStorage[options.name] = options.files;
-    }
+  private onUploadFiles(
+    temporaryFilesStorage: TemporaryFilesStorage,
+    options: any
+  ): void {
+    const question = options.question as QuestionFileModel;
+    temporaryFilesStorage.set(question, options.files);
+
     let content: any[] = [];
     options.files.forEach((file: any) => {
       const fileReader = new FileReader();

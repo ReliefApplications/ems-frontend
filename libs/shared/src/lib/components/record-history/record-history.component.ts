@@ -1,5 +1,12 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Inject,
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
@@ -20,7 +27,9 @@ import {
   GET_RECORD_HISTORY_BY_ID,
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
-import isNil from 'lodash/isNil';
+import { startCase, isNil } from 'lodash';
+import { ResizeEvent } from 'angular-resizable-element';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -55,26 +64,66 @@ export class RecordHistoryComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Id of the record */
   @Input() id!: string;
+  /** Function to revert to a version */
   @Input() revert!: (version: Version) => void;
+  /** Template of the record */
   @Input() template?: string;
+  /** Show history header ( need to disable it when in modal mode ) */
+  @Input() showHeader = true;
+  /** Refresh content of the history */
+  @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
+  /** Boolean indicating whether the dialog is resizable. */
+  @Input() resizable = false;
+  /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
-  public record!: Record;
+  /** Record to display */
+  public record!: Record | null;
+  /** Record history */
   public history: RecordHistory = [];
+  /** Filtered history */
   public filterHistory: RecordHistory = [];
+  /** Loading state */
   public loading = true;
+  /** Show more state */
   public showMore = false;
+  /** Displayed columns array */
   public displayedColumns: string[] = ['position'];
-  public filtersDate = new FormGroup({
+  /** Form group for date filters */
+  public filters = new FormGroup({
     startDate: new FormControl(''),
     endDate: new FormControl(''),
+    fields: new FormControl([]),
   });
+  /** Sorted fields */
   public sortedFields: any[] = [];
-  public filterFields: string[] = [];
-
-  // Refresh content of the history
-  @Input() refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Table columns */
+  public displayedColumnsHistory: string[] = [
+    'variable',
+    'date',
+    'time',
+    'person',
+    'action',
+    'originalValue',
+    'modifiedValue',
+  ];
+  /** Translations for chips */
+  translations = {
+    withValue: this.translate.instant('components.history.changes.withValue'),
+    from: this.translate.instant('components.history.changes.from'),
+    to: this.translate.instant('components.history.changes.to'),
+    add: this.translate.instant('components.history.changes.add'),
+    remove: this.translate.instant('components.history.changes.remove'),
+    modify: this.translate.instant('components.history.changes.modify'),
+  };
+  /** Data source for history as a table */
+  historyForTable: any[] = [];
+  /** Should view as table */
+  viewAsTable = new FormControl(true);
+  /** size style */
+  public style: any = {};
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -87,14 +136,15 @@ export class RecordHistoryComponent
   }
 
   /**
-   * Constructor of the record history component
+   * Record history component
    *
-   * @param dialog The Dialog service
-   * @param downloadService The download service
-   * @param translate The translation service
-   * @param dateFormat The dateTranslation service
-   * @param apollo The apollo client
-   * @param snackBar The snackbar service
+   * @param dialog CDK dialog service
+   * @param downloadService Shared download service
+   * @param translate Angular translation service
+   * @param dateFormat DateTranslation service
+   * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
+   * @param document Document
    */
   constructor(
     public dialog: Dialog,
@@ -102,14 +152,14 @@ export class RecordHistoryComponent
     private translate: TranslateService,
     private dateFormat: DateTranslateService,
     private apollo: Apollo,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
 
   ngOnInit(): void {
-    // Set subscription to load records
-    this.refresh$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    const setSubscription = () => {
       this.apollo
         .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID_FOR_HISTORY,
@@ -117,6 +167,7 @@ export class RecordHistoryComponent
             id: this.id,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.record = data.record;
           this.sortedFields = this.sortFields(this.getFields());
@@ -130,6 +181,7 @@ export class RecordHistoryComponent
             lang: this.translate.currentLang,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ errors, data }) => {
           if (errors) {
             this.snackBar.openSnackBar(
@@ -144,12 +196,115 @@ export class RecordHistoryComponent
               (item) => item.changes.length
             );
             this.filterHistory = this.history;
+            this.historyForTable = [];
+            this.history.map((elt) => {
+              elt.changes.map((change) => {
+                this.setHistoryForTableFromChange(change, elt);
+              });
+            });
             this.loading = false;
           }
         });
+    };
+    if (this.refresh$) {
+      // Set subscription to load records
+      this.refresh$?.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        setSubscription();
+      });
+      // Send first refresh event to load data
+      this.refresh$?.next(true);
+    } else {
+      setSubscription();
+    }
+
+    this.filters.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const startDate = this.filters.get('startDate')?.value
+        ? new Date(this.filters.get('startDate')?.value as any)
+        : undefined;
+      if (startDate) startDate.setHours(0, 0, 0, 0);
+      const endDate = this.filters.get('endDate')?.value
+        ? new Date(this.filters.get('endDate')?.value as any)
+        : undefined;
+      if (endDate) endDate.setHours(23, 59, 59, 99);
+      this.filterHistory = this.history.filter((item) => {
+        const createdAt = new Date(item.createdAt);
+        return (
+          !startDate ||
+          !endDate ||
+          (createdAt >= startDate && createdAt <= endDate)
+        );
+      });
+
+      const fields: any = this.filters.get('fields')?.value;
+      if (fields.length > 0) {
+        this.filterHistory = this.filterHistory
+          .filter(
+            (item) =>
+              !!item.changes.find((change) => fields.includes(change.field))
+          )
+          .map((item) => {
+            const newItem = Object.assign({}, item);
+            newItem.changes = item.changes.filter((change) =>
+              fields.includes(change.field)
+            );
+            return newItem;
+          });
+      }
+      this.historyForTable = [];
+      this.filterHistory.map((elt) => {
+        elt.changes.map((change) => {
+          this.setHistoryForTableFromChange(change, elt);
+        });
+      });
     });
-    // Send first refresh event to load data
-    this.refresh$.next(true);
+  }
+
+  /**
+   * On resize action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      width: `${event.rectangle.width}px`,
+      // height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const dashboardNavbars =
+      this.document.getElementsByTagName('shared-navbar');
+    let dashboardNavbarWidth = 0;
+    if (dashboardNavbars[0]) {
+      if (
+        (dashboardNavbars[0] as any).offsetWidth <
+        this.document.documentElement.clientWidth
+      ) {
+        // Only if the sidenav is not horizontal
+        dashboardNavbarWidth = (dashboardNavbars[0] as any).offsetWidth;
+      }
+    }
+    // set the min width as 30% of the screen size available
+    const minWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.3
+    );
+    // set the max width as 95% of the screen size available
+    const maxWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
+    );
+    if (
+      event.rectangle.width &&
+      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -160,21 +315,53 @@ export class RecordHistoryComponent
   }
 
   /**
+   * Push correct values to historyForTable list
+   *
+   * @param change Change to push
+   * @param filterHistoryElement Filter history element (used for createdAt and createdBy)
+   */
+  setHistoryForTableFromChange(change: Change, filterHistoryElement: any) {
+    this.historyForTable.push({
+      displayName: change.displayName,
+      new: change.new ? JSON.parse(change.new) : undefined,
+      old: change.old ? JSON.parse(change.old) : undefined,
+      type: change.type,
+      createdAt: filterHistoryElement.createdAt,
+      createdBy: filterHistoryElement.createdBy,
+    });
+  }
+
+  /**
+   * Get HTML for type chip
+   *
+   * @param change The field change object
+   * @returns the HTML for the chip
+   */
+  getChipFromChange(change: Change) {
+    switch (change.type) {
+      case 'remove':
+      case 'add':
+        return `
+            <span class="${change.type}-field">
+            ${this.translations[change.type]}
+            </span>
+          `;
+      case 'modify':
+        return `
+            <span class="${change.type}-field">
+            ${this.translations[change.type]}
+            </span>
+          `;
+    }
+  }
+
+  /**
    * Gets the HTML element from a change object
    *
    * @param change The field change object
    * @returns the innerHTML for the listing
    */
   getHTMLFromChange(change: Change) {
-    const translations = {
-      withValue: this.translate.instant('components.history.changes.withValue'),
-      from: this.translate.instant('components.history.changes.from'),
-      to: this.translate.instant('components.history.changes.to'),
-      add: this.translate.instant('components.history.changes.add'),
-      remove: this.translate.instant('components.history.changes.remove'),
-      modify: this.translate.instant('components.history.changes.modify'),
-    };
-
     let oldVal = change.old ? JSON.parse(change.old) : undefined;
     let newVal = change.new ? JSON.parse(change.new) : undefined;
 
@@ -197,24 +384,20 @@ export class RecordHistoryComponent
       case 'add':
         return `
           <p>
-            <span class="${change.type}-field">
-            ${translations[change.type]}
-            </span>
+            ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
-            ${translations.withValue}
+            ${this.translations.withValue}
             <b> ${change.type === 'add' ? newVal : oldVal}</b>
           <p>
           `;
       case 'modify':
         return `
           <p>
-            <span class="${change.type}-field">
-            ${translations[change.type]}
-            </span>
+          ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
-            ${translations.from}
+            ${this.translations.from}
             <b> ${oldVal}</b>
-            ${translations.to}
+            ${this.translations.to}
             <b> ${newVal}</b>
           <p>
           `;
@@ -231,7 +414,7 @@ export class RecordHistoryComponent
     // base case
     if (typeof object !== 'object') return object;
 
-    // arrys
+    // arrays
     if (Array.isArray(object)) {
       return object.map((elem) => this.toReadableObjectValue(elem));
     }
@@ -247,7 +430,6 @@ export class RecordHistoryComponent
         );
       });
     }
-
     return res;
   }
 
@@ -277,83 +459,22 @@ export class RecordHistoryComponent
   }
 
   /**
-   * Clears the date filter, empties it
-   */
-  clearDateFilter(): void {
-    this.filtersDate.get('startDate')?.setValue('');
-    this.filtersDate.get('endDate')?.setValue('');
-    this.filterHistory = this.history;
-  }
-
-  /**
-   * Triggers when the selected date and field filters are changed
-   * and filters the history accordingly
-   *
-   * @param fields selected fields
-   */
-  applyFilter(fields?: any): void {
-    // undefined => function called from date change
-    // empty => 'All fields' selected
-    // other => Field name for filter
-    if (fields) this.filterFields = fields;
-    if (!fields) this.filterFields = [];
-
-    const startDate = this.filtersDate.get('startDate')?.value
-      ? new Date(this.filtersDate.get('startDate')?.value as any)
-      : undefined;
-    if (startDate) startDate.setHours(0, 0, 0, 0);
-    const endDate = this.filtersDate.get('endDate')?.value
-      ? new Date(this.filtersDate.get('endDate')?.value as any)
-      : undefined;
-    if (endDate) endDate.setHours(23, 59, 59, 99);
-
-    // filtering by date
-    this.filterHistory = this.history.filter((item) => {
-      const createdAt = new Date(item.createdAt);
-      return (
-        !startDate ||
-        !endDate ||
-        (createdAt >= startDate && createdAt <= endDate)
-      );
-    });
-
-    // filtering by field
-    if (this.filterFields.length > 0) {
-      this.filterHistory = this.filterHistory
-        .filter(
-          (item) =>
-            !!item.changes.find((change) =>
-              this.filterFields.includes(change.field)
-            )
-        )
-        .map((item) => {
-          const newItem = Object.assign({}, item);
-          newItem.changes = item.changes.filter((change) =>
-            this.filterFields.includes(change.field)
-          );
-          return newItem;
-        });
-    }
-  }
-
-  /**
    * Handle the download event. Send a request to the server to get excel / csv file.
    *
    * @param type Type of document to download
    */
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}/history`;
+    const fields: any = this.filters.get('fields')?.value;
     const queryString = new URLSearchParams({
       type,
       from: `${new Date(
-        this.filtersDate.get('startDate')?.value as any
+        this.filters.get('startDate')?.value as any
       ).getTime()}`,
-      to: `${new Date(
-        this.filtersDate.get('endDate')?.value as any
-      ).getTime()}`,
+      to: `${new Date(this.filters.get('endDate')?.value as any).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
-      ...(this.filterFields && { fields: this.filterFields.join(',') }),
+      ...(fields && { fields: fields.join(',') }),
     }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,
@@ -386,18 +507,23 @@ export class RecordHistoryComponent
   private getFields(): any[] {
     const fields: any[] = [];
     // No form, break the display
-    if (this.record.form) {
+    if (this.record?.resource) {
       // Take the fields from the form
-      this.record.form.fields?.map((field: any) => {
+      this.record.resource.fields?.map((field: any) => {
         fields.push(Object.assign({}, field));
       });
-      if (this.record.form.structure) {
+      if (this.record.form && this.record.form.structure) {
         const structure = JSON.parse(this.record.form.structure);
         if (!structure.pages || !structure.pages.length) {
           return [];
         }
         for (const page of structure.pages) {
           this.extractFields(page, fields);
+        }
+      }
+      for (const field of fields) {
+        if (!field.title) {
+          field.title = startCase(field.name);
         }
       }
     }
@@ -427,5 +553,13 @@ export class RecordHistoryComponent
         }
       }
     }
+  }
+
+  /**
+   * Clear date filter
+   */
+  public clearDateFilters() {
+    this.filters.get('startDate')?.reset();
+    this.filters.get('endDate')?.reset();
   }
 }

@@ -1,9 +1,15 @@
-table {
-  div {
-    max-height: 48px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 240px;
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  table {
+    div {
+      max-height: 48px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
   }
 }

@@ -1,0 +1,26 @@
+<ui-button
+  icon="file_upload"
+  category="secondary"
+  variant="primary"
+  [uiTooltip]="'components.records.upload.hint' | translate"
+  (click)="showUpload = !showUpload"
+  cdkOverlayOrigin
+  #uploadTrigger="cdkOverlayOrigin"
+>
+  {{
+    'common.uploadObject'
+      | translate : { name: 'common.record.few' | translate }
+  }}
+</ui-button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="uploadTrigger"
+  [cdkConnectedOverlayOpen]="showUpload"
+>
+  <app-upload-menu
+    (close)="showUpload = false"
+    (upload)="uploadFileData($event)"
+    (download)="onDownloadTemplate()"
+  ></app-upload-menu>
+</ng-template>

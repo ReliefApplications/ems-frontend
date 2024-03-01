@@ -4,7 +4,6 @@ import { WidgetGridComponent } from './widget-grid.component';
 import { WidgetModule } from '../widget/widget.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WidgetActionsComponent } from './widget-actions/widget-actions.component';
-import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import { WidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
@@ -16,14 +15,11 @@ import {
   ButtonModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 
 /** Module for the widget-related components */
 @NgModule({
-  declarations: [
-    WidgetGridComponent,
-    WidgetActionsComponent,
-    ExpandedWidgetComponent,
-  ],
+  declarations: [WidgetGridComponent, WidgetActionsComponent],
   imports: [
     CommonModule,
     WidgetModule,
@@ -40,6 +36,8 @@ import {
     IconModule,
     SelectMenuModule,
     TooltipModule,
+    GridsterComponent,
+    GridsterItemComponent,
   ],
   exports: [WidgetGridComponent],
 })

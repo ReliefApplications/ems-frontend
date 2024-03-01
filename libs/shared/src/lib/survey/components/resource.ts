@@ -18,6 +18,7 @@ import {
   buildSearchButton,
   buildAddButton,
   processNewCreatedRecords,
+  setUpActionsButtonWrapper,
 } from './utils';
 import get from 'lodash/get';
 import { Question as SharedQuestion, QuestionResource } from '../types';
@@ -128,7 +129,7 @@ export const init = (
   // registers icon-resource in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
     'resource',
-    '<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>'
+    '<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>'
   );
 
   const visibleIfResource = (obj: QuestionResource) => {
@@ -412,7 +413,6 @@ export const init = (
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
       });
-
       serializer.addProperty('resource', {
         name: 'gridFieldsSettings',
         dependsOn: ['resource'],
@@ -473,12 +473,6 @@ export const init = (
         // type: 'expression',
         category: 'logic',
       });
-
-      serializer.addProperty('resource', {
-        name: 'afterRecordDeselection',
-        // type: 'expression',
-        category: 'logic',
-      });
     },
     /**
      * Get the resource after the question is loaded
@@ -486,6 +480,11 @@ export const init = (
      * @param question The current resource question
      */
     onLoaded(question: QuestionResource): void {
+      (question.survey as any)?.onValueChanged.add((_: any, options: any) => {
+        if (options.name === question.name) {
+          question.value = options.value;
+        }
+      });
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
@@ -593,12 +592,7 @@ export const init = (
       if (question.resource) {
         getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
-            const choices = mapQuestionChoices(data, question).filter(
-              (x: { value: string }) =>
-                // This makes it so if we have the canOnlyCreateRecords flag set to true,
-                // we can still see previously selected records when editing or seeing details of a record
-                !question.canOnlyCreateRecords || x.value === question.value
-            );
+            const choices = mapQuestionChoices(data, question);
             question.contentQuestion.choices = choices;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =
@@ -615,6 +609,19 @@ export const init = (
     onAfterRender: (question: QuestionResource, el: HTMLElement): void => {
       (question.survey as SurveyModel).loadedRecords = loadedRecords;
 
+      const actionsButtons = setUpActionsButtonWrapper();
+      const parentElement = el.querySelector('.sd-question__content');
+      const searchBtn = buildSearchButton(
+        question,
+        question.gridFieldsSettings,
+        false,
+        dialog,
+        temporaryRecordsForm,
+        document,
+        ngZone
+      );
+      // Hide search button by default
+      searchBtn.style.display = 'none';
       // support the placeholder field
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = get(
@@ -627,22 +634,7 @@ export const init = (
         (question.survey as SurveyModel).mode !== 'display' &&
         question.resource
       ) {
-        el.parentElement?.querySelector('#actionsButtons')?.remove();
-        const actionsButtons = document.createElement('div');
-        actionsButtons.id = 'actionsButtons';
-        actionsButtons.style.display = 'flex';
-        actionsButtons.style.marginBottom = '0.5em';
-
-        const searchBtn = buildSearchButton(
-          question,
-          question.gridFieldsSettings,
-          false,
-          dialog,
-          temporaryRecordsForm,
-          document
-        );
-        actionsButtons.appendChild(searchBtn);
-
+        searchBtn.style.display = 'block';
         const addBtn = buildAddButton(
           question,
           false,
@@ -650,32 +642,21 @@ export const init = (
           ngZone,
           document
         );
+        actionsButtons.appendChild(searchBtn);
         actionsButtons.appendChild(addBtn);
 
-        const parentElement = el.querySelector('.sd-question__content');
-        if (parentElement) {
-          parentElement.insertBefore(actionsButtons, parentElement.firstChild);
-        }
-
         // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
-
-        question.registerFunctionOnPropertyValueChanged(
-          'gridFieldsSettings',
-          () => {
-            searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
-          }
-        );
         question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-          searchBtn.style.display = question.canSearch ? '' : 'none';
+          searchBtn.style.display = question.canSearch ? 'block' : 'none';
         });
         question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
           addBtn.style.display =
-            question.addRecord && question.addTemplate ? '' : 'none';
+            question.addRecord && question.addTemplate ? 'block' : 'none';
         });
         question.registerFunctionOnPropertyValueChanged('addRecord', () => {
           addBtn.style.display =
             question.addRecord && question.addTemplate && !question.isReadOnly
-              ? ''
+              ? 'block'
               : 'none';
         });
 
@@ -683,11 +664,25 @@ export const init = (
 
         // Listen to value changes
         survey.onValueChanged.add((_, options) => {
-          if (question.name === options.name) {
-            addRecordToSurveyContext(options.question, options.value);
-          }
+          addRecordToSurveyContext(options.question, options.value);
         });
       }
+      actionsButtons.appendChild(searchBtn);
+      const header = el.querySelector('.sd-question__header') as HTMLDivElement;
+      // make header flex to align buttons
+      if (header) {
+        header.appendChild(actionsButtons);
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'flex-end';
+      } else if (parentElement) {
+        parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+      }
+      question.registerFunctionOnPropertyValueChanged('resource', () => {
+        if (question.resource && question.canSearch) {
+          searchBtn.style.display = 'block';
+        }
+      });
     },
   };
   componentCollectionInstance.add(component);

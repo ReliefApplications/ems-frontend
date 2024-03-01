@@ -10,13 +10,11 @@ import {
   ResourceRecordsNodesQueryResponse,
   DeleteRecordMutationResponse,
   RestoreRecordMutationResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../utils/update-queries';
 import { DELETE_RECORD, RESTORE_RECORD } from '../graphql/mutations';
 import { GET_RESOURCE_RECORDS } from './graphql/queries';
 import {
@@ -47,22 +45,48 @@ export class RecordsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Query to get records.
+   */
   private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
+  /**
+   * Data source for records.
+   */
   public dataSource = new Array<Record>();
+  /**
+   * Cached records.
+   */
   private cachedRecords: Record[] = [];
+  /**
+   * Resource.
+   */
   public resource!: Resource;
+  /**
+   * Default columns for records.
+   */
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
+  /**
+   * Columns to display.
+   */
   displayedColumnsRecords: string[] = [];
 
+  /**
+   * Show deleted records.
+   */
   showDeletedRecords = false;
+  /**
+   * Page info.
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: '',
   };
+  /**
+   * Loading state.
+   */
   public loading = true;
-  public showUpload = false;
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {
@@ -296,53 +320,6 @@ export class RecordsTabComponent
   }
 
   /**
-   * Get the records template, for upload.
-   */
-  onDownloadTemplate(): void {
-    const path = `download/resource/records/${this.resource.id}`;
-    const queryString = new URLSearchParams({
-      type: 'xlsx',
-      template: 'true',
-    }).toString();
-    this.downloadService.getFile(
-      `${path}?${queryString}`,
-      `text/xlsx;charset=utf-8;`,
-      `${this.resource.name}_template.xlsx`
-    );
-  }
-
-  /**
-   * Detects changes on the file.
-   *
-   * @param event new file event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
-   * Calls rest endpoint to upload new records for the resource.
-   *
-   * @param file File to upload.
-   */
-  uploadFileData(file: any): void {
-    const path = `upload/resource/records/${this.resource.id}`;
-    this.downloadService.uploadFile(path, file).subscribe({
-      next: (res) => {
-        if (res.status === 'OK') {
-          this.fetchRecords(true);
-          this.showUpload = false;
-        }
-      },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
-        this.showUpload = false;
-      },
-    });
-  }
-
-  /**
    * Toggle archive / active view.
    *
    * @param e click event.
@@ -400,7 +377,7 @@ export class RecordsTabComponent
    *
    * @param refetch rebuild query
    */
-  private fetchRecords(refetch?: boolean): void {
+  fetchRecords(refetch?: boolean): void {
     this.loading = true;
     const variables = {
       first: this.pageInfo.pageSize,

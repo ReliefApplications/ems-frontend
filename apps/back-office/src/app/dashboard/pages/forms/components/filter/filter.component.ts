@@ -19,18 +19,22 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   templateUrl: './filter.component.html',
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /** Input decorator for Loading state */
   @Input() loading = false;
+  /** Output decorator for Event emitter to emit the filter value */
   @Output() filter = new EventEmitter<any>();
   /** Reference to expanded filter template */
   @ViewChild('expandedFilter')
   expandedFilter!: TemplateRef<any>;
 
+  /** Form group */
   public form = this.fb.group({
     startDate: [null],
     endDate: [null],
     status: [''],
     core: [null],
   });
+  /** Show filter */
   public show = false;
 
   /**

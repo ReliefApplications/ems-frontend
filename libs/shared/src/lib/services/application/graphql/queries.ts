@@ -9,6 +9,7 @@ export const GET_APPLICATION_BY_ID = gql`
       name
       description
       sideMenu
+      hideMenu
       createdAt
       status
       templates {
@@ -112,8 +113,6 @@ export const GET_APPLICATION_BY_ID = gql`
       }
       locked
       lockedByUser
-      contextualFilter
-      contextualFilterPosition
     }
   }
 `;

@@ -5,11 +5,7 @@
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <ui-tabs
-      class="grow"
-      [vertical]="true"
-      (selectedIndexChange)="selectedIndexChange()"
-    >
+    <ui-tabs class="grow" [vertical]="true">
       <!-- Layer parameters -->
       <ui-tab>
         <ng-container ngProjectAs="label">
@@ -30,8 +26,7 @@
           <shared-layer-properties
             [form]="form"
             [currentZoom]="currentZoom"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
+            [mapPortal]="mapPortal"
           ></shared-layer-properties>
         </ng-template>
       </ui-tab>
@@ -51,16 +46,17 @@
             }}</span
           >
         </ng-container>
-        <ng-template uiTabContent>
-          <shared-layer-datasource
-            [formGroup]="$any(form.get('datasource'))"
-            [resourceQuery]="resource"
-            [fields$]="fields$"
-            (fields)="fields.next($event)"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
-          ></shared-layer-datasource>
-        </ng-template>
+        <!-- By not using the uiTabContent directive, we allow the component to init when loading parent, in order to get fields from datasource -->
+        <shared-layer-datasource
+          [formGroup]="$any(form.get('datasource'))"
+          [referenceData]="referenceData"
+          [resource]="resource"
+          [layout]="layout"
+          [aggregation]="aggregation"
+          [fields$]="fields$"
+          (fields)="fields.next($event)"
+          [mapPortal]="mapPortal"
+        ></shared-layer-datasource>
       </ui-tab>
       <!-- Sublayers -->
       <ui-tab *ngIf="form.get('sublayers')">
@@ -82,8 +78,7 @@
           <shared-map-layers
             [control]="$any(form.get('sublayers'))"
             [mapComponent]="data.mapComponent"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
+            [mapPortal]="mapPortal"
           ></shared-map-layers>
         </ng-template>
       </ui-tab>
@@ -111,8 +106,7 @@
             [formGroup]="$any(form.get('layerDefinition.drawingInfo'))"
             [geometryType]="form.get('datasource.type')?.value"
             [fields$]="fields$"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
+            [mapPortal]="mapPortal"
           ></shared-layer-styling>
         </ng-template>
       </ui-tab>
@@ -184,8 +178,7 @@
         <ng-template uiTabContent>
           <shared-layer-aggregation
             [formGroup]="$any(form.get('layerDefinition.featureReduction'))"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
+            [mapPortal]="mapPortal"
           ></shared-layer-aggregation>
         </ng-template>
       </ui-tab>
@@ -207,8 +200,7 @@
           <shared-layer-popup
             [formGroup]="$any(form.get('popupInfo'))"
             [fields$]="fields$"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
+            [mapPortal]="mapPortal"
           ></shared-layer-popup>
         </ng-template>
       </ui-tab>
@@ -229,8 +221,7 @@
         <ng-template uiTabContent>
           <shared-layer-fields
             [fields$]="fields$"
-            [destroyTab$]="destroyTab$"
-            [currentMapContainerRef]="data.currentMapContainerRef"
+            [mapPortal]="mapPortal"
             (updatedField)="updateFormField($event, false)"
           ></shared-layer-fields>
         </ng-template>
@@ -285,6 +276,7 @@
   </ng-container>
 </ui-dialog>
 
+<!-- Hiding it by default, when there is no place to show it -->
 <div class="hidden">
-  <ng-template #mapContainer></ng-template>
+  <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
 </div>

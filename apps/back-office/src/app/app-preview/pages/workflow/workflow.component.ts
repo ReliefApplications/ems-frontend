@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { PreviewService } from '../../../services/preview.service';
+import { Subscription } from 'rxjs';
 
 /**
  * Workflow page component for application preview.
@@ -36,6 +37,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   public activeStep = 0;
   /** Role used for preview */
   public role = '';
+  /** Subscription to change step events */
+  private changeStepSubscription!: Subscription;
 
   /**
    * Workflow page component for application preview
@@ -126,14 +129,23 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: any) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
+      this.changeStepSubscription = elementRef.changeStep.subscribe(
+        (event: any) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
         }
-      });
+      );
     }
+  }
+
+  /**
+   * Clear subscriptions set from the router-outlet
+   */
+  clearSubscriptions() {
+    this.changeStepSubscription?.unsubscribe();
   }
 
   /**

@@ -13,13 +13,19 @@ import { FormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SnackbarService, TooltipModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
 import 'survey-core/survey.i18n.min.js';
+import { CustomQuestionTypes } from '../../../survey/custom-question-types';
+import {
+  CustomJSONEditorComponent,
+  SurveyCustomJSONEditorPlugin,
+} from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -50,7 +56,7 @@ const QUESTION_TYPES = [
   // 'imagepicker',
   'boolean',
   // 'image',
-  // 'html',
+  'html',
   // 'signaturepad',
   // 'expression',
   // 'matrix',
@@ -132,6 +138,59 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueFalse',
   'valueName',
   'inputType',
+  'html',
+  'resource',
+  'displayField',
+  'test service',
+  'addRecordText',
+  'canSearch',
+  'searchButtonText',
+  'canOnlyCreateRecords',
+  'alwaysCreateRecord',
+  'prefillWithCurrentRecord',
+  'selectQuestion',
+  'staticValue',
+  'filterBy',
+  'filterCondition',
+  'selectResourceText',
+  'gridFieldsSettings',
+  'customFilterEl',
+  'customFilter',
+  'newCreatedRecords',
+  'afterRecordCreation',
+  'afterRecordSelection',
+  'afterRecordDeselection',
+  'displayAsGrid',
+  'valueExpression',
+  'canDelete',
+  'history',
+  'convert',
+  'update',
+  'inlineEdition',
+  'export',
+  'canDeselectRecords',
+  'autoSaveChanges',
+];
+
+/**
+ * Navigation tab properties (will be disabled).
+ */
+const NAVIGATION_PROPERTIES = [
+  'showPreviewBeforeComplete',
+  'pagePrevText',
+  'pageNextText',
+  'completeText',
+  'previewText',
+  'editText',
+  'startSurveyText',
+  'showNavigationButtons',
+  'showPrevButton',
+  'firstPageIsStarted',
+  'goNextPageAutomatic',
+  'showProgressBar',
+  'progressBarType',
+  'questionsOnPageMode',
+  'showTOC',
 ];
 
 /**
@@ -153,11 +212,14 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     DialogModule,
     AlertModule,
     SurveyCreatorModule,
+    ButtonModule,
+    CustomJSONEditorComponent,
   ],
 })
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
 
   /**
@@ -180,8 +242,13 @@ export class FilterBuilderModalComponent
   ) {}
 
   ngOnInit(): void {
-    // Initialize survey creator instance without custom questions
-    this.formService.initialize({ customQuestions: false });
+    // Initialize survey creator instance with selected custom questions
+    this.formService.initialize({
+      customQuestions: [
+        CustomQuestionTypes.RESOURCE,
+        CustomQuestionTypes.RESOURCES,
+      ],
+    });
   }
 
   ngAfterViewInit(): void {
@@ -201,6 +268,8 @@ export class FilterBuilderModalComponent
     };
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
 
+    new SurveyCustomJSONEditorPlugin(this.surveyCreator);
+
     // this.surveyCreator.text = '';
     this.surveyCreator.showToolbox = true;
     this.surveyCreator.toolboxLocation = 'right';
@@ -212,6 +281,11 @@ export class FilterBuilderModalComponent
 
     // Block core fields edition
     this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {
+      // Disable navigation properties
+      if (NAVIGATION_PROPERTIES.includes(opt.property.name)) {
+        opt.canShow = false;
+      }
+
       // opt: { obj: any, property: Survey.JsonObjectProperty, canShow: boolean and more...}
       const obj = opt.obj;
       if (!obj || !obj.page) {
@@ -223,6 +297,14 @@ export class FilterBuilderModalComponent
         opt.canShow = false;
       }
     });
+    // Reset property grid to let it handle onShowingProperty event (cf doc)
+    this.surveyCreator.JSON = {};
+
+    // Set content
+    const survey = new SurveyModel(
+      this.data?.surveyStructure || DEFAULT_STRUCTURE
+    );
+    this.surveyCreator.JSON = survey.toJSON();
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
@@ -235,11 +317,7 @@ export class FilterBuilderModalComponent
         )
     );
 
-    // Set content
-    const survey = new SurveyModel(
-      this.data?.surveyStructure || DEFAULT_STRUCTURE
-    );
-    this.surveyCreator.JSON = survey.toJSON();
+    this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }
 
   /**

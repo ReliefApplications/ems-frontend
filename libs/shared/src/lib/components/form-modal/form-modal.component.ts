@@ -24,7 +24,10 @@ import {
 import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
-import { FormBuilderService } from '../../services/form-builder/form-builder.service';
+import {
+  FormBuilderService,
+  TemporaryFilesStorage,
+} from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
@@ -43,6 +46,7 @@ import {
   transformSurveyData,
 } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
+import { DraftRecordComponent } from '../draft-record/draft-record.component';
 
 /**
  * Interface of Dialog data.
@@ -61,7 +65,7 @@ interface DialogData {
 const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 
 /**
- * Component that displays a form in a modal
+ * Display a form instance in a modal.
  */
 @Component({
   standalone: true,
@@ -79,37 +83,49 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     ButtonModule,
     SpinnerModule,
     SurveyModule,
+    DraftRecordComponent,
   ],
 })
 export class FormModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === DATA ===
-  public loading = true;
-  public saving = false;
-  public form?: Form;
-  public record?: Record;
-
-  public modifiedAt: Date | null = null;
-
-  protected isMultiEdition = false;
-  private storedMergedData: any;
-
-  public survey!: SurveyModel;
-  protected temporaryFilesStorage: any = {};
-
+  /** Reference to form container */
   @ViewChild('formContainer') formContainer!: ElementRef;
-
+  /** Current template */
+  public survey!: SurveyModel;
+  /** Loading indicator */
+  public loading = true;
+  /** Is form saving */
+  public saving = false;
+  /** Loaded form */
+  public form?: Form;
+  /** Loaded record (optional) */
+  public record?: Record;
+  /** Modification date */
+  public modifiedAt: Date | null = null;
   /** Selected page index */
   public selectedPageIndex: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
   /** Selected page index as observable */
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
+  /** The id of the last draft record that was loaded */
+  public lastDraftRecord?: string;
+  /** Disables the save as draft button */
+  public disableSaveAsDraft = false;
+  /** Available pages*/
+  private pages = new BehaviorSubject<any[]>([]);
+  /** Pages as observable */
+  public pages$ = this.pages.asObservable();
+  /** Is multi edition of records enabled ( for grid actions ) */
+  protected isMultiEdition = false;
+  /** Temporary storage of files */
+  protected temporaryFilesStorage: TemporaryFilesStorage = new Map();
+  /** Stored merged data */
+  private storedMergedData: any;
 
   /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
+   * Display a form instance in a modal.
    *
    * @param data This is the data that is passed to the modal when it is opened.
    * @param dialog This is the Angular Dialog service.
@@ -262,6 +278,10 @@ export class FormModalComponent
           this.survey.getQuestionByName(field.name).readOnly = true;
       });
     }
+    this.survey.onValueChanged.add(() => {
+      // Allow user to save as draft
+      this.disableSaveAsDraft = false;
+    });
     this.survey.onComplete.add(this.onComplete);
     if (this.storedMergedData) {
       this.survey.data = {
@@ -370,14 +390,12 @@ export class FormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    // const promises = this.formHelpersService.uploadTemporaryRecords(survey);
     await this.formHelpersService.uploadFiles(
-      survey,
       this.temporaryFilesStorage,
       this.form?.id
     );
     // await Promise.allSettled(promises);
-    await this.formHelpersService.createCachedRecords(survey);
+    await this.formHelpersService.createTemporaryRecords(survey);
 
     if (this.data.recordId) {
       if (this.isMultiEdition) {
@@ -404,6 +422,15 @@ export class FormModalComponent
                 this.dialogRef.close();
               });
             } else {
+              if (this.lastDraftRecord) {
+                const callback = () => {
+                  this.lastDraftRecord = undefined;
+                };
+                this.formHelpersService.deleteRecordDraft(
+                  this.lastDraftRecord,
+                  callback
+                );
+              }
               this.ngZone.run(() => {
                 this.dialogRef.close({
                   template: this.data.template,
@@ -465,6 +492,15 @@ export class FormModalComponent
       })
       .subscribe({
         next: ({ errors, data }) => {
+          if (this.lastDraftRecord) {
+            const callback = () => {
+              this.lastDraftRecord = undefined;
+            };
+            this.formHelpersService.deleteRecordDraft(
+              this.lastDraftRecord,
+              callback
+            );
+          }
           this.handleRecordMutationResponse({ data, errors }, 'editRecords');
         },
         error: (err) => {
@@ -614,6 +650,7 @@ export class FormModalComponent
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
         },
+        panelClass: ['lg:w-4/5', 'w-full'],
         autoFocus: false,
       });
     }
@@ -662,11 +699,35 @@ export class FormModalComponent
   }
 
   /**
+   * Saves the current data as a draft record
+   */
+  public saveAsDraft(): void {
+    const callback = (details: any) => {
+      this.lastDraftRecord = details.id;
+    };
+    this.formHelpersService.saveAsDraft(
+      this.survey,
+      this.form?.id as string,
+      this.lastDraftRecord,
+      callback
+    );
+  }
+
+  /**
+   * Handle draft record load .
+   *
+   * @param id if of the draft record loaded
+   */
+  public onLoadDraftRecord(id: string): void {
+    this.lastDraftRecord = id;
+    this.disableSaveAsDraft = true;
+  }
+
+  /**
    * Clears the cache for the records created by resource questions
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.formHelpersService.cleanCachedRecords(this.survey);
     this.survey?.dispose();
   }
 }

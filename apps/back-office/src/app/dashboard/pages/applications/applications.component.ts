@@ -10,6 +10,8 @@ import {
   ApplicationsApplicationNodesQueryResponse,
   DeleteApplicationMutationResponse,
   EditApplicationMutationResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import {
   DELETE_APPLICATION,
@@ -20,10 +22,6 @@ import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import {
   TableSort,
   UIPageChangeEvent,
@@ -46,11 +44,17 @@ export class ApplicationsComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Updating state */
   public updating = false;
+  /** Applications query */
   private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
+  /** Applications */
   public applications = new Array<Application>();
+  /** Cached applications */
   public cachedApplications: Application[] = [];
+  /** Columns to display */
   public displayedColumns = [
     'name',
     'createdAt',
@@ -58,13 +62,17 @@ export class ApplicationsComponent
     'usersCount',
     'actions',
   ];
+  /** New applications */
   public newApplications: Application[] = [];
+  /** Filter */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
+  /** Sort */
   private sort: TableSort = { active: '', sortDirection: '' };
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -409,9 +417,7 @@ export class ApplicationsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applications.push(value);
-        // eslint-disable-next-line no-self-assign
-        this.applications = this.applications;
+        this.onOpenApplication(value.id);
       }
     });
   }

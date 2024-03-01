@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Inject,
   Input,
@@ -16,12 +17,11 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import {
-  CompositeFilterDescriptor,
   FilterDescriptor,
+  CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AuthService } from '../../../services/auth/auth.service';
 import { DownloadService } from '../../../services/download/download.service';
 import {
   QueryBuilderService,
@@ -33,14 +33,15 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
   Record,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
-import { GridSettings } from './models/grid-settings.model';
-import { get, isEqual, cloneDeep } from 'lodash';
+import { GridActions, GridSettings } from './models/grid-settings.model';
+import { cloneDeep, get, isEqual, isNil } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -49,8 +50,7 @@ import { DateTranslateService } from '../../../services/date-translate/date-tran
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, Subject } from 'rxjs';
-import { searchFilters } from '../../../utils/filter/search-filters';
+import { firstValueFrom, from, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -84,6 +84,7 @@ export class CoreGridComponent
   implements OnChanges
 {
   // === INPUTS ===
+  /** Grid settings */
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
@@ -103,10 +104,15 @@ export class CoreGridComponent
   }
 
   // === SELECTION INPUTS ===
+  /** Multi select control */
   @Input() multiSelect = true;
+  /** Selected rows */
   @Input() selectedRows: string[] = [];
+  /** Selectable settings */
   @Input() selectable = true;
+  /** Event emitter for selection change */
   @Output() selectionChange = new EventEmitter();
+  /** Event emitter for row removal */
   @Output() removeRowIds = new EventEmitter<string[]>();
 
   /** @returns list of selected items in the grid */
@@ -115,56 +121,82 @@ export class CoreGridComponent
   }
 
   // === FEATURES INPUTS ===
+  /** Show details button control */
   @Input() showDetails = true;
+  /** Show export button control */
   @Input() showExport = true;
-  @Input() admin = false;
+  /** Whether new records can be created */
   @Input() canCreateRecords = false;
 
   // === OUTPUTS ===
+  /** Event emitter for layout change */
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for default layout change */
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for layout reset*/
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
+  /** Event emitter for row selection */
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
   // === TEMPLATE REFERENCE TO GRID ===
+  /** Grid component */
   @ViewChild(GridComponent)
   private grid?: GridComponent;
 
   // === DATA ===
+  /** Widget */
   @Input() widget: any;
+  /** Update permission */
   @Input() canUpdate = false;
+  /**
+   * Grid data containing the data and total count.
+   */
   public gridData: GridDataResult = { data: [], total: 0 };
+  /** Total count of items in the grid data. */
   private totalCount = 0;
+  /** Array containing the items for the grid. */
   private items: any[] = [];
+  /** Array containing fields for the grid. */
   public fields: any[] = [];
+  /** Metadata fields for the grid. */
   private metaFields: any;
+  /** Details field for the grid. */
   public detailsField?: any;
+  /** Data query reference for fetching data. */
   private dataQuery!: QueryRef<QueryResponse>;
-  private metaQuery: any;
+  /** Meta query reference for fetching metadata. */
+  private metaQuery!: any;
 
   // === PAGINATION ===
+  /** Number of items per page. */
   public pageSize = 10;
+  /** Number of items to skip in pagination. */
   public skip = 0;
+  /** Event emitter for page size changes. */
   @Output() pageSizeChanged: EventEmitter<any> = new EventEmitter<any>();
 
   // === INLINE EDITION ===
+  /** Original items data for inline editing. */
   private originalItems: any[] = this.gridData.data;
+  /** Updated items data for inline editing. */
   public updatedItems: any[] = [];
+  /** Form group for managing form controls. */
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  /** Loading status indicator. */
   public loading = false;
-  @Input() status: {
-    message?: string;
-    error: boolean;
-  } = {
-    error: false,
-  };
-  // Refresh content of the history
+  /** Status information, including a message and error flag. */
+  @Input() status: { message?: string; error: boolean } = { error: false };
+  /** Subject for triggering a content refresh in the history. */
   private refresh$: Subject<boolean> = new Subject<boolean>();
 
   // === SORTING ===
+  /** Array of sort descriptors for sorting data. */
   public sort: SortDescriptor[] = [];
 
   /** @returns current field used for sorting */
@@ -189,12 +221,16 @@ export class CoreGridComponent
   }
 
   // === FILTERING ===
+  /** Array of filter descriptors for filtering data. */
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  /** Context filters array */
   private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
     filters: [],
   };
+  /** Whether to show the filter menu. */
   public showFilter = false;
+  /** Search string */
   public search = '';
 
   /** @returns current grid filter, from grid settings and grid layout */
@@ -203,9 +239,10 @@ export class CoreGridComponent
     if (this.settings?.query?.filter) {
       gridFilters.push(this.settings?.query?.filter);
     }
+    let filter: CompositeFilterDescriptor | undefined;
     const filterCpy = cloneDeep(gridFilters);
     this.parseDateFilters({ logic: 'and', filters: filterCpy });
-    let filter: CompositeFilterDescriptor | undefined;
+
     if (this.search) {
       const skippedFields = ['id', 'incrementalId'];
       filter = {
@@ -214,7 +251,9 @@ export class CoreGridComponent
           { logic: 'and', filters: filterCpy },
           {
             logic: 'or',
-            filters: searchFilters(
+            field: '_globalSearch',
+            operator: 'contains',
+            value: searchFilters(
               this.search,
               this.fields.map((field) => field.meta),
               skippedFields
@@ -230,21 +269,18 @@ export class CoreGridComponent
     }
     return {
       logic: 'and',
-      filters: [
-        filter,
-        this.contextService.injectDashboardFilterValues(this.contextFilters),
-      ],
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
     };
   }
 
   // === LAYOUT CHANGES ===
+  /** Whether the layout has changes. */
   public hasLayoutChanges = false;
 
-  // === AUTHORIZATION ===
-  public isAdmin: boolean;
-
   // === ACTIONS ON SELECTION ===
+  /** Selected rows index array */
   public selectedRowsIndex: number[] = [];
+  /** Whether the edition is active */
   public editionActive = false;
 
   // === DOWNLOAD ===
@@ -266,7 +302,8 @@ export class CoreGridComponent
   }
 
   // === ACTIONS ===
-  public actions = {
+  /** Grid actions */
+  public actions: GridActions = {
     add: false,
     update: false,
     delete: false,
@@ -276,17 +313,23 @@ export class CoreGridComponent
     showDetails: true,
     navigateToPage: false,
     navigateSettings: {
-      useRecordId: false,
+      field: '',
       pageUrl: '',
       title: '',
     },
     remove: false,
   };
 
+  /** Whether the grid is editable */
   public editable = false;
+
+  /** Whether the grid is searchable */
+  public searchable = true;
 
   /** Current environment */
   private environment: any;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
 
   /**
    * Main Grid data component to display Records.
@@ -299,7 +342,6 @@ export class CoreGridComponent
    * @param layoutService UI layout service
    * @param snackBar Shared snackbar service
    * @param downloadService Shared download service
-   * @param authService Shared authentication service
    * @param gridService Shared grid service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
@@ -307,6 +349,7 @@ export class CoreGridComponent
    * @param applicationService Shared application service
    * @param contextService Shared context service
    * @param router Angular Router
+   * @param el Element reference
    */
   constructor(
     @Inject('environment') environment: any,
@@ -316,26 +359,30 @@ export class CoreGridComponent
     private layoutService: UILayoutService,
     private snackBar: SnackbarService,
     private downloadService: DownloadService,
-    private authService: AuthService,
     private gridService: GridService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private applicationService: ApplicationService,
     private contextService: ContextService,
-    private router: Router
+    private router: Router,
+    private el: ElementRef
   ) {
     super();
     this.environment = environment;
-    this.isAdmin =
-      this.authService.userIsAdmin && environment.module === 'backoffice';
-
     contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.dataQuery) this.reloadData();
+      .subscribe(({ previous, current }) => {
+        if (contextService.filterRegex.test(this.settings.contextFilters)) {
+          if (
+            this.contextService.shouldRefresh(this.widget, previous, current)
+          ) {
+            if (this.dataQuery) this.reloadData();
+          }
+        }
       });
 
+    // Refresh the grid when the language changes
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.configureGrid();
     });
@@ -376,17 +423,17 @@ export class CoreGridComponent
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
-        useRecordId: get(
-          this.settings,
-          'actions.navigateSettings.useRecordId',
-          false
-        ),
+        field: get(this.settings, 'actions.navigateSettings.field', false),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
         title: get(this.settings, 'actions.navigateSettings.title', ''),
       },
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
+    if (!isNil(this.settings.actions?.search)) {
+      this.searchable = this.settings.actions?.search;
+    }
+
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
@@ -630,6 +677,16 @@ export class CoreGridComponent
         delete item.validationErrors;
       }
       return Promise.all(this.promisedChanges()).then((allRes) => {
+        if (allRes) {
+          const hasErrors = allRes.filter((item: any) => {
+            if (item.data.editRecord.validationErrors) {
+              return item.data.editRecord.validationErrors.length;
+            }
+          });
+          if (hasErrors.length > 0) {
+            this.grid?.expandActionsColumn();
+          }
+        }
         for (const res of allRes) {
           const resRecord: Record = res.data.editRecord;
           const updatedIndex = this.updatedItems.findIndex(
@@ -657,6 +714,7 @@ export class CoreGridComponent
             item.saved = true;
           }
         }
+        this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
         if (this.updatedItems.length) {
           // show an error message
@@ -675,9 +733,8 @@ export class CoreGridComponent
             }
           );
           return true;
-        } else {
-          return false;
         }
+        return false;
       });
     } else {
       return Promise.resolve(false);
@@ -875,7 +932,6 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
-   * @param event.useRecordId boolean to use record id
    */
   public onAction(event: {
     action: string;
@@ -884,7 +940,6 @@ export class CoreGridComponent
     value?: any;
     field?: any;
     pageUrl?: string;
-    useRecordId?: boolean;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -922,9 +977,10 @@ export class CoreGridComponent
       case 'goTo': {
         if (event.item) {
           let fullUrl = this.getPageUrl(event.pageUrl as string);
-          if (event.useRecordId) {
-            const recordId = event.item.id;
-            fullUrl = `${fullUrl}?id=${recordId}`;
+          if (event.field) {
+            const field = get(event, 'field', '');
+            const value = get(event, `item.${field}`);
+            fullUrl = `${fullUrl}?id=${value}`;
           }
           this.router.navigateByUrl(fullUrl);
         }
@@ -1232,19 +1288,39 @@ export class CoreGridComponent
    * @param item item to get history of
    */
   public onViewHistory(item: any): void {
-    import('../../record-history/record-history.component').then(
-      ({ RecordHistoryComponent }) => {
-        this.layoutService.setRightSidenav({
-          component: RecordHistoryComponent,
-          inputs: {
-            id: item.id,
-            revert: (version: any) => this.confirmRevertDialog(item, version),
-            template: this.settings.template || null,
-            refresh$: this.refresh$,
-          },
-        });
-      }
-    );
+    const cdkOverlay = document.querySelector('.cdk-overlay-container');
+    // use modal to show history
+    if (cdkOverlay && cdkOverlay.contains(this.el.nativeElement)) {
+      import('../../record-history-modal/record-history-modal.component').then(
+        ({ RecordHistoryModalComponent }) => {
+          this.dialog.open(RecordHistoryModalComponent, {
+            data: {
+              id: item.id,
+              revert: (version: any) => this.confirmRevertDialog(item, version),
+              template: this.settings.template || null,
+              refresh$: this.refresh$,
+            },
+            autoFocus: false,
+          });
+        }
+      );
+    } else {
+      // Use sidenav
+      import('../../record-history/record-history.component').then(
+        ({ RecordHistoryComponent }) => {
+          this.layoutService.setRightSidenav({
+            component: RecordHistoryComponent,
+            inputs: {
+              id: item.id,
+              revert: (version: any) => this.confirmRevertDialog(item, version),
+              template: this.settings.template || null,
+              refresh$: this.refresh$,
+              resizable: true,
+            },
+          });
+        }
+      );
+    }
   }
 
   /**
@@ -1312,7 +1388,7 @@ export class CoreGridComponent
    * @param e export event
    */
   public onExport(e: any): void {
-    let ids: any[];
+    let ids: any[] = [];
     if (e.records === 'selected') {
       ids = this.selectedRows;
       if (ids.length === 0) {
@@ -1322,21 +1398,16 @@ export class CoreGridComponent
         );
         return;
       }
-    } else {
-      if (this.gridData.data.length > 0) {
-        ids = [this.gridData.data[0].id];
-      } else {
-        this.snackBar.openSnackBar('Export failed: grid is empty.', {
-          error: true,
-        });
-        return;
-      }
+    } else if (this.gridData.data.length === 0) {
+      this.snackBar.openSnackBar('Export failed: grid is empty.', {
+        error: true,
+      });
+      return;
     }
 
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
     const body = {
-      ids,
       filter:
         e.records === 'selected'
           ? {
@@ -1344,6 +1415,7 @@ export class CoreGridComponent
               filters: [{ operator: 'eq', field: 'ids', value: ids }],
             }
           : this.queryFilter,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       query: this.settings.query,
       sortField: this.sortField,
       sortOrder: this.sortOrder,
@@ -1351,6 +1423,7 @@ export class CoreGridComponent
       application: this.applicationService.name,
       fileName: this.fileName,
       email: e.email,
+      resource: this.settings.resource,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
@@ -1402,8 +1475,8 @@ export class CoreGridComponent
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery
-      ?.refetch({
+    from(
+      this.dataQuery?.refetch({
         first: this.pageSize,
         skip: this.skip,
         filter: this.queryFilter,
@@ -1414,7 +1487,9 @@ export class CoreGridComponent
           at: this.contextService.atArgumentValue(this.settings.at),
         }),
       })
-      .then(() => (this.loading = false));
+    )
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .subscribe(() => (this.loading = false));
   }
 
   // === FILTERING ===

@@ -46,6 +46,7 @@ export interface User {
   applications?: Application[];
   positionAttributes?: PositionAttribute[];
   favoriteApp?: string;
+  attributes?: any;
 }
 
 /** Model for user graphql query response */
@@ -63,9 +64,9 @@ export interface EditUserProfileMutationResponse {
   editUserProfile: User;
 }
 
-/** Model for users graphql query response */
-export interface UsersQueryResponse {
-  users: User[];
+/** Query response for users using cursor */
+export interface UsersNodeQueryResponse {
+  users: GraphqlNodesResponse<User>;
 }
 
 /** Model for add users graphql mutation response */

@@ -4,20 +4,17 @@ import {
   AddReferenceDataMutationResponse,
   DeleteReferenceDataMutationResponse,
   ReferenceData,
-  AuthService,
   ConfirmService,
   UnsubscribeComponent,
   ReferenceDatasQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { GET_REFERENCE_DATAS } from './graphql/queries';
 import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   TableSort,
@@ -42,33 +39,38 @@ export class ReferenceDatasComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  // === DATA ===
+  /** Loading status */
   public loading = true;
-  private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
-  displayedColumns = [
+  /** Updating status */
+  public updating = false;
+  /** Available columns */
+  public displayedColumns = [
     'name',
     'type',
     'apiConfiguration',
     'modifiedAt',
     'actions',
   ];
-  dataSource = new Array<ReferenceData>();
+  /** Table data */
+  public dataSource = new Array<ReferenceData>();
+  /** Cached table data */
   public cachedReferenceDatas: ReferenceData[] = [];
-
-  // === SORTING ===
-  sort?: TableSort;
-
-  // === FILTERS ===
-  public searchText = '';
-  public filter: any;
-  public filterLoading = false;
-
+  /** Query filters */
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
+  /** Pagination info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: '',
   };
+  /** Reference data apollo query */
+  private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
+  /** Table sorting */
+  private sort!: TableSort;
 
   /**
    * List of Reference data page.
@@ -76,7 +78,6 @@ export class ReferenceDatasComponent
    * @param apollo Apollo service
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translation service
@@ -85,7 +86,6 @@ export class ReferenceDatasComponent
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private router: Router,
     private translate: TranslateService
@@ -103,6 +103,9 @@ export class ReferenceDatasComponent
         variables: {
           first: ITEMS_PER_PAGE,
           afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.sortDirection && this.sort.active,
+          sortOrder: this.sort?.sortDirection,
         },
       });
 
@@ -111,6 +114,7 @@ export class ReferenceDatasComponent
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
+
     // Initializing sort to an empty one
     this.sort = {
       active: '',
@@ -142,20 +146,8 @@ export class ReferenceDatasComponent
    * @param filter Filter to apply
    */
   onFilter(filter: any) {
-    this.filterLoading = true;
-    this.cachedReferenceDatas = [];
-    this.pageInfo.pageIndex = 0;
     this.filter = filter;
-    this.referenceDatasQuery
-      .fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          filter: this.filter,
-        },
-      })
-      .then((results: ApolloQueryResult<ReferenceDatasQueryResponse>) => {
-        this.updateValues(results.data, false);
-      });
+    this.fetchReferenceDatas(true);
   }
 
   /**
@@ -301,7 +293,7 @@ export class ReferenceDatasComponent
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
     this.loading = loading;
-    this.filterLoading = false;
+    this.updating = false;
   }
 
   /**
@@ -310,10 +302,11 @@ export class ReferenceDatasComponent
    * @param refetch erase previous query results
    */
   private fetchReferenceDatas(refetch?: boolean): void {
-    this.loading = true;
+    this.updating = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };

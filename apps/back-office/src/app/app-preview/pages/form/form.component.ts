@@ -29,21 +29,30 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent extends UnsubscribeComponent implements OnInit {
+  /** Form component */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
 
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Current form id */
   public id = '';
+  /** Form */
   public form?: Form;
+  /** Is form completed */
   public completed = false;
+  /** Should possibility to add new records be hidden */
   public hideNewRecord = false;
 
   // === ROUTER ===
+  /** Current page */
   public page?: Page;
+  /** Current step */
   public step?: Step;
 
   // === ROUTE ===
+  /** Is this form part of step */
   public isStep = false;
 
   /**

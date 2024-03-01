@@ -7,7 +7,7 @@ import {
   forwardRef,
   QueryList,
   ElementRef,
-  AfterContentInit,
+  AfterViewInit,
 } from '@angular/core';
 
 /**
@@ -18,17 +18,26 @@ import {
   templateUrl: './select-option.component.html',
   styleUrls: ['./select-option.component.scss'],
 })
-export class SelectOptionComponent implements AfterContentInit {
+export class SelectOptionComponent implements AfterViewInit {
+  /** Option value */
   @Input() value!: any;
+  /** Option selected */
   @Input() selected = false;
+  /** Option group */
   @Input() isGroup = false;
+  /** Option disabled */
   @Input() disabled = false;
+  /** Option click event emitter */
   @Output() optionClick = new EventEmitter<boolean>();
 
+  /** List of options */
   @ContentChildren(forwardRef(() => SelectOptionComponent))
   options!: QueryList<SelectOptionComponent>;
 
+  /** Option label */
   label!: string;
+  /** If current option content should be displayed or not in the UI */
+  display = true;
 
   /**
    *
@@ -38,9 +47,11 @@ export class SelectOptionComponent implements AfterContentInit {
    */
   constructor(private el: ElementRef) {}
 
-  ngAfterContentInit(): void {
+  ngAfterViewInit(): void {
     this.label =
-      this.el.nativeElement.querySelector('span').firstChild?.textContent ?? '';
+      this.el.nativeElement
+        .querySelector('span')
+        .firstChild?.textContent?.trim() ?? '';
   }
 
   /**

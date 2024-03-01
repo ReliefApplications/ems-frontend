@@ -2,12 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import {
-  ApplicationService,
-  ConfirmService,
-  UnsubscribeComponent,
-} from '@oort-front/shared';
 import { distinctUntilChanged, takeUntil } from 'rxjs';
+import { ApplicationService } from '../../services/application/application.service';
+import { ConfirmService } from '../../services/confirm/confirm.service';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Mocked Interface
@@ -30,18 +28,26 @@ export class ApplicationsArchiveComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Loading state */
   loading = false;
+  /** List of pages */
   @Input() pages: ArchivePage[] = [];
+  /** List of visible pages */
   public visiblePages: Array<ArchivePage> = new Array<ArchivePage>();
+  /** List of displayed columns */
   public displayedColumns = ['name', 'autoDeletedAt', 'actions'];
 
   // === FILTERS ===
+  /** List of filters */
   public filters = [
     { id: 'name', value: '' },
     { id: 'autoDeletedAt', value: '' },
   ];
+  /** Form group */
   public form = this.fb.group({});
+  /** Search text */
   public searchText = '';
+  /** Date filter */
   public dateFilter = '';
 
   /**

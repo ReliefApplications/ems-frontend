@@ -1,11 +1,19 @@
-<div class="h-full flex flex-col">
-  <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
-    <div class="w-full h-fit">
-      <shared-html-widget-content
-        [html]="formattedHtml"
-        [style]="formattedStyle"
-      ></shared-html-widget-content>
-    </div>
+<div
+  class="h-full overflow-auto"
+  [ngClass]="{
+    'p-[14px]': usePadding
+  }"
+  (click)="onClick($event)"
+>
+  <div
+    *ngIf="!loading; else loadingTmpl"
+    class="w-full h-fit"
+    (click)="onClick($event)"
+  >
+    <shared-html-widget-content
+      [html]="formattedHtml"
+      [style]="formattedStyle"
+    ></shared-html-widget-content>
   </div>
 </div>
 <ng-template #headerTemplate>
@@ -18,9 +26,15 @@
       variant="primary"
       icon="open_in_new"
       (click)="openDataSource()"
-      *ngIf="settings.showDataSourceLink || false"
+      *ngIf="showDataSourceButton"
     >
       {{ 'components.widget.summaryCard.dataSource' | translate }}
     </ui-button>
+  </div>
+</ng-template>
+
+<ng-template #loadingTmpl>
+  <div class="flex h-full">
+    <ui-spinner class="m-auto"></ui-spinner>
   </div>
 </ng-template>

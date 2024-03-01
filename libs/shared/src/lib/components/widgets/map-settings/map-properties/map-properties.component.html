@@ -43,7 +43,7 @@
           <div class="w-full" formGroupName="initialState">
             <div class="flex flex-col flex-1" formGroupName="viewpoint">
               <!-- Default zoom -->
-              <label>
+              <label class="flex gap-1 items-center">
                 {{
                   'components.widget.settings.map.properties.zoom' | translate
                 }}
@@ -136,6 +136,46 @@
               'components.widget.settings.map.properties.setByMap' | translate
             }}
           </ui-button>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <!-- Fit & zoom on country polygon -->
+            <div uiFormFieldDirective class="flex-1">
+              <label>{{
+                'components.widget.settings.map.properties.geographicExtentValue'
+                  | translate
+              }}</label>
+              <input formControlName="geographicExtentValue" type="string" />
+              <ui-icon
+                uiSuffix
+                icon="info_outline"
+                class="cursor-pointer"
+                [uiTooltip]="
+                  'components.widget.settings.map.tooltip.geographicExtent'
+                    | translate
+                "
+                [size]="18"
+                variant="grey"
+              ></ui-icon>
+            </div>
+            <ui-divider></ui-divider>
+            <!-- Geographic extent field ("admin0" (by default) and region) -->
+            <div uiFormFieldDirective class="flex-1">
+              <label>{{
+                'components.widget.settings.map.properties.geographicExtent'
+                  | translate
+              }}</label>
+              <ui-select-menu
+                formControlName="geographicExtent"
+                [disabled]="true"
+              >
+                <ui-select-option
+                  *ngFor="let field of geographicExtents"
+                  [value]="field"
+                >
+                  {{ field }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+          </div>
           <ui-divider></ui-divider>
           <!-- Map controls -->
           <shared-map-controls
@@ -147,7 +187,9 @@
     </div>
   </form>
   <!-- Map -->
-  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
-    <ng-template #mapContainer></ng-template>
+  <div
+    class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0 rounded overflow-hidden"
+  >
+    <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
   </div>
 </div>

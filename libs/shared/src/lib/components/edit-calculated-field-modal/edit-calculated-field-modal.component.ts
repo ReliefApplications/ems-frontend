@@ -6,7 +6,7 @@ import { EditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EditorControlComponent } from '../editor-control/editor-control.component';
+import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
 import {
   DialogModule,
   ButtonModule,
@@ -45,6 +45,7 @@ interface DialogData {
   styleUrls: ['./edit-calculated-field-modal.component.scss'],
 })
 export class EditCalculatedFieldModalComponent implements OnInit {
+  /** Form */
   public form = this.fb.group({
     name: [
       this.data.calculatedField?.name,
@@ -53,8 +54,10 @@ export class EditCalculatedFieldModalComponent implements OnInit {
     expression: [this.data.calculatedField?.expression, Validators.required],
     // TODO: Add display options
   });
+  /** Calculated field */
   public field!: any;
 
+  /** Resource fields */
   public resourceFields: any[] = [];
 
   /** tinymce editor */
@@ -95,7 +98,7 @@ export class EditCalculatedFieldModalComponent implements OnInit {
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending form value.
    */
   onSubmit(): void {
     this.dialogRef.close(this.form?.getRawValue());

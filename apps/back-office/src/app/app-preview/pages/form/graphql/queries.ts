@@ -92,6 +92,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
       fields
       status
       canCreateRecords
+      allowUploadRecords
       uniqueRecord {
         id
         modifiedAt

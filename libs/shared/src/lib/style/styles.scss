@@ -33,7 +33,9 @@ ui-checkbox {
 
 // === Form builder ===
 .core-question {
-  @apply text-red-400;
+  .sd-question__title {
+    @apply text-red-400 #{!important};
+  }
 }
 
 // .multiline-tooltip {
@@ -45,15 +47,15 @@ ui-checkbox {
   box-sizing: border-box;
   height: 40px;
   position: relative;
-  z-index: 1001;
-  color: black;
+  z-index: 2;
   text-align: left;
   line-height: 40px;
-  padding: 0 12px !important;
+  padding: 0 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  @apply bg-white border-b border-b-gray-300 #{!important};
+  overflow: hidden;
+  @apply bg-white border-b border-b-gray-300 px-3 #{!important};
 
   .widget-title {
     overflow: hidden;
@@ -61,11 +63,31 @@ ui-checkbox {
     text-overflow: ellipsis;
     flex: 1;
     margin: unset;
+    font-size: 14px;
   }
 
   .hide-border & {
     border-bottom: none !important;
   }
+
+  #tab-list {
+    height: 100%;
+    overflow-y: hidden;
+  }
+}
+
+.floating-widget-header {
+  height: 40px;
+  position: absolute !important;
+  z-index: 2 !important;
+  line-height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  left: 0;
+  right: 0;
+  border: unset !important;
+  @apply px-3 #{!important};
 }
 
 // === TINYMCE ===

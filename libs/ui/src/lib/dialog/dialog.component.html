@@ -1,5 +1,5 @@
 <ui-button
-  class="absolute z-10 right-1.5 top-1.5"
+  class="absolute z-[1002] right-1.5 top-1.5"
   [isIcon]="true"
   icon="close"
   [variant]="'danger'"
@@ -7,7 +7,25 @@
   (click)="onClose()"
 >
 </ui-button>
-<div class="flex flex-col h-full overflow-hidden py-4 sm:py-6">
+
+<div
+  class="flex flex-col h-full overflow-hidden py-4 sm:py-6"
+  mwlResizable
+  (resizing)="onResizing($event)"
+  [validateResize]="validate"
+>
+  <div
+    *ngIf="resizable"
+    class="cursor-col-resize absolute h-full left-0 w-1.5"
+    mwlResizeHandle
+    [resizeEdges]="{ left: true }"
+  ></div>
+  <div
+    *ngIf="resizable"
+    class="cursor-col-resize absolute h-full right-0 w-1.5"
+    mwlResizeHandle
+    [resizeEdges]="{ right: true }"
+  ></div>
   <!-- Dialog header -->
   <div class="empty:hidden px-4 sm:px-6">
     <ng-content select="header"></ng-content>

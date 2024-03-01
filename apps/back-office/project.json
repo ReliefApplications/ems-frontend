@@ -64,12 +64,11 @@
           "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
           "node_modules/leaflet-measure/dist/leaflet-measure.css",
           "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
-          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
-          "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
+          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
         ],
         "scripts": [
-          "node_modules/tinymce/tinymce.js",
-          "node_modules/tinymce/themes/silver/theme.js"
+          "node_modules/tinymce/tinymce.min.js",
+          "node_modules/tinymce/themes/silver/theme.min.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
@@ -92,7 +91,8 @@
           "color",
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
-          "jsonpath"
+          "jsonpath",
+          "to-json-schema"
         ]
       },
       "configurations": {
@@ -246,31 +246,6 @@
             "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
-        "oort-tailwind": {
-          "fileReplacements": [
-            {
-              "replace": "apps/back-office/src/environments/environment.ts",
-              "with": "apps/back-office/src/environments/environment.oort.tailwind.ts"
-            }
-          ],
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "12mb",
-              "maximumError": "15mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "6kb",
-              "maximumError": "14kb"
-            }
-          ],
-          "baseHref": "/admin/",
-          "outputHashing": "all",
-          "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/Default"]
-          }
-        },
         "oort-guyane": {
           "fileReplacements": [
             {
@@ -296,6 +271,31 @@
             "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
+        "oort-hit-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.hit.uat.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "14kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/hit-uat"]
+          }
+        },
         "oort-alimentaide": {
           "fileReplacements": [
             {
@@ -319,6 +319,31 @@
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/alimentaide"]
+          }
+        },
+        "oort-pci": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.pci.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "14kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/pci"]
           }
         },
         "oort-demo": {
@@ -469,6 +494,55 @@
         "ci": {
           "ci": true,
           "codeCoverage": true
+        }
+      }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "apps/back-office/.storybook",
+        "browserTarget": "back-office:build",
+        "compodoc": true,
+        "compodocArgs": ["-e", "json", "-d", "apps/back-office"],
+        "styles": [
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/styles/src/lib/themes/default"]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "outputDir": "dist/storybook/back-office",
+        "configDir": "apps/back-office/.storybook",
+        "browserTarget": "back-office:build",
+        "compodoc": false,
+        "styles": ["libs/shared/src/lib/style/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/styles/src/lib/themes/default",
+            "libs/styles/src/lib/kendo"
+          ]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
         }
       }
     }

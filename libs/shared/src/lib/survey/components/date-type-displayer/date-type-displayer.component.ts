@@ -35,18 +35,19 @@ export class DateTypeDisplayerComponent
   extends QuestionAngular<QuestionDateTypeDisplayerModel>
   implements OnInit, OnDestroy
 {
+  /** Instance id */
   private instanceId = `survey-creator-date-picker${uuidv4()}`;
 
   /**
    * Component for the selection of the interest fields from date type question
    *
    * @param document Current document object
-   * @param changeDetectorRef This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param changeDetectorRef  This is angular change detector ref of the component instance needed for the survey AngularQuestion class
    * @param viewContainerRef This is angular view container ref of the component instance needed for the survey AngularQuestion class
    * @param domService Dom service to handle any DOM element update
    * @param renderer This is renderer instance that handles any DOM update safely
    * @param el Current class instance linked element ref template
-   * @param translateService  Translate service
+   * @param translateService Translate service to handle any translation
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,

@@ -4,7 +4,7 @@ import { LineChartComponent } from './line-chart.component';
 
 describe('LineChartComponent', () => {
   let component: LineChartComponent;
-  let fixture: ComponentFixture<sharedLineChartComponent>;
+  let fixture: ComponentFixture<LineChartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

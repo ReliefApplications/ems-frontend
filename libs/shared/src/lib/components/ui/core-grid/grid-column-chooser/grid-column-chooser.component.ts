@@ -18,9 +18,13 @@ import { ColumnBase } from '@progress/kendo-angular-grid';
   styleUrls: ['./grid-column-chooser.component.scss'],
 })
 export class GridColumnChooserComponent implements OnInit {
+  /** Original columns */
   @Input() originalColumns: QueryList<ColumnBase> | undefined;
+  /** Event emitter for the hide event */
   @Output() hideColumnChooser = new EventEmitter<boolean>();
+  /** Columns */
   public columns: { title: string; visible: boolean }[] = [];
+  /** Whether the component is shown or not */
   private show = true;
 
   /**

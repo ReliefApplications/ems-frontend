@@ -5,7 +5,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { PaletteControlModule } from '../../../palette-control/palette-control.module';
+import { PaletteControlModule } from '../../../controls/palette-control/palette-control.module';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { AggregationBuilderModule } from '../../../ui/aggregation-builder/aggregation-builder.module';
 import { GridModule } from '../../../ui/core-grid/grid/grid.module';

@@ -5,24 +5,17 @@ import {
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
 } from '../../../models/reference-data.model';
-import {
-  GET_REFERENCE_DATAS,
-  GET_SHORT_REFERENCE_DATA_BY_ID,
-} from './graphql/queries';
+import { GET_SHORT_REFERENCE_DATA_BY_ID } from './graphql/queries';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionReferenceDataDropdownModel } from './reference-data-dropdown.model';
 import { Subject } from 'rxjs';
-
-/** Pagination */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Reference data dropdown component.
@@ -36,9 +29,11 @@ export class ReferenceDataDropdownComponent
   extends QuestionAngular<QuestionReferenceDataDropdownModel>
   implements OnInit, OnDestroy
 {
+  /** Control */
   public control = new FormControl<string | null>(null);
+  /** Selected reference data */
   public selectedReferenceData: ReferenceData | null = null;
-  public referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
   /**
@@ -78,16 +73,22 @@ export class ReferenceDataDropdownComponent
           this.control.setValue(this.model.obj.referenceData, {
             emitEvent: false,
           });
+          this.changeDetectorRef.detectChanges();
         });
     }
+  }
 
-    this.referenceDatasQuery =
-      this.apollo.watchQuery<ReferenceDatasQueryResponse>({
-        query: GET_REFERENCE_DATAS,
-        variables: {
-          first: ITEMS_PER_PAGE,
-        },
-      });
+  /**
+   * Reset control value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param event click event
+   */
+  clearFormField(event: Event) {
+    if (this.control.value) {
+      this.control.setValue(null);
+    }
+    event.stopPropagation();
   }
 
   override ngOnDestroy(): void {

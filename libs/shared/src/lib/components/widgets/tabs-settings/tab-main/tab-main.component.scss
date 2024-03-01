@@ -1,0 +1,12 @@
+:host ::ng-deep {
+  #tab-group-wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  #tab-body-host {
+    display: flex;
+    flex-direction: column;
+  }
+}
