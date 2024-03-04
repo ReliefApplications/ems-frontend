@@ -143,7 +143,7 @@ export class Layer implements LayerModel {
   /** Map layer service */
   private layerService!: MapLayersService;
   /** Dashboar automation service */
-  private dashboardAutomationService!: DashboardAutomationService;
+  private dashboardAutomationService?: DashboardAutomationService;
   /** Map renderer */
   private renderer!: Renderer2;
 
@@ -273,9 +273,15 @@ export class Layer implements LayerModel {
     if (options) {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
-      this.dashboardAutomationService = injector.get(
-        DashboardAutomationService
-      );
+      // If no dashboard automation service is provided(it's optional, map settings does not use it), cannot recognize the token and breaks
+      try {
+        this.dashboardAutomationService = injector.get(
+          DashboardAutomationService
+        );
+      } catch (error) {
+        this.dashboardAutomationService =
+          null as unknown as DashboardAutomationService;
+      }
       this.renderer = injector.get(Renderer2);
       this.setConfig(options);
     } else {
@@ -849,7 +855,7 @@ export class Layer implements LayerModel {
     }
     this.rulesListener = (e) => {
       for (const rule of (map as any)._rules) {
-        this.dashboardAutomationService.executeAutomationRule(rule, e);
+        this.dashboardAutomationService?.executeAutomationRule(rule, e);
       }
     };
 

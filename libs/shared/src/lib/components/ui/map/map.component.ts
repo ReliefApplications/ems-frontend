@@ -11,6 +11,7 @@ import {
   Injector,
   ElementRef,
   Optional,
+  SkipSelf,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -200,7 +201,9 @@ export class MapComponent
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
     private mapPolygonsService: MapPolygonsService,
-    @Optional() private dashboardAutomationService: DashboardAutomationService
+    @Optional()
+    @SkipSelf()
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
