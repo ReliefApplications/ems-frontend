@@ -27,6 +27,8 @@ export class MapPolygonsService {
   private admin0sReady = new BehaviorSubject<boolean>(false);
   /** Admin0 polygons status as observable */
   public admin0sReady$ = this.admin0sReady.asObservable();
+  /** Map fit bounds timeout listener */
+  private fitBoundsTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Shared map polygons service.
@@ -197,7 +199,10 @@ export class MapPolygonsService {
 
       if (geoJSON.features.length > 0) {
         // Timeout seems to be needed for first load of the map.
-        setTimeout(() => {
+        if (this.fitBoundsTimeoutListener) {
+          clearTimeout(this.fitBoundsTimeoutListener);
+        }
+        this.fitBoundsTimeoutListener = setTimeout(() => {
           map.fitBounds(L.geoJSON(geoJSON).getBounds());
         }, 500);
       }

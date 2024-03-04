@@ -130,6 +130,8 @@ export const init = (
     }
   };
 
+  /** Display as grid feature timeout listener */
+  let displayAsGridTimeoutListener!: NodeJS.Timeout;
   const component = {
     name: 'resources',
     title: 'Resources',
@@ -603,8 +605,11 @@ export const init = (
       // Display the add button | grid for resources question
       const actionsButtons = setUpActionsButtonWrapper();
       let gridComponentRef!: ComponentRef<CoreGridComponent>;
+      if (displayAsGridTimeoutListener) {
+        clearTimeout(displayAsGridTimeoutListener);
+      }
       // hide tagbox if grid view is enable
-      setTimeout(() => {
+      displayAsGridTimeoutListener = setTimeout(() => {
         if (question.displayAsGrid) {
           const element = el.parentElement?.querySelector('#tagbox');
           if (element) {
