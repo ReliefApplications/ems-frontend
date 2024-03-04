@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '@oort-front/shared';
+import { AuthService, UnsubscribeComponent } from '@oort-front/shared';
+import { takeUntil } from 'rxjs';
 
 /**
  * Login Page component.
@@ -10,23 +11,27 @@ import { AuthService } from '@oort-front/shared';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Login Page component.
    *
    * @param authService Shared authentication service
    * @param router Angular router
    */
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+    super();
+  }
 
   /**
    * Check that user is authenticated, and redirect to main page if true.
    */
   ngOnInit(): void {
-    this.authService.isAuthenticated$.subscribe((res: boolean) => {
-      if (res === true) {
-        this.router.navigate(['/applications']);
-      }
-    });
+    this.authService.isAuthenticated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: boolean) => {
+        if (res === true) {
+          this.router.navigate(['/applications']);
+        }
+      });
   }
 }

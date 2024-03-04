@@ -18,10 +18,11 @@ import {
   FormQueryResponse,
   EditFormMutationResponse,
   SnackbarSpinnerComponent,
+  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { SpinnerComponent } from '@oort-front/ui';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
@@ -45,7 +46,10 @@ const REQUEST_SNACKBAR_CONF = {
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
 })
-export class FormBuilderComponent implements OnInit {
+export class FormBuilderComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Loading state */
   public loading = true;
   /** Form id */
@@ -102,7 +106,9 @@ export class FormBuilderComponent implements OnInit {
     private translate: TranslateService,
     private breadcrumbService: BreadcrumbService,
     private overlay: Overlay
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Show modal confirmation before leave the page if has changes on form
@@ -135,11 +141,13 @@ export class FormBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.formActive = false;
-    this.statusControl.valueChanges.subscribe((status) => {
-      if (status) {
-        this.updateStatus(status);
-      }
-    });
+    this.statusControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((status) => {
+        if (status) {
+          this.updateStatus(status);
+        }
+      });
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
@@ -149,7 +157,8 @@ export class FormBuilderComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             if (data.form) {
               this.loading = loading;
@@ -408,7 +417,8 @@ export class FormBuilderComponent implements OnInit {
           id,
         },
       })
-      .valueChanges.subscribe(({ data }) => {
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
         this.structure = data.form.structure;
       });
   }

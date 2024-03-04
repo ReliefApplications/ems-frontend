@@ -37,7 +37,7 @@ import {
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { takeUntil } from 'rxjs/operators';
-import { firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { cloneDeep, get } from 'lodash';
@@ -140,6 +140,8 @@ export class ReferenceDataComponent
   private addChipListTimeoutListener!: NodeJS.Timeout;
   /** Outside click listener for inline edition */
   private inlineEditionOutsideClickListener!: any;
+  /** Reference data type subscription listener */
+  private referenceDataTypeSubscription!: Subscription;
   /** size style of editor */
   public style: any = {};
 
@@ -394,10 +396,19 @@ export class ReferenceDataComponent
               this.loadApiConfigurations(
                 this.referenceForm?.get('type')?.value
               );
-              // Adapt validators to the type of reference data
-              this.referenceForm.get('type')?.valueChanges.subscribe((type) => {
-                this.loadApiConfigurations(type);
-              });
+              if (this.referenceForm.get('type')) {
+                if (this.referenceDataTypeSubscription) {
+                  this.referenceDataTypeSubscription.unsubscribe();
+                }
+                // Adapt validators to the type of reference data
+                this.referenceDataTypeSubscription = (
+                  this.referenceForm.get('type') as any
+                ).valueChanges
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe((type: referenceDataType | null) => {
+                    this.loadApiConfigurations(type);
+                  });
+              }
               this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
@@ -439,6 +450,9 @@ export class ReferenceDataComponent
     }
     if (this.inlineEditionOutsideClickListener) {
       this.inlineEditionOutsideClickListener();
+    }
+    if (this.referenceDataTypeSubscription) {
+      this.referenceDataTypeSubscription.unsubscribe();
     }
   }
 

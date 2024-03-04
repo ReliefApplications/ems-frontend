@@ -68,25 +68,28 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pageForm.get('type')?.valueChanges.subscribe((type) => {
-      const contentControl = this.pageForm.controls.content;
-      if (type === ContentType.form) {
-        this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
-          query: GET_FORMS,
-          variables: {
-            first: ITEMS_PER_PAGE,
-            sortField: 'name',
-          },
-        });
-        contentControl.setValidators([Validators.required]);
-        contentControl.updateValueAndValidity();
-      } else {
-        contentControl.setValidators(null);
-        contentControl.setValue(null);
-        contentControl.updateValueAndValidity();
-      }
-      this.onNext();
-    });
+    this.pageForm
+      .get('type')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((type) => {
+        const contentControl = this.pageForm.controls.content;
+        if (type === ContentType.form) {
+          this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
+            query: GET_FORMS,
+            variables: {
+              first: ITEMS_PER_PAGE,
+              sortField: 'name',
+            },
+          });
+          contentControl.setValidators([Validators.required]);
+          contentControl.updateValueAndValidity();
+        } else {
+          contentControl.setValidators(null);
+          contentControl.setValue(null);
+          contentControl.updateValueAndValidity();
+        }
+        this.onNext();
+      });
 
     // Set the available widgets that can directly be added as single widget dashboard
     this.availableWidgets = this.availableWidgets.filter((widget: any) => {

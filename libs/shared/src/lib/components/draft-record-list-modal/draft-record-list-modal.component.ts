@@ -21,6 +21,8 @@ import {
 import { EmptyModule } from '../ui/empty/empty.module';
 import { Form, FormQueryResponse } from '../../models/form.model';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /** Dialog data interface */
 interface DialogData {
@@ -46,7 +48,10 @@ interface DialogData {
   templateUrl: './draft-record-list-modal.component.html',
   styleUrls: ['./draft-record-list-modal.component.scss'],
 })
-export class DraftRecordListModalComponent implements OnInit {
+export class DraftRecordListModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Array of available draft records */
   public draftRecords: Array<DraftRecord> = new Array<DraftRecord>();
   /** Displayed table columns */
@@ -83,7 +88,9 @@ export class DraftRecordListModalComponent implements OnInit {
     public formHelpersService: FormHelpersService,
     @Inject(DIALOG_DATA)
     public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.fetchDraftRecords();
@@ -100,7 +107,6 @@ export class DraftRecordListModalComponent implements OnInit {
           form: this.data.form,
         },
       })
-      .pipe()
       .subscribe(({ data }) => {
         this.form = data.form;
         this.draftRecords = data.draftRecords;
@@ -141,7 +147,7 @@ export class DraftRecordListModalComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         this.loading = true;
         const callback = () => {
@@ -171,10 +177,12 @@ export class DraftRecordListModalComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
     });
-    confirmDialogRef.closed.pipe().subscribe((value) => {
-      if (value) {
-        this.dialogRef.close(element as any);
-      }
-    });
+    confirmDialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.dialogRef.close(element as any);
+        }
+      });
   }
 }
