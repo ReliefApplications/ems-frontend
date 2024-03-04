@@ -47,6 +47,8 @@ export class FormComponent
   @Input() form!: Form;
   /** Record input, optional */
   @Input() record?: RecordModel;
+  /** Display actions buttons on floating div, optional */
+  @Input() floatingActions = true;
   /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
