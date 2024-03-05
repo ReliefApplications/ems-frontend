@@ -4,9 +4,11 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
@@ -41,7 +43,7 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 })
 export class FormComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, OnChanges
 {
   /** Form input */
   @Input() form!: Form;
@@ -113,97 +115,14 @@ export class FormComponent
     super();
   }
 
-  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.record) {
+      this.initSurvey();
+    }
+  }
+
   ngOnInit(): void {
-    addCustomFunctions({
-      record: this.record,
-      authService: this.authService,
-      apollo: this.apollo,
-      form: this.form,
-    });
-
-    const structure = JSON.parse(this.form.structure || '{}');
-    if (structure && !structure.completedHtml) {
-      structure.completedHtml = `<h3>${this.translate.instant(
-        'components.form.display.submissionMessage'
-      )}</h3>`;
-    }
-
-    this.survey = this.formBuilderService.createSurvey(
-      JSON.stringify(structure),
-      this.form.metadata,
-      this.record,
-      this.form
-    );
-
-    // After the survey is created we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
-
-    this.survey.showCompletedPage = false;
-    if (!this.record && !this.form.canCreateRecords) {
-      this.survey.mode = 'display';
-    }
-    this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
-    });
-    this.survey.onComplete.add(this.onComplete);
-
-    // Set readOnly fields
-    this.form.fields?.forEach((field) => {
-      if (field.readOnly && this.survey.getQuestionByName(field.name))
-        this.survey.getQuestionByName(field.name).readOnly = true;
-    });
-    // Fetch cached data from local storage
-    //this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
-    //const storedData = localStorage.getItem(this.storageId);
-    //const cachedData = storedData ? JSON.parse(storedData).data : null;
-    //this.storageDate = storedData
-    //? new Date(JSON.parse(storedData).date)
-    //: undefined;
-    // this.isFromCacheData = !!cachedData;
-    //if (this.isFromCacheData) {
-    //this.snackBar.openSnackBar(
-    //this.translate.instant('common.notifications.loadedFromCache', {
-    //type: this.translate.instant('common.record.one'),
-    //})
-    //);
-    //}
-
-    //if (cachedData) {
-    //this.survey.data = cachedData;
-    // this.setUserVariables();
-    //}
-    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
-      this.survey.data = this.form.uniqueRecord.data;
-      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
-    } else if (this.record && this.record.data) {
-      this.survey.data = this.record.data;
-      this.modifiedAt = this.record.modifiedAt || null;
-    }
-
-    // if (this.survey.getUsedLocales().length > 1) {
-    //   this.survey.getUsedLocales().forEach((lang) => {
-    //     const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
-    //     this.usedLocales.push({ value: lang, text: nativeName });
-    //     this.dropdownLocales.push(nativeName);
-    //   });
-    // }
-
-    // Sets default language as form language if it is in survey locales
-    // const currentLang = this.usedLocales.find(
-    //   (lang) => lang.value === this.translate.currentLang
-    // );
-    // if (currentLang) {
-    //   this.setLanguage(currentLang.text);
-    //   this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-    // } else {
-    //   this.survey.locale = this.translate.currentLang;
-    // }
+    this.initSurvey();
   }
 
   /**
@@ -437,5 +356,101 @@ export class FormComponent
       clearTimeout(this.resetTimeoutListener);
     }
     this.survey?.dispose();
+  }
+
+  /**
+   * It adds custom functions, creates the lookup, adds callbacks to the lookup events,
+   * fetches cached data from local storage, and sets the lookup data.
+   */
+  private initSurvey(): void {
+    addCustomFunctions({
+      record: this.record,
+      authService: this.authService,
+      apollo: this.apollo,
+      form: this.form,
+    });
+
+    const structure = JSON.parse(this.form.structure || '{}');
+    if (structure && !structure.completedHtml) {
+      structure.completedHtml = `<h3>${this.translate.instant(
+        'components.form.display.submissionMessage'
+      )}</h3>`;
+    }
+
+    this.survey = this.formBuilderService.createSurvey(
+      JSON.stringify(structure),
+      this.form.metadata,
+      this.record,
+      this.form
+    );
+
+    // After the survey is created we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.selectedPageIndex,
+      this.temporaryFilesStorage
+    );
+
+    this.survey.showCompletedPage = false;
+    if (!this.record && !this.form.canCreateRecords) {
+      this.survey.mode = 'display';
+    }
+    this.survey.onValueChanged.add(() => {
+      // Allow user to save as draft
+      this.disableSaveAsDraft = false;
+    });
+    this.survey.onComplete.add(this.onComplete);
+
+    // Set readOnly fields
+    this.form.fields?.forEach((field) => {
+      if (field.readOnly && this.survey.getQuestionByName(field.name))
+        this.survey.getQuestionByName(field.name).readOnly = true;
+    });
+    // Fetch cached data from local storage
+    //this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
+    //const storedData = localStorage.getItem(this.storageId);
+    //const cachedData = storedData ? JSON.parse(storedData).data : null;
+    //this.storageDate = storedData
+    //? new Date(JSON.parse(storedData).date)
+    //: undefined;
+    // this.isFromCacheData = !!cachedData;
+    //if (this.isFromCacheData) {
+    //this.snackBar.openSnackBar(
+    //this.translate.instant('common.notifications.loadedFromCache', {
+    //type: this.translate.instant('common.record.one'),
+    //})
+    //);
+    //}
+
+    //if (cachedData) {
+    //this.survey.data = cachedData;
+    // this.setUserVariables();
+    //}
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+      this.survey.data = this.form.uniqueRecord.data;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+    } else if (this.record && this.record.data) {
+      this.survey.data = this.record.data;
+      this.modifiedAt = this.record.modifiedAt || null;
+    }
+
+    // if (this.survey.getUsedLocales().length > 1) {
+    //   this.survey.getUsedLocales().forEach((lang) => {
+    //     const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
+    //     this.usedLocales.push({ value: lang, text: nativeName });
+    //     this.dropdownLocales.push(nativeName);
+    //   });
+    // }
+
+    // Sets default language as form language if it is in survey locales
+    // const currentLang = this.usedLocales.find(
+    //   (lang) => lang.value === this.translate.currentLang
+    // );
+    // if (currentLang) {
+    //   this.setLanguage(currentLang.text);
+    //   this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    // } else {
+    //   this.survey.locale = this.translate.currentLang;
+    // }
   }
 }

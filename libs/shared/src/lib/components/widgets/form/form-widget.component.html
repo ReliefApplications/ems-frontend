@@ -8,10 +8,9 @@
   <shared-form
     [form]="form"
     [floatingActions]="false"
+    [record]="record"
     (save)="onComplete($event)"
-    ></shared-form>
-    <!-- TODO -->
-  <!-- [record]="record" -->
+  ></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
     <ui-button category="secondary" (click)="clearForm()" class="mt-2 m-auto">{{
       'models.record.new' | translate

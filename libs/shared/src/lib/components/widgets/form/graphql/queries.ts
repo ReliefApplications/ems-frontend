@@ -52,7 +52,6 @@ export const GET_RECORD_BY_ID = gql`
     record(id: $id) {
       id
       incrementalId
-      data
       createdAt
       modifiedAt
       createdBy {
@@ -61,22 +60,18 @@ export const GET_RECORD_BY_ID = gql`
       modifiedBy {
         name
       }
+      data
       form {
         id
+        name
+        queryName
         structure
         fields
-        permissions {
-          recordsUnicity
-        }
         metadata {
           name
           automated
           canSee
           canUpdate
-        }
-        resource {
-          id
-          name
         }
       }
     }
