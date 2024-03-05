@@ -955,6 +955,16 @@
 						"all": "Toute la carte",
 						"current": "Vue actuelle"
 					}
+				},
+				"timeline": {
+					"show": "Afficher la chronologie",
+					"time": {
+						"dateFormat": "Affichage des dates",
+						"startField": "Commencez à afficher à",
+						"stopField": "Arrêter de s'afficher à",
+						"tooltip": "Lorsqu'elle est activée, une chronologie sera affichée sur la carte. Il vous permettra de visualiser l’évolution de vos données dans le temps."
+					},
+					"title": "Timeline"
 				}
 			}
 		},
@@ -1134,7 +1144,6 @@
 		},
 		"records": {
 			"active": "Enregistrements actifs",
-			"archive": "Archiver",
 			"archived": "Enregistrements archivés",
 			"editAs": "Editer en tant que",
 			"paginator": {

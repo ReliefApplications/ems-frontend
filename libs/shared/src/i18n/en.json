@@ -944,6 +944,16 @@
 						"all": "Map",
 						"current": "Current view"
 					}
+				},
+				"timeline": {
+					"show": "Show timeline",
+					"time": {
+						"dateFormat": "Date display",
+						"startField": "Start showing at",
+						"stopField": "Stop showing at",
+						"tooltip": "When enabled, a timeline will be displayed on the map. It will allow you to visualize the evolution of your data over time."
+					},
+					"title": "Timeline"
 				}
 			}
 		},
@@ -1123,7 +1133,6 @@
 		},
 		"records": {
 			"active": "Active records",
-			"archive": "Archive records",
 			"archived": "Archived records",
 			"editAs": "Edit as",
 			"paginator": {

@@ -34,6 +34,7 @@ import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
 import { get, isEqual } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
+import { LayerTimelineModule } from './layer-timeline/layer-timeline.module';
 import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
 import { LayerFieldsModule } from './layer-fields/layer-fields.module';
 import { LayerAggregationModule } from './layer-aggregation/layer-aggregation.module';
@@ -90,6 +91,7 @@ interface DialogData {
     TranslateModule,
     TooltipModule,
     LayerPropertiesModule,
+    LayerTimelineModule,
     LayerDatasourceModule,
     LayerFieldsModule,
     LayerAggregationModule,
@@ -129,7 +131,7 @@ export class EditLayerModalComponent
   public currentZoom!: number;
   /** Current leaflet layer */
   private currentLayer!: L.Layer;
-  /** Is current datasource valie */
+  /** Is current datasource valid */
   public isDatasourceValid = false;
   /** Map dom portal */
   public mapPortal?: DomPortal;
@@ -150,6 +152,18 @@ export class EditLayerModalComponent
       label: this.form.get('name')?.value || '',
       layer: this.currentLayer,
     };
+  }
+
+  /** @returns if the current layer definition can use timeline feature */
+  public get canUseTimeline(): boolean {
+    const rendererType = this.form.get(
+      'layerDefinition.drawingInfo.renderer.type'
+    )?.value;
+    const featureReductionType = this.form.get(
+      'layerDefinition.featureReduction.type'
+    )?.value;
+
+    return rendererType === 'simple' && featureReductionType !== 'cluster';
   }
 
   /**

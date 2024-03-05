@@ -93,6 +93,7 @@
     "leaflet.control.layers.tree": "^1.1.0",
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.5.3",
+    "leaflet.timeline": "^1.6.0",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.34.1",

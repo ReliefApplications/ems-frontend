@@ -1,6 +1,7 @@
 import { FaIconName } from '@oort-front/ui';
 import { Gradient } from '../components/controls/gradient-picker/gradient-picker.component';
 import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
+import { DateFormat } from '../pipes/date/date.pipe';
 
 /**
  * Layer types for backend
@@ -141,6 +142,14 @@ export interface LayerDatasource {
   type?: LayerDatasourceType;
 }
 
+/** Model for the timeline configuration of a layer */
+export type TimelineInfo = {
+  enabled: boolean;
+  startTimeField: string;
+  endTimeField: string;
+  dateFormat: DateFormat;
+};
+
 /**
  * Backend layer model
  */
@@ -158,6 +167,7 @@ export interface LayerModel {
   updatedAt: Date;
   contextFilters?: string;
   at?: string;
+  timelineInfo?: TimelineInfo;
 }
 
 /** Model for AddLayerMutationResponse object */

@@ -103,6 +103,12 @@ export const GET_LAYER_BY_ID = gql`
           fields
         }
       }
+      timelineInfo {
+        enabled
+        startTimeField
+        endTimeField
+        dateFormat
+      }
       sublayers
       contextFilters
       at
