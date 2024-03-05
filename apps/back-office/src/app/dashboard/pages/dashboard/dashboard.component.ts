@@ -39,7 +39,7 @@ import {
   debounceTime,
   switchMap,
 } from 'rxjs/operators';
-import { Observable, firstValueFrom, of } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { cloneDeep, isEqual, isNil, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
@@ -572,11 +572,13 @@ export class DashboardComponent
         filter((button) => !isNil(button)),
         switchMap((button: any) => {
           const currButtons = this.dashboard?.buttons || [];
-          this.dashboardService.saveDashboardButtons(this.dashboard?.id, [
-            ...currButtons,
-            button,
-          ]);
-          return of(button);
+          return this.dashboardService
+            .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+            .pipe(
+              map(() => {
+                return button;
+              })
+            );
         }),
         takeUntil(this.destroy$)
       )

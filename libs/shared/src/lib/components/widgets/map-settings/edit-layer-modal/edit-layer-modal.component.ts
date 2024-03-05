@@ -176,7 +176,7 @@ export class EditLayerModalComponent
   }
 
   ngOnInit(): void {
-    this.form = createLayerForm(this.data.layer);
+    this.form = createLayerForm(this.destroy$, this.data.layer);
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
@@ -528,7 +528,6 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.resource = data.resource;
           // Update fields

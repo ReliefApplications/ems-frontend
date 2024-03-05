@@ -12,6 +12,7 @@ import {
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { takeUntil } from 'rxjs';
 
 /** Default action name */
 const DEFAULT_ACTION_NAME = 'Action';
@@ -29,9 +30,10 @@ const fb = new FormBuilder();
  * Floating button form factory.
  *
  * @param value default value ( if any )
+ * @param unsubscribe Unsubscribe flag for current form
  * @returns new form group for the floating button.
  */
-export const createButtonFormGroup = (value: any) => {
+export const createButtonFormGroup = (value: any, unsubscribe: any) => {
   const formGroup = fb.group({
     show: [value && value.show ? value.show : false, Validators.required],
     name: [
@@ -110,16 +112,22 @@ export const createButtonFormGroup = (value: any) => {
   } else if (formGroup.get('goToPreviousStep')?.value) {
     formGroup.get('goToNextStep')?.setValue(false);
   }
-  formGroup.get('goToNextStep')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('goToPreviousStep')?.setValue(false);
-    }
-  });
-  formGroup.get('goToPreviousStep')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('goToNextStep')?.setValue(false);
-    }
-  });
+  formGroup
+    .get('goToNextStep')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('goToPreviousStep')?.setValue(false);
+      }
+    });
+  formGroup
+    .get('goToPreviousStep')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('goToNextStep')?.setValue(false);
+      }
+    });
   return formGroup;
 };
 
@@ -128,9 +136,14 @@ export const createButtonFormGroup = (value: any) => {
  *
  * @param id id of the widget
  * @param configuration previous configuration
+ * @param unsubscribe Unsubscribe flag for current form
  * @returns form group
  */
-export const createGridWidgetFormGroup = (id: string, configuration: any) => {
+export const createGridWidgetFormGroup = (
+  id: string,
+  configuration: any,
+  unsubscribe: any
+) => {
   const formGroup = fb.group(
     {
       id,
@@ -142,13 +155,13 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
         get(configuration, 'aggregations', []),
         Validators.required,
       ],
-      actions: createGridActionsFormGroup(configuration),
+      actions: createGridActionsFormGroup(configuration, unsubscribe),
       floatingButtons: fb.array(
         configuration.floatingButtons && configuration.floatingButtons.length
           ? configuration.floatingButtons.map((x: any) =>
-              createButtonFormGroup(x)
+              createButtonFormGroup(x, unsubscribe)
             )
-          : [createButtonFormGroup(null)]
+          : [createButtonFormGroup(null, unsubscribe)]
       ) as FormArray<FormControl<typeof createButtonFormGroup>>,
       sortFields: new FormArray<any>([]),
       contextFilters: [
@@ -205,9 +218,13 @@ export const templateRequiredWhenAddRecord = (
  * Creates a form group for the grid settings with the given grid actions configuration
  *
  * @param configuration configuration to build up the grid actions form group
+ * @param unsubscribe Unsubscribe flag for current form
  * @returns form group with the given grid actions configuration
  */
-export const createGridActionsFormGroup = (configuration: any) => {
+export const createGridActionsFormGroup = (
+  configuration: any,
+  unsubscribe: any
+) => {
   const formGroup = fb.group({
     delete: [get(configuration, 'actions.delete', true)],
     history: [get(configuration, 'actions.history', true)],
@@ -240,8 +257,11 @@ export const createGridActionsFormGroup = (configuration: any) => {
   // Initialize
   setValidatorsNavigateToPageTitle(formGroup.get('navigateToPage')?.value);
   // Subscribe to changes
-  formGroup.get('navigateToPage')?.valueChanges.subscribe((value) => {
-    setValidatorsNavigateToPageTitle(value);
-  });
+  formGroup
+    .get('navigateToPage')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      setValidatorsNavigateToPageTitle(value);
+    });
   return formGroup;
 };

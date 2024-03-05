@@ -5,6 +5,7 @@ import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { takeUntil } from 'rxjs';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -13,9 +14,10 @@ const fb = new FormBuilder();
  * Create chart form group
  *
  * @param value chart settings
+ * @param unsubscribe Unsubscribe flag for current form
  * @returns chart form group
  */
-export const createChartForm = (value: any) => {
+export const createChartForm = (value: any, unsubscribe: any) => {
   const legend = get(value, 'legend', null);
   const title = get(value, 'title', null);
   const labels = get(value, 'labels', null);
@@ -176,140 +178,176 @@ export const createChartForm = (value: any) => {
     ),
   });
 
-  formGroup.get('type')?.valueChanges.subscribe((value) => {
-    // Update available mapping controls
-    const mapping = formGroup.get('mapping');
-    formGroup.setControl('mapping', createMappingForm(mapping?.value, value));
-    // Update series controls when chart type change
-    const seriesFormArray = fb.array(
-      formGroup.value.series?.map((serie: any) =>
-        createSerieForm(value, serie)
-      ) || []
-    );
-    formGroup.setControl('series', seriesFormArray);
-  });
+  formGroup
+    .get('type')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      // Update available mapping controls
+      const mapping = formGroup.get('mapping');
+      formGroup.setControl('mapping', createMappingForm(mapping?.value, value));
+      // Update series controls when chart type change
+      const seriesFormArray = fb.array(
+        formGroup.value.series?.map((serie: any) =>
+          createSerieForm(value, serie)
+        ) || []
+      );
+      formGroup.setControl('series', seriesFormArray);
+    });
 
-  formGroup.get('aggregationId')?.valueChanges.subscribe(() => {
-    formGroup.setControl(
-      'mapping',
-      createMappingForm(null, formGroup.get('type')?.value)
-    );
-  });
+  formGroup
+    .get('aggregationId')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe(() => {
+      formGroup.setControl(
+        'mapping',
+        createMappingForm(null, formGroup.get('type')?.value)
+      );
+    });
 
   // Update of palette
-  formGroup.get('palette.enabled')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('palette.value')?.enable();
-    } else {
-      formGroup.get('palette.value')?.disable();
-    }
-  });
+  formGroup
+    .get('palette.enabled')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('palette.value')?.enable();
+      } else {
+        formGroup.get('palette.value')?.disable();
+      }
+    });
 
   // Update of y axis
-  formGroup.get('axes.y.enableMin')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('axes.y.min')?.setValue(0);
-      formGroup.get('axes.y.min')?.enable();
-    } else {
-      formGroup.get('axes.y.min')?.setValue(null);
-      formGroup.get('axes.y.min')?.disable();
-    }
-  });
-  formGroup.get('axes.y.enableMax')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('axes.y.max')?.setValue(100);
-      formGroup.get('axes.y.max')?.enable();
-    } else {
-      formGroup.get('axes.y.max')?.setValue(null);
-      formGroup.get('axes.y.max')?.disable();
-    }
-  });
+  formGroup
+    .get('axes.y.enableMin')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('axes.y.min')?.setValue(0);
+        formGroup.get('axes.y.min')?.enable();
+      } else {
+        formGroup.get('axes.y.min')?.setValue(null);
+        formGroup.get('axes.y.min')?.disable();
+      }
+    });
+  formGroup
+    .get('axes.y.enableMax')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('axes.y.max')?.setValue(100);
+        formGroup.get('axes.y.max')?.enable();
+      } else {
+        formGroup.get('axes.y.max')?.setValue(null);
+        formGroup.get('axes.y.max')?.disable();
+      }
+    });
 
   // Update of x axis
-  formGroup.get('axes.x.enableMin')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('axes.x.min')?.setValue(0);
-      formGroup.get('axes.x.min')?.enable();
-    } else {
-      formGroup.get('axes.x.min')?.setValue(null);
-      formGroup.get('axes.x.min')?.disable();
-    }
-  });
-  formGroup.get('axes.x.enableMax')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('axes.x.max')?.setValue(100);
-      formGroup.get('axes.x.max')?.enable();
-    } else {
-      formGroup.get('axes.x.max')?.setValue(null);
-      formGroup.get('axes.x.max')?.disable();
-    }
-  });
+  formGroup
+    .get('axes.x.enableMin')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('axes.x.min')?.setValue(0);
+        formGroup.get('axes.x.min')?.enable();
+      } else {
+        formGroup.get('axes.x.min')?.setValue(null);
+        formGroup.get('axes.x.min')?.disable();
+      }
+    });
+  formGroup
+    .get('axes.x.enableMax')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('axes.x.max')?.setValue(100);
+        formGroup.get('axes.x.max')?.enable();
+      } else {
+        formGroup.get('axes.x.max')?.setValue(null);
+        formGroup.get('axes.x.max')?.disable();
+      }
+    });
 
   // Update of labels
-  formGroup.get('labels.showValue')?.valueChanges.subscribe((value) => {
-    if (value) {
-      if (['bar', 'column'].includes(formGroup.get('type')?.value)) {
-        if (
-          formGroup.get('stack.usePercentage')?.value &&
-          formGroup.get('stack.enable')?.value
-        )
-          formGroup.get('labels.valueType')?.enable();
-      } else formGroup.get('labels.valueType')?.enable();
-    } else {
-      formGroup.get('labels.valueType')?.disable();
-    }
-  });
+  formGroup
+    .get('labels.showValue')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        if (['bar', 'column'].includes(formGroup.get('type')?.value)) {
+          if (
+            formGroup.get('stack.usePercentage')?.value &&
+            formGroup.get('stack.enable')?.value
+          )
+            formGroup.get('labels.valueType')?.enable();
+        } else formGroup.get('labels.valueType')?.enable();
+      } else {
+        formGroup.get('labels.valueType')?.disable();
+      }
+    });
 
   // Update of stack properties
-  formGroup.get('stack.enable')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('stack.usePercentage')?.enable();
-    } else {
-      formGroup.get('stack.usePercentage')?.disable();
-    }
-  });
+  formGroup
+    .get('stack.enable')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('stack.usePercentage')?.enable();
+      } else {
+        formGroup.get('stack.usePercentage')?.disable();
+      }
+    });
 
   // update label value type based on stack settings
-  formGroup.get('stack.usePercentage')?.valueChanges.subscribe((value) => {
-    if (value) {
-      if (formGroup.get('labels.showValue'))
-        formGroup.get('labels.valueType')?.enable();
-    } else {
-      formGroup.get('labels.valueType')?.setValue('value');
-      formGroup.get('labels.valueType')?.disable();
-    }
-  });
+  formGroup
+    .get('stack.usePercentage')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        if (formGroup.get('labels.showValue'))
+          formGroup.get('labels.valueType')?.enable();
+      } else {
+        formGroup.get('labels.valueType')?.setValue('value');
+        formGroup.get('labels.valueType')?.disable();
+      }
+    });
 
-  formGroup.get('stack.enable')?.valueChanges.subscribe((value) => {
-    if (value) {
-      if (
-        formGroup.get('stack.usePercentage')?.value &&
-        formGroup.get('labels.showValue')
-      )
-        formGroup.get('labels.valueType')?.enable();
-    } else {
-      formGroup.get('labels.valueType')?.setValue('value');
-      formGroup.get('labels.valueType')?.disable();
-    }
-  });
+  formGroup
+    .get('stack.enable')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        if (
+          formGroup.get('stack.usePercentage')?.value &&
+          formGroup.get('labels.showValue')
+        )
+          formGroup.get('labels.valueType')?.enable();
+      } else {
+        formGroup.get('labels.valueType')?.setValue('value');
+        formGroup.get('labels.valueType')?.disable();
+      }
+    });
 
-  formGroup.get('title.text')?.valueChanges.subscribe((value) => {
-    if (!value) {
-      formGroup.get('title.position')?.disable();
-      formGroup.get('title.size')?.disable();
-      formGroup.get('title.color')?.disable();
-      formGroup.get('title.bold')?.disable();
-      formGroup.get('title.italic')?.disable();
-      formGroup.get('title.underline')?.disable();
-    } else {
-      formGroup.get('title.position')?.enable();
-      formGroup.get('title.size')?.enable();
-      formGroup.get('title.color')?.enable();
-      formGroup.get('title.bold')?.enable();
-      formGroup.get('title.italic')?.enable();
-      formGroup.get('title.underline')?.enable();
-    }
-  });
+  formGroup
+    .get('title.text')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (!value) {
+        formGroup.get('title.position')?.disable();
+        formGroup.get('title.size')?.disable();
+        formGroup.get('title.color')?.disable();
+        formGroup.get('title.bold')?.disable();
+        formGroup.get('title.italic')?.disable();
+        formGroup.get('title.underline')?.disable();
+      } else {
+        formGroup.get('title.position')?.enable();
+        formGroup.get('title.size')?.enable();
+        formGroup.get('title.color')?.enable();
+        formGroup.get('title.bold')?.enable();
+        formGroup.get('title.italic')?.enable();
+        formGroup.get('title.underline')?.enable();
+      }
+    });
 
   return formGroup;
 };
@@ -338,14 +376,19 @@ const createFilterForm = (value: any) => {
  *
  * @param id widget id
  * @param value chart widget settings
+ * @param unsubscribe Unsubscribe flag for current form
  * @returns chart widget form group
  */
-export const createChartWidgetForm = (id: any, value: any) => {
+export const createChartWidgetForm = (
+  id: any,
+  value: any,
+  unsubscribe: any
+) => {
   const form = fb.group(
     {
       id,
       title: [get(value, 'title', ''), Validators.required],
-      chart: createChartForm(get(value, 'chart')),
+      chart: createChartForm(get(value, 'chart'), unsubscribe),
       resource: [get(value, 'resource', null)],
       referenceData: [get(value, 'referenceData', null)],
       referenceDataVariableMapping: [

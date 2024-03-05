@@ -230,7 +230,6 @@ export class RoleResourcesComponent
             role: this.role.id,
           },
         })
-        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           if (data.resource) {
             this.openedResource = data.resource;
@@ -299,7 +298,6 @@ export class RoleResourcesComponent
           role: this.role.id as string,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ errors, data }) => {
           this.handleResourceMutationResponse(resource, { data, errors }, true);
@@ -329,7 +327,6 @@ export class RoleResourcesComponent
           role: this.role.id as string,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ errors, data }) => {
           this.handleResourceMutationResponse(resource, { data, errors });
@@ -426,7 +423,6 @@ export class RoleResourcesComponent
           },
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ errors, data }) => {
           this.handleResourceMutationResponse(resource, { data, errors });

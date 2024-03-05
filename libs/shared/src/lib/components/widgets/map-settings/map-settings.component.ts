@@ -217,7 +217,11 @@ export class MapSettingsComponent
    */
   public buildSettingsForm() {
     this.widgetFormGroup = extendWidgetForm(
-      createMapWidgetFormGroup(this.widget.id, this.widget.settings),
+      createMapWidgetFormGroup(
+        this.widget.id,
+        this.destroy$,
+        this.widget.settings
+      ),
       this.widget.settings?.widgetDisplay
     );
   }

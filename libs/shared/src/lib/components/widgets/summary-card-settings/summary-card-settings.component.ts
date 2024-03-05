@@ -393,7 +393,8 @@ export class SummaryCardSettingsComponent
   public buildSettingsForm() {
     this.widgetFormGroup = createSummaryCardForm(
       this.widget.id,
-      this.widget.settings
+      this.widget.settings,
+      this.destroy$
     );
   }
 }
