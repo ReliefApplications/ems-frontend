@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { AddUsersMutationResponse, Role } from '../../models/user.model';
@@ -11,6 +11,7 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { ADD_USERS } from './graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { isNil } from 'lodash';
 
 /**
  * Application users component.
@@ -89,50 +90,50 @@ export class ApplicationUsersComponent
         }),
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddUsersMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.apollo.mutate<AddUsersMutationResponse>({
             mutation: ADD_USERS,
             variables: {
               users: value,
               application: this.roles[0].application?.id,
             },
-          })
-          .subscribe(({ errors, data }) => {
-            if (!errors) {
-              if (data?.addUsers.length) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onInvite.plural')
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onInvite.singular')
-                );
-              }
-              this.userList?.fetchUsers(true);
-            } else {
-              if (data?.addUsers?.length) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotInvite.plural',
-                    { error: errors[0].message }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotInvite.singular',
-                    { error: errors[0].message }
-                  ),
-                  { error: true }
-                );
-              }
-            }
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ errors, data }) => {
+        if (!errors) {
+          if (data?.addUsers.length) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onInvite.plural')
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onInvite.singular')
+            );
+          }
+          this.userList?.fetchUsers(true);
+        } else {
+          if (data?.addUsers?.length) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onNotInvite.plural', {
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onNotInvite.singular', {
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+          }
+        }
+      });
   }
 
   /**

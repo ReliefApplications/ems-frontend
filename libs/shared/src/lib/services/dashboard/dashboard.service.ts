@@ -98,8 +98,6 @@ export class DashboardService {
    * @returns promise the mutation result
    */
   public updateContext(pageId: string | undefined, context: PageContextT) {
-    if (!pageId) return;
-
     return firstValueFrom(
       this.apollo.mutate<EditPageContextMutationResponse>({
         mutation: UPDATE_PAGE_CONTEXT,
@@ -148,9 +146,7 @@ export class DashboardService {
     dashboardId: string | undefined,
     buttons: Dashboard['buttons']
   ) {
-    if (!dashboardId) return;
     buttons = buttons || [];
-
     return this.apollo.mutate<EditDashboardMutationResponse>({
       mutation: EDIT_DASHBOARD,
       variables: {

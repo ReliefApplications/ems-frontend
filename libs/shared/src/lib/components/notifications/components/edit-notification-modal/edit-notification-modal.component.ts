@@ -11,13 +11,13 @@ import {
   ResourcesQueryResponse,
 } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { isEqual, get } from 'lodash';
+import { isEqual, get, isNil } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { DistributionList } from '../../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
@@ -268,15 +268,23 @@ export class EditNotificationModalComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe((res: any) => {
-            this.layout = res.data?.editLayout;
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => {
+          return !isNil(value) && !isNil(this.layout);
+        }),
+        switchMap((value: any) => {
+          return this.gridLayoutService.editLayout(
+            this.layout as Layout,
+            value,
+            this.resource?.id
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((res: any) => {
+        this.layout = res.data?.editLayout;
+      });
   }
 
   /** Unset layout. */

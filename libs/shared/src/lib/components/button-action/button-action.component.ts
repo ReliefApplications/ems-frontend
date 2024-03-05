@@ -6,6 +6,8 @@ import { DataTemplateService } from '../../services/data-template/data-template.
 import { Dashboard } from '../../models/dashboard.model';
 import { ButtonActionT } from './button-action-type';
 import { Router } from '@angular/router';
+import { filter, switchMap } from 'rxjs';
+import { isNil } from 'lodash';
 
 /** Component for display action buttons */
 @Component({
@@ -88,14 +90,18 @@ export class ButtonActionComponent {
       },
     });
 
-    dialogRef.closed.subscribe((value: any) => {
-      if (value) {
-        const currButtons = this.dashboard?.buttons || [];
-        currButtons.splice(idx, 1);
-        this.dashboardService
-          .saveDashboardButtons(this.dashboard?.id, currButtons)
-          ?.subscribe();
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          const currButtons = this.dashboard?.buttons || [];
+          currButtons.splice(idx, 1);
+          return this.dashboardService.saveDashboardButtons(
+            this.dashboard?.id,
+            currButtons
+          );
+        })
+      )
+      .subscribe();
   }
 }

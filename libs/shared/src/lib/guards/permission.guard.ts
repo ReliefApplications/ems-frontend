@@ -9,10 +9,11 @@ import {
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import { get } from 'lodash';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { ApplicationService } from '../services/application/application.service';
 import { AppAbility } from '../services/auth/auth.service';
 import { SnackbarService } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../components/utils/unsubscribe/unsubscribe.component';
 
 /**
  * Check if the logged user has an access to the route.
@@ -21,7 +22,10 @@ import { SnackbarService } from '@oort-front/ui';
 @Injectable({
   providedIn: 'root',
 })
-export class PermissionGuard implements CanActivate {
+export class PermissionGuard
+  extends UnsubscribeComponent
+  implements CanActivate
+{
   /**
    * Guard to prevent unauthorized users to see pages
    *
@@ -39,7 +43,9 @@ export class PermissionGuard implements CanActivate {
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private appService: ApplicationService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Executed anytime a route is called, in order to check user permissions.
@@ -83,17 +89,19 @@ export class PermissionGuard implements CanActivate {
     if (appId) {
       this.appService.loadApplication(appId);
       return new Promise((resolve) => {
-        const sub = this.appService.application$.subscribe((app) => {
-          if (!app?.id) return;
-          sub.unsubscribe();
-          const hasPermission = this.ability.can(
-            permission.action,
-            subject(permission.subject, {
-              application: app.id,
-            })
-          );
-          resolve(hasPermission ? true : this.router.parseUrl('/'));
-        });
+        const sub = this.appService.application$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((app) => {
+            if (!app?.id) return;
+            sub.unsubscribe();
+            const hasPermission = this.ability.can(
+              permission.action,
+              subject(permission.subject, {
+                application: app.id,
+              })
+            );
+            resolve(hasPermission ? true : this.router.parseUrl('/'));
+          });
       });
     }
 

@@ -130,7 +130,7 @@ export class DateFilterMenuComponent
 
   ngOnInit(): void {
     this.form = this.createFormGroup();
-    this.form.valueChanges.subscribe((value) => {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.filterService?.filter(value as any);
     });
   }

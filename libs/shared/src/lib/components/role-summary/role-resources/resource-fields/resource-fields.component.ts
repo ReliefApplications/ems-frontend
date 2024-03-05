@@ -11,6 +11,8 @@ import { isEqual, sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
 import { FormControl } from '@angular/forms';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 type ResourceField = {
   name: string;
@@ -27,7 +29,10 @@ type ResourceField = {
   templateUrl: './resource-fields.component.html',
   styleUrls: ['./resource-fields.component.scss'],
 })
-export class ResourceFieldsComponent implements OnInit, OnChanges {
+export class ResourceFieldsComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
   /** Resource */
   @Input() resource!: Resource;
   /** Role */
@@ -54,11 +59,20 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   private updatedField: { index: number; permission: 'canSee' | 'canUpdate' } =
     { index: -1, permission: 'canSee' };
 
+  /**
+   * Resource fields component constructor
+   */
+  constructor() {
+    super();
+  }
+
   ngOnInit() {
     this.fields = sortBy(this.resource.fields.map(this.hasFieldAccess), 'name');
-    this.filterId.valueChanges.subscribe((value) => {
-      this.filterByTemplate(value);
-    });
+    this.filterId.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.filterByTemplate(value);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

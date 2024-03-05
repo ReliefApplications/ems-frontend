@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
@@ -115,19 +115,25 @@ export class RecordSelectionTabComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            if (this.form.get('layout')) {
-              this.form
-                .get('layout')
-                ?.setValue(this.form.get('layout')?.value || null);
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value) && !isNil(this.layout)),
+        switchMap((value: any) => {
+          return this.gridLayoutService.editLayout(
+            this.layout as Layout,
+            value,
+            this.resource?.id
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        if (this.form.get('layout')) {
+          this.form
+            .get('layout')
+            ?.setValue(this.form.get('layout')?.value || null);
+        }
+      });
   }
 
   /** Handles deselect current layout */

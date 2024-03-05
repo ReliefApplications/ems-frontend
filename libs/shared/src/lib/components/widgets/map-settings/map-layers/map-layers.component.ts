@@ -6,7 +6,7 @@ import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
+import { of, switchMap, takeUntil } from 'rxjs';
 import { UntypedFormControl } from '@angular/forms';
 import { MapComponent } from '../../../ui/map/map.component';
 import { CdkTable } from '@angular/cdk/table';
@@ -98,24 +98,31 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
         mapPortal: this.mapPortal,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.loading = true;
-        this.mapLayersService.addLayer(value).subscribe({
-          next: (res) => {
-            if (res) {
-              const value = this.control.value;
-              this.control.setValue([...value, res.id]);
-              this.mapLayers.push(res);
-            }
-          },
-          error: (err) => console.error(err),
-          complete: () => (this.loading = false),
-        });
-      } else {
-        this.restoreMapSettingsView();
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        switchMap((value: any) => {
+          if (value) {
+            this.loading = true;
+            return this.mapLayersService.addLayer(value);
+          } else {
+            return of(null);
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            const value = this.control.value;
+            this.control.setValue([...value, res.id]);
+            this.mapLayers.push(res);
+          } else {
+            this.restoreMapSettingsView();
+          }
+        },
+        error: (err) => console.error(err),
+        complete: () => (this.loading = false),
+      });
   }
 
   /**
@@ -142,55 +149,58 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
     this.mapLayersService
       .getLayerById(id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(async (layer) => {
-        const { EditLayerModalComponent } = await import(
-          '../edit-layer-modal/edit-layer-modal.component'
-        );
-        if (this.mapComponent) {
-          this.mapComponent.resetLayers();
-          this.mapComponent.layers = [];
-        }
-        const dialogRef = this.dialog.open(EditLayerModalComponent, {
-          disableClose: true,
-          autoFocus: false,
-          data: {
-            layer,
-            mapComponent: this.mapComponent,
-            mapPortal: this.mapPortal,
-          },
-        });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((value: any) => {
-            if (value) {
-              this.loading = true;
-              this.mapLayersService.editLayer(value).subscribe({
-                next: (res) => {
-                  if (res) {
-                    const index = this.mapLayers.findIndex(
-                      (layer) => layer.id === id
-                    );
-                    if (index !== -1) {
-                      this.mapLayers.splice(index, 1, {
-                        ...res,
-                        name: value.name,
-                      });
-                      this.restoreMapSettingsView();
-                    } else {
-                      // Selecting a new layer
-                      const value = this.control.value;
-                      this.control.setValue([...value, res.id]);
-                      this.mapLayers.push(res);
-                    }
-                  }
-                },
-                error: (err) => console.log(err),
-                complete: () => (this.loading = false),
-              });
-            } else {
-              this.restoreMapSettingsView();
-            }
+      .subscribe({
+        next: async (layer) => {
+          const { EditLayerModalComponent } = await import(
+            '../edit-layer-modal/edit-layer-modal.component'
+          );
+          if (this.mapComponent) {
+            this.mapComponent.resetLayers();
+            this.mapComponent.layers = [];
+          }
+          const dialogRef = this.dialog.open(EditLayerModalComponent, {
+            disableClose: true,
+            autoFocus: false,
+            data: {
+              layer,
+              mapComponent: this.mapComponent,
+              mapPortal: this.mapPortal,
+            },
           });
+          dialogRef.closed
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((value: any) => {
+              if (value) {
+                this.loading = true;
+                this.mapLayersService.editLayer(value).subscribe({
+                  next: (res) => {
+                    if (res) {
+                      const index = this.mapLayers.findIndex(
+                        (layer) => layer.id === id
+                      );
+                      if (index !== -1) {
+                        this.mapLayers.splice(index, 1, {
+                          ...res,
+                          name: value.name,
+                        });
+                        this.restoreMapSettingsView();
+                      } else {
+                        // Selecting a new layer
+                        const value = this.control.value;
+                        this.control.setValue([...value, res.id]);
+                        this.mapLayers.push(res);
+                      }
+                    }
+                  },
+                  error: (err) => console.log(err),
+                  complete: () => (this.loading = false),
+                });
+              } else {
+                this.restoreMapSettingsView();
+              }
+            });
+        },
+        error: (err) => console.log(err),
       });
   }
 

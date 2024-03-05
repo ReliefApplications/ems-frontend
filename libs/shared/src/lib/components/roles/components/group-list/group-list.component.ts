@@ -8,7 +8,7 @@ import { ConfirmService } from '../../../../services/confirm/confirm.service';
 import get from 'lodash/get';
 import { RestService } from '../../../../services/rest/rest.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import {
   AddGroupMutationResponse,
@@ -18,6 +18,7 @@ import {
 } from '../../../../models/user.model';
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import { FormBuilder } from '@angular/forms';
+import { isNil } from 'lodash';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -105,7 +106,6 @@ export class GroupListComponent
       .query<GroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
         this.groups = data.groups;
         this.filteredGroups = this.groups;
@@ -119,12 +119,9 @@ export class GroupListComponent
    */
   private getPermissionsConfiguration(): void {
     const url = '/permissions/configuration';
-    this.restService
-      .get(url)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.manualCreation = get(res, 'groups.local', true);
-      });
+    this.restService.get(url).subscribe((res) => {
+      this.manualCreation = get(res, 'groups.local', true);
+    });
   }
 
   /**
@@ -149,47 +146,52 @@ export class GroupListComponent
     const dialogRef = this.dialog.open(AddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddGroupMutationResponse>({
-            mutation: ADD_GROUP,
-            variables: {
-              title: value.title,
-            },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.role.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate.instant('common.role.one'),
-                    value: value.title,
-                  })
-                );
-                this.getGroups();
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.apollo
+            .mutate<AddGroupMutationResponse>({
+              mutation: ADD_GROUP,
+              variables: {
+                title: value.title,
+              },
+            })
+            .pipe(
+              map(({ errors }) => {
+                return {
+                  errors,
+                  groupTile: value.title,
+                };
+              })
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, groupTile }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate.instant('common.role.one').toLowerCase(),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate.instant('common.role.one'),
+                value: groupTile,
+              })
+            );
+            this.getGroups();
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /** Fetches groups from service */
@@ -210,7 +212,6 @@ export class GroupListComponent
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
     this.apollo
       .mutate<FetchGroupsMutationResponse>({ mutation: FETCH_GROUPS })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data, loading }) => {
           if (data) this.groups = data.fetchGroups || [];
@@ -265,44 +266,42 @@ export class GroupListComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteGroupMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((item: any) => !isNil(item)),
+        switchMap((item: any) => {
+          return this.apollo.mutate<DeleteGroupMutationResponse>({
             mutation: DELETE_GROUP,
             variables: {
               id: item.id,
             },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: item.title,
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: item.title,
-                  })
-                );
-              }
-              this.getGroups();
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: item.title,
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: item.title,
+              })
+            );
+          }
+          this.getGroups();
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   override ngOnDestroy(): void {

@@ -48,8 +48,14 @@ import { GridComponent } from './grid/grid.component';
 import { DateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, from, merge, Subject } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  map,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
+import { firstValueFrom, from, merge, of, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -591,62 +597,80 @@ export class CoreGridComponent
           draft: true,
         },
       })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        if (data?.editRecord.data) {
-          const editedData = data.editRecord.data;
-          this.apollo
+      .pipe(
+        filter(({ data }) => !isNil(data?.editRecord.data)),
+        switchMap(({ data }) => {
+          const editedData = data?.editRecord.data;
+          return this.apollo
             .query<ResourceQueryResponse>({
               query: GET_RESOURCE_QUERY_NAME,
               variables: {
                 id: this.settings.resource,
               },
             })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(({ data }) => {
-              const queryName = data.resource.singleQueryName;
-              if (queryName) {
-                const query = this.queryBuilder.buildQuery(
-                  {
-                    query: {
-                      ...this.settings.query,
-                      name: queryName,
-                    },
+            .pipe(
+              map((data) => {
+                return {
+                  ...data,
+                  editedData,
+                };
+              })
+            );
+        }),
+        switchMap(({ data, editedData }) => {
+          const queryName = data.resource.singleQueryName;
+          let currentSubscription: any = of({
+            editedData,
+            ...(queryName && { queryName }),
+          });
+          if (queryName) {
+            const query = this.queryBuilder.buildQuery(
+              {
+                query: {
+                  ...this.settings.query,
+                  name: queryName,
+                },
+              },
+              true
+            );
+            if (query) {
+              currentSubscription = this.apollo
+                .query<any>({
+                  query,
+                  variables: {
+                    id: item.id,
+                    data: editedData,
                   },
-                  true
+                })
+                .pipe(
+                  map((data: any) => {
+                    return {
+                      ...data,
+                      editedData,
+                      ...(queryName && { queryName }),
+                    };
+                  })
                 );
-                if (query) {
-                  this.apollo
-                    .query<any>({
-                      query,
-                      variables: {
-                        id: item.id,
-                        data: editedData,
-                      },
-                    })
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe(({ data }) => {
-                      const dataItem = this.gridData.data.find(
-                        (x) => x.id === item.id
-                      );
-                      // Update data item element
-                      Object.assign(dataItem, get(data, queryName));
-                      // Update data item raw value ( used by inline edition )
-                      dataItem._meta.raw = editedData;
-                      item.saved = false;
-                      const index = this.updatedItems.findIndex(
-                        (x) => x.id === item.id
-                      );
-                      this.updatedItems.splice(index, 1, {
-                        id: item.id,
-                        ...editedData,
-                      });
-                      this.loadItems();
-                    });
-                }
-              }
-            });
-        }
+            }
+          }
+          return currentSubscription;
+        }),
+        filter((res: any) => !isNil(res.queryName)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((res: any) => {
+        const dataItem = this.gridData.data.find((x) => x.id === item.id);
+        // Update data item element
+        Object.assign(dataItem, get(res.data, res.queryName));
+        // Update data item raw value ( used by inline edition )
+        dataItem._meta.raw = res.editedData;
+        item.saved = false;
+        const index = this.updatedItems.findIndex((x) => x.id === item.id);
+        this.updatedItems.splice(index, 1, {
+          id: item.id,
+          ...res.editedData,
+        });
+        this.loadItems();
       });
   }
 
@@ -1208,22 +1232,23 @@ export class CoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<EditRecordMutationResponse>({
             mutation: DELETE_RECORDS,
             variables: {
               ids,
             },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
-            this.reloadData();
-            this.layoutService.setRightSidenav(null);
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.reloadData();
+        this.layoutService.setRightSidenav(null);
+      });
   }
 
   /**
@@ -1331,40 +1356,39 @@ export class CoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: record.id,
               version: version.id,
             },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.reloadData();
-                this.layoutService.setRightSidenav(null);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataNotRecovered'),
+              { error: true }
+            );
+          } else {
+            this.reloadData();
+            this.layoutService.setRightSidenav(null);
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataRecovered')
+            );
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   // === EXPORT ===

@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, UntypedFormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
@@ -58,7 +58,8 @@ export class TagboxComponent
   public showInput = false;
   /** Timeout to add */
   private addTimeoutListener!: NodeJS.Timeout;
-
+  /** Input value changes subscription */
+  private inputValueChangesSubscription!: Subscription;
   // === OUTPUT CONTROL ===
   /** Output control */
   @Input() control!: FormControl;
@@ -88,8 +89,10 @@ export class TagboxComponent
             .filter((x: any) => x);
       this.allChoices = choices;
       this.setAvailableChoices();
-
-      this.inputControl.valueChanges
+      if (this.inputValueChangesSubscription) {
+        this.inputValueChangesSubscription.unsubscribe();
+      }
+      this.inputValueChangesSubscription = this.inputControl.valueChanges
         .pipe(startWith(''), takeUntil(this.destroy$))
         .subscribe({
           next: (value: string) => {
@@ -196,6 +199,9 @@ export class TagboxComponent
     super.ngOnDestroy();
     if (this.addTimeoutListener) {
       clearTimeout(this.addTimeoutListener);
+    }
+    if (this.inputValueChangesSubscription) {
+      this.inputValueChangesSubscription.unsubscribe();
     }
   }
 }

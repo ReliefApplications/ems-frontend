@@ -56,8 +56,7 @@ export class SeriesMappingComponent
         (controlName) => this.formGroup.get(controlName)?.valueChanges || 0
       )
     )
-      .pipe(startWith(null), delay(100))
-      .pipe(takeUntil(this.destroy$))
+      .pipe(startWith(null), delay(100), takeUntil(this.destroy$))
       .subscribe(() => {
         for (const controlName of this.controlNames) {
           const excludedFields: string[] = [];

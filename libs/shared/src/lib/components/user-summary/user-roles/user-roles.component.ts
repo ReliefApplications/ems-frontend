@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Application } from '../../../models/application.model';
 import { User } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth/auth.service';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /** Component for the roles tab of the user summary */
 @Component({
@@ -9,7 +11,7 @@ import { AuthService } from '../../../services/auth/auth.service';
   templateUrl: './user-roles.component.html',
   styleUrls: ['./user-roles.component.scss'],
 })
-export class UserRolesComponent implements OnInit {
+export class UserRolesComponent extends UnsubscribeComponent implements OnInit {
   /** User */
   @Input() user!: User;
   /** Application */
@@ -28,17 +30,21 @@ export class UserRolesComponent implements OnInit {
    *
    * @param authService Shared auth service
    */
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    super();
+  }
 
   async ngOnInit(): Promise<void> {
     this.canSeeGroups = await new Promise<boolean>((resolve) => {
-      this.authService.user$.subscribe((user) => {
-        // can_see_groups is a permission that is only available globally
-        // therefore no need to check against the current application
-        resolve(
-          user?.permissions?.some((p) => p.type === 'can_see_groups') ?? false
-        );
-      });
+      this.authService.user$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((user) => {
+          // can_see_groups is a permission that is only available globally
+          // therefore no need to check against the current application
+          resolve(
+            user?.permissions?.some((p) => p.type === 'can_see_groups') ?? false
+          );
+        });
     });
   }
 }
