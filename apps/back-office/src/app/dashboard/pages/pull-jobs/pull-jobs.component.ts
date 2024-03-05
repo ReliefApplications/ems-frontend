@@ -21,8 +21,9 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ApolloQueryResult } from '@apollo/client';
-import { takeUntil } from 'rxjs';
+import { filter, map, switchMap, takeUntil } from 'rxjs';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /**
  * Limit of pull jobs shown at once.
@@ -152,75 +153,82 @@ export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
         channels: this.channels,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variables = {
-          name: value.name,
-          status: value.status,
-          apiConfiguration: value.apiConfiguration,
-        };
-        Object.assign(
-          variables,
-          value.url && { url: value.url },
-          value.path && { path: value.path },
-          value.schedule && { schedule: value.schedule },
-          value.convertTo && { convertTo: value.convertTo },
-          value.channel && { channel: value.channel },
-          value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
-          value.uniqueIdentifiers && {
-            uniqueIdentifiers: value.uniqueIdentifiers,
-          }
-        );
-        this.apollo
-          .mutate<AddPullJobMutationResponse>({
-            mutation: ADD_PULL_JOB,
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value) => {
+          const variables = {
+            name: value.name,
+            status: value.status,
+            apiConfiguration: value.apiConfiguration,
+          };
+          Object.assign(
             variables,
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.pullJob.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
+            value.url && { url: value.url },
+            value.path && { path: value.path },
+            value.schedule && { schedule: value.schedule },
+            value.convertTo && { convertTo: value.convertTo },
+            value.channel && { channel: value.channel },
+            value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
+            value.uniqueIdentifiers && {
+              uniqueIdentifiers: value.uniqueIdentifiers,
+            }
+          );
+          return this.apollo
+            .mutate<AddPullJobMutationResponse>({
+              mutation: ADD_PULL_JOB,
+              variables,
+            })
+            .pipe(
+              map(({ errors, data }) => {
+                return {
+                  errors,
+                  data,
+                  pulljobName: value.name,
+                };
+              })
+            );
+        }),
+
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, data, pulljobName }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate
+                  .instant('common.pullJob.one')
+                  .toLowerCase(),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data?.addPullJob) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate.instant('common.pullJob.one'),
+                  value: pulljobName,
+                })
+              );
+              if (this.cachedPullJobs.length === this.pageInfo.length) {
+                this.cachedPullJobs = this.cachedPullJobs.concat([
+                  data?.addPullJob,
+                ]);
+                this.pullJobs = this.cachedPullJobs.slice(
+                  ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+                  ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
                 );
-              } else {
-                if (data?.addPullJob) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate.instant('common.pullJob.one'),
-                        value: value.name,
-                      }
-                    )
-                  );
-                  if (this.cachedPullJobs.length === this.pageInfo.length) {
-                    this.cachedPullJobs = this.cachedPullJobs.concat([
-                      data?.addPullJob,
-                    ]);
-                    this.pullJobs = this.cachedPullJobs.slice(
-                      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-                      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-                    );
-                  }
-                  this.pageInfo.length += 1;
-                }
               }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              this.pageInfo.length += 1;
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**
@@ -242,55 +250,52 @@ export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
-          if (value) {
-            this.apollo
-              .mutate<DeletePullJobMutationResponse>({
-                mutation: DELETE_PULL_JOB,
-                variables: {
-                  id: element.id,
-                },
-              })
-              .subscribe({
-                next: ({ errors, data }) => {
-                  if (errors) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'common.notifications.objectNotDeleted',
-                        {
-                          value: this.translate.instant('common.pullJob.one'),
-                          error: errors ? errors[0].message : '',
-                        }
-                      ),
-                      { error: true }
-                    );
-                  } else {
-                    if (data?.deletePullJob) {
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'common.notifications.objectDeleted',
-                          {
-                            value: this.translate.instant('common.pullJob.one'),
-                          }
-                        )
-                      );
-                      this.cachedPullJobs = this.cachedPullJobs.filter(
-                        (x) => x.id !== data?.deletePullJob.id
-                      );
-                      this.pageInfo.length -= 1;
-                      this.pullJobs = this.cachedPullJobs.slice(
-                        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-                        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-                      );
-                    }
+        .pipe(
+          filter((value: any) => !isNil(value)),
+          switchMap(() => {
+            return this.apollo.mutate<DeletePullJobMutationResponse>({
+              mutation: DELETE_PULL_JOB,
+              variables: {
+                id: element.id,
+              },
+            });
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.pullJob.one'),
+                    error: errors ? errors[0].message : '',
                   }
-                },
-                error: (err) => {
-                  this.snackBar.openSnackBar(err.message, { error: true });
-                },
-              });
-          }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data?.deletePullJob) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.pullJob.one'),
+                  })
+                );
+                this.cachedPullJobs = this.cachedPullJobs.filter(
+                  (x) => x.id !== data?.deletePullJob.id
+                );
+                this.pageInfo.length -= 1;
+                this.pullJobs = this.cachedPullJobs.slice(
+                  ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+                  ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+                );
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -310,80 +315,86 @@ export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
         pullJob: element,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variables = {
-          id: element.id,
-        };
-        Object.assign(
-          variables,
-          value.name && { name: value.name },
-          value.status && { status: value.status },
-          value.apiConfiguration && {
-            apiConfiguration: value.apiConfiguration,
-          },
-          value.url && { url: value.url },
-          value.path && { path: value.path },
-          value.schedule && { schedule: value.schedule },
-          value.convertTo && { convertTo: value.convertTo },
-          value.channel && { channel: value.channel },
-          value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
-          value.uniqueIdentifiers && {
-            uniqueIdentifiers: value.uniqueIdentifiers,
-          }
-        );
-        this.apollo
-          .mutate<EditPullJobMutationResponse>({
-            mutation: EDIT_PULL_JOB,
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value) => {
+          const variables = {
+            id: element.id,
+          };
+          Object.assign(
             variables,
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotUpdated',
-                    {
-                      value: this.translate.instant('common.pullJob.one'),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data?.editPullJob) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectUpdated',
-                      {
-                        type: this.translate
-                          .instant('common.pullJob.one')
-                          .toLowerCase(),
-                        value: value.name,
-                      }
-                    )
-                  );
-                  this.cachedPullJobs = this.cachedPullJobs.map(
-                    (pullJob: PullJob) => {
-                      if (pullJob.id === data?.editPullJob.id) {
-                        pullJob = data?.editPullJob || pullJob;
-                      }
-                      return pullJob;
-                    }
-                  );
-                  this.pullJobs = this.cachedPullJobs.slice(
-                    ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-                    ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-                  );
+            value.name && { name: value.name },
+            value.status && { status: value.status },
+            value.apiConfiguration && {
+              apiConfiguration: value.apiConfiguration,
+            },
+            value.url && { url: value.url },
+            value.path && { path: value.path },
+            value.schedule && { schedule: value.schedule },
+            value.convertTo && { convertTo: value.convertTo },
+            value.channel && { channel: value.channel },
+            value.rawMapping && { mapping: JSON.parse(value.rawMapping) },
+            value.uniqueIdentifiers && {
+              uniqueIdentifiers: value.uniqueIdentifiers,
+            }
+          );
+          return this.apollo
+            .mutate<EditPullJobMutationResponse>({
+              mutation: EDIT_PULL_JOB,
+              variables,
+            })
+            .pipe(
+              map(({ errors, data }) => {
+                return {
+                  errors,
+                  data,
+                  pulljobName: value.name,
+                };
+              })
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, data, pulljobName }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                value: this.translate.instant('common.pullJob.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data?.editPullJob) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate
+                    .instant('common.pullJob.one')
+                    .toLowerCase(),
+                  value: pulljobName,
+                })
+              );
+              this.cachedPullJobs = this.cachedPullJobs.map(
+                (pullJob: PullJob) => {
+                  if (pullJob.id === data?.editPullJob.id) {
+                    pullJob = data?.editPullJob || pullJob;
+                  }
+                  return pullJob;
                 }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              );
+              this.pullJobs = this.cachedPullJobs.slice(
+                ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+                ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+              );
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**

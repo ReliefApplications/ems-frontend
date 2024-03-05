@@ -13,9 +13,10 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { GET_RESOURCE_LAYOUTS } from './graphql/queries';
+import { isNil } from 'lodash';
 
 /**
  * Layouts tab of resource page
@@ -103,9 +104,11 @@ export class LayoutsTabComponent
       },
     });
 
-    this.layoutsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.layoutsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -184,18 +187,20 @@ export class LayoutsTabComponent
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService
-          .addLayout(value, this.resource.id)
-          .subscribe(({ data }: any) => {
-            if (data.addLayout) {
-              this.layouts = [...this.layouts, data?.addLayout];
-              this.pageInfo.length += 1;
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.gridLayoutService.addLayout(value, this.resource.id);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }: any) => {
+        if (data.addLayout) {
+          this.layouts = [...this.layouts, data?.addLayout];
+          this.pageInfo.length += 1;
+        }
+      });
   }
 
   /**
@@ -212,23 +217,29 @@ export class LayoutsTabComponent
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService
-          .editLayout(layout, value, this.resource.id)
-          .subscribe(({ data }: any) => {
-            if (data.editLayout) {
-              this.layouts = this.layouts.map((x: any) => {
-                if (x.id === layout.id) {
-                  return data.editLayout;
-                } else {
-                  return x;
-                }
-              });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.gridLayoutService.editLayout(
+            layout,
+            value,
+            this.resource.id
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }: any) => {
+        if (data.editLayout) {
+          this.layouts = this.layouts.map((x: any) => {
+            if (x.id === layout.id) {
+              return data.editLayout;
+            } else {
+              return x;
             }
           });
-      }
-    });
+        }
+      });
   }
 
   /**
@@ -249,20 +260,20 @@ export class LayoutsTabComponent
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService
-          .deleteLayout(layout, this.resource.id)
-          .subscribe(({ data }: any) => {
-            if (data.deleteLayout) {
-              this.layouts = this.layouts.filter(
-                (x: any) => x.id !== layout.id
-              );
-              this.pageInfo.length -= 1;
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.gridLayoutService.deleteLayout(layout, this.resource.id);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }: any) => {
+        if (data.deleteLayout) {
+          this.layouts = this.layouts.filter((x: any) => x.id !== layout.id);
+          this.pageInfo.length -= 1;
+        }
+      });
   }
 
   /**

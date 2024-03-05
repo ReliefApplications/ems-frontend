@@ -17,7 +17,7 @@ import {
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 /**
  * Application preview form page component.
@@ -85,19 +85,20 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               id: this.id,
             },
           })
-          .subscribe((res) => {
-            this.step = res.data.step;
-            this.apollo
-              .query<FormQueryResponse>({
+          .pipe(
+            switchMap((res) => {
+              this.step = res.data.step;
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
                 },
-              })
-              .subscribe(({ data, loading }) => {
-                this.form = data.form;
-                this.loading = loading;
               });
+            })
+          )
+          .subscribe(({ data, loading }) => {
+            this.form = data.form;
+            this.loading = loading;
           });
       } else {
         this.apollo
@@ -107,21 +108,22 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               id: this.id,
             },
           })
-          .subscribe((res) => {
-            this.page = res.data.page;
-            this.apollo
-              .query<FormQueryResponse>({
+          .pipe(
+            switchMap((res) => {
+              this.page = res.data.page;
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.page.content,
                 },
-              })
-              .subscribe(({ data, loading }) => {
-                if (data) {
-                  this.form = data.form;
-                }
-                this.loading = loading;
               });
+            })
+          )
+          .subscribe(({ data, loading }) => {
+            if (data) {
+              this.form = data.form;
+            }
+            this.loading = loading;
           });
       }
     });

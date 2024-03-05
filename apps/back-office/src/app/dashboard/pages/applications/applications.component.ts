@@ -20,7 +20,7 @@ import {
 } from './graphql/mutations';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   TableSort,
@@ -29,6 +29,7 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { GET_APPLICATIONS } from './graphql/queries';
+import { isNil } from 'lodash';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -245,49 +246,48 @@ export class ApplicationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const id = element.id;
-        this.apollo
-          .mutate<DeleteApplicationMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          const id = element.id;
+          return this.apollo.mutate<DeleteApplicationMutationResponse>({
             mutation: DELETE_APPLICATION,
             variables: {
               id,
             },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant('common.application.one'),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.application.one'),
-                  })
-                );
-                this.applications = this.applications.filter(
-                  (x) => x.id !== data?.deleteApplication.id
-                );
-                this.newApplications = this.newApplications.filter(
-                  (x) => x.id !== data?.deleteApplication.id
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.application.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.application.one'),
+              })
+            );
+            this.applications = this.applications.filter(
+              (x) => x.id !== data?.deleteApplication.id
+            );
+            this.newApplications = this.newApplications.filter(
+              (x) => x.id !== data?.deleteApplication.id
+            );
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**

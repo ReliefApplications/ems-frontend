@@ -24,9 +24,10 @@ import {
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
+import { filter, map, switchMap, takeUntil } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ApolloQueryResult } from '@apollo/client';
+import { isNil } from 'lodash';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -120,7 +121,8 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
       .watchQuery<RolesQueryResponse>({
         query: GET_ROLES,
       })
-      .valueChanges.subscribe(({ data, loading }) => {
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
         this.roles = data.roles;
         this.loading = loading;
       });
@@ -155,52 +157,63 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
         uploadPath: 'upload/invite',
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddUsersMutationResponse>({
-            mutation: ADD_USERS,
-            variables: {
-              users: value,
-              application: this.roles[0].application?.id,
-            },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (!errors) {
-                if (data?.addUsers.length) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.plural')
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.singular')
-                  );
-                }
-                this.fetchUsers(true);
-              } else {
-                if (value.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.plural',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.singular',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
-                }
-              }
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.apollo
+            .mutate<AddUsersMutationResponse>({
+              mutation: ADD_USERS,
+              variables: {
+                users: value,
+                application: this.roles[0].application?.id,
+              },
+            })
+            .pipe(
+              map(({ data, errors }) => {
+                return {
+                  data,
+                  errors,
+                  usersLength: value.length,
+                };
+              })
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, data, usersLength }) => {
+          if (!errors) {
+            if (data?.addUsers.length) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('components.users.onInvite.plural')
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('components.users.onInvite.singular')
+              );
+            }
+            this.fetchUsers(true);
+          } else {
+            if (usersLength > 1) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('components.users.onNotInvite.plural', {
+                  error: errors[0].message,
+                }),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.users.onNotInvite.singular',
+                  { error: errors[0].message }
+                ),
+                { error: true }
+              );
+            }
+          }
+        },
+      });
   }
 
   /**
@@ -235,76 +248,84 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const ids = users.map((u) => u.id);
-        this.loading = true;
-        this.selection.clear();
-
-        this.apollo
-          .mutate<DeleteUsersMutationResponse>({
-            mutation: DELETE_USERS,
-            variables: { ids },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                if (ids.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.plural',
-                      { error: errors ? errors[0].message : '' }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.singular',
-                      { error: errors ? errors[0].message : '' }
-                    ),
-                    { error: true }
-                  );
-                }
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          const ids = users.map((u) => u.id);
+          this.loading = true;
+          this.selection.clear();
+          return this.apollo
+            .mutate<DeleteUsersMutationResponse>({
+              mutation: DELETE_USERS,
+              variables: { ids },
+            })
+            .pipe(
+              map(({ data, errors }) => {
+                return {
+                  data,
+                  errors,
+                  deletedUsers: ids.length,
+                };
+              })
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, data, deletedUsers }) => {
+          if (errors) {
+            if (deletedUsers > 1) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('components.users.onNotDelete.plural', {
+                  error: errors ? errors[0].message : '',
+                }),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.users.onNotDelete.singular',
+                  { error: errors ? errors[0].message : '' }
+                ),
+                { error: true }
+              );
+            }
+          } else {
+            this.loading = false;
+            if (data?.deleteUsers) {
+              if (data.deleteUsers > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onDelete.plural')
+                );
               } else {
-                this.loading = false;
-                if (data?.deleteUsers) {
-                  if (data.deleteUsers > 1) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant('components.users.onDelete.plural')
-                    );
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onDelete.singular'
-                      )
-                    );
-                  }
-                  this.fetchUsers(true);
-                } else {
-                  if (ids.length > 1) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onNotDelete.plural',
-                        { error: '' }
-                      ),
-                      { error: true }
-                    );
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onNotDelete.singular',
-                        { error: '' }
-                      ),
-                      { error: true }
-                    );
-                  }
-                }
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onDelete.singular')
+                );
               }
-            },
-          });
-      }
-    });
+              this.fetchUsers(true);
+            } else {
+              if (deletedUsers > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotDelete.plural',
+                    { error: '' }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotDelete.singular',
+                    { error: '' }
+                  ),
+                  { error: true }
+                );
+              }
+            }
+          }
+        },
+      });
   }
 
   /**

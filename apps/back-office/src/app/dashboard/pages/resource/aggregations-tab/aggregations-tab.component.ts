@@ -14,8 +14,9 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /**
  * Aggregations tab of resource page
@@ -102,9 +103,11 @@ export class AggregationsTabComponent
       },
     });
 
-    this.aggregationsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.aggregationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -185,18 +188,22 @@ export class AggregationsTabComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .addAggregation(value, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.addAggregation) {
-              this.aggregations = [...this.aggregations, data?.addAggregation];
-              this.pageInfo.length += 1;
-            }
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.aggregationService.addAggregation(value, {
+            resource: this.resource.id,
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }: any) => {
+        if (data.addAggregation) {
+          this.aggregations = [...this.aggregations, data?.addAggregation];
+          this.pageInfo.length += 1;
+        }
+      });
   }
 
   /**
@@ -215,23 +222,27 @@ export class AggregationsTabComponent
         aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .editAggregation(aggregation, value, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.editAggregation) {
-              this.aggregations = this.aggregations.map((x: any) => {
-                if (x.id === aggregation.id) {
-                  return data.editAggregation;
-                } else {
-                  return x;
-                }
-              });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.aggregationService.editAggregation(aggregation, value, {
+            resource: this.resource.id,
+          });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }: any) => {
+        if (data.editAggregation) {
+          this.aggregations = this.aggregations.map((x: any) => {
+            if (x.id === aggregation.id) {
+              return data.editAggregation;
+            } else {
+              return x;
             }
           });
-      }
-    });
+        }
+      });
   }
 
   /**
@@ -252,20 +263,24 @@ export class AggregationsTabComponent
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .deleteAggregation(aggregation, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.deleteAggregation) {
-              this.aggregations = this.aggregations.filter(
-                (x: any) => x.id !== aggregation.id
-              );
-              this.pageInfo.length -= 1;
-            }
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.aggregationService.deleteAggregation(aggregation, {
+            resource: this.resource.id,
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }: any) => {
+        if (data.deleteAggregation) {
+          this.aggregations = this.aggregations.filter(
+            (x: any) => x.id !== aggregation.id
+          );
+          this.pageInfo.length -= 1;
+        }
+      });
   }
 
   /**
