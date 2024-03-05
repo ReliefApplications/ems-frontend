@@ -29,7 +29,7 @@ import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { ContextService } from '../../services/context/context.service';
 import { isEqual } from 'lodash';
-import { Model } from 'survey-core';
+import { Model, SurveyModel } from 'survey-core';
 
 /**
  * Component for the main layout of the platform
@@ -487,28 +487,30 @@ export class LayoutComponent
    */
   onAttach(e: any) {
     if (this.contextService.shadowDomService.isShadowRoot) {
-      const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
-        e.linkedSurvey
-      );
-      this.contextService.filter.getValue();
-      // Removed the logic because in some cases, the widgets won't correctly get the last value from the survey
-      // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
-      // if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
-      //   if (this.attachViewFilterTriggerListener) {
-      //     clearTimeout(this.attachViewFilterTriggerListener);
-      //   }
-      //   this.attachViewFilterTriggerListener = setTimeout(() => {
-      //     this.contextService.filter.next(e.lastStateOfContextFilters);
-      //     this.contextService.filter.next(newFilterValues);
-      //   }, 0);
-      // }
-      if (this.attachViewFilterTriggerListener) {
-        clearTimeout(this.attachViewFilterTriggerListener);
+      if (e.linkedSurvey) {
+        const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
+          e.linkedSurvey
+        );
+        this.contextService.filter.getValue();
+        // Removed the logic because in some cases, the widgets won't correctly get the last value from the survey
+        // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
+        // if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
+        //   if (this.attachViewFilterTriggerListener) {
+        //     clearTimeout(this.attachViewFilterTriggerListener);
+        //   }
+        //   this.attachViewFilterTriggerListener = setTimeout(() => {
+        //     this.contextService.filter.next(e.lastStateOfContextFilters);
+        //     this.contextService.filter.next(newFilterValues);
+        //   }, 0);
+        // }
+        if (this.attachViewFilterTriggerListener) {
+          clearTimeout(this.attachViewFilterTriggerListener);
+        }
+        this.attachViewFilterTriggerListener = setTimeout(() => {
+          this.contextService.filter.next(e.lastStateOfContextFilters);
+          this.contextService.filter.next(newFilterValues);
+        }, 0);
       }
-      this.attachViewFilterTriggerListener = setTimeout(() => {
-        this.contextService.filter.next(e.lastStateOfContextFilters);
-        this.contextService.filter.next(newFilterValues);
-      }, 0);
     }
     if (e.onAttach) {
       e.onAttach();
