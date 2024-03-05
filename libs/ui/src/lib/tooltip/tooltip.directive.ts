@@ -68,6 +68,18 @@ export class TooltipDirective implements OnInit, OnDestroy {
         },
         {
           originX: 'end',
+          originY: 'bottom',
+          overlayX: 'end',
+          overlayY: 'top',
+        },
+        {
+          originX: 'center',
+          originY: 'top',
+          overlayX: 'center',
+          overlayY: 'bottom',
+        },
+        {
+          originX: 'end',
           originY: 'top',
           overlayX: 'end',
           overlayY: 'bottom',
