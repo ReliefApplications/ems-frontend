@@ -39,7 +39,11 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, cloneDeep, isNaN, isNil } from 'lodash';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  ShadowDomService,
+  SnackbarService,
+  UIPageChangeEvent,
+} from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { ContextService } from '../../../services/context/context.service';
@@ -265,6 +269,7 @@ export class SummaryCardComponent
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
    * @param dashboardService Shared dashboard service
+   * @param shadowDomService Shadow Dom service
    */
   constructor(
     private apollo: Apollo,
@@ -279,12 +284,36 @@ export class SummaryCardComponent
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
     private renderer: Renderer2,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private shadowDomService: ShadowDomService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    const defaultPageSize = localStorage.getItem('defaultPageSize');
+    if (defaultPageSize) {
+      this.pageInfo.pageSize = +defaultPageSize;
+    }
+    if (this.shadowDomService.isShadowRoot) {
+      this.dashboardService.defaultPageSize$
+        .pipe(
+          filter(
+            (pageSize: number) =>
+              pageSize !== 0 && pageSize !== this.pageInfo.pageSize
+          ),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((pageSize: number) => {
+          this.onPage({
+            pageIndex: this.pageInfo.pageIndex,
+            pageSize,
+            skip: this.pageInfo.skip,
+            totalItems: this.pageInfo.length,
+            previousPageIndex: this.pageInfo.pageIndex,
+          });
+        });
+    }
     // TODO: Replace once we have a proper UI
     this.contextFilters = this.widget.settings.contextFilters
       ? JSON.parse(this.widget.settings.contextFilters)
@@ -1036,6 +1065,13 @@ export class SummaryCardComponent
    */
   public onPage(event: UIPageChangeEvent): void {
     this.pageInfo.pageSize = event.pageSize;
+    if (this.shadowDomService.isShadowRoot) {
+      this.dashboardService.defaultPageSize.next(this.pageInfo.pageSize);
+      localStorage.setItem(
+        'defaultPageSize',
+        this.pageInfo.pageSize.toString()
+      );
+    }
     this.pageInfo.skip = event.skip;
     this.pageInfo.pageIndex = event.pageIndex;
 

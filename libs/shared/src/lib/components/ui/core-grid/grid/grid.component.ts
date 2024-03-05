@@ -42,12 +42,21 @@ import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  takeUntil,
+} from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection, isNil, has, isEqual } from 'lodash';
 import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService, TooltipDirective } from '@oort-front/ui';
+import {
+  ShadowDomService,
+  SnackbarService,
+  TooltipDirective,
+} from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
 import { WidgetComponent } from '../../../widget/widget.component';
@@ -301,6 +310,7 @@ export class GridComponent
    * @param el Ref to html element
    * @param document document
    * @param popupService Kendo popup service
+   * @param shadowDomService Shadow Dom service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -315,13 +325,30 @@ export class GridComponent
     private snackBar: SnackbarService,
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private shadowDomService: ShadowDomService
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
   }
 
   ngOnInit(): void {
+    const defaultPageSize = localStorage.getItem('defaultPageSize');
+    if (defaultPageSize) {
+      this.pageSize = +defaultPageSize;
+    }
+    if (this.shadowDomService.isShadowRoot) {
+      this.dashboardService.defaultPageSize$
+        .pipe(
+          filter(
+            (pageSize: number) => pageSize !== 0 && pageSize !== this.pageSize
+          ),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((pageSize: number) => {
+          this.onPageChange({ skip: this.skip, take: pageSize });
+        });
+    }
     this.setSelectedItems();
     if (this.closeEditorListener) {
       this.closeEditorListener();
@@ -475,6 +502,10 @@ export class GridComponent
     if (!this.loadingRecords) {
       this.skip = page.skip;
       this.pageSize = page.take;
+      if (this.shadowDomService.isShadowRoot) {
+        this.dashboardService.defaultPageSize.next(this.pageSize);
+        localStorage.setItem('defaultPageSize', this.pageSize.toString());
+      }
       this.pageChange.emit(page);
     }
   }

@@ -31,6 +31,12 @@ export class DashboardService {
   public widgets: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   /** Observable of current loaded dashboard widgets */
   public widgets$ = this.widgets.asObservable();
+  /** Default shared page size value for widgets in web components */
+  public defaultPageSize: BehaviorSubject<number> = new BehaviorSubject<number>(
+    0
+  );
+  /** Observable of current default page size */
+  public defaultPageSize$ = this.defaultPageSize.asObservable();
 
   /** @returns To listen when dashboard widgets that can be hidden refreshes its contents */
   get widgetContentRefreshed$(): Observable<any> {
