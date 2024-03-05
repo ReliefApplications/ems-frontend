@@ -6,6 +6,7 @@ import set from 'lodash/set';
 import { flattenDeep, get, isArray, isNil, isObject, uniq } from 'lodash';
 import * as L from 'leaflet';
 import REGIONS from './regions';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 
 /** Available admin identifiers */
 type AdminIdentifier = 'admin0.iso2code' | 'admin0.iso3code' | 'admin0.id';
@@ -202,5 +203,16 @@ export class MapPolygonsService {
         }, 500);
       }
     });
+  }
+
+  /**
+   * Find country from latlng
+   *
+   * @param latlng lat lng point
+   * @returns Country ( if any )
+   */
+  public findCountryFromPoint(latlng: L.LatLng) {
+    const point = [latlng.lng, latlng.lat];
+    return this.admin0s.find((x) => booleanPointInPolygon(point, x.polygons));
   }
 }

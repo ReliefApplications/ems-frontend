@@ -229,6 +229,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noData": "******",
 		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -920,6 +921,10 @@
 						"all": "******",
 						"current": "******"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "******",
+					"viewFullscreen": "******"
 				}
 			}
 		},
@@ -2306,6 +2311,7 @@
 				"border": "******",
 				"expand": "******",
 				"header": "******",
+				"hideEmpty": "******",
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
@@ -2334,6 +2340,7 @@
 					"help": "******",
 					"restore": "******"
 				},
+				"hideEmpty": "******",
 				"selector": {
 					"collapse": "******",
 					"expand": "******"

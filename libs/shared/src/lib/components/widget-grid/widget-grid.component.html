@@ -32,17 +32,17 @@
       <gridster-item
         [item]="widget"
         class="max-w-full"
-        *ngFor="let widget of widgets; let i = index"
+        *ngFor="let widget of visibleWidgets; let i = index"
       >
-        <shared-widget
-          #widgetElement
-          [widget]="widget"
-          (changeStep)="triggerChangeStepAction($event)"
-          (edit)="onEditWidget($event)"
-          [canUpdate]="canUpdate"
-          [headerLeftTemplate]="headerLeftTemplate"
-          [headerRightTemplate]="headerRightTemplate"
-        ></shared-widget>
+          <shared-widget
+            #widgetElement
+            [widget]="widget"
+            (changeStep)="triggerChangeStepAction($event)"
+            (edit)="onEditWidget($event)"
+            [canUpdate]="canUpdate"
+            [headerLeftTemplate]="headerLeftTemplate"
+            [headerRightTemplate]="headerRightTemplate"
+          ></shared-widget>
         <!-- Left header template -->
         <ng-template #headerLeftTemplate>
           <!-- Drag n drop indicator -->

@@ -487,18 +487,21 @@ export class LayoutComponent
    */
   onAttach(e: any) {
     if (this.contextService.shadowDomService.isShadowRoot) {
-      const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
-        e.linkedSurvey
-      );
-      // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
-      if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
-        if (this.attachViewFilterTriggerListener) {
-          clearTimeout(this.attachViewFilterTriggerListener);
+      if (e.linkedSurvey) {
+        const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
+          e.linkedSurvey
+        );
+        this.contextService.filter.getValue();
+        // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
+        if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
+          if (this.attachViewFilterTriggerListener) {
+            clearTimeout(this.attachViewFilterTriggerListener);
+          }
+          this.attachViewFilterTriggerListener = setTimeout(() => {
+            this.contextService.filter.next(e.lastStateOfContextFilters);
+            this.contextService.filter.next(newFilterValues);
+          }, 0);
         }
-        this.attachViewFilterTriggerListener = setTimeout(() => {
-          this.contextService.filter.next(e.lastStateOfContextFilters);
-          this.contextService.filter.next(newFilterValues);
-        }, 0);
       }
     }
     if (e.onAttach) {
@@ -549,6 +552,8 @@ export class LayoutComponent
         });
         this.surveySharedQuestions = Array.from(new Set(surveyQuestions));
       }
+      // Reset data change trigger on component detach
+      e.linkedSurvey?.setPropertyValue('refreshData', false);
       const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
         e.linkedSurvey
       );
