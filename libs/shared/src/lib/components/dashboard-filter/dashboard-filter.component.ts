@@ -320,7 +320,16 @@ export class DashboardFilterComponent
         };
         return acc;
       }, {});
-    this.contextService.filter.next(surveyData);
+    const currentFilterValue = this.contextService.filter.value;
+    const currentSurveyQuestions = this.survey.getAllQuestions();
+    const nextFilterValue: any = surveyData;
+    const filterKeys = Object.keys(currentFilterValue);
+    filterKeys
+      .filter((key) => !currentSurveyQuestions.find((sq) => sq.name === key))
+      .forEach((key) => {
+        nextFilterValue[key] = currentFilterValue[key];
+      });
+    this.contextService.filter.next(nextFilterValue);
     this.ngZone.run(() => {
       this.quickFilters = displayValues
         .filter((question) => !!question.value)

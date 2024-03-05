@@ -97,6 +97,33 @@
             ]
           }
         },
+        "azure-prod": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.azure.prod.ts"
+            }
+          ],
+          "outputHashing": "none",
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/styles/src/lib/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
+          }
+        },
         "azure-local": {
           "fileReplacements": [
             {
