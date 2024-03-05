@@ -3,19 +3,23 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 
 /** Available date formats. */
-export type DateFormat =
-  | 'short'
-  | 'medium'
-  | 'long'
-  | 'full'
-  | 'shortDate'
-  | 'mediumDate'
-  | 'longDate'
-  | 'fullDate'
-  | 'shortTime'
-  | 'mediumTime'
-  | 'longTime'
-  | 'fullTime';
+export const DATE_FORMATS = [
+  'short',
+  'medium',
+  'long',
+  'full',
+  'shortDate',
+  'mediumDate',
+  'longDate',
+  'fullDate',
+  'shortTime',
+  'mediumTime',
+  'longTime',
+  'fullTime',
+] as const;
+
+/** Available date formats. */
+export type DateFormat = (typeof DATE_FORMATS)[number];
 
 /**
  * Pipe to translate dates and formats them according to the user preferences.

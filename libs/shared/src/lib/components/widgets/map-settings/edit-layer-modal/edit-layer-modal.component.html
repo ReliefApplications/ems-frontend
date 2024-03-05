@@ -58,6 +58,26 @@
           [mapPortal]="mapPortal"
         ></shared-layer-datasource>
       </ui-tab>
+      <!-- Timeline settings -->
+      <ui-tab *ngIf="canUseTimeline">
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="fast_forward"
+            [size]="24"
+            [uiTooltip]="'components.map.controls.timeline.title' | translate"
+          ></ui-icon>
+          <span>
+            {{ 'components.map.controls.timeline.title' | translate }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <shared-layer-timeline
+            [fields$]="fields$"
+            [form]="$any(form.get('timelineInfo'))"
+            [mapPortal]="mapPortal"
+          ></shared-layer-timeline>
+        </ng-template>
+      </ui-tab>
       <!-- Sublayers -->
       <ui-tab *ngIf="form.get('sublayers')">
         <ng-container ngProjectAs="label">

@@ -86,6 +86,7 @@ export const createLayerForm = (value?: LayerModel) => {
       Validators.required
     ),
     opacity: new FormControl(get(value, 'opacity', 1), Validators.required),
+    timelineInfo: createTimelineForm(get(value, 'timelineInfo')),
     layerDefinition: createLayerDefinitionForm(
       get(value, 'datasource.type') || 'Point',
       type,
@@ -435,6 +436,20 @@ export const createPopupInfoForm = (value: any) =>
         createFieldsInfoForm(element)
       )
     ),
+  });
+
+/**
+ * Create time dimension form group
+ *
+ * @param value time dimension value
+ * @returns time dimension form group
+ */
+export const createTimelineForm = (value?: any) =>
+  fb.group({
+    enabled: [get(value, 'enabled', false)],
+    startTimeField: [get(value, 'startTimeField', null)],
+    endTimeField: [get(value, 'endTimeField', null)],
+    dateFormat: [get(value, 'dateFormat', null)],
   });
 
 /**

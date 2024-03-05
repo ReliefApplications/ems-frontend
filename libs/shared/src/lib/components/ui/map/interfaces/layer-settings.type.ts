@@ -49,6 +49,12 @@ export interface LayerFormData {
     popupElements: PopupElement[];
     fieldsInfo?: Fields[];
   };
+  timelineInfo: {
+    enabled: boolean;
+    startTimeField: string;
+    endTimeField: string;
+    dateFormat: string;
+  };
   datasource?: {
     origin?: 'resource' | 'refData';
     resource: any;

@@ -1,6 +1,7 @@
 // Leaflet imports
 import * as L from 'leaflet';
 import 'leaflet.heat';
+import 'leaflet.timeline';
 import 'leaflet.markercluster';
 import { Feature, Geometry } from 'geojson';
 import { get, isNil, set } from 'lodash';
@@ -20,6 +21,7 @@ import {
   LayerModel,
   LayerSymbol,
   PopupInfo,
+  TimelineInfo,
 } from '../../../models/layer.model';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
@@ -34,6 +36,7 @@ import {
   icon as iconCreator,
 } from '@fortawesome/fontawesome-svg-core';
 import { getIconDefinition } from '@oort-front/ui';
+import { DatePipe } from '../../../pipes/date/date.pipe';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -136,34 +139,30 @@ const featureSatisfiesFilter = (
 
 /** Objects represent a map layer */
 export class Layer implements LayerModel {
-  // Services and classes for layer class
   /** Map popup service */
   private popupService!: MapPopupService;
   /** Map layer service */
   private layerService!: MapLayersService;
   /** Map renderer */
   private renderer!: Renderer2;
-
+  /** Date pipe service */
+  private datePipe!: DatePipe;
   /** Map layer */
   private layer: L.Layer | null = null;
-
-  // Global properties for the layer
   /** Layer id */
   public id!: string;
   /** Layer name */
   public name!: string;
   /** Layer type */
   public type!: LayerType;
-
-  // Visibility
   /** Layer visibility */
   public visibility!: boolean;
   /** Layer opacity */
   public opacity!: number;
-
-  // Layer Definition
   /** Layer definition */
   public layerDefinition?: LayerDefinition;
+  /** Timeline config */
+  public timelineInfo?: TimelineInfo;
 
   /** Popup info */
   public popupInfo: PopupInfo = {
@@ -206,6 +205,8 @@ export class Layer implements LayerModel {
   private zoomListener!: L.LeafletEventHandlerFn;
   /** Array of listeners */
   private listeners: any[] = [];
+  /** Timeline control */
+  private timelineControl: any = null;
 
   /**
    * Get layer children. Await for sub-layers to be loaded first.
@@ -267,6 +268,7 @@ export class Layer implements LayerModel {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
       this.renderer = injector.get(Renderer2);
+      this.datePipe = injector.get(DatePipe);
       this.setConfig(options);
     } else {
       throw 'No settings provided';
@@ -297,6 +299,7 @@ export class Layer implements LayerModel {
       // this.label = options.labels || null;
       this.layerDefinition = get(options, 'layerDefinition');
       this.popupInfo = get(options, 'popupInfo');
+      this.timelineInfo = get(options, 'timelineInfo');
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
@@ -830,14 +833,58 @@ export class Layer implements LayerModel {
                 (this.layer as any).id = this.id;
                 return this.layer;
               default:
-                const layer = L.geoJSON(
-                  data,
-                  geoJSONopts(
+                const getInterval = (point: Feature) => {
+                  const start =
+                    point?.properties?.[
+                      this.timelineInfo?.startTimeField || 'start'
+                    ];
+
+                  const end =
+                    point?.properties?.[
+                      this.timelineInfo?.endTimeField || 'end'
+                    ] ?? start;
+
+                  const startDate = new Date(start).getTime();
+                  if (isNaN(startDate)) {
+                    return false;
+                  }
+
+                  const endDate = new Date(end).getTime();
+                  return {
+                    start: startDate,
+                    end: endDate,
+                  };
+                };
+
+                // Call the timeline function if the timeline is enabled
+                // Otherwise, call the default geoJSON function
+                const geoJsonFunction = this.timelineInfo?.enabled
+                  ? (L as any).timeline
+                  : L.geoJSON;
+
+                const layer = geoJsonFunction(data, {
+                  ...geoJSONopts(
                     this.layerDefinition?.drawingInfo?.renderer?.symbol
                       ?.fieldForSize
-                  )
-                );
+                  ),
+                  getInterval,
+                });
 
+                if (this.timelineInfo?.enabled) {
+                  // If the control does not exist, create it
+                  if (!this.timelineControl) {
+                    const timelineControl = (L as any).timelineSliderControl({
+                      position: 'bottomleft',
+                      formatOutput: (date: string | number | Date) =>
+                        this.datePipe.transform(
+                          date,
+                          this.timelineInfo?.dateFormat ?? 'shortDate'
+                        ),
+                    });
+
+                    this.timelineControl = timelineControl;
+                  }
+                }
                 layer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(layer, map);
                   this.onAddLayer(map, layer);
@@ -851,7 +898,7 @@ export class Layer implements LayerModel {
                 this.layer = layer;
                 (this.layer as any).origin = 'app-builder';
                 (this.layer as any).id = this.id;
-                return this.layer;
+                return layer;
             }
         }
     }
@@ -869,6 +916,27 @@ export class Layer implements LayerModel {
     // Ensure that we do not subscribe multiple times to zoom event
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
+    }
+
+    // If timeline is enabled, add the control to the map
+    if (this.timelineInfo?.enabled) {
+      this.timelineControl?.addTo(map);
+
+      // Link the timeline control to the layer
+      this.timelineControl?.addTimelines(layer);
+
+      // Add some custom classes to the timeline control
+      const container = this.timelineControl.getContainer();
+      if (container) {
+        container.classList.add('min-w-96');
+        container.classList.add('m-0');
+        container.classList.add('flex');
+        container.classList.add('gap-1');
+      }
+
+      // Gets its first child html element
+      const timelineCtrl = container?.firstElementChild;
+      timelineCtrl?.classList.add('min-w-28');
     }
     // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
     if (!isNil((layer as any).shouldDisplay)) {
@@ -943,6 +1011,12 @@ export class Layer implements LayerModel {
     const legendControl = (map as any).legendControl;
     if (legendControl) {
       legendControl.removeLayer(layer);
+    }
+
+    // If timeline is enabled, remove the control from the map
+    if (this.timelineInfo?.enabled) {
+      this.timelineControl?.remove();
+      this.timelineControl.removeTimelines(layer);
     }
     if (!isNil((layer as any).shouldDisplay) || (layer as any).deleted) {
       // Ensure that we do not subscribe multiple times to zoom event

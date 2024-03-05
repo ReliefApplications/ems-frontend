@@ -1,0 +1,78 @@
+<div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+  <!-- Timeline form -->
+  <form [formGroup]="form" class="flex-1 lg:max-w-[50%]">
+    <div class="flex flex-col gap-3 w-full">
+      <div class="flex-1 flex-col">
+        <!-- Enabled -->
+        <ui-toggle formControlName="enabled">
+          <ng-container ngProjectAs="label">
+            {{ 'components.map.controls.timeline.show' | translate }}
+          </ng-container>
+        </ui-toggle>
+
+        <!-- Start date -->
+        <div
+          uiFormFieldDirective
+          class="flex-1 mt-5"
+          *ngIf="form.get('enabled')?.value"
+        >
+          <label>{{
+            'components.map.controls.timeline.time.startField' | translate
+          }}</label>
+          <ui-select-menu formControlName="startTimeField">
+            <ui-select-option
+              *ngFor="let field of fields$ | async"
+              [value]="field.name"
+            >
+              {{ field.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
+        <!-- End date -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="form.get('enabled')?.value"
+        >
+          <label>{{
+            'components.map.controls.timeline.time.stopField' | translate
+          }}</label>
+          <ui-select-menu formControlName="endTimeField">
+            <ui-select-option
+              *ngFor="let field of fields$ | async"
+              [value]="field.name"
+            >
+              {{ field.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
+        <!-- Date format -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="form.get('enabled')?.value"
+        >
+          <label>{{
+            'components.map.controls.timeline.time.dateFormat' | translate
+          }}</label>
+          <ui-select-menu formControlName="dateFormat">
+            <ui-select-option
+              *ngFor="let format of dateFormats"
+              [value]="format"
+            >
+              {{ exampleDate | date : format }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- Map -->
+  <div
+    class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0 rounded overflow-hidden"
+  >
+    <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
+  </div>
+</div>
