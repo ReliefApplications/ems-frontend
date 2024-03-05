@@ -490,16 +490,25 @@ export class LayoutComponent
       const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
         e.linkedSurvey
       );
+      this.contextService.filter.getValue();
+      // Removed the logic because in some cases, the widgets won't correctly get the last value from the survey
       // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
-      if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
-        if (this.attachViewFilterTriggerListener) {
-          clearTimeout(this.attachViewFilterTriggerListener);
-        }
-        this.attachViewFilterTriggerListener = setTimeout(() => {
-          this.contextService.filter.next(e.lastStateOfContextFilters);
-          this.contextService.filter.next(newFilterValues);
-        }, 0);
+      // if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
+      //   if (this.attachViewFilterTriggerListener) {
+      //     clearTimeout(this.attachViewFilterTriggerListener);
+      //   }
+      //   this.attachViewFilterTriggerListener = setTimeout(() => {
+      //     this.contextService.filter.next(e.lastStateOfContextFilters);
+      //     this.contextService.filter.next(newFilterValues);
+      //   }, 0);
+      // }
+      if (this.attachViewFilterTriggerListener) {
+        clearTimeout(this.attachViewFilterTriggerListener);
       }
+      this.attachViewFilterTriggerListener = setTimeout(() => {
+        this.contextService.filter.next(e.lastStateOfContextFilters);
+        this.contextService.filter.next(newFilterValues);
+      }, 0);
     }
     if (e.onAttach) {
       e.onAttach();
