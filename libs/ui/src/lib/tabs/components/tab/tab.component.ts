@@ -5,7 +5,6 @@ import {
   ContentChild,
   ElementRef,
   EventEmitter,
-  HostBinding,
   Input,
   Output,
   TemplateRef,
@@ -26,8 +25,7 @@ import { v4 as uuidv4 } from 'uuid';
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent implements AfterContentChecked, AfterContentInit {
-  /** Unique tab id, visible in the dom. */
-  @HostBinding()
+  /** Unique tab id */
   @Input()
   id = uuidv4();
   /** Whether the tab is enabled or not */
