@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ComponentRef,
+  HostBinding,
   Input,
   ViewChild,
   ViewContainerRef,
@@ -18,6 +19,10 @@ import { GridsterConfig } from 'angular-gridster2';
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent implements AfterViewInit {
+  /** Unique tab id, visible in the dom. */
+  @HostBinding()
+  @Input()
+  id!: string;
   /** Structure of the tab ( list of widgets ) */
   @Input() structure: any;
   /** Should show padding */

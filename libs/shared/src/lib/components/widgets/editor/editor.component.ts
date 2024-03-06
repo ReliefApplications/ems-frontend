@@ -7,6 +7,7 @@ import {
   Renderer2,
   ElementRef,
   Optional,
+  SkipSelf,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -140,7 +141,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     }
 
     // Check for automation rules
-    let ruleButtonIsClicked = !!event.target.dataset.ruleTarget;
+    let ruleButtonIsClicked = !!event.target.dataset?.ruleTarget;
     currentNode = event.target; // reset the node
     if (!ruleButtonIsClicked) {
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
@@ -149,11 +150,11 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         !ruleButtonIsClicked
       ) {
         currentNode = this.renderer.parentNode(currentNode);
-        ruleButtonIsClicked = !!currentNode.dataset.ruleTarget;
+        ruleButtonIsClicked = !!currentNode.dataset?.ruleTarget;
       }
     }
     if (ruleButtonIsClicked) {
-      const ruleTarget = currentNode.dataset.ruleTarget;
+      const ruleTarget = currentNode.dataset?.ruleTarget;
       const rule = this.settings.automationRules.find(
         (rule: any) => rule.id === ruleTarget
       );
@@ -233,7 +234,9 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private aggregationService: AggregationService,
     private el: ElementRef,
     private router: Router,
-    @Optional() private dashboardAutomationService: DashboardAutomationService
+    @Optional()
+    @SkipSelf()
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
   }

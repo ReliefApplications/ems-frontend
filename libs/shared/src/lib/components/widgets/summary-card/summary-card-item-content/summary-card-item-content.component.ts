@@ -7,6 +7,7 @@ import {
   OnInit,
   Optional,
   Renderer2,
+  SkipSelf,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -99,7 +100,7 @@ export class SummaryCardItemContentComponent
     }
 
     // Check for automation rules
-    let ruleButtonIsClicked = !!event.target.dataset.ruleTarget;
+    let ruleButtonIsClicked = !!event.target.dataset?.ruleTarget;
     currentNode = event.target; // reset the node
     if (!ruleButtonIsClicked) {
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
@@ -108,11 +109,11 @@ export class SummaryCardItemContentComponent
         !ruleButtonIsClicked
       ) {
         currentNode = this.renderer.parentNode(currentNode);
-        ruleButtonIsClicked = !!currentNode.dataset.ruleTarget;
+        ruleButtonIsClicked = !!currentNode.dataset?.ruleTarget;
       }
     }
     if (ruleButtonIsClicked) {
-      const ruleTarget = currentNode.dataset.ruleTarget;
+      const ruleTarget = currentNode.dataset?.ruleTarget;
       const rule = (this.settings.automationRules || []).find(
         (rule: any) => rule.id === ruleTarget
       );
@@ -180,7 +181,9 @@ export class SummaryCardItemContentComponent
     private renderer: Renderer2,
     private el: ElementRef,
     private router: Router,
-    @Optional() private dashboardAutomationService: DashboardAutomationService
+    @Optional()
+    @SkipSelf()
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
   }

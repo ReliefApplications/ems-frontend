@@ -8,7 +8,7 @@ const authConfig: AuthConfig = {
     'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
   redirectUri: 'https://ems-safe.who.int/widgets/',
   postLogoutRedirectUri: 'https://ems-safe.who.int/widgets/auth/',
-  clientId: '8e237c86-3d84-4dda-b38d-b92031d77af1',
+  clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
   scope:
     'openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user',
   responseType: 'code',
@@ -30,6 +30,6 @@ export const environment = {
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
-  tinymceBaseUrl: 'https://ems2.who.int/app-builder/tinymce',
+  tinymceBaseUrl: 'https://ems2.who.int/app-builder/tinymce/',
   i18nUrl: 'https://ems2.who.int/app-builder/i18n/',
 };

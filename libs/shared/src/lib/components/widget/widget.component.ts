@@ -47,7 +47,7 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Change step workflow event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** Id of the ticket. Visible in the dom */
+  /** Id of the widget. Visible in the dom */
   @HostBinding()
   id = `widget-${uuidv4()}`;
   /** Reference to widget inner component */
