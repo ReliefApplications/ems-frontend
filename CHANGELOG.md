@@ -1,3 +1,11 @@
+## [2.10.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.10.0...v2.10.1) (2024-03-06)
+
+
+### Bug Fixes
+
+* dashboard automation service could create dependency injection issues ([#2429](https://github.com/ReliefApplications/ems-frontend/issues/2429)) ([225ad11](https://github.com/ReliefApplications/ems-frontend/commit/225ad11acb8a04610dfff0b88a926318279cb0c3)), closes [bugfix/AB#87222](https://github.com/bugfix/AB/issues/87222)
+* in web elements, some filters could be removed ([5014636](https://github.com/ReliefApplications/ems-frontend/commit/5014636b9df3d4c9ea91a276668662196b5833f0))
+
 # [2.10.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.9.0...v2.10.0) (2024-03-01)
 
 
