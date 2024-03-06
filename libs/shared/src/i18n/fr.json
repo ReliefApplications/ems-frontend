@@ -261,6 +261,7 @@
 					"ready": "Fichier importé"
 				}
 			},
+			"formStatus": "Le statut actuel du formulaire ne permet pas son affichage.",
 			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
 			"groups": {
 				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
@@ -957,15 +958,15 @@
 					}
 				},
 				"timeline": {
-          "title": "Timeline",
-          "show": "Afficher la chronologie",
-          "time": {
-            "tooltip": "Lorsqu'elle est activée, une chronologie sera affichée sur la carte. Il vous permettra de visualiser l’évolution de vos données dans le temps.",
-            "startField": "Commencez à afficher à",
-            "stopField": "Arrêter de s'afficher à",
-            "dateFormat": "Affichage des dates"
-          }
-        }
+					"show": "Afficher la chronologie",
+					"time": {
+						"dateFormat": "Affichage des dates",
+						"startField": "Commencez à afficher à",
+						"stopField": "Arrêter de s'afficher à",
+						"tooltip": "Lorsqu'elle est activée, une chronologie sera affichée sur la carte. Il vous permettra de visualiser l’évolution de vos données dans le temps."
+					},
+					"title": "Timeline"
+				}
 			}
 		},
 		"mapping": {

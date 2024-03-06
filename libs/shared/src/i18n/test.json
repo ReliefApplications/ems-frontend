@@ -261,6 +261,7 @@
 					"ready": "******"
 				}
 			},
+			"formStatus": "******",
 			"formatInvalid": "****** {{format}} ******",
 			"groups": {
 				"error": "******",
@@ -944,6 +945,16 @@
 						"all": "******",
 						"current": "******"
 					}
+				},
+				"timeline": {
+					"show": "******",
+					"time": {
+						"dateFormat": "******",
+						"startField": "******",
+						"stopField": "******",
+						"tooltip": "******"
+					},
+					"title": "******"
 				}
 			}
 		},
