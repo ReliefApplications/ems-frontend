@@ -698,7 +698,7 @@ export class FormHelpersService {
 
   /**
    * Adds any query parameters to the survey variables
-   * These variables are accessible using the variables {queryParam.<paramName>}
+   * These variables are accessible using the variables {param.<paramName>}
    *
    * @param survey Survey instance
    */

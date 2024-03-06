@@ -123,6 +123,22 @@ export class DashboardComponent
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */
         const queryId = this.route.snapshot.queryParamMap.get('id');
+
+        // Quick fix, not sure what's causing this two run twice,
+        // the second time the id is the old one concatenated with the the context id
+        if (id?.includes('?id=')) {
+          const [newId, newQueryId] = id.split('?id=');
+          const urlArr = this.router.url.split('/');
+          // remove the "faulty" id from the url
+          urlArr.pop();
+
+          this.router.navigateByUrl(
+            urlArr.join('/') + `/${newId}?id=${newQueryId}`
+          );
+
+          return;
+        }
+
         if (id) {
           this.loadDashboard(id, queryId?.trim()).then(
             () => (this.loading = false)
@@ -212,12 +228,12 @@ export class DashboardComponent
             }),
             { error: true }
           );
-          this.router.navigate(['/applications']);
+          this.router.navigate(['/']);
         }
       })
       .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
+        this.router.navigate(['/']);
       });
   }
 

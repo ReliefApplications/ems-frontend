@@ -58,7 +58,7 @@ const QUESTION_TYPES = [
   // 'image',
   'html',
   // 'signaturepad',
-  // 'expression',
+  'expression',
   // 'matrix',
   // 'matrixdropdown',
   // 'matrixdynamic',
