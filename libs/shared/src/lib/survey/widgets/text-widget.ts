@@ -6,7 +6,6 @@ import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
 import {
   CustomWidgetCollection,
-  ItemValue,
   JsonMetadata,
   Serializer,
   SurveyModel,
@@ -21,7 +20,6 @@ import {
 } from '../components/utils/create-picker-instance';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSearchTableComponent } from '../components/field-search-table/field-search-table.component';
-import { cloneDeep } from 'lodash';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
