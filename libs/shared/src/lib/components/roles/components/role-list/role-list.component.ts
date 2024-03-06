@@ -15,9 +15,11 @@ import { GET_ROLES } from '../../graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { FormBuilder } from '@angular/forms';
+import { isNil } from 'lodash';
+import { of } from 'rxjs';
 
 /**
  * This component is used to display the back-office roles tab
@@ -125,8 +127,12 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
     this.apollo
       .query<RolesQueryResponse>({
         query: GET_ROLES,
+        variables: {
+          ...(this.inApplication && {
+            application: this.applicationService.application.getValue()?.id,
+          }),
+        },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
         this.roles = data.roles;
         this.loading = loading;
@@ -142,54 +148,64 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(AddRoleComponent, {
       data: { title: 'components.role.add.title' },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (this.inApplication) {
-          this.applicationService.addRole(value);
-        } else {
-          this.apollo
-            .mutate<AddRoleMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          let currentSubscription!: any;
+          if (this.inApplication) {
+            this.applicationService.addRole(value);
+            currentSubscription = of(null);
+          } else {
+            currentSubscription = this.apollo.mutate<AddRoleMutationResponse>({
               mutation: ADD_ROLE,
               variables: {
                 title: value.title,
               },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ errors }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotCreated',
-                      {
-                        type: this.translate
-                          .instant('common.role.one')
-                          .toLowerCase(),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate.instant('common.role.one'),
-                        value: value.title,
-                      }
-                    )
-                  );
-                  this.getRoles();
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
             });
-        }
-      }
-    });
+          }
+          return currentSubscription.pipe(
+            map((res: any) => {
+              return {
+                ...(!isNil(res) && { ...res }),
+                roleTitle: value.title,
+              };
+            })
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res: any) => {
+          if (!this.inApplication) {
+            if (res?.errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
+                    error: res.errors ? res.errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate.instant('common.role.one'),
+                  value: res.roleTitle,
+                })
+              );
+              this.getRoles();
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**
@@ -210,51 +226,62 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (this.inApplication) {
-          this.applicationService.deleteRole(item);
-        } else {
-          this.apollo
-            .mutate<DeleteRoleMutationResponse>({
-              mutation: DELETE_ROLE,
-              variables: {
-                id: item.id,
-              },
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          let currentSubscription!: any;
+          if (this.inApplication) {
+            this.applicationService.deleteRole(item);
+            currentSubscription = of(null);
+          } else {
+            currentSubscription =
+              this.apollo.mutate<DeleteRoleMutationResponse>({
+                mutation: DELETE_ROLE,
+                variables: {
+                  id: item.id,
+                },
+              });
+          }
+          return currentSubscription.pipe(
+            map((res: any) => {
+              return {
+                ...(!isNil(res) && { ...res }),
+                roleTitle: value.title,
+              };
             })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ errors }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: item.title,
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectDeleted',
-                      {
-                        value: item.title,
-                      }
-                    )
-                  );
-                  this.getRoles();
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-        }
-      }
-    });
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res: any) => {
+          if (!this.inApplication) {
+            if (res?.errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: item.title,
+                    error: res.errors ? res.errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: item.title,
+                })
+              );
+              this.getRoles();
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**

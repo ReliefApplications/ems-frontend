@@ -1883,8 +1883,19 @@ export class ApplicationService {
             notification,
           },
         })
-        .subscribe((res) => {
-          if (callback) callback(res);
+        .subscribe({
+          next: (res) => {
+            if (res.errors?.length) {
+              this.snackBar.openSnackBar(res.errors[0].message, {
+                error: true,
+              });
+            } else {
+              if (callback) callback(res);
+            }
+          },
+          error: (error) => {
+            this.snackBar.openSnackBar(error[0]?.message, { error: true });
+          },
         });
     }
   }
@@ -1906,8 +1917,19 @@ export class ApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (callback) callback(res);
+        .subscribe({
+          next: (res) => {
+            if (res.errors?.length) {
+              this.snackBar.openSnackBar(res.errors[0].message, {
+                error: true,
+              });
+            } else {
+              if (callback) callback(res);
+            }
+          },
+          error: (error) => {
+            this.snackBar.openSnackBar(error[0]?.message, { error: true });
+          },
         });
     }
   }
@@ -1935,8 +1957,19 @@ export class ApplicationService {
             notification,
           },
         })
-        .subscribe((res) => {
-          if (callback) callback(res);
+        .subscribe({
+          next: (res) => {
+            if (res.errors?.length) {
+              this.snackBar.openSnackBar(res.errors[0].message, {
+                error: true,
+              });
+            } else {
+              if (callback) callback(res);
+            }
+          },
+          error: (error) => {
+            this.snackBar.openSnackBar(error[0]?.message, { error: true });
+          },
         });
     }
   }
