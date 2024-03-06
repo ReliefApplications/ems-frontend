@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { TooltipEnableBy } from './types/tooltip-enable-by-list';
 import {
+  ConnectedPosition,
   Overlay,
   OverlayPositionBuilder,
   OverlayRef,
@@ -32,6 +33,8 @@ export class TooltipDirective implements OnInit, OnDestroy {
   @Input() uiTooltip = '';
   /** Is tooltip disabled */
   @Input() tooltipDisabled = false;
+  /** preferred position for the tooltip */
+  @Input() preferredPosition: TooltipPosition = 'bottom';
   /** Overlay reference */
   private overlayRef!: OverlayRef;
 
@@ -56,16 +59,50 @@ export class TooltipDirective implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-    const positionStrategy = this.overlayPositionBuilder
-      .flexibleConnectedTo(this.elementRef)
-      .withPositions([
-        {
+  /**
+   * transforms a tooltip position into a connected position
+   *
+   * @param position the tooltip position as a string
+   * @returns the connected position
+   */
+  private getDefaultPosition(position: TooltipPosition): ConnectedPosition {
+    switch (position) {
+      case 'bottom':
+        return {
           originX: 'center',
           originY: 'bottom',
           overlayX: 'center',
           overlayY: 'top',
-        },
+        };
+      case 'top':
+        return {
+          originX: 'center',
+          originY: 'top',
+          overlayX: 'center',
+          overlayY: 'bottom',
+        };
+      case 'right':
+        return {
+          originX: 'end',
+          originY: 'center',
+          overlayX: 'start',
+          overlayY: 'center',
+        };
+      case 'left':
+        return {
+          originX: 'start',
+          originY: 'center',
+          overlayX: 'end',
+          overlayY: 'center',
+        };
+    }
+  }
+
+  ngOnInit(): void {
+    const positionStrategy = this.overlayPositionBuilder
+      .flexibleConnectedTo(this.elementRef)
+      .withPositions([
+        this.getDefaultPosition(this.preferredPosition),
         {
           originX: 'end',
           originY: 'bottom',
@@ -148,31 +185,5 @@ export class TooltipDirective implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.removeHint();
-  }
-}
-
-/**
- * Directive that allows selecting the preferred position of the tooltip
- */
-@Directive({
-  selector: '[uiTooltipPosition]',
-})
-export class TooltipPositionDirective implements OnInit {
-  /** Tooltip position */
-  @Input('uiTooltipPosition') position: TooltipPosition = 'bottom';
-
-  /**
-   * Directive that allows selecting the preferred position of the tooltip
-   *
-   * @param elementRef Tooltip host reference
-   */
-  constructor(private elementRef: ElementRef) {}
-
-  ngOnInit() {
-    const tooltipElement = this.elementRef.nativeElement;
-    if (tooltipElement) {
-      // Add data attribute to the host element
-      tooltipElement.dataset.tooltipPosition = this.position;
-    }
   }
 }
