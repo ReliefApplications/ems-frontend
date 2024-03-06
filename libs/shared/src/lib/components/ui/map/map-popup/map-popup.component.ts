@@ -141,7 +141,6 @@ export class MapPopupComponent
     // Closing the popup manually, otherwise, the tooltip isn't destroyed properly
     this.closePopup.emit();
     let fullUrl = this.getPageUrl(navigateSettings.pageUrl as string);
-    console.log(this);
     if (navigateSettings.field) {
       const field = get(navigateSettings, 'field', '');
       const value = get(this.feature[this.currValue].properties, field);
