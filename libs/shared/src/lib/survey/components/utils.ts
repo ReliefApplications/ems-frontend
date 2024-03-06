@@ -34,11 +34,15 @@ export const buildSearchButton = (
   );
   searchButton.className = 'sd-btn !px-3 !py-1';
   if (fieldsSettingsForm) {
-    temporaryRecords.valueChanges.subscribe((res: any) => {
-      if (res) {
-        fieldsSettingsForm.temporaryRecords = res;
-      }
-    });
+    if (question._temporaryRecordsChangeSubscription) {
+      question._temporaryRecordsChangeSubscription.unsubscribe();
+    }
+    question._temporaryRecordsChangeSubscription =
+      temporaryRecords.valueChanges.subscribe((res: any) => {
+        if (res) {
+          fieldsSettingsForm.temporaryRecords = res;
+        }
+      });
     searchButton.onclick = async () => {
       const { ResourceGridModalComponent } = await import(
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
@@ -57,16 +61,20 @@ export const buildSearchButton = (
           },
           panelClass: 'closable-dialog',
         });
-        dialogRef.closed.subscribe((rows: any) => {
-          if (!rows) {
-            return;
-          }
-          if (rows.length > 0) {
-            question.value = multiselect ? rows : rows[0];
-          } else {
-            question.value = null;
-          }
-        });
+        if (question._searchButtonDialogRefSubscription) {
+          question._searchButtonDialogRefSubscription.unsubscribe();
+        }
+        question._searchButtonDialogRefSubscription =
+          dialogRef.closed.subscribe((rows: any) => {
+            if (!rows) {
+              return;
+            }
+            if (rows.length > 0) {
+              question.value = multiselect ? rows : rows[0];
+            } else {
+              question.value = null;
+            }
+          });
       });
     };
   }
@@ -118,48 +126,53 @@ export const buildAddButton = (
           width: '100vw',
           panelClass: 'full-screen-modal',
         });
-        dialogRef.closed.subscribe((result: any) => {
-          if (result) {
-            const { data } = result;
-            question.template = result.template;
-            question.draftData = {
-              ...question.draftData,
-              [data.id]: data.data,
-            };
-            // TODO: call reload method
-            // if (question.displayAsGrid && gridComponent) {
-            //   gridComponent.availableRecords.push({
-            //     value: data.id,
-            //     text: data.data[question.displayField]
-            //   });
-            // }
-            if (multiselect) {
-              const newItem = {
-                value: data.id,
-                text: data.data[question.displayField],
+        if (question._addButtonDialogRefSubscription) {
+          question._addButtonDialogRefSubscription.unsubscribe();
+        }
+        question._addButtonDialogRefSubscription = dialogRef.closed.subscribe(
+          (result: any) => {
+            if (result) {
+              const { data } = result;
+              question.template = result.template;
+              question.draftData = {
+                ...question.draftData,
+                [data.id]: data.data,
               };
-              question.contentQuestion.choices = [
-                newItem,
-                ...question.contentQuestion.choices,
-              ];
-              question.newCreatedRecords = question.newCreatedRecords
-                ? question.newCreatedRecords.concat(data.id)
-                : [data.id];
-              question.value = question.value.concat(data.id);
-            } else {
-              const newItem = {
-                value: data.id,
-                text: data.data[question.displayField],
-              };
-              question.contentQuestion.choices = [
-                newItem,
-                ...question.contentQuestion.choices,
-              ];
-              question.newCreatedRecords = data.id;
-              question.value = data.id;
+              // TODO: call reload method
+              // if (question.displayAsGrid && gridComponent) {
+              //   gridComponent.availableRecords.push({
+              //     value: data.id,
+              //     text: data.data[question.displayField]
+              //   });
+              // }
+              if (multiselect) {
+                const newItem = {
+                  value: data.id,
+                  text: data.data[question.displayField],
+                };
+                question.contentQuestion.choices = [
+                  newItem,
+                  ...question.contentQuestion.choices,
+                ];
+                question.newCreatedRecords = question.newCreatedRecords
+                  ? question.newCreatedRecords.concat(data.id)
+                  : [data.id];
+                question.value = question.value.concat(data.id);
+              } else {
+                const newItem = {
+                  value: data.id,
+                  text: data.data[question.displayField],
+                };
+                question.contentQuestion.choices = [
+                  newItem,
+                  ...question.contentQuestion.choices,
+                ];
+                question.newCreatedRecords = data.id;
+                question.value = data.id;
+              }
             }
           }
-        });
+        );
       });
     };
   }

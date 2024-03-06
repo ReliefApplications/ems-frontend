@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import {
   QuestionTextModel,
   Question as SurveyCoreQuestion,
@@ -56,6 +57,7 @@ export interface QuestionOwner extends QuestionCustomModel, GlobalProperties {
 /** Type for the users question */
 export interface QuestionUsers extends QuestionCustomModel, GlobalProperties {
   applications?: any;
+  _selectionChangeSubscription: Subscription;
 }
 
 /** Type for resource question */
@@ -81,4 +83,5 @@ export interface QuestionResource
   remove?: boolean;
   template?: string;
   draftData?: any;
+  _removeRowIdsSubscription: Subscription;
 }

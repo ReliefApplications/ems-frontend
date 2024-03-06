@@ -576,6 +576,7 @@ export const init = (
         document,
         ngZone
       );
+      const addBtn = buildAddButton(question, false, dialog, ngZone, document);
       // Hide search button by default
       searchBtn.style.display = 'none';
       // support the placeholder field
@@ -590,30 +591,11 @@ export const init = (
         (question.survey as SurveyModel).mode !== 'display' &&
         question.resource
       ) {
-        searchBtn.style.display = 'block';
-        const addBtn = buildAddButton(
-          question,
-          false,
-          dialog,
-          ngZone,
-          document
-        );
-        actionsButtons.appendChild(addBtn);
+        if (question.canSearch) {
+          searchBtn.style.display = 'block';
+        }
 
         // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
-        question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-          searchBtn.style.display = question.canSearch ? 'block' : 'none';
-        });
-        question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
-          addBtn.style.display =
-            question.addRecord && question.addTemplate ? 'block' : 'none';
-        });
-        question.registerFunctionOnPropertyValueChanged('addRecord', () => {
-          addBtn.style.display =
-            question.addRecord && question.addTemplate && !question.isReadOnly
-              ? 'block'
-              : 'none';
-        });
 
         const survey: SurveyModel = question.survey as SurveyModel;
 
@@ -623,6 +605,7 @@ export const init = (
         });
       }
       actionsButtons.appendChild(searchBtn);
+      actionsButtons.appendChild(addBtn);
       if (parentElement) {
         parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       }
@@ -630,6 +613,19 @@ export const init = (
         if (question.resource && question.canSearch) {
           searchBtn.style.display = 'block';
         }
+      });
+      question.registerFunctionOnPropertyValueChanged('canSearch', () => {
+        searchBtn.style.display = question.canSearch ? 'block' : 'none';
+      });
+      question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
+        addBtn.style.display =
+          question.addRecord && question.addTemplate ? 'block' : 'none';
+      });
+      question.registerFunctionOnPropertyValueChanged('addRecord', () => {
+        addBtn.style.display =
+          question.addRecord && question.addTemplate && !question.isReadOnly
+            ? 'block'
+            : 'none';
       });
     },
   };

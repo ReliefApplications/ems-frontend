@@ -4,6 +4,7 @@ import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { QuestionUsers } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { UsersDropdownComponent } from './users-dropdown/users-dropdown.component';
+import { takeUntil } from 'rxjs';
 
 /**
  * Inits the users component.
@@ -73,9 +74,11 @@ export const init = (
       instance.initialSelectionIDs = selectedUserIDs;
 
       // Updates the question value when the selection changes
-      instance.selectionChange.subscribe((value: string[]) => {
-        question.value = value;
-      });
+      instance.selectionChange
+        .pipe(takeUntil(instance.destroy$))
+        .subscribe((value: string[]) => {
+          question.value = value;
+        });
 
       if (question.isReadOnly) {
         instance.control.disable();

@@ -3,7 +3,7 @@ import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
 } from '../graphql/queries';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
@@ -608,16 +608,6 @@ export const init = (
       if (displayAsGridTimeoutListener) {
         clearTimeout(displayAsGridTimeoutListener);
       }
-      // hide tagbox if grid view is enable
-      displayAsGridTimeoutListener = setTimeout(() => {
-        if (question.displayAsGrid) {
-          const element = el.parentElement?.querySelector('#tagbox');
-          if (element) {
-            element.style.display = 'none';
-          }
-        }
-      }, 500);
-
       const searchBtn = buildSearchButton(
         question,
         question.gridFieldsSettings,
@@ -627,42 +617,30 @@ export const init = (
         document,
         ngZone
       );
+      const addBtn = buildAddButton(question, true, dialog, ngZone, document);
       searchBtn.style.display = 'none';
-      if (question.resource) {
-        searchBtn.style.display = 'block';
-        if (parentElement) {
-          gridComponentRef = buildGridDisplay(question, parentElement);
-          if ((question.survey as SurveyModel).mode !== 'display') {
-            searchBtn.style.display = 'block';
-            const addBtn = buildAddButton(
-              question,
-              true,
-              dialog,
-              ngZone,
-              document
-            );
-            actionsButtons.appendChild(addBtn);
-
-            // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
-            question.registerFunctionOnPropertyValueChanged(
-              'addTemplate',
-              () => {
-                addBtn.style.display =
-                  question.addRecord && question.addTemplate ? '' : 'none';
-              }
-            );
-            question.registerFunctionOnPropertyValueChanged('addRecord', () => {
-              addBtn.style.display =
-                question.addRecord &&
-                question.addTemplate &&
-                !question.isReadOnly
-                  ? ''
-                  : 'none';
-            });
-          }
+      // hide tagbox if grid view is enable
+      if (question.displayAsGrid) {
+        const element = el.parentElement?.querySelector('#tagbox');
+        if (element) {
+          element.style.display = 'none';
         }
+        gridComponentRef = buildGridDisplay(question, parentElement);
+      }
+
+      if (
+        !question.displayAsGrid &&
+        question.canSearch &&
+        question.resource &&
+        parentElement &&
+        (question.survey as SurveyModel).mode !== 'display'
+      ) {
+        searchBtn.style.display = 'block';
+
+        // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
       }
       actionsButtons.appendChild(searchBtn);
+      actionsButtons.appendChild(addBtn);
       parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       question.registerFunctionOnPropertyValueChanged('resource', () => {
         if (question.resource && question.canSearch) {
@@ -675,6 +653,16 @@ export const init = (
         } else {
           searchBtn.style.display = question.canSearch ? 'block' : 'none';
         }
+      });
+      question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
+        addBtn.style.display =
+          question.addRecord && question.addTemplate ? '' : 'none';
+      });
+      question.registerFunctionOnPropertyValueChanged('addRecord', () => {
+        addBtn.style.display =
+          question.addRecord && question.addTemplate && !question.isReadOnly
+            ? ''
+            : 'none';
       });
       question.registerFunctionOnPropertyValueChanged(
         'gridFieldsSettings',
@@ -738,11 +726,13 @@ export const init = (
     const grid: ComponentRef<CoreGridComponent> =
       buildRecordsGrid(question, parentElement.firstChild) || undefined;
     if (grid.instance) {
-      grid.instance.removeRowIds.subscribe((ids) => {
-        question.value = question.value.filter(
-          (id: string) => !ids.includes(id)
-        );
-      });
+      grid.instance.removeRowIds
+        .pipe(takeUntil(grid.instance.destroy$))
+        .subscribe((ids) => {
+          question.value = question.value.filter(
+            (id: string) => !ids.includes(id)
+          );
+        });
     }
     return grid;
   }
