@@ -593,7 +593,7 @@ export class DashboardComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
+        next: ({ data, errors }) => {
           this.applicationService.handleEditionMutationResponse(
             errors,
             this.translate.instant('common.dashboard.one')
