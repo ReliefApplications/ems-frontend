@@ -529,11 +529,14 @@ export class DashboardComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
+        next: ({ data, errors }) => {
           this.applicationService.handleEditionMutationResponse(
             errors,
             this.translate.instant('common.dashboard.one')
           );
+          if (data) {
+            this.widgets = data.editDashboard.structure;
+          }
         },
         complete: () => (this.loading = false),
       });
