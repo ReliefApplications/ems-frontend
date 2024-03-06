@@ -30,6 +30,15 @@
         >
         </ui-button>
       </ng-container>
+      <ui-button
+        *ngIf="navigateToPage"
+        size="small"
+        [isIcon]="true"
+        icon="launch"
+        variant="light"
+        (click)="navigate(navigateSettings)"
+        [uiTooltip]="'components.widget.grid.actions.goTo' | translate"
+      ></ui-button>
       <!-- Close popup -->
       <ui-button
         size="small"

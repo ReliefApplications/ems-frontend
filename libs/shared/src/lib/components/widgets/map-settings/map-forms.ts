@@ -436,6 +436,11 @@ export const createPopupInfoForm = (value: any) =>
         createFieldsInfoForm(element)
       )
     ),
+    navigateToPage: get(value, 'navigateToPage', false),
+    navigateSettings: fb.group({
+      pageUrl: [get(value, 'navigateSettings.pageUrl', '')],
+      field: [get(value, 'navigateSettings.field', '')],
+    }),
   });
 
 /**
