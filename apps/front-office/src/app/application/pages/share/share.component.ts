@@ -8,7 +8,7 @@ import {
   UnsubscribeComponent,
 } from '@oort-front/shared';
 import { GET_SHARE_DASHBOARD_BY_ID } from './graphql/queries';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -44,45 +44,45 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
    */
   ngOnInit(): void {
     this.route.params
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((params: any) => {
-        this.apollo
-          .query<DashboardQueryResponse>({
+      .pipe(
+        switchMap((params: any) => {
+          return this.apollo.query<DashboardQueryResponse>({
             query: GET_SHARE_DASHBOARD_BY_ID,
             variables: {
               id: params.id,
             },
-          })
-          .subscribe(({ data }) => {
-            let url = '';
-            const dashboard: Dashboard = data.dashboard;
-            if (dashboard) {
-              if (dashboard.step) {
-                url +=
-                  '/' + data.dashboard.step?.workflow?.page?.application?.id;
-                url += '/workflow/' + data.dashboard.step?.workflow?.id;
-                url += '/dashboard/' + data.dashboard.id;
-              } else {
-                url += '/' + data.dashboard.page?.application?.id;
-                url += '/dashboard/' + data.dashboard.id;
-              }
-            } else {
-              // Error handling
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translateService
-                      .instant('common.dashboard.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-            }
-            this.router.navigate([url]);
           });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }) => {
+        let url = '';
+        const dashboard: Dashboard = data.dashboard;
+        if (dashboard) {
+          if (dashboard.step) {
+            url += '/' + data.dashboard.step?.workflow?.page?.application?.id;
+            url += '/workflow/' + data.dashboard.step?.workflow?.id;
+            url += '/dashboard/' + data.dashboard.id;
+          } else {
+            url += '/' + data.dashboard.page?.application?.id;
+            url += '/dashboard/' + data.dashboard.id;
+          }
+        } else {
+          // Error handling
+          this.snackBar.openSnackBar(
+            this.translateService.instant(
+              'common.notifications.accessNotProvided',
+              {
+                type: this.translateService
+                  .instant('common.dashboard.one')
+                  .toLowerCase(),
+                error: '',
+              }
+            ),
+            { error: true }
+          );
+        }
+        this.router.navigate([url]);
       });
   }
 }

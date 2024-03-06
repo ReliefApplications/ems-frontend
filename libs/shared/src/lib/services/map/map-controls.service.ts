@@ -55,6 +55,8 @@ export class MapControlsService {
   private downloadControlClickListener!: any;
   /** Listener on download control wheel */
   private downloadControlWheelListener!: any;
+  /** Address marker timeout listener */
+  private addressMarkerTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Shared map control service
@@ -185,11 +187,19 @@ export class MapControlsService {
                   <b>${'longitude: '}</b>${coordinates.lng}</p>`
             );
           circle.bindPopup(popup);
-          popup.on('remove', () => map.removeLayer(circle));
+          popup.on('remove', () => {
+            if (this.addressMarkerTimeoutListener) {
+              clearTimeout(this.addressMarkerTimeoutListener);
+            }
+            map.removeLayer(circle);
+          });
           circle.openPopup();
           // Use setTimeout to prevent the marker to be removed while
           // the map moves to the searched address and is re-centred
-          setTimeout(() => {
+          if (this.addressMarkerTimeoutListener) {
+            clearTimeout(this.addressMarkerTimeoutListener);
+          }
+          this.addressMarkerTimeoutListener = setTimeout(() => {
             this.addressMarker = circle;
           }, 1000);
         }

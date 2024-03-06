@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { takeUntil, Observable } from 'rxjs';
+import { takeUntil, Observable, filter, switchMap } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
 import { Layout } from '../../../../../models/layout.model';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
 import { EditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { GridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
@@ -130,15 +130,21 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         layout: this.layout,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            this.formGroup.get('layout')?.setValue(this.formGroup.value.layout);
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value) && !isNil(this.layout)),
+        switchMap((value: any) => {
+          return this.gridLayoutService.editLayout(
+            this.layout as Layout,
+            value,
+            this.resource?.id
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.formGroup.get('layout')?.setValue(this.formGroup.value.layout);
+      });
   }
 
   /**
@@ -153,20 +159,26 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, {
-            resource: this.resource?.id,
-            referenceData: this.referenceData?.id,
-          })
-          .subscribe(() => {
-            this.formGroup
-              .get('aggregation')
-              ?.setValue(this.formGroup.value.aggregation);
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value) && !isNil(this.aggregation)),
+        switchMap((value: any) => {
+          return this.aggregationService.editAggregation(
+            this.aggregation as Aggregation,
+            value,
+            {
+              resource: this.resource?.id,
+              referenceData: this.referenceData?.id,
+            }
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.formGroup
+          .get('aggregation')
+          ?.setValue(this.formGroup.value.aggregation);
+      });
   }
 
   /**

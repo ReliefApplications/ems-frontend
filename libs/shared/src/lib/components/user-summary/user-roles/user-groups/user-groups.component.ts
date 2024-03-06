@@ -9,6 +9,8 @@ import {
 } from '../../../../models/user.model';
 import { GET_GROUPS } from '../../graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /** Back-office groups section the user summary */
 @Component({
@@ -16,7 +18,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './user-groups.component.html',
   styleUrls: ['./user-groups.component.scss'],
 })
-export class UserGroupsComponent implements OnInit {
+export class UserGroupsComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Groups */
   public groups: Group[] = [];
   /** User */
@@ -49,13 +54,17 @@ export class UserGroupsComponent implements OnInit {
     private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SnackbarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.selectedGroups = this.createFormControl();
-    this.selectedGroups.valueChanges.subscribe((value) => {
-      this.edit.emit({ groups: value });
-    });
+    this.selectedGroups.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.edit.emit({ groups: value });
+      });
 
     this.loading = true;
     this.apollo

@@ -19,9 +19,10 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_RESOURCE_LAYOUTS, GET_FORM_LAYOUTS } from './graphql/queries';
+import { isNil } from 'lodash';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -127,13 +128,15 @@ export class AddLayoutModalComponent
         },
       });
 
-    this.selectedLayoutControl.valueChanges.subscribe((value) => {
-      if (value) {
-        this.dialogRef.close(
-          this.layoutSelect?.elements.getValue().find((x) => x.id === value)
-        );
-      }
-    });
+    this.selectedLayoutControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.dialogRef.close(
+            this.layoutSelect?.elements.getValue().find((x) => x.id === value)
+          );
+        }
+      });
   }
 
   /**
@@ -149,18 +152,24 @@ export class AddLayoutModalComponent
         queryName: this.resource?.queryName || this.form?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((layout: any) => {
-      if (layout) {
-        this.gridLayoutService
-          .addLayout(layout, this.resource?.id, this.form?.id)
-          .subscribe(({ data }) => {
-            if (data?.addLayout) {
-              this.dialogRef.close(data.addLayout as any);
-            } else {
-              this.dialogRef.close();
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((layout: any) => !isNil(layout)),
+        switchMap((layout: any) => {
+          return this.gridLayoutService.addLayout(
+            layout,
+            this.resource?.id,
+            this.form?.id
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }) => {
+        if (data?.addLayout) {
+          this.dialogRef.close(data.addLayout as any);
+        } else {
+          this.dialogRef.close();
+        }
+      });
   }
 }

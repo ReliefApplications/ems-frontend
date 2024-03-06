@@ -14,7 +14,7 @@ import { GET_REFERENCE_DATAS } from './graphql/queries';
 import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   TableSort,
@@ -23,6 +23,7 @@ import {
 } from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
 import { SnackbarService } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -159,45 +160,44 @@ export class ReferenceDatasComponent
       './add-reference-data/add-reference-data.component'
     );
     const dialogRef = this.dialog.open(AddReferenceDataComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddReferenceDataMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.apollo.mutate<AddReferenceDataMutationResponse>({
             mutation: ADD_REFERENCE_DATA,
             variables: {
               name: value.name,
             },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.referenceData.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
-                  this.router.navigate([
-                    '/referencedata',
-                    data.addReferenceData.id,
-                  ]);
-                }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate
+                  .instant('common.referenceData.one')
+                  .toLowerCase(),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.router.navigate([
+                '/referencedata',
+                data.addReferenceData.id,
+              ]);
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**
@@ -219,49 +219,49 @@ export class ReferenceDatasComponent
       confirmText: this.translate.instant('common.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteReferenceDataMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<DeleteReferenceDataMutationResponse>({
             mutation: DELETE_REFERENCE_DATA,
             variables: {
               id: element.id,
             },
-          })
-          .subscribe({
-            next: (res) => {
-              if (res && !res.errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.referenceData.one'),
-                  })
-                );
-                this.dataSource = this.dataSource.filter(
-                  (x) => x.id !== element.id
-                );
-              } else {
-                if (res.errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: this.translate.instant(
-                          'common.referenceData.one'
-                        ),
-                        error: res.errors ? res.errors[0] : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          if (res && !res.errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.referenceData.one'),
+              })
+            );
+            this.dataSource = this.dataSource.filter(
+              (x) => x.id !== element.id
+            );
+          } else {
+            if (res.errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.referenceData.one'),
+                    error: res.errors ? res.errors[0] : '',
+                  }
+                ),
+                { error: true }
+              );
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**

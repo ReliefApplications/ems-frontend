@@ -13,9 +13,10 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DELETE_APPLICATION } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /**
  * Application settings page component.
@@ -153,51 +154,44 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
-          if (value) {
+        .pipe(
+          filter((value) => !isNil(value)),
+          switchMap(() => {
             const id = this.application?.id;
-            this.apollo
-              .mutate<DeleteApplicationMutationResponse>({
-                mutation: DELETE_APPLICATION,
-                variables: {
-                  id,
-                },
-              })
-              .subscribe({
-                next: ({ errors }) => {
-                  if (errors) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'common.notifications.objectNotDeleted',
-                        {
-                          value: this.translate.instant(
-                            'common.application.one'
-                          ),
-                          error: errors ? errors[0].message : '',
-                        }
-                      ),
-                      { error: true }
-                    );
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'common.notifications.objectDeleted',
-                        {
-                          value: this.translate.instant(
-                            'common.application.one'
-                          ),
-                        }
-                      )
-                    );
+            return this.apollo.mutate<DeleteApplicationMutationResponse>({
+              mutation: DELETE_APPLICATION,
+              variables: {
+                id,
+              },
+            });
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe({
+          next: ({ errors }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.application.one'),
+                    error: errors ? errors[0].message : '',
                   }
-                },
-                error: (err) => {
-                  this.snackBar.openSnackBar(err.message, { error: true });
-                },
-              });
-            this.router.navigate(['/applications']);
-          }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.application.one'),
+                })
+              );
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
+          complete: () => this.router.navigate(['/applications']),
         });
     }
   }

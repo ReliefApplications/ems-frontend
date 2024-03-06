@@ -18,7 +18,7 @@ import {
   BlobType,
   DownloadService,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -111,21 +111,24 @@ export class CustomStyleComponent
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
+        switchMap((value: any) => {
+          const scss = value as string;
+          this.applicationService.customStyleEdited = true;
+          this.rawCustomStyle = value;
+          return this.restService.post(
+            'style/scss-to-css',
+            { scss },
+            { responseType: 'text' }
+          );
+        }),
         takeUntil(this.destroy$)
       )
-      .subscribe((value: any) => {
-        const scss = value as string;
-        this.restService
-          .post('style/scss-to-css', { scss }, { responseType: 'text' })
-          .subscribe({
-            next: (css) => {
-              if (this.applicationService.customStyle) {
-                this.applicationService.customStyle.innerText = css;
-              }
-            },
-          });
-        this.applicationService.customStyleEdited = true;
-        this.rawCustomStyle = value;
+      .subscribe({
+        next: (css) => {
+          if (this.applicationService.customStyle) {
+            this.applicationService.customStyle.innerText = css;
+          }
+        },
       });
   }
 

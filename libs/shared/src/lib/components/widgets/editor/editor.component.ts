@@ -7,6 +7,7 @@ import {
   HostListener,
   Renderer2,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
@@ -46,7 +47,10 @@ import { Router } from '@angular/router';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent extends UnsubscribeComponent implements OnInit {
+export class EditorComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /** Widget settings */
   @Input() settings: any;
   /** Should show padding */
@@ -683,6 +687,13 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         ),
         { error: true }
       );
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
     }
   }
 }

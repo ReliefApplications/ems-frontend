@@ -119,7 +119,7 @@ export class QueryBuilderComponent
       }
     } else {
       this.availableQueries = this.queryBuilder.availableQueries$;
-      this.availableQueries.subscribe((res) => {
+      this.availableQueries.pipe(takeUntil(this.destroy$)).subscribe((res) => {
         if (res && res.length > 0) {
           if (this.queryName) {
             this.allQueries = res

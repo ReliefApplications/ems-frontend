@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component to editable texts: display the text,
@@ -11,7 +13,10 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
   templateUrl: './editable-text.component.html',
   styleUrls: ['./editable-text.component.scss'],
 })
-export class EditableTextComponent implements OnInit {
+export class EditableTextComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Text to display */
   @Input() text: string | undefined = '';
   /** Edit permission control */
@@ -32,7 +37,9 @@ export class EditableTextComponent implements OnInit {
    *
    * @param fb Angular form builder
    */
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) {
+    super();
+  }
 
   /**
    * Sets the value of the textForm with the value received from the parent component
@@ -42,7 +49,7 @@ export class EditableTextComponent implements OnInit {
       { value: this.text, disabled: true },
       Validators.required
     );
-    this.onChange.subscribe((value) => {
+    this.onChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (!value) {
         this.formControl.setValue(this.text);
       }

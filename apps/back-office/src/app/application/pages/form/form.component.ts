@@ -85,53 +85,61 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.formActive = false;
-      this.loading = true;
-      this.id = params.id;
-      this.isStep = this.router.url.includes('/workflow/');
-      // If a query is already loading, cancel it
-      if (this.querySubscription) {
-        this.querySubscription.unsubscribe();
-      }
-      if (this.isStep) {
-        this.querySubscription = this.apollo
-          .query<StepQueryResponse>({
-            query: GET_STEP_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap(({ data }) => {
-              this.step = data.step;
-              return this.getFormQuery(this.step.content ?? '');
-            })
-          )
-          .subscribe(({ data, loading }) => {
-            this.handleFormQueryResponse(data, 'step');
-            this.loading = loading;
-          });
-      } else {
-        this.querySubscription = this.apollo
-          .query<PageQueryResponse>({
-            query: GET_PAGE_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap(({ data }) => {
-              this.page = data.page;
-              return this.getFormQuery(this.page.content ?? '');
-            })
-          )
-          .subscribe(({ data, loading }) => {
-            this.handleFormQueryResponse(data, 'page');
-            this.loading = loading;
-          });
-      }
-    });
+    this.querySubscription = this.route.params
+      .pipe(
+        switchMap((params) => {
+          this.formActive = false;
+          this.loading = true;
+          this.id = params.id;
+          this.isStep = this.router.url.includes('/workflow/');
+          let currentQuery!: any;
+          if (this.isStep) {
+            currentQuery = this.apollo.query<StepQueryResponse>({
+              query: GET_STEP_BY_ID,
+              variables: {
+                id: this.id,
+              },
+            });
+          } else {
+            currentQuery = this.apollo.query<PageQueryResponse>({
+              query: GET_PAGE_BY_ID,
+              variables: {
+                id: this.id,
+              },
+            });
+          }
+          return currentQuery;
+        }),
+        switchMap((res: any) => {
+          let currentFormSubscription!: any;
+          if (this.isStep) {
+            this.step = res.data.step;
+            currentFormSubscription = this.getFormQuery(
+              this.step?.content ?? ''
+            );
+          } else {
+            this.page = res.data.page;
+            currentFormSubscription = this.getFormQuery(
+              this.page?.content ?? ''
+            );
+          }
+          return currentFormSubscription;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((res: any) => {
+        // If a query is already loading, cancel it
+        if (this.querySubscription) {
+          this.querySubscription.unsubscribe();
+        }
+        if (this.isStep) {
+          this.handleFormQueryResponse(res.data, 'step');
+          this.loading = res.loading;
+        } else {
+          this.handleFormQueryResponse(res.data, 'page');
+          this.loading = res.loading;
+        }
+      });
   }
 
   /**

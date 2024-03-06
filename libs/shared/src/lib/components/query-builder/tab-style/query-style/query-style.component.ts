@@ -5,6 +5,8 @@ import {
   QueryBuilderService,
 } from '../../../../services/query-builder/query-builder.service';
 import { flattenDeep } from 'lodash';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Query style component.
@@ -18,7 +20,10 @@ import { flattenDeep } from 'lodash';
 /**
  * QueryStyleComponent is a component that allows the user to customize the style of a query.
  */
-export class QueryStyleComponent implements OnInit {
+export class QueryStyleComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** The query object to be styled. */
   @Input() query: any;
 
@@ -45,7 +50,9 @@ export class QueryStyleComponent implements OnInit {
    *
    * @param queryBuilder - The service used to build the query.
    */
-  constructor(private queryBuilder: QueryBuilderService) {}
+  constructor(private queryBuilder: QueryBuilderService) {
+    super();
+  }
 
   /**
    * Initializes the component.
@@ -71,11 +78,13 @@ export class QueryStyleComponent implements OnInit {
     } else {
       this.wholeRow = new UntypedFormControl(true);
     }
-    this.wholeRow.valueChanges.subscribe((value) => {
-      if (value) {
-        this.form.get('fields')?.setValue([]);
-      }
-    });
+    this.wholeRow.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.form.get('fields')?.setValue([]);
+        }
+      });
 
     this.queryBuilder.getFilterFields(this.query).then((f) => {
       this.filterFields = f;

@@ -72,7 +72,8 @@ export class ChartSettingsComponent
   public buildSettingsForm() {
     this.widgetFormGroup = createChartWidgetForm(
       this.widget.id,
-      this.widget.settings
+      this.widget.settings,
+      this.destroy$
     );
   }
 }

@@ -37,10 +37,11 @@ import {
   filter,
   startWith,
   debounceTime,
+  switchMap,
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { cloneDeep, isEqual, omit } from 'lodash';
+import { cloneDeep, isEqual, isNil, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -567,17 +568,22 @@ export class DashboardComponent
     );
 
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async (button) => {
-        if (!button) return;
-        const currButtons = this.dashboard?.buttons || [];
-
-        this.dashboardService
-          .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
-          ?.pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
-            this.buttonActions.push(button);
-          });
+      .pipe(
+        filter((button) => !isNil(button)),
+        switchMap((button: any) => {
+          const currButtons = this.dashboard?.buttons || [];
+          return this.dashboardService
+            .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+            .pipe(
+              map(() => {
+                return button;
+              })
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((button) => {
+        this.buttonActions.push(button);
       });
   }
 
@@ -595,34 +601,35 @@ export class DashboardComponent
     const parentDashboardId = this.route.snapshot.paramMap.get('id');
 
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter(
+          (context: any) => !isNil(context) && !isEqual(context, currContext)
+        ),
+        takeUntil(this.destroy$)
+      )
       .subscribe(async (context: any) => {
-        if (context) {
-          if (isEqual(context, currContext)) return;
-
-          this.dashboardService
-            .updateContext(this.dashboard?.page?.id, context)
-            ?.then(({ data }) => {
-              if (data) {
-                this.dashboard = {
-                  ...this.dashboard,
-                  page: {
-                    ...this.dashboard?.page,
-                    context,
-                    contentWithContext: data.editPageContext.contentWithContext,
-                  },
-                };
-              }
-            });
-
-          const urlArr = this.router.url.split('/');
-
-          // load the linked data
-          this.updateContextOptions();
-          // go the the parent dashboard
-          urlArr[urlArr.length - 1] = `${parentDashboardId}`;
-          this.router.navigateByUrl(urlArr.join('/'));
+        if (this.dashboard?.page?.id) {
+          const { data } = await this.dashboardService.updateContext(
+            this.dashboard.page.id,
+            context
+          );
+          if (data) {
+            this.dashboard = {
+              ...this.dashboard,
+              page: {
+                ...this.dashboard?.page,
+                context,
+                contentWithContext: data.editPageContext.contentWithContext,
+              },
+            };
+          }
         }
+        const urlArr = this.router.url.split('/');
+        // load the linked data
+        this.updateContextOptions();
+        // go the the parent dashboard
+        urlArr[urlArr.length - 1] = `${parentDashboardId}`;
+        this.router.navigateByUrl(urlArr.join('/'));
       });
   }
 
@@ -689,15 +696,16 @@ export class DashboardComponent
       event.previousIndex,
       event.currentIndex
     );
-
-    this.dashboardService
-      .saveDashboardButtons(this.dashboard?.id, this.buttonActions)
-      ?.subscribe(() => {
-        this.dashboard = {
-          ...this.dashboard,
-          buttons: this.buttonActions,
-        };
-      });
+    if (this.dashboard?.id) {
+      this.dashboardService
+        .saveDashboardButtons(this.dashboard.id, this.buttonActions)
+        .subscribe(() => {
+          this.dashboard = {
+            ...this.dashboard,
+            buttons: this.buttonActions,
+          };
+        });
+    }
   }
 
   /**

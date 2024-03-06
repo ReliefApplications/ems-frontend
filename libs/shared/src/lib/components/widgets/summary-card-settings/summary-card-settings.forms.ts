@@ -10,6 +10,7 @@ import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import isNil from 'lodash/isNil';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { takeUntil } from 'rxjs';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -19,21 +20,26 @@ const fb = new FormBuilder();
  *
  * @param id id of the widget
  * @param configuration Widget configuration
+ * @param unsubscribe Unsubscribe flag for current form
  * @returns Summary card widget form
  */
-export const createSummaryCardForm = (id: string, configuration: any) => {
+export const createSummaryCardForm = (
+  id: string,
+  configuration: any,
+  unsubscribe: any
+) => {
   const formGroup = fb.group(
     {
       id,
       title: get<string>(configuration, 'title', ''),
-      card: createCardForm(get(configuration, 'card', null)),
+      card: createCardForm(unsubscribe, get(configuration, 'card', null)),
       sortFields: new FormArray<any>([]),
       contextFilters: get<string>(
         configuration,
         'contextFilters',
         DEFAULT_CONTEXT_FILTER
       ),
-      actions: createGridActionsFormGroup(configuration),
+      actions: createGridActionsFormGroup(configuration, unsubscribe),
       at: get<string>(configuration, 'at', ''),
     },
     {
@@ -117,10 +123,11 @@ export const templateRequiredWhenAddRecord = (
 /**
  * Create a card form
  *
+ * @param unsubscribe Unsubscribe flag for current form
  * @param value card value, optional
  * @returns card as form group
  */
-const createCardForm = (value?: any) => {
+const createCardForm = (unsubscribe: any, value?: any) => {
   const formGroup = fb.group(
     {
       title: get<string>(value, 'title', 'New Card'),
@@ -162,23 +169,25 @@ const createCardForm = (value?: any) => {
       })
     );
   }
-  formGroup.controls.resource.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.addValidators(
-        mutuallyExclusive({
-          required: true,
-          fields: ['layout', 'aggregation'],
-        })
-      );
-    } else {
-      formGroup.setValidators([
-        mutuallyExclusive({
-          required: true,
-          fields: ['resource', 'referenceData'],
-        }),
-      ]);
-    }
-    formGroup.updateValueAndValidity();
-  });
+  formGroup.controls.resource.valueChanges
+    .pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.addValidators(
+          mutuallyExclusive({
+            required: true,
+            fields: ['layout', 'aggregation'],
+          })
+        );
+      } else {
+        formGroup.setValidators([
+          mutuallyExclusive({
+            required: true,
+            fields: ['resource', 'referenceData'],
+          }),
+        ]);
+      }
+      formGroup.updateValueAndValidity();
+    });
   return formGroup;
 };

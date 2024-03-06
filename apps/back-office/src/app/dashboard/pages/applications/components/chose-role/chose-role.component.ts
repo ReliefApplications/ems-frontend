@@ -2,8 +2,13 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { GET_ROLES } from '../../graphql/queries';
-import { Role, RolesQueryResponse } from '@oort-front/shared';
+import {
+  Role,
+  RolesQueryResponse,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
 
 /**
  * Chose role component, to preview application with selected role.
@@ -13,7 +18,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
   templateUrl: './chose-role.component.html',
   styleUrls: ['./chose-role.component.scss'],
 })
-export class ChoseRoleComponent implements OnInit {
+export class ChoseRoleComponent extends UnsubscribeComponent implements OnInit {
   /** Available roles */
   public roles: Role[] = [];
   /** Loading indicator */
@@ -42,7 +47,9 @@ export class ChoseRoleComponent implements OnInit {
     public data: {
       application: string;
     }
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.rolesQuery = this.apollo.watchQuery<RolesQueryResponse>({
@@ -52,8 +59,10 @@ export class ChoseRoleComponent implements OnInit {
       },
     });
 
-    this.rolesQuery.valueChanges.subscribe(({ loading }) => {
-      this.loading = loading;
-    });
+    this.rolesQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ loading }) => {
+        this.loading = loading;
+      });
   }
 }

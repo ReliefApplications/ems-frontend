@@ -96,12 +96,15 @@ export class MapPopupService {
         }
         // We will bind and unbind each time we set the popup for dynamic purposes
         layerToBind?.unbindPopup();
+        if (this.timeoutListener) {
+          clearTimeout(this.timeoutListener);
+        }
         instance.destroy();
       });
       if (this.timeoutListener) {
         clearTimeout(this.timeoutListener);
       }
-      setTimeout(() => {
+      this.timeoutListener = setTimeout(() => {
         // Reset default popup
         if (this.popupPane) {
           this.popupPane.className = 'leaflet-pane leaflet-popup-pan';

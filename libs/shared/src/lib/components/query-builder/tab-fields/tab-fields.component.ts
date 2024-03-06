@@ -7,6 +7,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   ViewChild,
   ViewContainerRef,
@@ -17,6 +18,7 @@ import { getCalcKeys, getDataKeys } from '../../../utils/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { QueryBuilderComponent } from '../query-builder.component';
 import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
+import { Subscription } from 'rxjs';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -26,7 +28,7 @@ import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
   templateUrl: './tab-fields.component.html',
   styleUrls: ['./tab-fields.component.scss'],
 })
-export class TabFieldsComponent implements OnInit, OnChanges {
+export class TabFieldsComponent implements OnInit, OnChanges, OnDestroy {
   /** Current form array */
   @Input() form: UntypedFormArray = new UntypedFormArray([]);
   /** All fields */
@@ -50,6 +52,8 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public searchSelected = '';
   /** Tinymce editor configuration */
   public editor: any = INLINE_EDITOR_CONFIG;
+  /** Created component closedField event subscription */
+  private componentRefClosedFieldSubscription!: Subscription;
 
   /**
    * Component used for the selection of fields to display the fields in tabs.
@@ -208,10 +212,14 @@ export class TabFieldsComponent implements OnInit, OnChanges {
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
         componentRef.instance.showLimit = this.showLimit;
         componentRef.instance.showColumnWidth = this.showColumnWidth;
-        componentRef.instance.closeField.subscribe(() => {
-          this.onCloseField();
-          componentRef.destroy();
-        });
+        if (this.componentRefClosedFieldSubscription) {
+          this.componentRefClosedFieldSubscription.unsubscribe();
+        }
+        this.componentRefClosedFieldSubscription =
+          componentRef.instance.closeField.subscribe(() => {
+            this.onCloseField();
+            componentRef.destroy();
+          });
       }
     }
   }
@@ -224,5 +232,11 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public onDelete(index: number): void {
     this.form.removeAt(index);
     this.selectedFields.splice(index, 1);
+  }
+
+  ngOnDestroy(): void {
+    if (this.componentRefClosedFieldSubscription) {
+      this.componentRefClosedFieldSubscription.unsubscribe();
+    }
   }
 }

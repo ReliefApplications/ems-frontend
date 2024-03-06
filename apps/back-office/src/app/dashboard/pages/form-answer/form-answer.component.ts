@@ -6,8 +6,10 @@ import {
   FormQueryResponse,
   BreadcrumbService,
   FormComponent,
+  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
+import { takeUntil } from 'rxjs';
 
 /**
  * Form answer page component.
@@ -17,7 +19,10 @@ import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
   templateUrl: './form-answer.component.html',
   styleUrls: ['./form-answer.component.scss'],
 })
-export class FormAnswerComponent implements OnInit {
+export class FormAnswerComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Reference to shared form component */
   @ViewChild(FormComponent)
   private formComponent?: FormComponent;
@@ -41,7 +46,9 @@ export class FormAnswerComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
@@ -53,7 +60,8 @@ export class FormAnswerComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(({ data, loading }) => {
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(({ data, loading }) => {
           this.loading = loading;
           this.form = data.form;
           this.breadcrumbService.setBreadcrumb(

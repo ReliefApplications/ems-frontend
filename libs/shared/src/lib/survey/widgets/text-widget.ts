@@ -313,21 +313,29 @@ export const init = (
               }
             }
           );
-
-          button.instance.emittedEventSubject.subscribe((eventType: string) => {
-            if (
-              eventType === 'click' &&
-              urlTester.host &&
-              urlTester.host !== window.location.host
-            ) {
-              window.open(urlTester.href, '_blank', 'noopener,noreferrer');
-            }
-          });
+          if (question._buttonEmittedSubjectSubscription) {
+            question._buttonEmittedSubjectSubscription.unsubscribe();
+          }
+          question._buttonEmittedSubjectSubscription =
+            button.instance.emittedEventSubject.subscribe(
+              (eventType: string) => {
+                if (
+                  eventType === 'click' &&
+                  urlTester.host &&
+                  urlTester.host !== window.location.host
+                ) {
+                  window.open(urlTester.href, '_blank', 'noopener,noreferrer');
+                }
+              }
+            );
         }
       }
     },
     willUnmount: (question: QuestionText): void => {
       if (question) {
+        if (question._buttonEmittedSubjectSubscription) {
+          question._buttonEmittedSubjectSubscription.unsubscribe();
+        }
         if (question._dateDisplayCallback) {
           question.unRegisterFunctionOnPropertyValueChanged(
             'value',

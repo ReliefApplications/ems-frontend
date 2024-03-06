@@ -17,6 +17,7 @@ import {
   StatusOptionsComponent,
   getCachedValues,
   updateQueryUniqueValues,
+  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -31,6 +32,7 @@ import {
   Subscription,
   debounceTime,
   distinctUntilChanged,
+  takeUntil,
 } from 'rxjs';
 import get from 'lodash/get';
 import { CommonModule, DOCUMENT } from '@angular/common';
@@ -85,7 +87,10 @@ const DEFAULT_FIELDS = ['createdBy'];
   templateUrl: './edit-pull-job-modal.component.html',
   styleUrls: ['./edit-pull-job-modal.component.scss'],
 })
-export class EditPullJobModalComponent implements OnInit {
+export class EditPullJobModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
   /** Reactive form */
   public formGroup = this.fb.group({
@@ -210,7 +215,9 @@ export class EditPullJobModalComponent implements OnInit {
       channels: Channel[];
       pullJob?: PullJob;
     }
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
@@ -228,22 +235,27 @@ export class EditPullJobModalComponent implements OnInit {
           first: ITEMS_PER_PAGE,
         },
       });
-    this.apiConfigurationsQuery.valueChanges.subscribe(
-      ({ data }) =>
-        (this.apiConfigurations = data.apiConfigurations.edges.map(
-          (x) => x.node
-        ))
-    );
+    this.apiConfigurationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        ({ data }) =>
+          (this.apiConfigurations = data.apiConfigurations.edges.map(
+            (x) => x.node
+          ))
+      );
 
     // Fetch form fields if any for mapping
     if (this.data.pullJob?.convertTo?.id) {
       this.getFields(this.data.pullJob?.convertTo.id);
     }
-    this.formGroup.get('convertTo')?.valueChanges.subscribe((res) => {
-      if (res) {
-        this.getFields(res);
-      }
-    });
+    this.formGroup
+      .get('convertTo')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res) {
+          this.getFields(res);
+        }
+      });
 
     // Fetch the applications to get the channels
     this.applicationsQuery =
@@ -256,9 +268,11 @@ export class EditPullJobModalComponent implements OnInit {
       });
 
     // this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
 
     // Set boolean to allow additional fields if it's not isHardcoded
     this.isHardcoded = !(
@@ -269,7 +283,8 @@ export class EditPullJobModalComponent implements OnInit {
     );
     this.formGroup
       .get('apiConfiguration')
-      ?.valueChanges.subscribe((apiConfiguration: string | null) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((apiConfiguration: string | null) => {
         if (apiConfiguration) {
           const api = this.apiConfigurations.find(
             (x) => x.id === apiConfiguration
@@ -284,7 +299,11 @@ export class EditPullJobModalComponent implements OnInit {
 
     this.formGroup
       .get('rawMapping')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value: any) => {
         const mapping = JSON.parse(value || '{}');
         this.formGroup.setControl(
@@ -317,7 +336,8 @@ export class EditPullJobModalComponent implements OnInit {
           id,
         },
       })
-      .valueChanges.subscribe((resForm) => {
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((resForm) => {
         if (resForm.data.form) {
           this.fields = resForm.data.form.fields || [];
           this.fields = this.fields.concat(

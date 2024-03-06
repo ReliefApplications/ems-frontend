@@ -73,8 +73,11 @@ export class TabDisplayComponent
     // Set the chart settings and add delay to avoid changes to be too frequent
     this.chartSettings = this.formGroup.value;
     this.formGroup.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .pipe(debounceTime(1000), distinctUntilChanged())
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.chartSettings = value;
         this.chartSettings.chart.title.font = this.getFont();

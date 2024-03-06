@@ -446,9 +446,8 @@ export class SelectMenuComponent
           this.applySelectListDisplayAnimation(true);
         }, 0);
         // Subscribe to all actions that close the select (outside click, item click, any other overlay detach)
-        this.selectClosingActionsSubscription = this.selectClosingActions()
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(
+        this.selectClosingActionsSubscription =
+          this.selectClosingActions().subscribe(
             // If so, destroy select
             () => this.closeSelectPanel()
           );
@@ -544,6 +543,9 @@ export class SelectMenuComponent
     }
     if (this.clickOutsideListener) {
       this.clickOutsideListener();
+    }
+    if (this.selectClosingActionsSubscription) {
+      this.selectClosingActionsSubscription.unsubscribe();
     }
     this.destroy$.next();
     this.destroy$.complete();

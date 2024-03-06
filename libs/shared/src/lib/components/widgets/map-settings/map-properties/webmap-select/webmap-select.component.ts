@@ -17,7 +17,12 @@ import {
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  takeUntil,
+} from 'rxjs';
 import {
   ButtonModule,
   FormWrapperModule,
@@ -26,6 +31,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import uniqBy from 'lodash/uniqBy';
+import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  *
@@ -48,6 +54,7 @@ import uniqBy from 'lodash/uniqBy';
   styleUrls: ['./webmap-select.component.scss'],
 })
 export class WebmapSelectComponent
+  extends UnsubscribeComponent
   implements ControlValueAccessor, OnInit, OnDestroy
 {
   /** Search control form*/
@@ -93,6 +100,7 @@ export class WebmapSelectComponent
     private renderer: Renderer2,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -115,7 +123,7 @@ export class WebmapSelectComponent
     this.search();
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
         this.start = 0;
         this.nextPage = true;
@@ -253,7 +261,8 @@ export class WebmapSelectComponent
     }
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.scrollListener) {
       this.scrollListener();
     }

@@ -22,9 +22,10 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { isNil } from 'lodash';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -116,15 +117,17 @@ export class AddAggregationModalComponent
     }
 
     // emits selected aggregation
-    this.selectedAggregationControl.valueChanges.subscribe((value) => {
-      if (value) {
-        this.dialogRef.close(
-          this.aggregationSelect?.elements
-            .getValue()
-            .find((x) => x.id === value)
-        );
-      }
-    });
+    this.selectedAggregationControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.dialogRef.close(
+            this.aggregationSelect?.elements
+              .getValue()
+              .find((x) => x.id === value)
+          );
+        }
+      });
   }
 
   /**
@@ -142,21 +145,21 @@ export class AddAggregationModalComponent
       },
     });
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((aggregation: any) => {
-        if (aggregation) {
-          this.aggregationService
-            .addAggregation(aggregation, {
-              resource: this.resource?.id,
-              referenceData: this.referenceData?.id,
-            })
-            .subscribe(({ data }) => {
-              if (data?.addAggregation) {
-                this.dialogRef.close(data.addAggregation as any);
-              } else {
-                this.dialogRef.close();
-              }
-            });
+      .pipe(
+        filter((aggregation: any) => !isNil(aggregation)),
+        switchMap((aggregation: any) => {
+          return this.aggregationService.addAggregation(aggregation, {
+            resource: this.resource?.id,
+            referenceData: this.referenceData?.id,
+          });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ data }) => {
+        if (data?.addAggregation) {
+          this.dialogRef.close(data.addAggregation as any);
+        } else {
+          this.dialogRef.close();
         }
       });
   }

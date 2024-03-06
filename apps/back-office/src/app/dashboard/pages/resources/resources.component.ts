@@ -21,7 +21,8 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
+import { isNil } from 'lodash';
 
 /**
  * Default number of resources that will be shown at once.
@@ -127,9 +128,11 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       },
     });
 
-    this.resourcesQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.resourcesQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -235,40 +238,37 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       confirmVariant: 'danger',
     });
 
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteResourceMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<DeleteResourceMutationResponse>({
             mutation: DELETE_RESOURCE,
             variables: {
               id: resource.id,
             },
-          })
-          .subscribe(({ errors }) => {
-            if (!errors) {
-              this.resources = this.resources.filter(
-                (x) => x.id !== resource.id
-              );
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.resource.one'),
-                })
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: this.translate.instant('common.resource.one'),
-                    error: errors[0].message,
-                  }
-                ),
-                { error: true }
-              );
-            }
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ errors }) => {
+        if (!errors) {
+          this.resources = this.resources.filter((x) => x.id !== resource.id);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: this.translate.instant('common.resource.one'),
+            })
+          );
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDeleted', {
+              value: this.translate.instant('common.resource.one'),
+              error: errors[0].message,
+            }),
+            { error: true }
+          );
+        }
+      });
   }
 
   /**
@@ -280,42 +280,39 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       '../../../components/add-resource-modal/add-resource-modal.component'
     );
     const dialogRef = this.dialog.open(AddResourceModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variablesData = { name: value.name };
-        this.apollo
-          .mutate<AddFormMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          const variablesData = { name: value.name };
+          return this.apollo.mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
             variables: variablesData,
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.form.one')
-                        .toLowerCase(),
-                      error: errors[0].message,
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
-                  const { id } = data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
-                }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate.instant('common.form.one').toLowerCase(),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              const { id } = data.addForm;
+              this.router.navigate(['/forms/builder', id]);
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**

@@ -4,6 +4,7 @@ import {
   HostListener,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Optional,
   Renderer2,
@@ -32,7 +33,7 @@ import { Router } from '@angular/router';
 })
 export class SummaryCardItemContentComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit, OnChanges, OnDestroy
 {
   /** Html template */
   @Input() html = '';
@@ -259,6 +260,13 @@ export class SummaryCardItemContentComponent
           // });
         }
       });
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
     }
   }
 }

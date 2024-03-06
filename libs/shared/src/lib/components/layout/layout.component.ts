@@ -30,6 +30,7 @@ import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service'
 import { ContextService } from '../../services/context/context.service';
 import { isEqual } from 'lodash';
 import { Model } from 'survey-core';
+import { Subscription } from 'rxjs';
 
 /**
  * Component for the main layout of the platform
@@ -154,6 +155,8 @@ export class LayoutComponent
   private attachViewFilterTriggerListener!: NodeJS.Timeout;
   /** Survey shared questions names on web component to track shared values when switching views */
   private surveySharedQuestions!: string[];
+  /** Created component ref cancel event subscription */
+  private componentRefCancelSubscription!: Subscription;
 
   /**
    * Gets URI of the other office
@@ -278,11 +281,14 @@ export class LayoutComponent
               componentRef.instance[key] = value;
             }
           }
-
-          componentRef.instance.cancel.subscribe(() => {
-            componentRef.destroy();
-            this.layoutService.setRightSidenav(null);
-          });
+          if (this.componentRefCancelSubscription) {
+            this.componentRefCancelSubscription.unsubscribe();
+          }
+          this.componentRefCancelSubscription =
+            componentRef.instance.cancel.subscribe(() => {
+              componentRef.destroy();
+              this.layoutService.setRightSidenav(null);
+            });
         } else {
           this.showSidenav = false;
           if (this.rightSidenav) {
@@ -559,6 +565,9 @@ export class LayoutComponent
     super.ngOnDestroy();
     if (this.attachViewFilterTriggerListener) {
       clearTimeout(this.attachViewFilterTriggerListener);
+    }
+    if (this.componentRefCancelSubscription) {
+      this.componentRefCancelSubscription.unsubscribe();
     }
   }
 }

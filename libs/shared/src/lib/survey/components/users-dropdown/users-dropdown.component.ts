@@ -80,7 +80,7 @@ export class UsersDropdownComponent
       },
     });
 
-    this.control.valueChanges?.subscribe(() => {
+    this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.selectionChange.emit(this.control.value ?? []);
     });
   }
@@ -111,7 +111,6 @@ export class UsersDropdownComponent
           },
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
         if (data.users) {
           this.initialSelection = data.users.edges.map((x) => x.node);

@@ -26,7 +26,7 @@ import {
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
 
@@ -269,30 +269,19 @@ export class GridSettingsComponent
   public getChannels(): void {
     if (this.widgetFormGroup) {
       this.applicationService.application$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((application: Application | null) => {
-          if (application) {
-            this.apollo
-              .query<ChannelsQueryResponse>({
-                query: GET_CHANNELS,
-                variables: {
-                  application: application.id,
-                },
-              })
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(({ data }) => {
-                this.channels = data.channels;
-              });
-          } else {
-            this.apollo
-              .query<ChannelsQueryResponse>({
-                query: GET_CHANNELS,
-              })
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(({ data }) => {
-                this.channels = data.channels;
-              });
-          }
+        .pipe(
+          switchMap((application: Application | null) => {
+            return this.apollo.query<ChannelsQueryResponse>({
+              query: GET_CHANNELS,
+              variables: {
+                ...(application && { application: application.id }),
+              },
+            });
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(({ data }) => {
+          this.channels = data.channels;
         });
     }
   }
@@ -387,7 +376,8 @@ export class GridSettingsComponent
   public buildSettingsForm() {
     this.widgetFormGroup = createGridWidgetFormGroup(
       this.widget.id,
-      this.widget.settings
+      this.widget.settings,
+      this.destroy$
     );
   }
 }
