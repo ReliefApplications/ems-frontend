@@ -28,7 +28,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
-import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * This component is used to display forms

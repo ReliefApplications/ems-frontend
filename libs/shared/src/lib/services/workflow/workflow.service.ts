@@ -14,7 +14,7 @@ import {
 import { ApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.

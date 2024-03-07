@@ -41,7 +41,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
-import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Interface of Dialog data.

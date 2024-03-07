@@ -15,7 +15,7 @@ import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
-import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Shared dashboard service. Handles dashboard events.

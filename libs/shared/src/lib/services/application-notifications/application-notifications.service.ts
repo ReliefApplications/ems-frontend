@@ -13,7 +13,7 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 /**
  * Shared service to manage application's notifications.
  */

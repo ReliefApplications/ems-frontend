@@ -18,7 +18,7 @@ import {
 } from '../../../../models/user.model';
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import { FormBuilder } from '@angular/forms';
-import { errorMessageFormatter } from '../../../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../../../utils/graphql/error-handler';
 
 /**
  * This component is used to display the groups tab in the platform

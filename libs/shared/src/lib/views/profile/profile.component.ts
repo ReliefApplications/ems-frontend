@@ -8,7 +8,7 @@ import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubsc
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { EditUserProfileMutationResponse, User } from '../../models/user.model';
-import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Shared profile page.

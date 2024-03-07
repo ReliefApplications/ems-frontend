@@ -19,7 +19,7 @@ import {
 } from '../../../models/aggregation.model';
 import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
-import { errorMessageFormatter } from '../../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../../utils/graphql/error-handler';
 
 /**
  * Main component of Aggregation builder.

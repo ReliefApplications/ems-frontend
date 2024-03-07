@@ -18,7 +18,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { FormBuilder } from '@angular/forms';
-import { errorMessageFormatter } from '../../../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../../../utils/graphql/error-handler';
 
 /**
  * This component is used to display the back-office roles tab

@@ -26,7 +26,7 @@ import {
   AggregationDataQueryResponse,
   ReferenceDataAggregationQueryResponse,
 } from '../../../../models/aggregation.model';
-import { errorMessageFormatter } from '../../../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../../../utils/graphql/error-handler';
 
 /**
  * Template aggregations component.

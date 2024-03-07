@@ -29,7 +29,7 @@ import {
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
-import { errorMessageFormatter } from '../../../utils/graphql/error-message-formatter';
+import { errorMessageFormatter } from '../../../utils/graphql/error-handler';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
