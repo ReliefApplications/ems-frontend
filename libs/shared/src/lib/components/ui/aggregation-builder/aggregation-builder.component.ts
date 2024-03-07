@@ -206,22 +206,14 @@ export class AggregationBuilderComponent
    * Updates fields depending on selected form.
    */
   private updateFields(): void {
-    if (this.resource) {
+    const originName = this.resource
+      ? this.resource.queryName
+      : this.referenceData
+      ? this.referenceData.graphQLTypeName
+      : null;
+    if (originName) {
       const fields = this.queryBuilder
-        .getFields(this.resource.queryName as string)
-        .filter(
-          (field: any) =>
-            !(
-              field.name.includes('_id') &&
-              (field.type.name === 'ID' ||
-                (field.type?.kind === 'LIST' &&
-                  field.type.ofType.name === 'ID'))
-            )
-        );
-      this.fields.next(fields);
-    } else if (this.referenceData) {
-      const fields = this.queryBuilder
-        .getFields(this.referenceData.graphQLTypeName as string)
+        .getFields(originName)
         .filter(
           (field: any) =>
             !(

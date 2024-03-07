@@ -358,7 +358,7 @@ export class EditLayerModalComponent
             prev.datasource?.longitudeField !== next.datasource?.longitudeField
           ) {
             this.setUpLayer(next);
-          } else {
+          } else if (this._layer) {
             await this._layer.removeAllListeners(this.data.mapComponent.map);
             await this._layer.setConfig({
               ...next,
