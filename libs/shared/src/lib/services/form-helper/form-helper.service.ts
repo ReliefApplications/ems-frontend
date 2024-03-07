@@ -8,7 +8,7 @@ import {
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../confirm/confirm.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
 import { IconComponent, SnackbarService } from '@oort-front/ui';
@@ -20,6 +20,7 @@ import {
   AddDraftRecordMutationResponse,
   AddRecordMutationResponse,
   EditDraftRecordMutationResponse,
+  RecordQueryResponse,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
 import {
@@ -32,6 +33,12 @@ import { ApplicationService } from '../application/application.service';
 import { DomService } from '../dom/dom.service';
 import { TemporaryFilesStorage } from '../form-builder/form-builder.service';
 import { Router } from '@angular/router';
+import { GET_RECORD_BY_UNIQUE_FIELD_VALUE } from './graphql/queries';
+
+export type CheckUniqueProprietyReturnT = {
+  verified: boolean;
+  overwriteRecords?: Set<string>;
+};
 
 /**
  * Applies custom logic to survey data values.
@@ -709,4 +716,120 @@ export class FormHelpersService {
       survey.setVariable(`param.${key}`, queryParams[key]);
     });
   };
+
+  /**
+   * Checks survey for unique fields when adding/editing records.
+   *
+   * @param survey Survey to get questions from
+   * @param newRecord If the operation is create a new record
+   * @returns if the validation is approved and can create/update the record,
+   * and if overwrite existing record with unique field is allowed
+   */
+  public async checkUniquePropriety(
+    survey: SurveyModel,
+    newRecord: boolean
+  ): Promise<CheckUniqueProprietyReturnT> {
+    const uniqueFields: Question[] = [];
+    console.log('newRecord', newRecord);
+    survey.getAllQuestions().forEach((question) => {
+      if (question.unique) {
+        uniqueFields.push(question);
+      }
+    });
+    let checkUniqueResponse: CheckUniqueProprietyReturnT = {
+      verified: true,
+      overwriteRecords: new Set<string>(),
+    };
+    if (uniqueFields.length) {
+      for await (const [index, field] of uniqueFields.entries()) {
+        console.log(index, field);
+        if (isNil(field.value)) {
+          console.log('isNil');
+          continue;
+        }
+        const { data } = await lastValueFrom(
+          this.apollo.query<RecordQueryResponse>({
+            query: GET_RECORD_BY_UNIQUE_FIELD_VALUE,
+            variables: {
+              uniqueField: field.name,
+              uniqueValue: field.value,
+            },
+          })
+        );
+        console.log('data', data);
+        const isLast = index === uniqueFields.length - 1;
+
+        if (!data.record) {
+          continue;
+        }
+        if (newRecord && data.record) {
+          const dialogRef = this.confirmService.openConfirmModal({
+            title: this.translate.instant(
+              'components.record.uniqueField.title'
+            ),
+            content:
+              this.translate.instant('components.record.uniqueField.exist', {
+                question: field.title,
+                value: field.value,
+              }) +
+              this.translate.instant(
+                'components.record.uniqueField.overwriteConfirm'
+              ),
+            confirmText: this.translate.instant(
+              'components.confirmModal.confirm'
+            ),
+            confirmVariant: 'primary',
+          });
+          const confirm = await lastValueFrom(dialogRef.closed);
+          console.log('confirm', confirm);
+          if (confirm) {
+            console.log('verified true');
+            checkUniqueResponse.overwriteRecords?.add(
+              data.record?.id as string
+            );
+            checkUniqueResponse = {
+              verified: true,
+              overwriteRecords: checkUniqueResponse.overwriteRecords,
+            };
+            if (isLast) {
+              console.log('return verified true');
+              checkUniqueResponse.verified =
+                !checkUniqueResponse.verified &&
+                checkUniqueResponse.overwriteRecords?.size
+                  ? true
+                  : checkUniqueResponse.verified;
+              return checkUniqueResponse;
+            } else {
+              continue;
+            }
+          } else {
+            console.log('verified false');
+            if (isLast) {
+              console.log('return verified false');
+              checkUniqueResponse.verified =
+                !checkUniqueResponse.verified &&
+                checkUniqueResponse.overwriteRecords?.size
+                  ? true
+                  : checkUniqueResponse.verified;
+              return checkUniqueResponse;
+            } else {
+              // TODO: can't do this, on first cancel or find a record with unique field return
+              continue;
+            }
+          }
+        }
+        console.log('fim for');
+      }
+      console.log('return  fim 1', checkUniqueResponse.overwriteRecords?.size);
+      checkUniqueResponse.verified =
+        !checkUniqueResponse.verified &&
+        checkUniqueResponse.overwriteRecords?.size
+          ? true
+          : checkUniqueResponse.verified;
+      return checkUniqueResponse;
+    } else {
+      console.log('return fim 2');
+      return checkUniqueResponse;
+    }
+  }
 }

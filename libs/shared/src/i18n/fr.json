@@ -797,6 +797,7 @@
 				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
 			},
 			"display": {
+				"cancelMessage": "Opération annulée",
 				"submissionMessage": "Le formulaire a été sauvegardé."
 			},
 			"draftRecords": {
@@ -1141,6 +1142,13 @@
 			"recovery": {
 				"confirmationMessage": "Souhaitez-vous appliquer les données du {{date}} à l'enregistrement ?",
 				"title": "Récupération de données"
+			},
+			"uniqueField": {
+				"exist": "L'enregistrement avec la question '{{question}}' avec la valeur '{{value}}' existe déjà et cette valeur doit être unique.",
+				"overwriteConfirm": "Voulez-vous écraser l'enregistrement existant?",
+				"overwriteError": "Erreur lors de l'écrasement des enregistrements",
+				"overwriteSuccess": "Enregistrement(s) écrasé(s) avec succès!",
+				"title": "Valeur de champ unique"
 			}
 		},
 		"records": {
