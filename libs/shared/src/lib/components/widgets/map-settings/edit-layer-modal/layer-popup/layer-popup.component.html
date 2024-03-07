@@ -61,9 +61,9 @@
       <div
         *ngIf="showSelectPage"
         formGroupName="navigateSettings"
-        class="flex flex-col ml-[55px]"
+        class="flex gap-2"
       >
-        <div uiFormFieldDirective class="w-80">
+        <div uiFormFieldDirective class="grow">
           <label>
             {{
               'components.widget.settings.grid.actions.pageUrl.label'
@@ -85,11 +85,13 @@
             </ui-select-option>
           </ui-select-menu>
         </div>
-        <div uiFormFieldDirective class="w-80">
-          {{
-            'components.widget.settings.grid.actions.goTo.field.label'
-              | translate
-          }}
+        <div uiFormFieldDirective class="grow">
+          <label>
+            {{
+              'components.widget.settings.grid.actions.goTo.field.label'
+                | translate
+            }}
+          </label>
           <ui-select-menu
             formControlName="field"
             [placeholder]="
