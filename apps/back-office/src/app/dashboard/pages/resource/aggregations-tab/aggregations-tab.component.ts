@@ -83,6 +83,7 @@ export class AggregationsTabComponent
    * @param aggregationService Grid aggregation service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
+   * @param snackbarService Snackbar service
    */
   constructor(
     private apollo: Apollo,
