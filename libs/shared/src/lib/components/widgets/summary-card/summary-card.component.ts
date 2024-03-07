@@ -57,9 +57,6 @@ import { PageSizeChangeEvent } from '@progress/kendo-angular-pager';
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
-/** Default page size for pagination */
-const DEFAULT_PAGE_SIZE = 25;
-
 /** Key to store user selected page size, in local storage */
 const SELECTED_PAGE_SIZE_KEY = 'selectedPageSize';
 
@@ -222,7 +219,24 @@ export class SummaryCardComponent
     if (selectedPageSize) {
       return Number(selectedPageSize);
     } else {
-      return DEFAULT_PAGE_SIZE;
+      const windowHeight = window.innerHeight;
+      switch (true) {
+        case windowHeight < 600: {
+          return 10;
+        }
+        case windowHeight >= 600 && windowHeight < 1200: {
+          return 25;
+        }
+        case windowHeight >= 1200 && windowHeight < 1800: {
+          return 50;
+        }
+        case windowHeight >= 1800: {
+          return 100;
+        }
+        default: {
+          return 25;
+        }
+      }
     }
   }
 
