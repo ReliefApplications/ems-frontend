@@ -84,6 +84,17 @@ export const init = (
           obj.setPropertyValue('max', value);
         },
       });
+      serializer.addProperty('text', {
+        name: 'calendarType',
+        visibleIndex: 2,
+        category: 'layout',
+        type: 'string',
+        choices: ['infinite', 'classic'],
+        default: 'infinite',
+        dependsOn: ['inputType'],
+        visibleIf: (obj: QuestionText) =>
+          ['date', 'datetime', 'datetime-local'].includes(obj.inputType || ''),
+      });
       // register the editor for type "date" with kendo date picker
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.dateTypeDisplayer
@@ -117,7 +128,8 @@ export const init = (
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
             pickerDiv,
-            domService
+            domService,
+            question.calendarType || 'infinite'
           );
 
           if (pickerInstance) {
