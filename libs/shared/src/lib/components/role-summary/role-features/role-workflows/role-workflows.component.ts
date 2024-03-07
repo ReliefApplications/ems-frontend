@@ -185,6 +185,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.loading = false;
         },
       });
   }

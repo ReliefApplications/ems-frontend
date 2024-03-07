@@ -4,6 +4,7 @@ import {
   EditResourceMutationResponse,
   Resource,
   UnsubscribeComponent,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
@@ -160,14 +161,11 @@ export class CalculatedFieldsTabComponent
                     )
                   );
             }
-            if (res.errors) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
-                error: true,
-              });
-            }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -217,14 +215,11 @@ export class CalculatedFieldsTabComponent
                   (f: any) => f.name !== field.name
                 );
               }
-              if (res.errors) {
-                this.snackBar.openSnackBar(res.errors[0].message, {
-                  error: true,
-                });
-              }
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: (errors) => {
+              this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+                error: true,
+              });
             },
           });
       }

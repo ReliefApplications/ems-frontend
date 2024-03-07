@@ -12,6 +12,7 @@ import {
   UnsubscribeComponent,
   User,
   UsersNodeQueryResponse,
+  errorMessageFormatter,
   getCachedValues,
   updateQueryUniqueValues,
 } from '@oort-front/shared';
@@ -166,36 +167,35 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
             },
           })
           .subscribe({
-            next: ({ errors, data }) => {
-              if (!errors) {
-                if (data?.addUsers.length) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.plural')
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.singular')
-                  );
-                }
-                this.fetchUsers(true);
+            next: ({ data }) => {
+              if (data?.addUsers.length) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onInvite.plural')
+                );
               } else {
-                if (value.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.plural',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.singular',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
-                }
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onInvite.singular')
+                );
+              }
+              this.fetchUsers(true);
+            },
+            error: (errors) => {
+              if (value.length > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotInvite.plural',
+                    { error: errorMessageFormatter(errors) }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotInvite.singular',
+                    { error: errorMessageFormatter(errors) }
+                  ),
+                  { error: true }
+                );
               }
             },
           });
@@ -247,13 +247,25 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
             variables: { ids },
           })
           .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
+            next: ({ data }) => {
+              this.loading = false;
+              if (data?.deleteUsers) {
+                if (data.deleteUsers > 1) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onDelete.plural')
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onDelete.singular')
+                  );
+                }
+                this.fetchUsers(true);
+              } else {
                 if (ids.length > 1) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
                       'components.users.onNotDelete.plural',
-                      { error: errors ? errors[0].message : '' }
+                      { error: '' }
                     ),
                     { error: true }
                   );
@@ -261,45 +273,30 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
                       'components.users.onNotDelete.singular',
-                      { error: errors ? errors[0].message : '' }
+                      { error: '' }
                     ),
                     { error: true }
                   );
                 }
+              }
+            },
+            error: (errors) => {
+              if (ids.length > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotDelete.plural',
+                    { error: errorMessageFormatter(errors) }
+                  ),
+                  { error: true }
+                );
               } else {
-                this.loading = false;
-                if (data?.deleteUsers) {
-                  if (data.deleteUsers > 1) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant('components.users.onDelete.plural')
-                    );
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onDelete.singular'
-                      )
-                    );
-                  }
-                  this.fetchUsers(true);
-                } else {
-                  if (ids.length > 1) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onNotDelete.plural',
-                        { error: '' }
-                      ),
-                      { error: true }
-                    );
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onNotDelete.singular',
-                        { error: '' }
-                      ),
-                      { error: true }
-                    );
-                  }
-                }
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotDelete.singular',
+                    { error: errorMessageFormatter(errors) }
+                  ),
+                  { error: true }
+                );
               }
             },
           });

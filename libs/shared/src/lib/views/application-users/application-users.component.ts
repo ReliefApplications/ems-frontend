@@ -11,6 +11,7 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { ADD_USERS } from './graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Application users component.
@@ -99,8 +100,8 @@ export class ApplicationUsersComponent
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe(({ errors, data }) => {
-            if (!errors) {
+          .subscribe({
+            next: ({ data }) => {
               if (data?.addUsers.length) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('components.users.onInvite.plural')
@@ -111,12 +112,13 @@ export class ApplicationUsersComponent
                 );
               }
               this.userList?.fetchUsers(true);
-            } else {
-              if (data?.addUsers?.length) {
+            },
+            error: (errors) => {
+              if (value?.length > 1) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'components.users.onNotInvite.plural',
-                    { error: errors[0].message }
+                    { error: errorMessageFormatter(errors) }
                   ),
                   { error: true }
                 );
@@ -124,12 +126,12 @@ export class ApplicationUsersComponent
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'components.users.onNotInvite.singular',
-                    { error: errors[0].message }
+                    { error: errorMessageFormatter(errors) }
                   ),
                   { error: true }
                 );
               }
-            }
+            },
           });
       }
     });

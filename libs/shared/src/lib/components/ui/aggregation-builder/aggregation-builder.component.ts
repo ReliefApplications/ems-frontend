@@ -19,6 +19,7 @@ import {
 } from '../../../models/aggregation.model';
 import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
+import { errorMessageFormatter } from '../../../utils/graphql/error-message-formatter';
 
 /**
  * Main component of Aggregation builder.
@@ -313,7 +314,9 @@ export class AggregationBuilderComponent
     if (!aggregationData || errors) {
       this.loadingAggregationRecords = false;
       if (errors?.length) {
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
+        this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+          error: true,
+        });
       }
       return;
     }

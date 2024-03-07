@@ -886,6 +886,7 @@ export class SummaryCardComponent
                     }
                   }
                 }
+                this.loading = false;
               },
               error: () => {
                 this.loading = false;

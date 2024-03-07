@@ -13,6 +13,7 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 /**
  * Shared service to manage application's notifications.
  */
@@ -60,18 +61,8 @@ export class ApplicationNotificationsService {
           notification,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotCreated', {
-              type: this.translate
-                .instant('common.customNotification.one')
-                .toLowerCase(),
-              error: res.errors ? res.errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
+      .subscribe({
+        next: (res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
@@ -80,7 +71,18 @@ export class ApplicationNotificationsService {
               })
             );
           }
-        }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate
+                .instant('common.customNotification.one')
+                .toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
       });
   }
 
@@ -98,16 +100,8 @@ export class ApplicationNotificationsService {
           id,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotDeleted', {
-              value: this.translate.instant('common.customNotification.one'),
-              error: res.errors ? res.errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
+      .subscribe({
+        next: (res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
@@ -115,7 +109,16 @@ export class ApplicationNotificationsService {
               })
             );
           }
-        }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDeleted', {
+              value: this.translate.instant('common.customNotification.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
       });
   }
 
@@ -134,16 +137,8 @@ export class ApplicationNotificationsService {
           notification,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              value: this.translate.instant('common.customNotification.one'),
-              error: res.errors ? res.errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
+      .subscribe({
+        next: (res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
@@ -152,7 +147,16 @@ export class ApplicationNotificationsService {
               })
             );
           }
-        }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              value: this.translate.instant('common.customNotification.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
       });
   }
 }

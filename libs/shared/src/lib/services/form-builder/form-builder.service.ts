@@ -16,6 +16,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
 import { HttpClient } from '@angular/common/http';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Shared form builder service.
@@ -272,26 +273,22 @@ export class FormBuilderService {
           },
         })
         .subscribe({
-          next: ({ errors }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.record.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.record.one'),
-                  value: '',
-                })
-              );
-            }
+          next: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.record.one'),
+                value: '',
+              })
+            );
+          },
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.record.one'),
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }

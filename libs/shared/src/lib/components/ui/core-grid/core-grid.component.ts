@@ -1343,24 +1343,18 @@ export class CoreGridComponent
           })
           .pipe(takeUntil(this.destroy$))
           .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.reloadData();
-                this.layoutService.setRightSidenav(null);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
+            next: () => {
+              this.reloadData();
+              this.layoutService.setRightSidenav(null);
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.dataRecovered')
+              );
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: () => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.dataNotRecovered'),
+                { error: true }
+              );
             },
           });
       }

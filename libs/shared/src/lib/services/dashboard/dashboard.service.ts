@@ -15,6 +15,7 @@ import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -57,11 +58,11 @@ export class DashboardService {
     type: string,
     value?: string
   ) {
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotUpdated', {
           type,
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );

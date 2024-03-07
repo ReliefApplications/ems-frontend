@@ -105,23 +105,18 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
               if (this.steps.length > 0) {
                 this.onOpenStep(0);
               }
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.workflow.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate
+                  .instant('common.workflow.one')
+                  .toLowerCase(),
+                error: '',
+              }),
+              { error: true }
+            );
           },
         });
     });

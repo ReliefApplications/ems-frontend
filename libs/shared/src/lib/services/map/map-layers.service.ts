@@ -11,6 +11,7 @@ import {
   Observable,
   of,
   switchMap,
+  throwError,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -35,6 +36,7 @@ import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Shared map layer service
@@ -86,11 +88,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data?.addLayer;
-        })
+        }),
+        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
       );
   }
 
@@ -117,11 +117,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data?.editLayer;
-        })
+        }),
+        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
       );
   }
 
@@ -157,11 +155,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data.layer;
-        })
+        }),
+        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
       );
   }
 
@@ -192,11 +188,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data.layers;
-        })
+        }),
+        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
       );
   }
 

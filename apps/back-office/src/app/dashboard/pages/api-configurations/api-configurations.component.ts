@@ -10,6 +10,7 @@ import {
   DeleteApiConfigurationMutationResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import {
   ADD_API_CONFIGURATION,
@@ -180,39 +181,35 @@ export class ApiConfigurationsComponent
             },
           })
           .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.apiConfiguration.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
+            next: ({ data }) => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate
+                    .instant('common.apiConfiguration.one')
+                    .toLowerCase(),
+                  value: data?.addApiConfiguration.name,
+                })
+              );
+              if (data) {
+                this.router.navigate([
+                  '/settings/apiconfigurations',
+                  data.addApiConfiguration.id,
+                ]);
+              }
+            },
+            error: (errors) => {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
                     type: this.translate
                       .instant('common.apiConfiguration.one')
                       .toLowerCase(),
-                    value: data?.addApiConfiguration.name,
-                  })
-                );
-                if (data) {
-                  this.router.navigate([
-                    '/settings/apiconfigurations',
-                    data.addApiConfiguration.id,
-                  ]);
-                }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+                    error: errorMessageFormatter(errors),
+                  }
+                ),
+                { error: true }
+              );
             },
           });
       }
@@ -249,7 +246,7 @@ export class ApiConfigurationsComponent
           })
           .subscribe({
             next: (res) => {
-              if (res && !res.errors) {
+              if (res) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant(
@@ -260,23 +257,21 @@ export class ApiConfigurationsComponent
                 this.dataSource = this.dataSource.filter(
                   (x) => x.id !== element.id
                 );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant(
-                        'common.apiConfiguration.one'
-                      ),
-                      error: res.errors ? res.errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
               }
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: (errors) => {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant(
+                      'common.apiConfiguration.one'
+                    ),
+                    error: errorMessageFormatter(errors),
+                  }
+                ),
+                { error: true }
+              );
             },
           });
       }

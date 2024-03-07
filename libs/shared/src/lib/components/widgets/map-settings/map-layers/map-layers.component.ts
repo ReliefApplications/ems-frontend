@@ -109,7 +109,10 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
               this.mapLayers.push(res);
             }
           },
-          error: (err) => console.error(err),
+          error: (err) => {
+            console.error(err);
+            this.loading = false;
+          },
           complete: () => (this.loading = false),
         });
       } else {
@@ -184,7 +187,10 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
                     }
                   }
                 },
-                error: (err) => console.log(err),
+                error: (err) => {
+                  console.log(err);
+                  this.loading = false;
+                },
                 complete: () => (this.loading = false),
               });
             } else {

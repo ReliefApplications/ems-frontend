@@ -22,6 +22,7 @@ import {
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 /**
  * Shared survey helper service.
  */
@@ -191,29 +192,22 @@ export class FormHelpersService {
                         },
                       })
                       .subscribe({
-                        next: ({ data, errors }) => {
-                          if (errors) {
-                            this.snackBar.openSnackBar(
-                              `Error. ${errors[0].message}`,
-                              {
-                                error: true,
-                              }
-                            );
-                            reject(errors);
-                          } else {
-                            question.value[question.value.indexOf(recordId)] =
-                              question.value.includes(recordId)
-                                ? data?.addRecord.id
-                                : recordId; // If there is no error, we replace in the question the temporary id by the final one
-                            surveyData[question.name] = question.value; // We update the survey data to consider our changes
-                            resolve();
-                          }
+                        next: ({ data }) => {
+                          question.value[question.value.indexOf(recordId)] =
+                            question.value.includes(recordId)
+                              ? data?.addRecord.id
+                              : recordId; // If there is no error, we replace in the question the temporary id by the final one
+                          surveyData[question.name] = question.value; // We update the survey data to consider our changes
+                          resolve();
                         },
-                        error: (err) => {
-                          this.snackBar.openSnackBar(err.message, {
-                            error: true,
-                          });
-                          reject(err);
+                        error: (errors) => {
+                          this.snackBar.openSnackBar(
+                            `Error. ${errorMessageFormatter(errors)}`,
+                            {
+                              error: true,
+                            }
+                          );
+                          reject(errors);
                         },
                       });
                   } else {
@@ -474,21 +468,14 @@ export class FormHelpersService {
         },
       });
       mutation.subscribe({
-        next: ({ errors, data }) => {
-          if (errors) {
-            survey.clear(false, true);
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          } else {
-            // localStorage.removeItem(this.storageId);
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'components.form.draftRecords.successSave'
-              ),
-              {
-                error: false,
-              }
-            );
-          }
+        next: ({ data }) => {
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successSave'),
+            {
+              error: false,
+            }
+          );
           // Callback to emit save but stay in record addition mode
           if (callback) {
             callback({
@@ -500,8 +487,11 @@ export class FormHelpersService {
             });
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          survey.clear(false, true);
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         },
       });
     } else {
@@ -516,7 +506,9 @@ export class FormHelpersService {
       mutation.subscribe(({ errors }: any) => {
         if (errors) {
           survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         } else {
           // localStorage.removeItem(this.storageId);
           this.snackBar.openSnackBar(

@@ -9,6 +9,7 @@ import {
   UnsubscribeComponent,
   FormsQueryResponse,
   AddFormMutationResponse,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { ADD_FORM } from './graphql/mutations';
@@ -177,35 +178,31 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
             variables: variablesData,
           })
           .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.form.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                const id = data?.addForm.id || '';
-                this.pageForm.controls.content.setValue(id);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate.instant('common.page.one'),
-                    value: value.name,
-                  })
-                );
+            next: ({ data }) => {
+              const id = data?.addForm.id || '';
+              this.pageForm.controls.content.setValue(id);
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate.instant('common.page.one'),
+                  value: value.name,
+                })
+              );
 
-                this.onSubmit();
-              }
+              this.onSubmit();
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: (errors) => {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: errorMessageFormatter(errors),
+                  }
+                ),
+                { error: true }
+              );
             },
           });
       }

@@ -14,6 +14,7 @@ import {
 import { ApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
@@ -84,35 +85,38 @@ export class WorkflowService {
             workflow: workflow.id,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate.instant('common.step.one').toLowerCase(),
-                value: data.addStep.name,
-              })
-            );
-            this.loadWorkflow(workflow.id);
-            if (step.type === ContentType.form) {
-              this.router.navigate(
-                ['../' + step.type + '/' + data.addStep.id],
-                { relativeTo: route.parent }
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate.instant('common.step.one').toLowerCase(),
+                  value: data.addStep.name,
+                })
               );
-            } else {
-              this.router.navigate(
-                ['../' + step.type + '/' + data.addStep.content],
-                { relativeTo: route.parent }
-              );
+              this.loadWorkflow(workflow.id);
+              if (step.type === ContentType.form) {
+                this.router.navigate(
+                  ['../' + step.type + '/' + data.addStep.id],
+                  { relativeTo: route.parent }
+                );
+              } else {
+                this.router.navigate(
+                  ['../' + step.type + '/' + data.addStep.content],
+                  { relativeTo: route.parent }
+                );
+              }
             }
-          } else {
+          },
+          error: (errors) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.workflow.one'),
-                error: errors ? errors[0].message : '',
+                error: errorMessageFormatter(errors),
               }),
               { error: true }
             );
-          }
+          },
         });
     } else {
       this.snackBar.openSnackBar(

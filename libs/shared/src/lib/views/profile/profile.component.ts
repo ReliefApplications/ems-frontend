@@ -8,6 +8,7 @@ import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubsc
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { EditUserProfileMutationResponse, User } from '../../models/user.model';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Shared profile page.
@@ -79,11 +80,13 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleUserProfileMutationResponse({ data, errors }, 'name');
+        next: ({ data }) => {
+          this.handleUserProfileMutationResponse({ data, errors: [] }, 'name');
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         },
       });
   }
@@ -105,14 +108,16 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
+          next: ({ data }) => {
             this.handleUserProfileMutationResponse(
-              { data, errors },
+              { data, errors: [] },
               'favoriteApp'
             );
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -145,7 +150,7 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
     profileProperty: 'name' | 'favoriteApp'
   ) {
     const { errors, data } = response;
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('pages.profile.notifications.notUpdated'),
         { error: true }

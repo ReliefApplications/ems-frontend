@@ -6,6 +6,7 @@ import {
   Application,
   DuplicateApplicationMutationResponse,
   SnackbarSpinnerComponent,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -94,35 +95,33 @@ export class DuplicateApplicationModalComponent {
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
-          if (errors) {
-            snackBarSpinner.instance.message = this.translateService.instant(
-              'common.notifications.objectNotDuplicated',
-              {
-                type: this.translateService
-                  .instant('common.application.one')
-                  .toLowerCase(),
-                error: errors ? errors[0].message : '',
-              }
-            );
-            snackBarSpinner.instance.error = true;
-          } else {
-            snackBarSpinner.instance.message = this.translateService.instant(
-              'common.notifications.objectDuplicated',
-              {
-                type: this.translateService
-                  .instant('common.application.one')
-                  .toLowerCase(),
-                value: this.currentApp.name,
-              }
-            );
-          }
+        next: ({ data }) => {
           snackBarSpinner.instance.loading = false;
+
+          snackBarSpinner.instance.message = this.translateService.instant(
+            'common.notifications.objectDuplicated',
+            {
+              type: this.translateService
+                .instant('common.application.one')
+                .toLowerCase(),
+              value: this.currentApp.name,
+            }
+          );
+
+          this.loading = false;
           this.dialogRef.close(data?.duplicateApplication as any);
         },
-        error: (err) => {
-          snackBarSpinner.instance.message = err.message;
+        error: (errors) => {
           snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.message = this.translateService.instant(
+            'common.notifications.objectNotDuplicated',
+            {
+              type: this.translateService
+                .instant('common.application.one')
+                .toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }
+          );
           snackBarSpinner.instance.error = true;
         },
       });

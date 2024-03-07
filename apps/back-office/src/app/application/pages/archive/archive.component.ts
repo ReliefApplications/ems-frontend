@@ -89,21 +89,17 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
                   autoDeletedAt: page.autoDeletedAt,
                 } as ArchivePage;
               }) ?? [];
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.accessNotProvided', {
-                type: this.translate
-                  .instant('common.workflow.one')
-                  .toLowerCase(),
-                error: '',
-              }),
-              { error: true }
-            );
           }
           this.loading = false;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate.instant('common.workflow.one').toLowerCase(),
+              error: '',
+            }),
+            { error: true }
+          );
           this.loading = false;
         },
       });

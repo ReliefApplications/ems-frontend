@@ -41,6 +41,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Interface of Dialog data.
@@ -353,34 +354,33 @@ export class FormModalComponent
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-                error: true,
-              });
-              this.ngZone.run(() => {
-                this.dialogRef.close();
-              });
-            } else {
-              if (this.lastDraftRecord) {
-                const callback = () => {
-                  this.lastDraftRecord = undefined;
-                };
-                this.formHelpersService.deleteRecordDraft(
-                  this.lastDraftRecord,
-                  callback
-                );
-              }
-              this.ngZone.run(() => {
-                this.dialogRef.close({
-                  template: this.data.template,
-                  data: data?.addRecord,
-                } as any);
-              });
+          next: ({ data }) => {
+            if (this.lastDraftRecord) {
+              const callback = () => {
+                this.lastDraftRecord = undefined;
+              };
+              this.formHelpersService.deleteRecordDraft(
+                this.lastDraftRecord,
+                callback
+              );
             }
+            this.ngZone.run(() => {
+              this.dialogRef.close({
+                template: this.data.template,
+                data: data?.addRecord,
+              } as any);
+            });
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              `Error. ${errorMessageFormatter(errors)}`,
+              {
+                error: true,
+              }
+            );
+            this.ngZone.run(() => {
+              this.dialogRef.close();
+            });
           },
         });
     }
@@ -404,11 +404,14 @@ export class FormModalComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleRecordMutationResponse({ data, errors }, 'editRecord');
+        next: ({ data }) => {
+          this.handleRecordMutationResponse({ data, errors: [] }, 'editRecord');
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleRecordMutationResponse(
+            { data: null, errors },
+            'editRecord'
+          );
         },
       });
   }
@@ -431,7 +434,7 @@ export class FormModalComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
+        next: ({ data }) => {
           if (this.lastDraftRecord) {
             const callback = () => {
               this.lastDraftRecord = undefined;
@@ -441,10 +444,16 @@ export class FormModalComponent
               callback
             );
           }
-          this.handleRecordMutationResponse({ data, errors }, 'editRecords');
+          this.handleRecordMutationResponse(
+            { data, errors: [] },
+            'editRecords'
+          );
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleRecordMutationResponse(
+            { data: null, errors },
+            'editRecords'
+          );
         },
       });
   }
@@ -466,11 +475,11 @@ export class FormModalComponent
       responseType === 'editRecords'
         ? this.translate.instant('common.record.few')
         : this.translate.instant('common.record.one');
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotUpdated', {
           type,
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );
@@ -619,23 +628,19 @@ export class FormModalComponent
             },
           })
           .subscribe({
-            next: (errors) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
+            next: () => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.dataRecovered')
+              );
+
               this.dialog.closeAll();
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: () => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.dataNotRecovered'),
+                { error: true }
+              );
+              this.dialog.closeAll();
             },
           });
       }

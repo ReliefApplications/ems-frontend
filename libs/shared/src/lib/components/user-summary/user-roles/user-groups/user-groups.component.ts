@@ -71,6 +71,7 @@ export class UserGroupsComponent implements OnInit {
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.loading = false;
         },
       });
   }

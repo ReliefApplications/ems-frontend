@@ -14,6 +14,7 @@ import {
   UnsubscribeComponent,
   DeleteStepMutationResponse,
   EditWorkflowMutationResponse,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
@@ -244,45 +245,41 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
                 },
               })
               .subscribe({
-                next: ({ errors, data }) => {
-                  if (errors) {
+                next: ({ data }) => {
+                  if (data) {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
-                        'common.notifications.objectNotDeleted',
+                        'common.notifications.objectDeleted',
                         {
                           value: this.translate.instant('common.step.one'),
-                          error: errors ? errors[0].message : '',
                         }
-                      ),
-                      { error: true }
+                      )
                     );
-                  } else {
-                    if (data) {
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'common.notifications.objectDeleted',
-                          {
-                            value: this.translate.instant('common.step.one'),
-                          }
-                        )
-                      );
-                      this.steps = this.steps.filter(
-                        (x) => x.id !== data?.deleteStep.id
-                      );
-                      if (index === this.activeStep) {
-                        this.onOpenStep(-1);
-                      } else {
-                        if (currentStep) {
-                          this.activeStep = this.steps.findIndex(
-                            (x) => x.id === currentStep.id
-                          );
-                        }
+                    this.steps = this.steps.filter(
+                      (x) => x.id !== data?.deleteStep.id
+                    );
+                    if (index === this.activeStep) {
+                      this.onOpenStep(-1);
+                    } else {
+                      if (currentStep) {
+                        this.activeStep = this.steps.findIndex(
+                          (x) => x.id === currentStep.id
+                        );
                       }
                     }
                   }
                 },
-                error: (err) => {
-                  this.snackBar.openSnackBar(err.message, { error: true });
+                error: (errors) => {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant('common.step.one'),
+                        error: errorMessageFormatter(errors),
+                      }
+                    ),
+                    { error: true }
+                  );
                 },
               });
           }
@@ -340,7 +337,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
+        next: ({ data }) => {
           if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectReordered', {
@@ -352,18 +349,16 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
               this.activeStep = index;
             }
             this.steps = steps;
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.workflow.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.workflow.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
         },
       });
   }

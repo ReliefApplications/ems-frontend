@@ -28,6 +28,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * This component is used to display forms
@@ -300,7 +301,9 @@ export class FormComponent
         this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
+        this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+          error: true,
+        });
       } else {
         if (this.lastDraftRecord) {
           const callback = () => {
@@ -405,23 +408,17 @@ export class FormComponent
             },
           })
           .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.layoutService.setRightSidenav(null);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
+            next: () => {
+              this.layoutService.setRightSidenav(null);
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.dataRecovered')
+              );
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: () => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.dataNotRecovered'),
+                { error: true }
+              );
             },
           });
       }

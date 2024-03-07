@@ -38,6 +38,7 @@ import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordQueryResponse } from '../../models/record.model';
 import { GET_RECORD_BY_ID } from './graphql/queries';
+import { errorMessageFormatter } from '../../utils/graphql/error-message-formatter';
 
 /**
  * Dashboard context service
@@ -579,11 +580,11 @@ export class ContextService {
     dashboard?: Dashboard
   ) {
     const { data, errors } = response;
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotUpdated', {
           type: this.translate.instant('common.filter.one'),
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );

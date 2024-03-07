@@ -29,6 +29,7 @@ import {
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../../utils/graphql/error-message-formatter';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -301,12 +302,20 @@ export class RoleResourcesComponent
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleResourceMutationResponse(resource, { data, errors }, true);
+        next: ({ data }) => {
+          this.handleResourceMutationResponse(
+            resource,
+            { data, errors: [] },
+            true
+          );
           this.updating = false;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleResourceMutationResponse(
+            resource,
+            { data: null, errors },
+            true
+          );
           this.updating = false;
         },
       });
@@ -331,12 +340,12 @@ export class RoleResourcesComponent
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleResourceMutationResponse(resource, { data, errors });
+        next: ({ data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors: [] });
           this.updating = false;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleResourceMutationResponse(resource, { data: null, errors });
           this.updating = false;
         },
       });
@@ -378,8 +387,10 @@ export class RoleResourcesComponent
         this.openedResource = tableElements[index].resource;
       }
     }
-    if (errors) {
-      this.snackBar.openSnackBar(errors[0].message, { error: true });
+    if (errors?.length) {
+      this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+        error: true,
+      });
     }
   }
 
@@ -428,12 +439,12 @@ export class RoleResourcesComponent
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleResourceMutationResponse(resource, { data, errors });
+        next: ({ data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors: [] });
           this.updating = false;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleResourceMutationResponse(resource, { data: null, errors });
           this.updating = false;
         },
       });

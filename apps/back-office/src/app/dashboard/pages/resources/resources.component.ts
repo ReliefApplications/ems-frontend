@@ -11,6 +11,7 @@ import {
   ResourcesQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -244,8 +245,8 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
               id: resource.id,
             },
           })
-          .subscribe(({ errors }) => {
-            if (!errors) {
+          .subscribe({
+            next: () => {
               this.resources = this.resources.filter(
                 (x) => x.id !== resource.id
               );
@@ -254,18 +255,19 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
                   value: this.translate.instant('common.resource.one'),
                 })
               );
-            } else {
+            },
+            error: (errors) => {
               this.snackBar.openSnackBar(
                 this.translate.instant(
                   'common.notifications.objectNotDeleted',
                   {
                     value: this.translate.instant('common.resource.one'),
-                    error: errors[0].message,
+                    error: errorMessageFormatter(errors),
                   }
                 ),
                 { error: true }
               );
-            }
+            },
           });
       }
     });
@@ -289,29 +291,25 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
             variables: variablesData,
           })
           .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.form.one')
-                        .toLowerCase(),
-                      error: errors[0].message,
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
-                  const { id } = data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
-                }
+            next: ({ data }) => {
+              if (data) {
+                const { id } = data.addForm;
+                this.router.navigate(['/forms/builder', id]);
               }
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: (errors) => {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: errorMessageFormatter(errors),
+                  }
+                ),
+                { error: true }
+              );
             },
           });
       }

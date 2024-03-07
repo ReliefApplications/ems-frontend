@@ -12,6 +12,7 @@ import {
   AddFormMutationResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { GET_SHORT_FORMS } from './graphql/queries';
 import { DELETE_FORM, ADD_FORM } from './graphql/mutations';
@@ -228,32 +229,27 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
             },
           })
           .subscribe({
-            next: ({ errors }) => {
-              if (!errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.form.one'),
-                  })
-                );
-                this.forms = this.forms.filter(
-                  (x) =>
-                    x.id !== form.id && form.id !== x.resource?.coreForm?.id
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant('common.form.one'),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              }
+            next: () => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.form.one'),
+                })
+              );
+              this.forms = this.forms.filter(
+                (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
+              );
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: (errors) => {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.form.one'),
+                    error: errorMessageFormatter(errors),
+                  }
+                ),
+                { error: true }
+              );
             },
           });
       }
@@ -283,29 +279,25 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
             variables: variablesData,
           })
           .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.form.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
-                  const { id } = data.addForm;
-                  this.router.navigate(['/forms/' + id + '/builder']);
-                }
+            next: ({ data }) => {
+              if (data) {
+                const { id } = data.addForm;
+                this.router.navigate(['/forms/' + id + '/builder']);
               }
             },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
+            error: (errors) => {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: errorMessageFormatter(errors),
+                  }
+                ),
+                { error: true }
+              );
             },
           });
       }

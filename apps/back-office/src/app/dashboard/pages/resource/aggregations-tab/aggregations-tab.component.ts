@@ -10,12 +10,17 @@ import {
   ResourceQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { takeUntil } from 'rxjs';
-import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -84,7 +89,8 @@ export class AggregationsTabComponent
     private dialog: Dialog,
     private aggregationService: AggregationService,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private snackbarService: SnackbarService
   ) {
     super();
   }
@@ -189,11 +195,21 @@ export class AggregationsTabComponent
       if (value) {
         this.aggregationService
           .addAggregation(value, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.addAggregation) {
-              this.aggregations = [...this.aggregations, data?.addAggregation];
-              this.pageInfo.length += 1;
-            }
+          .subscribe({
+            next: ({ data }: any) => {
+              if (data.addAggregation) {
+                this.aggregations = [
+                  ...this.aggregations,
+                  data?.addAggregation,
+                ];
+                this.pageInfo.length += 1;
+              }
+            },
+            error: (errors) => {
+              this.snackbarService.openSnackBar(errorMessageFormatter(errors), {
+                error: true,
+              });
+            },
           });
       }
     });
