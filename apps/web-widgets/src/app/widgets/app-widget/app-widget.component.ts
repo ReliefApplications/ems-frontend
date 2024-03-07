@@ -18,8 +18,9 @@ import {
   DataTemplateService,
   WorkflowService,
   MapLayersService,
+  AuthService,
 } from '@oort-front/shared';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
 import { Router } from '@angular/router';
@@ -60,6 +61,16 @@ export class AppWidgetComponent
   }
 
   /**
+   * Check if system that embeds web-widget has finish token refresh
+   */
+  @Input()
+  set isTokenRefreshed(tokenRefreshed: boolean) {
+    if (tokenRefreshed) {
+      this.authService.isTokenRefreshed.next(true);
+    }
+  }
+
+  /**
    * Set dashboard filter visibility status
    */
   @Input()
@@ -79,6 +90,9 @@ export class AppWidgetComponent
     this.contextService.filter.next(value);
   }
 
+  /** Send reminder to system about token refresh */
+  @Output()
+  refreshToken$ = new EventEmitter<boolean>();
   /** Is filter active */
   @Output()
   filterActive$ = new EventEmitter<boolean>();
@@ -100,6 +114,7 @@ export class AppWidgetComponent
    * @param applicationService Shared application service
    * @param router Angular router service
    * @param shadowDomService Shared shadow dom service
+   * @param authService Auth service
    */
   constructor(
     el: ElementRef,
@@ -107,7 +122,8 @@ export class AppWidgetComponent
     private contextService: ContextService,
     private applicationService: ApplicationService,
     private router: Router,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    private authService: AuthService
   ) {
     console.log('DEBUG: build from 03/05/2023, v5');
     super(el, injector);
@@ -138,6 +154,15 @@ export class AppWidgetComponent
         } else {
           this.pages.emit([]);
         }
+      });
+
+    this.authService.refreshToken$
+      .pipe(
+        filter((refreshToken) => !!refreshToken),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => this.refreshToken$.emit(),
       });
   }
 
