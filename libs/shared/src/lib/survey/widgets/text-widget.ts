@@ -85,15 +85,15 @@ export const init = (
         },
       });
       serializer.addProperty('text', {
-        name: 'useClassicCalendarType',
+        name: 'calendarType',
         visibleIndex: 2,
         category: 'layout',
-        default: false,
-        type: 'boolean',
+        type: 'string',
+        choices: ['infinite', 'classic'],
+        default: 'infinite',
+        dependsOn: ['inputType'],
         visibleIf: (obj: QuestionText) =>
-          ['date', 'datetime', 'datetime-local', 'time'].includes(
-            obj.inputType || ''
-          ),
+          ['date', 'datetime', 'datetime-local'].includes(obj.inputType || ''),
       });
       // register the editor for type "date" with kendo date picker
       registerCustomPropertyEditor(
@@ -129,7 +129,7 @@ export const init = (
             question.inputType as DateInputFormat,
             pickerDiv,
             domService,
-            question.useClassicCalendarType ? 'classic' : 'infinite'
+            question.calendarType || 'infinite'
           );
 
           if (pickerInstance) {
