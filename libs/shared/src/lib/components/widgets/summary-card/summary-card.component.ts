@@ -52,12 +52,16 @@ import filterReferenceData from '../../../utils/filter/reference-data-filter.uti
 import { ReferenceData } from '../../../models/reference-data.model';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { PageSizeChangeEvent } from '@progress/kendo-angular-pager';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
 /** Default page size for pagination */
 const DEFAULT_PAGE_SIZE = 25;
+
+/** Key to store user selected page size, in local storage */
+const SELECTED_PAGE_SIZE_KEY = 'selectedPageSize';
 
 /**
  * Summary Card Widget component.
@@ -92,7 +96,7 @@ export class SummaryCardComponent
   /** Pagination info */
   public pageInfo = {
     pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
+    pageSize: this.defaultPageSize,
     length: 0,
     skip: 0,
     lastCursor: null as any,
@@ -210,6 +214,16 @@ export class SummaryCardComponent
   /** @returns is widget exportable ( only cards mode ) */
   get exportable() {
     return get(this.settings, 'widgetDisplay.exportable', true);
+  }
+
+  /** @returns default page size, for initialization */
+  private get defaultPageSize(): number {
+    const selectedPageSize = localStorage.getItem(SELECTED_PAGE_SIZE_KEY);
+    if (selectedPageSize) {
+      return Number(selectedPageSize);
+    } else {
+      return DEFAULT_PAGE_SIZE;
+    }
   }
 
   /**
@@ -1077,6 +1091,15 @@ export class SummaryCardComponent
           this.loading = false;
         });
     }
+  }
+
+  /**
+   * Store new page size in local storage, so next time widgets are drawn, remembers it
+   *
+   * @param event page size change event
+   */
+  public onPageSizeChange(event: PageSizeChangeEvent): void {
+    localStorage.setItem(SELECTED_PAGE_SIZE_KEY, event.newPageSize.toString());
   }
 
   /**
