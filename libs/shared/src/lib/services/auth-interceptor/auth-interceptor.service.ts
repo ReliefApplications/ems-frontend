@@ -11,6 +11,7 @@ import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { RestService } from '../rest/rest.service';
 import { ShadowDomService } from '@oort-front/ui';
+import { jwtDecode } from 'jwt-decode';
 
 /**
  * Shared Authentication interceptor service
@@ -38,12 +39,32 @@ export class AuthInterceptorService implements HttpInterceptor {
   ) {}
 
   /**
+   * Clones the current intercepted request and sets the current idtoken
+   *
+   * @param request Current intercepted request
+   * @returns Intercepted request with the current idtoken
+   */
+  private addBearerTokenToRequest(request: HttpRequest<any>): HttpRequest<any> {
+    // If we have a token, we set it to the header
+    const token = this.authService.getAuthToken();
+    if (token) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+    return request;
+  }
+
+  /**
    * Clones the current intercepted request and sets the current access_token
    *
    * @param request Current intercepted request
    * @returns Intercepted request with the current access_token
    */
   private addAccessTokenToRequest(request: HttpRequest<any>): HttpRequest<any> {
+    // Passing the access token so backend can use it in proxy request involving authorization code flow
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
       request = request.clone({
@@ -51,6 +72,20 @@ export class AuthInterceptorService implements HttpInterceptor {
           AccessToken: accessToken,
         },
       });
+    }
+    return request;
+  }
+
+  /**
+   * Clones the current intercepted request and sets the current tokens
+   *
+   * @param request Current intercepted request
+   * @returns Intercepted request with the current tokens
+   */
+  private addTokensToRequest(request: HttpRequest<any>): HttpRequest<any> {
+    if (request.url.startsWith(this.restService.apiUrl)) {
+      request = this.addBearerTokenToRequest(request);
+      request = this.addAccessTokenToRequest(request);
     }
     return request;
   }
@@ -66,14 +101,14 @@ export class AuthInterceptorService implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token = this.authService.getAuthToken();
     /**
      * Pipes current request with a default logic
      *
      * @returns request with default pipe logic
      */
-    const defaultPipedRequest = () =>
-      next.handle(request).pipe(
+    const defaultPipedRequest = () => {
+      request = this.addTokensToRequest(request);
+      return next.handle(request).pipe(
         catchError((err) => {
           if (err instanceof HttpErrorResponse) {
             if (err.status === 401) {
@@ -83,29 +118,17 @@ export class AuthInterceptorService implements HttpInterceptor {
           return throwError(() => new Error(err.error || err.message));
         })
       );
+    };
 
-    if (request.url.startsWith(this.restService.apiUrl) && token) {
-      // If we have a token, we set it to the header
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      // Passing the access token so backend can use it in proxy request involving authorization code flow
-      request = this.addAccessTokenToRequest(request);
-    }
     /** Check if access token from system embedding web-widgets needs refresh */
-    if (
-      this.shadowDomService.isShadowRoot &&
-      localStorage.getItem('tokenExpiration')
-    ) {
-      // Time expiration range taken from the SUI code
-      const expirationDate = new Date(
-        (new Date(localStorage.getItem('tokenExpiration') as string) as any) -
-          1000 * 300
-      );
-      const currentDate = new Date();
-      if (expirationDate <= currentDate) {
+    if (this.shadowDomService.isShadowRoot) {
+      const currentToken = this.authService.getAuthToken();
+      if (
+        currentToken &&
+        jwtDecode(currentToken as string)?.exp &&
+        new Date((jwtDecode(currentToken)?.exp as number) * 1000) <=
+          new Date(new Date().getTime() + 5 * 60 * 1000)
+      ) {
         // Send signal to system embedding web-widgets to trigger access token refresh method of it's own
         this.authService.refreshToken.next(true);
         if (!this.refreshTokenInProgress) {
@@ -117,7 +140,6 @@ export class AuthInterceptorService implements HttpInterceptor {
               // When token is refreshed signal is received, send the request again with the new access token
               this.refreshTokenInProgress = false;
               this.refreshTokenDone.next(true);
-              request = this.addAccessTokenToRequest(request);
               return defaultPipedRequest();
             })
           );
@@ -127,15 +149,15 @@ export class AuthInterceptorService implements HttpInterceptor {
             filter((result) => !!result),
             take(1),
             switchMap(() => {
-              request = this.addAccessTokenToRequest(request);
               return defaultPipedRequest();
             })
           );
         }
+      } else {
+        return defaultPipedRequest();
       }
     } else {
       return defaultPipedRequest();
     }
-    return defaultPipedRequest();
   }
 }
