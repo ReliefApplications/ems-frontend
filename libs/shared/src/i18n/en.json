@@ -1813,6 +1813,9 @@
 							"region": "Use region name",
 							"remove": "Remove geographic extent",
 							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
+						},
+						"gradient": {
+							"reverse": "Reverse gradient"
 						}
 					}
 				},

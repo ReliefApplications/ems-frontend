@@ -364,7 +364,7 @@ export const createLayerDrawingInfoForm = (
       }),
       ...(type === 'heatmap' && {
         gradient: [
-          get(value, 'gradient', DEFAULT_GRADIENT),
+          get(value, 'renderer.gradient', DEFAULT_GRADIENT),
           Validators.required,
         ],
         blur: [get<number>(value, 'renderer.blur', 15), Validators.required],
@@ -376,6 +376,7 @@ export const createLayerDrawingInfoForm = (
           get<number>(value, 'renderer.minOpacity', 0.4),
           Validators.required,
         ],
+        field1: [get(value, 'renderer.field1', null)],
       }),
       ...(type === 'uniqueValue' && {
         defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
