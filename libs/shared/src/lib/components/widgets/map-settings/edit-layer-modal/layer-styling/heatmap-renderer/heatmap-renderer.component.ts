@@ -10,7 +10,7 @@ import {
 } from '@oort-front/ui';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { Fields } from '../../../../../../models/layer.model';
-import { UnsubscribeComponent } from 'libs/shared/src/lib/components/utils/unsubscribe/unsubscribe.component';
+import { UnsubscribeComponent } from '../../../../../../components/utils/unsubscribe/unsubscribe.component';
 
 /**
  * Layer Heatmap renderer component
