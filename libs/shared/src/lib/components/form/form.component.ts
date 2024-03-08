@@ -18,7 +18,7 @@ import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { BehaviorSubject, lastValueFrom, takeUntil } from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import {
@@ -266,18 +266,13 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public onComplete = async () => {
-    console.log('onComplete', this.surveyActive);
     this.formHelpersService
-      .checkUniquePropriety(
-        this.survey,
-        !(this.record || this.form.uniqueRecord)
-      )
+      .checkUniquePropriety(this.survey)
       .then(async (response: CheckUniqueProprietyReturnT) => {
-        console.log('response', response);
-
         if (response.verified) {
           let mutation: any;
           this.surveyActive = false;
+          this.saving = true;
           // const promises: Promise<any>[] =
           //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
@@ -288,125 +283,81 @@ export class FormComponent
           this.formHelpersService.setEmptyQuestions(this.survey);
           // We wait for the resources questions to update their ids
           await this.formHelpersService.createTemporaryRecords(this.survey);
-          if (response.overwriteRecords?.size) {
+          const editRecord =
+            response.overwriteRecord ?? (this.record || this.form.uniqueRecord);
+          // If is an already saved record, edit it
+          if (editRecord) {
             // If update or creation of record is overwriting another record because unique field values
-            this.saving = true;
-            let success = false;
-            for await (const recordId of response.overwriteRecords) {
-              const { data } = await lastValueFrom(
-                this.apollo.mutate<EditRecordMutationResponse>({
-                  mutation: EDIT_RECORD,
-                  variables: {
-                    id: recordId,
-                    data: this.survey.parsedData ?? this.survey.data,
-                  },
-                })
-              );
-              console.log('EDIT_RECORD', data);
-              if (data?.editRecord) {
-                success = true;
-              }
-            }
-            if (!success) {
-              this.save.emit({ completed: false });
-              this.survey.clear(false, true);
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'components.record.uniqueField.overwriteError',
-                  {
-                    error: true,
-                  }
-                )
-              );
-            } else {
-              if (this.lastDraftRecord) {
-                const callback = () => {
-                  this.lastDraftRecord = undefined;
-                };
-                this.formHelpersService.deleteRecordDraft(
-                  this.lastDraftRecord,
-                  callback
-                );
-              }
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'components.record.uniqueField.overwriteSuccess'
-                )
-              );
-              this.onClear();
-            }
-            this.saving = false;
-            this.surveyActive = true;
-          } else {
-            // If is an already saved record, edit it
-            if (this.record || this.form.uniqueRecord) {
-              const recordId = this.record
-                ? this.record.id
-                : this.form.uniqueRecord?.id;
-              mutation = this.apollo.mutate<EditRecordMutationResponse>({
-                mutation: EDIT_RECORD,
-                variables: {
-                  id: recordId,
-                  data: this.survey.parsedData ?? this.survey.data,
+            const recordId = response.overwriteRecord
+              ? response.overwriteRecord.id
+              : this.record
+              ? this.record.id
+              : this.form.uniqueRecord?.id;
+            mutation = this.apollo.mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: recordId,
+                data: this.survey.parsedData ?? this.survey.data,
+                ...(!response.overwriteRecord && {
                   template:
                     this.form.id !== this.record?.form?.id
                       ? this.form.id
                       : null,
-                },
-              });
-              // Else create a new one
-            } else {
-              mutation = this.apollo.mutate<AddRecordMutationResponse>({
-                mutation: ADD_RECORD,
-                variables: {
-                  form: this.form.id,
-                  data: this.survey.parsedData ?? this.survey.data,
-                },
-              });
-            }
-            mutation
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(({ errors, data }: any) => {
-                if (errors) {
-                  this.save.emit({ completed: false });
-                  this.survey.clear(false, true);
-                  this.surveyActive = true;
-                  this.snackBar.openSnackBar(errors[0].message, {
-                    error: true,
-                  });
-                } else {
-                  if (this.lastDraftRecord) {
-                    const callback = () => {
-                      this.lastDraftRecord = undefined;
-                    };
-                    this.formHelpersService.deleteRecordDraft(
-                      this.lastDraftRecord,
-                      callback
-                    );
-                  }
-                  // localStorage.removeItem(this.storageId);
-                  if (data.editRecord || data.addRecord.form.uniqueRecord) {
-                    this.survey.clear(false, false);
-                    if (data.addRecord) {
-                      this.record = data.addRecord;
-                      this.modifiedAt = this.record?.modifiedAt || null;
-                    } else {
-                      this.modifiedAt = data.editRecord.modifiedAt;
-                    }
-                    this.surveyActive = true;
-                  } else {
-                    this.survey.showCompletedPage = true;
-                  }
-                  this.save.emit({
-                    completed: true,
-                    hideNewRecord:
-                      data.addRecord && data.addRecord.form.uniqueRecord,
-                  });
-                }
-              });
+                }),
+              },
+            });
+            // Else create a new one
+          } else {
+            mutation = this.apollo.mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: this.form.id,
+                data: this.survey.parsedData ?? this.survey.data,
+              },
+            });
           }
+          mutation
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(({ errors, data }: any) => {
+              if (errors) {
+                this.save.emit({ completed: false });
+                this.survey.clear(false, true);
+                this.surveyActive = true;
+                this.snackBar.openSnackBar(errors[0].message, {
+                  error: true,
+                });
+              } else {
+                if (this.lastDraftRecord) {
+                  const callback = () => {
+                    this.lastDraftRecord = undefined;
+                  };
+                  this.formHelpersService.deleteRecordDraft(
+                    this.lastDraftRecord,
+                    callback
+                  );
+                }
+                // localStorage.removeItem(this.storageId);
+                if (data.editRecord || data.addRecord.form.uniqueRecord) {
+                  this.survey.clear(false, false);
+                  if (data.addRecord) {
+                    this.record = data.addRecord;
+                    this.modifiedAt = this.record?.modifiedAt || null;
+                  } else {
+                    this.modifiedAt = data.editRecord.modifiedAt;
+                  }
+                  this.surveyActive = true;
+                } else {
+                  this.survey.showCompletedPage = true;
+                }
+                this.save.emit({
+                  completed: true,
+                  hideNewRecord:
+                    data.addRecord && data.addRecord.form.uniqueRecord,
+                });
+              }
+              this.saving = false;
+            });
         } else {
-          console.log('else');
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.display.cancelMessage')
           );

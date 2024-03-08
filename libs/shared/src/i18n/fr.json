@@ -1144,11 +1144,11 @@
 				"title": "Récupération de données"
 			},
 			"uniqueField": {
+				"cannotUpdate": "Vous n'êtes pas autorisé à mettre à jour cet enregistrement existant.",
 				"exist": "L'enregistrement avec la question '{{question}}' avec la valeur '{{value}}' existe déjà et cette valeur doit être unique.",
 				"overwriteConfirm": "Voulez-vous écraser l'enregistrement existant?",
-				"overwriteError": "Erreur lors de l'écrasement des enregistrements",
-				"overwriteSuccess": "Enregistrement(s) écrasé(s) avec succès!",
-				"title": "Valeur de champ unique"
+				"title": "Valeur de champ unique",
+				"updateRecord": "Veuillez d'abord mettre à jour la valeur unique de cet enregistrement."
 			}
 		},
 		"records": {

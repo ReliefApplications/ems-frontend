@@ -42,6 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SpinnerModule } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
+  CheckUniqueProprietyReturnT,
   FormHelpersService,
   transformSurveyData,
 } from '../../services/form-helper/form-helper.service';
@@ -390,61 +391,78 @@ export class FormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    await this.formHelpersService.uploadFiles(
-      this.temporaryFilesStorage,
-      this.form?.id
-    );
-    // await Promise.allSettled(promises);
-    await this.formHelpersService.createTemporaryRecords(survey);
-
-    if (this.data.recordId) {
-      if (this.isMultiEdition) {
-        this.updateMultipleData(this.data.recordId, survey);
-      } else {
-        this.updateData(this.data.recordId, survey);
-      }
-    } else {
-      this.apollo
-        .mutate<AddRecordMutationResponse>({
-          mutation: ADD_RECORD,
-          variables: {
-            form: this.data.template,
-            data: survey.parsedData ?? survey.data,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-                error: true,
-              });
-              this.ngZone.run(() => {
-                this.dialogRef.close();
-              });
+    this.formHelpersService
+      .checkUniquePropriety(this.survey)
+      .then(async (response: CheckUniqueProprietyReturnT) => {
+        if (response.verified) {
+          this.loading = true;
+          await this.formHelpersService.uploadFiles(
+            this.temporaryFilesStorage,
+            this.form?.id
+          );
+          // await Promise.allSettled(promises);
+          await this.formHelpersService.createTemporaryRecords(survey);
+          const editRecord = response.overwriteRecord ?? this.data.recordId;
+          if (editRecord) {
+            // If update or creation of record is overwriting another record because unique field values
+            const recordId = response.overwriteRecord
+              ? response.overwriteRecord.id
+              : this.data.recordId;
+            if (this.isMultiEdition) {
+              this.updateMultipleData(recordId, survey);
             } else {
-              if (this.lastDraftRecord) {
-                const callback = () => {
-                  this.lastDraftRecord = undefined;
-                };
-                this.formHelpersService.deleteRecordDraft(
-                  this.lastDraftRecord,
-                  callback
-                );
-              }
-              this.ngZone.run(() => {
-                this.dialogRef.close({
-                  template: this.data.template,
-                  data: data?.addRecord,
-                } as any);
-              });
+              this.updateData(recordId, survey);
             }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    }
-    survey.showCompletedPage = true;
+          } else {
+            this.apollo
+              .mutate<AddRecordMutationResponse>({
+                mutation: ADD_RECORD,
+                variables: {
+                  form: this.data.template,
+                  data: survey.parsedData ?? survey.data,
+                },
+              })
+              .subscribe({
+                next: ({ errors, data }) => {
+                  if (errors) {
+                    this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
+                      error: true,
+                    });
+                    this.ngZone.run(() => {
+                      this.dialogRef.close();
+                    });
+                  } else {
+                    if (this.lastDraftRecord) {
+                      const callback = () => {
+                        this.lastDraftRecord = undefined;
+                      };
+                      this.formHelpersService.deleteRecordDraft(
+                        this.lastDraftRecord,
+                        callback
+                      );
+                    }
+                    this.ngZone.run(() => {
+                      this.dialogRef.close({
+                        template: this.data.template,
+                        data: data?.addRecord,
+                      } as any);
+                    });
+                  }
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+          }
+          survey.showCompletedPage = true;
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.display.cancelMessage')
+          );
+          this.survey.clear(false);
+          this.saving = false;
+        }
+      });
   }
 
   /**
@@ -466,9 +484,11 @@ export class FormModalComponent
       .subscribe({
         next: ({ errors, data }) => {
           this.handleRecordMutationResponse({ data, errors }, 'editRecord');
+          this.loading = false;
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.loading = false;
         },
       });
   }
@@ -502,9 +522,11 @@ export class FormModalComponent
             );
           }
           this.handleRecordMutationResponse({ data, errors }, 'editRecords');
+          this.loading = false;
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.loading = false;
         },
       });
   }

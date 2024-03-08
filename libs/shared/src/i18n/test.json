@@ -1133,11 +1133,11 @@
 				"title": "******"
 			},
 			"uniqueField": {
+				"cannotUpdate": "******",
 				"exist": "****** {{question}} ****** {{value}} ******",
 				"overwriteConfirm": "******",
-				"overwriteError": "******",
-				"overwriteSuccess": "******",
-				"title": "******"
+				"title": "******",
+				"updateRecord": "******"
 			}
 		},
 		"records": {

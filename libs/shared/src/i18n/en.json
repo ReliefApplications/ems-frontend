@@ -1133,11 +1133,11 @@
 				"title": "Recovery data"
 			},
 			"uniqueField": {
+				"cannotUpdate": "You do not have the permission to update this existing record.",
 				"exist": "Record with question '{{question}}' with value '{{value}}' already exists and this value must be unique.",
 				"overwriteConfirm": "Do you want to overwrite the existing record?",
-				"overwriteError": "Error on overwriting record(s)",
-				"overwriteSuccess": "Record(s) overwritten successfully!",
-				"title": "Unique field value"
+				"title": "Unique field value",
+				"updateRecord": "Please update the unique value on this record first."
 			}
 		},
 		"records": {
