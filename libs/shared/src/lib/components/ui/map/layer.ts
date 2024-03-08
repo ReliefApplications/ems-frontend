@@ -2,6 +2,7 @@
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
+import './utils/leaflet-heatmap.js';
 import { Feature, Geometry } from 'geojson';
 import { get, isNil, set } from 'lodash';
 import {
@@ -684,6 +685,7 @@ export class Layer implements LayerModel {
                 set(g, stop.ratio, stop.color);
                 return g;
               }, {}),
+              max: 1,
             };
 
             const layer = L.heatLayer(heatArray, heatmapOptions);
