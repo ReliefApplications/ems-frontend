@@ -191,7 +191,7 @@ export class MapComponent
    * @param arcgisService Shared arcgis service
    * @param mapLayersService MapLayersService
    * @param mapPopupService The map popup handler service
-   * @param mapStatusService
+   * @param mapStatusService The map status service for exporting dashboard
    * @param contextService The context service
    * @param platform Platform
    * @param injector Injector containing all needed providers
@@ -301,7 +301,7 @@ export class MapComponent
 
           // Replaces the current map layer with the WHO Polygon Raster Basemap
           this.basemap = L.tileLayer(
-            'https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Raster_Basemap/MapServer/tile/{z}/{y}/{x}',
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             {
               attribution:
                 '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
