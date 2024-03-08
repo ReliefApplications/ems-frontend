@@ -683,12 +683,13 @@ export class FormHelpersService {
    * @param record.id Record id
    * @param record.incrementalId Record incremental id
    */
-  public addRecordIDVariable = (
-    survey: SurveyModel,
-    record: { id?: string; incrementalId?: string }
-  ) => {
+  public addRecordVariables = (survey: SurveyModel, record: Record) => {
     survey.setVariable('record.id', record.id);
     survey.setVariable('record.incrementalID', record?.incrementalId ?? '');
+
+    Object.keys(record?.data ?? {}).forEach((key) => {
+      survey.setVariable(`record.${key}`, record.data[key]);
+    });
   };
 
   /**

@@ -185,7 +185,7 @@ export class FormBuilderService {
     this.formHelpersService.setWorkflowContextVariable(survey);
     if (record) {
       this.recordId = record.id;
-      this.formHelpersService.addRecordIDVariable(survey, record);
+      this.formHelpersService.addRecordVariables(survey, record);
     }
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
@@ -210,13 +210,19 @@ export class FormBuilderService {
       survey.getAllQuestions().forEach((question) => {
         const isResource = question.getType() === 'resource';
         const isResources = question.getType() === 'resources';
-        if ((!isResource && !isResources) || !question.value) {
+        if (!isResource && !isResources) {
           return;
         }
-        const initSelection = [get(record, `data.${question.name}`, [])].flat();
+        const initSelection = [get(record, `data.${question.name}`, [])]
+          .flat()
+          .filter(Boolean);
+
         const wasSelected = (id: string) => initSelection.includes(id);
 
-        const questionRecords = isResource ? [question.value] : question.value;
+        const questionRecords = (
+          isResource ? [question.value] : question.value
+        ).filter(Boolean);
+
         for (const recordID of questionRecords) {
           if (
             question.newCreatedRecords &&

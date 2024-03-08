@@ -1636,6 +1636,10 @@
 					},
 					"display": {
 						"actionsTitle": "Afficher le titre des actions",
+						"injectClasses": {
+							"title": "Injecter des valeurs en tant que classes CSS",
+							"tooltip": "Lorsqu'un champ est sélectionné, sa valeur sera ajoutée à l'élément <tr> en tant que classe, lui permettant d'être ciblé par un style personnalisé"
+						},
 						"showSingleActionAsButton": "Afficher une seule action sous forme de bouton"
 					},
 					"hint": {

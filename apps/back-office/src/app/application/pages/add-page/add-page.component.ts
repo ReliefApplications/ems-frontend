@@ -91,7 +91,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
     // Set the available widgets that can directly be added as single widget dashboard
     this.availableWidgets = this.availableWidgets.filter((widget: any) => {
       for (const wid of SINGLE_WIDGET_PAGE_TYPES) {
-        if (widget.id.includes(wid)) {
+        if (widget.widgetType.includes(wid)) {
           return widget;
         }
       }

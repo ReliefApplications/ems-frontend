@@ -41,7 +41,7 @@ export class DashboardService {
     private translate: TranslateService
   ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
-      get(environment, 'availableWidgets', []).includes(widget.id)
+      get(environment, 'availableWidgets', []).includes(widget.widgetType)
     );
   }
 

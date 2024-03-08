@@ -1623,6 +1623,10 @@
 					},
 					"display": {
 						"actionsTitle": "******",
+						"injectClasses": {
+							"title": "******",
+							"tooltip": "******"
+						},
 						"showSingleActionAsButton": "******"
 					},
 					"hint": {

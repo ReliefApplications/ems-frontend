@@ -47,8 +47,7 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /** Change step workflow event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
   /** Id of the ticket. Visible in the dom */
-  @HostBinding()
-  id = `widget-${uuidv4()}`;
+  @HostBinding() id!: string;
   /** Reference to widget inner component */
   @ViewChild('widgetContent')
   widgetContentComponent!:
@@ -122,6 +121,7 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    this.id = this.widget.id ?? `widget-${uuidv4()}`;
     // Initialize style
     this.widgetService
       .createCustomStyle(this.id, this.widget)

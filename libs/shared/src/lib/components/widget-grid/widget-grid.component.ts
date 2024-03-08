@@ -346,37 +346,35 @@ export class WidgetGridComponent
    * @param e new widget.
    */
   async onAdd(e: any): Promise<void> {
-    if (e) {
-      const widget = cloneDeep(e);
-      if (widget) {
-        /** Open settings dialog component from the widget.  */
-        const { EditWidgetModalComponent } = await import(
-          './edit-widget-modal/edit-widget-modal.component'
-        );
-        const dialogRef = this.dialog.open(EditWidgetModalComponent, {
-          disableClose: true,
-          data: {
-            widget,
-            template: this.dashboardService.findSettingsTemplate(widget),
+    const widget = cloneDeep(e);
+    if (!widget) {
+      return;
+    }
+
+    /** Open settings dialog component from the widget.  */
+    const { EditWidgetModalComponent } = await import(
+      './edit-widget-modal/edit-widget-modal.component'
+    );
+    const dialogRef = this.dialog.open(EditWidgetModalComponent, {
+      disableClose: true,
+      data: {
+        widget,
+        template: this.dashboardService.findSettingsTemplate(widget),
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      // Should save the value, and so, add the widget to the grid
+      if (value) {
+        this.add.emit({
+          ...widget,
+          settings: value,
+          ...{
+            resizeEnabled: this.canUpdate,
+            dragEnabled: this.canUpdate,
           },
         });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((value: any) => {
-            // Should save the value, and so, add the widget to the grid
-            if (value) {
-              this.add.emit({
-                ...widget,
-                settings: value,
-                ...{
-                  resizeEnabled: this.canUpdate,
-                  dragEnabled: this.canUpdate,
-                },
-              });
-            }
-          });
       }
-    }
+    });
   }
 
   /**
