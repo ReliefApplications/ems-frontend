@@ -147,6 +147,35 @@
             />
           </div>
         </div>
+        <!-- Select field to inject its value a class into the <tr> element -->
+        <div uiFormFieldDirective class="w-fit">
+          <label
+            >{{
+              'components.widget.settings.grid.display.injectClasses.title'
+                | translate
+            }}
+            <ui-icon
+              class="ml-1 cursor-help self-center"
+              icon="info_outline"
+              variant="grey"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.display.injectClasses.tooltip'
+                  | translate
+              "
+            ></ui-icon
+          ></label>
+          <ui-select-menu
+            [formControl]="
+              $any(widgetFormGroup.get('widgetDisplay.addToRowClasses'))
+            "
+            [multiselect]="true"
+          >
+            <ui-select-option *ngFor="let field of fields" [value]="field.name">
+              {{ field.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </shared-display-settings>
     </ng-template>
   </ui-tab>

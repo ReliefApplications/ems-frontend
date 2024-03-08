@@ -473,6 +473,12 @@ export const init = (
         // type: 'expression',
         category: 'logic',
       });
+
+      Serializer.addProperty('resource', {
+        name: 'afterRecordDeselection',
+        // type: 'expression',
+        category: 'logic',
+      });
     },
     /**
      * Get the resource after the question is loaded

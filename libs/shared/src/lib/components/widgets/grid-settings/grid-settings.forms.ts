@@ -190,6 +190,9 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       actionsTitle: new FormControl(
         get<string>(configuration, 'widgetDisplay.actionsTitle', '')
       ),
+      addToRowClasses: new FormControl(
+        get<string[]>(configuration, 'widgetDisplay.addToRowClasses', [])
+      ),
     }
   );
   return extendedForm;

@@ -1255,4 +1255,23 @@ export class GridComponent
       );
     }
   }
+
+  /**
+   * Gets any data to be injected into the row template as html classes
+   *
+   * @param context The record context
+   * @returns An ngClass like object
+   */
+  public injectClasses(context: any): { [key: string]: boolean } {
+    return (this.widget?.settings?.widgetDisplay?.addToRowClasses ?? []).reduce(
+      (acc: { [key: string]: true }, item: string) => {
+        const value = get(context.dataItem, item);
+        if (value) {
+          acc[`${item}_${value}`] = true;
+        }
+        return acc;
+      },
+      {}
+    );
+  }
 }
