@@ -65,9 +65,7 @@ export class AppWidgetComponent
    */
   @Input()
   set isTokenRefreshed(tokenRefreshed: boolean) {
-    if (tokenRefreshed) {
-      this.authService.isTokenRefreshed.next(true);
-    }
+    this.authService.isTokenRefreshed.next(tokenRefreshed);
   }
 
   /**
