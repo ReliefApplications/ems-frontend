@@ -607,49 +607,33 @@ export class Layer implements LayerModel {
               );
             }
             const heatArray: any[] = [];
-
+            let maxIntensityValue = 0;
             data.features.forEach((feature: any) => {
-              let intensityFieldValue = get(
-                feature,
-                `properties.${uniqueValueField}`,
-                null
+              // Format intensity to the required value for heat map point
+              // {number}.{decimal}
+              const intensityFieldValue = Number(
+                Number.parseFloat(
+                  get(feature, `properties.${uniqueValueField}`, 0).toFixed(1)
+                )
               );
-              if (!isNil(intensityFieldValue)) {
-                // Format intensity to the required value for heat map point
-                // {number}.{decimal}
-                intensityFieldValue = Number(
-                  Number.parseFloat(intensityFieldValue).toFixed(1)
-                );
+              if (maxIntensityValue < intensityFieldValue) {
+                maxIntensityValue = intensityFieldValue;
               }
               switch (get(feature, 'type')) {
                 case 'Point': {
-                  let point = [
+                  heatArray.push([
                     get(feature, 'coordinates[1]'), // lat
                     get(feature, 'coordinates[0]'), // long,
-                  ];
-                  if (!isNil(intensityFieldValue)) {
-                    point = [
-                      get(feature, 'coordinates[1]'), // lat
-                      get(feature, 'coordinates[0]'), // long,
-                      intensityFieldValue, // intensity
-                    ];
-                  }
-                  heatArray.push(point);
+                    intensityFieldValue, // intensity
+                  ]);
                   break;
                 }
                 case 'Feature': {
-                  let point = [
+                  heatArray.push([
                     get(feature, 'geometry.coordinates[1]'), // lat
                     get(feature, 'geometry.coordinates[0]'), // long
-                  ];
-                  if (intensityFieldValue) {
-                    point = [
-                      get(feature, 'geometry.coordinates[1]'), // lat
-                      get(feature, 'geometry.coordinates[0]'), // long
-                      intensityFieldValue, // intensity
-                    ];
-                  }
-                  heatArray.push(point);
+                    intensityFieldValue, // intensity
+                  ]);
                   break;
                 }
                 default: {
@@ -685,7 +669,7 @@ export class Layer implements LayerModel {
                 set(g, stop.ratio, stop.color);
                 return g;
               }, {}),
-              max: 1,
+              max: maxIntensityValue || 1,
             };
 
             const layer = L.heatLayer(heatArray, heatmapOptions);
