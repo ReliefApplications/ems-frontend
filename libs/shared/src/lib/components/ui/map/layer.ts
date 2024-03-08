@@ -608,19 +608,47 @@ export class Layer implements LayerModel {
             const heatArray: any[] = [];
 
             data.features.forEach((feature: any) => {
+              let intensityFieldValue = get(
+                feature,
+                `properties.${uniqueValueField}`,
+                null
+              );
+              if (!isNil(intensityFieldValue)) {
+                // Format intensity to the required value for heat map point
+                // {number}.{decimal}
+                intensityFieldValue = Number(
+                  Number.parseFloat(intensityFieldValue).toFixed(1)
+                );
+              }
               switch (get(feature, 'type')) {
                 case 'Point': {
-                  heatArray.push([
+                  let point = [
                     get(feature, 'coordinates[1]'), // lat
-                    get(feature, 'coordinates[0]'), // long
-                  ]);
+                    get(feature, 'coordinates[0]'), // long,
+                  ];
+                  if (!isNil(intensityFieldValue)) {
+                    point = [
+                      get(feature, 'coordinates[1]'), // lat
+                      get(feature, 'coordinates[0]'), // long,
+                      intensityFieldValue, // intensity
+                    ];
+                  }
+                  heatArray.push(point);
                   break;
                 }
                 case 'Feature': {
-                  heatArray.push([
+                  let point = [
                     get(feature, 'geometry.coordinates[1]'), // lat
                     get(feature, 'geometry.coordinates[0]'), // long
-                  ]);
+                  ];
+                  if (intensityFieldValue) {
+                    point = [
+                      get(feature, 'geometry.coordinates[1]'), // lat
+                      get(feature, 'geometry.coordinates[0]'), // long
+                      intensityFieldValue, // intensity
+                    ];
+                  }
+                  heatArray.push(point);
                   break;
                 }
                 default: {

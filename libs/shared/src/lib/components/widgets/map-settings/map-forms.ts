@@ -376,6 +376,7 @@ export const createLayerDrawingInfoForm = (
           get<number>(value, 'renderer.minOpacity', 0.4),
           Validators.required,
         ],
+        field1: [get(value, 'renderer.field1', null)],
       }),
       ...(type === 'uniqueValue' && {
         defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
