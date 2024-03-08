@@ -364,7 +364,7 @@ export const createLayerDrawingInfoForm = (
       }),
       ...(type === 'heatmap' && {
         gradient: [
-          get(value, 'gradient', DEFAULT_GRADIENT),
+          get(value, 'renderer.gradient', DEFAULT_GRADIENT),
           Validators.required,
         ],
         blur: [get<number>(value, 'renderer.blur', 15), Validators.required],

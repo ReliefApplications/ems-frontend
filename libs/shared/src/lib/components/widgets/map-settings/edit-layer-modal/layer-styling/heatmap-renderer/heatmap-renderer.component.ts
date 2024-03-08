@@ -47,8 +47,11 @@ export class HeatmapRendererComponent
 
   ngOnInit(): void {
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      console.log(value);
       this.scalarFields.next(
-        value.filter((field) => ['number'].includes(field.type.toLowerCase()))
+        value.filter((field) =>
+          ['integer', 'number'].includes(field.type.toLowerCase())
+        )
       );
     });
   }
