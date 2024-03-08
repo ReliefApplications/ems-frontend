@@ -20,6 +20,7 @@
     [pageSizeValues]="showPageSizes && pageSizeOptions"
     [info]="true"
     (pageChange)="onPageChange($event)"
+    (pageSizeChange)="pageSizeChange.emit($event)"
   >
     <!-- For some unknown reasons we need to write the messages, otherwise it would display only the keys in web elements mode. -->
     <kendo-datapager-messages

@@ -139,6 +139,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueName',
   'inputType',
   'html',
+  'calendarType',
 ];
 
 /**
