@@ -214,6 +214,10 @@ export class FormComponent
     this.formHelpersService.addUserVariables(this.survey);
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
+    /** Adding variables */
+    this.formHelpersService.addUserVariables(this.survey);
+    this.formHelpersService.addApplicationVariables(this.survey);
+    this.formHelpersService.setWorkflowContextVariable(this.survey);
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     if (this.resetTimeoutListener) {
