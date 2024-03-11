@@ -4,6 +4,7 @@
 /** Issue taken as source: https://github.com/Leaflet/Leaflet.heat/issues/74 */
 import * as L from 'leaflet';
 import simpleheat from 'simpleheat';
+import { isNil } from 'lodash';
 
 L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
   initialize: function (latlngs, options) {
@@ -112,6 +113,9 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
     if (this.options.gradient) {
       this._heat.gradient(this.options.gradient);
+    }
+    if (!isNil(this.options.opacity)) {
+      this._heat._canvas.style.opacity = this.options.opacity;
     }
   },
 

@@ -655,6 +655,7 @@ export class Layer implements LayerModel {
             }
 
             const heatmapOptions: L.HeatMapOptions = {
+              opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
                 'drawingInfo.renderer.blur',
