@@ -18,4 +18,11 @@ export const sharedAzureEnvironment = {
   production: true,
   availableLanguages: ['en', 'test'],
   theme,
+  messages: {
+    unauthorized: {
+      title: 'Your user account does not have access to this content.',
+      footer:
+        'Please contact <a class="underline text-primary-500 hover:text-primary-600" href="mailto:ems2@who.int">ems2@who.int</a> for more information.',
+    },
+  },
 };
