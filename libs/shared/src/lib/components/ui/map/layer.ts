@@ -650,10 +650,6 @@ export class Layer implements LayerModel {
               DEFAULT_HEATMAP.gradient
             );
 
-            if (valueField) {
-              console.log(maxBy(heatArray, 2)[2]);
-            }
-
             const heatmapOptions: L.HeatMapOptions = {
               opacity: this.opacity,
               blur: get(
