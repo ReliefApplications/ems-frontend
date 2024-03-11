@@ -6,7 +6,6 @@ import {
   HostListener,
   OnDestroy,
   Inject,
-  OnInit,
   Attribute,
   ComponentRef,
 } from '@angular/core';
@@ -19,8 +18,7 @@ import {
 } from '@angular/cdk/overlay';
 import { TooltipComponent } from './tooltip.component';
 import { ComponentPortal } from '@angular/cdk/portal';
-
-export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
+import { TooltipPosition } from './types/tooltip-positions';
 
 /**
  * Directive that allows to display a tooltip on a given html element
@@ -28,13 +26,13 @@ export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 @Directive({
   selector: '[uiTooltip]',
 })
-export class TooltipDirective implements OnInit, OnDestroy {
+export class TooltipDirective implements OnDestroy {
   /** Tooltip text */
   @Input() uiTooltip = '';
   /** Is tooltip disabled */
   @Input() tooltipDisabled = false;
   /** preferred position for the tooltip */
-  @Input() preferredPosition: TooltipPosition = 'bottom';
+  @Input() uiTooltipPosition: TooltipPosition = 'bottom';
   /** Overlay reference */
   private overlayRef!: OverlayRef;
 
@@ -98,11 +96,24 @@ export class TooltipDirective implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
+  /**
+   * Create overlay ref where to attach tooltip
+   */
+  private createOverlay() {
+    let defaultOffsetY = 5;
+    // If element close to screen bottom, apply negative offset of the tooltip
+    if (
+      window.innerHeight -
+        this.elementRef.nativeElement.getBoundingClientRect().bottom <
+      30
+    ) {
+      defaultOffsetY = -5;
+    }
     const positionStrategy = this.overlayPositionBuilder
       .flexibleConnectedTo(this.elementRef)
+      .withDefaultOffsetY(defaultOffsetY)
       .withPositions([
-        this.getDefaultPosition(this.preferredPosition),
+        this.getDefaultPosition(this.uiTooltipPosition),
         {
           originX: 'end',
           originY: 'bottom',
@@ -134,6 +145,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
       this.tooltipDisabled = this.disableTooltipByCase();
     }
     if (this.uiTooltip && !this.tooltipDisabled) {
+      this.createOverlay();
       // Create tooltip portal
       const tooltipPortal = new ComponentPortal(TooltipComponent);
       // Attach tooltip portal to overlay
@@ -156,7 +168,8 @@ export class TooltipDirective implements OnInit, OnDestroy {
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    this.overlayRef.detach();
+    this.overlayRef?.detach();
+    this.overlayRef?.dispose();
   }
 
   /**
