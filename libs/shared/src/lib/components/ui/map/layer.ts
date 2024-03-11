@@ -16,6 +16,7 @@ import {
   createCustomDivIcon,
 } from './utils/create-div-icon';
 import {
+  HeatMapOptions,
   LayerDatasource,
   LayerDefinition,
   LayerModel,
@@ -650,8 +651,7 @@ export class Layer implements LayerModel {
               DEFAULT_HEATMAP.gradient
             );
 
-            // const heatmapOptions: L.HeatMapOptions = {
-            const heatmapOptions: any = {
+            const heatmapOptions: HeatMapOptions = {
               opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
