@@ -162,6 +162,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
     );

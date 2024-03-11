@@ -56,7 +56,7 @@
       </ng-select>
     </div>
     <div class="text-gray-700 text-xs gap-1 flex items-end w-1/3" style="font-weight: 500;">
-      <input id="separateEmail" type="checkbox" formControlName="individualEmail" [(ngModel)]="separateEmail" (change)="onChangeSeparateEmail()">
+      <input id="separateEmail" type="checkbox" formControlName="individualEmail" (change)="onChangeSeparateEmail()">
       <label for="separateEmail">
         {{'components.select.distribution.separateEmail' | translate}}
       </label>

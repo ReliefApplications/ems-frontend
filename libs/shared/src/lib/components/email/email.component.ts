@@ -302,11 +302,52 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         const emailData = res.data.editAndGetEmailNotification;
         this.emailService.configId = res?.data?.editAndGetEmailNotification?.id;
         if (isClone) {
+          let maxCloneNumber = 0;
+          const filteredEmailList: string[][] =
+            this.emailService.emailNotificationNames
+              .map((notification: string) => notification.split('_clone'))
+              .filter(
+                (cloneNotificationName) =>
+                  cloneNotificationName.length > 1 &&
+                  cloneNotificationName[0] ===
+                    emailData.name.toLowerCase().split('_clone')[0]
+              );
+          if (filteredEmailList.length > 0) {
+            filteredEmailList.forEach(
+              (filteredEmail: string[], index: number) => {
+                if (
+                  filteredEmail[0] ===
+                  emailData.name.trim().toLowerCase().split('_clone')[0]
+                ) {
+                  if (filteredEmail[filteredEmail.length - 1] !== '') {
+                    maxCloneNumber =
+                      maxCloneNumber <
+                      Number(filteredEmail[filteredEmail.length - 1])
+                        ? Number(filteredEmail[filteredEmail.length - 1]) + 1
+                        : maxCloneNumber;
+                  } else if (
+                    filteredEmail[1] === '' &&
+                    maxCloneNumber === 0 &&
+                    index === filteredEmailList.length - 1
+                  ) {
+                    maxCloneNumber = 1;
+                  }
+                }
+              }
+            );
+            if (maxCloneNumber > 0) {
+              emailData.name =
+                emailData.name.split('_Clone')[0] + '_Clone' + maxCloneNumber;
+            } else {
+              emailData.name = emailData.name + '_Clone';
+            }
+          } else {
+            emailData.name = emailData.name + '_Clone';
+          }
           delete emailData.createdAt;
           delete emailData.id;
           delete emailData.createdBy;
           delete emailData.modifiedAt;
-          emailData.name = emailData.name + '_Clone';
           emailData.applicationId = this.applicationId;
           emailData?.dataSets?.forEach((element: any) => {
             delete element.__typename;
