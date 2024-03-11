@@ -13,12 +13,14 @@ export type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  * @param inputType - The type of the input element.
  * @param element - The element that the directive is attached to.
  * @param domService - The element that the directive is attached to
+ * @param calendarType - kendo type of calendar, classic or infinite (infinite by default)
  * @returns The picker instance, or null if the type is not allowed
  */
 export const createPickerInstance = (
   inputType: DateInputFormat,
   element: any,
-  domService: DomService
+  domService: DomService,
+  calendarType: 'classic' | 'infinite' = 'infinite'
 ):
   | DatePickerComponent
   | DateTimePickerComponent
@@ -32,6 +34,7 @@ export const createPickerInstance = (
       );
       const datePickerInstance: DatePickerComponent = datePicker.instance;
       datePickerInstance.format = 'dd/MM/yyyy';
+      datePickerInstance.calendarType = calendarType;
       return datePickerInstance;
     case 'datetime':
     case 'datetime-local':
@@ -42,6 +45,7 @@ export const createPickerInstance = (
       const dateTimePickerInstance: DateTimePickerComponent =
         dateTimePicker.instance;
       dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
+      dateTimePickerInstance.calendarType = calendarType;
       return dateTimePickerInstance;
     case 'time':
       const timePicker = domService.appendComponentToBody(

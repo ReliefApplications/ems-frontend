@@ -1676,7 +1676,7 @@
 						"styling": {
 							"heatmapOptions": {
 								"blur": "Flou",
-								"gradient": "Gradient",
+								"gradient": "Dégradé",
 								"minOpacity": "Opacité minimum",
 								"radius": "Rayon"
 							}
@@ -1826,6 +1826,9 @@
 							"region": "Utilisez le nom de région",
 							"remove": "Supprimer le type d'étendue",
 							"value": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"
+						},
+						"gradient": {
+							"reverse": "Inverser le dégradé"
 						}
 					}
 				},

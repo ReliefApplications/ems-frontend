@@ -1,4 +1,15 @@
 <div [formGroup]="formGroup">
+  <!-- Field -->
+  <div uiFormFieldDirective>
+    <label>{{ 'common.field.one' | translate }}</label>
+    <ui-select-menu formControlName="field1">
+      <ui-select-option
+        *ngFor="let field of scalarFields$ | async"
+        [value]="field.name"
+        >{{ field.label }}</ui-select-option
+      >
+    </ui-select-menu>
+  </div>
   <!-- Gradient -->
   <div uiFormFieldDirective>
     <label>{{
