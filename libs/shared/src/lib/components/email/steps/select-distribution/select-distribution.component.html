@@ -34,7 +34,7 @@
       </label>
       <input
         (input)="validateDistributionList()"
-        [class]="{'form-error': isNameDuplicate() && !distributionListId || !recipients.distributionListName }"
+        [class]="{'form-error': isNameDuplicate() && !distributionListId || !recipients.distributionListName || recipients.distributionListName.trim() === ''}"
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         (change)="validateDistributionList()"
         [(ngModel)]="recipients.distributionListName" [placeholder]="'common.name' | translate" />
@@ -147,6 +147,6 @@
   </div>
 </div>
 <ui-alert class="mb-4" variant="warning" *ngIf="recipients?.distributionListName?.length === 0 || recipients?.To?.length === 0">
-  To proceed, please enter <strong *ngIf="recipients?.distributionListName?.length === 0"> a distribution list name</strong> <strong *ngIf="recipients?.To?.length === 0 && recipients?.distributionListName?.length === 0"> and </strong><strong *ngIf="recipients?.To?.length === 0">at least one recipient email address</strong>.
+  To proceed, please enter <strong *ngIf="recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === '' "> a distribution list name</strong> <strong *ngIf="recipients?.To?.length === 0 && recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === ''"> and </strong><strong *ngIf="recipients?.To?.length === 0">at least one recipient email address</strong>.
 </ui-alert>
 

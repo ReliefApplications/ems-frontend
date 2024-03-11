@@ -253,8 +253,9 @@
 					"removeTooltip": "Supprimer Bannière Image"
 				},
 				"body": {
-					"title": "Corps"
+					"title": "Corps*"
 				},
+				"close": "Êtes-vous sûr de vouloir fermer cette notification? Les modifications apportées ne seront pas enregistrées.",
 				"dropdown": {
 					"emailInput": "Type de saisie d'e-mail",
 					"inTheLast": "Select Horodatage from filters...",
@@ -263,8 +264,9 @@
 				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
+					"noBody": "Le corps doit continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
-					"noSubject": "Veuillez entrer un sujet",
+					"noSubject": "Le sujet doit continuer!",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
 				},
 				"existing": "Ou utilisez l'existant",
@@ -1103,7 +1105,7 @@
 			},
 			"dataset": {
 				"select": "Sélectionner un jeu de données",
-				"title": "Jeu de données"
+				"title": "Ressource"
 			},
 			"errors": {
 				"field": {

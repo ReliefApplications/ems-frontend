@@ -116,6 +116,12 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   /** Flag for sending indivuial emails */
   public separateEmail = false;
 
+  /** Disabled Fields List */
+  public disabledFields: string[] = [];
+
+  /** Disabled Fields Type List */
+  public disabledTypes: string[] = [];
+
   /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
@@ -145,6 +151,8 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   currentFieldName: any;
   /** VALIDATION ERROR MESSAGE */
   showErrorMessage: any = '';
+  selectedFieldIndex: number | null = null;
+  availableFieldIndex: number | null = null;
 
   /**
    * To use helper functions, Apollo serve
@@ -316,6 +324,8 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     fromHtml ? this.query.controls.fields.setValue([]) : '';
     this.showDatasetLimitWarning = false;
     this.emailService.disableSaveAndProceed.next(false);
+    this.disabledFields = [];
+    this.disabledTypes = [];
     this.currentTabIndex = 0;
     if (this.selectedResourceId && this.emailService?.resourcesNameId?.length) {
       this.query.controls.resource.setValue(
@@ -421,6 +431,10 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                     a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
                   );
                 }
+              } else {
+                this.disabledFields.push(field.name);
+                this.disabledTypes.push(field.type);
+                this.disabledTypes = [...new Set(this.disabledTypes)];
               }
             });
 
@@ -437,7 +451,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   ? this.query?.controls?.fields?.value
                   : this.selectedFields;
               this.query?.controls?.fields?.value?.forEach((fieldEle: any) => {
-                this.addSelectedFields(fieldEle);
+                this.populateFields(fieldEle);
               });
             }
 
@@ -677,9 +691,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   /**
    * To add the selective fields in the layout
    *
-   * @param field string
+   * @param field to be added to list
    */
-  addSelectedFields(field: any): void {
+  populateFields(field: any): void {
     const fieldExists = clone(this.query.value.fields) || [];
     const fieldExistsArray = fieldExists?.map((ele: any) => ele?.name);
     if (!fieldExistsArray.includes(field.name)) {
@@ -694,26 +708,142 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Adds field from available field to selected field list.
+   */
+  addSelectedField(): void {
+    if (this.availableFieldIndex !== null) {
+      const field = this.availableFields[this.availableFieldIndex];
+      this.selectedFields.push(field);
+      this.availableFields.splice(this.availableFieldIndex, 1);
+      this.availableFields = this.availableFields.sort((a, b) =>
+        a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+      );
+      this.availableFieldIndex = null;
+      this.selectedFieldIndex = this.selectedFields.length - 1;
+      this.query.controls.fields.setValue(this.selectedFields);
+    }
+  }
+
+  /**
    * This function removes selected fields from the block table.
    *
-   * @param field The name of the field to remove.
+   * @param index index of field to remove
    */
-  removeSelectiveFields(field: any): void {
-    const fieldExists = this.query.controls.fields.value || [];
-    const index = fieldExists.findIndex(
-      (f: { name: string }) => f.name === field.name
-    );
-    if (index !== -1) {
-      fieldExists.splice(index, 1);
-      this.query.controls.fields.setValue(fieldExists);
-      this.selectedFields = fieldExists;
-    }
-    // Adds the deselected field back to the available fields list
-    this.availableFields.push(field);
+  removeSelectiveFields(index: number | null): void {
+    if (index !== null) {
+      const field = this.selectedFields[index];
+      const fieldExists = this.query.controls.fields.value || [];
+      const fieldIndex = fieldExists.findIndex(
+        (f: { name: string }) => f.name === field.name
+      );
+      if (fieldIndex !== -1) {
+        fieldExists.splice(fieldIndex, 1);
+        this.query.controls.fields.setValue(fieldExists);
+        this.selectedFields = fieldExists;
+      }
+      // Remove the field from the selectedFields array
+      this.selectedFields = this.selectedFields.filter(
+        (f: { name: string }) => f.name !== field.name
+      );
+      // Adds the deselected field back to the available fields list
+      this.availableFields.push(field);
+      this.availableFields = this.availableFields.sort((a, b) =>
+        a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+      );
 
+      // Set the availableFieldsIndex to the index of the field in the availableFields list
+      this.availableFieldIndex = this.availableFields.findIndex(
+        (f) => f.name === field.name
+      );
+      this.selectedFieldIndex = null; // Reset the selected field index
+    }
+  }
+
+  /**
+   * Moves all selected fields back into available fields list.
+   */
+  removeAllSelectedFields(): void {
+    this.availableFields = [
+      ...this.availableFields,
+      ...this.selectedFields.map((field) => JSON.parse(JSON.stringify(field))),
+    ];
+    this.selectedFields = [];
     this.availableFields.sort((a, b) =>
       a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
     );
+    this.query.controls.fields.setValue(this.selectedFields);
+  }
+
+  /**
+   * Moves all available fields into selected fields list.
+   */
+  addAllAvailableFields(): void {
+    this.selectedFields = [
+      ...this.selectedFields,
+      ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
+    ];
+    this.availableFields = [];
+    this.query.controls.fields.setValue(this.selectedFields);
+  }
+
+  /**
+   * Moves field up in selected fields list.
+   *
+   * @param index of field to be moved up
+   */
+  moveUp(index: number | null): void {
+    if (index && index > 0) {
+      const field = this.selectedFields[index];
+      this.selectedFields.splice(index, 1);
+      this.selectedFields.splice(index - 1, 0, field);
+      this.selectedFieldIndex = index - 1;
+      this.query.controls.fields.setValue(this.selectedFields);
+    }
+  }
+
+  /**
+   * Moves field down in selected fields list.
+   *
+   * @param index of field to be moved down.
+   */
+  moveDown(index: number | null): void {
+    if (index !== null && index < this.selectedFields.length - 1) {
+      const field = this.selectedFields[index];
+      this.selectedFields.splice(index, 1);
+      this.selectedFields.splice(index + 1, 0, field);
+      this.selectedFieldIndex = index + 1;
+      this.query.controls.fields.setValue(this.selectedFields);
+    }
+  }
+
+  /**
+   * Moves field in selected fields list to top of list.
+   *
+   * @param index of field to be moved to top.
+   */
+  moveTop(index: number | null): void {
+    if (index !== null && index > 0) {
+      const field = this.selectedFields[index];
+      this.selectedFields.splice(index, 1);
+      this.selectedFields.splice(0, 0, field);
+      this.selectedFieldIndex = 0;
+      this.query.controls.fields.setValue(this.selectedFields);
+    }
+  }
+
+  /**
+   * Moves field in selected fields list to bottom of list.
+   *
+   * @param index of field to be moved to bottom.
+   */
+  moveBottom(index: number | null): void {
+    if (index !== null) {
+      const field = this.selectedFields[index];
+      this.selectedFields.splice(index, 1);
+      this.selectedFields.push(field);
+      this.selectedFieldIndex = this.selectedFields.length - 1;
+      this.query.controls.fields.setValue(this.selectedFields);
+    }
   }
 
   /**

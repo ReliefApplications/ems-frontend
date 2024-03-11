@@ -253,8 +253,9 @@
 					"removeTooltip": "Remove banner image"
 				},
 				"body": {
-					"title": "Body"
+					"title": "Body*"
 				},
+				"close": "Are you sure you want to close this notification? Any changes made will not be saved.",
 				"dropdown": {
 					"emailInput": "Email input",
 					"inTheLast": "Select timestamp from filters...",
@@ -263,8 +264,9 @@
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
+					"noBody": "Body is required to proceed!",
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
-					"noSubject": "Please enter a subject",
+					"noSubject": "Subject is required to proceed!",
 					"noTemplate": "Something went wrong during the email sending: no template found"
 				},
 				"existing": "Or use existing",
@@ -1092,7 +1094,7 @@
 			},
 			"dataset": {
 				"select": "Select a dataset",
-				"title": "Dataset"
+				"title": "Resource"
 			},
 			"errors": {
 				"field": {

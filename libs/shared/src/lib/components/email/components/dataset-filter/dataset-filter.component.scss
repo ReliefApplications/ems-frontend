@@ -32,6 +32,10 @@ button.disabled-button {
   height: 1.25rem;
 }
 
+.field-box.field-select {
+  @apply border-b-zinc-200 bg-[#007bff] text-white;
+}
+
 .field-box:last-child {
   border: none;
 }

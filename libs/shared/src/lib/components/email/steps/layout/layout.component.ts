@@ -4,7 +4,7 @@ import { EditorService } from '../../../../services/editor/editor.service';
 import { EmailService } from '../../email.service';
 import { EditorComponent } from '@tinymce/tinymce-angular';
 import { ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { NgSelectComponent } from '@ng-select/ng-select';
@@ -52,8 +52,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   showInvalidHeaderSizeMessage = false;
   /** Message indicating whether footer logo size is invalid. */
   showInvalidFooterSizeMessage = false;
-  /** Flag indicating whether save and proceed buttion should be disabled. */
-  shouldDisable = false;
+  /** Flag indicating whether save and proceed button should be disabled. */
+  shouldDisable = true;
   /** Image data for the email header. */
   headerLogo: string | ArrayBuffer | null = null;
   /** Image data for the email banner. */
@@ -64,6 +64,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   showDropdown = false;
   /** List of fields for the first block. */
   firstBlockFields: string[] = [];
+  /** Form group for the layout form. */
+  layoutForm!: FormGroup;
   /** Options for time in the email. */
   timeOptions = [
     { value: '{{today.date}}', label: "Today's Date" },
@@ -112,6 +114,17 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.layoutForm = this.fb.group({
+      subjectField: [''],
+      timeInput: [''],
+      subjectInput: [this.emailService.allLayoutdata.txtSubject],
+      inTheLastDropdown: [''],
+      headerTimeInput: [''],
+      header: [this.emailService.allLayoutdata.headerHtml],
+      block: [''],
+      body: [this.emailService.allLayoutdata.bodyHtml],
+    });
+
     this.datasetOverflow =
       this.emailService.allPreviewData.length > 1 ||
       this.emailService.allPreviewData.length === 0;
@@ -189,33 +202,42 @@ export class LayoutComponent implements OnInit, OnDestroy {
    * Disables or enables save and proceed button based on if subject is empty.
    */
   onTxtSubjectChange(): void {
-    if (
-      !this.emailService.allLayoutdata.txtSubject ||
-      this.emailService.allLayoutdata.txtSubject.trim() === ''
-    ) {
-      this.showSubjectValidator = true;
-    } else {
-      this.showSubjectValidator = false;
-    }
+    this.emailService.disableSaveAndProceed.next(true);
+    this.showSubjectValidator =
+      !this.layoutForm.controls['subjectInput'].value ||
+      this.layoutForm.controls['subjectInput'].value.trim() === '';
 
     if (
-      this.emailService.allLayoutdata.txtSubject !== undefined &&
-      this.emailService.allLayoutdata.bodyHtml !== undefined
+      this.layoutForm.controls['subjectInput'].touched &&
+      this.showSubjectValidator
     ) {
-      this.shouldDisable =
-        !this.emailService.allLayoutdata.txtSubject ||
-        this.emailService.allLayoutdata.txtSubject.trim() === '' ||
-        this.emailService.allLayoutdata.bodyHtml.trim() === '';
-    } else {
-      this.shouldDisable = true;
+      this.snackbar.openSnackBar(
+        this.translate.instant('common.notifications.email.errors.noSubject'),
+        {
+          error: true,
+        }
+      );
     }
 
-    if (this.shouldDisable) {
+    const bodyHtml = this.layoutForm.get('body')?.value;
+    let isUndefined = !bodyHtml;
+    if (bodyHtml) {
+      isUndefined =
+        /^<p>\s*<\/p>$/.test(bodyHtml.trim()) ||
+        /^<p>(&nbsp;)*<\/p>$/.test(bodyHtml.trim()) ||
+        bodyHtml.trim() === '' ||
+        bodyHtml === '<p></p>';
+    }
+
+    this.showBodyValidator = isUndefined;
+
+    if (this.showSubjectValidator || this.showBodyValidator) {
+      this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 4, isValid: false });
     } else {
+      this.emailService.disableSaveAndProceed.next(false);
       this.emailService.stepperDisable.next({ id: 4, isValid: true });
     }
-    this.emailService.disableSaveAndProceed.next(this.shouldDisable);
   }
 
   /**
@@ -257,30 +279,70 @@ export class LayoutComponent implements OnInit, OnDestroy {
   /**
    * Inserts token at cursor position.
    *
-   * @param event The position to insert the token.
+   * @param tokenType The input type of form element
+   * @param event The value of the form element
    */
-  insertTokenAtCursor(event: any): void {
-    const selectElement = event?.value ? event.value : ''; //event.target as HTMLSelectElement;
-    if (selectElement !== '') {
-      const selectedOptionText = selectElement;
-      const [blockName, fieldWithInLast] = selectedOptionText.split(', ');
-      const [field, inTheLastText] = fieldWithInLast.split(' - last ');
-      const [numberString, unit] = inTheLastText.split(' ');
+  insertTokenAtCursor(tokenType: string, event: string): void {
+    if (event) {
+      // Builds Token based on the tokenType
+      let token = '';
+      if (tokenType === 'time') {
+        token = ` ${event} `;
+      } else if (tokenType === 'inTheLast') {
+        // Converts dropdown label to token
+        const [blockName, fieldWithInLast] = event.split(', ');
+        const [field, inTheLastText] = fieldWithInLast.split(' - last ');
+        const [numberString, unit] = inTheLastText.split(' ');
 
-      const unitInMinutes = this.emailService.convertToMinutes(
-        +numberString,
-        unit
-      );
+        // Converts in the last value to minutes
+        const unitInMinutes = this.emailService.convertToMinutes(
+          +numberString,
+          unit
+        );
 
-      const token = `{{${blockName}.${field}.${unitInMinutes}}}`;
-
+        // Builds Token
+        token = ` {{${blockName}.${field}.${unitInMinutes}}} `;
+      }
+      // Inserts Token and resets dropdown value
       if (this.headerEditor && this.headerEditor.editor) {
-        this.headerEditor.editor.insertContent(token);
+        // Get the current range of the editor
+        const range = this.headerEditor.editor.selection.getRng();
+
+        // Get the current cursor position as a number
+        const cursorPosition = range.startOffset;
+
+        // Get the current content of the editor
+        const currentContent = this.headerEditor.editor.getContent();
+
+        // Check if the cursor is at the beginning or end of the content
+        if (cursorPosition === 0) {
+          // If at the beginning, remove the leading whitespace from the token
+          this.headerEditor.editor.insertContent(token.trimStart());
+        } else if (cursorPosition === currentContent.length) {
+          // If at the end, remove the trailing whitespace from the token
+          this.headerEditor.editor.insertContent(token.trimEnd());
+        } else {
+          // If in the middle, insert the token with spaces before and after it
+          this.headerEditor.editor.insertContent(token);
+        }
+
+        // Reset the dropdown value
+        if (tokenType === 'time') {
+          this.layoutForm.get('headerTimeInput')?.reset();
+        } else if (tokenType === 'inTheLast') {
+          this.layoutForm.get('inTheLastDropdown')?.reset();
+        }
+
+        this.layoutForm
+          .get('header')
+          ?.setValue(this.headerEditor.editor.getContent());
+
+        this.emailService.allLayoutdata.headerHtml =
+          this.layoutForm.get('header')?.value;
       } else {
         console.error('Header TinyMCE editor is not initialised');
       }
     }
-    this.ngFilteredFieldComponent.handleClearClick();
   }
 
   /**
@@ -313,7 +375,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.showInvalidHeaderSizeMessage = true;
           console.error(error.message);
           this.snackbar.openSnackBar(
-            this.translate.instant('components.email.image.squareValidation')
+            this.translate.instant('components.email.image.squareValidation'),
+            { error: true }
           );
           if (this.headerLogoInput && this.headerLogoInput.nativeElement) {
             if (this.emailService.allLayoutdata.headerLogo) {
@@ -357,7 +420,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
         .catch((error) => {
           console.error(error.message);
           this.snackbar.openSnackBar(
-            this.translate.instant('components.email.image.rectangleValidation')
+            this.translate.instant(
+              'components.email.image.rectangleValidation'
+            ),
+            { error: true }
           );
           if (this.bannerInput && this.bannerInput.nativeElement) {
             if (this.emailService.allLayoutdata.bannerImage) {
@@ -423,7 +489,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.showInvalidFooterSizeMessage = true;
           console.error(error.message);
           this.snackbar.openSnackBar(
-            this.translate.instant('components.email.image.squareValidation')
+            this.translate.instant('components.email.image.squareValidation'),
+            { error: true }
           );
           if (this.footerLogoInput && this.footerLogoInput.nativeElement) {
             if (this.emailService.allLayoutdata.footerLogo) {
@@ -475,16 +542,24 @@ export class LayoutComponent implements OnInit, OnDestroy {
    *
    * @param tabName The name of the tab to insert the dataset token for.
    */
-  insertDataSetToBodyHtmlByTabName(tabName: any): void {
-    const token = `{{${tabName.tabName}}}`;
+  insertDataSetToBodyHtmlByTabName(tabName: string): void {
+    if (tabName) {
+      const token = `{{${tabName}}}`;
 
-    if (this.bodyEditor && this.bodyEditor.editor && tabName.tabName !== '') {
-      this.bodyEditor.editor.insertContent(token);
+      if (this.bodyEditor && this.bodyEditor.editor) {
+        this.bodyEditor.editor.insertContent(token);
+        this.layoutForm
+          .get('body')
+          ?.setValue(this.bodyEditor.editor.getContent());
+      } else {
+        console.error('Body TinyMCE editor is not initialised');
+      }
+      // Resets Block dropdown value to blank
+      this.layoutForm.get('block')?.reset();
+
+      // Trigger the content change event to update the editor and perform validation
       this.onEditorContentChange();
-    } else {
-      console.error('Body TinyMCE editor is not initialised');
     }
-    this.ngFieldComponent.handleClearClick();
   }
 
   /**
@@ -508,59 +583,50 @@ export class LayoutComponent implements OnInit, OnDestroy {
   /**
    * Inserts a dataset token into the subject field based on the selected field.
    *
-   * @param event The event object containing the selected field.
+   * @param control The control to take the token from.
+   * @param inputRef The input element, to insert the token into.
    */
-  insertSubjectFieldToken(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const value = selectElement.value;
+  insertSubjectFieldToken(control: string, inputRef: HTMLInputElement): void {
+    const value =
+      control === 'field' || control === 'time'
+        ? control === 'field'
+          ? this.layoutForm.get('subjectField')?.value
+          : this.layoutForm.get('timeInput')?.value
+        : '';
+
     if (value) {
-      const subjectInput = document.getElementById(
-        'subjectInput'
-      ) as HTMLInputElement;
+      // Get the current value of the subjectInput FormControl
+      let subjectInput = this.layoutForm.get('subjectInput')?.value;
       if (subjectInput) {
-        const cursorPos =
-          subjectInput.selectionStart ?? subjectInput.value.length;
-        const textBefore = subjectInput.value.substring(0, cursorPos);
-        const textAfter = subjectInput.value.substring(cursorPos);
-        subjectInput.value = textBefore + value + textAfter;
-
-        // Trigger the input event to ensure ngModel updates
-        const inputEvent = new Event('input', { bubbles: true });
-        subjectInput.dispatchEvent(inputEvent);
-        selectElement.value = '';
+        // Get the cursor position
+        const cursorPos = inputRef.selectionStart ?? subjectInput.length;
+        // Split the current value at the cursor position
+        const textBefore = subjectInput.substring(0, cursorPos);
+        const textAfter = subjectInput.substring(cursorPos);
+        // Insert the value at the cursor position
+        subjectInput = textBefore + ' ' + value + ' ' + textAfter;
+        // Update the FormControl value
+        this.layoutForm.get('subjectInput')?.setValue(subjectInput.trim());
+        this.emailService.allLayoutdata.txtSubject =
+          this.layoutForm.get('subjectInput')?.value;
+        // Clear the select element value
+        if (control === 'field') {
+          this.layoutForm.get('subjectField')?.reset();
+        } else if (control === 'time') {
+          this.layoutForm.get('timeInput')?.reset();
+        }
+      } else {
+        // Update the FormControl value
+        this.layoutForm.get('subjectInput')?.setValue(value);
+        this.emailService.allLayoutdata.txtSubject =
+          this.layoutForm.get('subjectInput')?.value;
+        // Clear the select element value
+        if (control === 'field') {
+          this.layoutForm.get('subjectField')?.reset();
+        } else if (control === 'time') {
+          this.layoutForm.get('timeInput')?.reset();
+        }
       }
-    }
-  }
-
-  /**
-   *
-   * @param event
-   */
-  insertSubjectFieldToken_New(event: any) {
-    let selectElement = event?.value ? event?.value : '{{' + event + '}}';
-    const value = selectElement;
-    if (event && value) {
-      const subjectInput = document.getElementById(
-        'subjectInput'
-      ) as HTMLInputElement;
-      if (subjectInput) {
-        const cursorPos =
-          subjectInput.selectionStart ?? subjectInput.value.length;
-        const textBefore = subjectInput.value.substring(0, cursorPos);
-        const textAfter = subjectInput.value.substring(cursorPos);
-        subjectInput.value = textBefore + value + textAfter;
-
-        // Trigger the input event to ensure ngModel updates
-        const inputEvent = new Event('input', { bubbles: true });
-        subjectInput.dispatchEvent(inputEvent);
-        selectElement = '';
-      }
-      event?.value
-        ? this.ngTimestampComponent.clearModel()
-        : this.ngSelectComponent.clearModel();
-      return true;
-    } else {
-      return false;
     }
   }
 
@@ -578,13 +644,37 @@ export class LayoutComponent implements OnInit, OnDestroy {
    * Handles changes to the editor content and updates the layout data accordingly.
    */
   onEditorContentChange(): void {
-    if (this.emailService.allLayoutdata.bodyHtml === '') {
-      this.showBodyValidator = true;
-    } else {
-      this.showBodyValidator = false;
+    const bodyHtml = this.layoutForm.get('body')?.value;
+    console.log(bodyHtml);
+    let isUndefined = !bodyHtml;
+    if (bodyHtml) {
+      isUndefined =
+        /^<p>\s*<\/p>$/.test(bodyHtml.trim()) ||
+        /^<p>(&nbsp;)*<\/p>$/.test(bodyHtml.trim()) ||
+        bodyHtml.trim() === '' ||
+        bodyHtml === '<p></p>';
     }
 
-    this.onTxtSubjectChange();
+    this.showBodyValidator = isUndefined;
+    if (this.showBodyValidator) {
+      this.onTxtSubjectChange();
+      this.snackbar.openSnackBar(
+        this.translate.instant('common.notifications.email.errors.noBody'),
+        { error: true }
+      );
+    } else if (this.layoutForm.get('body')?.touched) {
+      if (isUndefined) {
+        this.showBodyValidator = true;
+        this.snackbar.openSnackBar(
+          this.translate.instant('common.notifications.email.errors.noBody'),
+          { error: true }
+        );
+      }
+      this.onTxtSubjectChange();
+    } else {
+      this.showBodyValidator = false;
+      this.onTxtSubjectChange();
+    }
   }
 
   /**
@@ -611,12 +701,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
         .value,
     };
 
-    this.emailService.headerBackgroundColor = colors.headerBackground;
-    this.emailService.headerTextColor = colors.headerColor;
-    this.emailService.bodyBackgroundColor = colors.bodyBackground;
-    this.emailService.bodyTextColor = colors.bodyColor;
-    this.emailService.footerBackgroundColor = colors.footerBackground;
-    this.emailService.footerTextColor = colors.footerColor;
+    this.emailService.allLayoutdata.headerBackgroundColor =
+      colors.headerBackground;
+    this.emailService.allLayoutdata.headerTextColor = colors.headerColor;
+    this.emailService.allLayoutdata.bodyBackgroundColor = colors.bodyBackground;
+    this.emailService.allLayoutdata.bodyTextColor = colors.bodyColor;
+    this.emailService.allLayoutdata.footerBackgroundColor =
+      colors.footerBackground;
+    this.emailService.allLayoutdata.footerTextColor = colors.footerColor;
     return colors;
   }
 
@@ -625,6 +717,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.getColors();
+    this.emailService.allLayoutdata.txtSubject =
+      this.layoutForm.get('subjectInput')?.value;
+    this.emailService.allLayoutdata.bodyHtml =
+      this.layoutForm.get('body')?.value;
+    this.emailService.allLayoutdata.headerHtml =
+      this.layoutForm.get('header')?.value;
     this.emailService.patchEmailLayout();
   }
 }

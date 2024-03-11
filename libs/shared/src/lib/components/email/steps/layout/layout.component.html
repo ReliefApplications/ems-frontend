@@ -1,298 +1,263 @@
-<!-- 5th step Layout -->
-<div>
-  <!-- Dropdowns and Subject Input -->
-  <div class="flex flex-col mb-4 py-5" >
-    <!-- Subject Input Label -->
-    <div class="px-2 mb-2">
-      <label htmlFor="subjectInput" class="block text-base font-medium leading-6 text-gray-900">
-        {{'common.notifications.email.subject.title' | translate}}
-      </label>
-    </div>
-    <!-- Dropdowns -->
-    <div class="flex mb-2">
-      <div class="w-1/3 px-2" *ngIf="!datasetOverflow">
-        <label for="fieldSelect" class="block text-sm font-normal leading-6 text-gray-900">
-          {{'common.notifications.email.field.selectTitle' | translate}}
+<form [formGroup]="layoutForm">
+  <!-- 5th step Layout -->
+  <div>
+    <!-- Dropdowns and Subject Input -->
+    <div class="flex flex-col mb-4 py-5" >
+      <!-- Subject Input Label -->
+      <div class="px-2 mb-2">
+        <label htmlFor="subjectInput" class="block text-base font-medium leading-6 text-gray-900">
+          {{'common.notifications.email.subject.title' | translate}}
         </label>
-
-        <ng-select
-        id="fieldSelect"
-        name="fieldSelect"
-        #ngSelectComponent
-        [items]="firstBlockFields"
-        bindLabel="field"
-        [searchable]="true"
-        bindValue="'field"
-        appendTo="body"
-        (change)="insertSubjectFieldToken_New($event);"
-        placeholder="Select block field"
-        class="ngSelectCSS"
-      >       
-        <ng-template disabled selected>
-          <span>{{'common.notifications.email.field.selectPlaceholder' | translate}}</span>
-        </ng-template>
-        <ng-template
-          ng-option-tmp
-          let-item="item"
-          let-index="index"
-          let-search="searchTerm"
-        >
-          <span>{{ this.emailService.replaceUnderscores(item) | titlecase }}</span>
-        </ng-template>
-      </ng-select>
       </div>
-      <div class="w-1/3 px-2">
-        <label for="timeInput" class="block text-sm font-normal leading-6 text-gray-900">
-          {{'common.notifications.email.timestamp' | translate}}
-        </label>
-
-        <ng-select
-        id="timeInput"
-        name="timeInput"
-        #ngTimestampComponent
-        [items]="timeOptions"
-        bindLabel="label"
-        [searchable]="true"
-        bindValue="'value"
-        appendTo="body"
-        (change)="insertSubjectFieldToken_New($event);"
-        placeholder="Select a timestamp"
-        class="ngSelectCSS"
-      >       
-        <ng-template disabled selected>
-          <span>{{'common.notifications.email.dropdown.timestamp' | translate}}</span>
-        </ng-template>
-        <ng-template
-          ng-option-tmp
-          let-item="item"
-          let-index="index"
-          let-search="searchTerm"
-        >
-          <span>{{ item?.label }}</span>
-        </ng-template>
-      </ng-select>
-      </div>
-    </div>
-    <!-- Subject Input -->
-    <div class="flex-grow px-2 mb-2">
-      <label for="fieldSelect" class="block text-sm font-normal leading-6 text-gray-900">
-        {{'common.notifications.email.subject.textTitle' | translate}}
-      </label>
-      <input
-        #subjectInputRef="ngModel"
-        id="subjectInput"
-        name="subjectInput"
-        type="text"
-        class="mt-1 block py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
-        placeholder="Enter Value"
-        [(ngModel)]="emailService.allLayoutdata.txtSubject"
-        (ngModelChange)="onTxtSubjectChange()"
-        required
-        [ngClass]="{'form-error': showSubjectValidator}"
-      />
-    </div>
-  </div>
-
-  <!-- Header -->
-  <div class="bg-[#F5FAFF] mb-4 p-5">
-    <div class="text-md font-semibold text-left text-[#1D2939] mb-2">{{'common.notifications.email.header.style' | translate}}</div>
-    <div class="flex-grow w-1/3">
-      <label for="inTheLastDropdown" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.field.filtered' | translate}}</label>
-      <ng-select
-      id="inTheLastDropdown"
-      name="inTheLastDropdown"
-      #ngFilteredFieldComponent
-      [items]="inTheLastDropdown.controls"
-      bindLabel="value"
-      [searchable]="true"
-      bindValue="'value"
-      appendTo="body"
-      (change)="insertTokenAtCursor($event)"
-      placeholder="Select timestamp from filters..."
-      class="ngSelectCSS"
-    >       
-      <ng-template selected>
-        <span>{{'common.notifications.email.dropdown.inTheLast' | translate}}</span>
-      </ng-template>
-      <ng-template
-        ng-option-tmp
-        let-item="item"
-        let-index="index"
-        let-search="searchTerm"
-      >
-        <span>{{ item?.value }}</span>
-      </ng-template>
-    </ng-select>
-    </div>
-    <div class="flex flex-row mb-4 gap-5 mt-2">
-      <div class="w-1/3">
-        <label for="headerLogoInput" class="block text-sm font-normal leading-6 text-gray-900">
-          {{'common.notifications.email.header.logo' | translate}}
-        </label>
-        <div class="flex flex-row items-center space-y-2">
-          <img *ngIf="headerLogo" id="headerLogo" [src]="headerLogo" class="w-1/6 h-auto object-cover">
-          <input
-            #headerLogoInput
-            id="headerLogoInput"
-            type="file"
-            accept="image/*"
-            (change)="onHeaderLogoSelected($event)"
-            class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
-          />
-          <button *ngIf="headerLogo" (click)="removeHeaderLogo()" class="py-1 px-2 font-bold text-red-700 ui-button-icon primary medium button-danger" uiTooltip="{{'common.notifications.email.header.removeTooltip' | translate}}">
-            X
-          </button>
-        </div>
-      </div>
-      <!-- Color Picker for Header Background Color -->
-      <div class="w-1/6">
-        <label for="headerBackgroundColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.background' | translate}}</label>
-        <div [ngClass]="{'mt-3 mb-2': headerLogo}" class="color-picker-container">
-          <input type="color" id="headerBackgroundColor" name="headerBackgroundColor" value="#00205C"
-            class="h-10 w-full rounded-md"
-            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-          >
-        </div>
-      </div>
-      <!-- Color Picker for Header Text Color -->
-      <div class="w-1/6">
-        <label for="headerColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.text' | translate}}</label>
-        <div [ngClass]="{'mt-3 mb-2': headerLogo}">
-          <input type="color" id="headerColor" name="headerColor" value="#FFFFFF"
-            class="h-10 w-full rounded-md"
-            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-          >
-        </div>
-      </div>
-    </div>
-    <editor #headerEditor [(ngModel)]="emailService.allLayoutdata.headerHtml" [ngModelOptions]="{ standalone: true }" [init]="editor"></editor>
-  </div>
-  <!-- Body -->
-  <div class="bg-[#F5FAFF]  mb-4 p-5">
-    <label class="block text-base font-medium leading-6 text-gray-900">{{'common.notifications.email.body.title' | translate}}</label>
-    <div class="flex flex-row mb-4 gap-5">
-      <!-- Add Block Scrollable List -->
-      <div class="w-1/3">
-        <label class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.field.selectBlock' | translate}}</label>
-        <ng-container *ngIf="emailService.getAllPreviewData().length; else noBlocks">
-
-          <ng-select
+      <!-- Dropdowns -->
+      <div class="flex mb-2">
+        <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3 px-2" *ngIf="!datasetOverflow">
+          <label for="fieldSelect" class="block text-sm font-normal leading-6 text-gray-900">
+            {{'common.notifications.email.field.selectTitle' | translate}}
+          </label>
+          <ui-select-menu
             id="fieldSelect"
-            name="fieldSelect"
-            #ngFieldComponent
-            [items]="emailService.getAllPreviewData()"
-            bindLabel="tabName"
-            [searchable]="true"
-            bindValue="'tabName"
-            appendTo="body"
-            (change)="insertDataSetToBodyHtmlByTabName($event)"
-            placeholder="Select a block"
-            class="ngSelectCSS"
-          >       
-            <ng-template selected>
-              <span>{{'common.notifications.email.dropdown.selectBlock' | translate}}</span>
-            </ng-template>
-            <ng-template
-              ng-option-tmp
-              let-item="item"
-              let-index="index"
-              let-search="searchTerm"
-            >
-              <span>{{ item?.tabName }}</span>
-            </ng-template>
-          </ng-select>
-        </ng-container>
-        <ng-template #noBlocks>
-          <div class="block w-full mt-1 text-sm py-1.5 px-3 border border-gray-300 bg-white rounded-md shadow-sm">{{'common.notifications.email.field.noBlocks' | translate}}</div>
-        </ng-template>
+            formControlName="subjectField"
+            (ngModelChange)="insertSubjectFieldToken('field', subjectInputRef)"
+            placeholder="Field Select"
+            uiTooltip="First row of first created block"
+            [filterable]="true"
+            class=" w-full">
+            <ui-select-option *ngFor="let field of firstBlockFields" [value]="'{{' + field + '}}'">{{ this.emailService.replaceUnderscores(field) | titlecase }}</ui-select-option>
+        </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3 px-2">
+          <label for="timeInput" class="block text-sm font-normal leading-6 text-gray-900">
+            {{'common.notifications.email.timestamp' | translate}}
+          </label>
+          <ui-select-menu
+            id="timeInput"
+            formControlName="timeInput"
+            (ngModelChange)="insertSubjectFieldToken('time', subjectInputRef)"
+            placeholder="{{'common.notifications.email.dropdown.timestamp' | translate}}"
+            class="w-full">
+            <ui-select-option *ngFor="let option of timeOptions" [value]="option.value">{{ option.label }}</ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
-      <!-- Color Picker for Background Color -->
-      <div class="w-1/6">
-        <label for="bodyBackgroundColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.background' | translate}}</label>
-        <input type="color" id="bodyBackgroundColor" name="bodyBackgroundColor" value="#FFFFFF"
-          class="h-10 w-full rounded-md"
-          style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-        >
-      </div>
-      <!-- Color Picker for Text Color -->
-      <div class="w-1/6">
-        <label for="bodyColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.text' | translate}}</label>
-        <input type="color" id="bodyColor" name="bodyColor" value="#000000"
-          class="h-10 w-full rounded-md"
-          style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-        >
-      </div>
-    </div>
-    <!-- Body Text Editor -->
-    <editor class="rounded" [ngClass]="{'form-error': showBodyValidator}" #bodyEditor [(ngModel)]="emailService.allLayoutdata.bodyHtml" [init]="editor" (onChange)="onEditorContentChange()"></editor>
-  </div>
-  <!-- Banner Image -->
-  <div class="mb-4 bg-[#F5FAFF] flex items-center p-5">
-    <label for="bannerInput" class="w-1/5 block text-base font-medium leading-6 text-gray-900">
-        {{'common.notifications.email.banner.image' | translate}}
-    </label>
-    <div *ngIf="bannerImage" class="w-1/5 mx-1">
-      <img *ngIf="bannerImage" [src]="bannerImage" class="w-full h-20 object-cover mb-2">
-    </div>
-    <div class="w-1/2 flex justify-between">
-        <input
-            #bannerInput
-            id="bannerInput"
-            type="file"
-            accept="image/*"
-            placeholder="Upload an Image"
-            (change)="onBannerSelected($event)"
-            class="w-full mt-1 text-sm text-left block flex-grow py-1 px-2 border border-gray-300 bg-white rounded-md shadow-sm"
-        />
-        <button *ngIf="bannerImage" (click)="removeBannerImage()" class="py-1 px-2 font-bold text-red-700 ui-button-icon primary medium button-danger" uiTooltip="{{'common.notifications.email.banner.removeTooltip' | translate}}">
-            X
-        </button>
-    </div>
-  </div>
-  <!-- Footer -->
-  <div class="bg-[#F5FAFF]  mb-4 p-5">
-    <label class="block text-base font-medium leading-6 text-gray-900">{{'common.notifications.email.footer.style' | translate}}</label>
-    <div class="flex flex-row mb-4 gap-5">
-      <div class="w-1/3">
-        <label for="footerLogoInput" class="block text-sm font-normal leading-6 text-gray-900">
-          {{'common.notifications.email.footer.logo' | translate}}
+      <!-- Subject Input -->
+      <div class="flex-grow px-2 mb-2">
+        <label for="fieldSelect" class="block text-sm font-normal leading-6 text-gray-900">
+          {{'common.notifications.email.subject.textTitle' | translate}}
         </label>
-        <div class="flex flex-row items-center space-y-2">
-          <img *ngIf="footerLogo" id="footerLogo" [src]="footerLogo" class="w-1/6 h-auto object-cover">
-          <input
-            #footerLogoInput
-            id="footerLogoInput"
-            type="file"
-            accept="image/*"
-            (change)="onFooterLogoSelected($event)"
-            class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
-          />
-          <button *ngIf="footerLogo" (click)="removeFooterLogo()" class="py-1 px-2 font-bold text-red-700 ui-button-icon primary medium button-danger" uiTooltip="{{'common.notifications.email.footer.removeTooltip' | translate}}">
-            X
-          </button>
-        </div>
-      </div>
-      <!-- Color Picker for Footer Background Color -->
-      <div class="w-1/6">
-        <label for="footerBackgroundColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.background' | translate}}</label>
-        <div [ngClass]="{'mt-3 mb-2': footerLogo}" class="color-picker-container">
-          <input type="color" id="footerBackgroundColor" name="footerBackgroundColor" value="#FFFFFF"
-            class="h-10 w-full rounded-md"
-            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-          >
-        </div>
-      </div>
-      <!-- Color Picker for Footer Text Color -->
-      <div class="w-1/6">
-        <label for="footerColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.text' | translate}}</label>
-        <div [ngClass]="{'mt-3 mb-2': footerLogo}">
-          <input type="color" id="footerColor" name="footerColor" value="#000000"
-            class="h-10 w-full rounded-md"
-            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
-          >
-        </div>
+        <input
+          #subjectInputRef
+          id="subjectInput"
+          name="subjectInput"
+          type="text"
+          class="mt-1 block py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
+          placeholder="Enter Value"
+          formControlName="subjectInput"
+          (ngModelChange)="onTxtSubjectChange()"
+          required
+          [ngClass]="{'form-error': showSubjectValidator}"
+        />
       </div>
     </div>
-    <editor #footerEditor [(ngModel)]="emailService.allLayoutdata.footerHtml" [ngModelOptions]="{ standalone: true }" [init]="editor"></editor>
+
+    <!-- Banner Image -->
+    <div class="mb-4 bg-[#F5FAFF] flex items-center p-5">
+      <label for="bannerInput" class="w-1/5 block text-base font-medium leading-6 text-gray-900">
+          {{'common.notifications.email.banner.image' | translate}}
+      </label>
+      <div *ngIf="bannerImage" class="w-1/5 mx-1">
+        <img *ngIf="bannerImage" [src]="bannerImage" class="w-full h-20 object-cover mb-2">
+      </div>
+      <div class="w-1/2 flex justify-between">
+          <input
+              #bannerInput
+              id="bannerInput"
+              type="file"
+              accept="image/*"
+              placeholder="Upload an Image"
+              (change)="onBannerSelected($event)"
+              class="w-full mt-1 text-sm text-left block flex-grow py-1 px-2 border border-gray-300 bg-white rounded-md shadow-sm"
+          />
+          <button *ngIf="bannerImage" (click)="removeBannerImage()" class="py-1 px-2 font-bold text-red-700 ui-button-icon primary medium button-danger" uiTooltip="{{'common.notifications.email.banner.removeTooltip' | translate}}">
+              X
+          </button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-[#F5FAFF] mb-4 p-5">
+      <label class="text-md font-semibold text-left text-[#1D2939] mb-2">{{'common.notifications.email.header.style' | translate}}</label>
+      <div class="flex mb-4 gap-5 mt-2">
+        <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3">
+          <label for="inTheLastDropdown" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.field.filtered' | translate}}</label>
+          <ui-select-menu
+            id="inTheLastDropdown"
+            formControlName="inTheLastDropdown"
+            (ngModelChange)="insertTokenAtCursor('inTheLast', $event)"
+            uiTooltip="Date fields filtered by within the last"
+            [placeholder]="'common.notifications.email.dropdown.inTheLast' | translate">
+            <ui-select-option *ngFor="let control of inTheLastDropdown.controls" [value]="control.value">{{ control.value }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3">
+          <label for="timeInput" class="block text-sm font-normal leading-6 text-gray-900">
+            {{'common.notifications.email.timestamp' | translate}}
+          </label>
+          <ui-select-menu
+            id="timeInput"
+            formControlName="headerTimeInput"
+            (ngModelChange)="insertTokenAtCursor('time', $event)"
+            placeholder="{{'common.notifications.email.dropdown.timestamp' | translate}}"
+            class="w-full">
+            <ui-select-option *ngFor="let option of timeOptions" [value]="option.value">{{ option.label }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+      <div class="flex flex-row mb-4 gap-5 mt-2">
+        <div class="w-1/3">
+          <label for="headerLogoInput" class="block text-sm font-normal leading-6 text-gray-900">
+            {{'common.notifications.email.header.logo' | translate}}
+          </label>
+          <div class="flex flex-row items-center space-y-2">
+            <img *ngIf="headerLogo" id="headerLogo" [src]="headerLogo" class="w-1/6 h-auto object-cover">
+            <input
+              #headerLogoInput
+              id="headerLogoInput"
+              type="file"
+              accept="image/*"
+              (change)="onHeaderLogoSelected($event)"
+              class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
+            />
+            <button *ngIf="headerLogo" (click)="removeHeaderLogo()" class="py-1 px-2 font-bold text-red-700 ui-button-icon primary medium button-danger" uiTooltip="{{'common.notifications.email.header.removeTooltip' | translate}}">
+              X
+            </button>
+          </div>
+        </div>
+        <!-- Color Picker for Header Background Color -->
+        <div class="w-1/6">
+          <label for="headerBackgroundColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.background' | translate}}</label>
+          <div [ngClass]="{'mt-3 mb-2': headerLogo}" class="color-picker-container">
+            <input type="color" id="headerBackgroundColor" name="headerBackgroundColor" [value]="emailService.allLayoutdata.headerBackgroundColor ?? '#00205C'"
+              class="h-10 w-full rounded-md"
+              style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+            >
+          </div>
+        </div>
+        <!-- Color Picker for Header Text Color -->
+        <div class="w-1/6">
+          <label for="headerColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.text' | translate}}</label>
+          <div [ngClass]="{'mt-3 mb-2': headerLogo}">
+            <input type="color" id="headerColor" name="headerColor" [value]="emailService.allLayoutdata.headerTextColor ?? '#FFFFFF'"
+              class="h-10 w-full rounded-md"
+              style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+            >
+          </div>
+        </div>
+      </div>
+      <editor #headerEditor formControlName="header" [init]="editor"></editor>
+    </div>
+
+    <!-- Body -->
+    <div class="bg-[#F5FAFF]  mb-4 p-5">
+      <label class="block text-base font-medium leading-6 text-gray-900">{{'common.notifications.email.body.title' | translate}}</label>
+      <div class="flex flex-row mb-4 gap-5">
+        <!-- Add Block Scrollable List -->
+          <ng-container *ngIf="emailService.getAllPreviewData().length; else noBlocks">
+            <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3">
+              <label class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.field.selectBlock' | translate}}</label>
+              <ui-select-menu
+                id="fieldSelect"
+                formControlName="block"
+                [placeholder]="'common.notifications.email.dropdown.selectBlock' | translate"
+                (ngModelChange)="insertDataSetToBodyHtmlByTabName($event)">
+                <ui-select-option *ngFor="let previewData of emailService.getAllPreviewData(); let i = index" [value]="previewData.tabName">{{ previewData.tabName }}</ui-select-option>
+              </ui-select-menu>
+            </div>
+          </ng-container>
+        <ng-template #noBlocks>
+          <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3">
+            <label class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.field.selectBlock' | translate}}</label>
+            <ui-select-menu
+              id="fieldSelect"
+              formControlName="block"
+              [placeholder]="'common.notifications.email.field.noBlocks' | translate"
+              [disabled]="true">
+            </ui-select-menu>
+          </div>
+        </ng-template>
+        <!-- Color Picker for Background Color -->
+        <div class="w-1/6">
+          <label for="bodyBackgroundColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.background' | translate}}</label>
+          <input type="color" id="bodyBackgroundColor" name="bodyBackgroundColor" [value]="emailService.allLayoutdata.bodyBackgroundColor ?? '#FFFFFF'"
+            class="h-10 w-full rounded-md"
+            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+          >
+        </div>
+        <!-- Color Picker for Text Color -->
+        <div class="w-1/6">
+          <label for="bodyColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.text' | translate}}</label>
+          <input type="color" id="bodyColor" name="bodyColor" [value]="emailService.allLayoutdata.bodyTextColor ?? '#000000'"
+            class="h-10 w-full rounded-md"
+            style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+          >
+        </div>
+      </div>
+      <!-- Body Text Editor -->
+      <editor #bodyEditor formControlName="body" class="rounded" [ngClass]="{'form-error': showBodyValidator}" [init]="editor" (onChange)="onEditorContentChange()"></editor>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-[#F5FAFF]  mb-4 p-5">
+      <label class="block text-base font-medium leading-6 text-gray-900">{{'common.notifications.email.footer.style' | translate}}</label>
+      <div class="flex flex-row mb-4 gap-5">
+        <div class="w-1/3">
+          <label for="footerLogoInput" class="block text-sm font-normal leading-6 text-gray-900">
+            {{'common.notifications.email.footer.logo' | translate}}
+          </label>
+          <div class="flex flex-row items-center space-y-2">
+            <img *ngIf="footerLogo" id="footerLogo" [src]="footerLogo" class="w-1/6 h-auto object-cover">
+            <input
+              #footerLogoInput
+              id="footerLogoInput"
+              type="file"
+              accept="image/*"
+              (change)="onFooterLogoSelected($event)"
+              class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
+            />
+            <button *ngIf="footerLogo" (click)="removeFooterLogo()" class="py-1 px-2 font-bold text-red-700 ui-button-icon primary medium button-danger" uiTooltip="{{'common.notifications.email.footer.removeTooltip' | translate}}">
+              X
+            </button>
+          </div>
+        </div>
+        <!-- Color Picker for Footer Background Color -->
+        <div class="w-1/6">
+          <label for="footerBackgroundColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.background' | translate}}</label>
+          <div [ngClass]="{'mt-3 mb-2': footerLogo}" class="color-picker-container">
+            <input
+              type="color"
+              id="footerBackgroundColor"
+              name="footerBackgroundColor"
+              [value]="emailService.allLayoutdata.footerBackgroundColor ?? '#FFFFFF'"
+              class="h-10 w-full rounded-md"
+              style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+            >
+          </div>
+        </div>
+        <!-- Color Picker for Footer Text Color -->
+        <div class="w-1/6">
+          <label for="footerColor" class="block text-sm font-normal leading-6 text-gray-900">{{'common.notifications.email.style.text' | translate}}</label>
+          <div [ngClass]="{'mt-3 mb-2': footerLogo}">
+            <input type="color"
+              id="footerColor"
+              name="footerColor"
+              [value]="emailService.allLayoutdata.footerTextColor ?? '#000000'"
+              class="h-10 w-full rounded-md"
+              style="border: none !important; background-color: transparent; -webkit-appearance: none; appearance: none;"
+            >
+          </div>
+        </div>
+      </div>
+      <editor #footerEditor [(ngModel)]="emailService.allLayoutdata.footerHtml" [ngModelOptions]="{ standalone: true }" [init]="editor"></editor>
+    </div>
   </div>
-</div>
+</form>

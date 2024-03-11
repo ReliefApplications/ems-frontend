@@ -64,7 +64,7 @@ export class CreateNotificationComponent implements OnInit {
    *
    */
   triggerDuplicateChecker() {
-    const flag = this.isNameDuplicate();
+    const flag = this.isNameDuplicate() || this.isEmpty();
     if (flag) {
       this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 0, isValid: false });
@@ -72,6 +72,18 @@ export class CreateNotificationComponent implements OnInit {
       this.emailService.disableSaveAndProceed.next(false);
       this.emailService.stepperDisable.next({ id: 0, isValid: true });
     }
+  }
+
+  /**
+   * Checks if name input is empty.
+   *
+   * @returns if true if input is empty.
+   */
+  isEmpty(): boolean {
+    return (
+      !this.dataSetFormGroup.controls['name'].value ||
+      this.dataSetFormGroup.controls['name'].value.trim() === ''
+    );
   }
 
   /**
@@ -93,10 +105,7 @@ export class CreateNotificationComponent implements OnInit {
         { error: true }
       );
     }
-    if (
-      !this.dataSetFormGroup.controls['name'].valid &&
-      this.dataSetFormGroup.controls['name'].touched
-    ) {
+    if (this.isEmpty() && this.dataSetFormGroup.controls['name'].touched) {
       this.snackBar.openSnackBar(
         this.translate.instant('components.email.notification.validTitle'),
         { error: true }

@@ -218,19 +218,19 @@ export class ApplicationComponent
         icon: 'admin_panel_settings',
       });
     }
-    if (
-      this.ability.can(
-        'manage',
-        subject('Template', { application: application.id })
-      )
-    ) {
-      // if can manage apps / can manage email notifications in app
-      this.adminNavItems.push({
-        name: this.translate.instant('common.email.notification.few'),
-        path: './settings/email-notifications',
-        icon: 'mail',
-      });
-    }
+    // if (
+    //   this.ability.can(
+    //     'manage',
+    //     subject('Template', { application: application.id })
+    //   )
+    // ) {
+    //   // if can manage apps / can manage email notifications in app
+    //   this.adminNavItems.push({
+    //     name: this.translate.instant('common.email.notification.few'),
+    //     path: './settings/email-notifications',
+    //     icon: 'mail',
+    //   });
+    // }
     if (
       this.ability.can(
         'manage',

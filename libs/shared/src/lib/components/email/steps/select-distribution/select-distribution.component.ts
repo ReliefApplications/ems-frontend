@@ -344,7 +344,8 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   validateDistributionList(): void {
     const isSaveAndProceedNotAllowed =
       this.recipients.To.length === 0 ||
-      this.recipients.distributionListName.length === 0;
+      this.recipients.distributionListName.length === 0 ||
+      this.recipients.distributionListName.trim() === '';
     this.emailService.disableSaveAndProceed.next(isSaveAndProceedNotAllowed);
     if (isSaveAndProceedNotAllowed) {
       this.emailService.disableFormSteps.next({

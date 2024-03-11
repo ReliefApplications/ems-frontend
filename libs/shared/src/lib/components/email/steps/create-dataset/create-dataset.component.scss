@@ -31,6 +31,7 @@
 
 ::ng-deep .k-tabstrip-items-wrapper, ::ng-deep .ng-trigger-state.k-content.k-active {
   border: none;
+  overflow-x: hidden;
 }
 
 ::ng-deep .k-tabstrip-top {

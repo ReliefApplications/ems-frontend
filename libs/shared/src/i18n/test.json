@@ -255,6 +255,7 @@
 				"body": {
 					"title": "******"
 				},
+				"close": "******",
 				"dropdown": {
 					"emailInput": "******",
 					"inTheLast": "******",
@@ -263,6 +264,7 @@
 				},
 				"error": "******",
 				"errors": {
+					"noBody": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
 					"noTemplate": "******"

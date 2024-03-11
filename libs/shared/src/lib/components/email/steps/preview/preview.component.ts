@@ -148,37 +148,37 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'header':
         styles[
           'headerStyle'
-        ] = `margin: 0 auto; display: flex; width: 100%; background-color: ${this.emailService.headerBackgroundColor};`;
+        ] = `margin: 0 auto; display: flex; width: 100%; background-color: ${this.emailService.allLayoutdata.headerBackgroundColor};`;
         break;
       case 'headerLogo':
         styles[
           'headerLogoStyle'
-        ] = `margin: 0.5rem; display: block; width: 15%; padding: 0.25rem 0.5rem; border-radius: 0.375rem; background-color: ${this.emailService.headerBackgroundColor};`;
+        ] = `margin: 0.5rem; display: block; width: 15%; padding: 0.25rem 0.5rem; border-radius: 0.375rem; background-color: ${this.emailService.allLayoutdata.headerBackgroundColor};`;
         break;
       case 'headerHtml':
         styles[
           'headerHtmlStyle'
-        ] = `text-align: center; margin: 0.5rem auto; padding: 0.5rem; width: 80%; background-color: white; overflow: hidden; background-color: ${this.emailService.headerBackgroundColor}; color: ${this.emailService.headerTextColor}; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif;`;
+        ] = `text-align: center; margin: 0.5rem auto; padding: 0.5rem; width: 80%; overflow: hidden; background-color: ${this.emailService.allLayoutdata.headerBackgroundColor}; color: ${this.emailService.allLayoutdata.headerTextColor}; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif;`;
         break;
       case 'body':
         styles[
           'bodyStyle'
-        ] = `text-align: center; margin: 0.5rem auto; padding: 0.5rem; width: 90%;overflow-x: auto; background-color: ${this.emailService.bodyBackgroundColor}; color: ${this.emailService.bodyTextColor};`;
+        ] = `text-align: center; padding: 0.5rem; padding-top: 1rem; width: 100%; overflow-x: auto; background-color: ${this.emailService.allLayoutdata.bodyBackgroundColor}; color: ${this.emailService.allLayoutdata.bodyTextColor}; flex-grow: 1;`;
         break;
       case 'footer':
         styles[
           'footerStyle'
-        ] = `margin: 0.25rem 0; display: flex; width: 90%; background-color: ${this.emailService.footerBackgroundColor};`;
+        ] = `display: flex; width: 100%; background-color: ${this.emailService.allLayoutdata.footerBackgroundColor};`;
         break;
       case 'footerImg':
         styles[
           'footerImgStyle'
-        ] = `margin: 0.5rem; display: block; width: 20%; padding: 0.25rem 0.5rem; border-radius: 0.375rem; background-color: ${this.emailService.footerBackgroundColor};`;
+        ] = `margin: 0.5rem; display: block; width: 20%; padding: 0.25rem 0.5rem; border-radius: 0.375rem; background-color: ${this.emailService.allLayoutdata.footerBackgroundColor};`;
         break;
       case 'footerHtml':
         styles[
           'footerHtmlStyle'
-        ] = `width: 80%; background-color: white; overflow: hidden; background-color: ${this.emailService.footerBackgroundColor}; color: ${this.emailService.footerTextColor}; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif;`;
+        ] = `width: 80%; padding-top: 1rem; overflow: hidden; background-color: ${this.emailService.allLayoutdata.footerBackgroundColor}; color: ${this.emailService.allLayoutdata.footerTextColor}; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif;`;
         break;
       case 'copyright':
         styles[
@@ -210,7 +210,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'tableDiv':
         styles[
           'tableDivStyle'
-        ] = `display: flex; flex-direction: column; align-items: center; width: 90%; margin: 0 auto;`;
+        ] = `display: flex; flex-direction: column; align-items: center; width: 90%; margin: 0 auto; margin-top: 1rem;`;
         break;
       case 'label':
         styles[
@@ -308,13 +308,14 @@ export class PreviewComponent implements OnInit, OnDestroy {
     // Token matching {{String.String.number}}
     const tokenRegex = /{{([^}]+)\.([^}]+)\.(\d+)}}/g;
     let match;
-    while ((match = tokenRegex.exec(this.headerString)) !== null) {
+    while ((match = tokenRegex.exec(headerString)) !== null) {
       // Extract the unitInMinutes from the token
       const unitInMinutes = Number(match[3]);
       const formattedDateTime = this.formatInLastString(unitInMinutes);
       // Replace the entire token with the formatted date and time
-      this.headerString = headerString.replace(match[0], formattedDateTime);
+      headerString = headerString.replace(match[0], formattedDateTime);
     }
+    this.headerString = headerString;
   }
 
   /**
