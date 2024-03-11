@@ -26,7 +26,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 import { cloneDeep, get } from 'lodash';
 
@@ -77,7 +76,6 @@ export class DashboardComponent
    * @param route Angular current page
    * @param router Angular router service
    * @param dialog Dialog service
-   * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
@@ -91,7 +89,6 @@ export class DashboardComponent
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
-    private snackBar: SnackbarService,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private renderer: Renderer2,
@@ -194,23 +191,15 @@ export class DashboardComponent
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.setFilter(this.dashboard);
         } else {
+          this.route.snapshot.data.reuse = false;
           this.contextService.isFilterEnabled.next(false);
           this.contextService.setFilter();
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.accessNotProvided', {
-              type: this.translate
-                .instant('common.dashboard.one')
-                .toLowerCase(),
-              error: '',
-            }),
-            { error: true }
-          );
-          this.router.navigate(['/applications']);
+          this.router.navigate(['/auth/error'], { skipLocationChange: true });
         }
       })
-      .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
+      .catch(() => {
+        this.route.snapshot.data.reuse = false;
+        this.router.navigate(['/auth/error'], { skipLocationChange: true });
       });
   }
 

@@ -39,6 +39,13 @@ import { DashboardAutomationService } from '../../../services/dashboard-automati
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
+/**
+ * Extend heat map options @type with opacity
+ */
+interface HeatMapOptions extends L.HeatMapOptions {
+  opacity?: number | undefined;
+}
+
 /** GeoJSON with no features */
 export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
   type: 'FeatureCollection',
@@ -650,11 +657,8 @@ export class Layer implements LayerModel {
               DEFAULT_HEATMAP.gradient
             );
 
-            if (valueField) {
-              console.log(maxBy(heatArray, 2)[2]);
-            }
-
-            const heatmapOptions: L.HeatMapOptions = {
+            const heatmapOptions: HeatMapOptions = {
+              opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
                 'drawingInfo.renderer.blur',
