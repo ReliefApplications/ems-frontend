@@ -3,6 +3,7 @@ import {
   DetachedRouteHandle,
   RouteReuseStrategy,
 } from '@angular/router';
+import { isNil } from 'lodash';
 
 /**
  * Get resolve url, that will be used to compare pages.
@@ -45,10 +46,19 @@ export class AppRouteReuseStrategy implements RouteReuseStrategy {
   /**
    * Should detach the route when navigating
    *
+   * @param route activated route snapshot
    * @returns always true
    */
-  shouldDetach(): boolean {
-    return true;
+  shouldDetach(route: ActivatedRouteSnapshot): boolean {
+    if (!isNil(route.data.reuse)) {
+      if (route.data.reuse) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
   }
 
   /**
