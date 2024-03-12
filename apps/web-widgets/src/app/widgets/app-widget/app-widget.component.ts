@@ -22,7 +22,7 @@ import {
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
-import { Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 /**
  * Application as Web Widget.
@@ -90,6 +90,8 @@ export class AppWidgetComponent
   pages = new EventEmitter<any[]>();
   /** Trigger subscription teardown on component destruction */
   private destroy$: Subject<void> = new Subject<void>();
+  /** Navigation in SUI is loading */
+  public isNavigationLoading = false;
 
   /**
    * Application as Web Widget.
@@ -139,6 +141,14 @@ export class AppWidgetComponent
           this.pages.emit([]);
         }
       });
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.isNavigationLoading = true;
+      }
+      if (event instanceof NavigationEnd) {
+        this.isNavigationLoading = false;
+      }
+    });
   }
 
   /**
