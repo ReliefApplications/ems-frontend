@@ -23,7 +23,7 @@ import {
 import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
-import { Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 /**
  * Application as Web Widget.
@@ -102,6 +102,8 @@ export class AppWidgetComponent
   pages = new EventEmitter<any[]>();
   /** Trigger subscription teardown on component destruction */
   private destroy$: Subject<void> = new Subject<void>();
+  /** Navigation in SUI is loading */
+  public isNavigationLoading = false;
 
   /**
    * Application as Web Widget.
@@ -123,15 +125,19 @@ export class AppWidgetComponent
     private shadowDomService: ShadowDomService,
     private authService: AuthService
   ) {
-    console.log('DEBUG: build from 03/11/2023, v1');
+    console.log('DEBUG: build from 03/12/2023, v1');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
+
+    // Subscribe to filter changes to emit them
     this.contextService.filter$
       .pipe(debounceTime(500))
       .subscribe(({ current }) => {
         this.filterActive$.emit(!isEmpty(current));
         this.filter$.emit(current);
       });
+
+    // Subscribe to application changes to update the pages
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
@@ -154,6 +160,7 @@ export class AppWidgetComponent
         }
       });
 
+    // Subscribe to token refresh events
     this.authService.refreshToken$
       .pipe(
         filter((refreshToken) => !!refreshToken),
@@ -162,6 +169,16 @@ export class AppWidgetComponent
       .subscribe({
         next: () => this.refreshToken$.emit(),
       });
+
+    // Subscribe to router events, to show / hide loading indicator
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.isNavigationLoading = true;
+      }
+      if (event instanceof NavigationEnd) {
+        this.isNavigationLoading = false;
+      }
+    });
   }
 
   /**
