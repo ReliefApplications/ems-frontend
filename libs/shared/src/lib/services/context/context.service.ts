@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, filter, map, pairwise } from 'rxjs';
 import localForage from 'localforage';
 import {
@@ -132,6 +132,16 @@ export class ContextService {
   } | null = null;
 
   /**
+   * Check if given question filter is shared across all views in web widgets
+   *
+   * @param questionName Question name to check
+   * @returns boolean ensuring that current question filter is shared across all views or not
+   */
+  public isSharedFilter = (questionName: string) =>
+    isNil(this.environment.sharedFilters) ||
+    this.environment.sharedFilters.includes(questionName);
+
+  /**
    * Dashboard context service
    *
    * @param dialog The Dialog service
@@ -142,6 +152,7 @@ export class ContextService {
    * @param applicationService Shared application service
    * @param router Angular router
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param environment This is the environment in which we are running the application
    */
   constructor(
     private dialog: Dialog,
@@ -151,7 +162,8 @@ export class ContextService {
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
     private router: Router,
-    public shadowDomService: ShadowDomService
+    public shadowDomService: ShadowDomService,
+    @Inject('environment') private environment: any
   ) {
     this.filterPosition$.subscribe(
       (value: { position: FilterPosition; dashboardId: string } | null) => {
@@ -424,7 +436,13 @@ export class ContextService {
     const survey = this.formBuilderService.createSurvey(structure);
     // set each question value manually otherwise the defaultValueExpression is not loaded
     forEach(this.filterValues.getValue(), (value, key) => {
-      if (survey.getQuestionByName(key)) {
+      if (
+        (!this.shadowDomService.isShadowRoot &&
+          survey.getQuestionByName(key)) ||
+        (this.shadowDomService.isShadowRoot &&
+          survey.getQuestionByName(key) &&
+          this.isSharedFilter(key))
+      ) {
         survey.getQuestionByName(key).value = value;
       }
     });

@@ -153,7 +153,7 @@ export class LayoutComponent
   /** Timeout listeners */
   private attachViewFilterTriggerListener!: NodeJS.Timeout;
   /** Survey shared questions names on web component to track shared values when switching views */
-  private surveySharedQuestions!: string[];
+  // private surveySharedQuestions!: string[];
 
   /**
    * Gets URI of the other office
@@ -460,13 +460,20 @@ export class LayoutComponent
     filterKeys
       .filter((fk) => currentSurveyQuestions.find((sq) => sq.name === fk))
       .forEach((filterKey) => {
-        newFilterValues[filterKey] =
-          this.contextService.filter.value[filterKey];
+        if (this.contextService.isSharedFilter(filterKey)) {
+          newFilterValues[filterKey] =
+            this.contextService.filter.value[filterKey];
+        } else {
+          // Values as array contains properties from survey question that if not casted to array spread, will make the tagbox or any question using array values to not trigger the survey value change
+          newFilterValues[filterKey] =
+            survey.getQuestionByName(filterKey)._instance?.value ??
+            survey.getQuestionByName(filterKey).value;
+        }
       });
     // Include all the survey question values that are not shared, not present in the current context filter value and contains a value to be set
     currentSurveyQuestions.forEach((qu: any) => {
       if (
-        !this.surveySharedQuestions.includes(qu.name) &&
+        !this.contextService.isSharedFilter(qu.name) &&
         !filterKeys.includes(qu.name) &&
         ((!Array.isArray(qu.value) && qu.value) ||
           (Array.isArray(qu.value) && qu.value.length))
@@ -491,7 +498,6 @@ export class LayoutComponent
         const newFilterValues: { [key: string]: any } = this.getViewFilterValue(
           e.linkedSurvey
         );
-        this.contextService.filter.getValue();
         // If attached view context filter state and current context filter state are different we set the force trigger refresh to true and trigger the filter event again
         if (!isEqual(e.lastStateOfContextFilters, newFilterValues)) {
           if (this.attachViewFilterTriggerListener) {
@@ -523,34 +529,39 @@ export class LayoutComponent
             this.contextService.webComponentsFilterSurvey.length - 1
           ];
         // Any time a new view is set, we update the surveySharedQuestions value with the questions from the new survey
-        const surveyQuestions: string[] = [];
-        this.contextService.webComponentsFilterSurvey.forEach((survey) => {
-          const otherSurveys =
-            this.contextService.webComponentsFilterSurvey.filter(
-              (sur) => !isEqual(sur, survey)
-            );
-          survey
-            .getAllQuestions()
-            // Get all questions from the survey to check that their question is not already set in the shared questions property
-            .filter((qu) => !surveyQuestions.includes(qu.name))
-            .forEach((qu) => {
-              let isFoundQuestion = false;
-              otherSurveys.forEach((sur) => {
-                if (
-                  sur
-                    .getAllQuestions()
-                    .find((question) => question.name === qu.name)
-                ) {
-                  isFoundQuestion = true;
-                  return;
-                }
-              });
-              if (isFoundQuestion) {
-                surveyQuestions.push(qu.name);
-              }
-            });
-        });
-        this.surveySharedQuestions = Array.from(new Set(surveyQuestions));
+        // const surveyQuestions: string[] = [];
+        // this.contextService.webComponentsFilterSurvey.forEach((survey) => {
+        //   const otherSurveys =
+        //     this.contextService.webComponentsFilterSurvey.filter(
+        //       (sur) => !isEqual(sur, survey)
+        //     );
+        //   survey
+        //     .getAllQuestions()
+        //     // Get all questions from the survey to check that their question is not already set in the shared questions property
+        //     .filter((qu) => !surveyQuestions.includes(qu.name))
+        //     .forEach((qu) => {
+        //       let isFoundQuestion = false;
+        //       otherSurveys.forEach((sur) => {
+        //         if (
+        //           sur
+        //             .getAllQuestions()
+        //             .find(
+        //               (question) =>
+        //                 question.name === qu.name &&
+        //                 (isNil(this.environment.activeFilters) ||
+        //                   this.environment.activeFilters.includes(qu.name))
+        //             )
+        //         ) {
+        //           isFoundQuestion = true;
+        //           return;
+        //         }
+        //       });
+        //       if (isFoundQuestion) {
+        //         surveyQuestions.push(qu.name);
+        //       }
+        //     });
+        // });
+        // this.surveySharedQuestions = Array.from(new Set(surveyQuestions));
       }
       // Reset data change trigger on component detach
       e.linkedSurvey?.setPropertyValue('refreshData', false);
