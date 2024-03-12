@@ -1,3 +1,19 @@
+# [2.11.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.10.1...v2.11.0) (2024-03-12)
+
+
+### Bug Fixes
+
+* BO resource's subpages not loading fine, and requiring 2x clicks  ([#2441](https://github.com/ReliefApplications/ems-frontend/issues/2441)) ([cc569ce](https://github.com/ReliefApplications/ems-frontend/commit/cc569ce81a0d02edb98172d1d9c8a406058baf7d))
+* heatmap can now use opacity parameter ([#2439](https://github.com/ReliefApplications/ems-frontend/issues/2439)) ([80da23e](https://github.com/ReliefApplications/ems-frontend/commit/80da23e11c4fd7a1141ba13ee5666f21c04dce90))
+
+
+### Features
+
+* add calendar type option to date questions ([#2435](https://github.com/ReliefApplications/ems-frontend/issues/2435)) ([6518b16](https://github.com/ReliefApplications/ems-frontend/commit/6518b168c9903e737142f11a033e8f3c024aae71))
+* allow heatmap to have intensity field ([#2437](https://github.com/ReliefApplications/ems-frontend/issues/2437)) ([027c291](https://github.com/ReliefApplications/ems-frontend/commit/027c291cdac7455c4b7ad9e4e916822a460f4df2))
+* default number of items per page in summary cards now depend by default on height of window ([15072c5](https://github.com/ReliefApplications/ems-frontend/commit/15072c587143d7e1e033fdb550c503c1f26c3108))
+* system now stores selection of page size on summary card widgets, so it can be reused for future widgets ([768ff58](https://github.com/ReliefApplications/ems-frontend/commit/768ff587212bc78cd5a310db579a79dd8b8af595))
+
 ## [2.10.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.10.0...v2.10.1) (2024-03-06)
 
 
