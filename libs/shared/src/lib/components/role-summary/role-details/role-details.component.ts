@@ -78,12 +78,16 @@ export class RoleDetailsComponent implements OnInit {
           application: this.role.application !== null,
         },
       })
-      .subscribe(({ data }) => {
-        this.permissions = data.permissions;
+      .subscribe({
+        next: ({ data }) => {
+          this.permissions = data.permissions;
+        },
       });
     const url = `/roles/${this.role.id}/summary`;
-    this.restService.get(url).subscribe((res: any) => {
-      this.roleStats = res;
+    this.restService.get(url).subscribe({
+      next: (res: any) => {
+        this.roleStats = res;
+      },
     });
   }
 

@@ -164,12 +164,15 @@ export class AddLayoutModalComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }) => {
-        if (data?.addLayout) {
-          this.dialogRef.close(data.addLayout as any);
-        } else {
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.addLayout) {
+            this.dialogRef.close(data.addLayout as any);
+          }
+        },
+        error: () => {
           this.dialogRef.close();
-        }
+        },
       });
   }
 }

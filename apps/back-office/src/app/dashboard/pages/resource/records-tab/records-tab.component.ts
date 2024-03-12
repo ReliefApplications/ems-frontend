@@ -12,6 +12,7 @@ import {
   RestoreRecordMutationResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -131,11 +132,14 @@ export class RecordsTabComponent
           showDeletedRecords: this.showDeletedRecords,
         },
       });
-    this.recordsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+    this.recordsQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.updateValues(data, loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   /**
@@ -177,6 +181,10 @@ export class RecordsTabComponent
    * @param id Id of record to delete.
    */
   private deleteRecord(id: string): void {
+    const deleteRecordMessage = {
+      success: 'common.notifications.objectDeleted',
+      error: 'common.notifications.objectNotDeleted',
+    };
     this.apollo
       .mutate<DeleteRecordMutationResponse>({
         mutation: DELETE_RECORD,
@@ -186,17 +194,11 @@ export class RecordsTabComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
-          this.handleRecordMutationResponse(
-            {
-              success: 'common.notifications.objectDeleted',
-              error: 'common.notifications.objectNotDeleted',
-            },
-            errors
-          );
+        next: () => {
+          this.handleRecordMutationResponse(deleteRecordMessage, []);
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleRecordMutationResponse(deleteRecordMessage, errors);
         },
       });
   }
@@ -220,7 +222,7 @@ export class RecordsTabComponent
       this.snackBar.openSnackBar(
         this.translate.instant(messageKeys.error, {
           value: this.translate.instant('common.record.one'),
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );
@@ -242,6 +244,10 @@ export class RecordsTabComponent
    */
   public onRestoreRecord(id: string, e: any): void {
     e.stopPropagation();
+    const restoreRecordMessage = {
+      success: 'common.notifications.objectRestored',
+      error: 'common.notifications.objectNotRestored',
+    };
     this.apollo
       .mutate<RestoreRecordMutationResponse>({
         mutation: RESTORE_RECORD,
@@ -250,17 +256,11 @@ export class RecordsTabComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
-          this.handleRecordMutationResponse(
-            {
-              success: 'common.notifications.objectRestored',
-              error: 'common.notifications.objectNotRestored',
-            },
-            errors
-          );
+        next: () => {
+          this.handleRecordMutationResponse(restoreRecordMessage, []);
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleRecordMutationResponse(restoreRecordMessage, errors);
         },
       });
   }

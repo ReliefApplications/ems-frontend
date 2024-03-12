@@ -2,7 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { Subject, filter, switchMap, takeUntil } from 'rxjs';
+import {
+  Subject,
+  catchError,
+  filter,
+  switchMap,
+  takeUntil,
+  throwError,
+} from 'rxjs';
 import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { AddUsersMutationResponse, Role } from '../../models/user.model';
@@ -11,6 +18,7 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { ADD_USERS } from './graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 import { isNil } from 'lodash';
 
 /**
@@ -94,18 +102,29 @@ export class ApplicationUsersComponent
       .pipe(
         filter((value: any) => !isNil(value)),
         switchMap((value: any) => {
-          return this.apollo.mutate<AddUsersMutationResponse>({
-            mutation: ADD_USERS,
-            variables: {
-              users: value,
-              application: this.roles[0].application?.id,
-            },
-          });
+          return this.apollo
+            .mutate<AddUsersMutationResponse>({
+              mutation: ADD_USERS,
+              variables: {
+                users: value,
+                application: this.roles[0].application?.id,
+              },
+            })
+            .pipe(
+              catchError((errors) =>
+                throwError(() => {
+                  return {
+                    errors,
+                    addUsers: value,
+                  };
+                })
+              )
+            );
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ errors, data }) => {
-        if (!errors) {
+      .subscribe({
+        next: ({ data }) => {
           if (data?.addUsers.length) {
             this.snackBar.openSnackBar(
               this.translate.instant('components.users.onInvite.plural')
@@ -116,23 +135,24 @@ export class ApplicationUsersComponent
             );
           }
           this.userList?.fetchUsers(true);
-        } else {
-          if (data?.addUsers?.length) {
+        },
+        error: ({ errors, addUsers }) => {
+          if (addUsers?.length) {
             this.snackBar.openSnackBar(
               this.translate.instant('components.users.onNotInvite.plural', {
-                error: errors[0].message,
+                error: errorMessageFormatter(errors),
               }),
               { error: true }
             );
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('components.users.onNotInvite.singular', {
-                error: errors[0].message,
+                error: errorMessageFormatter(errors),
               }),
               { error: true }
             );
           }
-        }
+        },
       });
   }
 

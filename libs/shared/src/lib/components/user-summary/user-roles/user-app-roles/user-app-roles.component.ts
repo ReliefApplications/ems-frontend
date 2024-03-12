@@ -11,6 +11,7 @@ import { GET_APPLICATIONS, GET_ROLES } from '../../graphql/queries';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../../../utils/public-api';
 
 /** Roles tab for the user summary */
 @Component({
@@ -102,8 +103,10 @@ export class UserAppRolesComponent
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         },
       });
   }
@@ -160,8 +163,11 @@ export class UserAppRolesComponent
           );
           this.loading = loading;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
+          this.loading = false;
         },
       });
   }

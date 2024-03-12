@@ -165,14 +165,16 @@ export class LayoutTableComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }: any) => {
-        if (data.editLayout) {
-          const layouts = [...this.allLayouts];
-          const index = layouts.findIndex((x) => x.id === layout.id);
-          layouts[index] = data.editLayout;
-          this.allLayouts = layouts;
-          this.setSelectedLayouts(this.selectedLayouts?.value);
-        }
+      .subscribe({
+        next: ({ data }: any) => {
+          if (data.editLayout) {
+            const layouts = [...this.allLayouts];
+            const index = layouts.findIndex((x) => x.id === layout.id);
+            layouts[index] = data.editLayout;
+            this.allLayouts = layouts;
+            this.setSelectedLayouts(this.selectedLayouts?.value);
+          }
+        },
       });
   }
 

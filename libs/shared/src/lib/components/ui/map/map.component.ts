@@ -1100,32 +1100,34 @@ export class MapComponent
     this.resetLayers(this.layers.filter((x) => x.shouldRefresh));
     from(this.getLayers(layersToGet ?? [], false))
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-      .subscribe((res) => {
-        this.overlaysTree = [res.layers];
+      .subscribe({
+        next: (res) => {
+          this.overlaysTree = [res.layers];
 
-        flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach(
-          (x) => {
-            if (x.layer) {
-              const id = (x.layer as any).id;
-              if (!isNil(shouldDisplayStatuses[id])) {
-                (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
-                if (shouldDisplayStatuses[id]) {
+          flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach(
+            (x) => {
+              if (x.layer) {
+                const id = (x.layer as any).id;
+                if (!isNil(shouldDisplayStatuses[id])) {
+                  (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
+                  if (shouldDisplayStatuses[id]) {
+                    this.map.addLayer(x.layer);
+                  }
+                } else {
                   this.map.addLayer(x.layer);
                 }
-              } else {
-                this.map.addLayer(x.layer);
               }
             }
-          }
-        );
-
-        if (controls.layer) {
-          // update layer controls, from newly created layers
-          this.setLayersControl(
-            flatten(this.basemapTree),
-            flatten(this.overlaysTree)
           );
-        }
+
+          if (controls.layer) {
+            // update layer controls, from newly created layers
+            this.setLayersControl(
+              flatten(this.basemapTree),
+              flatten(this.overlaysTree)
+            );
+          }
+        },
       });
   }
 

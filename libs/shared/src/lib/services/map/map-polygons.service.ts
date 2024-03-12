@@ -46,14 +46,14 @@ export class MapPolygonsService {
    * Retrieve admin0 polygons
    */
   public getAdmin0Polygons() {
-    this.restService
-      .get(`${this.restService.apiUrl}/gis/admin0`)
-      .subscribe((value) => {
+    this.restService.get(`${this.restService.apiUrl}/gis/admin0`).subscribe({
+      next: (value) => {
         if (value) {
           this.admin0s = value;
           this.admin0sReady.next(true);
         }
-      });
+      },
+    });
   }
 
   /**

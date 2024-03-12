@@ -96,9 +96,14 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               });
             })
           )
-          .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.loading = loading;
+          .subscribe({
+            next: ({ data, loading }) => {
+              this.form = data.form;
+              this.loading = loading;
+            },
+            error: () => {
+              this.loading = false;
+            },
           });
       } else {
         this.apollo
@@ -119,11 +124,16 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               });
             })
           )
-          .subscribe(({ data, loading }) => {
-            if (data) {
-              this.form = data.form;
-            }
-            this.loading = loading;
+          .subscribe({
+            next: ({ data, loading }) => {
+              if (data) {
+                this.form = data.form;
+              }
+              this.loading = loading;
+            },
+            error: () => {
+              this.loading = false;
+            },
           });
       }
     });

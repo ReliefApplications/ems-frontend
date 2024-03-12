@@ -183,16 +183,18 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const choices = (data.resource.fields || [])
-                .filter((item: any) => item.type !== 'matrix')
-                .map((item: any) => {
-                  return {
-                    value: item.name,
-                  };
-                });
-              choices.unshift({ value: null });
-              choicesCallback(choices);
+            getResourceById({ id: obj.resource }).subscribe({
+              next: ({ data }) => {
+                const choices = (data.resource.fields || [])
+                  .filter((item: any) => item.type !== 'matrix')
+                  .map((item: any) => {
+                    return {
+                      value: item.name,
+                    };
+                  });
+                choices.unshift({ value: null });
+                choicesCallback(choices);
+              },
             });
           }
         },
@@ -272,12 +274,14 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const choices = (data.resource.forms || []).map((item: any) => {
-                return { value: item.id, text: item.name };
-              });
-              choices.unshift({ value: null, text: '' });
-              choicesCallback(choices);
+            getResourceById({ id: obj.resource }).subscribe({
+              next: ({ data }) => {
+                const choices = (data.resource.forms || []).map((item: any) => {
+                  return { value: item.id, text: item.name };
+                });
+                choices.unshift({ value: null, text: '' });
+                choicesCallback(choices);
+              },
             });
           }
         },
@@ -336,11 +340,15 @@ export const init = (
           !!obj && !!obj.selectQuestion && !!obj.displayField,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const choices = (data.resource.fields || []).map((item: any) => {
-                return { value: item.name };
-              });
-              choicesCallback(choices);
+            getResourceById({ id: obj.resource }).subscribe({
+              next: ({ data }) => {
+                const choices = (data.resource.fields || []).map(
+                  (item: any) => {
+                    return { value: item.name };
+                  }
+                );
+                choicesCallback(choices);
+              },
             });
           }
         },

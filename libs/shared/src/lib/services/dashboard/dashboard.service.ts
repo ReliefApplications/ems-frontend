@@ -15,6 +15,7 @@ import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -57,11 +58,11 @@ export class DashboardService {
     type: string,
     value?: string
   ) {
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotUpdated', {
           type,
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );
@@ -130,8 +131,10 @@ export class DashboardService {
           name,
         },
       })
-      .subscribe(() => {
-        if (callback) callback();
+      .subscribe({
+        next: () => {
+          if (callback) callback();
+        },
       });
   }
 
@@ -178,14 +181,22 @@ export class DashboardService {
           gridOptions,
         },
       })
-      .subscribe(({ errors, data }) => {
-        this.handleEditionMutationResponse(
-          errors,
-          this.translate.instant('common.page.one')
-        );
-        if (!errors && data) {
-          if (callback) callback();
-        }
+      .subscribe({
+        next: ({ data }) => {
+          this.handleEditionMutationResponse(
+            [],
+            this.translate.instant('common.page.one')
+          );
+          if (data) {
+            if (callback) callback();
+          }
+        },
+        error: (errors) => {
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.page.one')
+          );
+        },
       });
   }
 }

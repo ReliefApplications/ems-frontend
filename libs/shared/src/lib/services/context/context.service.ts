@@ -38,6 +38,7 @@ import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordQueryResponse } from '../../models/record.model';
 import { GET_RECORD_BY_ID } from './graphql/queries';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Dashboard context service
@@ -533,13 +534,15 @@ export class ContextService {
             id: dContext.record,
           },
         })
-        .subscribe((res) => {
-          if (res?.data) {
-            callback({
-              record: dContext.record,
-              recordData: res.data.record,
-            });
-          }
+        .subscribe({
+          next: (res) => {
+            if (res?.data) {
+              callback({
+                record: dContext.record,
+                recordData: res.data.record,
+              });
+            }
+          },
         });
     }
   }
@@ -561,8 +564,13 @@ export class ContextService {
           },
         },
       })
-      .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors }, dashboard);
+      .subscribe({
+        next: ({ data }) => {
+          this.handleFilterMutationResponse({ data, errors: [] }, dashboard);
+        },
+        error: (errors) => {
+          this.handleFilterMutationResponse({ data: null, errors }, dashboard);
+        },
       });
   }
 
@@ -579,11 +587,11 @@ export class ContextService {
     dashboard?: Dashboard
   ) {
     const { data, errors } = response;
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotUpdated', {
           type: this.translate.instant('common.filter.one'),
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );

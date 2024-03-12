@@ -7,6 +7,7 @@ import {
   ConfirmService,
   UnsubscribeComponent,
   ResourceQueryResponse,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { DELETE_FORM } from './graphql/mutations';
@@ -81,11 +82,16 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
           id: this.resource?.id,
         },
       })
-      .subscribe(({ data }) => {
-        if (data.resource) {
-          this.forms = data.resource.forms || [];
-        }
-        this.loading = false;
+      .subscribe({
+        next: ({ data }) => {
+          if (data.resource) {
+            this.forms = data.resource.forms || [];
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
@@ -124,26 +130,22 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate.instant('common.form.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.form.one'),
-              })
-            );
-            this.forms = this.forms.filter((x: any) => x.id !== form.id);
-          }
+        next: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: this.translate.instant('common.form.one'),
+            })
+          );
+          this.forms = this.forms.filter((x: any) => x.id !== form.id);
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDeleted', {
+              value: this.translate.instant('common.form.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
         },
       });
   }

@@ -51,15 +51,20 @@ export class RoleSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.role = data.role;
-          this.breadcrumbService.setBreadcrumb(
-            '@role',
-            this.role.title as string
-          );
-        }
-        this.loading = loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.role = data.role;
+            this.breadcrumbService.setBreadcrumb(
+              '@role',
+              this.role.title as string
+            );
+          }
+          this.loading = loading;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
@@ -76,11 +81,16 @@ export class RoleSummaryComponent implements OnInit {
         mutation: EDIT_ROLE,
         variables: { ...e, id: this.id },
       })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.role = data.editRole;
-          this.loading = loading;
-        }
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.role = data.editRole;
+            this.loading = loading;
+          }
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 }

@@ -528,29 +528,44 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .subscribe(({ data }) => {
-          this.resource = data.resource;
-          // Update fields
-          if (layoutID) {
-            this.layout = get(data, 'resource.layouts.edges[0].node', null);
-            this.fields.next(this.mapLayersService.getQueryFields(this.layout));
-          } else {
-            if (aggregationID) {
-              this.aggregation = get(
-                data,
-                'resource.aggregations.edges[0].node',
-                null
-              );
+        .subscribe({
+          next: ({ data }) => {
+            this.resource = data.resource;
+            // Update fields
+            if (layoutID) {
+              this.layout = get(data, 'resource.layouts.edges[0].node', null);
               this.fields.next(
-                this.aggregation
-                  ? this.mapLayersService.getAggregationFields(
-                      data.resource.queryName ?? '',
-                      this.aggregation
-                    )
-                  : []
+                this.mapLayersService.getQueryFields(this.layout)
               );
+            } else {
+              if (aggregationID) {
+                this.aggregation = get(
+                  data,
+                  'resource.aggregations.edges[0].node',
+                  null
+                );
+                this.fields.next(
+                  this.mapLayersService.getQueryFields(this.layout)
+                );
+              } else {
+                if (aggregationID) {
+                  this.aggregation = get(
+                    data,
+                    'resource.aggregations.edges[0].node',
+                    null
+                  );
+                  this.fields.next(
+                    this.aggregation
+                      ? this.mapLayersService.getAggregationFields(
+                          data.resource.queryName ?? '',
+                          this.aggregation
+                        )
+                      : []
+                  );
+                }
+              }
             }
-          }
+          },
         });
     }
   }
@@ -572,27 +587,29 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .subscribe(({ data }) => {
-          this.referenceData = data.referenceData;
-          if (aggregationID) {
-            this.aggregation = get(
-              data,
-              'referenceData.aggregations.edges[0].node',
-              null
-            );
-            this.fields.next(
-              this.aggregation
-                ? this.mapLayersService.getAggregationFields(
-                    data.referenceData.graphQLTypeName ?? '',
-                    this.aggregation
-                  )
-                : []
-            );
-          } else {
-            this.fields.next(
-              this.getFieldsFromRefData(this.referenceData?.fields || [])
-            );
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.referenceData = data.referenceData;
+            if (aggregationID) {
+              this.aggregation = get(
+                data,
+                'referenceData.aggregations.edges[0].node',
+                null
+              );
+              this.fields.next(
+                this.aggregation
+                  ? this.mapLayersService.getAggregationFields(
+                      data.referenceData.graphQLTypeName ?? '',
+                      this.aggregation
+                    )
+                  : []
+              );
+            } else {
+              this.fields.next(
+                this.getFieldsFromRefData(this.referenceData?.fields || [])
+              );
+            }
+          },
         });
     }
   }

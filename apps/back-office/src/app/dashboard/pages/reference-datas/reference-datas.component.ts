@@ -9,6 +9,7 @@ import {
   ReferenceDatasQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { GET_REFERENCE_DATAS } from './graphql/queries';
 import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
@@ -112,8 +113,14 @@ export class ReferenceDatasComponent
 
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.updateValues(data, loading);
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: () => {
+          this.loading = false;
+          this.updating = false;
+        },
       });
 
     // Initializing sort to an empty one
@@ -174,28 +181,21 @@ export class ReferenceDatasComponent
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotCreated', {
-                type: this.translate
-                  .instant('common.referenceData.one')
-                  .toLowerCase(),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.router.navigate([
-                '/referencedata',
-                data.addReferenceData.id,
-              ]);
-            }
+        next: ({ data }) => {
+          if (data) {
+            this.router.navigate(['/referencedata', data.addReferenceData.id]);
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate
+                .instant('common.referenceData.one')
+                .toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
         },
       });
   }
@@ -234,7 +234,7 @@ export class ReferenceDatasComponent
       )
       .subscribe({
         next: (res) => {
-          if (res && !res.errors) {
+          if (res) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: this.translate.instant('common.referenceData.one'),
@@ -243,23 +243,16 @@ export class ReferenceDatasComponent
             this.dataSource = this.dataSource.filter(
               (x) => x.id !== element.id
             );
-          } else {
-            if (res.errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: this.translate.instant('common.referenceData.one'),
-                    error: res.errors ? res.errors[0] : '',
-                  }
-                ),
-                { error: true }
-              );
-            }
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDeleted', {
+              value: this.translate.instant('common.referenceData.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
         },
       });
   }

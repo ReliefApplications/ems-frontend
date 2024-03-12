@@ -18,6 +18,7 @@ import {
   FormQueryResponse,
   EditFormMutationResponse,
   SnackbarSpinnerComponent,
+  errorMessageFormatter,
   UnsubscribeComponent,
 } from '@oort-front/shared';
 import { SpinnerComponent } from '@oort-front/ui';
@@ -186,25 +187,16 @@ export class FormBuilderComponent
                 this.hasChanges = true;
                 this.authService.canLogout.next(!this.hasChanges);
               }
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.form.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-              // redirect to default screen if error
-              this.router.navigate(['/forms']);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate.instant('common.form.one').toLowerCase(),
+                error: '',
+              }),
+              { error: true }
+            );
             // redirect to default screen if error
             this.router.navigate(['/forms']);
           },
@@ -288,34 +280,35 @@ export class FormBuilderComponent
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
+          next: ({ data }) => {
             // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
-            // Open new snackbar with the request error or success message
-            const message = errors
-              ? errors[0].message
-              : this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.form.one').toLowerCase(),
-                  value: '',
-                });
-            const snackbarConfig = {
-              ...REQUEST_SNACKBAR_CONF,
-              error: errors ? true : false,
-            };
-            this.snackBar.openSnackBar(message, snackbarConfig);
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.form.one').toLowerCase(),
+                value: '',
+              }),
+              {
+                ...REQUEST_SNACKBAR_CONF,
+                error: false,
+              }
+            );
 
-            if (!errors) {
-              this.form = { ...data?.editForm, structure };
-              this.structure = structure;
-              localStorage.removeItem(`form:${this.id}`);
-              this.hasChanges = false;
-              this.authService.canLogout.next(true);
-            }
+            this.form = { ...data?.editForm, structure };
+            this.structure = structure;
+            localStorage.removeItem(`form:${this.id}`);
+            this.hasChanges = false;
+            this.authService.canLogout.next(true);
           },
-          error: (err) => {
+          error: (errors) => {
             // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
-            this.snackBar.openSnackBar(err.message, { error: true });
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              ...REQUEST_SNACKBAR_CONF,
+              error: true,
+            });
+            // Detach the current set overlay
+            overlayRef.detach();
           },
           complete: () => {
             // Detach the current set overlay
@@ -343,15 +336,15 @@ export class FormBuilderComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
+        next: ({ data }) => {
           // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
-          this.handleFormMutationResponse(data, errors);
+          this.handleFormMutationResponse(data, []);
         },
-        error: (err) => {
+        error: (errors) => {
           // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
-          this.snackBar.openSnackBar(err.message, { error: true });
+          this.handleFormMutationResponse(null, errors);
         },
         complete: () => {
           // Detach the current set overlay
@@ -372,13 +365,13 @@ export class FormBuilderComponent
     errors: readonly GraphQLError[] | undefined,
     formName?: string
   ) {
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotUpdated', {
           type: this.translate.instant(
             formName ? 'common.form.one' : 'common.status'
           ),
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );
@@ -418,8 +411,10 @@ export class FormBuilderComponent
         },
       })
       .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.structure = data.form.structure;
+      .subscribe({
+        next: ({ data }) => {
+          this.structure = data.form.structure;
+        },
       });
   }
 
@@ -464,14 +459,17 @@ export class FormBuilderComponent
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
+          next: ({ data }) => {
             // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
-            this.handleFormMutationResponse(data, errors, formName);
+            this.handleFormMutationResponse(data, [], formName);
           },
-          error: () => {
+          error: (errors) => {
             // Dismiss the loading snackbar
             loadingSnackbarRef.instance.dismiss();
+            this.handleFormMutationResponse(null, errors, formName);
+            // Detach the current set overlay
+            overlayRef.detach();
           },
           complete: () => {
             // Detach the current set overlay
@@ -499,31 +497,37 @@ export class FormBuilderComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
+        next: ({ data }) => {
           // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
-          // Open new snackbar with the request error or success message
-          const message = errors
-            ? this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.access'),
-                error: errors ? errors[0].message : '',
-              })
-            : this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.access'),
-                value: '',
-              });
-          const snackbarConfig = {
-            ...REQUEST_SNACKBAR_CONF,
-            error: errors ? true : false,
-          };
-          this.snackBar.openSnackBar(message, snackbarConfig);
-          if (!errors) {
-            this.form = { ...data?.editForm, structure: this.structure };
-          }
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.access'),
+              value: '',
+            }),
+            {
+              ...REQUEST_SNACKBAR_CONF,
+              error: false,
+            }
+          );
+
+          this.form = { ...data?.editForm, structure: this.structure };
         },
-        error: (err) => {
+        error: (errors) => {
+          // Dismiss the loading snackbar
           loadingSnackbarRef.instance.dismiss();
-          this.snackBar.openSnackBar(err.message, { error: true });
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.access'),
+              error: errorMessageFormatter(errors),
+            }),
+            {
+              ...REQUEST_SNACKBAR_CONF,
+              error: false,
+            }
+          );
+          // Detach the current set overlay
+          overlayRef.detach();
         },
         complete: () => {
           // Detach the current set overlay

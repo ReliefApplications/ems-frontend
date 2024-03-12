@@ -127,12 +127,14 @@ export class RecordSelectionTabComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        if (this.form.get('layout')) {
-          this.form
-            .get('layout')
-            ?.setValue(this.form.get('layout')?.value || null);
-        }
+      .subscribe({
+        next: () => {
+          if (this.form.get('layout')) {
+            this.form
+              .get('layout')
+              ?.setValue(this.form.get('layout')?.value || null);
+          }
+        },
       });
   }
 

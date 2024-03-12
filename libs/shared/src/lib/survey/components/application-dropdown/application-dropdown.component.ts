@@ -118,10 +118,12 @@ export class ApplicationDropdownComponent
             },
           },
         })
-        .subscribe(({ data }) => {
-          this.selectedApplications = data.applications.edges.map(
-            (x) => x.node
-          );
+        .subscribe({
+          next: ({ data }) => {
+            this.selectedApplications = data.applications.edges.map(
+              (x) => x.node
+            );
+          },
         });
     }
 
@@ -138,8 +140,13 @@ export class ApplicationDropdownComponent
     this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.updateValues(data, loading);
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

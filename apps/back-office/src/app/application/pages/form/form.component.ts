@@ -127,18 +127,23 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe((res: any) => {
-        // If a query is already loading, cancel it
-        if (this.querySubscription) {
-          this.querySubscription.unsubscribe();
-        }
-        if (this.isStep) {
-          this.handleFormQueryResponse(res.data, 'step');
-          this.loading = res.loading;
-        } else {
-          this.handleFormQueryResponse(res.data, 'page');
-          this.loading = res.loading;
-        }
+      .subscribe({
+        next: (res: any) => {
+          // If a query is already loading, cancel it
+          if (this.querySubscription) {
+            this.querySubscription.unsubscribe();
+          }
+          if (this.isStep) {
+            this.handleFormQueryResponse(res.data, 'step');
+            this.loading = res.loading;
+          } else {
+            this.handleFormQueryResponse(res.data, 'page');
+            this.loading = res.loading;
+          }
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

@@ -58,11 +58,16 @@ export class FormComponent implements OnInit, OnChanges {
    * Trigger get form query action
    */
   private getFormById() {
-    this.getFormQuery.subscribe(({ data, loading }) => {
-      if (data) {
-        this.form = data.form;
-        this.loading = loading;
-      }
+    this.getFormQuery.subscribe({
+      next: ({ data, loading }) => {
+        if (data) {
+          this.form = data.form;
+          this.loading = loading;
+        }
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 

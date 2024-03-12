@@ -20,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /** Model fot the input data */
 interface DialogData {
@@ -148,10 +149,7 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
             this.gridData.data = this.gridData.data.concat(res);
           },
           error: (err) => {
-            if (err.status === 400) {
-              this.snackBar.openSnackBar(err.error, { error: true });
-              this.resetFileInput();
-            } else {
+            if (isNil(err.status)) {
               this.snackBar.openSnackBar(
                 this.translate.instant(
                   'models.user.notifications.userImportFail'
@@ -160,8 +158,8 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
                   error: true,
                 }
               );
-              this.resetFileInput();
             }
+            this.resetFileInput();
           },
         });
       } else {

@@ -26,6 +26,7 @@ import {
   AggregationDataQueryResponse,
   ReferenceDataAggregationQueryResponse,
 } from '../../../../models/aggregation.model';
+import { errorMessageFormatter } from '../../../../utils/graphql/error-handler';
 
 /**
  * Template aggregations component.
@@ -187,13 +188,15 @@ export class TemplateAggregationsComponent
         : undefined,
       first: -1,
     });
-
-    const { data: aggregationData, errors } = await firstValueFrom(query$);
-    if (!aggregationData || errors) {
+    let aggregationData!: any;
+    try {
+      const { data } = await firstValueFrom(query$);
+      aggregationData = data;
+    } catch (errors) {
       this.loadingAggregationRecords = false;
-      if (errors?.length) {
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
-      }
+      this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+        error: true,
+      });
       return;
     }
     this.loadingAggregationRecords = false;

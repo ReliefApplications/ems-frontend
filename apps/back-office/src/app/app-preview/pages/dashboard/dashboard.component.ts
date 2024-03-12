@@ -84,25 +84,20 @@ export class DashboardComponent
               this.widgets = cloneDeep(
                 data.dashboard.structure ? data.dashboard.structure : []
               );
-              this.loading = loading;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.dashboard.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-              this.router.navigate(['/dashboards']);
             }
+            this.loading = loading;
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: () => {
+            this.loading = false;
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate
+                  .instant('common.dashboard.one')
+                  .toLowerCase(),
+                error: '',
+              }),
+              { error: true }
+            );
             this.router.navigate(['/dashboards']);
           },
         });

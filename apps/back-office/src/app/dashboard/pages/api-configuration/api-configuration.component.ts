@@ -11,6 +11,7 @@ import {
   UnsubscribeComponent,
   ApiConfigurationQueryResponse,
   EditApiConfigurationMutationResponse,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { takeUntil } from 'rxjs/operators';
@@ -117,24 +118,18 @@ export class ApiConfigurationComponent
                     this.resetFormSettings(value);
                   });
               this.loading = loading;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.resource.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-              this.router.navigate(['/settings/apiconfigurations']);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate
+                  .instant('common.resource.one')
+                  .toLowerCase(),
+                error: '',
+              }),
+              { error: true }
+            );
             this.router.navigate(['/settings/apiconfigurations']);
           },
         });
@@ -241,21 +236,23 @@ export class ApiConfigurationComponent
           permissions: e,
         },
       })
-      .subscribe(({ errors, data, loading }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.apiConfiguration.one'),
-              error: errors ? errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
+      .subscribe({
+        next: ({ data, loading }) => {
           if (data) {
             this.apiConfiguration = data.editApiConfiguration;
           }
-        }
-        this.loading = loading;
+          this.loading = loading;
+        },
+        error: (errors) => {
+          this.loading = false;
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.apiConfiguration.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
       });
   }
 
@@ -315,21 +312,22 @@ export class ApiConfigurationComponent
         mutation: EDIT_API_CONFIGURATION,
         variables,
       })
-      .subscribe(({ errors, data, loading }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.apiConfiguration.one'),
-              error: errors ? errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
+      .subscribe({
+        next: ({ data, loading }) => {
           this.apiConfiguration = data?.editApiConfiguration;
           this.resetFormSettings(this.apiConfiguration?.authType as string);
           this.loading = loading || false;
-        }
-        this.loading = loading;
+        },
+        error: (errors) => {
+          this.loading = false;
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.apiConfiguration.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
       });
   }
 

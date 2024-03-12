@@ -30,6 +30,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { startCase, isNil } from 'lodash';
 import { ResizeEvent } from 'angular-resizable-element';
 import { DOCUMENT } from '@angular/common';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -168,9 +169,11 @@ export class RecordHistoryComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          this.record = data.record;
-          this.sortedFields = this.sortFields(this.getFields());
+        .subscribe({
+          next: ({ data }) => {
+            this.record = data.record;
+            this.sortedFields = this.sortFields(this.getFields());
+          },
         });
 
       this.apollo
@@ -182,16 +185,8 @@ export class RecordHistoryComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.history.error', {
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-            this.cancel.emit(true);
-          } else {
+        .subscribe({
+          next: ({ data }) => {
             this.history = data.recordHistory.filter(
               (item) => item.changes.length
             );
@@ -203,7 +198,17 @@ export class RecordHistoryComponent
               });
             });
             this.loading = false;
-          }
+          },
+          error: (errors) => {
+            this.loading = false;
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.history.error', {
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
+            this.cancel.emit(true);
+          },
         });
     };
     if (this.refresh$) {

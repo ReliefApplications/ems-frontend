@@ -18,6 +18,7 @@ import {
 } from '../../../../models/user.model';
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import { FormBuilder } from '@angular/forms';
+import { errorMessageFormatter } from '../../../../utils/graphql/error-handler';
 import { isNil } from 'lodash';
 import { of } from 'rxjs';
 
@@ -107,11 +108,16 @@ export class GroupListComponent
       .query<GroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .subscribe(({ data, loading }) => {
-        this.groups = data.groups;
-        this.filteredGroups = this.groups;
-        // this.manualCreation = data.groups.manualCreation;
-        this.loading = loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.groups = data.groups;
+          this.filteredGroups = this.groups;
+          // this.manualCreation = data.groups.manualCreation;
+          this.loading = loading;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
@@ -120,8 +126,10 @@ export class GroupListComponent
    */
   private getPermissionsConfiguration(): void {
     const url = '/permissions/configuration';
-    this.restService.get(url).subscribe((res) => {
-      this.manualCreation = get(res, 'groups.local', true);
+    this.restService.get(url).subscribe({
+      next: (res) => {
+        this.manualCreation = get(res, 'groups.local', true);
+      },
     });
   }
 
@@ -159,9 +167,8 @@ export class GroupListComponent
               },
             })
             .pipe(
-              map(({ errors }) => {
+              map(() => {
                 return {
-                  errors,
                   groupTile: value.title,
                 };
               })
@@ -170,27 +177,23 @@ export class GroupListComponent
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ({ errors, groupTile }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotCreated', {
-                type: this.translate.instant('common.group.one').toLowerCase(),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate.instant('common.group.one'),
-                value: groupTile,
-              })
-            );
-            this.getGroups();
-          }
+        next: ({ groupTile }) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectCreated', {
+              type: this.translate.instant('common.group.one'),
+              value: groupTile,
+            })
+          );
+          this.getGroups();
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate.instant('common.group.one').toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
         },
       });
   }
@@ -232,6 +235,7 @@ export class GroupListComponent
           );
         },
         error: () => {
+          this.loadingFetch = false;
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.groups.error'
           );
@@ -287,29 +291,22 @@ export class GroupListComponent
       .subscribe({
         next: (res) => {
           if (res) {
-            if (res.errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: item.title,
-                    error: res.errors ? res.errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: item.title,
-                })
-              );
-            }
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: item.title,
+              })
+            );
             this.getGroups();
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDeleted', {
+              value: item.title,
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
         },
       });
   }

@@ -7,6 +7,7 @@ import {
   Workflow,
   UnsubscribeComponent,
   WorkflowQueryResponse,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
@@ -118,20 +119,17 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
               }
               this.onOpenStep(currentActiveStep);
             }
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.accessNotProvided', {
-                type: this.translate
-                  .instant('common.workflow.one')
-                  .toLowerCase(),
-                error: '',
-              }),
-              { error: true }
-            );
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.loading = false;
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate.instant('common.workflow.one').toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
         },
       });
   }

@@ -73,11 +73,15 @@ export class RoleUsersComponent extends UnsubscribeComponent implements OnInit {
         automated: this.autoAssigned,
       },
     });
-    this.usersQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+    this.usersQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.updateValues(data, loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+        this.updating = false;
+      },
+    });
   }
 
   /**

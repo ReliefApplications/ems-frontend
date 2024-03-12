@@ -142,8 +142,10 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        this.formGroup.get('layout')?.setValue(this.formGroup.value.layout);
+      .subscribe({
+        next: () => {
+          this.formGroup.get('layout')?.setValue(this.formGroup.value.layout);
+        },
       });
   }
 
@@ -174,10 +176,12 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        this.formGroup
-          .get('aggregation')
-          ?.setValue(this.formGroup.value.aggregation);
+      .subscribe({
+        next: () => {
+          this.formGroup
+            .get('aggregation')
+            ?.setValue(this.formGroup.value.aggregation);
+        },
       });
   }
 

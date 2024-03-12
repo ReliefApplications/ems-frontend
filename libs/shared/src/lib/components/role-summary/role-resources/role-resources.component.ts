@@ -29,6 +29,7 @@ import {
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../../utils/graphql/error-handler';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -124,11 +125,15 @@ export class RoleResourcesComponent
       },
     });
 
-    this.resourcesQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+    this.resourcesQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.updateValues(data, loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+        this.updating = false;
+      },
+    });
   }
 
   /**
@@ -230,11 +235,16 @@ export class RoleResourcesComponent
             role: this.role.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data.resource) {
-            this.openedResource = data.resource;
-          }
-          this.updating = false;
+        .subscribe({
+          next: ({ data }) => {
+            if (data.resource) {
+              this.openedResource = data.resource;
+            }
+            this.updating = false;
+          },
+          error: () => {
+            this.updating = false;
+          },
         });
     }
   }
@@ -299,13 +309,21 @@ export class RoleResourcesComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleResourceMutationResponse(resource, { data, errors }, true);
+        next: ({ data }) => {
+          this.handleResourceMutationResponse(
+            resource,
+            { data, errors: [] },
+            true
+          );
           this.updating = false;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
           this.updating = false;
+          this.handleResourceMutationResponse(
+            resource,
+            { data: null, errors },
+            true
+          );
         },
       });
   }
@@ -328,12 +346,12 @@ export class RoleResourcesComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleResourceMutationResponse(resource, { data, errors });
+        next: ({ data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors: [] });
           this.updating = false;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleResourceMutationResponse(resource, { data: null, errors });
           this.updating = false;
         },
       });
@@ -375,8 +393,10 @@ export class RoleResourcesComponent
         this.openedResource = tableElements[index].resource;
       }
     }
-    if (errors) {
-      this.snackBar.openSnackBar(errors[0].message, { error: true });
+    if (errors?.length) {
+      this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+        error: true,
+      });
     }
   }
 
@@ -424,12 +444,12 @@ export class RoleResourcesComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
-          this.handleResourceMutationResponse(resource, { data, errors });
+        next: ({ data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors: [] });
           this.updating = false;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleResourceMutationResponse(resource, { data: null, errors });
           this.updating = false;
         },
       });

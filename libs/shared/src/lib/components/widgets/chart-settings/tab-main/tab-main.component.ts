@@ -119,17 +119,22 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .subscribe(({ data }) => {
-        this.resource = data.resource;
-        if (aggregationId && this.resource.aggregations?.edges[0]) {
-          this.aggregation = this.resource.aggregations.edges[0].node;
-          this.availableSeriesFields =
-            this.aggregationBuilder.getAvailableSeriesFields(this.aggregation, {
-              resource: this.resource,
-            });
-        } else {
-          this.availableSeriesFields = [];
-        }
+      .subscribe({
+        next: ({ data }) => {
+          this.resource = data.resource;
+          if (aggregationId && this.resource.aggregations?.edges[0]) {
+            this.aggregation = this.resource.aggregations.edges[0].node;
+            this.availableSeriesFields =
+              this.aggregationBuilder.getAvailableSeriesFields(
+                this.aggregation,
+                {
+                  resource: this.resource,
+                }
+              );
+          } else {
+            this.availableSeriesFields = [];
+          }
+        },
       });
   }
 
@@ -148,17 +153,22 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .subscribe(({ data }) => {
-        this.referenceData = data.referenceData;
-        if (aggregationId && this.referenceData.aggregations?.edges[0]) {
-          this.aggregation = this.referenceData.aggregations.edges[0].node;
-          this.availableSeriesFields =
-            this.aggregationBuilder.getAvailableSeriesFields(this.aggregation, {
-              referenceData: this.referenceData,
-            });
-        } else {
-          this.availableSeriesFields = [];
-        }
+      .subscribe({
+        next: ({ data }) => {
+          this.referenceData = data.referenceData;
+          if (aggregationId && this.referenceData.aggregations?.edges[0]) {
+            this.aggregation = this.referenceData.aggregations.edges[0].node;
+            this.availableSeriesFields =
+              this.aggregationBuilder.getAvailableSeriesFields(
+                this.aggregation,
+                {
+                  referenceData: this.referenceData,
+                }
+              );
+          } else {
+            this.availableSeriesFields = [];
+          }
+        },
       });
   }
 
@@ -228,14 +238,16 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }) => {
-        if (data?.editAggregation) {
-          if (this.resource) {
-            this.getResource(this.resource?.id as string);
-          } else {
-            this.getReferenceData(this.referenceData?.id as string);
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.editAggregation) {
+            if (this.resource) {
+              this.getResource(this.resource?.id as string);
+            } else {
+              this.getReferenceData(this.referenceData?.id as string);
+            }
           }
-        }
+        },
       });
   }
 

@@ -65,7 +65,7 @@ export class AuthInterceptorService implements HttpInterceptor {
             // redirect user to the logout page
           }
         }
-        return throwError(() => new Error(err.error || err.message));
+        return throwError(() => err);
       })
     );
   }

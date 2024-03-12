@@ -314,23 +314,25 @@ export class EditorComponent
         ])
       )
         .pipe(takeUntil(this.cancelRefresh$))
-        .subscribe(() => {
-          this.formattedStyle = this.dataTemplateService.renderStyle(
-            this.settings.wholeCardStyles || false,
-            this.fieldsValue,
-            this.styles
-          );
-          this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
-            {
-              data: this.fieldsValue,
-              aggregation: this.aggregations,
-              fields: this.fields,
-              styles: this.styles,
-            }
-          );
-          this.loading = false;
-          callback();
+        .subscribe({
+          next: () => {
+            this.formattedStyle = this.dataTemplateService.renderStyle(
+              this.settings.wholeCardStyles || false,
+              this.fieldsValue,
+              this.styles
+            );
+            this.formattedHtml = this.dataTemplateService.renderHtml(
+              this.settings.text,
+              {
+                data: this.fieldsValue,
+                aggregation: this.aggregations,
+                fields: this.fields,
+                styles: this.styles,
+              }
+            );
+            this.loading = false;
+            callback();
+          },
         });
     } else if (this.settings.element && this.settings.referenceData) {
       from(
@@ -366,32 +368,36 @@ export class EditorComponent
         ])
       )
         .pipe(takeUntil(this.cancelRefresh$))
-        .subscribe(() => {
-          this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
-            {
-              data: this.fieldsValue,
-              aggregation: this.aggregations,
-              fields: this.fields,
-            }
-          );
-          this.loading = false;
-          callback();
+        .subscribe({
+          next: () => {
+            this.formattedHtml = this.dataTemplateService.renderHtml(
+              this.settings.text,
+              {
+                data: this.fieldsValue,
+                aggregation: this.aggregations,
+                fields: this.fields,
+              }
+            );
+            this.loading = false;
+            callback();
+          },
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
         .pipe(takeUntil(this.cancelRefresh$))
-        .subscribe(() => {
-          this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
-            {
-              data: this.fieldsValue,
-              aggregation: this.aggregations,
-              fields: this.fields,
-            }
-          );
-          this.loading = false;
-          callback();
+        .subscribe({
+          next: () => {
+            this.formattedHtml = this.dataTemplateService.renderHtml(
+              this.settings.text,
+              {
+                data: this.fieldsValue,
+                aggregation: this.aggregations,
+                fields: this.fields,
+              }
+            );
+            this.loading = false;
+            callback();
+          },
         });
     }
   }

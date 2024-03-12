@@ -14,6 +14,7 @@ import extractFiles from 'extract-files/extractFiles.mjs';
 import isExtractableFile from 'extract-files/isExtractableFile.mjs';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
+import { createGraphQlErrorHandler } from '@oort-front/shared';
 
 /**
  * Configuration of the Apollo client.
@@ -63,6 +64,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
 
   const link = ApolloLink.from([
     basic,
+    createGraphQlErrorHandler(console.error),
     auth,
     split(
       ({ query }) => {

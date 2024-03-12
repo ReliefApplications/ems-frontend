@@ -1,7 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription, filter, switchMap, takeUntil } from 'rxjs';
 import {
@@ -65,15 +65,13 @@ export class NotificationsComponent
    * @param confirmService Shared confirmation service
    * @param apollo Apollo service
    * @param applicationService Shared application service
-   * @param snackBar Shared snackbar service
    */
   constructor(
     public dialog: Dialog,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private apollo: Apollo,
-    private applicationService: ApplicationService,
-    private snackBar: SnackbarService
+    private applicationService: ApplicationService
   ) {
     super();
   }
@@ -97,19 +95,25 @@ export class NotificationsComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe((res) => {
-        this.cachedNotifications =
-          res.data.application.customNotifications.edges.map((x) => x.node);
-        this.notifications = this.cachedNotifications.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length =
-          res.data.application.customNotifications.totalCount;
-        this.pageInfo.endCursor =
-          res.data.application.customNotifications.pageInfo.endCursor;
-        this.loading = res.loading;
-        this.updating = false;
+      .subscribe({
+        next: (res) => {
+          this.cachedNotifications =
+            res.data.application.customNotifications.edges.map((x) => x.node);
+          this.notifications = this.cachedNotifications.slice(
+            this.pageInfo.pageSize * this.pageInfo.pageIndex,
+            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+          );
+          this.pageInfo.length =
+            res.data.application.customNotifications.totalCount;
+          this.pageInfo.endCursor =
+            res.data.application.customNotifications.pageInfo.endCursor;
+          this.loading = res.loading;
+          this.updating = false;
+        },
+        error: () => {
+          this.loading = false;
+          this.updating = false;
+        },
       });
   }
 
@@ -143,12 +147,6 @@ export class NotificationsComponent
           notification.id,
           value,
           () => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                value: value.name,
-                type: this.translate.instant('common.customNotification.one'),
-              })
-            );
             this.notificationsQuery.refetch();
           }
         );
@@ -179,11 +177,6 @@ export class NotificationsComponent
         this.applicationService.deleteCustomNotification(
           notification.id,
           () => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: notification.name,
-              })
-            );
             this.notificationsQuery.refetch();
           }
         );
@@ -203,12 +196,6 @@ export class NotificationsComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addCustomNotification(value, () => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectCreated', {
-              value: value.name,
-              type: this.translate.instant('common.customNotification.one'),
-            })
-          );
           this.notificationsQuery.refetch();
         });
       }

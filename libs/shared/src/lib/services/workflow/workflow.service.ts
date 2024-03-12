@@ -14,6 +14,7 @@ import {
 import { ApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
@@ -61,8 +62,10 @@ export class WorkflowService {
           id,
         },
       })
-      .subscribe(({ data }) => {
-        this.workflow.next(data.workflow);
+      .subscribe({
+        next: ({ data }) => {
+          this.workflow.next(data.workflow);
+        },
       });
   }
 
@@ -84,35 +87,38 @@ export class WorkflowService {
             workflow: workflow.id,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate.instant('common.step.one').toLowerCase(),
-                value: data.addStep.name,
-              })
-            );
-            this.loadWorkflow(workflow.id);
-            if (step.type === ContentType.form) {
-              this.router.navigate(
-                ['../' + step.type + '/' + data.addStep.id],
-                { relativeTo: route.parent }
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate.instant('common.step.one').toLowerCase(),
+                  value: data.addStep.name,
+                })
               );
-            } else {
-              this.router.navigate(
-                ['../' + step.type + '/' + data.addStep.content],
-                { relativeTo: route.parent }
-              );
+              this.loadWorkflow(workflow.id);
+              if (step.type === ContentType.form) {
+                this.router.navigate(
+                  ['../' + step.type + '/' + data.addStep.id],
+                  { relativeTo: route.parent }
+                );
+              } else {
+                this.router.navigate(
+                  ['../' + step.type + '/' + data.addStep.content],
+                  { relativeTo: route.parent }
+                );
+              }
             }
-          } else {
+          },
+          error: (errors) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.workflow.one'),
-                error: errors ? errors[0].message : '',
+                error: errorMessageFormatter(errors),
               }),
               { error: true }
             );
-          }
+          },
         });
     } else {
       this.snackBar.openSnackBar(
@@ -142,25 +148,34 @@ export class WorkflowService {
             name: step.name,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.applicationService.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.step.one'),
-            step.name
-          );
-          if (!errors && data) {
-            const newWorkflow: Workflow = {
-              ...workflow,
-              steps: workflow.steps?.map((x) => {
-                if (x.id === step.id) {
-                  x = { ...x, name: step.name };
-                }
-                return x;
-              }),
-            };
-            this.workflow.next(newWorkflow);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.applicationService.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+            if (data) {
+              const newWorkflow: Workflow = {
+                ...workflow,
+                steps: workflow.steps?.map((x) => {
+                  if (x.id === step.id) {
+                    x = { ...x, name: step.name };
+                  }
+                  return x;
+                }),
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+          },
         });
     }
   }
@@ -183,25 +198,34 @@ export class WorkflowService {
             icon,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.applicationService.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.step.one'),
-            step.name
-          );
-          if (!errors && data) {
-            const newWorkflow: Workflow = {
-              ...workflow,
-              steps: workflow.steps?.map((x) => {
-                if (x.id === step.id) {
-                  x = { ...x, icon: data.editStep.icon };
-                }
-                return x;
-              }),
-            };
-            this.workflow.next(newWorkflow);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.applicationService.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+            if (data) {
+              const newWorkflow: Workflow = {
+                ...workflow,
+                steps: workflow.steps?.map((x) => {
+                  if (x.id === step.id) {
+                    x = { ...x, icon: data.editStep.icon };
+                  }
+                  return x;
+                }),
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+          },
         });
     }
   }
@@ -224,19 +248,27 @@ export class WorkflowService {
             permissions,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.applicationService.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.step.one')
-          );
-          if (!errors && data) {
-            const newWorkflow: Workflow = {
-              ...workflow,
-              permissions: data.editStep.permissions,
-            };
-            this.workflow.next(newWorkflow);
-            if (callback) callback(data.editStep.permissions);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.applicationService.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.step.one')
+            );
+            if (data) {
+              const newWorkflow: Workflow = {
+                ...workflow,
+                permissions: data.editStep.permissions,
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback(data.editStep.permissions);
+            }
+          },
+          error: (errors) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.step.one')
+            );
+          },
         });
     }
   }

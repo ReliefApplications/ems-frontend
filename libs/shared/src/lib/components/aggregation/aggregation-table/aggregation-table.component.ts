@@ -143,14 +143,16 @@ export class AggregationTableComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }: any) => {
-        if (data.editAggregation) {
-          const layouts = [...this.allAggregations];
-          const index = layouts.findIndex((x) => x.id === aggregation.id);
-          layouts[index] = data.editAggregation;
-          this.allAggregations = layouts;
-          this.setSelectedAggregations(this.selectedAggregations?.value);
-        }
+      .subscribe({
+        next: ({ data }: any) => {
+          if (data.editAggregation) {
+            const layouts = [...this.allAggregations];
+            const index = layouts.findIndex((x) => x.id === aggregation.id);
+            layouts[index] = data.editAggregation;
+            this.allAggregations = layouts;
+            this.setSelectedAggregations(this.selectedAggregations?.value);
+          }
+        },
       });
   }
 

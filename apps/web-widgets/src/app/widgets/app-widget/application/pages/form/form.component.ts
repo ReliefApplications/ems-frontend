@@ -114,11 +114,16 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe((res: any) => {
-        if (this.querySubscription) {
-          this.querySubscription.unsubscribe();
-        }
-        this.handleApplicationLoadResponse(res.data, res.loading);
+      .subscribe({
+        next: (res: any) => {
+          if (this.querySubscription) {
+            this.querySubscription.unsubscribe();
+          }
+          this.handleApplicationLoadResponse(res.data, res.loading);
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

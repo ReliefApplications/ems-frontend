@@ -22,6 +22,7 @@ import {
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 /**
  * Shared survey helper service.
  */
@@ -191,29 +192,22 @@ export class FormHelpersService {
                         },
                       })
                       .subscribe({
-                        next: ({ data, errors }) => {
-                          if (errors) {
-                            this.snackBar.openSnackBar(
-                              `Error. ${errors[0].message}`,
-                              {
-                                error: true,
-                              }
-                            );
-                            reject(errors);
-                          } else {
-                            question.value[question.value.indexOf(recordId)] =
-                              question.value.includes(recordId)
-                                ? data?.addRecord.id
-                                : recordId; // If there is no error, we replace in the question the temporary id by the final one
-                            surveyData[question.name] = question.value; // We update the survey data to consider our changes
-                            resolve();
-                          }
+                        next: ({ data }) => {
+                          question.value[question.value.indexOf(recordId)] =
+                            question.value.includes(recordId)
+                              ? data?.addRecord.id
+                              : recordId; // If there is no error, we replace in the question the temporary id by the final one
+                          surveyData[question.name] = question.value; // We update the survey data to consider our changes
+                          resolve();
                         },
-                        error: (err) => {
-                          this.snackBar.openSnackBar(err.message, {
-                            error: true,
-                          });
-                          reject(err);
+                        error: (errors) => {
+                          this.snackBar.openSnackBar(
+                            `Error. ${errorMessageFormatter(errors)}`,
+                            {
+                              error: true,
+                            }
+                          );
+                          reject(errors);
                         },
                       });
                   } else {
@@ -287,30 +281,34 @@ export class FormHelpersService {
                 data,
               },
             })
-          ).then((res) => {
-            // change the draftId to the new recordId
-            const newId = res.data?.addRecord?.id;
-            if (!newId) return;
-            updateIds[draftId](newId);
-            // update question.newCreatedRecords too
-            const isResource = element.question.getType() === 'resource';
-            const draftIndex = (
-              isResource
-                ? [element.question.newCreatedRecords]
-                : element.question.newCreatedRecords
-            ).indexOf(draftId);
-            if (draftIndex !== -1) {
-              if (isResource) {
-                element.question.newCreatedRecords = newId;
-              } else {
-                element.question.newCreatedRecords[draftIndex] = newId;
+          )
+            .then((res) => {
+              // change the draftId to the new recordId
+              const newId = res.data?.addRecord?.id;
+              if (!newId) return;
+              updateIds[draftId](newId);
+              // update question.newCreatedRecords too
+              const isResource = element.question.getType() === 'resource';
+              const draftIndex = (
+                isResource
+                  ? [element.question.newCreatedRecords]
+                  : element.question.newCreatedRecords
+              ).indexOf(draftId);
+              if (draftIndex !== -1) {
+                if (isResource) {
+                  element.question.newCreatedRecords = newId;
+                } else {
+                  element.question.newCreatedRecords[draftIndex] = newId;
+                }
               }
-            }
-            // delete old temporary/draft record and data
-            this.deleteRecordDraft(draftId);
-            delete element.question.draftData[draftId];
-            return;
-          })
+              // delete old temporary/draft record and data
+              this.deleteRecordDraft(draftId);
+              delete element.question.draftData[draftId];
+              return;
+            })
+            .catch(() => {
+              return;
+            })
         );
       }
     }
@@ -474,21 +472,14 @@ export class FormHelpersService {
         },
       });
       mutation.subscribe({
-        next: ({ errors, data }) => {
-          if (errors) {
-            survey.clear(false, true);
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          } else {
-            // localStorage.removeItem(this.storageId);
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'components.form.draftRecords.successSave'
-              ),
-              {
-                error: false,
-              }
-            );
-          }
+        next: ({ data }) => {
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successSave'),
+            {
+              error: false,
+            }
+          );
           // Callback to emit save but stay in record addition mode
           if (callback) {
             callback({
@@ -500,8 +491,11 @@ export class FormHelpersService {
             });
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          survey.clear(false, true);
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         },
       });
     } else {
@@ -513,11 +507,8 @@ export class FormHelpersService {
           data: survey.data,
         },
       });
-      mutation.subscribe(({ errors }: any) => {
-        if (errors) {
-          survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
-        } else {
+      mutation.subscribe({
+        next: () => {
           // localStorage.removeItem(this.storageId);
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.draftRecords.successEdit'),
@@ -525,17 +516,24 @@ export class FormHelpersService {
               error: false,
             }
           );
-        }
-        // Callback to emit save but stay in record addition mode
-        if (callback) {
-          callback({
-            id: draftId,
-            save: {
-              completed: false,
-              hideNewRecord: true,
-            },
+
+          // Callback to emit save but stay in record addition mode
+          if (callback) {
+            callback({
+              id: draftId,
+              save: {
+                completed: false,
+                hideNewRecord: true,
+              },
+            });
+          }
+        },
+        error: (errors) => {
+          survey.clear(false, true);
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
           });
-        }
+        },
       });
     }
   }
@@ -554,10 +552,12 @@ export class FormHelpersService {
           id: draftId,
         },
       })
-      .subscribe(() => {
-        if (callback) {
-          callback();
-        }
+      .subscribe({
+        next: () => {
+          if (callback) {
+            callback();
+          }
+        },
       });
   }
 

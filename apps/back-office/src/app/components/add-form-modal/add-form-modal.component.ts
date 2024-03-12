@@ -155,8 +155,10 @@ export class AddFormModalComponent
           id,
         },
       })
-      .subscribe(({ data }) => {
-        this.templates = data.resource.forms || [];
+      .subscribe({
+        next: ({ data }) => {
+          this.templates = data.resource.forms || [];
+        },
       });
   }
 }

@@ -107,10 +107,15 @@ export class DraftRecordListModalComponent
           form: this.data.form,
         },
       })
-      .subscribe(({ data }) => {
-        this.form = data.form;
-        this.draftRecords = data.draftRecords;
-        this.loading = false;
+      .subscribe({
+        next: ({ data }) => {
+          this.form = data.form;
+          this.draftRecords = data.draftRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

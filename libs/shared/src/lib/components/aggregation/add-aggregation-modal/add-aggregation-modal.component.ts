@@ -155,12 +155,15 @@ export class AddAggregationModalComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }) => {
-        if (data?.addAggregation) {
-          this.dialogRef.close(data.addAggregation as any);
-        } else {
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.addAggregation) {
+            this.dialogRef.close(data.addAggregation as any);
+          }
+        },
+        error: () => {
           this.dialogRef.close();
-        }
+        },
       });
   }
 }

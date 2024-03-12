@@ -486,7 +486,15 @@ export class DashboardComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
+        next: () => {
+          this.loading = false;
+          this.applicationService.handleEditionMutationResponse(
+            [],
+            this.translate.instant('common.dashboard.one')
+          );
+        },
+        error: (errors) => {
+          this.loading = false;
           this.applicationService.handleEditionMutationResponse(
             errors,
             this.translate.instant('common.dashboard.one')
@@ -582,8 +590,10 @@ export class DashboardComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe((button) => {
-        this.buttonActions.push(button);
+      .subscribe({
+        next: (button) => {
+          this.buttonActions.push(button);
+        },
       });
   }
 
@@ -699,11 +709,13 @@ export class DashboardComponent
     if (this.dashboard?.id) {
       this.dashboardService
         .saveDashboardButtons(this.dashboard.id, this.buttonActions)
-        .subscribe(() => {
-          this.dashboard = {
-            ...this.dashboard,
-            buttons: this.buttonActions,
-          };
+        .subscribe({
+          next: () => {
+            this.dashboard = {
+              ...this.dashboard,
+              buttons: this.buttonActions,
+            };
+          },
         });
     }
   }

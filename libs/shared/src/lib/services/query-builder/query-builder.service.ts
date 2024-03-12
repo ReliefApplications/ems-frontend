@@ -118,10 +118,12 @@ export class QueryBuilderService {
       .query<QueryTypesResponse>({
         query: GET_QUERY_TYPES,
       })
-      .subscribe(({ data }) => {
-        this.isDoneLoading.next(true);
-        this.availableQueries.next(data.types.availableQueries);
-        this.userFields = data.types.userFields;
+      .subscribe({
+        next: ({ data }) => {
+          this.isDoneLoading.next(true);
+          this.availableQueries.next(data.types.availableQueries);
+          this.userFields = data.types.userFields;
+        },
       });
   }
 

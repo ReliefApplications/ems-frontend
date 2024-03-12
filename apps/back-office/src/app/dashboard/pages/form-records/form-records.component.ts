@@ -19,6 +19,7 @@ import {
   DownloadService,
   getCachedValues,
   updateQueryUniqueValues,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -156,22 +157,23 @@ export class FormRecordsComponent
       },
     });
 
-    this.recordsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ errors, data, loading }) => {
+    this.recordsQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.updateValues(data, loading, true);
-
-        if (errors) {
-          // TO-DO: Check why it's not working as intended.
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.accessNotProvided', {
-              type: this.translate.instant('common.record.one').toLowerCase(),
-              error: errors ? errors[0].message : '',
-            }),
-            { error: true }
-          );
-        }
-      });
+      },
+      error: (errors) => {
+        this.loading = false;
+        this.updating = false;
+        // TO-DO: Check why it's not working as intended.
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.accessNotProvided', {
+            type: this.translate.instant('common.record.one').toLowerCase(),
+            error: errorMessageFormatter(errors),
+          }),
+          { error: true }
+        );
+      },
+    });
   }
 
   /**
@@ -322,6 +324,10 @@ export class FormRecordsComponent
    * @param id Id of record to delete.
    */
   private deleteRecord(id: string): void {
+    const recordMutationMessage = {
+      success: 'common.notifications.objectDeleted',
+      error: 'common.notifications.objectNotDeleted',
+    };
     this.apollo
       .mutate<DeleteRecordMutationResponse>({
         mutation: DELETE_RECORD,
@@ -331,18 +337,11 @@ export class FormRecordsComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
-          this.handleRecordMutationResponse(
-            errors,
-            {
-              success: 'common.notifications.objectDeleted',
-              error: 'common.notifications.objectNotDeleted',
-            },
-            id
-          );
+        next: () => {
+          this.handleRecordMutationResponse([], recordMutationMessage, id);
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleRecordMutationResponse(errors, recordMutationMessage, id);
         },
       });
   }
@@ -383,21 +382,17 @@ export class FormRecordsComponent
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataNotRecovered'),
-              { error: true }
-            );
-          } else {
-            this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
-          }
+        next: () => {
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataRecovered')
+          );
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataNotRecovered'),
+            { error: true }
+          );
         },
       });
   }
@@ -498,6 +493,10 @@ export class FormRecordsComponent
    */
   public onRestoreRecord(id: string, e: any): void {
     e.stopPropagation();
+    const restoreRecordMessage = {
+      success: 'common.notifications.objectRestored',
+      error: 'common.notifications.objectNotRestored',
+    };
     this.apollo
       .mutate<RestoreRecordMutationResponse>({
         mutation: RESTORE_RECORD,
@@ -506,18 +505,11 @@ export class FormRecordsComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
-          this.handleRecordMutationResponse(
-            errors,
-            {
-              success: 'common.notifications.objectRestored',
-              error: 'common.notifications.objectNotRestored',
-            },
-            id
-          );
+        next: () => {
+          this.handleRecordMutationResponse([], restoreRecordMessage, id);
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleRecordMutationResponse(errors, restoreRecordMessage, id);
         },
       });
   }
@@ -540,7 +532,7 @@ export class FormRecordsComponent
       this.snackBar.openSnackBar(
         this.translate.instant(messageKeys.error, {
           value: this.translate.instant('common.record.one'),
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );

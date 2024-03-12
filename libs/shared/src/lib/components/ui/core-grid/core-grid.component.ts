@@ -61,6 +61,7 @@ import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { errorMessageFormatter } from '../../../utils/public-api';
 
 /**
  * Default file name when exporting grid data.
@@ -514,17 +515,14 @@ export class CoreGridComponent
             }
             this.getRecords();
           },
-          error: (err: any) => {
+          error: (errors: any) => {
             this.loading = false;
             this.status = {
               error: true,
               message: this.translate.instant(
                 'components.widget.grid.errors.metaQueryFetchFailed',
                 {
-                  error:
-                    err.networkError?.error?.errors
-                      ?.map((x: any) => x.message)
-                      .join(', ') || err,
+                  error: errorMessageFormatter(errors),
                 }
               ),
             };
@@ -658,19 +656,21 @@ export class CoreGridComponent
         filter((res: any) => !isNil(res.queryName)),
         takeUntil(this.destroy$)
       )
-      .subscribe((res: any) => {
-        const dataItem = this.gridData.data.find((x) => x.id === item.id);
-        // Update data item element
-        Object.assign(dataItem, get(res.data, res.queryName));
-        // Update data item raw value ( used by inline edition )
-        dataItem._meta.raw = res.editedData;
-        item.saved = false;
-        const index = this.updatedItems.findIndex((x) => x.id === item.id);
-        this.updatedItems.splice(index, 1, {
-          id: item.id,
-          ...res.editedData,
-        });
-        this.loadItems();
+      .subscribe({
+        next: (res: any) => {
+          const dataItem = this.gridData.data.find((x) => x.id === item.id);
+          // Update data item element
+          Object.assign(dataItem, get(res.data, res.queryName));
+          // Update data item raw value ( used by inline edition )
+          dataItem._meta.raw = res.editedData;
+          item.saved = false;
+          const index = this.updatedItems.findIndex((x) => x.id === item.id);
+          this.updatedItems.splice(index, 1, {
+            id: item.id,
+            ...res.editedData,
+          });
+          this.loadItems();
+        },
       });
   }
 
@@ -850,16 +850,13 @@ export class CoreGridComponent
             this.getTemporaryRecords();
           }
         },
-        error: (err: any) => {
+        error: (errors: any) => {
           this.status = {
             error: true,
             message: this.translate.instant(
               'components.widget.grid.errors.queryFetchFailed',
               {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
+                error: errorMessageFormatter(errors),
               }
             ),
           };
@@ -1245,9 +1242,11 @@ export class CoreGridComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        this.reloadData();
-        this.layoutService.setRightSidenav(null);
+      .subscribe({
+        next: () => {
+          this.reloadData();
+          this.layoutService.setRightSidenav(null);
+        },
       });
   }
 
@@ -1371,22 +1370,18 @@ export class CoreGridComponent
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataNotRecovered'),
-              { error: true }
-            );
-          } else {
-            this.reloadData();
-            this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
-          }
+        next: () => {
+          this.reloadData();
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataRecovered')
+          );
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataNotRecovered'),
+            { error: true }
+          );
         },
       });
   }
@@ -1499,7 +1494,12 @@ export class CoreGridComponent
       })
     )
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-      .subscribe(() => (this.loading = false));
+      .subscribe({
+        next: () => (this.loading = false),
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   // === FILTERING ===

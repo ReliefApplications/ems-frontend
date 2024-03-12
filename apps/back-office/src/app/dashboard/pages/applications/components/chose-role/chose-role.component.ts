@@ -59,10 +59,13 @@ export class ChoseRoleComponent extends UnsubscribeComponent implements OnInit {
       },
     });
 
-    this.rolesQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ loading }) => {
+    this.rolesQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ loading }) => {
         this.loading = loading;
-      });
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 }

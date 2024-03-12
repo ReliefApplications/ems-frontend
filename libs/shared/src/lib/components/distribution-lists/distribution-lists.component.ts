@@ -4,7 +4,6 @@ import { ApplicationService } from '../../services/application/application.servi
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { SnackbarService } from '@oort-front/ui';
 import { DistributionList } from '../../models/distribution-list.model';
 
 /**
@@ -36,13 +35,8 @@ export class DistributionListsComponent
    *
    * @param dialog The Dialog service
    * @param translate The translation service
-   * @param snackBar Shared snackbar service
    */
-  constructor(
-    public dialog: Dialog,
-    private translate: TranslateService,
-    private snackBar: SnackbarService
-  ) {
+  constructor(public dialog: Dialog, private translate: TranslateService) {
     super();
   }
 
@@ -78,12 +72,6 @@ export class DistributionListsComponent
           name: value.name,
           emails: value.emails,
         });
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectUpdated', {
-            value: value.name,
-            type: this.translate.instant('common.distributionList.one'),
-          })
-        );
       }
     });
   }
@@ -105,12 +93,6 @@ export class DistributionListsComponent
           name: value.name,
           emails: value.emails,
         });
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectCreated', {
-            value: value.name,
-            type: this.translate.instant('common.distributionList.one'),
-          })
-        );
       }
     });
   }
@@ -146,11 +128,6 @@ export class DistributionListsComponent
       if (value) {
         this.applicationService.deleteDistributionList(
           distributionList.id || ''
-        );
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectDeleted', {
-            value: distributionList.name,
-          })
         );
       }
     });

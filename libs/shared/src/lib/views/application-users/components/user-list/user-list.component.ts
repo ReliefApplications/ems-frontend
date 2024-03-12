@@ -144,8 +144,14 @@ export class UserListComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data, loading }) => {
-        this.updateValues(data, loading);
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: () => {
+          this.loading.next(false);
+          this.updating = false;
+        },
       });
   }
 

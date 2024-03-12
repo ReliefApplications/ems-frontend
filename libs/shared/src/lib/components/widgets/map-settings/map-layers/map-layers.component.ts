@@ -58,9 +58,14 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
    */
   private updateLayerList(): void {
     const layerIds = this.control.value;
-    this.mapLayersService.getLayers(layerIds).subscribe((layers) => {
-      this.mapLayers = layers;
-      this.loading = false;
+    this.mapLayersService.getLayers(layerIds).subscribe({
+      next: (layers) => {
+        this.mapLayers = layers;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 
@@ -112,6 +117,7 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
+          this.loading = false;
           if (res) {
             const value = this.control.value;
             this.control.setValue([...value, res.id]);
@@ -120,8 +126,10 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
             this.restoreMapSettingsView();
           }
         },
-        error: (err) => console.error(err),
-        complete: () => (this.loading = false),
+        error: () => {
+          this.loading = false;
+          this.restoreMapSettingsView();
+        },
       });
   }
 
@@ -146,62 +154,66 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
    * @param id id of layer to edit
    */
   public onEditLayer(id: string) {
-    this.mapLayersService
-      .getLayerById(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: async (layer) => {
-          const { EditLayerModalComponent } = await import(
-            '../edit-layer-modal/edit-layer-modal.component'
-          );
-          if (this.mapComponent) {
-            this.mapComponent.resetLayers();
-            this.mapComponent.layers = [];
-          }
-          const dialogRef = this.dialog.open(EditLayerModalComponent, {
-            disableClose: true,
-            autoFocus: false,
-            data: {
-              layer,
-              mapComponent: this.mapComponent,
-              mapPortal: this.mapPortal,
-            },
-          });
-          dialogRef.closed
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((value: any) => {
-              if (value) {
-                this.loading = true;
-                this.mapLayersService.editLayer(value).subscribe({
-                  next: (res) => {
-                    if (res) {
-                      const index = this.mapLayers.findIndex(
-                        (layer) => layer.id === id
-                      );
-                      if (index !== -1) {
-                        this.mapLayers.splice(index, 1, {
-                          ...res,
-                          name: value.name,
-                        });
-                        this.restoreMapSettingsView();
-                      } else {
-                        // Selecting a new layer
-                        const value = this.control.value;
-                        this.control.setValue([...value, res.id]);
-                        this.mapLayers.push(res);
-                      }
+    this.mapLayersService.getLayerById(id).subscribe({
+      next: async (layer) => {
+        const { EditLayerModalComponent } = await import(
+          '../edit-layer-modal/edit-layer-modal.component'
+        );
+        if (this.mapComponent) {
+          this.mapComponent.resetLayers();
+          this.mapComponent.layers = [];
+        }
+        const dialogRef = this.dialog.open(EditLayerModalComponent, {
+          disableClose: true,
+          autoFocus: false,
+          data: {
+            layer,
+            mapComponent: this.mapComponent,
+            mapPortal: this.mapPortal,
+          },
+        });
+        dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe({
+          next: (value: any) => {
+            if (value) {
+              this.loading = true;
+              this.mapLayersService.editLayer(value).subscribe({
+                next: (res) => {
+                  this.loading = false;
+                  if (res) {
+                    const index = this.mapLayers.findIndex(
+                      (layer) => layer.id === id
+                    );
+                    if (index !== -1) {
+                      this.mapLayers.splice(index, 1, {
+                        ...res,
+                        name: value.name,
+                      });
+                      this.restoreMapSettingsView();
+                    } else {
+                      // Selecting a new layer
+                      const value = this.control.value;
+                      this.control.setValue([...value, res.id]);
+                      this.mapLayers.push(res);
                     }
-                  },
-                  error: (err) => console.log(err),
-                  complete: () => (this.loading = false),
-                });
-              } else {
-                this.restoreMapSettingsView();
-              }
-            });
-        },
-        error: (err) => console.log(err),
-      });
+                  }
+                },
+                error: (err) => {
+                  this.loading = false;
+                  this.restoreMapSettingsView();
+                  console.log(err);
+                },
+              });
+            } else {
+              this.restoreMapSettingsView();
+            }
+          },
+          error: () => {
+            this.restoreMapSettingsView();
+          },
+        });
+      },
+      error: (err) => console.log(err),
+    });
   }
 
   /**

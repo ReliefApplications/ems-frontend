@@ -115,6 +115,7 @@ import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -277,17 +278,19 @@ export class ApplicationService {
           id,
         },
       })
-      .subscribe(() => {
-        const snackBar = this.snackBar.openSnackBar(
-          this.translate.instant('models.application.notifications.updated'),
-          {
-            action: 'Reload',
-            duration: 0,
-          }
-        );
-        snackBar.instance.actionComplete.subscribe(() =>
-          window.location.reload()
-        );
+      .subscribe({
+        next: () => {
+          const snackBar = this.snackBar.openSnackBar(
+            this.translate.instant('models.application.notifications.updated'),
+            {
+              action: 'Reload',
+              duration: 0,
+            }
+          );
+          snackBar.instance.actionComplete.subscribe(() =>
+            window.location.reload()
+          );
+        },
       });
     this.lockSubscription = this.apollo
       .subscribe<ApplicationUnlockedSubscriptionResponse>({
@@ -296,16 +299,18 @@ export class ApplicationService {
           id,
         },
       })
-      .subscribe(({ data }) => {
-        if (data?.applicationUnlocked) {
-          const application = this.application.getValue();
-          const newApplication = {
-            ...application,
-            locked: data?.applicationUnlocked?.locked,
-            lockedByUser: data?.applicationUnlocked?.lockedByUser,
-          };
-          this.application.next(newApplication);
-        }
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.applicationUnlocked) {
+            const application = this.application.getValue();
+            const newApplication = {
+              ...application,
+              locked: data?.applicationUnlocked?.locked,
+              lockedByUser: data?.applicationUnlocked?.lockedByUser,
+            };
+            this.application.next(newApplication);
+          }
+        },
       });
   }
 
@@ -351,17 +356,19 @@ export class ApplicationService {
           lock: !locked,
         },
       })
-      .subscribe(({ data }) => {
-        if (data?.toggleApplicationLock) {
-          if (!data.toggleApplicationLock.lockedByUser) {
-            const newApplication = {
-              ...application,
-              locked: data?.toggleApplicationLock?.locked,
-              lockedByUser: data?.toggleApplicationLock.lockedByUser,
-            };
-            this.application.next(newApplication);
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.toggleApplicationLock) {
+            if (!data.toggleApplicationLock.lockedByUser) {
+              const newApplication = {
+                ...application,
+                locked: data?.toggleApplicationLock?.locked,
+                lockedByUser: data?.toggleApplicationLock.lockedByUser,
+              };
+              this.application.next(newApplication);
+            }
           }
-        }
+        },
       });
   }
 
@@ -385,13 +392,13 @@ export class ApplicationService {
             status: value.status,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.application.one'),
-            value.name
-          );
-          if (!errors && data && data.editApplication) {
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.application.one'),
+              value.name
+            );
             if (data?.editApplication) {
               const newApplication = {
                 ...application,
@@ -403,7 +410,14 @@ export class ApplicationService {
               };
               this.application.next(newApplication);
             }
-          }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.application.one'),
+              value.name
+            );
+          },
         });
     }
   }
@@ -425,13 +439,13 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
+          next: ({ data }) => {
             this.handleEditionMutationResponse(
-              errors,
+              [],
               this.translate.instant('common.access'),
               application?.name
             );
-            if (!errors && data?.editApplication) {
+            if (data?.editApplication) {
               const newApplication = {
                 ...application,
                 permissions: data.editApplication.permissions,
@@ -439,8 +453,12 @@ export class ApplicationService {
               this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.access'),
+              application?.name
+            );
           },
         });
     }
@@ -461,30 +479,26 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
+          next: ({ data }) => {
+            if (data) {
               this.snackBar.openSnackBar(
                 this.translate.instant(
-                  'models.application.notifications.notPublished'
-                ),
-                { error: true }
+                  'models.application.notifications.published',
+                  {
+                    value: data.editApplication.name,
+                  }
+                )
               );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'models.application.notifications.published',
-                    {
-                      value: data.editApplication.name,
-                    }
-                  )
-                );
-                this.router.navigate(['/applications']);
-              }
+              this.router.navigate(['/applications']);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'models.application.notifications.notPublished'
+              ),
+              { error: true }
+            );
           },
         });
     }
@@ -506,33 +520,36 @@ export class ApplicationService {
             id,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.page.one'),
-              })
-            );
-            const app = this.application.getValue();
-            if (app) {
-              const newApplication = {
-                ...app,
-                pages: app.pages?.filter((x) => x.id !== data?.deletePage.id),
-              };
-              this.application.next(newApplication);
-              if (!stayOnPage) {
-                this.router.navigate([`./applications/${app.id}`]);
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.page.one'),
+                })
+              );
+              const app = this.application.getValue();
+              if (app) {
+                const newApplication = {
+                  ...app,
+                  pages: app.pages?.filter((x) => x.id !== data?.deletePage.id),
+                };
+                this.application.next(newApplication);
+                if (!stayOnPage) {
+                  this.router.navigate([`./applications/${app.id}`]);
+                }
               }
             }
-          } else {
+          },
+          error: (errors) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotDeleted', {
                 value: this.translate.instant('common.page.one'),
-                error: errors ? errors[0].message : '',
+                error: errorMessageFormatter(errors),
               }),
               { error: true }
             );
-          }
+          },
         });
     }
   }
@@ -552,35 +569,38 @@ export class ApplicationService {
             id,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectRestored', {
-                value: this.translate.instant('common.page.one'),
-              })
-            );
-            const application = this.application.getValue();
-            if (application) {
-              const newApplication = {
-                ...application,
-                pages: application.pages?.concat([data.restorePage]),
-              };
-              this.application.next(newApplication);
-              this.router.navigate([
-                data.restorePage.type === ContentType.form
-                  ? `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.id}`
-                  : `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.content}`,
-              ]);
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectRestored', {
+                  value: this.translate.instant('common.page.one'),
+                })
+              );
+              const application = this.application.getValue();
+              if (application) {
+                const newApplication = {
+                  ...application,
+                  pages: application.pages?.concat([data.restorePage]),
+                };
+                this.application.next(newApplication);
+                this.router.navigate([
+                  data.restorePage.type === ContentType.form
+                    ? `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.id}`
+                    : `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.content}`,
+                ]);
+              }
             }
-          } else {
+          },
+          error: (errors) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotRestored', {
                 value: this.translate.instant('common.page.one'),
-                error: errors ? errors[0].message : '',
+                error: errorMessageFormatter(errors),
               }),
               { error: true }
             );
-          }
+          },
         });
     }
   }
@@ -602,48 +622,44 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              if (pages.length > 1) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.application.pages.notReordered.plural',
-                    { error: errors ? errors[0].message : '' }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.application.pages.notReordered.singular',
-                    { error: errors ? errors[0].message : '' }
-                  ),
-                  { error: true }
-                );
-              }
+          next: ({ data }) => {
+            if (pages.length > 1) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.application.pages.reordered.plural'
+                )
+              );
             } else {
-              if (pages.length > 1) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.application.pages.reordered.plural'
-                  )
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.application.pages.reordered.singular'
-                  )
-                );
-              }
-
-              this.application.next({
-                ...application,
-                ...{ pages: data?.editApplication.pages },
-              });
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.application.pages.reordered.singular'
+                )
+              );
             }
+
+            this.application.next({
+              ...application,
+              ...{ pages: data?.editApplication.pages },
+            });
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            if (pages.length > 1) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.application.pages.notReordered.plural',
+                  { error: errorMessageFormatter(errors) }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.application.pages.notReordered.singular',
+                  { error: errorMessageFormatter(errors) }
+                ),
+                { error: true }
+              );
+            }
           },
         });
     }
@@ -666,25 +682,34 @@ export class ApplicationService {
             name: page.name,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one'),
-            page.name
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = { ...x, name: page.name };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one'),
+              page.name
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, name: page.name };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one'),
+              page.name
+            );
+          },
         });
     }
   }
@@ -707,24 +732,32 @@ export class ApplicationService {
             visible: page.visible,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = { ...x, visible: data.editPage.visible };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one')
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, visible: data.editPage.visible };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+          },
         });
     }
   }
@@ -747,24 +780,32 @@ export class ApplicationService {
             icon,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = { ...x, icon: data.editPage.icon };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one')
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, icon: data.editPage.icon };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+          },
         });
     }
   }
@@ -788,35 +829,38 @@ export class ApplicationService {
             structure,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (data?.addPage) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate.instant('common.page.one').toLowerCase(),
-                value: data.addPage.name,
-              })
-            );
+        .subscribe({
+          next: ({ data }) => {
+            if (data?.addPage) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate.instant('common.page.one').toLowerCase(),
+                  value: data.addPage.name,
+                })
+              );
 
-            const content = data.addPage.content;
-            const newApplication = {
-              ...application,
-              pages: application.pages?.concat([data.addPage]),
-            };
-            this.application.next(newApplication);
-            this.router.navigate([
-              page.type === ContentType.form
-                ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
-                : `/applications/${application.id}/${page.type}/${content}`,
-            ]);
-          } else {
+              const content = data.addPage.content;
+              const newApplication = {
+                ...application,
+                pages: application.pages?.concat([data.addPage]),
+              };
+              this.application.next(newApplication);
+              this.router.navigate([
+                page.type === ContentType.form
+                  ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
+                  : `/applications/${application.id}/${page.type}/${content}`,
+              ]);
+            }
+          },
+          error: (errors) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotCreated', {
                 type: this.translate.instant('common.page.one').toLowerCase(),
-                error: errors ? errors[0].message : '',
+                error: errorMessageFormatter(errors),
               }),
               { error: true }
             );
-          }
+          },
         });
     }
   }
@@ -844,16 +888,8 @@ export class ApplicationService {
           step: content.stepId,
         },
       })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotCreated', {
-              type: this.translate.instant('common.page.one').toLowerCase(),
-              error: errors ? errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
+      .subscribe({
+        next: ({ data }) => {
           if (data?.duplicatePage) {
             const newPage = data.duplicatePage;
             this.translate.instant('common.notifications.objectCreated', {
@@ -873,7 +909,16 @@ export class ApplicationService {
             ]);
             if (callback) callback();
           }
-        }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
       });
   }
 
@@ -894,40 +939,29 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
+          next: ({ data }) => {
+            if (data) {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotCreated',
-                  {
-                    type: this.translate
-                      .instant('common.role.one')
-                      .toLowerCase(),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate.instant('common.role.one').toLowerCase(),
+                  value: role.title,
+                })
               );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.role.one')
-                      .toLowerCase(),
-                    value: role.title,
-                  })
-                );
-                const newApplication = {
-                  ...application,
-                  roles: application.roles?.concat([data.addRole]),
-                };
-                this.application.next(newApplication);
-              }
+              const newApplication = {
+                ...application,
+                roles: application.roles?.concat([data.addRole]),
+              };
+              this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate.instant('common.role.one').toLowerCase(),
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -953,13 +987,13 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
+          next: ({ data }) => {
             this.handleEditionMutationResponse(
-              errors,
+              [],
               this.translate.instant('common.role.one'),
               role.title
             );
-            if (!errors && data) {
+            if (data) {
               const newApplication: Application = {
                 ...application,
                 roles: application.roles?.map((x) => {
@@ -994,8 +1028,12 @@ export class ApplicationService {
               this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.role.one'),
+              role.title
+            );
           },
         });
     }
@@ -1017,33 +1055,26 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: role.title,
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: role.title,
-                })
-              );
-              const newApplication = {
-                ...application,
-                roles: application.roles?.filter((x) => x.id !== role.id),
-              };
-              this.application.next(newApplication);
-            }
+          next: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: role.title,
+              })
+            );
+            const newApplication = {
+              ...application,
+              roles: application.roles?.filter((x) => x.id !== role.id),
+            };
+            this.application.next(newApplication);
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: role.title,
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -1067,58 +1098,39 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              if (ids.length > 1) {
+          next: ({ data }) => {
+            if (data) {
+              const deletedUsers = data.deleteUsersFromApplication.map(
+                (x) => x.id
+              );
+              if (deletedUsers.length > 1) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotDelete.plural',
-                    { error: errors ? errors[0].message : '' }
-                  ),
-                  { error: true }
+                  this.translate.instant('components.users.onDelete.plural')
                 );
               } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotDelete.singular',
-                    { error: errors ? errors[0].message : '' }
-                  ),
-                  { error: true }
+                  this.translate.instant('components.users.onDelete.singular')
                 );
               }
+            }
+            resolved();
+          },
+          error: (errors) => {
+            if (ids.length > 1) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('components.users.onNotDelete.plural', {
+                  error: errorMessageFormatter(errors),
+                }),
+                { error: true }
+              );
             } else {
-              if (data) {
-                const deletedUsers = data.deleteUsersFromApplication.map(
-                  (x) => x.id
-                );
-                if (deletedUsers.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onDelete.plural')
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onDelete.singular')
-                  );
-                }
-              } else {
-                if (ids.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.plural',
-                      { error: '' }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.singular',
-                      { error: '' }
-                    ),
-                    { error: true }
-                  );
-                }
-              }
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.users.onNotDelete.singular',
+                  { error: errorMessageFormatter(errors) }
+                ),
+                { error: true }
+              );
             }
             resolved();
           },
@@ -1156,43 +1168,36 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
+          next: ({ data }) => {
+            if (data) {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotCreated',
-                  {
-                    type: this.translate
-                      .instant('common.positionCategory.one')
-                      .toLowerCase(),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate
+                    .instant('common.positionCategory.one')
+                    .toLowerCase(),
+                  value: category.title,
+                })
               );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.positionCategory.one')
-                      .toLowerCase(),
-                    value: category.title,
-                  })
-                );
-                const newApplication: Application = {
-                  ...application,
-                  positionAttributeCategories:
-                    application.positionAttributeCategories?.concat([
-                      data.addPositionAttributeCategory,
-                    ]),
-                };
-                this.application.next(newApplication);
-              }
+              const newApplication: Application = {
+                ...application,
+                positionAttributeCategories:
+                  application.positionAttributeCategories?.concat([
+                    data.addPositionAttributeCategory,
+                  ]),
+              };
+              this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate
+                  .instant('common.positionCategory.one')
+                  .toLowerCase(),
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -1215,38 +1220,31 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
+          next: ({ data }) => {
+            if (data) {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: category.title,
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: category.title,
+                })
               );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: category.title,
-                  })
-                );
-                const newApplication: Application = {
-                  ...application,
-                  positionAttributeCategories:
-                    application.positionAttributeCategories?.filter(
-                      (x) => x.id !== data?.deletePositionAttributeCategory.id
-                    ),
-                };
-                this.application.next(newApplication);
-              }
+              const newApplication: Application = {
+                ...application,
+                positionAttributeCategories:
+                  application.positionAttributeCategories?.filter(
+                    (x) => x.id !== data?.deletePositionAttributeCategory.id
+                  ),
+              };
+              this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: category.title,
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -1273,18 +1271,8 @@ export class ApplicationService {
             title: value.title,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.errors.objectDuplicated', {
-                type: this.translate
-                  .instant('common.positionCategory.one')
-                  .toLowerCase(),
-                value: value.title,
-              }),
-              { error: true }
-            );
-          } else {
+        .subscribe({
+          next: ({ data }) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.positionCategory.one'),
@@ -1305,7 +1293,18 @@ export class ApplicationService {
                 }),
             };
             this.application.next(newApplication);
-          }
+          },
+          error: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.errors.objectDuplicated', {
+                type: this.translate
+                  .instant('common.positionCategory.one')
+                  .toLowerCase(),
+                value: value.title,
+              }),
+              { error: true }
+            );
+          },
         });
     }
   }
@@ -1328,40 +1327,33 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
+          next: ({ data }) => {
+            if (data) {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotCreated',
-                  {
-                    type: this.translate
-                      .instant('common.channel.one')
-                      .toLowerCase(),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate
+                    .instant('common.channel.one')
+                    .toLowerCase(),
+                  value: channel.title,
+                })
               );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.channel.one')
-                      .toLowerCase(),
-                    value: channel.title,
-                  })
-                );
-                const newApplication: Application = {
-                  ...application,
-                  channels: application.channels?.concat([data.addChannel]),
-                };
-                this.application.next(newApplication);
-              }
+              const newApplication: Application = {
+                ...application,
+                channels: application.channels?.concat([data.addChannel]),
+              };
+              this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate
+                  .instant('common.channel.one')
+                  .toLowerCase(),
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -1384,13 +1376,13 @@ export class ApplicationService {
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
+        next: ({ data }) => {
           this.handleEditionMutationResponse(
-            errors,
+            [],
             this.translate.instant('common.channel.one'),
             title
           );
-          if (!errors && data) {
+          if (data) {
             const newApplication: Application = {
               ...application,
               channels: application?.channels?.map((x) => {
@@ -1403,8 +1395,12 @@ export class ApplicationService {
             this.application.next(newApplication);
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.channel.one'),
+            title
+          );
         },
       });
   }
@@ -1425,37 +1421,30 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
+          next: ({ data }) => {
+            if (data) {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: channel.title,
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: channel.title,
+                })
               );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: channel.title,
-                  })
-                );
-                const newApplication: Application = {
-                  ...application,
-                  channels: application.channels?.filter(
-                    (x) => x.id !== data?.deleteChannel.id
-                  ),
-                };
-                this.application.next(newApplication);
-              }
+              const newApplication: Application = {
+                ...application,
+                channels: application.channels?.filter(
+                  (x) => x.id !== data?.deleteChannel.id
+                ),
+              };
+              this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: channel.title,
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -1490,42 +1479,35 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
+          next: ({ data }) => {
+            if (data) {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotCreated',
-                  {
-                    type: this.translate
-                      .instant('common.subscription.one')
-                      .toLowerCase(),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate
+                    .instant('common.subscription.one')
+                    .toLowerCase(),
+                  value: subscription.title,
+                })
               );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.subscription.one')
-                      .toLowerCase(),
-                    value: subscription.title,
-                  })
-                );
-                const newApplication: Application = {
-                  ...application,
-                  subscriptions: application.subscriptions?.concat([
-                    data.addSubscription,
-                  ]),
-                };
-                this.application.next(newApplication);
-              }
+              const newApplication: Application = {
+                ...application,
+                subscriptions: application.subscriptions?.concat([
+                  data.addSubscription,
+                ]),
+              };
+              this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate
+                  .instant('common.subscription.one')
+                  .toLowerCase(),
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -1548,35 +1530,28 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: this.translate.instant('common.subscription.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.subscription.one'),
-                })
-              );
-              const newApplication = {
-                ...application,
-                subscriptions: application.subscriptions?.filter(
-                  (sub) => sub.routingKey !== subscription
-                ),
-              };
-              this.application.next(newApplication);
-            }
+          next: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.subscription.one'),
+              })
+            );
+            const newApplication = {
+              ...application,
+              subscriptions: application.subscriptions?.filter(
+                (sub) => sub.routingKey !== subscription
+              ),
+            };
+            this.application.next(newApplication);
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.subscription.one'),
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           },
         });
     }
@@ -1604,13 +1579,13 @@ export class ApplicationService {
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
+          next: ({ data }) => {
             this.handleEditionMutationResponse(
-              errors,
+              [],
               this.translate.instant('common.subscription.one'),
               value.title
             );
-            if (!errors && data) {
+            if (data) {
               const subscription = data.editSubscription;
               const newApplication = {
                 ...application,
@@ -1624,8 +1599,12 @@ export class ApplicationService {
               this.application.next(newApplication);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.subscription.one'),
+              value.title
+            );
           },
         });
     }
@@ -1675,16 +1654,18 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const newApplication: Application = {
-              ...application,
-              templates: [...(application.templates || []), data.addTemplate],
-            };
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              const newApplication: Application = {
+                ...application,
+                templates: [...(application.templates || []), data.addTemplate],
+              };
 
-            this.application.next(newApplication);
-            if (callback) callback(data.addTemplate);
-          }
+              this.application.next(newApplication);
+              if (callback) callback(data.addTemplate);
+            }
+          },
         });
     }
   }
@@ -1705,14 +1686,16 @@ export class ApplicationService {
             id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const newApplication: Application = {
-              ...application,
-              templates: this.templates.filter((t) => t.id !== id),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              const newApplication: Application = {
+                ...application,
+                templates: this.templates.filter((t) => t.id !== id),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1738,20 +1721,22 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data?.editTemplate) {
-            const updatedTemplate = data.editTemplate;
-            const newApplication: Application = {
-              ...application,
-              templates: application.templates?.map((t) => {
-                if (t.id === template.id) {
-                  t = updatedTemplate;
-                }
-                return t;
-              }),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data?.editTemplate) {
+              const updatedTemplate = data.editTemplate;
+              const newApplication: Application = {
+                ...application,
+                templates: application.templates?.map((t) => {
+                  if (t.id === template.id) {
+                    t = updatedTemplate;
+                  }
+                  return t;
+                }),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1776,20 +1761,30 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data?.editDistributionList) {
-            const updatedDistributionList = data.editDistributionList;
-            const newApplication: Application = {
-              ...application,
-              distributionLists: application.distributionLists?.map((dist) => {
-                if (dist.id === distributionList.id) {
-                  dist = updatedDistributionList;
-                }
-                return dist;
-              }),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data?.editDistributionList) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  value: data.editDistributionList.name,
+                  type: this.translate.instant('common.distributionList.one'),
+                })
+              );
+              const updatedDistributionList = data.editDistributionList;
+              const newApplication: Application = {
+                ...application,
+                distributionLists: application.distributionLists?.map(
+                  (dist) => {
+                    if (dist.id === distributionList.id) {
+                      dist = updatedDistributionList;
+                    }
+                    return dist;
+                  }
+                ),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1817,18 +1812,26 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data?.addDistributionList) {
-            const newApplication: Application = {
-              ...application,
-              distributionLists: [
-                ...(application.distributionLists || []),
-                data.addDistributionList,
-              ],
-            };
-            this.application.next(newApplication);
-            if (callback) callback(data.addDistributionList);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectCreated', {
+                value: distributionList.name,
+                type: this.translate.instant('common.distributionList.one'),
+              })
+            );
+            if (data?.addDistributionList) {
+              const newApplication: Application = {
+                ...application,
+                distributionLists: [
+                  ...(application.distributionLists || []),
+                  data.addDistributionList,
+                ],
+              };
+              this.application.next(newApplication);
+              if (callback) callback(data.addDistributionList);
+            }
+          },
         });
     }
   }
@@ -1849,16 +1852,23 @@ export class ApplicationService {
             id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const newApplication: Application = {
-              ...application,
-              distributionLists: application.distributionLists?.filter(
-                (dist) => dist.id !== id
-              ),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: data.deleteDistributionList.name,
+                })
+              );
+              const newApplication: Application = {
+                ...application,
+                distributionLists: application.distributionLists?.filter(
+                  (dist) => dist.id !== id
+                ),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1885,16 +1895,12 @@ export class ApplicationService {
         })
         .subscribe({
           next: (res) => {
-            if (res.errors?.length) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
-                error: true,
-              });
-            } else {
-              if (callback) callback(res);
-            }
+            if (callback) callback(res);
           },
-          error: (error) => {
-            this.snackBar.openSnackBar(error[0]?.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -1919,16 +1925,12 @@ export class ApplicationService {
         })
         .subscribe({
           next: (res) => {
-            if (res.errors?.length) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
-                error: true,
-              });
-            } else {
-              if (callback) callback(res);
-            }
+            if (callback) callback(res);
           },
-          error: (error) => {
-            this.snackBar.openSnackBar(error[0]?.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -1959,16 +1961,12 @@ export class ApplicationService {
         })
         .subscribe({
           next: (res) => {
-            if (res.errors?.length) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
-                error: true,
-              });
-            } else {
-              if (callback) callback(res);
-            }
+            if (callback) callback(res);
           },
-          error: (error) => {
-            this.snackBar.openSnackBar(error[0]?.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -2047,11 +2045,11 @@ export class ApplicationService {
     type: string,
     value?: string
   ) {
-    if (errors) {
+    if (errors?.length) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotUpdated', {
           type,
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );
@@ -2083,29 +2081,37 @@ export class ApplicationService {
             permissions,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = {
-                    ...x,
-                    canSee: data.editPage.permissions.canSee,
-                    canDelete: data.editPage.permissions.canDelete,
-                    canUpdate: data.editPage.permissions.canUpdate,
-                  };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback(data.editPage.permissions);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one')
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = {
+                      ...x,
+                      canSee: data.editPage.permissions.canSee,
+                      canDelete: data.editPage.permissions.canDelete,
+                      canUpdate: data.editPage.permissions.canUpdate,
+                    };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback(data.editPage.permissions);
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+          },
         });
     }
   }

@@ -60,13 +60,18 @@ export class UpdateRecordComponent
           },
         })
         .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.form = data.form;
-          this.breadcrumbService.setBreadcrumb(
-            '@resource',
-            this.form.name as string
-          );
-          this.loading = loading;
+        .subscribe({
+          next: ({ data, loading }) => {
+            this.form = data.form;
+            this.breadcrumbService.setBreadcrumb(
+              '@resource',
+              this.form.name as string
+            );
+            this.loading = loading;
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     }
     if (this.id !== null) {
@@ -78,24 +83,29 @@ export class UpdateRecordComponent
           },
         })
         .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.record = data.record;
-          this.breadcrumbService.setBreadcrumb(
-            '@record',
-            this.record.incrementalId as string
-          );
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.record.form?.name as string
-          );
-          this.breadcrumbService.setBreadcrumb(
-            '@resource',
-            this.record.form?.name as string
-          );
-          if (!template) {
-            this.form = this.record.form || {};
-            this.loading = loading;
-          }
+        .subscribe({
+          next: ({ data, loading }) => {
+            this.record = data.record;
+            this.breadcrumbService.setBreadcrumb(
+              '@record',
+              this.record.incrementalId as string
+            );
+            this.breadcrumbService.setBreadcrumb(
+              '@form',
+              this.record.form?.name as string
+            );
+            this.breadcrumbService.setBreadcrumb(
+              '@resource',
+              this.record.form?.name as string
+            );
+            if (!template) {
+              this.form = this.record.form || {};
+              this.loading = loading;
+            }
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     }
   }

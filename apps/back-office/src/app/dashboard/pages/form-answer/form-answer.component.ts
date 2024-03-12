@@ -61,18 +61,23 @@ export class FormAnswerComponent
           },
         })
         .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.loading = loading;
-          this.form = data.form;
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          this.breadcrumbService.setBreadcrumb(
-            '@resource',
-            this.form.resource?.name as string
-          );
-          // this.breadcrumbService.setResourceName();
+        .subscribe({
+          next: ({ data, loading }) => {
+            this.loading = loading;
+            this.form = data.form;
+            this.breadcrumbService.setBreadcrumb(
+              '@form',
+              this.form.name as string
+            );
+            this.breadcrumbService.setBreadcrumb(
+              '@resource',
+              this.form.resource?.name as string
+            );
+            // this.breadcrumbService.setResourceName();
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     }
   }

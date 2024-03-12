@@ -93,23 +93,29 @@ export class UserDetailsComponent implements OnInit {
           );
         })
       )
-      .subscribe(({ attributes, manualCreation }) => {
-        this.form.addControl(
-          'attributes',
-          this.fb.group(
-            attributes.reduce(
-              (group: any, attribute: any) => ({
-                ...group,
-                [attribute.value]: this.fb.control({
-                  value: get(this.user, `attributes.${attribute.value}`, null),
-                  disabled: !manualCreation,
+      .subscribe({
+        next: ({ attributes, manualCreation }) => {
+          this.form.addControl(
+            'attributes',
+            this.fb.group(
+              attributes.reduce(
+                (group: any, attribute: any) => ({
+                  ...group,
+                  [attribute.value]: this.fb.control({
+                    value: get(
+                      this.user,
+                      `attributes.${attribute.value}`,
+                      null
+                    ),
+                    disabled: !manualCreation,
+                  }),
                 }),
-              }),
-              {}
+                {}
+              )
             )
-          )
-        );
-        this.attributes = attributes;
+          );
+          this.attributes = attributes;
+        },
       });
   }
 }

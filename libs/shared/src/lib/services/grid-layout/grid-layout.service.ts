@@ -60,8 +60,11 @@ export class GridLayoutService {
           first: options.first,
         },
       })
-    ).then(async ({ errors, data }) => {
-      if (errors) {
+    )
+      .then(async ({ data }) => {
+        return data.resource.layouts || FALLBACK_LAYOUTS;
+      })
+      .catch(async () => {
         return await firstValueFrom(
           this.apollo.query<FormQueryResponse>({
             query: GET_GRID_FORM_META,
@@ -71,17 +74,14 @@ export class GridLayoutService {
               first: options.first,
             },
           })
-        ).then((res2) => {
-          if (res2.errors) {
-            return FALLBACK_LAYOUTS;
-          } else {
+        )
+          .then((res2) => {
             return res2.data.form.layouts || FALLBACK_LAYOUTS;
-          }
-        });
-      } else {
-        return data.resource.layouts || FALLBACK_LAYOUTS;
-      }
-    });
+          })
+          .catch(() => {
+            return FALLBACK_LAYOUTS;
+          });
+      });
   }
 
   /**

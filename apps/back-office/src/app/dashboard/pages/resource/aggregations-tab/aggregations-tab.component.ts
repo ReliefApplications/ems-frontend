@@ -1,21 +1,25 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Dialog } from '@angular/cdk/dialog';
 import {
   Aggregation,
   AggregationService,
   ConfirmService,
   Resource,
-  UnsubscribeComponent,
   ResourceQueryResponse,
+  UnsubscribeComponent,
   getCachedValues,
   updateQueryUniqueValues,
 } from '@oort-front/shared';
+import {
+  SnackbarService,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { filter, switchMap, takeUntil } from 'rxjs';
-import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { isNil } from 'lodash';
 
 /**
@@ -79,13 +83,15 @@ export class AggregationsTabComponent
    * @param aggregationService Grid aggregation service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
+   * @param snackbarService Snackbar service
    */
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
     private aggregationService: AggregationService,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private snackbarService: SnackbarService
   ) {
     super();
   }
@@ -105,8 +111,13 @@ export class AggregationsTabComponent
 
     this.aggregationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.updateValues(data, loading);
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
@@ -198,11 +209,13 @@ export class AggregationsTabComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }: any) => {
-        if (data.addAggregation) {
-          this.aggregations = [...this.aggregations, data?.addAggregation];
-          this.pageInfo.length += 1;
-        }
+      .subscribe({
+        next: ({ data }: any) => {
+          if (data.addAggregation) {
+            this.aggregations = [...this.aggregations, data?.addAggregation];
+            this.pageInfo.length += 1;
+          }
+        },
       });
   }
 
@@ -232,16 +245,18 @@ export class AggregationsTabComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }: any) => {
-        if (data.editAggregation) {
-          this.aggregations = this.aggregations.map((x: any) => {
-            if (x.id === aggregation.id) {
-              return data.editAggregation;
-            } else {
-              return x;
-            }
-          });
-        }
+      .subscribe({
+        next: ({ data }: any) => {
+          if (data.editAggregation) {
+            this.aggregations = this.aggregations.map((x: any) => {
+              if (x.id === aggregation.id) {
+                return data.editAggregation;
+              } else {
+                return x;
+              }
+            });
+          }
+        },
       });
   }
 
@@ -273,13 +288,15 @@ export class AggregationsTabComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }: any) => {
-        if (data.deleteAggregation) {
-          this.aggregations = this.aggregations.filter(
-            (x: any) => x.id !== aggregation.id
-          );
-          this.pageInfo.length -= 1;
-        }
+      .subscribe({
+        next: ({ data }: any) => {
+          if (data.deleteAggregation) {
+            this.aggregations = this.aggregations.filter(
+              (x: any) => x.id !== aggregation.id
+            );
+            this.pageInfo.length -= 1;
+          }
+        },
       });
   }
 

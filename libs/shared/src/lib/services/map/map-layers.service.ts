@@ -11,6 +11,7 @@ import {
   Observable,
   of,
   switchMap,
+  throwError,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -86,11 +87,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data?.addLayer;
-        })
+        }),
+        catchError((errors) => throwError(() => errors))
       );
   }
 
@@ -117,11 +116,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data?.editLayer;
-        })
+        }),
+        catchError((errors) => throwError(() => errors))
       );
   }
 
@@ -157,11 +154,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data.layer;
-        })
+        }),
+        catchError((errors) => throwError(() => errors))
       );
   }
 
@@ -192,11 +187,9 @@ export class MapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
           return response.data.layers;
-        })
+        }),
+        catchError((errors) => throwError(() => errors))
       );
   }
 

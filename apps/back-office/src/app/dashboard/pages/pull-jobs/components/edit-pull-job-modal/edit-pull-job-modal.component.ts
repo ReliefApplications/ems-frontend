@@ -237,12 +237,12 @@ export class EditPullJobModalComponent
       });
     this.apiConfigurationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        ({ data }) =>
+      .subscribe({
+        next: ({ data }) =>
           (this.apiConfigurations = data.apiConfigurations.edges.map(
             (x) => x.node
-          ))
-      );
+          )),
+      });
 
     // Fetch form fields if any for mapping
     if (this.data.pullJob?.convertTo?.id) {
@@ -270,8 +270,13 @@ export class EditPullJobModalComponent
     // this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.updateValues(data, loading);
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: () => {
+          this.applicationsLoading = false;
+        },
       });
 
     // Set boolean to allow additional fields if it's not isHardcoded
@@ -337,13 +342,15 @@ export class EditPullJobModalComponent
         },
       })
       .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((resForm) => {
-        if (resForm.data.form) {
-          this.fields = resForm.data.form.fields || [];
-          this.fields = this.fields.concat(
-            DEFAULT_FIELDS.map((x) => ({ name: x }))
-          );
-        }
+      .subscribe({
+        next: (resForm) => {
+          if (resForm.data.form) {
+            this.fields = resForm.data.form.fields || [];
+            this.fields = this.fields.concat(
+              DEFAULT_FIELDS.map((x) => ({ name: x }))
+            );
+          }
+        },
       });
   }
 

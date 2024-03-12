@@ -289,7 +289,12 @@ export class AggregationGridComponent
       })
     )
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-      .subscribe((results) => this.updateValues(results.data, results.loading));
+      .subscribe({
+        next: (results) => this.updateValues(results.data, results.loading),
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   /**

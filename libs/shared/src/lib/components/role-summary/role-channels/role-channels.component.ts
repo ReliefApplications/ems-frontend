@@ -65,20 +65,22 @@ export class RoleChannelsComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.channels = data.channels;
-        // Move channels in an array under corresponding applications.
-        this.applications = Array.from(
-          new Set(this.channels.map((x) => x.application?.name))
-        ).map((name) => ({
-          name: name ? name : 'Global',
-          channels: this.channels.reduce((o: Channel[], channel: Channel) => {
-            if (channel?.application?.name === name) {
-              o.push(channel);
-            }
-            return o;
-          }, []),
-        }));
+      .subscribe({
+        next: ({ data }) => {
+          this.channels = data.channels;
+          // Move channels in an array under corresponding applications.
+          this.applications = Array.from(
+            new Set(this.channels.map((x) => x.application?.name))
+          ).map((name) => ({
+            name: name ? name : 'Global',
+            channels: this.channels.reduce((o: Channel[], channel: Channel) => {
+              if (channel?.application?.name === name) {
+                o.push(channel);
+              }
+              return o;
+            }, []),
+          }));
+        },
       });
   }
 

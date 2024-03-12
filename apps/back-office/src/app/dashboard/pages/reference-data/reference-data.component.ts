@@ -27,6 +27,7 @@ import {
   ApiConfigurationQueryResponse,
   EditReferenceDataMutationResponse,
   paginationStrategy,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { EDIT_REFERENCE_DATA } from './graphql/mutations';
@@ -410,24 +411,21 @@ export class ReferenceDataComponent
                   });
               }
               this.loading = loading;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translateService
-                      .instant('notification.term.resource')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-              this.router.navigate(['/referencedata']);
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: () => {
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.accessNotProvided',
+                {
+                  type: this.translateService
+                    .instant('notification.term.resource')
+                    .toLowerCase(),
+                  error: '',
+                }
+              ),
+              { error: true }
+            );
             this.router.navigate(['/referencedata']);
           },
         });
@@ -476,10 +474,12 @@ export class ReferenceDataComponent
               id: this.referenceForm.value.apiConfiguration,
             },
           })
-          .subscribe(({ data }) => {
-            if (data.apiConfiguration) {
-              this.selectedApiConfiguration = data.apiConfiguration;
-            }
+          .subscribe({
+            next: ({ data }) => {
+              if (data.apiConfiguration) {
+                this.selectedApiConfiguration = data.apiConfiguration;
+              }
+            },
           });
       }
 
@@ -516,11 +516,11 @@ export class ReferenceDataComponent
         },
       })
       .subscribe({
-        next: ({ errors, data, loading }) => {
-          this.handleEditReferenceDataResponse(data, errors, loading);
+        next: ({ data, loading }) => {
+          this.handleEditReferenceDataResponse(data, [], loading);
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleEditReferenceDataResponse(null, errors, false);
         },
       });
   }
@@ -543,7 +543,7 @@ export class ReferenceDataComponent
       this.snackBar.openSnackBar(
         this.translateService.instant('common.notifications.objectNotUpdated', {
           type: this.translateService.instant('common.referenceData.one'),
-          error: errors ? errors[0].message : '',
+          error: errorMessageFormatter(errors),
         }),
         { error: true }
       );
@@ -696,11 +696,11 @@ export class ReferenceDataComponent
         variables,
       })
       .subscribe({
-        next: ({ errors, data, loading }) => {
-          this.handleEditReferenceDataResponse(data, errors, loading, true);
+        next: ({ data, loading }) => {
+          this.handleEditReferenceDataResponse(data, [], loading, true);
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.handleEditReferenceDataResponse(null, errors, false, true);
         },
       });
   }

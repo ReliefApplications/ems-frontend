@@ -314,21 +314,18 @@ export class RecordModalComponent
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: (errors) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataNotRecovered'),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
-          }
+        next: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataRecovered')
+          );
           this.dialogRef.close();
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataNotRecovered'),
+            { error: true }
+          );
+          this.dialogRef.close();
         },
       });
   }

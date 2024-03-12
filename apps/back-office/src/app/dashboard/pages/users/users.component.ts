@@ -12,6 +12,7 @@ import {
   UnsubscribeComponent,
   User,
   UsersNodeQueryResponse,
+  errorMessageFormatter,
   getCachedValues,
   updateQueryUniqueValues,
 } from '@oort-front/shared';
@@ -24,7 +25,14 @@ import {
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, map, switchMap, takeUntil } from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  switchMap,
+  takeUntil,
+  throwError,
+} from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ApolloQueryResult } from '@apollo/client';
 import { isNil } from 'lodash';
@@ -122,16 +130,24 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
         query: GET_ROLES,
       })
       .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.roles = data.roles;
-        this.loading = loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.roles = data.roles;
+          this.loading = loading;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
-    this.usersQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+    this.usersQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.loading = true;
         this.updateValues(data, loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   /**
@@ -170,47 +186,43 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
               },
             })
             .pipe(
-              map(({ data, errors }) => {
-                return {
-                  data,
-                  errors,
-                  usersLength: value.length,
-                };
-              })
+              catchError((errors) =>
+                throwError(() => {
+                  return { errors, usersLength: value.length };
+                })
+              )
             );
         }),
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ({ errors, data, usersLength }) => {
-          if (!errors) {
-            if (data?.addUsers.length) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('components.users.onInvite.plural')
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('components.users.onInvite.singular')
-              );
-            }
-            this.fetchUsers(true);
+        next: ({ data }) => {
+          if (data?.addUsers.length) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onInvite.plural')
+            );
           } else {
-            if (usersLength > 1) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('components.users.onNotInvite.plural', {
-                  error: errors[0].message,
-                }),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'components.users.onNotInvite.singular',
-                  { error: errors[0].message }
-                ),
-                { error: true }
-              );
-            }
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onInvite.singular')
+            );
+          }
+          this.fetchUsers(true);
+        },
+        error: ({ errors, usersLength }) => {
+          if (usersLength > 1) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onNotInvite.plural', {
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onNotInvite.singular', {
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           }
         },
       });
@@ -261,24 +273,40 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
               variables: { ids },
             })
             .pipe(
-              map(({ data, errors }) => {
+              map(({ data }) => {
                 return {
                   data,
-                  errors,
                   deletedUsers: ids.length,
                 };
-              })
+              }),
+              catchError((errors) =>
+                throwError(() => {
+                  return { errors, deletedUsers: ids.length };
+                })
+              )
             );
         }),
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: ({ errors, data, deletedUsers }) => {
-          if (errors) {
+        next: ({ data, deletedUsers }) => {
+          this.loading = false;
+          if (data?.deleteUsers) {
+            if (data.deleteUsers > 1) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('components.users.onDelete.plural')
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('components.users.onDelete.singular')
+              );
+            }
+            this.fetchUsers(true);
+          } else {
             if (deletedUsers > 1) {
               this.snackBar.openSnackBar(
                 this.translate.instant('components.users.onNotDelete.plural', {
-                  error: errors ? errors[0].message : '',
+                  error: '',
                 }),
                 { error: true }
               );
@@ -286,43 +314,29 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
               this.snackBar.openSnackBar(
                 this.translate.instant(
                   'components.users.onNotDelete.singular',
-                  { error: errors ? errors[0].message : '' }
+                  { error: '' }
                 ),
                 { error: true }
               );
             }
+          }
+        },
+        error: ({ errors, deletedUsers }) => {
+          this.loading = false;
+          if (deletedUsers > 1) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onNotDelete.plural', {
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           } else {
-            this.loading = false;
-            if (data?.deleteUsers) {
-              if (data.deleteUsers > 1) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onDelete.plural')
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onDelete.singular')
-                );
-              }
-              this.fetchUsers(true);
-            } else {
-              if (deletedUsers > 1) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotDelete.plural',
-                    { error: '' }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotDelete.singular',
-                    { error: '' }
-                  ),
-                  { error: true }
-                );
-              }
-            }
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.users.onNotDelete.singular', {
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
           }
         },
       });

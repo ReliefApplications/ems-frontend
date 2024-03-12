@@ -118,13 +118,18 @@ export class CustomWidgetStyleComponent
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ css, value }) => {
-        set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
-        this.styleApplied.innerText = css;
-        this.document
-          .getElementsByTagName('head')[0]
-          .appendChild(this.styleApplied);
-        this.loading = false;
+      .subscribe({
+        next: ({ css, value }) => {
+          set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
+          this.styleApplied.innerText = css;
+          this.document
+            .getElementsByTagName('head')[0]
+            .appendChild(this.styleApplied);
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
