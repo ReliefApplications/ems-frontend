@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { EDIT_USER_PROFILE } from './graphql/mutations';
@@ -30,11 +30,14 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
     'positionAttributes',
     'actions',
   ];
+  /** URL for updating user password */
+  public updatePasswordUrl: string;
 
   /**
    * Shared profile page.
    * Displays information of the logged user.
    *
+   * @param environment Environment configuration
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
@@ -42,6 +45,7 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
    * @param translate Translation service
    */
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private authService: AuthService,
@@ -49,6 +53,11 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
     public translate: TranslateService
   ) {
     super();
+
+    // Set update password URL
+    const { issuer, clientId } = environment.authConfig ?? {};
+    const currentUrl = window.location.href;
+    this.updatePasswordUrl = `${issuer}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${currentUrl}&response_type=code&scope=openid&kc_action=UPDATE_PASSWORD`;
   }
 
   /**
@@ -158,5 +167,11 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
         this.user[profileProperty] = data.editUserProfile[profileProperty];
       }
     }
+  }
+
+  /** Initiate update user password sequence. */
+  public updatePassword(): void {
+    // Redirect to update password URL
+    window.location.href = this.updatePasswordUrl;
   }
 }
