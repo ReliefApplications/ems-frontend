@@ -8,7 +8,6 @@ import {
   Resource,
   ResourceQueryResponse,
   UnsubscribeComponent,
-  errorMessageFormatter,
   getCachedValues,
   updateQueryUniqueValues,
 } from '@oort-front/shared';
