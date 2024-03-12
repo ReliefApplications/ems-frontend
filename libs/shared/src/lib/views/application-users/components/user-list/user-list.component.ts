@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApplicationService } from '../../../../services/application/application.service';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, switchMap, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../../components/utils/unsubscribe/unsubscribe.component';
 import {
   ApplicationUsersQueryResponse,
@@ -25,6 +25,7 @@ import { ConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { isNil } from 'lodash';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -126,9 +127,9 @@ export class UserListComponent
       );
     }
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((application) => {
-        if (application) {
+      .pipe(
+        filter((application) => !isNil(application)),
+        switchMap((application: any) => {
           this.usersQuery =
             this.apollo.watchQuery<ApplicationUsersQueryResponse>({
               query: GET_APPLICATION_USERS,
@@ -139,23 +140,23 @@ export class UserListComponent
                 filter: this.filter,
               },
             });
-          this.usersQuery.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ data, loading }) => {
-                this.updateValues(data, loading);
-              },
-              error: () => {
-                this.loading.next(false);
-                this.updating = false;
-              },
-            });
-        }
+          return this.usersQuery.valueChanges;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: () => {
+          this.loading.next(false);
+          this.updating = false;
+        },
       });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.filter) {
+    if (!isNil(changes.filter.previousValue) && changes.filter) {
       this.fetchUsers(true);
     }
   }

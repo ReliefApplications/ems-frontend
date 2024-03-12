@@ -7,8 +7,9 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import get from 'lodash/get';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { isNil } from 'lodash';
 
 /**
  * Layouts list configuration for grid widgets
@@ -151,23 +152,30 @@ export class LayoutTableComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService
-          .editLayout(layout, value, this.resource?.id, this.form?.id)
-          .subscribe({
-            next: ({ data }: any) => {
-              if (data.editLayout) {
-                const layouts = [...this.allLayouts];
-                const index = layouts.findIndex((x) => x.id === layout.id);
-                layouts[index] = data.editLayout;
-                this.allLayouts = layouts;
-                this.setSelectedLayouts(this.selectedLayouts?.value);
-              }
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((layout: any) => !isNil(layout)),
+        switchMap((value: any) => {
+          return this.gridLayoutService.editLayout(
+            layout,
+            value,
+            this.resource?.id,
+            this.form?.id
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }: any) => {
+          if (data.editLayout) {
+            const layouts = [...this.allLayouts];
+            const index = layouts.findIndex((x) => x.id === layout.id);
+            layouts[index] = data.editLayout;
+            this.allLayouts = layouts;
+            this.setSelectedLayouts(this.selectedLayouts?.value);
+          }
+        },
+      });
   }
 
   /**

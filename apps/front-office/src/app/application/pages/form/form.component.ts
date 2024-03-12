@@ -77,60 +77,55 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * Subscribes to the route to load the form.
    */
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.id = params.id;
-      this.isStep = this.router.url.includes('/workflow/');
-      // If a query is already loading, cancel it
-      if (this.querySubscription) {
-        this.querySubscription.unsubscribe();
-      }
-      if (this.isStep) {
-        this.querySubscription = this.apollo
-          .query<StepQueryResponse>({
-            query: GET_STEP_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap((res) => {
-              this.step = res.data.step;
-              return this.getFormQuery(this.step.content ?? '');
-            })
-          )
-          .subscribe({
-            next: ({ data, loading }) => {
-              this.handleApplicationLoadResponse(data, loading);
-            },
-            error: () => {
-              this.loading = false;
-            },
-          });
-      } else {
-        this.querySubscription = this.apollo
-          .query<PageQueryResponse>({
-            query: GET_PAGE_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap((res) => {
-              this.page = res.data.page;
-              return this.getFormQuery(this.page.content ?? '');
-            })
-          )
-          .subscribe({
-            next: ({ data, loading }) => {
-              this.handleApplicationLoadResponse(data, loading);
-            },
-            error: () => {
-              this.loading = false;
-            },
-          });
-      }
-    });
+    this.querySubscription = this.route.params
+      .pipe(
+        switchMap((params: any) => {
+          this.loading = true;
+          this.id = params.id;
+          this.isStep = this.router.url.includes('/workflow/');
+          let currentQuery!: any;
+          if (this.isStep) {
+            currentQuery = this.apollo.query<StepQueryResponse>({
+              query: GET_STEP_BY_ID,
+              variables: {
+                id: this.id,
+              },
+            });
+          } else {
+            currentQuery = this.apollo.query<PageQueryResponse>({
+              query: GET_PAGE_BY_ID,
+              variables: {
+                id: this.id,
+              },
+            });
+          }
+          return currentQuery;
+        }),
+        switchMap((res: any) => {
+          let currentFormQuery!: any;
+          if (this.isStep) {
+            this.step = res.data.step;
+            currentFormQuery = this.getFormQuery(this.step?.content ?? '');
+          } else {
+            this.page = res.data.page;
+            currentFormQuery = this.getFormQuery(this.page?.content ?? '');
+          }
+          return currentFormQuery;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res: any) => {
+          // If a query is already loading, cancel it
+          if (this.querySubscription) {
+            this.querySubscription.unsubscribe();
+          }
+          this.handleApplicationLoadResponse(res.data, res.loading);
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   /**

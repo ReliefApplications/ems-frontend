@@ -24,7 +24,7 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/shared';
 import {
   SnackbarService,
@@ -34,6 +34,7 @@ import {
 } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
 import { ApolloQueryResult } from '@apollo/client';
+import { isNil } from 'lodash';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -366,32 +367,34 @@ export class FormRecordsComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: record.id,
               version: version.id,
             },
-          })
-          .subscribe({
-            next: () => {
-              this.layoutService.setRightSidenav(null);
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.dataRecovered')
-              );
-            },
-            error: () => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.dataNotRecovered'),
-                { error: true }
-              );
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataRecovered')
+          );
+        },
+        error: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataNotRecovered'),
+            { error: true }
+          );
+        },
+      });
   }
 
   /**

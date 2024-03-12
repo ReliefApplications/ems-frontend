@@ -78,9 +78,11 @@ export class RoleAutoAssignmentComponent
       )
     );
     this.rules = this.formArray.value;
-    this.formArray.valueChanges.subscribe((value) => {
-      this.rules = value;
-    });
+    this.formArray.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.rules = value;
+      });
     this.apollo
       .query<GroupsQueryResponse>({
         query: GET_GROUPS,

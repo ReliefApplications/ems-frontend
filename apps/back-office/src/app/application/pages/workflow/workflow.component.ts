@@ -18,9 +18,10 @@ import {
 } from '@oort-front/shared';
 import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { Subscription } from 'rxjs';
+import { isNil } from 'lodash';
 
 /**
  * Application workflow page component.
@@ -234,55 +235,49 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
-          if (value) {
-            this.apollo
-              .mutate<DeleteStepMutationResponse>({
-                mutation: DELETE_STEP,
-                variables: {
-                  id: step.id,
-                },
-              })
-              .subscribe({
-                next: ({ data }) => {
-                  if (data) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'common.notifications.objectDeleted',
-                        {
-                          value: this.translate.instant('common.step.one'),
-                        }
-                      )
-                    );
-                    this.steps = this.steps.filter(
-                      (x) => x.id !== data?.deleteStep.id
-                    );
-                    if (index === this.activeStep) {
-                      this.onOpenStep(-1);
-                    } else {
-                      if (currentStep) {
-                        this.activeStep = this.steps.findIndex(
-                          (x) => x.id === currentStep.id
-                        );
-                      }
-                    }
-                  }
-                },
-                error: (errors) => {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: this.translate.instant('common.step.one'),
-                        error: errorMessageFormatter(errors),
-                      }
-                    ),
-                    { error: true }
+        .pipe(
+          filter((value) => !isNil(value)),
+          switchMap(() => {
+            return this.apollo.mutate<DeleteStepMutationResponse>({
+              mutation: DELETE_STEP,
+              variables: {
+                id: step.id,
+              },
+            });
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.step.one'),
+                })
+              );
+              this.steps = this.steps.filter(
+                (x) => x.id !== data?.deleteStep.id
+              );
+              if (index === this.activeStep) {
+                this.onOpenStep(-1);
+              } else {
+                if (currentStep) {
+                  this.activeStep = this.steps.findIndex(
+                    (x) => x.id === currentStep.id
                   );
-                },
-              });
-          }
+                }
+              }
+            }
+          },
+          error: (errors) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.step.one'),
+                error: errorMessageFormatter(errors),
+              }),
+              { error: true }
+            );
+          },
         });
     }
   }

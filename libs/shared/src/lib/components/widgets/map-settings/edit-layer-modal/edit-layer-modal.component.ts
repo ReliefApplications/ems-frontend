@@ -176,7 +176,7 @@ export class EditLayerModalComponent
   }
 
   ngOnInit(): void {
-    this.form = createLayerForm(this.data.layer);
+    this.form = createLayerForm(this.destroy$, this.data.layer);
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
@@ -528,7 +528,6 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: ({ data }) => {
             this.resource = data.resource;
@@ -546,13 +545,24 @@ export class EditLayerModalComponent
                   null
                 );
                 this.fields.next(
-                  this.aggregation
-                    ? this.mapLayersService.getAggregationFields(
-                        data.resource.queryName ?? '',
-                        this.aggregation
-                      )
-                    : []
+                  this.mapLayersService.getQueryFields(this.layout)
                 );
+              } else {
+                if (aggregationID) {
+                  this.aggregation = get(
+                    data,
+                    'resource.aggregations.edges[0].node',
+                    null
+                  );
+                  this.fields.next(
+                    this.aggregation
+                      ? this.mapLayersService.getAggregationFields(
+                          data.resource.queryName ?? '',
+                          this.aggregation
+                        )
+                      : []
+                  );
+                }
               }
             }
           },

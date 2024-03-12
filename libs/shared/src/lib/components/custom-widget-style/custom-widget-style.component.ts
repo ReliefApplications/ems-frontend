@@ -12,7 +12,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime, map, switchMap, takeUntil } from 'rxjs';
 import set from 'lodash/set';
 import get from 'lodash/get';
 import { RestService } from '../../services/rest/rest.service';
@@ -99,31 +99,37 @@ export class CustomWidgetStyleComponent
 
     // Updates the style when the value changes
     this.formControl.valueChanges
-      .pipe(debounceTime(1000), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        const scss = `#${this.widgetComp.id} {
-        ${value}
-      }`;
-        this.restService
-          .post('style/scss-to-css', { scss }, { responseType: 'text' })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: (css) => {
-              set(
-                this.widgetComp,
-                'widget.settings.widgetDisplay.style',
-                value
-              );
-              this.styleApplied.innerText = css;
-              this.document
-                .getElementsByTagName('head')[0]
-                .appendChild(this.styleApplied);
-              this.loading = false;
-            },
-            error: () => {
-              this.loading = false;
-            },
-          });
+      .pipe(
+        debounceTime(1000),
+        switchMap((value: any) => {
+          const scss = `#${this.widgetComp.id} {
+          ${value}
+        }`;
+          return this.restService
+            .post('style/scss-to-css', { scss }, { responseType: 'text' })
+            .pipe(
+              map((css) => {
+                return {
+                  css,
+                  value,
+                };
+              })
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ css, value }) => {
+          set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
+          this.styleApplied.innerText = css;
+          this.document
+            .getElementsByTagName('head')[0]
+            .appendChild(this.styleApplied);
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

@@ -2,6 +2,8 @@ import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { MapEvent, MapEventType } from '../interfaces/map.interface';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /** Zoom slider component for the map widget */
 @Component({
@@ -11,7 +13,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./map-zoom.component.scss'],
   imports: [FormsModule, CommonModule],
 })
-export class MapZoomComponent implements OnInit, OnDestroy {
+export class MapZoomComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /** Maximum zoom level */
   public maxZoom!: number;
   /** Minimum zoom level */
@@ -23,8 +28,15 @@ export class MapZoomComponent implements OnInit, OnDestroy {
   /** Event emitter for the map events */
   public mapEvent!: EventEmitter<MapEvent>;
 
+  /**
+   * Map zoom component constructor
+   */
+  constructor() {
+    super();
+  }
+
   ngOnInit() {
-    this.mapEvent.subscribe((event) => {
+    this.mapEvent.pipe(takeUntil(this.destroy$)).subscribe((event) => {
       if (event.type === MapEventType.ZOOM_END)
         this.currentZoom = event.content.zoom;
     });
@@ -51,7 +63,8 @@ export class MapZoomComponent implements OnInit, OnDestroy {
     if (this.currentZoom > this.minZoom) this.map.setZoom(this.currentZoom - 1);
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     this.mapEvent.unsubscribe();
   }
 }

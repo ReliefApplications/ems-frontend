@@ -150,7 +150,6 @@ export class UserAppRolesComponent
           application,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data, loading }) => {
           if (data) {

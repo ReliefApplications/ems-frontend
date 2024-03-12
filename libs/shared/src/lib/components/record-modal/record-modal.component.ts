@@ -14,7 +14,13 @@ import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  firstValueFrom,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -28,6 +34,7 @@ import { FormActionsModule } from '../form-actions/form-actions.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -292,34 +299,35 @@ export class RecordModalComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: record.id,
               version: version.id,
             },
-          })
-          .subscribe({
-            next: () => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.dataRecovered')
-              );
-
-              this.dialogRef.close();
-            },
-            error: () => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.dataNotRecovered'),
-                { error: true }
-              );
-              this.dialogRef.close();
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataRecovered')
+          );
+          this.dialogRef.close();
+        },
+        error: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataNotRecovered'),
+            { error: true }
+          );
+          this.dialogRef.close();
+        },
+      });
   }
 
   override ngOnDestroy(): void {

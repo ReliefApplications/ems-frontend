@@ -16,6 +16,8 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -43,7 +45,10 @@ interface PreferencesDialogData {
   templateUrl: './preferences-modal.component.html',
   styleUrls: ['./preferences-modal.component.scss'],
 })
-export class PreferencesModalComponent implements OnInit {
+export class PreferencesModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Reactive form */
   public preferencesForm!: ReturnType<typeof this.createPreferencesForm>;
   /** Data */
@@ -70,6 +75,7 @@ export class PreferencesModalComponent implements OnInit {
     private translate: TranslateService,
     private dateTranslate: DateTranslateService
   ) {
+    super();
     // find the current language
     this.currLang = this.translate.currentLang || this.translate.defaultLang;
     // find the list of languages and their complete names
@@ -93,7 +99,8 @@ export class PreferencesModalComponent implements OnInit {
     this.preferencesForm = this.createPreferencesForm();
     this.preferencesForm
       .get('language')
-      ?.valueChanges.subscribe((lang: any) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((lang: any) => {
         this.translate.use(lang);
       });
   }

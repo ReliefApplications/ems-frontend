@@ -18,7 +18,7 @@ import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, switchMap, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -398,32 +398,34 @@ export class FormComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: record.id,
               version: version.id,
             },
-          })
-          .subscribe({
-            next: () => {
-              this.layoutService.setRightSidenav(null);
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.dataRecovered')
-              );
-            },
-            error: () => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.dataNotRecovered'),
-                { error: true }
-              );
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          this.layoutService.setRightSidenav(null);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataRecovered')
+          );
+        },
+        error: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataNotRecovered'),
+            { error: true }
+          );
+        },
+      });
   }
 
   /** It removes the item from local storage, clears cached records, and discards the search. */

@@ -18,7 +18,7 @@ import {
 } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   TableSort,
@@ -28,6 +28,7 @@ import {
 import { SnackbarService } from '@oort-front/ui';
 import { GET_API_CONFIGURATIONS } from './graphql/queries';
 import { FormBuilder } from '@angular/forms';
+import { isNil } from 'lodash';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -171,49 +172,48 @@ export class ApiConfigurationsComponent
       './components/add-api-configuration/add-api-configuration.component'
     );
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddApiConfigurationMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: { name: any }) => {
+          return this.apollo.mutate<AddApiConfigurationMutationResponse>({
             mutation: ADD_API_CONFIGURATION,
             variables: {
               name: value.name,
             },
-          })
-          .subscribe({
-            next: ({ data }) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate
-                    .instant('common.apiConfiguration.one')
-                    .toLowerCase(),
-                  value: data?.addApiConfiguration.name,
-                })
-              );
-              if (data) {
-                this.router.navigate([
-                  '/settings/apiconfigurations',
-                  data.addApiConfiguration.id,
-                ]);
-              }
-            },
-            error: (errors) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotCreated',
-                  {
-                    type: this.translate
-                      .instant('common.apiConfiguration.one')
-                      .toLowerCase(),
-                    error: errorMessageFormatter(errors),
-                  }
-                ),
-                { error: true }
-              );
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectCreated', {
+              type: this.translate
+                .instant('common.apiConfiguration.one')
+                .toLowerCase(),
+              value: data?.addApiConfiguration.name,
+            })
+          );
+          if (data) {
+            this.router.navigate([
+              '/settings/apiconfigurations',
+              data.addApiConfiguration.id,
+            ]);
+          }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate
+                .instant('common.apiConfiguration.one')
+                .toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
+      });
   }
 
   /**
@@ -235,47 +235,42 @@ export class ApiConfigurationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteApiConfigurationMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<DeleteApiConfigurationMutationResponse>({
             mutation: DELETE_API_CONFIGURATION,
             variables: {
               id: element.id,
             },
-          })
-          .subscribe({
-            next: (res) => {
-              if (res) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant(
-                      'common.apiConfiguration.one'
-                    ),
-                  })
-                );
-                this.dataSource = this.dataSource.filter(
-                  (x) => x.id !== element.id
-                );
-              }
-            },
-            error: (errors) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: this.translate.instant(
-                      'common.apiConfiguration.one'
-                    ),
-                    error: errorMessageFormatter(errors),
-                  }
-                ),
-                { error: true }
-              );
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.apiConfiguration.one'),
+              })
+            );
+            this.dataSource = this.dataSource.filter(
+              (x) => x.id !== element.id
+            );
+          }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDeleted', {
+              value: this.translate.instant('common.apiConfiguration.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
+      });
   }
 
   /**

@@ -58,18 +58,21 @@ export const init = (
           question.value = value;
         }
       });
-
+      if (question._dropdownInstanceChangeSubscription) {
+        question._dropdownInstanceChangeSubscription.unsubscribe();
+      }
       // We subscribe to whatever you write on the field so we can filter the data accordingly
-      dropdownInstance.filterChange
-        .pipe(
-          debounceTime(500), // Debounce time to limit quantity of updates
-          tap(() => (dropdownInstance.loading = true)),
-          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
-        )
-        .subscribe((searchValue: string) => {
-          currentSearchValue = searchValue;
-          updateChoices(dropdownInstance, question, searchValue);
-        });
+      question._dropdownInstanceChangeSubscription =
+        dropdownInstance.filterChange
+          .pipe(
+            debounceTime(500), // Debounce time to limit quantity of updates
+            tap(() => (dropdownInstance.loading = true)),
+            map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+          )
+          .subscribe((searchValue: string) => {
+            currentSearchValue = searchValue;
+            updateChoices(dropdownInstance, question, searchValue);
+          });
 
       question._propertyValueChangedVirtual = () => {
         updateChoices(dropdownInstance, question, currentSearchValue);
@@ -119,6 +122,18 @@ export const init = (
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
+      if (question._dropdownInstanceChangeSubscription) {
+        question._dropdownInstanceChangeSubscription.unsubscribe();
+      }
+      if (question._temporaryRecordsChangeSubscription) {
+        question._temporaryRecordsChangeSubscription.unsubscribe();
+      }
+      if (question._searchButtonDialogRefSubscription) {
+        question._searchButtonDialogRefSubscription.unsubscribe();
+      }
+      if (question._addButtonDialogRefSubscription) {
+        question._addButtonDialogRefSubscription.unsubscribe();
+      }
       if (!question._propertyValueChangedVirtual) return;
       question.readOnlyChangedCallback = null;
       question.valueChangedCallback = null;

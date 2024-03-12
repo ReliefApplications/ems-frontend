@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,6 +19,7 @@ import { apiValidator } from '../../../utils/nameValidation';
 import { EDIT_API_CONFIGURATION } from './graphql/mutations';
 import { GET_API_CONFIGURATION } from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
+import { Subscription } from 'rxjs';
 
 /**
  * Default value shown for private settings fields
@@ -35,7 +36,7 @@ const ENCRYPTED_VALUE = '●●●●●●●●●●●●●';
 })
 export class ApiConfigurationComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Loading indicator */
   public loading = true;
@@ -53,6 +54,8 @@ export class ApiConfigurationComponent
   public authType = authType;
   /** Available auth types */
   public authTypeChoices = Object.values(authType);
+  /** Form auth type subscription listener */
+  private authTypeSubscription!: Subscription;
 
   /** @returns API configuration name */
   get name(): AbstractControl | null {
@@ -104,11 +107,16 @@ export class ApiConfigurationComponent
                 this.apiConfiguration.name as string
               );
               this.apiForm = this.createApiForm(data.apiConfiguration);
-              this.apiForm.controls.authType?.valueChanges
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((value) => {
-                  this.resetFormSettings(value);
-                });
+              // Reset auth type subscription on same component instance to avoid keeping multiple opened subscriptions
+              if (this.authTypeSubscription) {
+                this.authTypeSubscription.unsubscribe();
+              }
+              this.authTypeSubscription =
+                this.apiForm.controls.authType?.valueChanges
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe((value) => {
+                    this.resetFormSettings(value);
+                  });
               this.loading = loading;
             }
           },
@@ -372,6 +380,13 @@ export class ApiConfigurationComponent
     const control = this.apiForm.get(key);
     if (control && control.pristine) {
       control.setValue('');
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.authTypeSubscription) {
+      this.authTypeSubscription.unsubscribe();
     }
   }
 }

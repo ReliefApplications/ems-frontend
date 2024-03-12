@@ -7,10 +7,11 @@ import {
   Workflow,
   UnsubscribeComponent,
   WorkflowQueryResponse,
+  errorMessageFormatter,
 } from '@oort-front/shared';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { Subscription } from 'rxjs';
 
@@ -73,64 +74,64 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
           this.onOpenStep(0);
         }
       });
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.id = params.id;
-      this.apollo
-        .watchQuery<WorkflowQueryResponse>({
-          query: GET_WORKFLOW_BY_ID,
-          variables: {
-            id: this.id,
-          },
-        })
-        .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: ({ data, loading }) => {
-            if (data.workflow) {
-              this.workflow = data.workflow;
-              this.steps = data.workflow.steps || [];
-              this.loading = loading;
-              if (this.steps.length > 0) {
-                const currentStepId = this.router.url.split('/').pop();
-                // If redirect to the workflow beginning, just go to the firstStep
-                const firstStep = this.steps[0];
-                const firstStepIsForm = firstStep.type === ContentType.form;
-                let currentActiveStep = 0;
-                if (
-                  !(firstStepIsForm
-                    ? firstStep.id === currentStepId
-                    : firstStep.content === currentStepId)
-                ) {
-                  // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)
-                  data.workflow?.steps?.forEach((step: Step, index: number) => {
-                    const stepIsForm = step.type === ContentType.form;
-                    if (
-                      (stepIsForm && step.id === currentStepId) ||
-                      step.content === currentStepId
-                    ) {
-                      currentActiveStep = index;
-                      return;
-                    }
-                  });
-                }
-                this.onOpenStep(currentActiveStep);
+    this.route.params
+      .pipe(
+        switchMap((params: any) => {
+          this.loading = true;
+          this.id = params.id;
+          return this.apollo.watchQuery<WorkflowQueryResponse>({
+            query: GET_WORKFLOW_BY_ID,
+            variables: {
+              id: this.id,
+            },
+          }).valueChanges;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data.workflow) {
+            this.workflow = data.workflow;
+            this.steps = data.workflow.steps || [];
+            this.loading = loading;
+            if (this.steps.length > 0) {
+              const currentStepId = this.router.url.split('/').pop();
+              // If redirect to the workflow beginning, just go to the firstStep
+              const firstStep = this.steps[0];
+              const firstStepIsForm = firstStep.type === ContentType.form;
+              let currentActiveStep = 0;
+              if (
+                !(firstStepIsForm
+                  ? firstStep.id === currentStepId
+                  : firstStep.content === currentStepId)
+              ) {
+                // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)
+                data.workflow?.steps?.forEach((step: Step, index: number) => {
+                  const stepIsForm = step.type === ContentType.form;
+                  if (
+                    (stepIsForm && step.id === currentStepId) ||
+                    step.content === currentStepId
+                  ) {
+                    currentActiveStep = index;
+                    return;
+                  }
+                });
               }
+              this.onOpenStep(currentActiveStep);
             }
-          },
-          error: () => {
-            this.loading = false;
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.accessNotProvided', {
-                type: this.translate
-                  .instant('common.workflow.one')
-                  .toLowerCase(),
-                error: '',
-              }),
-              { error: true }
-            );
-          },
-        });
-    });
+          }
+        },
+        error: (errors) => {
+          this.loading = false;
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate.instant('common.workflow.one').toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
+      });
   }
 
   /**

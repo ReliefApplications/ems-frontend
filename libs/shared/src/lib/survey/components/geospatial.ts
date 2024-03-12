@@ -10,6 +10,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { getGeoFields } from './utils/get-geospatial-fields';
+import { takeUntil } from 'rxjs';
 
 /**
  * Inits the geospatial component.
@@ -82,7 +83,7 @@ export const init = (
       });
 
       // updates the question value when the map changes
-      instance.mapChange.subscribe((res) => {
+      instance.mapChange.pipe(takeUntil(instance.destroy$)).subscribe((res) => {
         question.value = res;
       });
     },

@@ -19,6 +19,8 @@ export class EditorService {
   private editorScrollListener!: any;
   /** Active item scroll listener */
   public activeItemScrollListener!: any;
+  /** Allow scrolling timeout listener */
+  private allowScrollingTimeoutListener!: NodeJS.Timeout;
   /** Renderer */
   private renderer!: Renderer2;
 
@@ -122,7 +124,10 @@ export class EditorService {
     if (this.editorScrollListener) {
       this.editorScrollListener();
     }
-    setTimeout(() => {
+    if (this.allowScrollingTimeoutListener) {
+      clearTimeout(this.allowScrollingTimeoutListener);
+    }
+    this.allowScrollingTimeoutListener = setTimeout(() => {
       const autoCompleterContainer =
         this.document.querySelector('.tox-tinymce-aux');
       if (!autoCompleterContainer) return;

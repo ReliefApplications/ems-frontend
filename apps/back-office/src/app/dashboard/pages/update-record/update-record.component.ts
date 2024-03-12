@@ -6,9 +6,11 @@ import {
   BreadcrumbService,
   FormQueryResponse,
   RecordQueryResponse,
+  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { GET_FORM_STRUCTURE, GET_RECORD_BY_ID } from './graphql/queries';
+import { takeUntil } from 'rxjs';
 
 /**
  * Update record view.
@@ -18,7 +20,10 @@ import { GET_FORM_STRUCTURE, GET_RECORD_BY_ID } from './graphql/queries';
   templateUrl: './update-record.component.html',
   styleUrls: ['./update-record.component.scss'],
 })
-export class UpdateRecordComponent implements OnInit {
+export class UpdateRecordComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Loading indicator */
   public loading = true;
   /** Current record id */
@@ -39,7 +44,9 @@ export class UpdateRecordComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
@@ -52,7 +59,8 @@ export class UpdateRecordComponent implements OnInit {
             id: template,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             this.form = data.form;
             this.breadcrumbService.setBreadcrumb(
@@ -74,7 +82,8 @@ export class UpdateRecordComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             this.record = data.record;
             this.breadcrumbService.setBreadcrumb(

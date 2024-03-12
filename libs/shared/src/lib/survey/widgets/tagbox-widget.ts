@@ -146,9 +146,11 @@ export const init = (
         console.log(value);
         question.value = value;
       });
-
+      if (question._tagboxInstanceChangeSubscription) {
+        question._tagboxInstanceChangeSubscription.unsubscribe();
+      }
       // We subscribe to whatever you write on the field so we can filter the data accordingly
-      tagboxInstance.filterChange
+      question._tagboxInstanceChangeSubscription = tagboxInstance.filterChange
         .pipe(
           debounceTime(500), // Debounce time to limit quantity of updates
           tap(() => (tagboxInstance.loading = true)),
@@ -217,6 +219,18 @@ export const init = (
       el.parentElement?.appendChild(tagboxDiv);
     },
     willUnmount: (question: any): void => {
+      if (question._tagboxInstanceChangeSubscription) {
+        question._tagboxInstanceChangeSubscription.unsubscribe();
+      }
+      if (question._temporaryRecordsChangeSubscription) {
+        question._temporaryRecordsChangeSubscription.unsubscribe();
+      }
+      if (question._searchButtonDialogRefSubscription) {
+        question._searchButtonDialogRefSubscription.unsubscribe();
+      }
+      if (question._addButtonDialogRefSubscription) {
+        question._addButtonDialogRefSubscription.unsubscribe();
+      }
       if (!question._propertyValueChangedVirtual) return;
       question.readOnlyChangedCallback = null;
       question.valueChangedCallback = null;

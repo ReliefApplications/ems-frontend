@@ -133,11 +133,6 @@ export class GeospatialMapComponent
    */
   private disableGeomanToolsFlag = false;
 
-  // output
-  /**
-   * Timeout for the reverse search
-   */
-  private timeout: ReturnType<typeof setTimeout> | null = null;
   /**
    * Output for the map change
    */

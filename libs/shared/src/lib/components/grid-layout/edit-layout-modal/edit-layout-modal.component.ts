@@ -13,6 +13,8 @@ import { flattenDeep } from 'lodash';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -41,7 +43,10 @@ interface DialogData {
   templateUrl: './edit-layout-modal.component.html',
   styleUrls: ['./edit-layout-modal.component.scss'],
 })
-export class EditLayoutModalComponent implements AfterViewInit {
+export class EditLayoutModalComponent
+  extends UnsubscribeComponent
+  implements AfterViewInit
+{
   /**
    * Layout to edit
    */
@@ -74,7 +79,9 @@ export class EditLayoutModalComponent implements AfterViewInit {
     private fb: FormBuilder,
     public dialogRef: DialogRef<EditLayoutModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   ngAfterViewInit(): void {
     this.layoutPreviewData = {
@@ -92,9 +99,12 @@ export class EditLayoutModalComponent implements AfterViewInit {
       }
     }
     // Subscribe to changes to set display of the query
-    this.form.get('display')?.valueChanges.subscribe((value: any) => {
-      this.layoutPreviewData.defaultLayout = value;
-    });
+    this.form
+      .get('display')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        this.layoutPreviewData.defaultLayout = value;
+      });
   }
 
   /**

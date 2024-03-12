@@ -6,7 +6,7 @@ import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
+import { of, switchMap, takeUntil } from 'rxjs';
 import { UntypedFormControl } from '@angular/forms';
 import { MapComponent } from '../../../ui/map/map.component';
 import { CdkTable } from '@angular/cdk/table';
@@ -103,27 +103,34 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
         mapPortal: this.mapPortal,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.loading = true;
-        this.mapLayersService.addLayer(value).subscribe({
-          next: (res) => {
-            if (res) {
-              const value = this.control.value;
-              this.control.setValue([...value, res.id]);
-              this.mapLayers.push(res);
-            }
-          },
-          error: (err) => {
-            console.error(err);
-            this.loading = false;
-          },
-          complete: () => (this.loading = false),
-        });
-      } else {
-        this.restoreMapSettingsView();
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        switchMap((value: any) => {
+          if (value) {
+            this.loading = true;
+            return this.mapLayersService.addLayer(value);
+          } else {
+            return of(null);
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+          if (res) {
+            const value = this.control.value;
+            this.control.setValue([...value, res.id]);
+            this.mapLayers.push(res);
+          } else {
+            this.restoreMapSettingsView();
+          }
+        },
+        error: () => {
+          this.loading = false;
+          this.restoreMapSettingsView();
+        },
+      });
   }
 
   /**
@@ -147,10 +154,8 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
    * @param id id of layer to edit
    */
   public onEditLayer(id: string) {
-    this.mapLayersService
-      .getLayerById(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async (layer) => {
+    this.mapLayersService.getLayerById(id).subscribe({
+      next: async (layer) => {
         const { EditLayerModalComponent } = await import(
           '../edit-layer-modal/edit-layer-modal.component'
         );
@@ -167,13 +172,13 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
             mapPortal: this.mapPortal,
           },
         });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((value: any) => {
+        dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe({
+          next: (value: any) => {
             if (value) {
               this.loading = true;
               this.mapLayersService.editLayer(value).subscribe({
                 next: (res) => {
+                  this.loading = false;
                   if (res) {
                     const index = this.mapLayers.findIndex(
                       (layer) => layer.id === id
@@ -193,16 +198,22 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
                   }
                 },
                 error: (err) => {
-                  console.error(err);
                   this.loading = false;
+                  this.restoreMapSettingsView();
+                  console.log(err);
                 },
-                complete: () => (this.loading = false),
               });
             } else {
               this.restoreMapSettingsView();
             }
-          });
-      });
+          },
+          error: () => {
+            this.restoreMapSettingsView();
+          },
+        });
+      },
+      error: (err) => console.log(err),
+    });
   }
 
   /**

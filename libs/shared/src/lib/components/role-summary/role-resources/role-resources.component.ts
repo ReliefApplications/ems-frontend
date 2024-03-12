@@ -235,7 +235,6 @@ export class RoleResourcesComponent
             role: this.role.id,
           },
         })
-        .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: ({ data }) => {
             if (data.resource) {
@@ -309,7 +308,6 @@ export class RoleResourcesComponent
           role: this.role.id as string,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
           this.handleResourceMutationResponse(
@@ -347,7 +345,6 @@ export class RoleResourcesComponent
           role: this.role.id as string,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
           this.handleResourceMutationResponse(resource, { data, errors: [] });
@@ -446,7 +443,6 @@ export class RoleResourcesComponent
           },
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
           this.handleResourceMutationResponse(resource, { data, errors: [] });

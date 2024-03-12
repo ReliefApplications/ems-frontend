@@ -18,13 +18,14 @@ import { GET_SHORT_FORMS } from './graphql/queries';
 import { DELETE_FORM, ADD_FORM } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ApolloQueryResult } from '@apollo/client';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import {
   TableSort,
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -222,42 +223,41 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const id = form.id;
-        this.apollo
-          .mutate<DeleteFormMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          const id = form.id;
+          return this.apollo.mutate<DeleteFormMutationResponse>({
             mutation: DELETE_FORM,
             variables: {
               id,
             },
-          })
-          .subscribe({
-            next: () => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.form.one'),
-                })
-              );
-              this.forms = this.forms.filter(
-                (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
-              );
-            },
-            error: (errors) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: this.translate.instant('common.form.one'),
-                    error: errorMessageFormatter(errors),
-                  }
-                ),
-                { error: true }
-              );
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: this.translate.instant('common.form.one'),
+            })
+          );
+          this.forms = this.forms.filter(
+            (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
+          );
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDeleted', {
+              value: this.translate.instant('common.form.one'),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
+      });
   }
 
   /**
@@ -269,43 +269,40 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variablesData = { name: value.name };
-        Object.assign(
-          variablesData,
-          value.resource && { resource: value.resource },
-          value.template && { template: value.template }
-        );
-        this.apollo
-          .mutate<AddFormMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value) => {
+          const variablesData = { name: value.name };
+          Object.assign(
+            variablesData,
+            value.resource && { resource: value.resource },
+            value.template && { template: value.template }
+          );
+          return this.apollo.mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
             variables: variablesData,
-          })
-          .subscribe({
-            next: ({ data }) => {
-              if (data) {
-                const { id } = data.addForm;
-                this.router.navigate(['/forms/' + id + '/builder']);
-              }
-            },
-            error: (errors) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotCreated',
-                  {
-                    type: this.translate
-                      .instant('common.form.one')
-                      .toLowerCase(),
-                    error: errorMessageFormatter(errors),
-                  }
-                ),
-                { error: true }
-              );
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          if (data) {
+            const { id } = data.addForm;
+            this.router.navigate(['/forms/' + id + '/builder']);
+          }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate.instant('common.form.one').toLowerCase(),
+              error: errorMessageFormatter(errors),
+            }),
+            { error: true }
+          );
+        },
+      });
   }
 
   /**

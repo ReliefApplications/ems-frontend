@@ -14,9 +14,9 @@ import {
 } from '../../../../models/reference-data.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
 
 /**
@@ -119,7 +119,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
           this.resource = data.resource;
@@ -154,7 +153,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
           this.referenceData = data.referenceData;
@@ -225,27 +223,32 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, {
-            resource: this.resource?.id,
-            referenceData: this.referenceData?.id,
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ data }) => {
-              if (data?.editAggregation) {
-                if (this.resource) {
-                  this.getResource(this.resource?.id as string);
-                } else {
-                  this.getReferenceData(this.referenceData?.id as string);
-                }
-              }
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value) && !isNil(this.aggregation)),
+        switchMap((value: any) => {
+          return this.aggregationService.editAggregation(
+            this.aggregation as Aggregation,
+            value,
+            {
+              resource: this.resource?.id,
+              referenceData: this.referenceData?.id,
+            }
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.editAggregation) {
+            if (this.resource) {
+              this.getResource(this.resource?.id as string);
+            } else {
+              this.getReferenceData(this.referenceData?.id as string);
+            }
+          }
+        },
+      });
   }
 
   /**

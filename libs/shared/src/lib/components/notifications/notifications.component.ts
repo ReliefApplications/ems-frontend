@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subscription, filter, switchMap, takeUntil } from 'rxjs';
 import {
   Application,
   ApplicationCustomNotificationsNodesQueryResponse,
@@ -13,6 +13,7 @@ import { ApplicationService } from '../../services/application/application.servi
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { GET_CUSTOM_NOTIFICATIONS } from './graphql/queries';
+import { isNil } from 'lodash';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -76,45 +77,44 @@ export class NotificationsComponent
   }
 
   ngOnInit(): void {
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.notificationsQuery =
-              this.apollo.watchQuery<ApplicationCustomNotificationsNodesQueryResponse>(
-                {
-                  query: GET_CUSTOM_NOTIFICATIONS,
-                  variables: {
-                    first: DEFAULT_PAGE_SIZE,
-                    application: application.id,
-                  },
-                }
-              );
-            this.notificationsQuery.valueChanges.subscribe({
-              next: (res) => {
-                this.cachedNotifications =
-                  res.data.application.customNotifications.edges.map(
-                    (x) => x.node
-                  );
-                this.notifications = this.cachedNotifications.slice(
-                  this.pageInfo.pageSize * this.pageInfo.pageIndex,
-                  this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-                );
-                this.pageInfo.length =
-                  res.data.application.customNotifications.totalCount;
-                this.pageInfo.endCursor =
-                  res.data.application.customNotifications.pageInfo.endCursor;
-                this.loading = res.loading;
-                this.updating = false;
-              },
-              error: () => {
-                this.loading = false;
-                this.updating = false;
-              },
-            });
-          }
-        }
-      );
+    this.applicationSubscription = this.applicationService.application$
+      .pipe(
+        filter((application: Application | null) => !isNil(application)),
+        switchMap((application: any) => {
+          this.notificationsQuery =
+            this.apollo.watchQuery<ApplicationCustomNotificationsNodesQueryResponse>(
+              {
+                query: GET_CUSTOM_NOTIFICATIONS,
+                variables: {
+                  first: DEFAULT_PAGE_SIZE,
+                  application: application.id,
+                },
+              }
+            );
+          return this.notificationsQuery.valueChanges;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          this.cachedNotifications =
+            res.data.application.customNotifications.edges.map((x) => x.node);
+          this.notifications = this.cachedNotifications.slice(
+            this.pageInfo.pageSize * this.pageInfo.pageIndex,
+            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+          );
+          this.pageInfo.length =
+            res.data.application.customNotifications.totalCount;
+          this.pageInfo.endCursor =
+            res.data.application.customNotifications.pageInfo.endCursor;
+          this.loading = res.loading;
+          this.updating = false;
+        },
+        error: () => {
+          this.loading = false;
+          this.updating = false;
+        },
+      });
   }
 
   /**

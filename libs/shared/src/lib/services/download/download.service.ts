@@ -32,6 +32,9 @@ const SNACKBAR_DURATION = 3000;
   providedIn: 'root',
 })
 export class DownloadService {
+  /** Save file timeout listener */
+  private saveFileTimeoutListener!: NodeJS.Timeout;
+
   /**
    * Shared download service. Handles export and upload events.
    * TODO: rename in file service
@@ -234,7 +237,10 @@ export class DownloadService {
     link.download = fileName;
     this.document.body.append(link);
     link.click();
-    setTimeout(() => link.remove(), 0);
+    if (this.saveFileTimeoutListener) {
+      clearTimeout(this.saveFileTimeoutListener);
+    }
+    this.saveFileTimeoutListener = setTimeout(() => link.remove(), 0);
   }
 
   /**

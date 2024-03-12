@@ -11,6 +11,7 @@ import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { TabsComponent } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Buttons tab of grid widget configuration modal.
@@ -20,7 +21,7 @@ import { TabsComponent } from '@oort-front/ui';
   templateUrl: './tab-buttons.component.html',
   styleUrls: ['./tab-buttons.component.scss'],
 })
-export class TabButtonsComponent {
+export class TabButtonsComponent extends UnsubscribeComponent {
   /** Form group */
   @Input() formGroup!: UntypedFormGroup;
   /** List of fields */
@@ -55,7 +56,7 @@ export class TabButtonsComponent {
     const floatingButtons = this.formGroup?.get(
       'floatingButtons'
     ) as UntypedFormArray;
-    floatingButtons.push(createButtonFormGroup({ show: true }));
+    floatingButtons.push(createButtonFormGroup({ show: true }, this.destroy$));
     event.stopPropagation();
   }
 

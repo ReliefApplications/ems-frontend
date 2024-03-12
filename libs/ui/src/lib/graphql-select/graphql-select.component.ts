@@ -335,7 +335,7 @@ export class GraphQLSelectComponent
       });
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
         this.cachedElements = [];
         this.searchChange.emit(value);

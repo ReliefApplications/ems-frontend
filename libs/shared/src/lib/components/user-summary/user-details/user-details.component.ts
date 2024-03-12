@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import { User } from '../../../models/user.model';
 import { AppAbility } from '../../../services/auth/auth.service';
 import { RestService } from '../../../services/rest/rest.service';
+import { map, switchMap } from 'rxjs';
 
 /**
  * User summary details component.
@@ -76,35 +77,45 @@ export class UserDetailsComponent implements OnInit {
    * Get attributes from back-end, and set controls if any
    */
   private getAttributes(): void {
-    this.restService.get('/permissions/configuration').subscribe({
-      next: (config) => {
-        // can user edit attributes
-        const manualCreation = get(config, 'attributes.local', true);
-        this.restService.get('/permissions/attributes').subscribe({
-          next: (attributes: any) => {
-            this.form.addControl(
-              'attributes',
-              this.fb.group(
-                attributes.reduce(
-                  (group: any, attribute: any) => ({
-                    ...group,
-                    [attribute.value]: this.fb.control({
-                      value: get(
-                        this.user,
-                        `attributes.${attribute.value}`,
-                        null
-                      ),
-                      disabled: !manualCreation,
-                    }),
+    this.restService
+      .get('/permissions/configuration')
+      .pipe(
+        switchMap((config: any) => {
+          // can user edit attributes
+          const manualCreation = get(config, 'attributes.local', true);
+          return this.restService.get('/permissions/attributes').pipe(
+            map((attributes: any) => {
+              return {
+                attributes,
+                manualCreation,
+              };
+            })
+          );
+        })
+      )
+      .subscribe({
+        next: ({ attributes, manualCreation }) => {
+          this.form.addControl(
+            'attributes',
+            this.fb.group(
+              attributes.reduce(
+                (group: any, attribute: any) => ({
+                  ...group,
+                  [attribute.value]: this.fb.control({
+                    value: get(
+                      this.user,
+                      `attributes.${attribute.value}`,
+                      null
+                    ),
+                    disabled: !manualCreation,
                   }),
-                  {}
-                )
+                }),
+                {}
               )
-            );
-            this.attributes = attributes;
-          },
-        });
-      },
-    });
+            )
+          );
+          this.attributes = attributes;
+        },
+      });
   }
 }

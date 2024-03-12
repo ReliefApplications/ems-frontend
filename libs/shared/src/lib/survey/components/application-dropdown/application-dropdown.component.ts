@@ -118,7 +118,6 @@ export class ApplicationDropdownComponent
             },
           },
         })
-        .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: ({ data }) => {
             this.selectedApplications = data.applications.edges.map(

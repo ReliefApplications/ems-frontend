@@ -11,7 +11,8 @@ import get from 'lodash/get';
 import { Calculated_FIELD_UPDATE } from './graphql/mutations';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
+import { isNil } from 'lodash';
 
 /**
  * Calculated fields tab of resource page
@@ -194,10 +195,11 @@ export class CalculatedFieldsTabComponent
       },
     });
 
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditResourceMutationResponse>({
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap(() => {
+          return this.apollo.mutate<EditResourceMutationResponse>({
             mutation: Calculated_FIELD_UPDATE,
             variables: {
               resourceId: this.resource.id,
@@ -207,22 +209,21 @@ export class CalculatedFieldsTabComponent
                 },
               },
             },
-          })
-          .subscribe({
-            next: (res) => {
-              if (res.data?.editResource) {
-                this.fields = this.fields.filter(
-                  (f: any) => f.name !== field.name
-                );
-              }
-            },
-            error: (errors) => {
-              this.snackBar.openSnackBar(errorMessageFormatter(errors), {
-                error: true,
-              });
-            },
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          if (res.data?.editResource) {
+            this.fields = this.fields.filter((f: any) => f.name !== field.name);
+          }
+        },
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
+        },
+      });
   }
 }

@@ -21,7 +21,9 @@ import {
   Form,
   ResourceQueryResponse,
   ResourceSelectComponent,
+  UnsubscribeComponent,
 } from '@oort-front/shared';
+import { takeUntil } from 'rxjs';
 
 /**
  * Add form component (modal)
@@ -49,7 +51,10 @@ import {
   templateUrl: './add-form-modal.component.html',
   styleUrls: ['./add-form-modal.component.scss'],
 })
-export class AddFormModalComponent implements OnInit {
+export class AddFormModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Form group */
   public form = this.fb.group({
     name: ['', Validators.required],
@@ -83,27 +88,33 @@ export class AddFormModalComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: DialogRef<AddFormModalComponent>,
     private apollo: Apollo
-  ) {}
+  ) {
+    super();
+  }
 
   /** Load the resources and build the form. */
   ngOnInit(): void {
-    this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
-      if (value) {
-        this.form.get('resource')?.clearValidators();
-        this.form.patchValue({
-          resource: null,
-          inheritsTemplate: false,
-          template: null,
-        });
-      } else {
-        this.form.get('resource')?.setValidators([Validators.required]);
-      }
-      this.form.get('resource')?.updateValueAndValidity();
-    });
+    this.form
+      .get('newResource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
+        if (value) {
+          this.form.get('resource')?.clearValidators();
+          this.form.patchValue({
+            resource: null,
+            inheritsTemplate: false,
+            template: null,
+          });
+        } else {
+          this.form.get('resource')?.setValidators([Validators.required]);
+        }
+        this.form.get('resource')?.updateValueAndValidity();
+      });
 
     this.form
       .get('inheritsTemplate')
-      ?.valueChanges.subscribe((value: boolean) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
         if (value) {
           this.form.get('template')?.setValidators([Validators.required]);
         } else {
@@ -117,7 +128,8 @@ export class AddFormModalComponent implements OnInit {
 
     this.form
       .get('resource')
-      ?.valueChanges.subscribe((value: string | null) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value: string | null) => {
         if (value) {
           this.getResource(value);
         } else {

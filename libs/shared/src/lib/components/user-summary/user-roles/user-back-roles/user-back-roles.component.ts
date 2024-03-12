@@ -6,6 +6,8 @@ import { Role, RolesQueryResponse, User } from '../../../../models/user.model';
 import { GET_ROLES } from '../../graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 import { errorMessageFormatter } from '../../../../utils/public-api';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /** Back-office roles section the user summary */
 @Component({
@@ -13,7 +15,10 @@ import { errorMessageFormatter } from '../../../../utils/public-api';
   templateUrl: './user-back-roles.component.html',
   styleUrls: ['./user-back-roles.component.scss'],
 })
-export class UserBackRolesComponent implements OnInit {
+export class UserBackRolesComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Roles */
   public roles: Role[] = [];
   /** User */
@@ -43,13 +48,17 @@ export class UserBackRolesComponent implements OnInit {
     private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SnackbarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.selectedRoles = this.createFormControl();
-    this.selectedRoles.valueChanges.subscribe((value) => {
-      this.edit.emit({ roles: value });
-    });
+    this.selectedRoles.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.edit.emit({ roles: value });
+      });
 
     this.loading = true;
     this.apollo

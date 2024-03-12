@@ -5,9 +5,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
 
 /**
@@ -133,23 +133,27 @@ export class AggregationTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .editAggregation(aggregation, value, { resource: this.resource?.id })
-          .subscribe({
-            next: ({ data }: any) => {
-              if (data.editAggregation) {
-                const layouts = [...this.allAggregations];
-                const index = layouts.findIndex((x) => x.id === aggregation.id);
-                layouts[index] = data.editAggregation;
-                this.allAggregations = layouts;
-                this.setSelectedAggregations(this.selectedAggregations?.value);
-              }
-            },
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value)),
+        switchMap((value: any) => {
+          return this.aggregationService.editAggregation(aggregation, value, {
+            resource: this.resource?.id,
           });
-      }
-    });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }: any) => {
+          if (data.editAggregation) {
+            const layouts = [...this.allAggregations];
+            const index = layouts.findIndex((x) => x.id === aggregation.id);
+            layouts[index] = data.editAggregation;
+            this.allAggregations = layouts;
+            this.setSelectedAggregations(this.selectedAggregations?.value);
+          }
+        },
+      });
   }
 
   /**

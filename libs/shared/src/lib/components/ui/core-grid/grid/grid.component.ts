@@ -42,7 +42,12 @@ import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection, isNil, has, isEqual } from 'lodash';
 import { DashboardService } from '../../../../services/dashboard/dashboard.service';
@@ -621,30 +626,31 @@ export class GridComponent
     if (this.formGroup) {
       this.gridService
         .getFieldDefinition(this.widget.settings.resource, field.name)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(async (fieldDefinition) => {
-          // Prevent edition to be cancelled
-          this.editing = true;
-          const { PopupEditorComponent } = await import(
-            '../popup-editor/popup-editor.component'
-          );
-          const dialogRef = this.dialog.open(PopupEditorComponent, {
-            data: {
-              field: fieldDefinition,
-              value: this.formGroup.get(field.name)?.value,
-            },
-            autoFocus: false,
-            disableClose: true,
-          });
-          dialogRef.closed
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((data: any) => {
-              if (has(data, 'value')) {
-                this.formGroup.get(field.name)?.setValue(data.value);
-                this.formGroup.markAsDirty();
-              }
-              this.editing = false;
+        .pipe(
+          switchMap(async (fieldDefinition) => {
+            // Prevent edition to be cancelled
+            this.editing = true;
+            const { PopupEditorComponent } = await import(
+              '../popup-editor/popup-editor.component'
+            );
+            const dialogRef = this.dialog.open(PopupEditorComponent, {
+              data: {
+                field: fieldDefinition,
+                value: this.formGroup.get(field.name)?.value,
+              },
+              autoFocus: false,
+              disableClose: true,
             });
+            return dialogRef.closed;
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((data: any) => {
+          if (has(data, 'value')) {
+            this.formGroup.get(field.name)?.setValue(data.value);
+            this.formGroup.markAsDirty();
+          }
+          this.editing = false;
         });
     }
   }

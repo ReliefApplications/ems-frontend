@@ -139,11 +139,13 @@ export class AggregationGridComponent
           }
         });
     }
-    this.queryBuilder.isDoneLoading$.subscribe((doneLoading) => {
-      if (doneLoading) {
-        this.getAggregationFields();
-      }
-    });
+    this.queryBuilder.isDoneLoading$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((doneLoading) => {
+        if (doneLoading) {
+          this.getAggregationFields();
+        }
+      });
   }
 
   ngOnChanges(): void {

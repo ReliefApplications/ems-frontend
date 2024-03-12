@@ -7,11 +7,11 @@ import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs';
 import {
   ButtonModule,
   CheckboxModule,
@@ -126,21 +126,27 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.layout) {
-        this.layoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe({
-            next: () => {
-              if (this.formGroup.get('card.layout')) {
-                this.formGroup
-                  .get('card.layout')
-                  ?.setValue(this.formGroup.get('card.layout')?.value || null);
-              }
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value) && !isNil(this.layout)),
+        switchMap((value: Layout) => {
+          return this.layoutService.editLayout(
+            this.layout as Layout,
+            value,
+            this.resource?.id
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          if (this.formGroup.get('card.layout')) {
+            this.formGroup
+              .get('card.layout')
+              ?.setValue(this.formGroup.get('card.layout')?.value || null);
+          }
+        },
+      });
   }
 
   /**
@@ -184,25 +190,29 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, {
-            resource: this.resource?.id,
-          })
-          .subscribe({
-            next: () => {
-              if (this.formGroup.get('card.aggregation')) {
-                this.formGroup
-                  .get('card.aggregation')
-                  ?.setValue(
-                    this.formGroup.get('card.aggregation')?.value || null
-                  );
-              }
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(
+        filter((value: any) => !isNil(value) && !isNil(this.aggregation)),
+        switchMap((value) => {
+          return this.aggregationService.editAggregation(
+            this.aggregation as Aggregation,
+            value,
+            {
+              resource: this.resource?.id,
+            }
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          if (this.formGroup.get('card.aggregation')) {
+            this.formGroup
+              .get('card.aggregation')
+              ?.setValue(this.formGroup.get('card.aggregation')?.value || null);
+          }
+        },
+      });
   }
 
   /**

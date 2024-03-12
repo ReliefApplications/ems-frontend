@@ -10,7 +10,7 @@ import {
 } from '@oort-front/shared';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, startWith, takeUntil } from 'rxjs/operators';
+import { filter, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { PreviewService } from '../../../services/preview.service';
 import { Subscription } from 'rxjs';
@@ -84,43 +84,43 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
           this.onOpenStep(0);
         }
       });
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.id = params.id;
-      this.apollo
-        .watchQuery<WorkflowQueryResponse>({
-          query: GET_WORKFLOW_BY_ID,
-          variables: {
-            id: this.id,
-            asRole: this.role,
-          },
-        })
-        .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: ({ data, loading }) => {
-            if (data.workflow) {
-              this.workflow = data.workflow;
-              this.steps = data.workflow.steps || [];
-              this.loading = loading;
-              if (this.steps.length > 0) {
-                this.onOpenStep(0);
-              }
+    this.route.params
+      .pipe(
+        switchMap((params) => {
+          this.loading = true;
+          this.id = params.id;
+          return this.apollo.watchQuery<WorkflowQueryResponse>({
+            query: GET_WORKFLOW_BY_ID,
+            variables: {
+              id: this.id,
+              asRole: this.role,
+            },
+          }).valueChanges;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data.workflow) {
+            this.workflow = data.workflow;
+            this.steps = data.workflow.steps || [];
+            this.loading = loading;
+            if (this.steps.length > 0) {
+              this.onOpenStep(0);
             }
-          },
-          error: () => {
-            this.loading = false;
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.accessNotProvided', {
-                type: this.translate
-                  .instant('common.workflow.one')
-                  .toLowerCase(),
-                error: '',
-              }),
-              { error: true }
-            );
-          },
-        });
-    });
+          }
+        },
+        error: () => {
+          this.loading = false;
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate.instant('common.workflow.one').toLowerCase(),
+              error: '',
+            }),
+            { error: true }
+          );
+        },
+      });
   }
 
   /**

@@ -25,6 +25,7 @@ import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { takeUntil } from 'rxjs';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -71,10 +72,11 @@ const DEFAULT_CONTEXT_FILTER = `{
 /**
  * Create layer form from value
  *
+ * @param unsubscribe Unsubscribe flag for current form
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: LayerModel) => {
+export const createLayerForm = (unsubscribe: any, value?: LayerModel) => {
   const type = get(value, 'type') || 'FeatureLayer';
   const formGroup = fb.group({
     // Layer properties
@@ -89,12 +91,16 @@ export const createLayerForm = (value?: LayerModel) => {
     layerDefinition: createLayerDefinitionForm(
       get(value, 'datasource.type') || 'Point',
       type,
+      unsubscribe,
       get(value, 'layerDefinition')
     ),
     ...(type !== 'GroupLayer' && {
       popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
       // Layer datasource
-      datasource: createLayerDataSourceForm(get(value, 'datasource')),
+      datasource: createLayerDataSourceForm(
+        unsubscribe,
+        get(value, 'datasource')
+      ),
     }),
     ...(type === 'GroupLayer' && {
       sublayers: new FormControl(get(value, 'sublayers', [])),
@@ -107,17 +113,21 @@ export const createLayerForm = (value?: LayerModel) => {
     at: new FormControl(get(value, 'at', null)),
   });
   if (type !== 'GroupLayer') {
-    formGroup.get('datasource.type')?.valueChanges.subscribe((geometryType) => {
-      formGroup.setControl(
-        'layerDefinition',
-        createLayerDefinitionForm(
-          geometryType,
-          type,
-          formGroup.get('layerDefinition')?.value
-        ),
-        { emitEvent: false }
-      );
-    });
+    formGroup
+      .get('datasource.type')
+      ?.valueChanges.pipe(takeUntil(unsubscribe))
+      .subscribe((geometryType) => {
+        formGroup.setControl(
+          'layerDefinition',
+          createLayerDefinitionForm(
+            geometryType,
+            type,
+            unsubscribe,
+            formGroup.get('layerDefinition')?.value
+          ),
+          { emitEvent: false }
+        );
+      });
   }
   return formGroup;
 };
@@ -125,10 +135,14 @@ export const createLayerForm = (value?: LayerModel) => {
 /**
  * Create layer data source form group
  *
+ * @param unsubscribe Unsubscribe flag for current form
  * @param value layer data
  * @returns layer data source form group
  */
-const createLayerDataSourceForm = (value?: any): FormGroup => {
+const createLayerDataSourceForm = (
+  unsubscribe: any,
+  value?: any
+): FormGroup => {
   const getCanSeeFields = (value: any) => {
     return (
       (get(value, 'resource') &&
@@ -195,7 +209,7 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
       ],
     }
   );
-  formGroup.valueChanges.subscribe((value) => {
+  formGroup.valueChanges.pipe(takeUntil(unsubscribe)).subscribe((value) => {
     const canSeeFields = getCanSeeFields(value);
     if (canSeeFields) {
       if (value.geoField || value.type === 'Polygon') {
@@ -229,12 +243,14 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
  *
  * @param geometryType layer geometry type
  * @param type layer type
+ * @param unsubscribe Unsubscribe flag for current form
  * @param value layer definition
  * @returns layer definition form group
  */
 const createLayerDefinitionForm = (
   geometryType: GeometryType = 'Point',
   type: LayerType,
+  unsubscribe: any,
   value?: any
 ): FormGroup => {
   const formGroup = fb.group({
@@ -255,7 +271,8 @@ const createLayerDefinitionForm = (
     const setTypeListeners = () => {
       formGroup
         .get('drawingInfo.renderer.type')
-        ?.valueChanges.subscribe((type: string) => {
+        ?.valueChanges.pipe(takeUntil(unsubscribe))
+        .subscribe((type: string) => {
           const drawingInfo = { ...formGroup.get('drawingInfo')?.value };
           set(drawingInfo, 'renderer.type', type);
           formGroup.setControl(
@@ -273,15 +290,18 @@ const createLayerDefinitionForm = (
         });
     };
     setTypeListeners();
-    formGroup.get('featureReduction.type')?.valueChanges.subscribe((type) => {
-      formGroup.setControl(
-        'featureReduction',
-        createLayerFeatureReductionForm({
-          ...formGroup.get('featureReduction')?.value,
-          type,
-        })
-      );
-    });
+    formGroup
+      .get('featureReduction.type')
+      ?.valueChanges.pipe(takeUntil(unsubscribe))
+      .subscribe((type) => {
+        formGroup.setControl(
+          'featureReduction',
+          createLayerFeatureReductionForm({
+            ...formGroup.get('featureReduction')?.value,
+            type,
+          })
+        );
+      });
   }
   return formGroup;
 };
@@ -533,10 +553,15 @@ export const createGeographicExtent = (value?: {
  * Create map form from value
  *
  * @param id widget id
+ * @param unsubscribe Unsubscribe flag for current form
  * @param value map settings ( optional )
  * @returns map form
  */
-export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
+export const createMapWidgetFormGroup = (
+  id: any,
+  unsubscribe: any,
+  value?: any
+): FormGroup => {
   const formGroup = fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
@@ -587,12 +612,15 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
   if (formGroup.get('arcGisWebMap')?.value) {
     formGroup.get('basemap')?.disable({ emitEvent: false });
   }
-  formGroup.get('arcGisWebMap')?.valueChanges.subscribe((value) => {
-    if (value) {
-      formGroup.get('basemap')?.disable({ emitEvent: false });
-    } else {
-      formGroup.get('basemap')?.enable({ emitEvent: false });
-    }
-  });
+  formGroup
+    .get('arcGisWebMap')
+    ?.valueChanges.pipe(takeUntil(unsubscribe))
+    .subscribe((value) => {
+      if (value) {
+        formGroup.get('basemap')?.disable({ emitEvent: false });
+      } else {
+        formGroup.get('basemap')?.enable({ emitEvent: false });
+      }
+    });
   return formGroup;
 };

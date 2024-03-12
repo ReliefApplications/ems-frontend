@@ -1895,13 +1895,12 @@ export class ApplicationService {
         })
         .subscribe({
           next: (res) => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                value: notification.name,
-                type: this.translate.instant('common.customNotification.one'),
-              })
-            );
             if (callback) callback(res);
+          },
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -1926,12 +1925,12 @@ export class ApplicationService {
         })
         .subscribe({
           next: (res) => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: res.data?.deleteCustomNotification.name,
-              })
-            );
             if (callback) callback(res);
+          },
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -1962,13 +1961,12 @@ export class ApplicationService {
         })
         .subscribe({
           next: (res) => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                value: notification.name,
-                type: this.translate.instant('common.customNotification.one'),
-              })
-            );
             if (callback) callback(res);
+          },
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
