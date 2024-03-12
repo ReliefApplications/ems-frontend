@@ -1,1 +1,9 @@
 <router-outlet></router-outlet>
+<!-- Router outlet content load and disable state panel-->
+<ng-container *ngIf="isNavigationLoading">
+  <div
+    class="z-[9999] absolute inset-0 bg-white opacity-70 flex items-center justify-center"
+  >
+    <ui-spinner></ui-spinner>
+  </div>
+</ng-container>
