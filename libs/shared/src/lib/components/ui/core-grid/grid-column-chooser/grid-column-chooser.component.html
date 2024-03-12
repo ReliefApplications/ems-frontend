@@ -1,10 +1,10 @@
 <div class="mt-1">
   <!-- Select all / unselect all -->
-  <div class="flex flex-col px-2 gap-1">
+  <div class="flex flex-col px-2 gap-1 export-hide">
     <button kendoButton (click)="uncheckAllCheckboxes()">
       {{ 'kendo.editor.unselectAll' | translate }}
     </button>
-    <button kendoButton (click)="checkAllCheckboxes()">
+    <button kendoButton (click)="checkAllCheckboxes()" class="export-hide">
       {{ 'kendo.editor.selectAll' | translate }}
     </button>
   </div>

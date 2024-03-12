@@ -154,3 +154,31 @@ ui-checkbox {
     align-items: center;
   }
 }
+
+.k-pdf-export {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  overflow: visible !important;
+  .export-hide {
+    display: none;
+    i {
+      display: none;
+    }
+  }
+
+  // Map Components
+  .leaflet-control-fullscreen, shared-map-zoom, .geocoder-control, .leaflet-control-measure, shared-map-download, shared-map-sidenav-controls {
+    display: none;
+  }
+
+  // Grid Components
+  kendo-grid-column-menu,
+  .k-checkbox,
+  kendo-grid-toolbar,
+  shared-grid-row-actions,
+  kendo-datapager,
+  .k-i-detail-section::before,
+  kendo-icon {
+    display: none;
+  }
+
+}

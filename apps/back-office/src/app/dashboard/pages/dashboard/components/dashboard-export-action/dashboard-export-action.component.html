@@ -1,0 +1,61 @@
+<ui-dialog [closable]="true" size="small">
+  <ng-container ngProjectAs="header">
+    <h3>{{ 'common.notifications.export.options' | translate }}</h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form class="w-full pb-1" [formGroup]="form">
+      <!-- Selection of image format, only for image export -->
+      <div
+        *ngIf="data.exportType === 'image'"
+        uiFormFieldDirective
+        [outline]="false"
+      >
+        <label>{{ 'common.notifications.export.format' | translate }}</label>
+        <ui-select-menu formControlName="format">
+          <ui-select-option
+            *ngFor="let format of imageFormats"
+            [value]="format.value"
+          >
+            {{ format.label }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <!-- Selection of paper size, only for PDF export -->
+      <div
+        *ngIf="data.exportType === 'pdf'"
+        uiFormFieldDirective
+        [outline]="false"
+      >
+        <label>{{ 'common.notifications.export.paperSize' | translate }}</label>
+        <ui-select-menu formControlName="paperSize">
+          <ui-select-option
+            *ngFor="let size of paperSizes"
+            [value]="size.value"
+          >
+            {{ size.label }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <!-- Whether or not to include headers and footers when exporting-->
+      <ui-toggle formControlName="includeHeaderFooter">
+        <ng-container ngProjectAs="label">
+          {{ 'common.notifications.export.includeHeaderFooter' | translate }}
+        </ng-container>
+      </ui-toggle>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]>
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="confirmDownload()"
+    >
+      {{ 'common.notifications.export.download' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>
