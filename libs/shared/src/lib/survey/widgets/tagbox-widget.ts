@@ -9,6 +9,7 @@ import {
 } from 'survey-core';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
+import { isEqual } from 'lodash';
 
 /**
  * Init tagbox question
@@ -175,9 +176,11 @@ export const init = (
       );
 
       question._valueChangeCallback = () => {
-        if (!question.isPrimitiveValue) {
-          tagboxInstance.value = question.value;
-          updateChoices(tagboxInstance, question, currentSearchValue);
+        if (!isEqual(question.value, tagboxInstance.value)) {
+          if (!question.isPrimitiveValue) {
+            tagboxInstance.value = question.value;
+            updateChoices(tagboxInstance, question, currentSearchValue);
+          }
         }
       };
       question.registerFunctionOnPropertyValueChanged(

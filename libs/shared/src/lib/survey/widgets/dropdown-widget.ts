@@ -88,19 +88,21 @@ export const init = (
         }
       );
       question.registerFunctionOnPropertyValueChanged('value', () => {
-        // We need this line for resource select
-        if (question.isPrimitiveValue) {
-          dropdownInstance.value = question.value;
-        } else {
-          if (question.visibleChoices.length > 0) {
-            if (has(question.value, 'text') && has(question.value, 'value')) {
-              dropdownInstance.value = question.visibleChoices.find((choice) =>
-                isEqual(choice.value, question.value.value)
-              );
-            } else {
-              dropdownInstance.value = question.visibleChoices.find((choice) =>
-                isEqual(choice.value, question.value)
-              );
+        if (!isEqual(question.value, dropdownInstance.value)) {
+          // We need this line for resource select
+          if (question.isPrimitiveValue) {
+            dropdownInstance.value = question.value;
+          } else {
+            if (question.visibleChoices.length > 0) {
+              if (has(question.value, 'text') && has(question.value, 'value')) {
+                dropdownInstance.value = question.visibleChoices.find(
+                  (choice) => isEqual(choice.value, question.value.value)
+                );
+              } else {
+                dropdownInstance.value = question.visibleChoices.find(
+                  (choice) => isEqual(choice.value, question.value)
+                );
+              }
             }
           }
         }
