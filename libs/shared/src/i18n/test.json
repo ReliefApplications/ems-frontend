@@ -1813,6 +1813,9 @@
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
+						},
+						"gradient": {
+							"reverse": "******"
 						}
 					}
 				},

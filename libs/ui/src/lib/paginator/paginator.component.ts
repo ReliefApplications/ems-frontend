@@ -10,7 +10,10 @@ import {
   Renderer2,
   SimpleChanges,
 } from '@angular/core';
-import { PageChangeEvent } from '@progress/kendo-angular-pager';
+import {
+  PageChangeEvent,
+  PageSizeChangeEvent,
+} from '@progress/kendo-angular-pager';
 import { v4 as uuidv4 } from 'uuid';
 import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
 import { min } from 'lodash';
@@ -49,6 +52,9 @@ export class PaginatorComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() displayedPageNumbers = 0;
   /** Page change event */
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
+  /** Page size change event */
+  @Output() pageSizeChange: EventEmitter<PageSizeChangeEvent> =
+    new EventEmitter();
   /** Generate random unique identifier for each paginator component */
   public paginatorId = uuidv4();
   /** Number of buttons to display */
