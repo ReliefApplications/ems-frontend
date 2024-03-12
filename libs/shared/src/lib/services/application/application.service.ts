@@ -278,17 +278,19 @@ export class ApplicationService {
           id,
         },
       })
-      .subscribe(() => {
-        const snackBar = this.snackBar.openSnackBar(
-          this.translate.instant('models.application.notifications.updated'),
-          {
-            action: 'Reload',
-            duration: 0,
-          }
-        );
-        snackBar.instance.actionComplete.subscribe(() =>
-          window.location.reload()
-        );
+      .subscribe({
+        next: () => {
+          const snackBar = this.snackBar.openSnackBar(
+            this.translate.instant('models.application.notifications.updated'),
+            {
+              action: 'Reload',
+              duration: 0,
+            }
+          );
+          snackBar.instance.actionComplete.subscribe(() =>
+            window.location.reload()
+          );
+        },
       });
     this.lockSubscription = this.apollo
       .subscribe<ApplicationUnlockedSubscriptionResponse>({
@@ -297,16 +299,18 @@ export class ApplicationService {
           id,
         },
       })
-      .subscribe(({ data }) => {
-        if (data?.applicationUnlocked) {
-          const application = this.application.getValue();
-          const newApplication = {
-            ...application,
-            locked: data?.applicationUnlocked?.locked,
-            lockedByUser: data?.applicationUnlocked?.lockedByUser,
-          };
-          this.application.next(newApplication);
-        }
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.applicationUnlocked) {
+            const application = this.application.getValue();
+            const newApplication = {
+              ...application,
+              locked: data?.applicationUnlocked?.locked,
+              lockedByUser: data?.applicationUnlocked?.lockedByUser,
+            };
+            this.application.next(newApplication);
+          }
+        },
       });
   }
 
@@ -352,17 +356,19 @@ export class ApplicationService {
           lock: !locked,
         },
       })
-      .subscribe(({ data }) => {
-        if (data?.toggleApplicationLock) {
-          if (!data.toggleApplicationLock.lockedByUser) {
-            const newApplication = {
-              ...application,
-              locked: data?.toggleApplicationLock?.locked,
-              lockedByUser: data?.toggleApplicationLock.lockedByUser,
-            };
-            this.application.next(newApplication);
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.toggleApplicationLock) {
+            if (!data.toggleApplicationLock.lockedByUser) {
+              const newApplication = {
+                ...application,
+                locked: data?.toggleApplicationLock?.locked,
+                lockedByUser: data?.toggleApplicationLock.lockedByUser,
+              };
+              this.application.next(newApplication);
+            }
           }
-        }
+        },
       });
   }
 
@@ -386,13 +392,13 @@ export class ApplicationService {
             status: value.status,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.application.one'),
-            value.name
-          );
-          if (!errors && data && data.editApplication) {
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.application.one'),
+              value.name
+            );
             if (data?.editApplication) {
               const newApplication = {
                 ...application,
@@ -404,7 +410,14 @@ export class ApplicationService {
               };
               this.application.next(newApplication);
             }
-          }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.application.one'),
+              value.name
+            );
+          },
         });
     }
   }
@@ -669,25 +682,34 @@ export class ApplicationService {
             name: page.name,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one'),
-            page.name
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = { ...x, name: page.name };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one'),
+              page.name
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, name: page.name };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one'),
+              page.name
+            );
+          },
         });
     }
   }
@@ -710,24 +732,32 @@ export class ApplicationService {
             visible: page.visible,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = { ...x, visible: data.editPage.visible };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one')
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, visible: data.editPage.visible };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+          },
         });
     }
   }
@@ -750,24 +780,32 @@ export class ApplicationService {
             icon,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = { ...x, icon: data.editPage.icon };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one')
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, icon: data.editPage.icon };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+          },
         });
     }
   }
@@ -1074,24 +1112,6 @@ export class ApplicationService {
                   this.translate.instant('components.users.onDelete.singular')
                 );
               }
-            } else {
-              if (ids.length > 1) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotDelete.plural',
-                    { error: '' }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotDelete.singular',
-                    { error: '' }
-                  ),
-                  { error: true }
-                );
-              }
             }
             resolved();
           },
@@ -1251,18 +1271,8 @@ export class ApplicationService {
             title: value.title,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.errors.objectDuplicated', {
-                type: this.translate
-                  .instant('common.positionCategory.one')
-                  .toLowerCase(),
-                value: value.title,
-              }),
-              { error: true }
-            );
-          } else {
+        .subscribe({
+          next: ({ data }) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.positionCategory.one'),
@@ -1283,7 +1293,18 @@ export class ApplicationService {
                 }),
             };
             this.application.next(newApplication);
-          }
+          },
+          error: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.errors.objectDuplicated', {
+                type: this.translate
+                  .instant('common.positionCategory.one')
+                  .toLowerCase(),
+                value: value.title,
+              }),
+              { error: true }
+            );
+          },
         });
     }
   }
@@ -1633,16 +1654,18 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const newApplication: Application = {
-              ...application,
-              templates: [...(application.templates || []), data.addTemplate],
-            };
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              const newApplication: Application = {
+                ...application,
+                templates: [...(application.templates || []), data.addTemplate],
+              };
 
-            this.application.next(newApplication);
-            if (callback) callback(data.addTemplate);
-          }
+              this.application.next(newApplication);
+              if (callback) callback(data.addTemplate);
+            }
+          },
         });
     }
   }
@@ -1663,14 +1686,16 @@ export class ApplicationService {
             id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const newApplication: Application = {
-              ...application,
-              templates: this.templates.filter((t) => t.id !== id),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              const newApplication: Application = {
+                ...application,
+                templates: this.templates.filter((t) => t.id !== id),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1696,20 +1721,22 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data?.editTemplate) {
-            const updatedTemplate = data.editTemplate;
-            const newApplication: Application = {
-              ...application,
-              templates: application.templates?.map((t) => {
-                if (t.id === template.id) {
-                  t = updatedTemplate;
-                }
-                return t;
-              }),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data?.editTemplate) {
+              const updatedTemplate = data.editTemplate;
+              const newApplication: Application = {
+                ...application,
+                templates: application.templates?.map((t) => {
+                  if (t.id === template.id) {
+                    t = updatedTemplate;
+                  }
+                  return t;
+                }),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1734,20 +1761,30 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data?.editDistributionList) {
-            const updatedDistributionList = data.editDistributionList;
-            const newApplication: Application = {
-              ...application,
-              distributionLists: application.distributionLists?.map((dist) => {
-                if (dist.id === distributionList.id) {
-                  dist = updatedDistributionList;
-                }
-                return dist;
-              }),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data?.editDistributionList) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  value: data.editDistributionList.name,
+                  type: this.translate.instant('common.distributionList.one'),
+                })
+              );
+              const updatedDistributionList = data.editDistributionList;
+              const newApplication: Application = {
+                ...application,
+                distributionLists: application.distributionLists?.map(
+                  (dist) => {
+                    if (dist.id === distributionList.id) {
+                      dist = updatedDistributionList;
+                    }
+                    return dist;
+                  }
+                ),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1775,18 +1812,26 @@ export class ApplicationService {
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data?.addDistributionList) {
-            const newApplication: Application = {
-              ...application,
-              distributionLists: [
-                ...(application.distributionLists || []),
-                data.addDistributionList,
-              ],
-            };
-            this.application.next(newApplication);
-            if (callback) callback(data.addDistributionList);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectCreated', {
+                value: distributionList.name,
+                type: this.translate.instant('common.distributionList.one'),
+              })
+            );
+            if (data?.addDistributionList) {
+              const newApplication: Application = {
+                ...application,
+                distributionLists: [
+                  ...(application.distributionLists || []),
+                  data.addDistributionList,
+                ],
+              };
+              this.application.next(newApplication);
+              if (callback) callback(data.addDistributionList);
+            }
+          },
         });
     }
   }
@@ -1807,16 +1852,23 @@ export class ApplicationService {
             id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const newApplication: Application = {
-              ...application,
-              distributionLists: application.distributionLists?.filter(
-                (dist) => dist.id !== id
-              ),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: data.deleteDistributionList.name,
+                })
+              );
+              const newApplication: Application = {
+                ...application,
+                distributionLists: application.distributionLists?.filter(
+                  (dist) => dist.id !== id
+                ),
+              };
+              this.application.next(newApplication);
+            }
+          },
         });
     }
   }
@@ -1841,8 +1893,16 @@ export class ApplicationService {
             notification,
           },
         })
-        .subscribe((res) => {
-          if (callback) callback(res);
+        .subscribe({
+          next: (res) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectCreated', {
+                value: notification.name,
+                type: this.translate.instant('common.customNotification.one'),
+              })
+            );
+            if (callback) callback(res);
+          },
         });
     }
   }
@@ -1864,8 +1924,15 @@ export class ApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (callback) callback(res);
+        .subscribe({
+          next: (res) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: res.data?.deleteCustomNotification.name,
+              })
+            );
+            if (callback) callback(res);
+          },
         });
     }
   }
@@ -1893,8 +1960,16 @@ export class ApplicationService {
             notification,
           },
         })
-        .subscribe((res) => {
-          if (callback) callback(res);
+        .subscribe({
+          next: (res) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                value: notification.name,
+                type: this.translate.instant('common.customNotification.one'),
+              })
+            );
+            if (callback) callback(res);
+          },
         });
     }
   }
@@ -2008,29 +2083,37 @@ export class ApplicationService {
             permissions,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.page.one')
-          );
-          if (!errors && data) {
-            const newApplication = {
-              ...application,
-              pages: application.pages?.map((x) => {
-                if (x.id === page.id) {
-                  x = {
-                    ...x,
-                    canSee: data.editPage.permissions.canSee,
-                    canDelete: data.editPage.permissions.canDelete,
-                    canUpdate: data.editPage.permissions.canUpdate,
-                  };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-            if (callback) callback(data.editPage.permissions);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.page.one')
+            );
+            if (data) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = {
+                      ...x,
+                      canSee: data.editPage.permissions.canSee,
+                      canDelete: data.editPage.permissions.canDelete,
+                      canUpdate: data.editPage.permissions.canUpdate,
+                    };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback(data.editPage.permissions);
+            }
+          },
+          error: (errors) => {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.page.one')
+            );
+          },
         });
     }
   }

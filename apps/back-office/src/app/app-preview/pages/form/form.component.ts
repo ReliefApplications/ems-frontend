@@ -85,19 +85,29 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               id: this.id,
             },
           })
-          .subscribe((res) => {
-            this.step = res.data.step;
-            this.apollo
-              .query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.step.content,
-                },
-              })
-              .subscribe(({ data, loading }) => {
-                this.form = data.form;
-                this.loading = loading;
-              });
+          .subscribe({
+            next: (res) => {
+              this.step = res.data.step;
+              this.apollo
+                .query<FormQueryResponse>({
+                  query: GET_SHORT_FORM_BY_ID,
+                  variables: {
+                    id: this.step.content,
+                  },
+                })
+                .subscribe({
+                  next: ({ data, loading }) => {
+                    this.form = data.form;
+                    this.loading = loading;
+                  },
+                  error: () => {
+                    this.loading = false;
+                  },
+                });
+            },
+            error: () => {
+              this.loading = false;
+            },
           });
       } else {
         this.apollo
@@ -107,21 +117,31 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               id: this.id,
             },
           })
-          .subscribe((res) => {
-            this.page = res.data.page;
-            this.apollo
-              .query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.page.content,
-                },
-              })
-              .subscribe(({ data, loading }) => {
-                if (data) {
-                  this.form = data.form;
-                }
-                this.loading = loading;
-              });
+          .subscribe({
+            next: (res) => {
+              this.page = res.data.page;
+              this.apollo
+                .query<FormQueryResponse>({
+                  query: GET_SHORT_FORM_BY_ID,
+                  variables: {
+                    id: this.page.content,
+                  },
+                })
+                .subscribe({
+                  next: ({ data, loading }) => {
+                    if (data) {
+                      this.form = data.form;
+                    }
+                    this.loading = loading;
+                  },
+                  error: () => {
+                    this.loading = false;
+                  },
+                });
+            },
+            error: () => {
+              this.loading = false;
+            },
           });
       }
     });

@@ -121,16 +121,24 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
       .watchQuery<RolesQueryResponse>({
         query: GET_ROLES,
       })
-      .valueChanges.subscribe(({ data, loading }) => {
-        this.roles = data.roles;
-        this.loading = loading;
+      .valueChanges.subscribe({
+        next: ({ data, loading }) => {
+          this.roles = data.roles;
+          this.loading = loading;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
-    this.usersQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+    this.usersQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.loading = true;
         this.updateValues(data, loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   /**
@@ -260,27 +268,10 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
                   );
                 }
                 this.fetchUsers(true);
-              } else {
-                if (ids.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.plural',
-                      { error: '' }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.singular',
-                      { error: '' }
-                    ),
-                    { error: true }
-                  );
-                }
               }
             },
             error: (errors) => {
+              this.loading = false;
               if (ids.length > 1) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(

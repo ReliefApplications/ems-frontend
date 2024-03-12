@@ -281,30 +281,34 @@ export class FormHelpersService {
                 data,
               },
             })
-          ).then((res) => {
-            // change the draftId to the new recordId
-            const newId = res.data?.addRecord?.id;
-            if (!newId) return;
-            updateIds[draftId](newId);
-            // update question.newCreatedRecords too
-            const isResource = element.question.getType() === 'resource';
-            const draftIndex = (
-              isResource
-                ? [element.question.newCreatedRecords]
-                : element.question.newCreatedRecords
-            ).indexOf(draftId);
-            if (draftIndex !== -1) {
-              if (isResource) {
-                element.question.newCreatedRecords = newId;
-              } else {
-                element.question.newCreatedRecords[draftIndex] = newId;
+          )
+            .then((res) => {
+              // change the draftId to the new recordId
+              const newId = res.data?.addRecord?.id;
+              if (!newId) return;
+              updateIds[draftId](newId);
+              // update question.newCreatedRecords too
+              const isResource = element.question.getType() === 'resource';
+              const draftIndex = (
+                isResource
+                  ? [element.question.newCreatedRecords]
+                  : element.question.newCreatedRecords
+              ).indexOf(draftId);
+              if (draftIndex !== -1) {
+                if (isResource) {
+                  element.question.newCreatedRecords = newId;
+                } else {
+                  element.question.newCreatedRecords[draftIndex] = newId;
+                }
               }
-            }
-            // delete old temporary/draft record and data
-            this.deleteRecordDraft(draftId);
-            delete element.question.draftData[draftId];
-            return;
-          })
+              // delete old temporary/draft record and data
+              this.deleteRecordDraft(draftId);
+              delete element.question.draftData[draftId];
+              return;
+            })
+            .catch(() => {
+              return;
+            })
         );
       }
     }
@@ -503,13 +507,8 @@ export class FormHelpersService {
           data: survey.data,
         },
       });
-      mutation.subscribe(({ errors }: any) => {
-        if (errors) {
-          survey.clear(false, true);
-          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
-            error: true,
-          });
-        } else {
+      mutation.subscribe({
+        next: () => {
           // localStorage.removeItem(this.storageId);
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.draftRecords.successEdit'),
@@ -517,17 +516,24 @@ export class FormHelpersService {
               error: false,
             }
           );
-        }
-        // Callback to emit save but stay in record addition mode
-        if (callback) {
-          callback({
-            id: draftId,
-            save: {
-              completed: false,
-              hideNewRecord: true,
-            },
+
+          // Callback to emit save but stay in record addition mode
+          if (callback) {
+            callback({
+              id: draftId,
+              save: {
+                completed: false,
+                hideNewRecord: true,
+              },
+            });
+          }
+        },
+        error: (errors) => {
+          survey.clear(false, true);
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
           });
-        }
+        },
       });
     }
   }
@@ -546,10 +552,12 @@ export class FormHelpersService {
           id: draftId,
         },
       })
-      .subscribe(() => {
-        if (callback) {
-          callback();
-        }
+      .subscribe({
+        next: () => {
+          if (callback) {
+            callback();
+          }
+        },
       });
   }
 

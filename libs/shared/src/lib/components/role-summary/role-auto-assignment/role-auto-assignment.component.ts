@@ -85,39 +85,43 @@ export class RoleAutoAssignmentComponent
       .query<GroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .subscribe(({ data }) => {
-        if (data.groups) {
-          this.groups = data.groups;
-          this.fields.push({
-            text: 'User Groups',
-            name: '{{groups}}',
-            editor: 'select',
-            multiSelect: true,
-            options: this.groups.map((group) => ({
-              text: group.title,
-              value: group.id,
-            })),
-            filter: {
-              operators: ['eq', 'contains'],
-            },
-          });
-        }
+      .subscribe({
+        next: ({ data }) => {
+          if (data.groups) {
+            this.groups = data.groups;
+            this.fields.push({
+              text: 'User Groups',
+              name: '{{groups}}',
+              editor: 'select',
+              multiSelect: true,
+              options: this.groups.map((group) => ({
+                text: group.title,
+                value: group.id,
+              })),
+              filter: {
+                operators: ['eq', 'contains'],
+              },
+            });
+          }
+        },
       });
 
     const url = '/permissions/attributes';
-    this.restService.get(url).subscribe((res: any) => {
-      if (isArray(res)) {
-        res.forEach((attr: { value: string; text: string }) => {
-          this.fields.push({
-            text: attr.text,
-            name: `{{attributes.${attr.value}}}`,
-            filter: {
-              operators: ['eq'],
-            },
-            editor: 'text',
+    this.restService.get(url).subscribe({
+      next: (res: any) => {
+        if (isArray(res)) {
+          res.forEach((attr: { value: string; text: string }) => {
+            this.fields.push({
+              text: attr.text,
+              name: `{{attributes.${attr.value}}}`,
+              filter: {
+                operators: ['eq'],
+              },
+              editor: 'text',
+            });
           });
-        });
-      }
+        }
+      },
     });
   }
 

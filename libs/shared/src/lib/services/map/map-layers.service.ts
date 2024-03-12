@@ -36,7 +36,6 @@ import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
-import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * Shared map layer service
@@ -90,7 +89,7 @@ export class MapLayersService {
         map((response) => {
           return response.data?.addLayer;
         }),
-        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
+        catchError((errors) => throwError(() => errors))
       );
   }
 
@@ -119,7 +118,7 @@ export class MapLayersService {
         map((response) => {
           return response.data?.editLayer;
         }),
-        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
+        catchError((errors) => throwError(() => errors))
       );
   }
 
@@ -157,7 +156,7 @@ export class MapLayersService {
         map((response) => {
           return response.data.layer;
         }),
-        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
+        catchError((errors) => throwError(() => errors))
       );
   }
 
@@ -190,7 +189,7 @@ export class MapLayersService {
         map((response) => {
           return response.data.layers;
         }),
-        catchError((errors) => throwError(() => errorMessageFormatter(errors)))
+        catchError((errors) => throwError(() => errors))
       );
   }
 

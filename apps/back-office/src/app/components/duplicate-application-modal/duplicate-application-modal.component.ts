@@ -97,7 +97,6 @@ export class DuplicateApplicationModalComponent {
       .subscribe({
         next: ({ data }) => {
           snackBarSpinner.instance.loading = false;
-
           snackBarSpinner.instance.message = this.translateService.instant(
             'common.notifications.objectDuplicated',
             {
@@ -107,11 +106,11 @@ export class DuplicateApplicationModalComponent {
               value: this.currentApp.name,
             }
           );
-
           this.loading = false;
           this.dialogRef.close(data?.duplicateApplication as any);
         },
         error: (errors) => {
+          this.loading = false;
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.message = this.translateService.instant(
             'common.notifications.objectNotDuplicated',

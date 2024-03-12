@@ -115,11 +115,15 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
       },
     });
 
-    this.formsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((results) => {
+    this.formsQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (results) => {
         this.updateValues(results.data, results.loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+        this.updating = false;
+      },
+    });
   }
 
   /**

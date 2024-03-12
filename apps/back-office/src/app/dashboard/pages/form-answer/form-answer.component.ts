@@ -53,18 +53,23 @@ export class FormAnswerComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(({ data, loading }) => {
-          this.loading = loading;
-          this.form = data.form;
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          this.breadcrumbService.setBreadcrumb(
-            '@resource',
-            this.form.resource?.name as string
-          );
-          // this.breadcrumbService.setResourceName();
+        .valueChanges.subscribe({
+          next: ({ data, loading }) => {
+            this.loading = loading;
+            this.form = data.form;
+            this.breadcrumbService.setBreadcrumb(
+              '@form',
+              this.form.name as string
+            );
+            this.breadcrumbService.setBreadcrumb(
+              '@resource',
+              this.form.resource?.name as string
+            );
+            // this.breadcrumbService.setResourceName();
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     }
   }

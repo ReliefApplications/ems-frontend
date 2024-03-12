@@ -133,8 +133,10 @@ export class DashboardService {
           name,
         },
       })
-      .subscribe(() => {
-        if (callback) callback();
+      .subscribe({
+        next: () => {
+          if (callback) callback();
+        },
       });
   }
 
@@ -183,14 +185,22 @@ export class DashboardService {
           gridOptions,
         },
       })
-      .subscribe(({ errors, data }) => {
-        this.handleEditionMutationResponse(
-          errors,
-          this.translate.instant('common.page.one')
-        );
-        if (!errors && data) {
-          if (callback) callback();
-        }
+      .subscribe({
+        next: ({ data }) => {
+          this.handleEditionMutationResponse(
+            [],
+            this.translate.instant('common.page.one')
+          );
+          if (data) {
+            if (callback) callback();
+          }
+        },
+        error: (errors) => {
+          this.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.page.one')
+          );
+        },
       });
   }
 }

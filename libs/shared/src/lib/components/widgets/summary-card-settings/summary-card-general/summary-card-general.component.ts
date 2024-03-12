@@ -130,12 +130,14 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
       if (value && this.layout) {
         this.layoutService
           .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            if (this.formGroup.get('card.layout')) {
-              this.formGroup
-                .get('card.layout')
-                ?.setValue(this.formGroup.get('card.layout')?.value || null);
-            }
+          .subscribe({
+            next: () => {
+              if (this.formGroup.get('card.layout')) {
+                this.formGroup
+                  .get('card.layout')
+                  ?.setValue(this.formGroup.get('card.layout')?.value || null);
+              }
+            },
           });
       }
     });
@@ -188,14 +190,16 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
           .editAggregation(this.aggregation, value, {
             resource: this.resource?.id,
           })
-          .subscribe(() => {
-            if (this.formGroup.get('card.aggregation')) {
-              this.formGroup
-                .get('card.aggregation')
-                ?.setValue(
-                  this.formGroup.get('card.aggregation')?.value || null
-                );
-            }
+          .subscribe({
+            next: () => {
+              if (this.formGroup.get('card.aggregation')) {
+                this.formGroup
+                  .get('card.aggregation')
+                  ?.setValue(
+                    this.formGroup.get('card.aggregation')?.value || null
+                  );
+              }
+            },
           });
       }
     });

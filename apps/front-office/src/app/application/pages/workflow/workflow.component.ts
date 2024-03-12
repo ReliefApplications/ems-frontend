@@ -118,6 +118,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
             }
           },
           error: () => {
+            this.loading = false;
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.accessNotProvided', {
                 type: this.translate

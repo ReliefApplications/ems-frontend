@@ -86,8 +86,10 @@ export class EditAccessComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.roles = data.roles;
+      .subscribe({
+        next: ({ data }) => {
+          this.roles = data.roles;
+        },
       });
 
     if (!this.useModal) {

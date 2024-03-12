@@ -164,12 +164,14 @@ export class TemplateAggregationModalComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.resource = data.resource;
-        if (aggregationId && this.resource.aggregations?.edges[0]) {
-          this.aggregation = this.resource.aggregations.edges[0].node;
-          this.form.controls.name.setValue(this.aggregation.name as string);
-        }
+      .subscribe({
+        next: ({ data }) => {
+          this.resource = data.resource;
+          if (aggregationId && this.resource.aggregations?.edges[0]) {
+            this.aggregation = this.resource.aggregations.edges[0].node;
+            this.form.controls.name.setValue(this.aggregation.name as string);
+          }
+        },
       });
   }
 
@@ -189,12 +191,14 @@ export class TemplateAggregationModalComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.referenceData = data.referenceData;
-        if (aggregationId && this.referenceData.aggregations?.edges[0]) {
-          this.aggregation = this.referenceData.aggregations.edges[0].node;
-          this.form.controls.name.setValue(this.aggregation.name as string);
-        }
+      .subscribe({
+        next: ({ data }) => {
+          this.referenceData = data.referenceData;
+          if (aggregationId && this.referenceData.aggregations?.edges[0]) {
+            this.aggregation = this.referenceData.aggregations.edges[0].node;
+            this.form.controls.name.setValue(this.aggregation.name as string);
+          }
+        },
       });
   }
 
@@ -249,14 +253,16 @@ export class TemplateAggregationModalComponent
             referenceData: this.referenceData?.id,
           })
           .pipe(takeUntil(this.destroy$))
-          .subscribe(({ data }) => {
-            if (data?.editAggregation) {
-              if (this.resource) {
-                this.getResource(this.resource?.id as string);
-              } else {
-                this.getReferenceData(this.referenceData?.id as string);
+          .subscribe({
+            next: ({ data }) => {
+              if (data?.editAggregation) {
+                if (this.resource) {
+                  this.getResource(this.resource?.id as string);
+                } else {
+                  this.getReferenceData(this.referenceData?.id as string);
+                }
               }
-            }
+            },
           });
       }
     });

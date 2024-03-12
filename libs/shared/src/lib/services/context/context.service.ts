@@ -534,13 +534,15 @@ export class ContextService {
             id: dContext.record,
           },
         })
-        .subscribe((res) => {
-          if (res?.data) {
-            callback({
-              record: dContext.record,
-              recordData: res.data.record,
-            });
-          }
+        .subscribe({
+          next: (res) => {
+            if (res?.data) {
+              callback({
+                record: dContext.record,
+                recordData: res.data.record,
+              });
+            }
+          },
         });
     }
   }
@@ -562,8 +564,13 @@ export class ContextService {
           },
         },
       })
-      .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors }, dashboard);
+      .subscribe({
+        next: ({ data }) => {
+          this.handleFilterMutationResponse({ data, errors: [] }, dashboard);
+        },
+        error: (errors) => {
+          this.handleFilterMutationResponse({ data: null, errors }, dashboard);
+        },
       });
   }
 

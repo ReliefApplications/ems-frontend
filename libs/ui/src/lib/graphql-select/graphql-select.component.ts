@@ -306,9 +306,14 @@ export class GraphQLSelectComponent
     if (this.query) {
       this.query.valueChanges
         .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.queryName = Object.keys(data)[0];
-          this.updateValues(data, loading);
+        .subscribe({
+          next: ({ data, loading }) => {
+            this.queryName = Object.keys(data)[0];
+            this.updateValues(data, loading);
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     }
     this.ngControl?.valueChanges
@@ -370,9 +375,14 @@ export class GraphQLSelectComponent
       // Subscribe to the new query
       this.query.valueChanges
         .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.queryName = Object.keys(data)[0];
-          this.updateValues(data, loading);
+        .subscribe({
+          next: ({ data, loading }) => {
+            this.queryName = Object.keys(data)[0];
+            this.updateValues(data, loading);
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     } else {
       const elements = this.elements.getValue();

@@ -296,15 +296,8 @@ export class FormComponent
         },
       });
     }
-    mutation.subscribe(({ errors, data }: any) => {
-      if (errors) {
-        this.save.emit({ completed: false });
-        this.survey.clear(false, true);
-        this.surveyActive = true;
-        this.snackBar.openSnackBar(errorMessageFormatter(errors), {
-          error: true,
-        });
-      } else {
+    mutation.subscribe({
+      next: ({ data }: any) => {
         if (this.lastDraftRecord) {
           const callback = () => {
             this.lastDraftRecord = undefined;
@@ -331,7 +324,15 @@ export class FormComponent
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
         });
-      }
+      },
+      error: (errors: any) => {
+        this.save.emit({ completed: false });
+        this.survey.clear(false, true);
+        this.surveyActive = true;
+        this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+          error: true,
+        });
+      },
     });
   };
 

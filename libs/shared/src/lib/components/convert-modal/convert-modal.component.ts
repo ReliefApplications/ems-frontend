@@ -100,13 +100,18 @@ export class ConvertModalComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        const record = data.record;
-        this.form = record.form;
-        this.loading = false;
-        this.availableForms =
-          this.form?.resource?.forms?.filter((x) => x.id !== this.form?.id) ||
-          [];
+      .subscribe({
+        next: ({ data }) => {
+          const record = data.record;
+          this.form = record.form;
+          this.loading = false;
+          this.availableForms =
+            this.form?.resource?.forms?.filter((x) => x.id !== this.form?.id) ||
+            [];
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
     this.convertForm
       .get('targetForm')

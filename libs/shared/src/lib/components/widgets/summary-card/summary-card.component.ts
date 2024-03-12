@@ -466,9 +466,10 @@ export class SummaryCardComponent
         })
       )
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-        .subscribe(({ items, pageInfo }) =>
-          this.updateReferenceDataCards(items, pageInfo)
-        );
+        .subscribe({
+          next: ({ items, pageInfo }) =>
+            this.updateReferenceDataCards(items, pageInfo),
+        });
     }
   }
 
@@ -1014,7 +1015,7 @@ export class SummaryCardComponent
             })
           )
             .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-            .subscribe(() => this.updateRecordCards.bind(this));
+            .subscribe({ next: () => this.updateRecordCards.bind(this) });
         }
       }
     }
@@ -1063,9 +1064,14 @@ export class SummaryCardComponent
         })
       )
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-        .subscribe(({ items, pageInfo }) => {
-          this.updateReferenceDataCards(items, pageInfo);
-          this.loading = false;
+        .subscribe({
+          next: ({ items, pageInfo }) => {
+            this.updateReferenceDataCards(items, pageInfo);
+            this.loading = false;
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     }
   }
@@ -1159,7 +1165,12 @@ export class SummaryCardComponent
           })
         )
           .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-          .subscribe(() => (this.loading = false));
+          .subscribe({
+            next: () => (this.loading = false),
+            error: () => {
+              this.loading = false;
+            },
+          });
       } else if (this.useReferenceData) {
         if (this.refData?.pageInfo?.strategy) {
           this.refresh();

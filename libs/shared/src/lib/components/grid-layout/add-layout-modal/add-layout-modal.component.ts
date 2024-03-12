@@ -153,12 +153,15 @@ export class AddLayoutModalComponent
       if (layout) {
         this.gridLayoutService
           .addLayout(layout, this.resource?.id, this.form?.id)
-          .subscribe(({ data }) => {
-            if (data?.addLayout) {
-              this.dialogRef.close(data.addLayout as any);
-            } else {
+          .subscribe({
+            next: ({ data }) => {
+              if (data?.addLayout) {
+                this.dialogRef.close(data.addLayout as any);
+              }
+            },
+            error: () => {
               this.dialogRef.close();
-            }
+            },
           });
       }
     });

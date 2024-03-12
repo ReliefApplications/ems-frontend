@@ -11,6 +11,7 @@ import { EDIT_USER_PROFILE, EDIT_USER_ROLES } from './graphql/mutations';
 import { GET_USER } from './graphql/queries';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../utils/graphql/error-handler';
 
 /**
  * User Summary shared component.
@@ -75,8 +76,10 @@ export class UserSummaryComponent implements OnInit {
           }
           this.loading = loading;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
           this.loading = false;
         },
       });
@@ -104,8 +107,10 @@ export class UserSummaryComponent implements OnInit {
             this.loading = loading;
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
           this.loading = false;
         },
       });
@@ -142,8 +147,10 @@ export class UserSummaryComponent implements OnInit {
             this.loading = loading;
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
           this.loading = false;
         },
       });

@@ -69,10 +69,12 @@ export class ResourceDropdownComponent
             id: this.model.value,
           },
         })
-        .subscribe(({ data }) => {
-          if (data.resource) {
-            this.selectedResource = data.resource;
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data.resource) {
+              this.selectedResource = data.resource;
+            }
+          },
         });
     }
   }

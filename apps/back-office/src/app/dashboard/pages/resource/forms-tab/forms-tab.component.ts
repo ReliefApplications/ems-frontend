@@ -81,11 +81,16 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
           id: this.resource?.id,
         },
       })
-      .subscribe(({ data }) => {
-        if (data.resource) {
-          this.forms = data.resource.forms || [];
-        }
-        this.loading = false;
+      .subscribe({
+        next: ({ data }) => {
+          if (data.resource) {
+            this.forms = data.resource.forms || [];
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

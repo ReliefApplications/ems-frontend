@@ -107,11 +107,16 @@ export class GroupListComponent
         query: GET_GROUPS,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.groups = data.groups;
-        this.filteredGroups = this.groups;
-        // this.manualCreation = data.groups.manualCreation;
-        this.loading = loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.groups = data.groups;
+          this.filteredGroups = this.groups;
+          // this.manualCreation = data.groups.manualCreation;
+          this.loading = loading;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
@@ -123,8 +128,10 @@ export class GroupListComponent
     this.restService
       .get(url)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.manualCreation = get(res, 'groups.local', true);
+      .subscribe({
+        next: (res) => {
+          this.manualCreation = get(res, 'groups.local', true);
+        },
       });
   }
 
@@ -164,7 +171,7 @@ export class GroupListComponent
             next: () => {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate.instant('common.role.one'),
+                  type: this.translate.instant('common.group.one'),
                   value: value.title,
                 })
               );
@@ -176,7 +183,7 @@ export class GroupListComponent
                   'common.notifications.objectNotCreated',
                   {
                     type: this.translate
-                      .instant('common.role.one')
+                      .instant('common.group.one')
                       .toLowerCase(),
                     error: errorMessageFormatter(errors),
                   }

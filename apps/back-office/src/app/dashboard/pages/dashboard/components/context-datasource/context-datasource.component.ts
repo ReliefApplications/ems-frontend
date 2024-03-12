@@ -174,9 +174,11 @@ export class ContextDatasourceComponent
           id,
         },
       })
-      .subscribe(({ data }) => {
-        this.refData = data.referenceData;
-        this.updateDisplayFieldOptions();
+      .subscribe({
+        next: ({ data }) => {
+          this.refData = data.referenceData;
+          this.updateDisplayFieldOptions();
+        },
       });
   }
 
@@ -193,9 +195,11 @@ export class ContextDatasourceComponent
           id,
         },
       })
-      .subscribe(({ data }) => {
-        this.resource = data.resource;
-        this.updateDisplayFieldOptions();
+      .subscribe({
+        next: ({ data }) => {
+          this.resource = data.resource;
+          this.updateDisplayFieldOptions();
+        },
       });
   }
 

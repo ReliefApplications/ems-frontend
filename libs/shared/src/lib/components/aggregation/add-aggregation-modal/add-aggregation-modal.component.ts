@@ -150,12 +150,15 @@ export class AddAggregationModalComponent
               resource: this.resource?.id,
               referenceData: this.referenceData?.id,
             })
-            .subscribe(({ data }) => {
-              if (data?.addAggregation) {
-                this.dialogRef.close(data.addAggregation as any);
-              } else {
+            .subscribe({
+              next: ({ data }) => {
+                if (data?.addAggregation) {
+                  this.dialogRef.close(data.addAggregation as any);
+                }
+              },
+              error: () => {
                 this.dialogRef.close();
-              }
+              },
             });
         }
       });

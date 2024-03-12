@@ -48,6 +48,7 @@ export class ErrorHandlerInterceptorService implements HttpInterceptor {
             } else {
               errorMessage = errorMessage + '\n' + res.error;
             }
+            errorMessage = errorMessage + '\n' + res.message;
             this.snackbarService.openSnackBar(errorMessage, {
               error: true,
               duration: 0,

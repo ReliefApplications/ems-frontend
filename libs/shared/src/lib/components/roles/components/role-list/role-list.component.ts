@@ -128,10 +128,15 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
         query: GET_ROLES,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.roles = data.roles;
-        this.loading = loading;
-        this.filterPredicate();
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.roles = data.roles;
+          this.loading = loading;
+          this.filterPredicate();
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

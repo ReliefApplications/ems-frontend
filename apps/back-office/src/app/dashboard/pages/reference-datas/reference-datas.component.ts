@@ -112,8 +112,14 @@ export class ReferenceDatasComponent
 
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.updateValues(data, loading);
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.updateValues(data, loading);
+        },
+        error: () => {
+          this.loading = false;
+          this.updating = false;
+        },
       });
 
     // Initializing sort to an empty one

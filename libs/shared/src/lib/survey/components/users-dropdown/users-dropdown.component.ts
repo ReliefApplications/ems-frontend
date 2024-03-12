@@ -112,10 +112,12 @@ export class UsersDropdownComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        if (data.users) {
-          this.initialSelection = data.users.edges.map((x) => x.node);
-        }
+      .subscribe({
+        next: ({ data }) => {
+          if (data.users) {
+            this.initialSelection = data.users.edges.map((x) => x.node);
+          }
+        },
       });
   }
 

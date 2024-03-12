@@ -52,8 +52,13 @@ export class ChoseRoleComponent implements OnInit {
       },
     });
 
-    this.rolesQuery.valueChanges.subscribe(({ loading }) => {
-      this.loading = loading;
+    this.rolesQuery.valueChanges.subscribe({
+      next: ({ loading }) => {
+        this.loading = loading;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 }

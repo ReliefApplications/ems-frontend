@@ -56,13 +56,22 @@ export class PositionAttributesComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe(({ data, loading }) => {
-        this.positionAttributes = data.positionAttributes;
-        if (this.positionAttributes.length > 0) {
-          this.categoryName = this.positionAttributes[0].category?.title || '';
-          this.breadcrumbService.setBreadcrumb('@attribute', this.categoryName);
-        }
-        this.loading = loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.positionAttributes = data.positionAttributes;
+          if (this.positionAttributes.length > 0) {
+            this.categoryName =
+              this.positionAttributes[0].category?.title || '';
+            this.breadcrumbService.setBreadcrumb(
+              '@attribute',
+              this.categoryName
+            );
+          }
+          this.loading = loading;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 }

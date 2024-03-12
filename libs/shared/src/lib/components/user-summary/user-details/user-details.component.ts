@@ -76,33 +76,35 @@ export class UserDetailsComponent implements OnInit {
    * Get attributes from back-end, and set controls if any
    */
   private getAttributes(): void {
-    this.restService.get('/permissions/configuration').subscribe((config) => {
-      // can user edit attributes
-      const manualCreation = get(config, 'attributes.local', true);
-      this.restService
-        .get('/permissions/attributes')
-        .subscribe((attributes: any) => {
-          this.form.addControl(
-            'attributes',
-            this.fb.group(
-              attributes.reduce(
-                (group: any, attribute: any) => ({
-                  ...group,
-                  [attribute.value]: this.fb.control({
-                    value: get(
-                      this.user,
-                      `attributes.${attribute.value}`,
-                      null
-                    ),
-                    disabled: !manualCreation,
+    this.restService.get('/permissions/configuration').subscribe({
+      next: (config) => {
+        // can user edit attributes
+        const manualCreation = get(config, 'attributes.local', true);
+        this.restService.get('/permissions/attributes').subscribe({
+          next: (attributes: any) => {
+            this.form.addControl(
+              'attributes',
+              this.fb.group(
+                attributes.reduce(
+                  (group: any, attribute: any) => ({
+                    ...group,
+                    [attribute.value]: this.fb.control({
+                      value: get(
+                        this.user,
+                        `attributes.${attribute.value}`,
+                        null
+                      ),
+                      disabled: !manualCreation,
+                    }),
                   }),
-                }),
-                {}
+                  {}
+                )
               )
-            )
-          );
-          this.attributes = attributes;
+            );
+            this.attributes = attributes;
+          },
         });
+      },
     });
   }
 }

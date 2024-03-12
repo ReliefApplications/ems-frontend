@@ -209,17 +209,22 @@ export class EditorSettingsComponent
           layout: layout ? [layout] : undefined,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.resource = data.resource;
-          if (layout) {
-            this.layout = data.resource.layouts?.edges[0]?.node || null;
-          } else {
-            this.layout = null;
+      .subscribe({
+        next: ({ data }) => {
+          if (data) {
+            this.resource = data.resource;
+            if (layout) {
+              this.layout = data.resource.layouts?.edges[0]?.node || null;
+            } else {
+              this.layout = null;
+            }
+            this.updateFields();
           }
-          this.updateFields();
-        }
-        this.loading = false;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
@@ -237,12 +242,17 @@ export class EditorSettingsComponent
           id: referenceData,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.referenceData = data.referenceData;
-          this.updateFields();
-        }
-        this.loading = false;
+      .subscribe({
+        next: ({ data }) => {
+          if (data) {
+            this.referenceData = data.referenceData;
+            this.updateFields();
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 

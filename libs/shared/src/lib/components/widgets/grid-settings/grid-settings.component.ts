@@ -280,8 +280,10 @@ export class GridSettingsComponent
                 },
               })
               .pipe(takeUntil(this.destroy$))
-              .subscribe(({ data }) => {
-                this.channels = data.channels;
+              .subscribe({
+                next: ({ data }) => {
+                  this.channels = data.channels;
+                },
               });
           } else {
             this.apollo
@@ -289,8 +291,10 @@ export class GridSettingsComponent
                 query: GET_CHANNELS,
               })
               .pipe(takeUntil(this.destroy$))
-              .subscribe(({ data }) => {
-                this.channels = data.channels;
+              .subscribe({
+                next: ({ data }) => {
+                  this.channels = data.channels;
+                },
               });
           }
         });
@@ -317,8 +321,8 @@ export class GridSettingsComponent
             firstAggregations: aggregationIds?.length || 10,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
+        .subscribe({
+          next: ({ data }) => {
             this.resource = data.resource;
             this.relatedForms = data.resource.relatedForms || [];
             this.templates = data.resource.forms || [];
@@ -331,12 +335,13 @@ export class GridSettingsComponent
                 this.resource.queryName as string
               );
             }
-          } else {
+          },
+          error: () => {
             this.relatedForms = [];
             this.templates = [];
             this.resource = null;
             this.fields = [];
-          }
+          },
         });
     } else {
       this.relatedForms = [];
@@ -368,15 +373,17 @@ export class GridSettingsComponent
           resource: this.resource.id,
           aggregation: aggregationId || '',
         })
-        .subscribe(({ data }: any) => {
-          if (data.recordsAggregation) {
-            this.fields = data.recordsAggregation.items[0]
-              ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({
-                  name: f,
-                  editor: 'text',
-                }))
-              : [];
-          }
+        .subscribe({
+          next: ({ data }: any) => {
+            if (data.recordsAggregation) {
+              this.fields = data.recordsAggregation.items[0]
+                ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({
+                    name: f,
+                    editor: 'text',
+                  }))
+                : [];
+            }
+          },
         });
     }
   }

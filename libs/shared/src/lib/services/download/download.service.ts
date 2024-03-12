@@ -293,27 +293,27 @@ export class DownloadService {
     const formData = new FormData();
     formData.append('file', file, file.name);
     return new Promise((resolve, reject) => {
-      this.restService
-        .post(path, formData, { headers })
-        .subscribe((res: { path: string }) => {
+      this.restService.post(path, formData, { headers }).subscribe({
+        next: (res: { path: string }) => {
           const { path } = res ?? {};
-          if (path) {
-            snackBarRef.instance.message = this.translate.instant(
-              'common.notifications.file.upload.ready'
-            );
-            snackBarRef.instance.loading = false;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-            resolve(path);
-          } else {
-            snackBarRef.instance.message = this.translate.instant(
-              'common.notifications.file.upload.error'
-            );
-            snackBarRef.instance.loading = false;
-            snackBarRef.instance.error = true;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-            reject();
-          }
-        });
+
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.file.upload.ready'
+          );
+          snackBarRef.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          resolve(path);
+        },
+        error: () => {
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.file.upload.error'
+          );
+          snackBarRef.instance.loading = false;
+          snackBarRef.instance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          reject();
+        },
+      });
     });
   }
 }

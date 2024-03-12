@@ -53,20 +53,24 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
               id: params.id,
             },
           })
-          .subscribe(({ data }) => {
-            let url = '';
-            const dashboard: Dashboard = data.dashboard;
-            if (dashboard) {
-              if (dashboard.step) {
-                url +=
-                  '/' + data.dashboard.step?.workflow?.page?.application?.id;
-                url += '/workflow/' + data.dashboard.step?.workflow?.id;
-                url += '/dashboard/' + data.dashboard.id;
-              } else {
-                url += '/' + data.dashboard.page?.application?.id;
-                url += '/dashboard/' + data.dashboard.id;
+          .subscribe({
+            next: ({ data }) => {
+              let url = '';
+              const dashboard: Dashboard = data.dashboard;
+              if (dashboard) {
+                if (dashboard.step) {
+                  url +=
+                    '/' + data.dashboard.step?.workflow?.page?.application?.id;
+                  url += '/workflow/' + data.dashboard.step?.workflow?.id;
+                  url += '/dashboard/' + data.dashboard.id;
+                } else {
+                  url += '/' + data.dashboard.page?.application?.id;
+                  url += '/dashboard/' + data.dashboard.id;
+                }
               }
-            } else {
+              this.router.navigate([url]);
+            },
+            error: () => {
               // Error handling
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -80,8 +84,7 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
                 ),
                 { error: true }
               );
-            }
-            this.router.navigate([url]);
+            },
           });
       });
   }

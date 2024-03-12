@@ -58,9 +58,14 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
    */
   private updateLayerList(): void {
     const layerIds = this.control.value;
-    this.mapLayersService.getLayers(layerIds).subscribe((layers) => {
-      this.mapLayers = layers;
-      this.loading = false;
+    this.mapLayersService.getLayers(layerIds).subscribe({
+      next: (layers) => {
+        this.mapLayers = layers;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 
@@ -188,7 +193,7 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
                   }
                 },
                 error: (err) => {
-                  console.log(err);
+                  console.error(err);
                   this.loading = false;
                 },
                 complete: () => (this.loading = false),

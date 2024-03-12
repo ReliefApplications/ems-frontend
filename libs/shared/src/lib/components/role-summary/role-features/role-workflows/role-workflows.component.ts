@@ -22,6 +22,7 @@ import { EditStepMutationResponse, Step } from '../../../../models/step.model';
 import { WorkflowQueryResponse } from '../../../../models/workflow.model';
 import { EDIT_STEP_ACCESS } from '../../graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../../../utils/graphql/error-handler';
 
 /** Component for the workflows section of the roles features */
 @Component({
@@ -141,8 +142,10 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
               );
             }
           },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
+          error: (errors) => {
+            this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+              error: true,
+            });
           },
         });
     }
@@ -183,9 +186,11 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
           }
           this.loading = loading;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
           this.loading = false;
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         },
       });
   }

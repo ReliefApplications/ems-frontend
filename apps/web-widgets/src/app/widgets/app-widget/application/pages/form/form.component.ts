@@ -99,8 +99,13 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               return this.getFormQuery(this.step.content ?? '');
             })
           )
-          .subscribe(({ data, loading }) => {
-            this.handleApplicationLoadResponse(data, loading);
+          .subscribe({
+            next: ({ data, loading }) => {
+              this.handleApplicationLoadResponse(data, loading);
+            },
+            error: () => {
+              this.loading = false;
+            },
           });
       } else {
         this.querySubscription = this.apollo
@@ -116,8 +121,13 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               return this.getFormQuery(this.page.content ?? '');
             })
           )
-          .subscribe(({ data, loading }) => {
-            this.handleApplicationLoadResponse(data, loading);
+          .subscribe({
+            next: ({ data, loading }) => {
+              this.handleApplicationLoadResponse(data, loading);
+            },
+            error: () => {
+              this.loading = false;
+            },
           });
       }
     });

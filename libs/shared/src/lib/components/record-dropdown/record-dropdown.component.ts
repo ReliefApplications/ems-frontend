@@ -97,10 +97,12 @@ export class RecordDropdownComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          if (data.record) {
-            this.selectedRecord = data.record;
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data.record) {
+              this.selectedRecord = data.record;
+            }
+          },
         });
     }
 
@@ -118,11 +120,14 @@ export class RecordDropdownComponent
         });
 
       this.records$ = this.records.asObservable();
-      this.recordsQuery.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
+      this.recordsQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+        next: ({ data, loading }) => {
           this.updateValues(data, loading);
-        });
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
     }
   }
 

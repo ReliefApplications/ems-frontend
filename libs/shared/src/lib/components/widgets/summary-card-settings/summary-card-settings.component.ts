@@ -298,15 +298,8 @@ export class SummaryCardSettingsComponent
           aggregation: aggregationID ? [aggregationID] : undefined,
         },
       })
-      .subscribe(({ data, errors }) => {
-        if (errors) {
-          this.widgetFormGroup.get('card.resource')?.patchValue(null);
-          this.widgetFormGroup.get('card.layout')?.patchValue(null);
-          this.widgetFormGroup.get('card.aggregation')?.patchValue(null);
-          this.resource = null;
-          this.layout = null;
-          this.aggregation = null;
-        } else {
+      .subscribe({
+        next: ({ data }) => {
           this.resource = data.resource;
           if (layoutID) {
             this.layout = data?.resource.layouts?.edges[0]?.node || null;
@@ -327,7 +320,15 @@ export class SummaryCardSettingsComponent
               data?.resource.aggregations?.edges[0]?.node || null;
             this.getCustomAggregation();
           }
-        }
+        },
+        error: () => {
+          this.widgetFormGroup.get('card.resource')?.patchValue(null);
+          this.widgetFormGroup.get('card.layout')?.patchValue(null);
+          this.widgetFormGroup.get('card.aggregation')?.patchValue(null);
+          this.resource = null;
+          this.layout = null;
+          this.aggregation = null;
+        },
       });
   }
 
@@ -344,11 +345,8 @@ export class SummaryCardSettingsComponent
           id,
         },
       })
-      .subscribe(({ data, errors }) => {
-        if (errors) {
-          this.widgetFormGroup.get('card.referenceData')?.patchValue(null);
-          this.referenceData = null;
-        } else {
+      .subscribe({
+        next: ({ data }) => {
           this.referenceData = data.referenceData;
           this.fields = (this.referenceData.fields || [])
             .filter((field) => field && typeof field !== 'string')
@@ -359,7 +357,11 @@ export class SummaryCardSettingsComponent
                 type: field.type,
               };
             });
-        }
+        },
+        error: () => {
+          this.widgetFormGroup.get('card.referenceData')?.patchValue(null);
+          this.referenceData = null;
+        },
       });
   }
 
@@ -374,16 +376,18 @@ export class SummaryCardSettingsComponent
         resource: this.resource.id,
         aggregation: this.aggregation.id || '',
       })
-      ?.subscribe(({ data }: any) => {
-        if (data.recordsAggregation) {
-          const customAggregation = data.recordsAggregation;
-          this.fields = customAggregation.items[0]
-            ? Object.keys(customAggregation.items[0]).map((f) => ({
-                name: f,
-                editor: 'text',
-              }))
-            : [];
-        }
+      ?.subscribe({
+        next: ({ data }: any) => {
+          if (data.recordsAggregation) {
+            const customAggregation = data.recordsAggregation;
+            this.fields = customAggregation.items[0]
+              ? Object.keys(customAggregation.items[0]).map((f) => ({
+                  name: f,
+                  editor: 'text',
+                }))
+              : [];
+          }
+        },
       });
   }
 

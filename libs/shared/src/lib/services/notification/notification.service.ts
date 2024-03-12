@@ -74,27 +74,37 @@ export class NotificationService {
           },
         });
 
-      this.notificationsQuery.valueChanges.subscribe(({ data }) => {
-        this.updateValues(data);
+      this.notificationsQuery.valueChanges.subscribe({
+        next: ({ data }) => {
+          this.updateValues(data);
+        },
+        error: () => {
+          this.firstLoad = false;
+        },
       });
 
       this.apollo
         .subscribe<NotificationSubscriptionResponse>({
           query: NOTIFICATION_SUBSCRIPTION,
         })
-        .subscribe(({ data }) => {
-          if (data && data.notification) {
-            // prevent new notification duplication
-            if (this.previousNotificationId !== data.notification.id) {
-              const notifications = this.notifications.getValue();
-              if (notifications) {
-                this.notifications.next([data.notification, ...notifications]);
-              } else {
-                this.notifications.next([data.notification]);
+        .subscribe({
+          next: ({ data }) => {
+            if (data && data.notification) {
+              // prevent new notification duplication
+              if (this.previousNotificationId !== data.notification.id) {
+                const notifications = this.notifications.getValue();
+                if (notifications) {
+                  this.notifications.next([
+                    data.notification,
+                    ...notifications,
+                  ]);
+                } else {
+                  this.notifications.next([data.notification]);
+                }
               }
+              this.previousNotificationId = data.notification.id;
             }
-            this.previousNotificationId = data.notification.id;
-          }
+          },
         });
     }
   }
@@ -113,13 +123,15 @@ export class NotificationService {
           id: notification.id,
         },
       })
-      .subscribe(({ data }) => {
-        if (data && data.seeNotification) {
-          const seeNotification = data.seeNotification;
-          this.notifications.next(
-            notifications.filter((x) => x.id !== seeNotification.id)
-          );
-        }
+      .subscribe({
+        next: ({ data }) => {
+          if (data && data.seeNotification) {
+            const seeNotification = data.seeNotification;
+            this.notifications.next(
+              notifications.filter((x) => x.id !== seeNotification.id)
+            );
+          }
+        },
       });
   }
 
@@ -135,8 +147,10 @@ export class NotificationService {
           ids: notificationsIds,
         },
       })
-      .subscribe(() => {
-        this.fetchMore();
+      .subscribe({
+        next: () => {
+          this.fetchMore();
+        },
       });
   }
 

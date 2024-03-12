@@ -1,7 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription, takeUntil } from 'rxjs';
 import {
@@ -64,15 +64,13 @@ export class NotificationsComponent
    * @param confirmService Shared confirmation service
    * @param apollo Apollo service
    * @param applicationService Shared application service
-   * @param snackBar Shared snackbar service
    */
   constructor(
     public dialog: Dialog,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private apollo: Apollo,
-    private applicationService: ApplicationService,
-    private snackBar: SnackbarService
+    private applicationService: ApplicationService
   ) {
     super();
   }
@@ -92,21 +90,27 @@ export class NotificationsComponent
                   },
                 }
               );
-            this.notificationsQuery.valueChanges.subscribe((res) => {
-              this.cachedNotifications =
-                res.data.application.customNotifications.edges.map(
-                  (x) => x.node
+            this.notificationsQuery.valueChanges.subscribe({
+              next: (res) => {
+                this.cachedNotifications =
+                  res.data.application.customNotifications.edges.map(
+                    (x) => x.node
+                  );
+                this.notifications = this.cachedNotifications.slice(
+                  this.pageInfo.pageSize * this.pageInfo.pageIndex,
+                  this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
                 );
-              this.notifications = this.cachedNotifications.slice(
-                this.pageInfo.pageSize * this.pageInfo.pageIndex,
-                this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-              );
-              this.pageInfo.length =
-                res.data.application.customNotifications.totalCount;
-              this.pageInfo.endCursor =
-                res.data.application.customNotifications.pageInfo.endCursor;
-              this.loading = res.loading;
-              this.updating = false;
+                this.pageInfo.length =
+                  res.data.application.customNotifications.totalCount;
+                this.pageInfo.endCursor =
+                  res.data.application.customNotifications.pageInfo.endCursor;
+                this.loading = res.loading;
+                this.updating = false;
+              },
+              error: () => {
+                this.loading = false;
+                this.updating = false;
+              },
             });
           }
         }
@@ -146,12 +150,6 @@ export class NotificationsComponent
             this.notificationsQuery.refetch();
           }
         );
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectUpdated', {
-            value: value.name,
-            type: this.translate.instant('common.customNotification.one'),
-          })
-        );
       }
     });
   }
@@ -182,11 +180,6 @@ export class NotificationsComponent
             this.notificationsQuery.refetch();
           }
         );
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectDeleted', {
-            value: notification.name,
-          })
-        );
       }
     });
   }
@@ -205,12 +198,6 @@ export class NotificationsComponent
         this.applicationService.addCustomNotification(value, () => {
           this.notificationsQuery.refetch();
         });
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectCreated', {
-            value: value.name,
-            type: this.translate.instant('common.customNotification.one'),
-          })
-        );
       }
     });
   }

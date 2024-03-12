@@ -134,8 +134,12 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
       if (value && this.layout) {
         this.gridLayoutService
           .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            this.formGroup.get('layout')?.setValue(this.formGroup.value.layout);
+          .subscribe({
+            next: () => {
+              this.formGroup
+                .get('layout')
+                ?.setValue(this.formGroup.value.layout);
+            },
           });
       }
     });
@@ -160,10 +164,12 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
             resource: this.resource?.id,
             referenceData: this.referenceData?.id,
           })
-          .subscribe(() => {
-            this.formGroup
-              .get('aggregation')
-              ?.setValue(this.formGroup.value.aggregation);
+          .subscribe({
+            next: () => {
+              this.formGroup
+                .get('aggregation')
+                ?.setValue(this.formGroup.value.aggregation);
+            },
           });
       }
     });

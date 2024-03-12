@@ -102,9 +102,14 @@ export class ReferenceDataSelectComponent extends GraphQLSelectComponent {
 
       this.query.valueChanges
         .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.queryName = Object.keys(data)[0];
-          this.updateValues(data, loading);
+        .subscribe({
+          next: ({ data, loading }) => {
+            this.queryName = Object.keys(data)[0];
+            this.updateValues(data, loading);
+          },
+          error: () => {
+            this.loading = false;
+          },
         });
     }
     super.onOpenSelect();

@@ -223,11 +223,13 @@ export class EditNotificationModalComponent
           layoutIds: layoutId ? [layoutId] : null,
         },
       })
-      .subscribe((res) => {
-        this.resource = res.data.resource;
-        if (layoutId && this.resource.layouts?.edges[0]) {
-          this.layout = this.resource.layouts.edges[0].node;
-        }
+      .subscribe({
+        next: (res) => {
+          this.resource = res.data.resource;
+          if (layoutId && this.resource.layouts?.edges[0]) {
+            this.layout = this.resource.layouts.edges[0].node;
+          }
+        },
       });
   }
 
@@ -272,8 +274,10 @@ export class EditNotificationModalComponent
       if (value && this.layout) {
         this.gridLayoutService
           .editLayout(this.layout, value, this.resource?.id)
-          .subscribe((res: any) => {
-            this.layout = res.data?.editLayout;
+          .subscribe({
+            next: (res: any) => {
+              this.layout = res.data?.editLayout;
+            },
           });
       }
     });

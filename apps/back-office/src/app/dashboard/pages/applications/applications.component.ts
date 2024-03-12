@@ -130,18 +130,24 @@ export class ApplicationsComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.newApplications = data.applications.edges.map((x) => x.node);
+      .subscribe({
+        next: ({ data }) => {
+          this.newApplications = data.applications.edges.map((x) => x.node);
+        },
       });
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (
+      .subscribe({
+        next: (
           results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>
         ) => {
           this.updateValues(results.data, results.loading);
-        }
-      );
+        },
+        error: () => {
+          this.loading = false;
+          this.updating = false;
+        },
+      });
   }
 
   /**

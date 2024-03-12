@@ -84,13 +84,13 @@ export class AggregationService {
             first: options.first,
           },
         })
-      ).then(async ({ errors, data }) => {
-        if (errors) {
-          return FALLBACK_AGGREGATIONS;
-        } else {
+      )
+        .then(async ({ data }) => {
           return data.resource.aggregations || FALLBACK_AGGREGATIONS;
-        }
-      });
+        })
+        .catch(() => {
+          return FALLBACK_AGGREGATIONS;
+        });
     } else {
       return await firstValueFrom(
         this.apollo.query<ReferenceDataQueryResponse>({
@@ -101,13 +101,13 @@ export class AggregationService {
             first: options.first,
           },
         })
-      ).then(async ({ errors, data }) => {
-        if (errors) {
-          return FALLBACK_AGGREGATIONS;
-        } else {
+      )
+        .then(async ({ data }) => {
           return data.referenceData.aggregations || FALLBACK_AGGREGATIONS;
-        }
-      });
+        })
+        .catch(() => {
+          return FALLBACK_AGGREGATIONS;
+        });
     }
   }
 

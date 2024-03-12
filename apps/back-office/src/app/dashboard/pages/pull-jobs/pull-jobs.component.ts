@@ -92,11 +92,14 @@ export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
       },
     });
 
-    this.pullJobsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((results) => {
+    this.pullJobsQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (results) => {
         this.updateValues(results.data, results.loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   /**

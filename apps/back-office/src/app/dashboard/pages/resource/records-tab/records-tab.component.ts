@@ -132,11 +132,14 @@ export class RecordsTabComponent
           showDeletedRecords: this.showDeletedRecords,
         },
       });
-    this.recordsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+    this.recordsQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.updateValues(data, loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   /**

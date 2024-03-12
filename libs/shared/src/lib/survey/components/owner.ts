@@ -56,14 +56,16 @@ export const init = (
             applications: question.applications,
           },
         })
-        .subscribe(({ data }) => {
-          if (data.rolesFromApplications) {
-            const roles = [];
-            for (const role of data.rolesFromApplications) {
-              roles.push({ value: role.id, text: role.title });
+        .subscribe({
+          next: ({ data }) => {
+            if (data.rolesFromApplications) {
+              const roles = [];
+              for (const role of data.rolesFromApplications) {
+                roles.push({ value: role.id, text: role.title });
+              }
+              question.contentQuestion.choices = roles;
             }
-            question.contentQuestion.choices = roles;
-          }
+          },
         });
     },
     // eslint-disable-next-line @typescript-eslint/no-empty-function

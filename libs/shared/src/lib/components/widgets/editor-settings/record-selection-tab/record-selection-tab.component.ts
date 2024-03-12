@@ -119,12 +119,14 @@ export class RecordSelectionTabComponent
       if (value && this.layout) {
         this.gridLayoutService
           .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            if (this.form.get('layout')) {
-              this.form
-                .get('layout')
-                ?.setValue(this.form.get('layout')?.value || null);
-            }
+          .subscribe({
+            next: () => {
+              if (this.form.get('layout')) {
+                this.form
+                  .get('layout')
+                  ?.setValue(this.form.get('layout')?.value || null);
+              }
+            },
           });
       }
     });

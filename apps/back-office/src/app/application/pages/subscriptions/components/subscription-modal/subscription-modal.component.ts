@@ -165,8 +165,13 @@ export class SubscriptionModalComponent
     // this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((results) => {
-        this.updateValues(results.data, results.loading);
+      .subscribe({
+        next: (results) => {
+          this.updateValues(results.data, results.loading);
+        },
+        error: () => {
+          this.applicationsLoading = false;
+        },
       });
 
     this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({

@@ -128,8 +128,14 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       },
     });
 
-    this.resourcesQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
+    this.resourcesQuery.valueChanges.subscribe({
+      next: ({ data, loading }) => {
+        this.updateValues(data, loading);
+      },
+      error: () => {
+        this.loading = false;
+        this.updating = false;
+      },
     });
   }
 

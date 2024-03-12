@@ -106,10 +106,12 @@ export class AggregationBuilderComponent
     // Fixes issue where sometimes we try to load the fields before the queries are loaded
     this.queryBuilder.availableQueries$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((queryList) => {
-        if (queryList.length > 0) {
-          this.initFields();
-        }
+      .subscribe({
+        next: (queryList) => {
+          if (queryList.length > 0) {
+            this.initFields();
+          }
+        },
       });
 
     this.stageList = this.referenceData
@@ -309,15 +311,15 @@ export class AggregationBuilderComponent
       pipeline: this.aggregationForm.value.pipeline,
       first: -1,
     });
-
-    const { data: aggregationData, errors } = await firstValueFrom(query$);
-    if (!aggregationData || errors) {
+    let aggregationData!: any;
+    try {
+      const { data } = await firstValueFrom(query$);
+      aggregationData = data;
+    } catch (errors) {
       this.loadingAggregationRecords = false;
-      if (errors?.length) {
-        this.snackBar.openSnackBar(errorMessageFormatter(errors), {
-          error: true,
-        });
-      }
+      this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+        error: true,
+      });
       return;
     }
     this.loadingAggregationRecords = false;

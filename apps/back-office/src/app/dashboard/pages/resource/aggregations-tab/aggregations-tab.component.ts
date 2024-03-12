@@ -109,8 +109,13 @@ export class AggregationsTabComponent
       },
     });
 
-    this.aggregationsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
+    this.aggregationsQuery.valueChanges.subscribe({
+      next: ({ data, loading }) => {
+        this.updateValues(data, loading);
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 
@@ -236,16 +241,18 @@ export class AggregationsTabComponent
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.editAggregation) {
-              this.aggregations = this.aggregations.map((x: any) => {
-                if (x.id === aggregation.id) {
-                  return data.editAggregation;
-                } else {
-                  return x;
-                }
-              });
-            }
+          .subscribe({
+            next: ({ data }: any) => {
+              if (data.editAggregation) {
+                this.aggregations = this.aggregations.map((x: any) => {
+                  if (x.id === aggregation.id) {
+                    return data.editAggregation;
+                  } else {
+                    return x;
+                  }
+                });
+              }
+            },
           });
       }
     });
@@ -273,13 +280,15 @@ export class AggregationsTabComponent
       if (value) {
         this.aggregationService
           .deleteAggregation(aggregation, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.deleteAggregation) {
-              this.aggregations = this.aggregations.filter(
-                (x: any) => x.id !== aggregation.id
-              );
-              this.pageInfo.length -= 1;
-            }
+          .subscribe({
+            next: ({ data }: any) => {
+              if (data.deleteAggregation) {
+                this.aggregations = this.aggregations.filter(
+                  (x: any) => x.id !== aggregation.id
+                );
+                this.pageInfo.length -= 1;
+              }
+            },
           });
       }
     });

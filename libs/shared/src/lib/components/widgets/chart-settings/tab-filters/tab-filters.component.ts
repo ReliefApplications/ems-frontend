@@ -108,9 +108,11 @@ export class TabFiltersComponent implements OnInit {
             id: resourceID,
           },
         })
-        .subscribe((res) => {
-          this.resource = res.data.resource;
-          this.filterFields = this.resource?.metadata ?? [];
+        .subscribe({
+          next: (res) => {
+            this.resource = res.data.resource;
+            this.filterFields = this.resource?.metadata ?? [];
+          },
         });
     } else if (referenceDataID) {
       this.apollo
@@ -120,9 +122,11 @@ export class TabFiltersComponent implements OnInit {
             id: referenceDataID,
           },
         })
-        .subscribe((res) => {
-          this.referenceData = res.data.referenceData;
-          this.filterFields = getReferenceMetadata(this.referenceData);
+        .subscribe({
+          next: (res) => {
+            this.referenceData = res.data.referenceData;
+            this.filterFields = getReferenceMetadata(this.referenceData);
+          },
         });
     }
   }

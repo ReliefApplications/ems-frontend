@@ -125,11 +125,15 @@ export class RoleResourcesComponent
       },
     });
 
-    this.resourcesQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+    this.resourcesQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ data, loading }) => {
         this.updateValues(data, loading);
-      });
+      },
+      error: () => {
+        this.loading = false;
+        this.updating = false;
+      },
+    });
   }
 
   /**
@@ -232,11 +236,16 @@ export class RoleResourcesComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          if (data.resource) {
-            this.openedResource = data.resource;
-          }
-          this.updating = false;
+        .subscribe({
+          next: ({ data }) => {
+            if (data.resource) {
+              this.openedResource = data.resource;
+            }
+            this.updating = false;
+          },
+          error: () => {
+            this.updating = false;
+          },
         });
     }
   }
@@ -311,12 +320,12 @@ export class RoleResourcesComponent
           this.updating = false;
         },
         error: (errors) => {
+          this.updating = false;
           this.handleResourceMutationResponse(
             resource,
             { data: null, errors },
             true
           );
-          this.updating = false;
         },
       });
   }

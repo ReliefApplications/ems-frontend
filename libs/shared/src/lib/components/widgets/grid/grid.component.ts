@@ -186,14 +186,16 @@ export class GridWidgetComponent
             resource: this.settings.resource,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
-            this.canCreateRecords = get(
-              res,
-              'data.resource.canCreateRecords',
-              false
-            );
-          }
+        .subscribe({
+          next: (res) => {
+            if (res.data) {
+              this.canCreateRecords = get(
+                res,
+                'data.resource.canCreateRecords',
+                false
+              );
+            }
+          },
         });
 
       if (layouts.length > 0) {
@@ -623,81 +625,84 @@ export class GridWidgetComponent
                     id: value.record,
                   },
                 })
-                .subscribe((getRecord) => {
-                  const resourceField = form.fields?.find(
-                    (field) =>
-                      field.resource &&
-                      field.resource === this.settings.resource
-                  );
-                  let data = getRecord.data.record.data;
-                  const key = resourceField.name;
-                  if (resourceField.type === 'resource') {
-                    data = { ...data, [key]: selectedRecords[0] };
-                  } else {
-                    if (data[key]) {
-                      data = {
-                        ...data,
-                        [key]: data[key].concat(selectedRecords),
-                      };
+                .subscribe({
+                  next: (getRecord) => {
+                    const resourceField = form.fields?.find(
+                      (field) =>
+                        field.resource &&
+                        field.resource === this.settings.resource
+                    );
+                    let data = getRecord.data.record.data;
+                    const key = resourceField.name;
+                    if (resourceField.type === 'resource') {
+                      data = { ...data, [key]: selectedRecords[0] };
                     } else {
-                      data = { ...data, [key]: selectedRecords };
-                    }
-                  }
-                  this.apollo
-                    .mutate<EditRecordMutationResponse>({
-                      mutation: EDIT_RECORD,
-                      variables: {
-                        id: value.record,
-                        template: targetForm,
-                        data,
-                      },
-                    })
-                    .subscribe(async (editRecord) => {
-                      if (editRecord.errors) {
-                        this.snackBar.openSnackBar(
-                          this.translate.instant(
-                            'models.record.notifications.rowsNotAdded'
-                          ),
-                          { error: true }
-                        );
-                        resolve(false);
+                      if (data[key]) {
+                        data = {
+                          ...data,
+                          [key]: data[key].concat(selectedRecords),
+                        };
                       } else {
-                        if (editRecord.data) {
-                          const record = editRecord.data.editRecord;
-                          if (record) {
-                            this.snackBar.openSnackBar(
-                              this.translate.instant(
-                                'models.record.notifications.rowsAdded',
-                                {
-                                  field: record.data[targetFormField],
-                                  length: selectedRecords.length,
-                                  value: key,
-                                }
-                              )
-                            );
-                            const { FormModalComponent } = await import(
-                              '../../form-modal/form-modal.component'
-                            );
-                            const dialogRef2 = this.dialog.open(
-                              FormModalComponent,
-                              {
-                                disableClose: true,
-                                data: {
-                                  recordId: record.id,
-                                  template: targetForm,
-                                },
-                                autoFocus: false,
-                              }
-                            );
-                            dialogRef2.closed
-                              .pipe(takeUntil(this.destroy$))
-                              .subscribe(() => resolve(true));
-                          } else {
-                            resolve(false);
-                          }
-                        }
+                        data = { ...data, [key]: selectedRecords };
                       }
-                    });
+                    }
+                    this.apollo
+                      .mutate<EditRecordMutationResponse>({
+                        mutation: EDIT_RECORD,
+                        variables: {
+                          id: value.record,
+                          template: targetForm,
+                          data,
+                        },
+                      })
+                      .subscribe({
+                        next: async (editRecord) => {
+                          if (editRecord.data) {
+                            const record = editRecord.data.editRecord;
+                            if (record) {
+                              this.snackBar.openSnackBar(
+                                this.translate.instant(
+                                  'models.record.notifications.rowsAdded',
+                                  {
+                                    field: record.data[targetFormField],
+                                    length: selectedRecords.length,
+                                    value: key,
+                                  }
+                                )
+                              );
+                              const { FormModalComponent } = await import(
+                                '../../form-modal/form-modal.component'
+                              );
+                              const dialogRef2 = this.dialog.open(
+                                FormModalComponent,
+                                {
+                                  disableClose: true,
+                                  data: {
+                                    recordId: record.id,
+                                    template: targetForm,
+                                  },
+                                  autoFocus: false,
+                                }
+                              );
+                              dialogRef2.closed
+                                .pipe(takeUntil(this.destroy$))
+                                .subscribe(() => resolve(true));
+                            } else {
+                              resolve(false);
+                            }
+                          }
+                        },
+                        error: () => {
+                          this.snackBar.openSnackBar(
+                            this.translate.instant(
+                              'models.record.notifications.rowsNotAdded'
+                            ),
+                            { error: true }
+                          );
+                          resolve(false);
+                        },
+                      });
+                  },
                 });
             } else {
               resolve(false);

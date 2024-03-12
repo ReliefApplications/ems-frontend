@@ -343,12 +343,8 @@ export class ChartComponent
   private getData(): void {
     this.dataQuery
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-      .subscribe(({ errors, data, loading }: any) => {
-        if (errors) {
-          this.loading = false;
-          this.hasError = true;
-          this.series.next([]);
-        } else {
+      .subscribe({
+        next: ({ data, loading }: any) => {
           this.hasError = false;
           const today = new Date();
           this.lastUpdate =
@@ -415,7 +411,12 @@ export class ChartComponent
             );
           }
           this.loading = loading;
-        }
+        },
+        error: () => {
+          this.loading = false;
+          this.hasError = true;
+          this.series.next([]);
+        },
       });
   }
 

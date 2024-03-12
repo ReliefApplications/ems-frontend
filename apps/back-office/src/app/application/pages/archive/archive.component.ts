@@ -93,6 +93,7 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
+          this.loading = false;
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate.instant('common.workflow.one').toLowerCase(),
@@ -100,7 +101,6 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
             }),
             { error: true }
           );
-          this.loading = false;
         },
       });
   }

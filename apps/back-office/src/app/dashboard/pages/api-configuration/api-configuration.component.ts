@@ -304,8 +304,14 @@ export class ApiConfigurationComponent
         mutation: EDIT_API_CONFIGURATION,
         variables,
       })
-      .subscribe(({ errors, data, loading }) => {
-        if (errors) {
+      .subscribe({
+        next: ({ data, loading }) => {
+          this.apiConfiguration = data?.editApiConfiguration;
+          this.resetFormSettings(this.apiConfiguration?.authType as string);
+          this.loading = loading || false;
+        },
+        error: (errors) => {
+          this.loading = false;
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.apiConfiguration.one'),
@@ -313,12 +319,7 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-        } else {
-          this.apiConfiguration = data?.editApiConfiguration;
-          this.resetFormSettings(this.apiConfiguration?.authType as string);
-          this.loading = loading || false;
-        }
-        this.loading = loading;
+        },
       });
   }
 

@@ -161,6 +161,8 @@ export class FormRecordsComponent
         this.updateValues(data, loading, true);
       },
       error: (errors) => {
+        this.loading = false;
+        this.updating = false;
         // TO-DO: Check why it's not working as intended.
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.accessNotProvided', {

@@ -139,21 +139,32 @@ export class DashboardFilterSettingsComponent
         },
       })
       .subscribe({
-        next: ({ errors }) => {
+        next: () => {
+          this.dashboardService.handleEditionMutationResponse(
+            [],
+            this.translate.instant('common.dashboard.one')
+          );
+          const filter = value;
+          this.dashboard = {
+            ...this.dashboard,
+            filter,
+          };
+          // Updates parent component
+          const updates = { filter };
+          this.parentComponent.onUpdate.emit(updates);
+        },
+        error: (errors) => {
           this.dashboardService.handleEditionMutationResponse(
             errors,
             this.translate.instant('common.dashboard.one')
           );
-          if (!errors) {
-            const filter = value;
-            this.dashboard = {
-              ...this.dashboard,
-              filter,
-            };
-            // Updates parent component
-            const updates = { filter };
-            this.parentComponent.onUpdate.emit(updates);
-          }
+          this.contextService.isFilterEnabled.next(value.show);
+          this.contextService.filterPosition.next({
+            position:
+              (this.dashboard.filter?.position as FilterPosition) ||
+              FilterPosition.BOTTOM,
+            dashboardId: this.dashboard.id ?? '',
+          });
         },
         complete: () => {
           this.contextService.isFilterEnabled.next(value.show);

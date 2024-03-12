@@ -188,15 +188,15 @@ export class TemplateAggregationsComponent
         : undefined,
       first: -1,
     });
-
-    const { data: aggregationData, errors } = await firstValueFrom(query$);
-    if (!aggregationData || errors) {
+    let aggregationData!: any;
+    try {
+      const { data } = await firstValueFrom(query$);
+      aggregationData = data;
+    } catch (errors) {
       this.loadingAggregationRecords = false;
-      if (errors?.length) {
-        this.snackBar.openSnackBar(errorMessageFormatter(errors), {
-          error: true,
-        });
-      }
+      this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+        error: true,
+      });
       return;
     }
     this.loadingAggregationRecords = false;

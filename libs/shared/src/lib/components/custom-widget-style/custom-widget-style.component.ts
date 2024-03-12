@@ -107,13 +107,22 @@ export class CustomWidgetStyleComponent
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .pipe(takeUntil(this.destroy$))
-          .subscribe((css) => {
-            set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
-            this.styleApplied.innerText = css;
-            this.document
-              .getElementsByTagName('head')[0]
-              .appendChild(this.styleApplied);
-            this.loading = false;
+          .subscribe({
+            next: (css) => {
+              set(
+                this.widgetComp,
+                'widget.settings.widgetDisplay.style',
+                value
+              );
+              this.styleApplied.innerText = css;
+              this.document
+                .getElementsByTagName('head')[0]
+                .appendChild(this.styleApplied);
+              this.loading = false;
+            },
+            error: () => {
+              this.loading = false;
+            },
           });
       });
   }

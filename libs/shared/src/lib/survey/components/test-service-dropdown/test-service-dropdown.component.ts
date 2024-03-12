@@ -113,10 +113,12 @@ export class TestServiceDropdownComponent
             id: this.model.value,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.selectedRecord = data.record;
-          }
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.selectedRecord = data.record;
+            }
+          },
         });
     }
     if (this.resource) {

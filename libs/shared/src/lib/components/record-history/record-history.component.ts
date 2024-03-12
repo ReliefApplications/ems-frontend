@@ -169,9 +169,11 @@ export class RecordHistoryComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          this.record = data.record;
-          this.sortedFields = this.sortFields(this.getFields());
+        .subscribe({
+          next: ({ data }) => {
+            this.record = data.record;
+            this.sortedFields = this.sortFields(this.getFields());
+          },
         });
 
       this.apollo

@@ -5,6 +5,7 @@ import { get } from 'lodash';
 import { Role, RolesQueryResponse, User } from '../../../../models/user.model';
 import { GET_ROLES } from '../../graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../../../utils/public-api';
 
 /** Back-office roles section the user summary */
 @Component({
@@ -62,8 +63,10 @@ export class UserBackRolesComponent implements OnInit {
           }
           this.loading = loading;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
           this.loading = false;
         },
       });

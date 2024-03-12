@@ -155,14 +155,16 @@ export class LayoutTableComponent
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource?.id, this.form?.id)
-          .subscribe(({ data }: any) => {
-            if (data.editLayout) {
-              const layouts = [...this.allLayouts];
-              const index = layouts.findIndex((x) => x.id === layout.id);
-              layouts[index] = data.editLayout;
-              this.allLayouts = layouts;
-              this.setSelectedLayouts(this.selectedLayouts?.value);
-            }
+          .subscribe({
+            next: ({ data }: any) => {
+              if (data.editLayout) {
+                const layouts = [...this.allLayouts];
+                const index = layouts.findIndex((x) => x.id === layout.id);
+                layouts[index] = data.editLayout;
+                this.allLayouts = layouts;
+                this.setSelectedLayouts(this.selectedLayouts?.value);
+              }
+            },
           });
       }
     });

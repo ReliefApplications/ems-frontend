@@ -14,6 +14,7 @@ import { Role } from '../../../models/user.model';
 import { EDIT_PAGE_ACCESS } from '../graphql/mutations';
 import { GET_APPLICATION_FEATURES } from '../graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
+import { errorMessageFormatter } from '../../../utils/public-api';
 
 /**
  * Features tab of Role Summary component.
@@ -73,8 +74,10 @@ export class RoleFeaturesComponent implements OnInit {
             );
           }
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         },
       });
   }
@@ -135,9 +138,11 @@ export class RoleFeaturesComponent implements OnInit {
           }
           this.loading = loading;
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (errors) => {
           this.loading = false;
+          this.snackBar.openSnackBar(errorMessageFormatter(errors), {
+            error: true,
+          });
         },
       });
   }

@@ -103,8 +103,13 @@ export class LayoutsTabComponent
       },
     });
 
-    this.layoutsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
+    this.layoutsQuery.valueChanges.subscribe({
+      next: ({ data, loading }) => {
+        this.updateValues(data, loading);
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 
@@ -186,14 +191,14 @@ export class LayoutsTabComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.gridLayoutService
-          .addLayout(value, this.resource.id)
-          .subscribe(({ data }: any) => {
+        this.gridLayoutService.addLayout(value, this.resource.id).subscribe({
+          next: ({ data }: any) => {
             if (data.addLayout) {
               this.layouts = [...this.layouts, data?.addLayout];
               this.pageInfo.length += 1;
             }
-          });
+          },
+        });
       }
     });
   }
@@ -216,16 +221,18 @@ export class LayoutsTabComponent
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource.id)
-          .subscribe(({ data }: any) => {
-            if (data.editLayout) {
-              this.layouts = this.layouts.map((x: any) => {
-                if (x.id === layout.id) {
-                  return data.editLayout;
-                } else {
-                  return x;
-                }
-              });
-            }
+          .subscribe({
+            next: ({ data }: any) => {
+              if (data.editLayout) {
+                this.layouts = this.layouts.map((x: any) => {
+                  if (x.id === layout.id) {
+                    return data.editLayout;
+                  } else {
+                    return x;
+                  }
+                });
+              }
+            },
           });
       }
     });
@@ -253,13 +260,15 @@ export class LayoutsTabComponent
       if (value) {
         this.gridLayoutService
           .deleteLayout(layout, this.resource.id)
-          .subscribe(({ data }: any) => {
-            if (data.deleteLayout) {
-              this.layouts = this.layouts.filter(
-                (x: any) => x.id !== layout.id
-              );
-              this.pageInfo.length -= 1;
-            }
+          .subscribe({
+            next: ({ data }: any) => {
+              if (data.deleteLayout) {
+                this.layouts = this.layouts.filter(
+                  (x: any) => x.id !== layout.id
+                );
+                this.pageInfo.length -= 1;
+              }
+            },
           });
       }
     });

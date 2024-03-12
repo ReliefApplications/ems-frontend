@@ -55,6 +55,7 @@ import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { errorMessageFormatter } from '../../../utils/public-api';
 
 /**
  * Default file name when exporting grid data.
@@ -508,17 +509,14 @@ export class CoreGridComponent
             }
             this.getRecords();
           },
-          error: (err: any) => {
+          error: (errors: any) => {
             this.loading = false;
             this.status = {
               error: true,
               message: this.translate.instant(
                 'components.widget.grid.errors.metaQueryFetchFailed',
                 {
-                  error:
-                    err.networkError?.error?.errors
-                      ?.map((x: any) => x.message)
-                      .join(', ') || err,
+                  error: errorMessageFormatter(errors),
                 }
               ),
             };
@@ -592,61 +590,67 @@ export class CoreGridComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        if (data?.editRecord.data) {
-          const editedData = data.editRecord.data;
-          this.apollo
-            .query<ResourceQueryResponse>({
-              query: GET_RESOURCE_QUERY_NAME,
-              variables: {
-                id: this.settings.resource,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(({ data }) => {
-              const queryName = data.resource.singleQueryName;
-              if (queryName) {
-                const query = this.queryBuilder.buildQuery(
-                  {
-                    query: {
-                      ...this.settings.query,
-                      name: queryName,
-                    },
-                  },
-                  true
-                );
-                if (query) {
-                  this.apollo
-                    .query<any>({
-                      query,
-                      variables: {
-                        id: item.id,
-                        data: editedData,
+      .subscribe({
+        next: ({ data }) => {
+          if (data?.editRecord.data) {
+            const editedData = data.editRecord.data;
+            this.apollo
+              .query<ResourceQueryResponse>({
+                query: GET_RESOURCE_QUERY_NAME,
+                variables: {
+                  id: this.settings.resource,
+                },
+              })
+              .pipe(takeUntil(this.destroy$))
+              .subscribe({
+                next: ({ data }) => {
+                  const queryName = data.resource.singleQueryName;
+                  if (queryName) {
+                    const query = this.queryBuilder.buildQuery(
+                      {
+                        query: {
+                          ...this.settings.query,
+                          name: queryName,
+                        },
                       },
-                    })
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe(({ data }) => {
-                      const dataItem = this.gridData.data.find(
-                        (x) => x.id === item.id
-                      );
-                      // Update data item element
-                      Object.assign(dataItem, get(data, queryName));
-                      // Update data item raw value ( used by inline edition )
-                      dataItem._meta.raw = editedData;
-                      item.saved = false;
-                      const index = this.updatedItems.findIndex(
-                        (x) => x.id === item.id
-                      );
-                      this.updatedItems.splice(index, 1, {
-                        id: item.id,
-                        ...editedData,
-                      });
-                      this.loadItems();
-                    });
-                }
-              }
-            });
-        }
+                      true
+                    );
+                    if (query) {
+                      this.apollo
+                        .query<any>({
+                          query,
+                          variables: {
+                            id: item.id,
+                            data: editedData,
+                          },
+                        })
+                        .pipe(takeUntil(this.destroy$))
+                        .subscribe({
+                          next: ({ data }) => {
+                            const dataItem = this.gridData.data.find(
+                              (x) => x.id === item.id
+                            );
+                            // Update data item element
+                            Object.assign(dataItem, get(data, queryName));
+                            // Update data item raw value ( used by inline edition )
+                            dataItem._meta.raw = editedData;
+                            item.saved = false;
+                            const index = this.updatedItems.findIndex(
+                              (x) => x.id === item.id
+                            );
+                            this.updatedItems.splice(index, 1, {
+                              id: item.id,
+                              ...editedData,
+                            });
+                            this.loadItems();
+                          },
+                        });
+                    }
+                  }
+                },
+              });
+          }
+        },
       });
   }
 
@@ -826,16 +830,13 @@ export class CoreGridComponent
             this.getTemporaryRecords();
           }
         },
-        error: (err: any) => {
+        error: (errors: any) => {
           this.status = {
             error: true,
             message: this.translate.instant(
               'components.widget.grid.errors.queryFetchFailed',
               {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
+                error: errorMessageFormatter(errors),
               }
             ),
           };
@@ -1218,9 +1219,11 @@ export class CoreGridComponent
             },
           })
           .pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
-            this.reloadData();
-            this.layoutService.setRightSidenav(null);
+          .subscribe({
+            next: () => {
+              this.reloadData();
+              this.layoutService.setRightSidenav(null);
+            },
           });
       }
     });
@@ -1469,7 +1472,12 @@ export class CoreGridComponent
       })
     )
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-      .subscribe(() => (this.loading = false));
+      .subscribe({
+        next: () => (this.loading = false),
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   // === FILTERING ===

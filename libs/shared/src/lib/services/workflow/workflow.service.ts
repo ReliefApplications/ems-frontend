@@ -62,8 +62,10 @@ export class WorkflowService {
           id,
         },
       })
-      .subscribe(({ data }) => {
-        this.workflow.next(data.workflow);
+      .subscribe({
+        next: ({ data }) => {
+          this.workflow.next(data.workflow);
+        },
       });
   }
 
@@ -146,25 +148,34 @@ export class WorkflowService {
             name: step.name,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.applicationService.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.step.one'),
-            step.name
-          );
-          if (!errors && data) {
-            const newWorkflow: Workflow = {
-              ...workflow,
-              steps: workflow.steps?.map((x) => {
-                if (x.id === step.id) {
-                  x = { ...x, name: step.name };
-                }
-                return x;
-              }),
-            };
-            this.workflow.next(newWorkflow);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.applicationService.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+            if (data) {
+              const newWorkflow: Workflow = {
+                ...workflow,
+                steps: workflow.steps?.map((x) => {
+                  if (x.id === step.id) {
+                    x = { ...x, name: step.name };
+                  }
+                  return x;
+                }),
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+          },
         });
     }
   }
@@ -187,25 +198,34 @@ export class WorkflowService {
             icon,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.applicationService.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.step.one'),
-            step.name
-          );
-          if (!errors && data) {
-            const newWorkflow: Workflow = {
-              ...workflow,
-              steps: workflow.steps?.map((x) => {
-                if (x.id === step.id) {
-                  x = { ...x, icon: data.editStep.icon };
-                }
-                return x;
-              }),
-            };
-            this.workflow.next(newWorkflow);
-            if (callback) callback();
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.applicationService.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+            if (data) {
+              const newWorkflow: Workflow = {
+                ...workflow,
+                steps: workflow.steps?.map((x) => {
+                  if (x.id === step.id) {
+                    x = { ...x, icon: data.editStep.icon };
+                  }
+                  return x;
+                }),
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback();
+            }
+          },
+          error: (errors) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.step.one'),
+              step.name
+            );
+          },
         });
     }
   }
@@ -228,19 +248,27 @@ export class WorkflowService {
             permissions,
           },
         })
-        .subscribe(({ errors, data }) => {
-          this.applicationService.handleEditionMutationResponse(
-            errors,
-            this.translate.instant('common.step.one')
-          );
-          if (!errors && data) {
-            const newWorkflow: Workflow = {
-              ...workflow,
-              permissions: data.editStep.permissions,
-            };
-            this.workflow.next(newWorkflow);
-            if (callback) callback(data.editStep.permissions);
-          }
+        .subscribe({
+          next: ({ data }) => {
+            this.applicationService.handleEditionMutationResponse(
+              [],
+              this.translate.instant('common.step.one')
+            );
+            if (data) {
+              const newWorkflow: Workflow = {
+                ...workflow,
+                permissions: data.editStep.permissions,
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback(data.editStep.permissions);
+            }
+          },
+          error: (errors) => {
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.step.one')
+            );
+          },
         });
     }
   }

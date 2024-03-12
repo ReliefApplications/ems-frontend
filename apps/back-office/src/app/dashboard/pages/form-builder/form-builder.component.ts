@@ -401,8 +401,10 @@ export class FormBuilderComponent implements OnInit {
           id,
         },
       })
-      .valueChanges.subscribe(({ data }) => {
-        this.structure = data.form.structure;
+      .valueChanges.subscribe({
+        next: ({ data }) => {
+          this.structure = data.form.structure;
+        },
       });
   }
 

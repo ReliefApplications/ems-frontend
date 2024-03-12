@@ -460,10 +460,12 @@ export class ReferenceDataComponent
               id: this.referenceForm.value.apiConfiguration,
             },
           })
-          .subscribe(({ data }) => {
-            if (data.apiConfiguration) {
-              this.selectedApiConfiguration = data.apiConfiguration;
-            }
+          .subscribe({
+            next: ({ data }) => {
+              if (data.apiConfiguration) {
+                this.selectedApiConfiguration = data.apiConfiguration;
+              }
+            },
           });
       }
 
