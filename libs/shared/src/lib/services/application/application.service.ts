@@ -256,8 +256,8 @@ export class ApplicationService {
             }
           });
           this.authService.extendAbilityForApplication(data.application);
+          await this.getCustomStyle(data.application);
         }
-        await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
         if (data.application?.locked) {
