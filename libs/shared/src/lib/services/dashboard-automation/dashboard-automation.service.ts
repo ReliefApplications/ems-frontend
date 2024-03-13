@@ -81,7 +81,7 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'hide.layer': {
+              case 'remove.layer': {
                 const widget = this.findWidget(component.value.widget);
                 const layerIds = component.value.layers;
                 if (
