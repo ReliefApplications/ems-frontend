@@ -12,8 +12,6 @@ import {
   get,
   isEqual,
   isObject,
-  forEach,
-  set,
   has,
   isArray,
   every,
@@ -55,7 +53,7 @@ export class ContextService {
     dashboardId: string;
   } | null>(null);
   /** To keep the history of previous dashboard filter values */
-  public filterValues = new BehaviorSubject<any>(null);
+  public filterHistory = new Map();
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Web component filter surveys */
@@ -106,11 +104,6 @@ export class ContextService {
   /** @returns filterPosition value as observable */
   get filterPosition$() {
     return this.filterPosition.asObservable();
-  }
-
-  /** @returns filterValues value as observable */
-  get filterValues$() {
-    return this.filterValues.asObservable();
   }
 
   /** @returns filterOpened value as observable */
@@ -422,20 +415,31 @@ export class ContextService {
    */
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
-    // set each question value manually otherwise the defaultValueExpression is not loaded
+    // Create unique identifier key using current question names
+    const surveyModelQuestions = JSON.stringify(
+      survey.getAllQuestions().map((qu) => qu.name) ?? {}
+    );
     if (!this.shadowDomService.isShadowRoot) {
-      forEach(this.filterValues.getValue(), (value, key) => {
-        if (survey.getQuestionByName(key)) {
-          survey.getQuestionByName(key).value = value;
-        }
-      });
+      if (this.filterHistory.has(surveyModelQuestions)) {
+        const previousSurveyValue =
+          this.filterHistory.get(surveyModelQuestions);
+        survey.data = previousSurveyValue;
+      } else {
+        this.filterHistory.set(surveyModelQuestions, {
+          ...survey.data,
+        });
+      }
     }
-
     // prevent the default value from being applied when a question has been intentionally cleared
     const handleValueChanged = (sender: any, options: any) => {
-      const history = this.filterValues.getValue() ?? {};
-      set(history, options.name, options.value);
-      this.filterValues.next(history);
+      if (this.filterHistory.has(surveyModelQuestions)) {
+        const previousSurveyValue =
+          this.filterHistory.get(surveyModelQuestions);
+        this.filterHistory.set(surveyModelQuestions, {
+          ...previousSurveyValue,
+          [options.name]: options.value,
+        });
+      }
     };
 
     survey.onValueChanged.add(handleValueChanged);
