@@ -20,7 +20,7 @@ import {
   MapLayersService,
   AuthService,
 } from '@oort-front/shared';
-import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, skip, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
@@ -48,6 +48,8 @@ export class AppWidgetComponent
   /** Application Id */
   @Input()
   set id(value: string) {
+    // Reset error status
+    this.hasError = false;
     this.applicationService.loadApplication(value);
     // Get the current path
     const currentPath = this.router.url;
@@ -79,7 +81,11 @@ export class AppWidgetComponent
   /** Navigation path */
   @Input()
   set path(value: string) {
-    this.router.navigate([value]);
+    // Only navigate if no error
+    if (!this.hasError) {
+      this.router.navigate([value]);
+    }
+    // Otherwise, stay on error page
   }
 
   /** Pass new value to the filter */
@@ -104,6 +110,8 @@ export class AppWidgetComponent
   private destroy$: Subject<void> = new Subject<void>();
   /** Navigation in SUI is loading */
   public isNavigationLoading = false;
+  /** Is there an application error */
+  public hasError = false;
 
   /**
    * Application as Web Widget.
@@ -125,7 +133,7 @@ export class AppWidgetComponent
     private shadowDomService: ShadowDomService,
     private authService: AuthService
   ) {
-    console.log('DEBUG: build from 03/12/2023, v1');
+    console.log('DEBUG: build from 03/13/2023, v2');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
 
@@ -139,7 +147,7 @@ export class AppWidgetComponent
 
     // Subscribe to application changes to update the pages
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(skip(1), takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
           const pages = application.pages
@@ -156,7 +164,10 @@ export class AppWidgetComponent
             }));
           this.pages.emit(pages);
         } else {
+          this.hasError = true;
           this.pages.emit([]);
+          // Navigate to error page
+          this.router.navigate(['/auth/error'], { skipLocationChange: true });
         }
       });
 
