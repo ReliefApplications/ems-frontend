@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { ButtonModule, DialogModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef } from '@angular/cdk/dialog';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 /** Available action components */
 const ACTION_COMPONENTS = [
@@ -83,7 +84,14 @@ const ACTION_COMPONENTS = [
 @Component({
   selector: 'shared-automation-component-selector',
   standalone: true,
-  imports: [CommonModule, DialogModule, TranslateModule, ButtonModule],
+  imports: [
+    CommonModule,
+    DialogModule,
+    TranslateModule,
+    ButtonModule,
+    TooltipModule,
+    DragDropModule,
+  ],
   templateUrl: './automation-component-selector.component.html',
   styleUrls: ['./automation-component-selector.component.scss'],
 })

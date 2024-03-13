@@ -653,6 +653,27 @@
 				"ariaLabel": "******"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "******",
+				"add.tab": "******",
+				"display.collapse": "******",
+				"display.expand": "******",
+				"map.click": "******",
+				"map.get.country": "******",
+				"open.tab": "******",
+				"remove.layer": "******",
+				"remove.tab": "******",
+				"set.context": "******"
+			},
+			"addRule": "******",
+			"component": {
+				"add": "******",
+				"select": "******"
+			},
+			"configuration": "******",
+			"ruleName": "******"
+		},
 		"calculatedFields": {
 			"add": "******",
 			"delete": {

@@ -1,7 +1,12 @@
 <ui-dialog size="big">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.automation.title' | translate }}
+    </h3>
+  </ng-container>
   <ng-container ngProjectAs="header" [formGroup]="formGroup">
     <div uiFormFieldDirective>
-      <label>Name of automation rule</label>
+      <label>{{ 'components.automation.ruleName' | translate }}</label>
       <input formControlName="name" type="text" placeholder="Type a name..." />
     </div>
     <div class="flex justify-between">
@@ -12,7 +17,7 @@
         variant="primary"
         (click)="onAddComponent()"
       >
-        Add a new component
+        {{ 'components.automation.component.add' | translate }}
       </ui-button>
     </div>
   </ng-container>

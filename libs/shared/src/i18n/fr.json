@@ -659,6 +659,27 @@
 				"ariaLabel": "Sélectionnez la page d'applications"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "Ajouter une couche",
+				"add.tab": "Ajouter un onglet",
+				"display.collapse": "Afficher / Réduire",
+				"display.expand": "Afficher / Développer",
+				"map.click": "Sur clic sur la carte",
+				"map.get.country": "Obtenir le pays sur la carte",
+				"open.tab": "Ouvrir un onglet",
+				"remove.layer": "Supprimer une couche",
+				"remove.tab": "Supprimer un onglet",
+				"set.context": "Définir le contexte"
+			},
+			"addRule": "Ajouter une nouvelle règle d'automatisation",
+			"component": {
+				"add": "Ajoutez un nouveau composant",
+				"select": "Sélectionnez un composant"
+			},
+			"configuration": "Configuration de l'automatisation",
+			"ruleName": "Nom de la règle d'automatisation"
+		},
 		"calculatedFields": {
 			"add": "Créer un nouveau champ dérivé",
 			"delete": {
