@@ -332,7 +332,10 @@ export class MapComponent
             (this.map as any)._rules = [rule];
           }
           this.map.on('click', (e) => {
-            this.dashboardAutomationService?.executeAutomationRule(rule, e);
+            this.dashboardAutomationService?.executeRuleQueue.next({
+              rule,
+              value: e,
+            });
           });
         }
       }
@@ -1115,6 +1118,7 @@ export class MapComponent
 
   /** Set the new layers based on the filter value */
   private async filterLayers() {
+    this.contextService.areLayersFiltering.next(true);
     this.cancelRefresh$.next();
     const { layers: layersToGet, controls } = this.extractSettings();
 
@@ -1176,6 +1180,7 @@ export class MapComponent
             flatten(this.overlaysTree)
           );
         }
+        this.contextService.areLayersFiltering.next(false);
       });
   }
 

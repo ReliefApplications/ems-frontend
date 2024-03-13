@@ -875,7 +875,10 @@ export class Layer implements LayerModel {
     }
     this.rulesListener = (e) => {
       for (const rule of (map as any)._rules) {
-        this.dashboardAutomationService?.executeAutomationRule(rule, e);
+        this.dashboardAutomationService?.executeRuleQueue.next({
+          rule,
+          value: e,
+        });
       }
     };
 

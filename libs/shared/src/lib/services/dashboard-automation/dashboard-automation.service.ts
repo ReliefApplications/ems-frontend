@@ -13,7 +13,15 @@ import {
 } from 'lodash';
 import { MapWidgetComponent } from '../../components/widgets/map/map.component';
 import { MapPolygonsService } from '../map/map-polygons.service';
-import { first, firstValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscriber,
+  filter,
+  first,
+  firstValueFrom,
+  merge,
+} from 'rxjs';
 import { ContextService } from '../context/context.service';
 import { TabsComponent } from '../../components/widgets/tabs/tabs.component';
 
@@ -28,6 +36,13 @@ export class DashboardAutomationService {
   public dashboard!: DashboardComponent;
   /** Regex used to replace values in rule components */
   public automationRegex = /["']?{{automation\.(.*?)}}["']?/;
+  /** Automation rule subject used to queue all rules triggered */
+  public executeRuleQueue = new BehaviorSubject<{
+    rule: any;
+    value?: any;
+  } | null>(null);
+  /** Automation rule subject used to queue all rules triggered as observable */
+  private executeRuleQueue$ = this.executeRuleQueue.asObservable();
 
   /**
    * Dashboard automation services.
@@ -40,7 +55,82 @@ export class DashboardAutomationService {
   constructor(
     private mapPolygonsService: MapPolygonsService,
     private contextService: ContextService
-  ) {}
+  ) {
+    const notNull = <T>(value: T | null): value is T => value !== null;
+
+    this.executeRuleQueue$
+      .pipe(
+        filter(notNull),
+        this.triggerSubscriptionOn(this.contextService.areLayersFiltering)
+      )
+      .subscribe({
+        next: ({ rule, value }) => {
+          this.executeAutomationRule(rule, value);
+        },
+      });
+  }
+
+  /**
+   * Handle rule queue, if one of the rules wants to be applied while layer filters are applied in a map component
+   *
+   * @param isLayerFiltering Flag to tell to the automation rule queue if layers in a map component are filtering
+   * @returns Observable from execute rule queue
+   */
+  private triggerSubscriptionOn<T>(isLayerFiltering: BehaviorSubject<boolean>) {
+    const triggerRuleSentToStream = (
+      queuedAutomationRules: any[],
+      subscriber: Subscriber<T>
+    ) => {
+      let numberOfRulesSent = 0;
+      if (!isLayerFiltering.getValue()) {
+        queuedAutomationRules.forEach((rule) => {
+          /** Keep checking as one of the sent rules could trigger map layer filtering in the meantime */
+          if (!isLayerFiltering.getValue()) {
+            subscriber.next(rule);
+            numberOfRulesSent++;
+          }
+        });
+        /** And take all sent rules from the actual queue */
+        queuedAutomationRules.splice(0, numberOfRulesSent);
+      }
+    };
+    return (observable: Observable<T>) =>
+      new Observable<T>((subscriber) => {
+        const queuedAutomationRules = new Array<any>();
+        const subscription = merge(observable, isLayerFiltering).subscribe({
+          /**
+           * Handle rule queue, if one of the rules wants to be applied while layer filters are applied in a map component
+           * Then are queued and later on returned once the isLayerFiltering flag is set to false
+           *
+           * @param value Could be a rule or flag from map widget that layer filters are applied
+           */
+          next(value) {
+            /** If new rule comes, push it to the queue */
+            if (!(typeof value === 'boolean')) {
+              queuedAutomationRules.push(value);
+            }
+            triggerRuleSentToStream(queuedAutomationRules, subscriber);
+          },
+          /**
+           * On error from observable
+           *
+           * @param err Error thrown
+           */
+          error(err) {
+            subscriber.error(err);
+          },
+          /** On complete  */
+          complete() {
+            if (queuedAutomationRules.length === 0) {
+              subscriber.complete();
+            }
+          },
+        });
+        return () => {
+          subscription.unsubscribe();
+        };
+      });
+  }
 
   /**
    * Execute an automation rule.
@@ -81,7 +171,7 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'hide.layer': {
+              case 'remove.layer': {
                 const widget = this.findWidget(component.value.widget);
                 const layerIds = component.value.layers;
                 if (

@@ -159,7 +159,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         (rule: any) => rule.id === ruleTarget
       );
       if (rule) {
-        this.dashboardAutomationService?.executeAutomationRule(rule);
+        this.dashboardAutomationService?.executeRuleQueue.next({ rule });
       }
     }
 

@@ -126,6 +126,14 @@ export class ContextService {
     return this.isFilterEnabled.asObservable();
   }
 
+  /** Used to update the state of map layers filtering state */
+  public areLayersFiltering = new BehaviorSubject<boolean>(false);
+
+  /** @returns  areLayersFiltering value as observable */
+  get areLayersFiltering$() {
+    return this.areLayersFiltering.asObservable();
+  }
+
   /** Current dashboard context */
   public context: {
     [key: string]: any;
