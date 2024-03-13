@@ -16,7 +16,6 @@ import { MapPolygonsService } from '../map/map-polygons.service';
 import {
   BehaviorSubject,
   Observable,
-  Subscriber,
   filter,
   first,
   firstValueFrom,
@@ -61,7 +60,7 @@ export class DashboardAutomationService {
     this.executeRuleQueue$
       .pipe(
         filter(notNull),
-        this.triggerSubscriptionOn(this.contextService.areLayersFiltering)
+        this.holdSubscriptionBy(this.contextService.areLayersFiltering)
       )
       .subscribe({
         next: ({ rule, value }) => {
@@ -73,34 +72,17 @@ export class DashboardAutomationService {
   /**
    * Handle rule queue, if one of the rules wants to be applied while layer filters are applied in a map component
    *
-   * @param isLayerFiltering Flag to tell to the automation rule queue if layers in a map component are filtering
+   * @param areLayersFiltering Flag to tell to the automation rule queue if layers in a map component are filtering
    * @returns Observable from execute rule queue
    */
-  private triggerSubscriptionOn<T>(isLayerFiltering: BehaviorSubject<boolean>) {
-    const triggerRuleSentToStream = (
-      queuedAutomationRules: any[],
-      subscriber: Subscriber<T>
-    ) => {
-      let numberOfRulesSent = 0;
-      if (!isLayerFiltering.getValue()) {
-        queuedAutomationRules.forEach((rule) => {
-          /** Keep checking as one of the sent rules could trigger map layer filtering in the meantime */
-          if (!isLayerFiltering.getValue()) {
-            subscriber.next(rule);
-            numberOfRulesSent++;
-          }
-        });
-        /** And take all sent rules from the actual queue */
-        queuedAutomationRules.splice(0, numberOfRulesSent);
-      }
-    };
+  private holdSubscriptionBy<T>(areLayersFiltering: BehaviorSubject<boolean>) {
     return (observable: Observable<T>) =>
       new Observable<T>((subscriber) => {
         const queuedAutomationRules = new Array<any>();
-        const subscription = merge(observable, isLayerFiltering).subscribe({
+        const subscription = merge(observable, areLayersFiltering).subscribe({
           /**
            * Handle rule queue, if one of the rules wants to be applied while layer filters are applied in a map component
-           * Then are queued and later on returned once the isLayerFiltering flag is set to false
+           * Then are queued and later on returned once the areLayersFiltering flag is set to false
            *
            * @param value Could be a rule or flag from map widget that layer filters are applied
            */
@@ -109,7 +91,18 @@ export class DashboardAutomationService {
             if (!(typeof value === 'boolean')) {
               queuedAutomationRules.push(value);
             }
-            triggerRuleSentToStream(queuedAutomationRules, subscriber);
+            let numberOfRulesSent = 0;
+            if (!areLayersFiltering.getValue()) {
+              queuedAutomationRules.forEach((rule) => {
+                /** Keep checking as one of the sent rules could trigger map layer filtering in the meantime */
+                if (!areLayersFiltering.getValue()) {
+                  subscriber.next(rule);
+                  numberOfRulesSent++;
+                }
+              });
+              /** And take all sent rules from the actual queue */
+              queuedAutomationRules.splice(0, numberOfRulesSent);
+            }
           },
           /**
            * On error from observable
