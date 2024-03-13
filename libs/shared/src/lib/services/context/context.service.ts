@@ -423,11 +423,13 @@ export class ContextService {
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
     // set each question value manually otherwise the defaultValueExpression is not loaded
-    forEach(this.filterValues.getValue(), (value, key) => {
-      if (survey.getQuestionByName(key)) {
-        survey.getQuestionByName(key).value = value;
-      }
-    });
+    if (!this.shadowDomService.isShadowRoot) {
+      forEach(this.filterValues.getValue(), (value, key) => {
+        if (survey.getQuestionByName(key)) {
+          survey.getQuestionByName(key).value = value;
+        }
+      });
+    }
 
     // prevent the default value from being applied when a question has been intentionally cleared
     const handleValueChanged = (sender: any, options: any) => {

@@ -72,6 +72,8 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   /** Filter template */
   public survey: Model = new Model();
+  /** Survey init flag */
+  private surveyInit = true;
   /** Quick filter display */
   public quickFilters: QuickFilter[] = [];
   /** Indicate empty status of filter */
@@ -227,6 +229,7 @@ export class DashboardFilterComponent
       renderGlobalProperties(this.referenceDataService, this.http);
     });
     this.onValueChange();
+    this.surveyInit = false;
   }
 
   /**
@@ -320,15 +323,20 @@ export class DashboardFilterComponent
         };
         return acc;
       }, {});
-    const currentFilterValue = this.contextService.filter.value;
     const currentSurveyQuestions = this.survey.getAllQuestions();
     const nextFilterValue: any = surveyData;
-    const filterKeys = Object.keys(currentFilterValue);
-    filterKeys
-      .filter((key) => !currentSurveyQuestions.find((sq) => sq.name === key))
-      .forEach((key) => {
-        nextFilterValue[key] = currentFilterValue[key];
-      });
+    // Don't merge current context filter values to the filter if survey has init and it's used in web component
+    if (
+      !(this.surveyInit && this.contextService.shadowDomService.isShadowRoot)
+    ) {
+      const currentFilterValue = this.contextService.filter.value;
+      const filterKeys = Object.keys(currentFilterValue);
+      filterKeys
+        .filter((key) => !currentSurveyQuestions.find((sq) => sq.name === key))
+        .forEach((key) => {
+          nextFilterValue[key] = currentFilterValue[key];
+        });
+    }
     this.contextService.filter.next(nextFilterValue);
     this.ngZone.run(() => {
       this.quickFilters = displayValues
