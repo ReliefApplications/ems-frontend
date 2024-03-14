@@ -19,6 +19,7 @@ import {
   buildAddButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
+  buildUpdateButton,
 } from './utils';
 import get from 'lodash/get';
 import { Question as SharedQuestion, QuestionResource } from '../types';
@@ -253,6 +254,22 @@ export const init = (
         dependsOn: ['resource', 'addRecord'],
         visibleIndex: 3,
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+      });
+
+      serializer.addProperty('resource', {
+        name: 'updateRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        visibleIf: visibleIfResource,
+        visibleIndex: 4,
+      });
+      serializer.addProperty('resource', {
+        name: 'updateRecordText',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'updateRecord'],
+        visibleIndex: 5,
+        visibleIf: (obj: null | QuestionResource) =>
+          !!obj && !!obj.updateRecord,
       });
 
       serializer.addProperty('resource', {
@@ -590,6 +607,7 @@ export const init = (
         this.filters = [];
         this.resourceFieldsName = [];
         question.addRecord = false;
+        question.updateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
@@ -648,8 +666,15 @@ export const init = (
           ngZone,
           document
         );
+
+        const updateBtn = buildUpdateButton(question, dialog, ngZone, document);
+        updateBtn.disabled = !question.value;
+
         actionsButtons.appendChild(searchBtn);
         actionsButtons.appendChild(addBtn);
+        if (question.updateRecord) {
+          actionsButtons.appendChild(updateBtn);
+        }
 
         // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
         question.registerFunctionOnPropertyValueChanged('canSearch', () => {
@@ -666,11 +691,25 @@ export const init = (
               : 'none';
         });
 
+        question.registerFunctionOnPropertyValueChanged('updateRecord', () => {
+          if (question.updateRecord) {
+            // add the update button to the actions buttons
+            actionsButtons.appendChild(updateBtn);
+          } else {
+            // remove the update button from the actions buttons
+            actionsButtons.removeChild(updateBtn);
+          }
+        });
         const survey: SurveyModel = question.survey as SurveyModel;
 
         // Listen to value changes
         survey.onValueChanged.add((_, options) => {
           addRecordToSurveyContext(options.question, options.value);
+          if (options.question === question) {
+            if (question.updateRecord && !question.isReadOnly) {
+              updateBtn.disabled = !options.value;
+            }
+          }
         });
       }
       actionsButtons.appendChild(searchBtn);
