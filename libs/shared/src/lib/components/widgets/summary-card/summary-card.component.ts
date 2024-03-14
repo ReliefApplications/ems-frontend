@@ -53,6 +53,7 @@ import { ReferenceData } from '../../../models/reference-data.model';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { PageSizeChangeEvent } from '@progress/kendo-angular-pager';
+import { WidgetService } from '../../../services/widget/widget.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -263,18 +264,12 @@ export class SummaryCardComponent
 
   /** @returns the graphql query variables object */
   get graphqlVariables() {
-    try {
-      let mapping = JSON.parse(
-        this.settings.card?.referenceDataVariableMapping || ''
-      );
-      mapping = this.contextService.replaceContext(mapping);
-      mapping = this.contextService.replaceFilter(mapping);
-      mapping = this.replaceWidgetVariables(mapping);
-      this.contextService.removeEmptyPlaceholders(mapping);
-      return mapping;
-    } catch {
-      return null;
-    }
+    let mapping = this.widgetService.mapGraphQLVariables(
+      this.settings.card?.referenceDataVariableMapping as any
+    );
+    mapping = this.replaceWidgetVariables(mapping);
+    this.contextService.removeEmptyPlaceholders(mapping);
+    return mapping;
   }
 
   /**
@@ -293,6 +288,7 @@ export class SummaryCardComponent
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
    * @param dashboardService Shared dashboard service
+   * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
@@ -307,7 +303,8 @@ export class SummaryCardComponent
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
     private renderer: Renderer2,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private widgetService: WidgetService
   ) {
     super();
   }

@@ -262,24 +262,6 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   };
 
   /**
-   * Gets graphQLVariables from target aggregation
-   *
-   * @param aggregation aggregation we need the mapping variables from
-   * @returns the graphql query variables object
-   */
-  private graphQLVariables(aggregation: any) {
-    try {
-      let mapping = JSON.parse(aggregation.referenceDataVariableMapping || '');
-      mapping = this.contextService.replaceContext(mapping);
-      mapping = this.contextService.replaceFilter(mapping);
-      this.contextService.removeEmptyPlaceholders(mapping);
-      return mapping;
-    } catch {
-      return null;
-    }
-  }
-
-  /**
    * Set widget html.
    */
   private setHtml() {
@@ -431,7 +413,9 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
               contextFilters: aggregation.contextFilters
                 ? JSON.parse(aggregation.contextFilters)
                 : {},
-              graphQLVariables: this.graphQLVariables(aggregation),
+              graphQLVariables: this.widgetService.mapGraphQLVariables(
+                aggregation.referenceDataVariableMapping
+              ),
               at: this.contextService.atArgumentValue(aggregation.at),
             })
           )

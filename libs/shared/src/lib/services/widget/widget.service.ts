@@ -195,4 +195,22 @@ export class WidgetService {
       this.contextService.filter.next(updatedFilters);
     }
   }
+
+  /**
+   * Gets graphQLVariables from target source
+   *
+   * @param source source we need the mapping variables from
+   * @returns the graphql query variables object
+   */
+  public mapGraphQLVariables(source: string | undefined): object | null {
+    try {
+      let mapping = JSON.parse(source || '');
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping || {};
+    } catch {
+      return {};
+    }
+  }
 }
