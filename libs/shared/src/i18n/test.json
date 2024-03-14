@@ -672,7 +672,8 @@
 				"select": "******"
 			},
 			"configuration": "******",
-			"ruleName": "******"
+			"ruleName": "******",
+			"rules": "******"
 		},
 		"calculatedFields": {
 			"add": "******",

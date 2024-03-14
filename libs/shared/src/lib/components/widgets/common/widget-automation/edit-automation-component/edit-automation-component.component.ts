@@ -16,6 +16,7 @@ import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { get } from 'lodash';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { ActionType, ActionWithProperties } from '@oort-front/shared';
 
 /**
  * Edition of automation component.
@@ -47,18 +48,18 @@ export class EditAutomationComponentComponent
   /** Current editor */
   public editor: any;
   /** Available editors */
-  public editors = [
+  public editors: ActionWithProperties[] = [
     {
       component: 'trigger',
-      type: 'map.click',
+      type: ActionType.mapClick,
     },
     {
       component: 'action',
-      type: 'map.get.country',
+      type: ActionType.mapGetCountry,
     },
     {
       component: 'action',
-      type: 'add.layer',
+      type: ActionType.addLayer,
       properties: [
         {
           name: 'widget',
@@ -134,7 +135,7 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
-      type: 'remove.layer',
+      type: ActionType.removeLayer,
       properties: [
         {
           name: 'widget',
@@ -210,7 +211,7 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
-      type: 'add.tab',
+      type: ActionType.addTab,
       properties: [
         {
           name: 'widget',
@@ -278,7 +279,7 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
-      type: 'remove.tab',
+      type: ActionType.removeTab,
       properties: [
         {
           name: 'widget',
@@ -346,7 +347,7 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
-      type: 'open.tab',
+      type: ActionType.openTab,
       properties: [
         {
           name: 'widget',
@@ -414,7 +415,7 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
-      type: 'display.collapse',
+      type: ActionType.displayCollapse,
       properties: [
         {
           name: 'widget',
@@ -436,7 +437,7 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
-      type: 'display.expand',
+      type: ActionType.displayExpand,
       properties: [
         {
           name: 'widget',
@@ -458,7 +459,7 @@ export class EditAutomationComponentComponent
     },
     {
       component: 'action',
-      type: 'set.context',
+      type: ActionType.setContext,
       properties: [
         {
           name: 'mapping',

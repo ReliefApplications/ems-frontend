@@ -55,6 +55,7 @@ export * from './lib/models/layout.model';
 export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
 export * from './lib/models/metadata.model';
+export * from './lib/models/automation.model';
 
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';

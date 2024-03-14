@@ -663,9 +663,9 @@
 			"actions": {
 				"add.layer": "Ajouter une couche",
 				"add.tab": "Ajouter un onglet",
-				"display.collapse": "Afficher / Réduire",
-				"display.expand": "Afficher / Développer",
-				"map.click": "Sur clic sur la carte",
+				"display.collapse": "Réduire l'affichage",
+				"display.expand": "Développer l'affichage",
+				"map.click": "En cliquant sur la carte",
 				"map.get.country": "Obtenir le pays sur la carte",
 				"open.tab": "Ouvrir un onglet",
 				"remove.layer": "Supprimer une couche",
@@ -678,7 +678,8 @@
 				"select": "Sélectionnez un composant"
 			},
 			"configuration": "Configuration de l'automatisation",
-			"ruleName": "Nom de la règle d'automatisation"
+			"ruleName": "Nom de la règle d'automatisation",
+			"rules": "Règles d'automatisation"
 		},
 		"calculatedFields": {
 			"add": "Créer un nouveau champ dérivé",

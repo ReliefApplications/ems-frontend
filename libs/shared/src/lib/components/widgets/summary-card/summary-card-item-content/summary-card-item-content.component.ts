@@ -118,7 +118,7 @@ export class SummaryCardItemContentComponent
         (rule: any) => rule.id === ruleTarget
       );
       if (rule) {
-        this.dashboardAutomationService?.executeAutomationRule(rule);
+        this.dashboardAutomationService?.executeAutomationRule(rule as any);
       }
     }
 

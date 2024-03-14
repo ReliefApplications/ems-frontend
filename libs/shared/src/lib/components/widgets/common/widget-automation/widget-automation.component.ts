@@ -14,6 +14,11 @@ import {
   createAutomationForm,
 } from '../../../../forms/automation.forms';
 import { takeUntil } from 'rxjs';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 /**
  * Widget automation edition.
@@ -28,6 +33,7 @@ import { takeUntil } from 'rxjs';
     ReactiveFormsModule,
     FormWrapperModule,
     TooltipModule,
+    DragDropModule,
   ],
   templateUrl: './widget-automation.component.html',
   styleUrls: ['./widget-automation.component.scss'],
@@ -87,9 +93,27 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.components.removeAt(index);
-        this.components.insert(index, createAutomationComponentForm(value));
+        this.components.insert(
+          index,
+          createAutomationComponentForm(value) as any
+        );
       }
     });
+  }
+
+  /**
+   * Reorders button actions.
+   *
+   * @param event event
+   */
+  onDrop(event: CdkDragDrop<(typeof this.components.controls)[]>) {
+    if (event.previousIndex === event.currentIndex) return;
+
+    moveItemInArray(
+      this.components.controls,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
 
   /**

@@ -1,12 +1,12 @@
 <div class="flex justify-between">
-  <h2>Automation rules</h2>
+  <h2>{{ 'components.automation.rules' | translate }}</h2>
   <ui-button
     class="mb-6"
     category="secondary"
     variant="primary"
     (click)="addEditRule()"
   >
-    {{'components.automation.addRule' |translate}}
+    {{ 'components.automation.addRule' | translate }}
   </ui-button>
 </div>
 <ng-template #emptyTmpl>

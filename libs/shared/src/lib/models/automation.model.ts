@@ -1,18 +1,51 @@
-export type AutomationTriggerComponent = {
-  component: 'trigger';
-  type: 'click';
+import { Observable } from 'rxjs';
+
+/** enum of */
+export enum ActionType {
+  mapClick = 'map.click',
+  addLayer = 'add.layer',
+  removeLayer = 'remove.layer',
+  addTab = 'add.tab',
+  openTab = 'open.tab',
+  removeTab = 'remove.tab',
+  displayCollapse = 'display.collapse',
+  displayExpand = 'display.expand',
+  setContext = 'set.context',
+  mapGetCountry = 'map.get.country',
+}
+
+export type ActionComponent = {
+  component: 'trigger' | 'action';
+  type: ActionType;
 };
 
-type AutomationRemoveLayerActionComponent = {
-  component: 'action';
-  type: 'remove.layer';
+export type ActionWithValue = ActionComponent & {
+  value?: {
+    widget?: any;
+    layers?: any;
+    tab?: any;
+    tabs?: any;
+    mapping?: string;
+  };
 };
 
-type AutomationAddLayerActionComponent = {
-  component: 'action';
-  type: 'add.layer';
+export type ActionWithProperties = ActionComponent & {
+  properties?: {
+    name: string;
+    required?: boolean;
+    type?: string;
+    options?: {
+      theme: string;
+      language: string;
+      fixedOverflowWidgets: boolean;
+      formatOnPaste: boolean;
+      automaticLayout: boolean;
+    };
+    editor: string;
+    multiselect?: boolean;
+    async?: boolean;
+    choices?: Observable<{ value: any; text: any }[]> | [];
+    onValueChanged?: (value: any) => void;
+    onInit?: (value: any) => void;
+  }[];
 };
-
-export type AutomationActionComponent =
-  | AutomationRemoveLayerActionComponent
-  | AutomationAddLayerActionComponent;

@@ -1,28 +1,17 @@
-<ui-dialog>
+<ui-dialog size="medium">
   <ng-container ngProjectAs="header"
     ><h3 class="font-semibold">
       {{ 'components.automation.component.select' | translate }}
     </h3></ng-container
   >
   <ng-container ngProjectAs="content">
-    <div class="flex gap-2 flex-wrap flex-row">
+    <div class="flex flex-wrap justify-between">
       <div
-        *ngFor="let action of actionComponents"
-        class="relative flex flex-row justify-between bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center p-4"
-        cdkDrag
-        cdkDropList
+        *ngFor="let action of actionComponents; let i = index"
+        class="mb-4 mx-0.5 relative bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center p-2"
+        (click)="onSelect(action)"
       >
-        <ui-button
-          variant="grey"
-          [isIcon]="true"
-          size="small"
-          cdkDragHandle
-          icon="drag_indicator"
-          class="draggable"
-          [uiTooltip]="'common.tooltip.dragDrop' | translate"
-        >
-        </ui-button>
-        <h3 class="!m-0" (click)="onSelect(action)">
+        <h3 class="!m-0">
           {{ 'components.automation.actions.' + action.type | translate }}
         </h3>
       </div>

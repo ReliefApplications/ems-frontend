@@ -672,7 +672,8 @@
 				"select": "Select a component"
 			},
 			"configuration": "Automation configuration",
-			"ruleName": "Name of the automation rule"
+			"ruleName": "Name of the automation rule",
+			"rules": "Automation rules"
 		},
 		"calculatedFields": {
 			"add": "Create a new Calculated field",
