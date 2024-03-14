@@ -49,7 +49,7 @@ import { GridComponent } from './grid/grid.component';
 import { DateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom, from, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
@@ -371,7 +371,7 @@ export class CoreGridComponent
     super();
     this.environment = environment;
     contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(({ previous, current }) => {
         if (contextService.filterRegex.test(this.settings.contextFilters)) {
           if (

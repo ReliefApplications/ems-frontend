@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { Subject, debounceTime, firstValueFrom, from, takeUntil } from 'rxjs';
+import { Subject, firstValueFrom, from, takeUntil } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
@@ -141,7 +141,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       .join('');
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(({ previous, current }) => {
         if (
           this.contextService.filterRegex.test(

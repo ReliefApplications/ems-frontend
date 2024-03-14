@@ -55,7 +55,7 @@ import {
   pick,
   clone,
 } from 'lodash';
-import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
+import { Subject, filter, from, merge, takeUntil } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
@@ -246,7 +246,6 @@ export class MapComponent
     ) {
       this.contextService.filter$
         .pipe(
-          debounceTime(500),
           filter(({ previous, current }) =>
             this.contextService.shouldRefresh(
               this.layers.map((layer) => {
@@ -476,7 +475,7 @@ export class MapComponent
     if (fieldValue) {
       // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
       this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
           this.zoomOn();
         });

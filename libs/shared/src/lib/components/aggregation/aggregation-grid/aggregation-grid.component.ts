@@ -9,7 +9,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GET_RESOURCE } from './graphql/queries';
-import { Subject, debounceTime, from, merge, takeUntil } from 'rxjs';
+import { Subject, from, merge, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GridService } from '../../../services/grid/grid.service';
@@ -116,7 +116,7 @@ export class AggregationGridComponent
     // Listen to dashboard filters changes if it is necessary
     if (this.contextService.filterRegex.test(this.contextFilters as string)) {
       this.contextService.filter$
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ previous, current }) => {
           if (
             this.contextService.shouldRefresh(this.widget, previous, current)
