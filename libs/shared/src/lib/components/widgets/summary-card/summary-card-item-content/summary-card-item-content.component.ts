@@ -22,6 +22,7 @@ import { ContextService } from '../../../../services/context/context.service';
 import { Router } from '@angular/router';
 import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
 import { DashboardAutomationService } from '../../../../services/dashboard-automation/dashboard-automation.service';
+import { isEqual, set } from 'lodash';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -68,6 +69,8 @@ export class SummaryCardItemContentComponent
   onContentClick(event: any) {
     let filterButtonIsClicked = !!event.target.dataset.filterField;
     let currentNode = event.target;
+    const currentFilters = { ...this.contextService.filter.getValue() };
+    const updatedFilters = { ...currentFilters };
     // Check for filter fields
     if (!filterButtonIsClicked) {
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
@@ -84,19 +87,14 @@ export class SummaryCardItemContentComponent
       // Cleanup filter value from the span set by default in the tinymce calculated field if exists
       const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
       const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
-      const currentFilters = { ...this.contextService.filter.getValue() };
       // If current filters contains the field but there is no value set, delete it
       if (filterField in currentFilters && !cleanFilterValue) {
-        delete currentFilters[filterField];
+        delete updatedFilters[filterField];
       }
       // Update filter object with existing fields and values
-      const updatedFilters = {
-        ...(currentFilters && { ...currentFilters }),
-        ...(cleanFilterValue && {
-          [filterField]: cleanFilterValue,
-        }),
-      };
-      this.contextService.filter.next(updatedFilters);
+      if (cleanFilterValue) {
+        set(updatedFilters, filterField, cleanFilterValue);
+      }
     }
 
     // Check for automation rules
@@ -140,16 +138,17 @@ export class SummaryCardItemContentComponent
       const resetList = currentNode.dataset.filterReset
         .split(';')
         .map((item: any) => item.trim());
-      const updatedFilter: any = {};
-      for (const [key, value] of Object.entries(
-        this.contextService.filter.getValue()
-      )) {
-        // If key is not in list of fields that need to be cleared, add to updated Filter
-        if (!resetList.includes(key)) {
-          updatedFilter[key] = value;
+      for (const key of Object.keys(updatedFilters)) {
+        // If key is in list of fields that need to be cleared, remove it
+        if (resetList.includes(key)) {
+          delete updatedFilters[key];
         }
       }
-      this.contextService.filter.next(updatedFilter);
+    }
+
+    // If filter is affected, update it
+    if (!isEqual(currentFilters, updatedFilters)) {
+      this.contextService.filter.next(updatedFilters);
     }
 
     const content = this.htmlContentComponent.el.nativeElement;
