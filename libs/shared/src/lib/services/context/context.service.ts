@@ -431,11 +431,14 @@ export class ContextService {
     const survey = this.formBuilderService.createSurvey(surveyStructure);
 
     // set each question value manually otherwise the defaultValueExpression is not loaded
-    forEach(this.filterValues.getValue(), (value, key) => {
-      if (survey.getQuestionByName(key)) {
-        survey.getQuestionByName(key).value = value;
-      }
-    });
+    // commented this out because was causing an error when navigating between dashboards
+    // in case they had resource questions
+    // It also didn't seem to be necessary, as even when without it, the defaultValueExpression was still being loaded
+    // forEach(this.filterValues.getValue(), (value, key) => {
+    //   if (survey.getQuestionByName(key)) {
+    //     survey.getQuestionByName(key).value = value;
+    //   }
+    // });
 
     // prevent the default value from being applied when a question has been intentionally cleared
     const handleValueChanged = (sender: any, options: any) => {
