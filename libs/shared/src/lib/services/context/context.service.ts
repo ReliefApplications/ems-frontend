@@ -36,6 +36,7 @@ import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordQueryResponse } from '../../models/record.model';
 import { GET_RECORD_BY_ID } from './graphql/queries';
+import { DashboardService } from '../dashboard/dashboard.service';
 
 /**
  * Dashboard context service
@@ -139,6 +140,7 @@ export class ContextService {
    * @param applicationService Shared application service
    * @param router Angular router
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private dialog: Dialog,
@@ -148,7 +150,8 @@ export class ContextService {
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
     private router: Router,
-    public shadowDomService: ShadowDomService
+    public shadowDomService: ShadowDomService,
+    private dashboardService: DashboardService
   ) {
     this.filterPosition$.subscribe(
       (value: { position: FilterPosition; dashboardId: string } | null) => {
@@ -419,27 +422,26 @@ export class ContextService {
    */
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
-    // Create unique identifier key using current question names
-    const surveyModelQuestions = JSON.stringify(
-      survey.getAllQuestions().map((qu) => qu.name) ?? {}
-    );
+
     if (!this.shadowDomService.isShadowRoot) {
-      if (this.filterHistory.has(surveyModelQuestions)) {
-        const previousSurveyValue =
-          this.filterHistory.get(surveyModelQuestions);
+      if (this.filterHistory.has(this.dashboardService.currentDashboardId)) {
+        const previousSurveyValue = this.filterHistory.get(
+          this.dashboardService.currentDashboardId
+        );
         survey.data = previousSurveyValue;
       } else {
-        this.filterHistory.set(surveyModelQuestions, {
+        this.filterHistory.set(this.dashboardService.currentDashboardId, {
           ...survey.data,
         });
       }
     }
     // prevent the default value from being applied when a question has been intentionally cleared
     const handleValueChanged = (sender: any, options: any) => {
-      if (this.filterHistory.has(surveyModelQuestions)) {
-        const previousSurveyValue =
-          this.filterHistory.get(surveyModelQuestions);
-        this.filterHistory.set(surveyModelQuestions, {
+      if (this.filterHistory.has(this.dashboardService.currentDashboardId)) {
+        const previousSurveyValue = this.filterHistory.get(
+          this.dashboardService.currentDashboardId
+        );
+        this.filterHistory.set(this.dashboardService.currentDashboardId, {
           ...previousSurveyValue,
           [options.name]: options.value,
         });

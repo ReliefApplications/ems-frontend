@@ -249,6 +249,7 @@ export class DashboardComponent
       .then(({ data }) => {
         if (data.dashboard) {
           this.id = data.dashboard.id || id;
+          this.dashboardService.currentDashboardId = this.id;
           this.dashboard = data.dashboard;
           this.gridOptions = {
             ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set

@@ -31,6 +31,8 @@ export class DashboardService {
   public widgets: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   /** Observable of current loaded dashboard widgets */
   public widgets$ = this.widgets.asObservable();
+  /** Current dashboard id in the view */
+  public currentDashboardId = '';
 
   /** @returns To listen when dashboard widgets that can be hidden refreshes its contents */
   get widgetContentRefreshed$(): Observable<any> {
