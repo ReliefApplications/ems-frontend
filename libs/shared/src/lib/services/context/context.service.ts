@@ -56,8 +56,10 @@ export class ContextService {
   public filterHistory = new Map();
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
+  /** Should skip filter, used by the web widgets app, so when a page is redrawn, emit a value */
+  public skipFilter = false;
   /** Web component filter surveys */
-  webComponentsFilterSurvey: Model[] = [];
+  public webComponentsFilterSurvey: Model[] = [];
   /** Regex used to allow widget refresh */
   public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
@@ -93,6 +95,8 @@ export class ContextService {
         ([prev, curr]: [Record<string, any>, Record<string, any>]) =>
           !isEqual(prev, curr)
       ),
+      // Deactivate the filter emit when the context service is disabled ( when changing dashboard in web-widgets )
+      filter(() => !this.skipFilter),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       map(([prev, curr]: [Record<string, any>, Record<string, any>]) => ({
         previous: prev,
