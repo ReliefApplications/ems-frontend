@@ -16,7 +16,10 @@ import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { get } from 'lodash';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { ActionType, ActionWithProperties } from '@oort-front/shared';
+import {
+  ActionType,
+  ActionWithProperties,
+} from '../../../../../models/automation.model';
 
 /**
  * Edition of automation component.
