@@ -1,16 +1,19 @@
+import { Dialog } from '@angular/cdk/dialog';
 import {
   Component,
-  OnInit,
-  Input,
-  ViewChild,
-  HostListener,
-  Renderer2,
   ElementRef,
-  Optional,
-  SkipSelf,
+  HostListener,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
+import { clone, get, isEmpty, isEqual, isNil, set } from 'lodash';
 import {
   Subject,
   debounceTime,
@@ -19,26 +22,21 @@ import {
   from,
   takeUntil,
 } from 'rxjs';
+import { ReferenceData } from '../../../models/reference-data.model';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { ContextService } from '../../../services/context/context.service';
+import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import { GridService } from '../../../services/grid/grid.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { WidgetService } from '../../../services/widget/widget.service';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isEmpty, isEqual, isNil, set } from 'lodash';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { DataTemplateService } from '../../../services/data-template/data-template.service';
-import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
-import { TranslateService } from '@ngx-translate/core';
-import { ResourceQueryResponse } from '../../../models/resource.model';
-import { GridService } from '../../../services/grid/grid.service';
-import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import { ReferenceData } from '../../../models/reference-data.model';
-import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
-import { ContextService } from '../../../services/context/context.service';
-import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { Router } from '@angular/router';
-import { BaseWidgetComponent } from '../base-widget/base-widget.component';
-import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 /**
  * Text widget component using Tinymce.
@@ -101,96 +99,17 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   }
 
   /**
-   * Listen to click events from host element, if record editor is clicked, open record editor modal
+   * Listen to click events from host element, and trigger any action attached to the content clicked in the editor
    *
    * @param event Click event from host element
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    let filterButtonIsClicked = !!event.target.dataset.filterField;
-    let currentNode = event.target;
-    const currentFilters = { ...this.contextService.filter.getValue() };
-    const updatedFilters = { ...currentFilters };
-    // Check for filter fields
-    if (!filterButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-editor' &&
-        !filterButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        filterButtonIsClicked = !!currentNode.dataset.filterField;
-      }
-    }
-    if (filterButtonIsClicked) {
-      const { filterField, filterValue } = currentNode.dataset;
-      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
-      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
-      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
-      // If current filters contains the field but there is no value set, delete it
-      if (filterField in currentFilters && !cleanFilterValue) {
-        delete updatedFilters[filterField];
-      }
-      // Update filter object with existing fields and values
-      if (cleanFilterValue) {
-        set(updatedFilters, filterField, cleanFilterValue);
-      }
-    }
-
-    // Check for automation rules
-    let ruleButtonIsClicked = !!event.target.dataset?.ruleTarget;
-    currentNode = event.target; // reset the node
-    if (!ruleButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-editor' &&
-        !ruleButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        ruleButtonIsClicked = !!currentNode.dataset?.ruleTarget;
-      }
-    }
-    if (ruleButtonIsClicked) {
-      const ruleTarget = currentNode.dataset?.ruleTarget;
-      const rule = this.settings.automationRules.find(
-        (rule: any) => rule.id === ruleTarget
-      );
-      if (rule) {
-        this.dashboardAutomationService?.executeAutomationRule(rule);
-      }
-    }
-
-    // Check for filter reset
-    let resetButtonIsClicked = !!event.target.dataset.filterReset;
-    currentNode = event.target; // reset the node
-    if (!resetButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-editor' &&
-        !resetButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        resetButtonIsClicked = !!currentNode.dataset.filterReset;
-      }
-    }
-    if (resetButtonIsClicked) {
-      // Get all the fields that need to be cleared
-      const resetList = currentNode.dataset.filterReset
-        .split(';')
-        .map((item: any) => item.trim());
-      for (const key of Object.keys(updatedFilters)) {
-        // If key is in list of fields that need to be cleared, remove it
-        if (resetList.includes(key)) {
-          delete updatedFilters[key];
-        }
-      }
-    }
-
-    // If filter is affected, update it
-    if (!isEqual(currentFilters, updatedFilters)) {
-      this.contextService.filter.next(updatedFilters);
-    }
-
+    this.widgetService.handleWidgetContentAction(
+      event,
+      'shared-editor',
+      this.settings.automationRules
+    );
     const content = this.htmlContentComponent.el.nativeElement;
     const editorTriggers = content.querySelectorAll('.record-editor');
     editorTriggers.forEach((recordEditor: HTMLElement) => {
@@ -216,7 +135,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param aggregationService Shared aggregation service
    * @param el Element ref
    * @param router Angular router
-   * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
@@ -232,9 +151,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private aggregationService: AggregationService,
     private el: ElementRef,
     private router: Router,
-    @Optional()
-    @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService
+    private widgetService: WidgetService
   ) {
     super();
   }
