@@ -7,7 +7,7 @@
   <ng-container ngProjectAs="content">
     <div class="flex flex-wrap justify-between">
       <div
-        *ngFor="let action of actionComponents; let i = index"
+        *ngFor="let action of actionComponents"
         class="mb-4 mx-0.5 relative bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center p-2"
         (click)="onSelect(action)"
       >

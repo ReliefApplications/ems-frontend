@@ -102,7 +102,7 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
   }
 
   /**
-   * Reorders button actions.
+   * Reorders automation components.
    *
    * @param event event
    */

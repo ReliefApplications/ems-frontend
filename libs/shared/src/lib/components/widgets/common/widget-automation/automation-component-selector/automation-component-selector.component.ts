@@ -4,11 +4,6 @@ import { ButtonModule, DialogModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
-import {
   ActionWithValue,
   ActionType,
 } from '../../../../../models/automation.model';
@@ -95,7 +90,6 @@ const ACTION_COMPONENTS: ActionWithValue[] = [
     TranslateModule,
     ButtonModule,
     TooltipModule,
-    DragDropModule,
   ],
   templateUrl: './automation-component-selector.component.html',
   styleUrls: ['./automation-component-selector.component.scss'],
@@ -112,20 +106,6 @@ export class AutomationComponentSelectorComponent {
   constructor(
     private dialogRef: DialogRef<AutomationComponentSelectorComponent>
   ) {}
-
-  /**
-   * drop
-   *
-   * @param event drag drop event
-   */
-  drop(event: CdkDragDrop<any[]>) {
-    if (event.previousIndex === event.currentIndex) return;
-    moveItemInArray(
-      this.actionComponents,
-      event.previousIndex,
-      event.currentIndex
-    );
-  }
 
   /**
    * Select the component.
