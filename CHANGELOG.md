@@ -1,3 +1,18 @@
+## [2.11.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.0...v2.11.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* automation to hide layers would not work fine ([062151e](https://github.com/ReliefApplications/ems-frontend/commit/062151ebd82ec2a9acc376f6a8a1bd136d97320d))
+* clicking on points when cluster expand should use lat / long of cluster, not lat / long of click ([#2452](https://github.com/ReliefApplications/ems-frontend/issues/2452)) ([1317299](https://github.com/ReliefApplications/ems-frontend/commit/1317299e40c9eb9f7c6fa8bcfe2e4dbebc40986e))
+* empty heatmap with valueField could make the map fail ([45bbdbf](https://github.com/ReliefApplications/ems-frontend/commit/45bbdbf31077ec6a556150a4393777601afd3245))
+* filter between pages could sometimes be reactivated ([a76e6fe](https://github.com/ReliefApplications/ems-frontend/commit/a76e6fe0350016073b98c9f1176b875d684d01e7))
+* incorrect message error when no access to application ([#2446](https://github.com/ReliefApplications/ems-frontend/issues/2446)) ([718964f](https://github.com/ReliefApplications/ems-frontend/commit/718964feaf3ab6592112e5a0ca7bb76d235cb180))
+* layers control would not automatically close when used in web component ([4029ca3](https://github.com/ReliefApplications/ems-frontend/commit/4029ca3a74057eb26a63b107d93df293101e2da8))
+* onDownloadFile not working when seeing record in form ( display mode ) ([#2453](https://github.com/ReliefApplications/ems-frontend/issues/2453)) ([06323db](https://github.com/ReliefApplications/ems-frontend/commit/06323db7d6dbad88c1c3957160911ee49e8a2efb))
+* possible conflict between reset filter event and add filter event on widget content click ([e7a48ba](https://github.com/ReliefApplications/ems-frontend/commit/e7a48baf9675c0a609110fda9eac05c50fb47a28))
+* some layers could be drawn multiple times due to add layer & remove layer automations ([f20f4ea](https://github.com/ReliefApplications/ems-frontend/commit/f20f4eae9971a1e80a927a00e745c6004517667b))
+
 # [2.11.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.10.1...v2.11.0) (2024-03-12)
 
 
