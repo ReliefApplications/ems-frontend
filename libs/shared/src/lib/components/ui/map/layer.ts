@@ -874,8 +874,24 @@ export class Layer implements LayerModel {
       layer.off('clusterclick', this.rulesListener);
     }
     this.rulesListener = (e) => {
+      let event: any = e;
+      if (
+        get(this.layerDefinition, 'featureReduction.type') === 'cluster' &&
+        // If it's actually one of the features within the cluster, then take that one
+        e.propagatedFrom.feature
+      ) {
+        const latitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[1]'
+        );
+        const longitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[0]'
+        );
+        event = { latlng: { lat: latitude, lng: longitude } };
+      }
       for (const rule of (map as any)._rules) {
-        this.dashboardAutomationService?.executeAutomationRule(rule, e);
+        this.dashboardAutomationService?.executeAutomationRule(rule, event);
       }
     };
 
