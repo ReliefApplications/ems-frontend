@@ -35,7 +35,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
   /** A list of side navigation menus. */
-  @ViewChildren('sidenav') sidenav!: QueryList<any>;
+  @ViewChildren('sidenav') sidenav!: QueryList<ElementRef>;
   /** Reference to the content wrapper. */
   @ViewChild('contentWrapper') contentWrapper!: ElementRef;
   /** Reference to the fixed wrapper actions. */
@@ -71,7 +71,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   onResize() {
     this.uiSidenavDirective.forEach((sidenavDirective, index) => {
       this.setRightSidenavHeight(
-        this.sidenav.get(index).nativeElement,
+        this.sidenav.get(index)?.nativeElement,
         sidenavDirective
       );
     });
@@ -129,12 +129,12 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       this.mode[index] = sidenavDirective.mode;
       this.position[index] = sidenavDirective.position;
       this.setRightSidenavHeight(
-        this.sidenav.get(index).nativeElement,
+        this.sidenav.get(index)?.nativeElement,
         sidenavDirective
       );
       this.cdr.detectChanges();
       this.renderer.appendChild(
-        this.sidenav.get(index).nativeElement.querySelector('div'),
+        this.sidenav.get(index)?.nativeElement.querySelector('div'),
         sidenavDirective.el.nativeElement
       );
       sidenavDirective.openedChange
