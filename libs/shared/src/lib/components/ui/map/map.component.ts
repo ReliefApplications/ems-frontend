@@ -504,7 +504,7 @@ export class MapComponent
     }
 
     // Close layers/bookmarks menu
-    this.document.getElementById('layer-control-button-close')?.click();
+    this.closeLayersControl();
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
@@ -1119,26 +1119,22 @@ export class MapComponent
     const { layers: layersToGet, controls } = this.extractSettings();
 
     if (controls.layer) {
-      this.document.getElementById('layer-control-button-close')?.click();
+      this.closeLayersControl();
       this.layerControlButtons._component.loading = true;
     }
-
-    const shouldDisplayStatuses: Record<string, boolean> = {};
 
     const flattenOverlaysTree = (tree: L.Control.Layers.TreeObject): any => {
       return [tree, flatMapDeep(tree.children, flattenOverlaysTree)];
     };
 
+    // Copy old layers, so if the visibility changes while filtering the layers, we still get the last visibility
+    const oldLayers = this.layers.slice();
+
     // remove zoom listeners from old layers
     flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree)
       .filter((x) => x.layer && (x.layer as any).origin === 'app-builder')
       .forEach((x) => {
-        // Store visibility status of the layer
-        const shouldDisplay = (x.layer as any).shouldDisplay;
         const id = (x.layer as any).id;
-        if (!isNil(shouldDisplay)) {
-          shouldDisplayStatuses[id] = shouldDisplay;
-        }
         const existingLayer = this.layers.find((layer) => layer.id === id);
         if (!existingLayer || existingLayer.shouldRefresh) {
           (x.layer as any).deleted = true;
@@ -1157,9 +1153,13 @@ export class MapComponent
           (x) => {
             if (x.layer) {
               const id = (x.layer as any).id;
-              if (!isNil(shouldDisplayStatuses[id])) {
-                (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
-                if (shouldDisplayStatuses[id]) {
+              const shouldDisplay = get(
+                oldLayers.find((x) => x.id === id),
+                'layer.shouldDisplay'
+              );
+              if (!isNil(shouldDisplay)) {
+                (x.layer as any).shouldDisplay = shouldDisplay;
+                if (shouldDisplay) {
                   this.map.addLayer(x.layer);
                 }
               } else {
@@ -1270,5 +1270,22 @@ export class MapComponent
     const { center, zoom } = this.extractSettings().initialState.viewpoint;
     this.currentZoom = zoom;
     this.map.setView([center.latitude, center.longitude], zoom);
+  }
+
+  /**
+   * Close layers control sidenav.
+   */
+  private closeLayersControl(): void {
+    let controlButton: HTMLElement | null;
+    if (this.shadowDomService.isShadowRoot) {
+      controlButton = this.shadowDomService.currentHost.getElementById(
+        'layer-control-button-close'
+      );
+    } else {
+      controlButton = this.document.getElementById(
+        'layer-control-button-close'
+      );
+    }
+    controlButton?.click();
   }
 }

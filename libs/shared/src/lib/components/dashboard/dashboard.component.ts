@@ -20,4 +20,6 @@ export class DashboardComponent extends UnsubscribeComponent {
   public widgetGridComponent!: WidgetGridComponent;
   /** List of widgets */
   public widgets: any[] = [];
+  /** Last state of filters, updated when attaching / detaching dashboard */
+  public filter: any;
 }
