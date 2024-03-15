@@ -651,7 +651,6 @@ export class Layer implements LayerModel {
               DEFAULT_HEATMAP.gradient
             );
 
-            console.log(heatArray);
             const heatmapOptions: HeatMapOptions = {
               opacity: this.opacity,
               blur: get(
