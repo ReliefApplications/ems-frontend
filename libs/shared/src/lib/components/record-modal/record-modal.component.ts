@@ -195,7 +195,6 @@ export class RecordModalComponent
       this.selectedPageIndex,
       {}
     );
-
     this.survey.data = this.record.data;
 
     if (this.data.compareTo) {
@@ -204,16 +203,14 @@ export class RecordModalComponent
         this.form?.metadata,
         this.record
       );
-      if (this.surveyNext) {
-        this.surveyNext.data = this.data.compareTo.data;
-        this.surveyNext.mode = 'display';
-      }
+      this.surveyNext.mode = 'display';
       // After the survey is created we add common callback to survey events
       this.formBuilderService.addEventsCallBacksToSurvey(
         this.surveyNext,
         this.selectedPageIndex,
         {}
       );
+      this.surveyNext.data = this.data.compareTo.data;
 
       // Set list of updated questions
       const updatedQuestions: string[] = [];
@@ -244,7 +241,6 @@ export class RecordModalComponent
       );
     }
     addCustomFunctions(this.authService, this.record);
-
     this.loading = false;
   }
 
