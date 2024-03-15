@@ -674,7 +674,7 @@ export class Layer implements LayerModel {
                 return g;
               }, {}),
               ...(valueField && {
-                max: maxBy(heatArray, 2)[2],
+                max: maxBy(heatArray, 2) ? maxBy(heatArray, 2)[2] : 1,
               }),
             };
 
