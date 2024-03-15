@@ -1,4 +1,4 @@
-<div class="flex flex-row gap-4 overflow-x-auto">
+<div class="flex flex-row gap-4 overflow-x-auto" [ngStyle]="{ 'max-width.px': maxWidth }">
   <shared-add-application
     *ngIf="!loading && canCreate"
     (click)="add.emit()"

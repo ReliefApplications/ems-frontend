@@ -28,4 +28,13 @@ export class ApplicationsSummaryComponent {
   @Output() clone = new EventEmitter<Application>();
   /** Emits an event with the application when a clone is requested. */
   @Output() editAccess = new EventEmitter<Application>();
+
+  /**
+   * get the max width for the application summary
+   *
+   * @returns a max width to not exceed the container
+   */
+  get maxWidth() {
+    return window.innerWidth - 288;
+  }
 }
