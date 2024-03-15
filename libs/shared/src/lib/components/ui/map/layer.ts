@@ -880,7 +880,14 @@ export class Layer implements LayerModel {
         // If it's actually one of the features within the cluster, then take that one
         e.propagatedFrom.feature
       ) {
-        const { latitude, longitude } = e.propagatedFrom.feature.properties;
+        const latitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[1]'
+        );
+        const longitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[0]'
+        );
         event = { latlng: { lat: latitude, lng: longitude } };
       }
       for (const rule of (map as any)._rules) {
