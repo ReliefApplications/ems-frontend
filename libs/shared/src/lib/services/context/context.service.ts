@@ -12,8 +12,6 @@ import {
   get,
   isEqual,
   isObject,
-  forEach,
-  set,
   has,
   isArray,
   every,
@@ -38,6 +36,7 @@ import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordQueryResponse } from '../../models/record.model';
 import { GET_RECORD_BY_ID } from './graphql/queries';
+import { DashboardService } from '../dashboard/dashboard.service';
 
 /**
  * Dashboard context service
@@ -55,7 +54,7 @@ export class ContextService {
     dashboardId: string;
   } | null>(null);
   /** To keep the history of previous dashboard filter values */
-  public filterValues = new BehaviorSubject<any>(null);
+  public filterHistory = new Map();
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
   /** Should skip filter, used by the web widgets app, so when a page is redrawn, emit a value */
@@ -112,11 +111,6 @@ export class ContextService {
     return this.filterPosition.asObservable();
   }
 
-  /** @returns filterValues value as observable */
-  get filterValues$() {
-    return this.filterValues.asObservable();
-  }
-
   /** @returns filterOpened value as observable */
   get filterOpened$() {
     return this.filterOpened.asObservable();
@@ -146,6 +140,7 @@ export class ContextService {
    * @param applicationService Shared application service
    * @param router Angular router
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private dialog: Dialog,
@@ -155,7 +150,8 @@ export class ContextService {
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
     private router: Router,
-    public shadowDomService: ShadowDomService
+    public shadowDomService: ShadowDomService,
+    private dashboardService: DashboardService
   ) {
     this.filterPosition$.subscribe(
       (value: { position: FilterPosition; dashboardId: string } | null) => {
@@ -426,20 +422,30 @@ export class ContextService {
    */
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
-    // set each question value manually otherwise the defaultValueExpression is not loaded
-    if (!this.shadowDomService.isShadowRoot) {
-      forEach(this.filterValues.getValue(), (value, key) => {
-        if (survey.getQuestionByName(key)) {
-          survey.getQuestionByName(key).value = value;
-        }
-      });
-    }
 
+    if (!this.shadowDomService.isShadowRoot) {
+      if (this.filterHistory.has(this.dashboardService.currentDashboardId)) {
+        const previousSurveyValue = this.filterHistory.get(
+          this.dashboardService.currentDashboardId
+        );
+        survey.data = previousSurveyValue;
+      } else {
+        this.filterHistory.set(this.dashboardService.currentDashboardId, {
+          ...survey.data,
+        });
+      }
+    }
     // prevent the default value from being applied when a question has been intentionally cleared
     const handleValueChanged = (sender: any, options: any) => {
-      const history = this.filterValues.getValue() ?? {};
-      set(history, options.name, options.value);
-      this.filterValues.next(history);
+      if (this.filterHistory.has(this.dashboardService.currentDashboardId)) {
+        const previousSurveyValue = this.filterHistory.get(
+          this.dashboardService.currentDashboardId
+        );
+        this.filterHistory.set(this.dashboardService.currentDashboardId, {
+          ...previousSurveyValue,
+          [options.name]: options.value,
+        });
+      }
     };
 
     survey.onValueChanged.add(handleValueChanged);

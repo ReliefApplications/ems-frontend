@@ -70,6 +70,7 @@ export class DashboardComponent
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
+      this.dashboardService.currentDashboardId = this.id;
       this.apollo
         .query<DashboardQueryResponse>({
           query: GET_DASHBOARD_BY_ID,

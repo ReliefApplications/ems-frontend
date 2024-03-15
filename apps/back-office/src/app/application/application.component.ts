@@ -7,6 +7,7 @@ import {
   ApplicationService,
   ConfirmService,
   UnsubscribeComponent,
+  ContextService,
 } from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
@@ -49,13 +50,15 @@ export class ApplicationComponent
    * @param router Angular router
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param contextService ContextService
    */
   constructor(
     private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private contextService: ContextService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -270,12 +273,16 @@ export class ApplicationComponent
       return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
+            // Clear any context filter history from current application
+            this.contextService.filterHistory.clear();
             return true;
           }
           return false;
         })
       );
     }
+    // Clear any context filter history from current application
+    this.contextService.filterHistory.clear();
     return true;
   }
 

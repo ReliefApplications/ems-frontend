@@ -326,9 +326,7 @@ export class DashboardFilterComponent
     const currentSurveyQuestions = this.survey.getAllQuestions();
     const nextFilterValue: any = surveyData;
     // Don't merge current context filter values to the filter if survey has init and it's used in web component
-    if (
-      !(this.surveyInit && this.contextService.shadowDomService.isShadowRoot)
-    ) {
+    if (!this.surveyInit) {
       const currentFilterValue = this.contextService.filter.value;
       const filterKeys = Object.keys(currentFilterValue);
       filterKeys
