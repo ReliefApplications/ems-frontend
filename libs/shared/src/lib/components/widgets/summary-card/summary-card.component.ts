@@ -910,10 +910,16 @@ export class SummaryCardComponent
         showDetails: get(this.settings, 'actions.showDetails', true),
         update: get(this.settings, 'actions.update', true),
         navigateToPage: get(this.settings, 'actions.navigateToPage', false),
+        actionsAsIcons: get(this.settings, 'actions.actionsAsIcons', false),
         navigateSettings: {
           pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
           field: get(this.settings, 'actions.navigateSettings.field', ''),
           title: get(this.settings, 'actions.navigateSettings.title', ''),
+          copyLink: get(
+            this.settings,
+            'actions.navigateSettings.copyLink',
+            false
+          ),
         },
       },
       contextFilters: JSON.stringify(this.contextFilters),

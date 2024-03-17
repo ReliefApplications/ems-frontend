@@ -135,8 +135,10 @@ export class GridComponent
       field: '',
       pageUrl: '',
       title: '',
+      copyLink: false,
     },
     remove: false,
+    actionsAsIcons: false,
   };
   /** Input decorator */
   @Input() hasDetails = true;

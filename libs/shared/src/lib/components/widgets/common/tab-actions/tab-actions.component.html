@@ -4,6 +4,7 @@
       {{ 'components.widget.settings.grid.actions.title' | translate }}
     </h2>
     <div class="flex flex-col gap-2 pb-0.5">
+      <!-- Actions -->
       <div class="flex flex-col gap-2 mb-2">
         <ui-toggle
           *ngFor="let action of actions"
@@ -110,6 +111,23 @@
             </ng-container>
           </ui-select-menu>
         </div>
+        <ui-toggle formControlName="copyLink">
+          >
+          <ng-container ngProjectAs="label">
+            {{ 'components.widget.settings.grid.actions.copyLink' | translate }}
+            <ui-icon
+              class="ml-1 cursor-help self-center"
+              variant="grey"
+              icon="info_outline"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.hint.actions.copyLink'
+                  | translate
+              "
+              uiTooltipPosition="right"
+            ></ui-icon>
+          </ng-container>
+        </ui-toggle>
       </div>
     </div>
   </div>

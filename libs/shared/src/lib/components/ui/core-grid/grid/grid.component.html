@@ -1079,6 +1079,7 @@
             !!widget?.settings?.widgetDisplay?.showSingleActionAsButton
           "
           [actions]="actions"
+          [actionsAsIcons]="actions.actionsAsIcons ?? false"
           (action)="action.emit($event)"
         >
         </shared-grid-row-actions>
