@@ -16,6 +16,28 @@ import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
 import { Router } from '@angular/router';
 
 /**
+ * Parses a query string and returns an object with key-value pairs.
+ *
+ * @param queryString The query string to parse.
+ * @returns An object with key-value pairs representing the parsed query string.
+ */
+const parseQuery = (queryString: string): Record<string, string> => {
+  if (!queryString) {
+    return {};
+  }
+
+  const query: Record<string, string> = {};
+  const pairs = (
+    queryString[0] === '?' ? queryString.substring(1) : queryString
+  ).split('&');
+  for (let i = 0; i < pairs.length; i++) {
+    const pair = pairs[i].split('=');
+    query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+  }
+  return query;
+};
+
+/**
  * Main component of Front-office.
  */
 @Component({
@@ -96,7 +118,9 @@ export class AppComponent implements OnInit {
         // Navigate to the url in the href using the router
         event.preventDefault();
         const regex = new RegExp(`^${environment.frontOfficeUri}`);
-        this.router.navigate([href.replace(regex, '')]).catch(() => {
+        const [route, params] = href.replace(regex, '').split('?');
+        const queryParams = parseQuery(params);
+        this.router.navigate([route], { queryParams }).catch(() => {
           // If the navigation fails, fallback to window.location.href
           window.location.href = href;
         });
