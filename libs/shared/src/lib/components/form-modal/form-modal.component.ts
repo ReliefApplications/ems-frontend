@@ -7,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
@@ -47,6 +48,7 @@ import {
 } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { UploadRecordsComponent } from '../upload-records/upload-records.component';
 
 /**
  * Interface of Dialog data.
@@ -92,6 +94,9 @@ export class FormModalComponent
 {
   /** Reference to form container */
   @ViewChild('formContainer') formContainer!: ElementRef;
+  /** Reference to content view container */
+  @ViewChild('uploadRecordsContent', { read: ViewContainerRef })
+  uploadRecordsContent!: ViewContainerRef;
   /** Current template */
   public survey!: SurveyModel;
   /** Loading indicator */
@@ -123,6 +128,8 @@ export class FormModalComponent
   protected temporaryFilesStorage: TemporaryFilesStorage = new Map();
   /** Stored merged data */
   private storedMergedData: any;
+  /** If new records was uploaded */
+  private uploadedRecords = false;
 
   /**
    * Display a form instance in a modal.
@@ -222,6 +229,19 @@ export class FormModalComponent
     await Promise.all(promises);
 
     this.initSurvey();
+
+    // Creates UploadRecordsComponent
+    const componentRef = this.uploadRecordsContent.createComponent(
+      UploadRecordsComponent
+    );
+    componentRef.setInput('id', this.form?.id);
+    componentRef.setInput('name', this.form?.name);
+    componentRef.setInput('path', 'form');
+    componentRef.instance.uploaded.subscribe(
+      () => (this.uploadedRecords = true)
+    );
+    /** To use angular hooks */
+    componentRef.changeDetectorRef.detectChanges();
   }
 
   /**
@@ -333,11 +353,11 @@ export class FormModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.dialogRef.close();
+            this.dialogRef.close((this.uploadedRecords ? true : false) as any);
           }
         });
     } else {
-      this.dialogRef.close();
+      this.dialogRef.close((this.uploadedRecords ? true : false) as any);
     }
   }
 

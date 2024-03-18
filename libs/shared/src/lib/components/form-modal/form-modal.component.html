@@ -1,7 +1,7 @@
 <ui-dialog size="big" [onClose]="close.bind(this)">
   <ng-container ngProjectAs="header">
-    <ng-container *ngIf="!loading">
-      <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+    <div class="flex flex-wrap justify-start items-center gap-4 mb-4">
+      <ng-container *ngIf="!loading">
         <shared-record-summary
           *ngIf="record"
           [record]="record"
@@ -16,7 +16,10 @@
           [formId]="form?.id ?? ''"
           (loadDraft)="onLoadDraftRecord($event)"
         ></shared-draft-record> -->
-      </div>
+      </ng-container>
+      <ng-template #uploadRecordsContent *ngIf="!record"></ng-template>
+    </div>
+    <ng-container *ngIf="!loading">
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"
         (selectedIndexChange)="onShowPage($event)"
