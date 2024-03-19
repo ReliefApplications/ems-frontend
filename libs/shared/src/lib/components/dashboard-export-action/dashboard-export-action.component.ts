@@ -5,10 +5,10 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
-  DialogModule,
   ToggleModule,
   FormWrapperModule,
   SelectMenuModule,
+  DialogModule,
 } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -41,10 +41,10 @@ type DialogResultI = {
     FormWrapperModule,
     ToggleModule,
     TranslateModule,
-    DialogModule,
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
+    DialogModule,
   ],
   selector: 'app-dashboard-export-action',
   templateUrl: './dashboard-export-action.component.html',

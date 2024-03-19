@@ -46,9 +46,8 @@ import {
 } from 'rxjs/operators';
 import { Observable, Subscription, firstValueFrom, first } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { cloneDeep, isEqual, upperCase, omit } from 'lodash';
+import { cloneDeep, isEqual, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
-import { DashboardExportActionComponent } from './components/dashboard-export-action/dashboard-export-action.component';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -56,6 +55,7 @@ import {
   ContextService,
   MapStatusService,
   CustomWidgetStyleComponent,
+  DashboardExportActionComponent,
 } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -593,7 +593,7 @@ export class DashboardComponent
         },
       })
       .subscribe({
-        next: ({ data, errors }) => {
+        next: ({ errors }) => {
           this.applicationService.handleEditionMutationResponse(
             errors,
             this.translate.instant('common.dashboard.one')
@@ -1027,7 +1027,7 @@ export class DashboardComponent
 
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.export.loading', {
-            type: upperCase(resultValue.format),
+            type: resultValue.format.toUpperCase(),
           })
         );
 
@@ -1062,7 +1062,7 @@ export class DashboardComponent
         setTimeout(async () => {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.export.image', {
-              image: upperCase(resultValue.format),
+              image: resultValue.format.toUpperCase(),
             })
           );
         }, 1000);

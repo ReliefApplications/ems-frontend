@@ -8,6 +8,7 @@ import {
   OnInit,
   Output,
   Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -20,6 +21,7 @@ import {
   DashboardQueryResponse,
   Record,
   MapStatusService,
+  DashboardExportActionComponent,
   DashboardComponent as SharedDashboardComponent,
   DashboardAutomationService,
 } from '@oort-front/shared';
@@ -32,7 +34,6 @@ import { cloneDeep, upperCase } from 'lodash';
 import { PDFExportComponent } from '@progress/kendo-angular-pdf-export';
 import { drawDOM, exportPDF, exportImage } from '@progress/kendo-drawing';
 import { saveAs } from '@progress/kendo-file-saver';
-import { DashboardExportActionComponent } from './../../../../../../back-office/src/app/dashboard/pages/dashboard/components/dashboard-export-action/dashboard-export-action.component';
 
 /**
  * Dashboard page.
@@ -192,10 +193,25 @@ export class DashboardComponent
       return;
     }
 
+    // Ensures cleanup of the count of map widgets present on the dashboard to 0.
+    this.mapStatusService.resetMapCount();
+    this.mapExists = false; // MapExists state reset
+
     const rootElement = this.elementRef.nativeElement;
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
+
+    // Returns true if a map exists in the dashboard
+    this.mapStatusSubscription = this.mapStatusService.mapStatus$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((status: any) => {
+        if (status) {
+          console.log(status);
+          this.mapExists = status;
+        }
+      });
+
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
@@ -505,5 +521,16 @@ export class DashboardComponent
         }, 1000);
       }
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    // Unsubscribe from map export subscription
+    if (this.mapReadyForExportSubscription) {
+      this.mapReadyForExportSubscription.unsubscribe();
+    }
+    // Unsubscribe from map exist status subscription
+    this.mapStatusSubscription?.unsubscribe();
+    this.mapExists = false;
   }
 }

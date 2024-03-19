@@ -308,10 +308,9 @@ export class MapComponent
 
           // Replaces the current map layer with the WHO Polygon Raster Basemap
           this.basemap = L.tileLayer(
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Raster_Basemap_with_labels/MapServer/tile/{z}/{y}/{x}',
             {
-              attribution:
-                '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+              attribution: '&copy; WHO',
             }
           );
 
@@ -335,7 +334,8 @@ export class MapComponent
           this.revertMapSubscription = this.mapStatusService.isExporting$
             .pipe(
               filter((isExporting) => !isExporting),
-              take(1)
+              take(1),
+              takeUntil(this.destroy$)
             )
             .subscribe(() => {
               this.map.removeLayer(this.basemap);

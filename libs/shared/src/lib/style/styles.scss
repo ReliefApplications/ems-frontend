@@ -180,7 +180,12 @@ ui-checkbox {
   }
 
   // Map Components
-  .leaflet-control-fullscreen, shared-map-zoom, .geocoder-control, .leaflet-control-measure, shared-map-download, shared-map-sidenav-controls {
+  .leaflet-control-fullscreen,
+  shared-map-zoom,
+  .geocoder-control,
+  .leaflet-control-measure,
+  shared-map-download,
+  shared-map-sidenav-controls {
     display: none;
   }
 
@@ -194,5 +199,4 @@ ui-checkbox {
   kendo-icon {
     display: none;
   }
-
 }

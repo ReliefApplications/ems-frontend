@@ -1,19 +1,7 @@
-<shared-dashboard-filter
-  *ngIf="showFilter && !isFullScreen"
-  [isFullScreen]="isFullScreen"
-  [variant]="variant"
-  [closable]="closable"
-  [dashboard]="dashboard"
-  [structure]="dashboard?.filter?.structure"
-  class="export-hide"
-></shared-dashboard-filter>
-<!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-<div
-  class="grow flex flex-col"
-  [ngClass]="{ 'py-8 px-6 bg-white overflow-auto': isFullScreen }"
->
+<!-- PDF Exporter -->
+<div #pdfExport>
   <shared-dashboard-filter
-    *ngIf="showFilter && isFullScreen"
+    *ngIf="showFilter && !isFullScreen"
     [isFullScreen]="isFullScreen"
     [variant]="variant"
     [closable]="closable"
@@ -21,27 +9,48 @@
     [structure]="dashboard?.filter?.structure"
     class="export-hide"
   ></shared-dashboard-filter>
-  <ng-container
-    sharedFullScreen
-    [(isFullScreenMode)]="isFullScreen"
-    *sharedSkeleton="
-      loading;
-      repeat: 1;
-      height: '32px';
-      width: '120px';
-      shape: 'rectangle'
-    "
+  <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
+  <div
+    class="grow flex flex-col"
+    [ngClass]="{ 'py-8 px-6 bg-white overflow-auto': isFullScreen }"
   >
-    <ng-container *ngIf="dashboard">
-      <div
-        id="dashboard-header"
-        class="flex flex-wrap items-center mb-6 gap-4 justify-between"
-      >
-        <ng-container>
-          <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ dashboard.name }}
-          </h1>
-          <ui-button
+    <shared-dashboard-filter
+      *ngIf="showFilter && isFullScreen"
+      [isFullScreen]="isFullScreen"
+      [variant]="variant"
+      [closable]="closable"
+      [dashboard]="dashboard"
+      [structure]="dashboard?.filter?.structure"
+      class="export-hide"
+    ></shared-dashboard-filter>
+    <ng-container
+      sharedFullScreen
+      [(isFullScreenMode)]="isFullScreen"
+      *sharedSkeleton="
+        loading;
+        repeat: 1;
+        height: '32px';
+        width: '120px';
+        shape: 'rectangle'
+      "
+    >
+      <ng-container *ngIf="dashboard">
+        <div
+          id="dashboard-header"
+          class="flex flex-wrap items-center mb-6 gap-4 justify-between"
+        >
+          <ng-container>
+            <h1 class="!m-0 overflow-hidden text-ellipsis">
+              {{ dashboard.name }}
+            </h1>
+          </ng-container>
+          <div class="flex items-center gap-1">
+            <!-- Button actions -->
+            <shared-button-action
+              [buttonActions]="buttonActions"
+              [dashboard]="dashboard"
+            ></shared-button-action>
+            <ui-button
               variant="grey"
               class="export-hide"
               [isIcon]="true"
@@ -60,16 +69,9 @@
                 {{ 'common.exportType.png' | translate }}
               </button>
             </ui-menu>
-        </ng-container>
-        <div class="flex items-center gap-1">
-          <!-- Button actions -->
-          <shared-button-action
-            [buttonActions]="buttonActions"
-            [dashboard]="dashboard"
-          ></shared-button-action>
 
-          <!-- Fullscreen -->
-          <!-- <ui-button
+            <!-- Fullscreen -->
+            <!-- <ui-button
             variant="grey"
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
@@ -80,15 +82,16 @@
             "
           >
           </ui-button> -->
+          </div>
         </div>
-      </div>
+      </ng-container>
     </ng-container>
-  </ng-container>
-  <shared-widget-grid
-    class="flex-1"
-    [loading]="loading"
-    [widgets]="widgets"
-    [options]="dashboard?.gridOptions"
-    (changeStep)="changeStep.emit($event)"
-  ></shared-widget-grid>
+    <shared-widget-grid
+      class="flex-1"
+      [loading]="loading"
+      [widgets]="widgets"
+      [options]="dashboard?.gridOptions"
+      (changeStep)="changeStep.emit($event)"
+    ></shared-widget-grid>
+  </div>
 </div>
