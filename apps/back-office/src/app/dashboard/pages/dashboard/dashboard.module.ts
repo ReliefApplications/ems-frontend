@@ -28,14 +28,13 @@ import {
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
-import { DashboardExportActionComponent } from './components/dashboard-export-action/dashboard-export-action.component';
 import { ContextSelectorComponent } from './components/context-selector/context-selector.component';
 
 /**
  * Dashboard page module.
  */
 @NgModule({
-  declarations: [DashboardComponent, DashboardExportActionComponent],
+  declarations: [DashboardComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,

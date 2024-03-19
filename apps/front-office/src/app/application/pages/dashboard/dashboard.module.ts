@@ -9,7 +9,12 @@ import {
   SkeletonModule,
   WidgetGridModule,
 } from '@oort-front/shared';
-import { ButtonModule, TooltipModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  TooltipModule,
+  MenuModule,
+  IconModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -29,6 +34,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TooltipModule,
     TranslateModule,
     ButtonActionModule,
+    MenuModule,
+    IconModule,
   ],
   exports: [DashboardComponent],
 })

@@ -1,6 +1,16 @@
 import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  ButtonModule,
+  DialogModule,
+  ToggleModule,
+  FormWrapperModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /** Dialog data interface */
 type DialogInputI = {
@@ -23,6 +33,19 @@ type DialogResultI = {
 
 /** Component for export options modal */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FormWrapperModule,
+    ToggleModule,
+    TranslateModule,
+    DialogModule,
+    ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+  ],
   selector: 'app-dashboard-export-action',
   templateUrl: './dashboard-export-action.component.html',
   styleUrls: ['./dashboard-export-action.component.scss'],
