@@ -97,6 +97,7 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
           index,
           createAutomationComponentForm(value) as any
         );
+        console.log(value);
       }
     });
   }

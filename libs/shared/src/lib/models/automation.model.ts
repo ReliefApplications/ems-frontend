@@ -44,7 +44,9 @@ export type ActionWithProperties = ActionComponent & {
     editor: string;
     multiselect?: boolean;
     async?: boolean;
-    choices?: Observable<{ value: any; text: any }[]> | [];
+    choices?:
+      | Observable<{ value: string; text: string }[]>
+      | { value: string; text: string }[];
     onValueChanged?: (value: any) => void;
     onInit?: (value: any) => void;
   }[];
