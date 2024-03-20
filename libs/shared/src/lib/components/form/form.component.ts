@@ -209,6 +209,11 @@ export class FormComponent
    */
   public reset(): void {
     this.survey.clear();
+    /** Adding variables */
+    this.formHelpersService.addUserVariables(this.survey);
+    this.formHelpersService.addApplicationVariables(this.survey);
+    this.formHelpersService.setWorkflowContextVariable(this.survey);
+    /** Clear temporary files */
     this.temporaryFilesStorage.clear();
     /** Reset custom variables */
     this.formHelpersService.addUserVariables(this.survey);
