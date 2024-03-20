@@ -79,8 +79,6 @@ export class DashboardComponent
   public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
-  /** List of widgets */
-  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Show dashboard filter */
@@ -159,7 +157,7 @@ export class DashboardComponent
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: DashboardService,
+    public dashboardService: DashboardService,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private contextService: ContextService,
@@ -260,7 +258,7 @@ export class DashboardComponent
           this.editionActive = this.canUpdate;
           this.initContext();
           this.updateContextOptions();
-          this.widgets = cloneDeep(
+          this.dashboardService.widgets = cloneDeep(
             data.dashboard.structure
               ?.filter((x: any) => x !== null)
               .map((widget: any) => {
@@ -369,7 +367,7 @@ export class DashboardComponent
    */
   onAdd(e: any): void {
     const widget = cloneDeep(e);
-    this.widgets.push(widget);
+    this.dashboardService.widgets.push(widget);
     if (this.addTimeoutListener) {
       clearTimeout(this.addTimeoutListener);
     }
@@ -402,18 +400,20 @@ export class DashboardComponent
         if (index > -1) {
           const { settings, originalSettings } =
             this.contextService.updateSettingsContextContent(
-              this.widgets[index]?.settings?.defaultLayout
+              this.dashboardService.widgets[index]?.settings?.defaultLayout
                 ? {
                     ...e.options,
-                    defaultLayout: this.widgets[index].settings.defaultLayout,
+                    defaultLayout:
+                      this.dashboardService.widgets[index].settings
+                        .defaultLayout,
                   }
                 : e.options,
               this.dashboard
             );
           if (settings) {
             // Save configuration
-            this.widgets[index] = {
-              ...this.widgets[index],
+            this.dashboardService.widgets[index] = {
+              ...this.dashboardService.widgets[index],
               settings: settings,
               ...(originalSettings && { originalSettings }),
             };
@@ -439,7 +439,7 @@ export class DashboardComponent
       this.widgetGridComponent.widgetComponents.toArray();
     const targetIndex = widgetComponents.findIndex((x) => x.id === e.id);
     if (targetIndex > -1) {
-      this.widgets.splice(targetIndex, 1);
+      this.dashboardService.widgets.splice(targetIndex, 1);
       this.autoSaveChanges();
     }
   }
@@ -462,12 +462,12 @@ export class DashboardComponent
 
   /** Save the dashboard changes in the database. */
   private autoSaveChanges(): void {
-    let widgets = this.widgets;
+    let widgets = this.dashboardService.widgets;
     // If context data exists we have to clean up widget setting original settings
     // Which do not have the {{context}} replaced, and delete duplicated original settings property as it's not needed in the DB
     if (this.dashboard?.contextData) {
       widgets = [];
-      this.widgets.forEach((widget) => {
+      this.dashboardService.widgets.forEach((widget) => {
         const contextContentCleanWidget = {
           ...widget,
           settings: widget.originalSettings

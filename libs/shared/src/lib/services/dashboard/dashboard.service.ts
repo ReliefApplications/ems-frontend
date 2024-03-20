@@ -25,6 +25,8 @@ import { GraphQLError } from 'graphql';
 export class DashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
+  /** List of widgets of the current open dashboard*/
+  public widgets: any[] = [];
 
   /**
    * Shared dashboard service. Handles dashboard events.

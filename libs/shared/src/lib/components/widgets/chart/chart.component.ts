@@ -175,20 +175,17 @@ export class ChartComponent
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ previous, current }) => {
-        if (
-          this.contextService.filterRegex.test(this.settings.contextFilters) ||
-          this.contextService.filterRegex.test(
-            this.settings.referenceDataVariableMapping
-          )
-        ) {
-          if (
-            this.contextService.shouldRefresh(this.settings, previous, current)
-          ) {
-            this.series.next([]);
-            this.loadChart();
-            this.getOptions();
-          }
+      .subscribe(({ previous, current, resourceId }) => {
+        const hasFilter =
+          (this.contextService.filterRegex.test(this.settings.contextFilters) ||
+            this.contextService.filterRegex.test(
+              this.settings.referenceDataVariableMapping
+            )) &&
+          this.contextService.shouldRefresh(this.settings, previous, current);
+        if (resourceId === this.settings.resource || hasFilter) {
+          this.series.next([]);
+          this.loadChart();
+          this.getOptions();
         }
       });
   }

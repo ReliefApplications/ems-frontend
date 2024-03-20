@@ -1541,10 +1541,10 @@
         "grid": {
           "actions": {
             "actionsAsIcons": "Afficher les actions sous forme d'icônes",
-            "copyLink": "Copier le lien",
-            "copyLinkDone": "Lien copié dans le presse-papier",
             "add": "Ajouter de nouveaux enregistrements",
             "convert": "Convertir des enregistrements",
+            "copyLink": "Copier le lien",
+            "copyLinkDone": "Lien copié dans le presse-papier",
             "delete": "Supprimer les enregistrements",
             "export": "Exporter les enregistrements",
             "goTo": {
@@ -1642,12 +1642,12 @@
               "actionsAsIcons": "Si activé, au lieu d'afficher le menu à trois points, toutes les actions seront affichées sous forme d'icônes côte à côte",
               "add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
               "convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
+              "copyLink": "Si activé, les utilisateurs peuvent copier la même URL de la page \"Naviguer vers\" sur les actions de ligne",
               "delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
               "export": "L'utilisateur peut exporter les enregistrements affichés",
               "goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
               "inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
               "navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
-              "copyLink": "Si activé, les utilisateurs peuvent copier la même URL de la page \"Naviguer vers\" sur les actions de ligne",
               "show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
               "showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
               "update": "L'utilisateur peut mettre à jour les enregistrements affichés"
@@ -2540,10 +2540,10 @@
         "notUpdated": "Erreur lors de l'enregistrement des préférences.",
         "updated": "Préférences sauvegardées."
       },
-      "title": "Votre profil",
       "password": {
         "change": "Changer le mot de passe"
-      }
+      },
+      "title": "Votre profil"
     },
     "pullJobs": {
       "create": "Créer une tâche planifiée"

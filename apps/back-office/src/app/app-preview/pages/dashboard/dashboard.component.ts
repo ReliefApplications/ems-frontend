@@ -35,8 +35,6 @@ export class DashboardComponent
   public id = '';
   /** Loading indicator */
   public loading = true;
-  /** Current widgets */
-  public widgets = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Emit event when changing steps */
@@ -57,7 +55,7 @@ export class DashboardComponent
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SnackbarService,
-    private dashboardService: DashboardService,
+    public dashboardService: DashboardService,
     private translate: TranslateService
   ) {
     super();
@@ -81,7 +79,7 @@ export class DashboardComponent
           next: ({ data, loading }) => {
             if (data.dashboard) {
               this.dashboard = data.dashboard;
-              this.widgets = cloneDeep(
+              this.dashboardService.widgets = cloneDeep(
                 data.dashboard.structure ? data.dashboard.structure : []
               );
               this.loading = loading;

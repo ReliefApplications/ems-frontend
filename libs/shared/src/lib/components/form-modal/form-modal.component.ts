@@ -49,6 +49,7 @@ import {
 import { DialogModule } from '@oort-front/ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { UploadRecordsComponent } from '../upload-records/upload-records.component';
+import { ContextService } from '../../services/context/context.service';
 
 /**
  * Interface of Dialog data.
@@ -145,6 +146,7 @@ export class FormModalComponent
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param contextService Shared context service
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -157,7 +159,8 @@ export class FormModalComponent
     protected formHelpersService: FormHelpersService,
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
-    protected ngZone: NgZone
+    protected ngZone: NgZone,
+    protected contextService: ContextService
   ) {
     super();
   }
@@ -408,8 +411,9 @@ export class FormModalComponent
    * Handles update data event.
    *
    * @param survey current survey
+   * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
    */
-  public async onUpdate(survey: any): Promise<void> {
+  public async onUpdate(survey: any, refreshWidgets = false): Promise<void> {
     await this.formHelpersService.uploadFiles(
       this.temporaryFilesStorage,
       this.form?.id
@@ -419,9 +423,9 @@ export class FormModalComponent
 
     if (this.data.recordId) {
       if (this.isMultiEdition) {
-        this.updateMultipleData(this.data.recordId, survey);
+        this.updateMultipleData(this.data.recordId, survey, refreshWidgets);
       } else {
-        this.updateData(this.data.recordId, survey);
+        this.updateData(this.data.recordId, survey, refreshWidgets);
       }
     } else {
       this.apollo
@@ -433,7 +437,7 @@ export class FormModalComponent
           },
         })
         .subscribe({
-          next: ({ errors, data }) => {
+          next: async ({ errors, data }) => {
             if (errors) {
               this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
                 error: true,
@@ -449,6 +453,14 @@ export class FormModalComponent
                 this.formHelpersService.deleteRecordDraft(
                   this.lastDraftRecord,
                   callback
+                );
+              }
+              if (refreshWidgets) {
+                this.contextService.setWidgets(
+                  await this.formHelpersService.checkResourceOnFilter(
+                    this.form?.resource?.id as string,
+                    this.contextService.filterStructure.getValue()
+                  )
                 );
               }
               this.ngZone.run(() => {
@@ -472,8 +484,9 @@ export class FormModalComponent
    *
    * @param id record id.
    * @param survey current survey.
+   * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
    */
-  public updateData(id: any, survey: any): void {
+  public updateData(id: any, survey: any, refreshWidgets = false): void {
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -484,8 +497,16 @@ export class FormModalComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
+        next: async ({ errors, data }) => {
           this.handleRecordMutationResponse({ data, errors }, 'editRecord');
+          if (refreshWidgets) {
+            this.contextService.setWidgets(
+              await this.formHelpersService.checkResourceOnFilter(
+                this.form?.resource?.id as string,
+                this.contextService.filterStructure.getValue()
+              )
+            );
+          }
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -498,8 +519,13 @@ export class FormModalComponent
    *
    * @param ids list of record ids.
    * @param survey current survey.
+   * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
    */
-  public updateMultipleData(ids: any, survey: any): void {
+  public updateMultipleData(
+    ids: any,
+    survey: any,
+    refreshWidgets = false
+  ): void {
     const recordData = cleanRecord(survey.parsedData ?? survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
@@ -511,7 +537,7 @@ export class FormModalComponent
         },
       })
       .subscribe({
-        next: ({ errors, data }) => {
+        next: async ({ errors, data }) => {
           if (this.lastDraftRecord) {
             const callback = () => {
               this.lastDraftRecord = undefined;
@@ -522,6 +548,14 @@ export class FormModalComponent
             );
           }
           this.handleRecordMutationResponse({ data, errors }, 'editRecords');
+          if (refreshWidgets) {
+            this.contextService.setWidgets(
+              await this.formHelpersService.checkResourceOnFilter(
+                this.form?.resource?.id as string,
+                this.contextService.filterStructure.getValue()
+              )
+            );
+          }
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
