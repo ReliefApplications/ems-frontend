@@ -10,12 +10,14 @@ import {
   Renderer2,
   ViewChild,
   ViewChildren,
+  ViewContainerRef,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { SidenavDirective } from './sidenav.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { filter } from 'rxjs/operators';
+import { UILayoutService } from './layout/layout.service';
 
 /**
  * UI Sidenav component
@@ -28,13 +30,18 @@ import { filter } from 'rxjs/operators';
 })
 export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   /** A list of SidenavDirective children. */
-  @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
+  @ContentChildren(SidenavDirective)
+  uiSidenavDirective!: QueryList<SidenavDirective>;
   /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
   /** A list of side navigation menus. */
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
   /** Reference to the content wrapper. */
   @ViewChild('contentWrapper') contentWrapper!: ElementRef;
+  /** Reference to the fixed wrapper actions. */
+  @ViewChild('fixedWrapperActions', { read: ViewContainerRef })
+  fixedWrapperActions?: ViewContainerRef;
+
   /** Array indicating whether each side navigation menu should be shown. */
   public showSidenav: boolean[] = [];
   /** Array indicating the mode of each side navigation menu. */
@@ -47,6 +54,10 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
   /** Array of classes for animations. */
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
+  /** Should display fixed wrapper at bottom */
+  fixedWrapperActionExist = false;
+  /** Timeout to transitions */
+  private transitionsTimeoutListener!: NodeJS.Timeout;
 
   /** @returns height of element */
   get height() {
@@ -73,15 +84,30 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * @param cdr ChangeDetectorRef
    * @param el elementRef
    * @param router Angular router
+   * @param layoutService Layout service that handles view injection of the fixed wrapper actions if exists
    */
   constructor(
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
     public el: ElementRef,
-    private router: Router
+    private router: Router,
+    private layoutService: UILayoutService
   ) {}
 
   ngAfterViewInit() {
+    this.layoutService.fixedWrapperActions$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((view) => {
+        if (view && this.fixedWrapperActions) {
+          this.fixedWrapperActionExist = true;
+          this.fixedWrapperActions.createEmbeddedView(view);
+        } else {
+          if (this.fixedWrapperActions) {
+            this.fixedWrapperActionExist = false;
+            this.fixedWrapperActions.clear();
+          }
+        }
+      });
     // Listen to router events to auto scroll to top of the view
     this.router.events
       .pipe(
@@ -97,7 +123,9 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       });
     // Initialize width and show sidenav value
     this.uiSidenavDirective.forEach((sidenavDirective, index) => {
-      this.showSidenav[index] = sidenavDirective.opened;
+      this.showSidenav[index] = sidenavDirective.visible
+        ? sidenavDirective.opened
+        : false;
       this.mode[index] = sidenavDirective.mode;
       this.position[index] = sidenavDirective.position;
       this.setRightSidenavHeight(
@@ -112,14 +140,17 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       sidenavDirective.openedChange
         .pipe(takeUntil(this.destroy$))
         .subscribe((opened: boolean) => {
-          this.showSidenav[index] = opened;
+          this.showSidenav[index] = sidenavDirective.visible ? opened : false;
           // Change the mode if it has changed since last opening/closure
           this.mode[index] = sidenavDirective.mode;
         });
     });
 
     //Then set the transitions
-    setTimeout(() => {
+    if (this.transitionsTimeoutListener) {
+      clearTimeout(this.transitionsTimeoutListener);
+    }
+    this.transitionsTimeoutListener = setTimeout(() => {
       this.setTransitionForContent();
     }, 0);
   }
@@ -143,6 +174,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       );
     }
   }
+
   /**
    * Resolve sidenav classes by given properties
    *
@@ -190,6 +222,9 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.transitionsTimeoutListener) {
+      clearTimeout(this.transitionsTimeoutListener);
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

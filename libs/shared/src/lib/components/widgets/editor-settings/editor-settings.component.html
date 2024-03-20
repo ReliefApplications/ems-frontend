@@ -1,4 +1,4 @@
-<ng-container *ngIf="tileForm">
+<ng-container *ngIf="widgetFormGroup">
   <ui-tabs class="grow" [vertical]="true">
     <!-- Main Parameters -->
     <ui-tab>
@@ -11,19 +11,24 @@
         <span>{{ 'components.widget.settings.editor.title' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <form [formGroup]="tileForm">
+        <form [formGroup]="widgetFormGroup">
           <div class="flex flex-col">
             <div uiFormFieldDirective>
               <label>{{ 'common.title' | translate }}</label>
               <input formControlName="title" type="string" />
             </div>
           </div>
-          <editor [init]="editor" formControlName="text"></editor>
+          <editor
+            *ngIf="!loading"
+            [init]="editor"
+            formControlName="text"
+          ></editor>
+          <ui-spinner *ngIf="loading"></ui-spinner>
         </form>
       </ng-template>
     </ui-tab>
     <!-- Preview -->
-    <ui-tab *ngIf="tileForm.value">
+    <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon icon="preview" [size]="24"></ui-icon>
         <span>{{
@@ -33,9 +38,10 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-editor
+          id="widgetPreview"
           #widgetContent
           class="flex-1 h-full w-full"
-          [settings]="tile.settings"
+          [settings]="widget.settings"
         >
         </shared-editor>
       </ng-template>
@@ -56,13 +62,23 @@
       </ng-container>
       <ng-template uiTabContent>
         <shared-record-selection-tab
-          *ngIf="tileForm"
-          [form]="tileForm"
-          [selectedResource]="selectedResource"
-          [selectedLayout]="selectedLayout"
-          (resourceChange)="selectedResource = $event; updateFields()"
-          (layoutChange)="selectedLayout = $event; updateFields()"
+          *ngIf="widgetFormGroup"
+          [form]="widgetFormGroup"
+          [referenceData]="referenceData"
+          [resource]="resource"
+          [layout]="layout"
         ></shared-record-selection-tab>
+      </ng-template>
+    </ui-tab>
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="list" [size]="24"></ui-icon>
+        <span>{{ 'common.aggregation.few' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-template-aggregations
+          [formGroup]="widgetFormGroup"
+        ></shared-template-aggregations>
       </ng-template>
     </ui-tab>
     <!-- Widget display options -->
@@ -78,29 +94,51 @@
       <ng-template uiTabContent>
         <div class="flex flex-col">
           <shared-display-settings
-            [formGroup]="tileForm"
+            [formGroup]="widgetFormGroup"
           ></shared-display-settings>
-          <ui-divider class="my-2"></ui-divider>
-          <div [formGroup]="tileForm">
-            <ui-toggle formControlName="showDataSourceLink">
-              <ng-container ngProjectAs="label">
-                {{
-                  'components.widget.settings.summaryCard.card.display.dataSource'
-                    | translate
-                }}
-                <ui-icon
-                  icon="info_outline"
-                  variant="grey"
-                  [size]="18"
-                  [uiTooltip]="
-                    'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+          <ng-container
+            *ngIf="widgetFormGroup.get('showDataSourceLink')?.enabled"
+          >
+            <ui-divider class="my-2"></ui-divider>
+            <div [formGroup]="widgetFormGroup">
+              <ui-toggle formControlName="showDataSourceLink">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'components.widget.settings.summaryCard.card.display.dataSource'
                       | translate
-                  "
-                ></ui-icon>
-              </ng-container>
-            </ui-toggle>
-          </div>
+                  }}
+                  <ui-icon
+                    class="ml-1 cursor-help self-center"
+                    icon="info_outline"
+                    variant="grey"
+                    [size]="18"
+                    [uiTooltip]="
+                      'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+                        | translate
+                    "
+                  ></ui-icon>
+                </ng-container>
+              </ui-toggle>
+            </div>
+          </ng-container>
         </div>
+      </ng-template>
+    </ui-tab>
+    <!-- Widget API options -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="settings_input_composite"
+          [size]="24"
+          uiTooltip="Automation"
+        ></ui-icon>
+        <span>Automation</span>
+      </ng-container>
+
+      <ng-template uiTabContent>
+        <shared-tab-widget-automations
+          [formArray]="widgetFormGroup.controls.automationRules"
+        ></shared-tab-widget-automations>
       </ng-template>
     </ui-tab>
   </ui-tabs>

@@ -13,6 +13,7 @@ export class QuestionDateTypeDisplayerModel extends Question {
   override getType() {
     return CustomPropertyGridComponentTypes.dateTypeDisplayer;
   }
+
   /**
    * inputType property of QuestionDateTypeDisplayerModel
    *

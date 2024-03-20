@@ -28,26 +28,60 @@
       </ui-select-menu>
     </div>
   </ng-container>
-  <div uiFormFieldDirective>
-    <label>{{ 'common.resource.one' | translate }}</label>
-    <ui-graphql-select
-      valueField="id"
-      textField="name"
-      [query]="resourcesQuery"
-      formControlName="resource"
-      [selectedElements]="[resource]"
-      (searchChange)="onResourceSearchChange($event)"
-      [filterable]="true"
+  <div class="flex-1 flex-col">
+    <!-- Reference data selection  -->
+    <div uiFormFieldDirective class="flex-1" *ngIf="!formGroup.value.resource">
+      <label>{{ 'models.referenceData.select' | translate }}</label>
+      <shared-reference-data-select
+        formControlName="referenceData"
+        [selectedElements]="[referenceData]"
+      ></shared-reference-data-select>
+      <ui-button
+        *ngIf="formGroup.value.referenceData"
+        uiSuffix
+        size="small"
+        [isIcon]="true"
+        (click)="clearFormField('referenceData', $event)"
+        icon="close"
+        variant="danger"
+        [uiTooltip]="'common.remove' | translate"
+      ></ui-button>
+    </div>
+    <ui-divider
+      class="max-w-xs m-auto"
+      [text]="'common.or' | translate"
+      *ngIf="!formGroup.value.resource && !formGroup.value.referenceData"
+    ></ui-divider>
+    <!-- Resource selection -->
+    <div
+      uiFormFieldDirective
+      class="flex-1"
+      *ngIf="!formGroup.value.referenceData"
     >
-    </ui-graphql-select>
+      <label>{{ 'models.resource.select' | translate }}</label>
+      <shared-resource-select
+        formControlName="resource"
+        [selectedElements]="[resource]"
+      ></shared-resource-select>
+      <ui-button
+        *ngIf="formGroup.value.resource"
+        uiSuffix
+        size="small"
+        [isIcon]="true"
+        (click)="clearFormField('resource', $event)"
+        icon="close"
+        variant="danger"
+        [uiTooltip]="'common.remove' | translate"
+      ></ui-button>
+    </div>
   </div>
-  <ng-container *ngIf="resource">
+  <ng-container *ngIf="resource || referenceData">
     <!-- Aggregation -->
     <ng-container *ngIf="formGroup.value.chart.aggregationId">
       <div *ngIf="aggregation" uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
-        <ui-select-menu [disabled]="true" [value]="aggregation.id">
-          <ui-select-option [value]="aggregation.id">{{
+        <ui-select-menu [disabled]="true" [value]="aggregation.name">
+          <ui-select-option [value]="aggregation.name">{{
             aggregation.name
           }}</ui-select-option>
         </ui-select-menu>
@@ -65,9 +99,16 @@
           [isIcon]="true"
           icon="close"
           (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
-          [uiTooltip]="'common.delete' | translate"
+          [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
+      <!-- GraphQL variable mapping for reference data graphql-->
+      <shared-graphql-variables-mapping
+        class="mb-1"
+        *ngIf="referenceData && referenceData.type === 'graphql'"
+        [referenceData]="referenceData"
+        [control]="$any(formGroup.get('referenceDataVariableMapping'))"
+      ></shared-graphql-variables-mapping>
       <!-- Series Mapping -->
       <h3 class="mb-1">{{ 'components.mapping.title' | translate }}</h3>
       <shared-series-mapping

@@ -2,8 +2,9 @@
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
+import './utils/leaflet-heatmap.js';
 import { Feature, Geometry } from 'geojson';
-import { get, isNil, set } from 'lodash';
+import { get, isNaN, isNil, maxBy, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -15,6 +16,7 @@ import {
   createCustomDivIcon,
 } from './utils/create-div-icon';
 import {
+  HeatMapOptions,
   LayerDatasource,
   LayerDefinition,
   LayerModel,
@@ -23,13 +25,18 @@ import {
 } from '../../../models/layer.model';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
-import { IconDisplayPipe } from '../../../pipes/icon-display/icon-display.pipe';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
-import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import centroid from '@turf/centroid';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import {
+  IconName,
+  icon as iconCreator,
+} from '@fortawesome/fontawesome-svg-core';
+import { getIconDefinition } from '@oort-front/ui';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -133,59 +140,88 @@ const featureSatisfiesFilter = (
 /** Objects represent a map layer */
 export class Layer implements LayerModel {
   // Services and classes for layer class
+  /** Map popup service */
   private popupService!: MapPopupService;
+  /** Map layer service */
   private layerService!: MapLayersService;
+  /** Dashboar automation service */
+  private dashboardAutomationService?: DashboardAutomationService;
+  /** Map renderer */
   private renderer!: Renderer2;
 
-  // Map layer
+  /** Map layer */
   private layer: L.Layer | null = null;
 
   // Global properties for the layer
+  /** Layer id */
   public id!: string;
+  /** Layer name */
   public name!: string;
+  /** Layer type */
   public type!: LayerType;
 
   // Visibility
+  /** Layer visibility */
   public visibility!: boolean;
+  /** Layer opacity */
   public opacity!: number;
 
   // Layer Definition
+  /** Layer definition */
   public layerDefinition?: LayerDefinition;
 
-  // Popup info
+  /** Popup info */
   public popupInfo: PopupInfo = {
     title: '',
     description: '',
     popupElements: [],
   };
+  /** Created at */
   public createdAt!: Date;
+  /** Updated at */
   public updatedAt!: Date;
 
   // If the layer is a group, the sublayers array has the ids of the layers
+  /** Sublayers */
   public sublayers: string[] = [];
 
-  public _sublayers: Layer[] = [];
+  /** Sublayers */
+  public _sublayers: string[] = [];
 
+  /** Sublayers loaded */
   public sublayersLoaded = new BehaviorSubject(false);
 
-  // Layer datasource
+  /** Layer datasource */
   public datasource?: LayerDatasource;
+  /** Layer geojson */
   public geojson: GeoJSON | null = null;
   // private properties: any | null = null;
+  /** Layer filter */
   private filter: LayerFilter | null = null;
+  /** Layer context filters  */
+  public contextFilters!: string;
   // private styling: any | null = null;
   // private label: LayerLabel | null = null;
 
-  // Layer fields, extracted from geojson
+  /** Layer fields, extracted from geojson */
   private fields: { [key in string]: FieldTypes } = {};
 
   // Declare variables to store the event listeners
+  /** Event listener for zoom event */
   private zoomListener!: L.LeafletEventHandlerFn;
+  /** Event listener for automation rules events from map */
+  private rulesListener!: L.LeafletEventHandlerFn;
+  /** Array of listeners */
   private listeners: any[] = [];
+  /** Should refresh layer */
+  public shouldRefresh = false;
 
-  /** @returns the children of the current layer */
-  public async getChildren() {
-    await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
+  /**
+   * Get layer children. Await for sub-layers to be loaded first.
+   *
+   * @returns Children of the current layer
+   */
+  public getChildren() {
     return this._sublayers;
   }
 
@@ -239,8 +275,16 @@ export class Layer implements LayerModel {
     if (options) {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
+      // If no dashboard automation service is provided(it's optional, map settings does not use it), cannot recognize the token and breaks
+      try {
+        this.dashboardAutomationService = injector.get(
+          DashboardAutomationService
+        );
+      } catch (error) {
+        this.dashboardAutomationService =
+          null as unknown as DashboardAutomationService;
+      }
       this.renderer = injector.get(Renderer2);
-      console.log(options);
       this.setConfig(options);
     } else {
       throw 'No settings provided';
@@ -265,6 +309,7 @@ export class Layer implements LayerModel {
       this.datasource = get(options, 'datasource', null);
       this.geojson = get(options, 'geojson', EMPTY_FEATURE_COLLECTION);
       // this.properties = options.properties || DEFAULT_LAYER_PROPERTIES;
+      this.contextFilters = get(options, 'contextFilters', null);
       this.filter = get(options, 'filter', DEFAULT_LAYER_FILTER);
       // this.styling = options.styling || [];
       // this.label = options.labels || null;
@@ -273,12 +318,7 @@ export class Layer implements LayerModel {
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
-      this._sublayers = options.sublayers?.length
-        ? await this.layerService.createLayersFromIds(
-            options.sublayers,
-            this.injector
-          )
-        : [];
+      this._sublayers = options.sublayers?.length ? options.sublayers : [];
 
       this.sublayersLoaded.next(true);
     }
@@ -416,7 +456,7 @@ export class Layer implements LayerModel {
       []
     );
 
-    const uniqueValueField = get(
+    const valueField = get(
       this.layerDefinition,
       'drawingInfo.renderer.field1',
       ''
@@ -433,11 +473,7 @@ export class Layer implements LayerModel {
       ...(geometryType === 'Point' && {
         pointToLayer: (feature, latlng) => {
           if (rendererType === 'uniqueValue') {
-            const fieldValue = get(
-              feature,
-              `properties.${uniqueValueField}`,
-              null
-            );
+            const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
@@ -464,11 +500,7 @@ export class Layer implements LayerModel {
       ...(geometryType === 'Polygon' && {
         style: (feature) => {
           if (rendererType === 'uniqueValue') {
-            const fieldValue = get(
-              feature,
-              `properties.${uniqueValueField}`,
-              null
-            );
+            const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
@@ -525,7 +557,11 @@ export class Layer implements LayerModel {
 
     switch (this.type) {
       case 'GroupLayer':
-        const sublayers = await this.getChildren();
+        const ChildrenIds = this.getChildren();
+        const layerPromises = ChildrenIds.map((layer) => {
+          return this.layerService.createLayersFromId(layer, this.injector);
+        });
+        const sublayers = await Promise.all(layerPromises);
 
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
@@ -564,21 +600,43 @@ export class Layer implements LayerModel {
               );
             }
             const heatArray: any[] = [];
-
             data.features.forEach((feature: any) => {
+              // Format intensity to the required value for heat map point
+              // {number}.{decimal}
+              const intensity = (feature: any) => {
+                return Number(
+                  Number.parseFloat(
+                    get(feature, `properties.${valueField}`, 0).toFixed(1)
+                  )
+                );
+              };
               switch (get(feature, 'type')) {
                 case 'Point': {
-                  heatArray.push([
-                    get(feature, 'coordinates[1]'), // lat
-                    get(feature, 'coordinates[0]'), // long
-                  ]);
+                  const lat = parseFloat(get(feature, 'coordinates[1]'));
+                  const long = parseFloat(get(feature, 'coordinates[0]'));
+                  if (!isNaN(lat) && !isNaN(long)) {
+                    if (valueField) {
+                      heatArray.push([lat, long, intensity(feature)]);
+                    } else {
+                      heatArray.push([lat, long]);
+                    }
+                  }
                   break;
                 }
                 case 'Feature': {
-                  heatArray.push([
-                    get(feature, 'geometry.coordinates[1]'), // lat
-                    get(feature, 'geometry.coordinates[0]'), // long
-                  ]);
+                  const lat = parseFloat(
+                    get(feature, 'geometry.coordinates[1]')
+                  );
+                  const long = parseFloat(
+                    get(feature, 'geometry.coordinates[0]')
+                  );
+                  if (!isNaN(lat) && !isNaN(long)) {
+                    if (valueField) {
+                      heatArray.push([lat, long, intensity(feature)]);
+                    } else {
+                      heatArray.push([lat, long]);
+                    }
+                  }
                   break;
                 }
                 default: {
@@ -593,7 +651,8 @@ export class Layer implements LayerModel {
               DEFAULT_HEATMAP.gradient
             );
 
-            const heatmapOptions: L.HeatMapOptions = {
+            const heatmapOptions: HeatMapOptions = {
+              opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
                 'drawingInfo.renderer.blur',
@@ -614,6 +673,9 @@ export class Layer implements LayerModel {
                 set(g, stop.ratio, stop.color);
                 return g;
               }, {}),
+              ...(valueField && {
+                max: maxBy(heatArray, 2) ? maxBy(heatArray, 2)[2] : 1,
+              }),
             };
 
             const layer = L.heatLayer(heatArray, heatmapOptions);
@@ -807,6 +869,45 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
+    if (this.rulesListener) {
+      layer.off('click', this.rulesListener);
+      layer.off('clusterclick', this.rulesListener);
+    }
+    this.rulesListener = (e) => {
+      let event: any = e;
+      if (
+        get(this.layerDefinition, 'featureReduction.type') === 'cluster' &&
+        // If it's actually one of the features within the cluster, then take that one
+        e.propagatedFrom.feature
+      ) {
+        const latitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[1]'
+        );
+        const longitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[0]'
+        );
+        event = { latlng: { lat: latitude, lng: longitude } };
+      }
+      for (const rule of (map as any)._rules) {
+        this.dashboardAutomationService?.executeAutomationRule(rule, event);
+      }
+    };
+
+    if (map.hasEventListeners('click') && (map as any)._rules) {
+      layer.on('click', this.rulesListener);
+      layer.on('clusterclick', this.rulesListener);
+    }
+    map.eachLayer((l) => {
+      if (
+        (l as any).id === this.id &&
+        (l as any)._leaflet_id !== (layer as any)._leaflet_id
+      ) {
+        (l as any).deleted = true;
+        (l as L.Layer).remove();
+      }
+    });
     // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
     if (!isNil((layer as any).shouldDisplay)) {
       this.visibility = (layer as any).shouldDisplay;
@@ -885,6 +986,10 @@ export class Layer implements LayerModel {
       // Ensure that we do not subscribe multiple times to zoom event
       if (this.zoomListener) {
         map.off('zoomend', this.zoomListener);
+      }
+      if (this.rulesListener) {
+        layer.off('click', this.rulesListener);
+        layer.off('clusterclick', this.rulesListener);
       }
     }
     // map.off('zoomend', this.zoomListener);
@@ -989,7 +1094,6 @@ export class Layer implements LayerModel {
                   24
                 ),
               };
-              const pipe = new IconDisplayPipe();
               // Cluster legend
               const clusterSymbol: LayerSymbol = get(
                 this.layerDefinition,
@@ -997,9 +1101,18 @@ export class Layer implements LayerModel {
                 symbol
               );
               html += `<div>${this.name} clusters</div>`;
-              html += `<i style="color: ${
-                clusterSymbol.color
-              }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
+              const iconDef = getIconDefinition('circle');
+              const i = iconCreator(iconDef, {
+                styles: {
+                  height: '1rem',
+                  width: '1rem',
+                  color: clusterSymbol.color,
+                  'line-height': '1rem',
+                  'font-size': '1rem',
+                  'padding-left': '.5rem',
+                },
+              });
+              html += i.html[0];
               break;
             }
             default: {
@@ -1036,11 +1149,11 @@ export class Layer implements LayerModel {
     label?: string
   ): string {
     if (symbol) {
-      const pipe = new IconDisplayPipe();
+      let svg: string;
       switch (type) {
         case 'Polygon': {
           // We avoid stroke width to be too important
-          const svgTemplate = `<svg 
+          svg = `<svg 
                 
                   width="16" 
                   height="16"
@@ -1054,19 +1167,25 @@ export class Layer implements LayerModel {
                     height="16" />
                     </g>
                 </svg>`;
-          return `<span class="flex gap-2 items-center">${svgTemplate}${
-            label || ''
-          }</span>`;
+          break;
         }
         default:
         case 'Point': {
-          return `<span class="flex gap-2 items-center"><i style="color: ${
-            symbol.color
-          }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
-            label || ''
-          }</span>`;
+          const iconDef = getIconDefinition(symbol.style as IconName);
+          const i = iconCreator(iconDef, {
+            styles: {
+              height: '1rem',
+              width: '1rem',
+              color: symbol.color,
+              'line-height': '1rem',
+              'font-size': '1rem',
+            },
+          });
+          svg = i.node[0].outerHTML;
+          break;
         }
       }
+      return `<span class="flex gap-2 items-start">${svg}${label || ''}</span>`;
     } else {
       return '';
     }
@@ -1081,13 +1200,23 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
-    const children = await this.getChildren();
+    if (this.layer && this.rulesListener) {
+      this.layer.off('click', this.rulesListener);
+      this.layer.off('clusterclick', this.rulesListener);
+    }
+    const children = this.getChildren();
     if (children.length) {
-      children.forEach((cl) => {
-        cl.removeAllListeners(map);
+      const removeAllListenersLayerPromises = children.map((layer) => {
+        return this.layerService
+          .createLayersFromId(layer, this.injector)
+          .then((layer) => {
+            return layer.removeAllListeners(map);
+          });
       });
+      await Promise.all(removeAllListenersLayerPromises);
     }
     this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
+    this.rulesListener = null as unknown as L.LeafletEventHandlerFn;
     this.listeners.forEach((listener) => {
       listener();
     });

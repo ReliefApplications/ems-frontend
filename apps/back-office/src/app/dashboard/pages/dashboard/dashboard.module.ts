@@ -3,20 +3,16 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
-  AccessModule,
   RecordHistoryModule,
   WidgetGridModule,
   SkeletonModule,
-  SearchMenuModule,
   EditableTextModule,
   FullScreenModule,
   DashboardFilterModule,
   ButtonActionModule,
 } from '@oort-front/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MenuModule,
@@ -27,6 +23,7 @@ import {
   AlertModule,
   DialogModule,
   GraphQLSelectModule,
+  IconModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -38,7 +35,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    AccessModule,
     WidgetGridModule,
     IconModule,
     DialogModule,
@@ -46,8 +42,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     ClipboardModule,
     RecordHistoryModule,
     TranslateModule,
-    OverlayModule,
-    SearchMenuModule,
     SkeletonModule,
     EditableTextModule,
     FullScreenModule,

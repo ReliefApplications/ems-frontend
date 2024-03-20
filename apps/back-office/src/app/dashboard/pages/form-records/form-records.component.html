@@ -66,7 +66,7 @@
       >
         <app-upload-menu
           (close)="showUpload = false"
-          (upload)="onFileChange($event)"
+          (upload)="uploadFileData($event)"
           (download)="onDownloadTemplate()"
         ></app-upload-menu>
       </ng-template>
@@ -108,14 +108,14 @@
                   icon="more_vert"
                   [uiMenuTriggerFor]="menu"
                   (click)="$event.stopPropagation()"
-                  [uiTooltip]="'common.options' | translate"
+                  [uiTooltip]="'common.actions' | translate"
                 >
                 </ui-button>
                 <ui-menu #menu>
                   <button
                     uiMenuItem
                     color="warn"
-                    (click)="onViewHistory(element.id)"
+                    (click)="onViewHistory(element)"
                   >
                     <ui-icon icon="library_books" variant="grey"></ui-icon>
                     {{ 'common.history' | translate }}
@@ -159,8 +159,9 @@
       </div>
     </div>
     <ui-paginator
-      [disabled]="loadingMore"
+      [disabled]="loadingMore || updating"
       [pageSize]="pageInfo.pageSize"
+      [pageIndex]="pageInfo.pageIndex"
       [totalItems]="pageInfo.length"
       [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
       (pageChange)="onPage($event)"

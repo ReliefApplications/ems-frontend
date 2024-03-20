@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   component: PieDonutChartComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [PieDonutChartModule, BrowserAnimationsModule],
@@ -37,7 +38,7 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: StoryFn<sharedPieDonutChartComponent> = (args) => ({
+const TEMPLATE: StoryFn<PieDonutChartComponent> = (args) => ({
   props: {
     ...args,
   },

@@ -2,8 +2,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
-import { surveyLocalization } from 'survey-core';
-import localForage from 'localforage';
+import { SurveyModel, surveyLocalization } from 'survey-core';
+import { Question } from '../types';
 
 /**
  * Build the search button for resource and resources components
@@ -14,22 +14,25 @@ import localForage from 'localforage';
  * @param dialog The Dialog service
  * @param temporaryRecords The form used to save and keep the temporary records updated
  * @param document Document
+ * @param ngZone Angular Service to execute code inside Angular environment
  * @returns The button DOM element
  */
 export const buildSearchButton = (
-  question: any,
+  question: Question,
   fieldsSettingsForm: any,
   multiselect: boolean,
   dialog: Dialog,
   temporaryRecords: UntypedFormControl,
-  document: Document
+  document: Document,
+  ngZone: NgZone
 ): any => {
   const searchButton = document.createElement('button');
+  searchButton.id = 'resourceSearchButton';
   searchButton.innerText = surveyLocalization.getString(
     'oort:search',
-    question.survey.locale
+    (question.survey as SurveyModel).locale
   );
-  searchButton.style.marginRight = '8px';
+  searchButton.className = 'sd-btn !px-3 !py-1';
   if (fieldsSettingsForm) {
     temporaryRecords.valueChanges.subscribe((res: any) => {
       if (res) {
@@ -40,33 +43,35 @@ export const buildSearchButton = (
       const { ResourceGridModalComponent } = await import(
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
       );
-      const dialogRef = dialog.open(ResourceGridModalComponent, {
-        data: {
-          multiselect,
-          gridSettings: { ...fieldsSettingsForm },
-          selectedRows: Array.isArray(question.value)
-            ? question.value
-            : question.value
-            ? [question.value]
-            : [],
-          selectable: true,
-        },
-        panelClass: 'closable-dialog',
-      });
-      dialogRef.closed.subscribe((rows: any) => {
-        if (!rows) {
-          return;
-        }
-        if (rows.length > 0) {
-          question.value = multiselect ? rows : rows[0];
-        } else {
-          question.value = null;
-        }
+      ngZone.run(() => {
+        const dialogRef = dialog.open(ResourceGridModalComponent, {
+          data: {
+            multiselect,
+            gridSettings: { ...fieldsSettingsForm },
+            selectedRows: Array.isArray(question.value)
+              ? question.value
+              : question.value
+              ? [question.value]
+              : [],
+            selectable: true,
+          },
+          panelClass: 'closable-dialog',
+        });
+        dialogRef.closed.subscribe((rows: any) => {
+          if (!rows) {
+            return;
+          }
+          if (rows.length > 0) {
+            question.value = multiselect ? rows : rows[0];
+          } else {
+            question.value = null;
+          }
+        });
       });
     };
   }
   searchButton.style.display =
-    !question.isReadOnly && question.canSearch ? '' : 'none';
+    !question.isReadOnly && question.canSearch ? 'block' : 'none';
   return searchButton;
 };
 
@@ -81,7 +86,7 @@ export const buildSearchButton = (
  * @returns The button DOM element
  */
 export const buildAddButton = (
-  question: any,
+  question: Question,
   multiselect: boolean,
   dialog: Dialog,
   ngZone: NgZone,
@@ -90,14 +95,15 @@ export const buildAddButton = (
   const addButton = document.createElement('button');
   addButton.innerText = surveyLocalization.getString(
     'oort:addNewRecord',
-    question.survey.locale
+    (question.survey as SurveyModel).locale
   );
+  addButton.className = 'sd-btn !px-3 !py-1';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
-      ngZone.run(async () => {
-        const { ResourceModalComponent } = await import(
-          '../../components/resource-modal/resource-modal.component'
-        );
+      const { ResourceModalComponent } = await import(
+        '../../components/resource-modal/resource-modal.component'
+      );
+      ngZone.run(() => {
         const dialogRef = dialog.open(ResourceModalComponent, {
           disableClose: true,
           data: {
@@ -105,7 +111,7 @@ export const buildAddButton = (
             locale: question.resource.value,
             askForConfirm: false,
             ...(question.prefillWithCurrentRecord && {
-              prefillData: question.survey.data,
+              prefillData: (question.survey as SurveyModel).data,
             }),
           },
           height: '98%',
@@ -115,6 +121,11 @@ export const buildAddButton = (
         dialogRef.closed.subscribe((result: any) => {
           if (result) {
             const { data } = result;
+            question.template = result.template;
+            question.draftData = {
+              ...question.draftData,
+              [data.id]: data.data,
+            };
             // TODO: call reload method
             // if (question.displayAsGrid && gridComponent) {
             //   gridComponent.availableRecords.push({
@@ -182,50 +193,26 @@ export const processNewCreatedRecords = (
   const temporaryRecords: any[] = [];
   if (multiselect) {
     question.newCreatedRecords?.forEach((recordId: string) => {
-      const promise = new Promise<void>((resolve, reject) => {
-        localForage
-          .getItem(recordId)
-          .then((data: any) => {
-            if (data != null) {
-              // We ensure to make it only if such a record is found
-              const parsedData = JSON.parse(data);
-              temporaryRecords.push({
-                id: recordId,
-                template: parsedData.template,
-                ...parsedData.data,
-                isTemporary: true,
-              });
-            }
-            resolve();
-          })
-          .catch((error: any) => {
-            console.error(error); // Handle any errors that occur while getting the item
-            reject(error);
-          });
+      const promise = new Promise<void>((resolve) => {
+        temporaryRecords.push({
+          id: recordId,
+          template: question.template,
+          ...question.draftData[recordId],
+          isTemporary: true,
+        });
+        resolve();
       });
       promises.push(promise);
     });
   } else {
-    new Promise<void>((resolve, reject) => {
-      localForage
-        .getItem(question.newCreatedRecords)
-        .then((data: any) => {
-          if (data != null) {
-            // We ensure to make it only if such a record is found
-            const parsedData = JSON.parse(data);
-            temporaryRecords.push({
-              id: question.newCreatedRecords,
-              template: parsedData.template,
-              ...parsedData.data,
-              isTemporary: true,
-            });
-          }
-          resolve();
-        })
-        .catch((error: any) => {
-          console.error(error); // Handle any errors that occur while getting the item
-          reject(error);
-        });
+    new Promise<void>((resolve) => {
+      temporaryRecords.push({
+        id: question.newCreatedRecords,
+        template: question.template,
+        ...question.draftData[question.newCreatedRecords],
+        isTemporary: true,
+      });
+      resolve();
     });
   }
 
@@ -243,8 +230,10 @@ export const processNewCreatedRecords = (
               field: 'ids',
               operator: 'eq',
               value:
+                // Was used exclude the temporary records by excluding id in UUID format
+                // But we not longer use UUID or local storage for the temporary records
                 question.value.filter((id: string) => !uuidRegExpr.test(id)) ||
-                [], //We exclude the temporary records by excluding id in UUID format
+                [],
             },
           ],
         }),
@@ -253,3 +242,19 @@ export const processNewCreatedRecords = (
   };
   return settings;
 };
+
+/******** SHARED METHODS FOR RESOURCE AND RESOURCES *********/
+
+/**
+ * Build up an element wrapper for questions actions buttons
+ *
+ * @returns Element wrapper containing the actions buttons
+ */
+export function setUpActionsButtonWrapper() {
+  const actionsButtons = document.createElement('div');
+  actionsButtons.id = 'actionsButtons';
+  actionsButtons.style.display = 'flex';
+  actionsButtons.style.gap = '8px';
+  actionsButtons.style.marginBottom = '0.5em';
+  return actionsButtons;
+}

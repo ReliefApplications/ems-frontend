@@ -15,6 +15,7 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Shared form builder service.
@@ -25,7 +26,8 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 })
 export class FormBuilderService {
   /**
-   * Constructor of the service
+   * Shared form builder service.
+   * Only used to add on complete expression to the survey.
    *
    * @param referenceDataService Reference data service
    * @param translate Translation service
@@ -33,6 +35,7 @@ export class FormBuilderService {
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
    * @param formHelpersService Shared form helper service.
+   * @param http Http client
    */
   constructor(
     private referenceDataService: ReferenceDataService,
@@ -40,7 +43,8 @@ export class FormBuilderService {
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private restService: RestService,
-    private formHelpersService: FormHelpersService
+    private formHelpersService: FormHelpersService,
+    private http: HttpClient
   ) {}
 
   /**
@@ -61,7 +65,7 @@ export class FormBuilderService {
     const survey = new Model(structure);
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService, this.http)
     );
     //Add tooltips to questions if exist
     survey.onAfterRenderQuestion.add(
@@ -160,9 +164,6 @@ export class FormBuilderService {
     survey.onDownloadFile.add((_, options: any) =>
       this.onDownloadFile(options)
     );
-    survey.onUpdateQuestionCssClasses.add((_, options: any) =>
-      this.onSetCustomCss(options)
-    );
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
@@ -252,16 +253,6 @@ export class FormBuilderService {
       };
       xhr.send();
     }
-  }
-
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += 'shared-qst-content';
   }
 
   /**

@@ -34,28 +34,32 @@ type StepInterpolation = 'before' | 'after' | 'middle';
   styleUrls: ['./line-chart.component.scss'],
 })
 export class LineChartComponent implements OnChanges {
+  /** Array of plugins. */
   public plugins: Plugin[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
     whiteBackgroundPlugin,
   ];
+  /** Boolean to track the display of value labels. */
   private showValueLabels = false;
+  /** Variable to track the minimum value. */
   private min = Infinity;
+  /** Variable to track the maximum value. */
   private max = -Infinity;
-
+  /** Input decorator for title. */
   @Input() title: ChartTitle | undefined;
-
+  /** Input decorator for legend. */
   @Input() legend: ChartLegend | undefined;
-
+  /** Input decorator for series.  */
   @Input() series: any[] = [];
-
+  /** Input decorator for options. */
   @Input() options: any = {
     palette: DEFAULT_PALETTE,
     axes: null,
   };
-
+  /** ViewChild decorator for chart. */
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
+  /** Options for the chart configuration. */
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -69,12 +73,14 @@ export class LineChartComponent implements OnChanges {
       },
     },
   };
-
+  /** Type of the chart. */
   public chartType: ChartType = 'line';
+  /** Data for the chart. */
   public chartData: ChartData<'line'> = {
     datasets: [],
   };
 
+  /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.showValueLabels = get(this.options, 'labels.showValue', false);
     const series = get(this.options, 'series', []);
@@ -159,7 +165,7 @@ export class LineChartComponent implements OnChanges {
     const titleColor = get(this.title, 'color', undefined);
     const titleVisible = titleText !== '';
 
-    // log min an max
+    // Configure chartjs options based on widget settings
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
@@ -177,8 +183,11 @@ export class LineChartComponent implements OnChanges {
           grid: {
             display: get(this.options, 'grid.y.display', true),
           },
-          min: this.min - 0.1 * this.min,
-          max: this.max + 0.1 * this.max,
+          min: get(this.options, 'axes.y.min', undefined),
+          max: get(this.options, 'axes.y.max', undefined),
+          ticks: {
+            stepSize: get(this.options, 'axes.y.stepSize', undefined),
+          },
         },
       },
       plugins: {

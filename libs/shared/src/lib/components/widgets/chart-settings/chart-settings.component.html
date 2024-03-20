@@ -1,8 +1,4 @@
-<ui-tabs
-  class="grow"
-  [vertical]="true"
-  (selectedIndexChange)="handleTabChange($event)"
->
+<ui-tabs class="grow overflow-x-hidden" [vertical]="true">
   <!-- Main Parameters -->
   <ui-tab>
     <ng-container ngProjectAs="label">
@@ -14,7 +10,10 @@
       <span>{{ 'common.general' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-main [formGroup]="formGroup" [type]="type"></shared-tab-main>
+      <shared-tab-main
+        [formGroup]="widgetFormGroup"
+        [type]="type"
+      ></shared-tab-main>
     </ng-template>
   </ui-tab>
   <!-- Display options -->
@@ -29,7 +28,7 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-display
-        [formGroup]="formGroup"
+        [formGroup]="widgetFormGroup"
         [type]="type"
       ></shared-tab-display>
     </ng-template>
@@ -42,8 +41,20 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-contextual-filters-settings
-        [form]="formGroup"
+        [form]="widgetFormGroup"
       ></shared-contextual-filters-settings>
+    </ng-template>
+  </ui-tab>
+  <!-- Chart filters tab -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_alt" [size]="24"></ui-icon>
+      <span>{{
+        'components.widget.settings.chart.filters.title' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-filters [formGroup]="widgetFormGroup"></shared-tab-filters>
     </ng-template>
   </ui-tab>
   <!-- Widget display options -->
@@ -58,7 +69,8 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-display-settings
-        [formGroup]="formGroup"
+        [formGroup]="widgetFormGroup"
+        [showHideOption]="true"
       ></shared-display-settings>
     </ng-template>
   </ui-tab>

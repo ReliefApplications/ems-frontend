@@ -4,7 +4,7 @@ import { RecordSummaryComponent } from './record-summary.component';
 
 describe('RecordSummaryComponent', () => {
   let component: RecordSummaryComponent;
-  let fixture: ComponentFixture<sharedRecordSummaryComponent>;
+  let fixture: ComponentFixture<RecordSummaryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

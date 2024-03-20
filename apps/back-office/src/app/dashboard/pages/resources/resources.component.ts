@@ -9,13 +9,11 @@ import {
   ConfirmService,
   UnsubscribeComponent,
   ResourcesQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   TableSort,
@@ -40,24 +38,54 @@ const DEFAULT_PAGE_SIZE = 10;
 })
 export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
+  /**
+   * Loading state
+   */
   public loading = true;
+  /**
+   * Filter loading state
+   */
   public filterLoading = false;
+  /**
+   * Resources query
+   */
   private resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  /**
+   * Columns to display
+   */
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
+  /**
+   * Cached resources
+   */
   public cachedResources: Resource[] = [];
+  /**
+   * Resources list
+   */
   public resources = new Array<Resource>();
 
   // === SORTING ===
+  /**
+   * Sorting state
+   */
   public updating = false;
+  /**
+   * Sort state
+   */
   private sort: TableSort = { active: '', sortDirection: '' };
 
   // === FILTERING ===
+  /**
+   * Filter state
+   */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
 
   // === PAGINATION ===
+  /**
+   * Page info
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,

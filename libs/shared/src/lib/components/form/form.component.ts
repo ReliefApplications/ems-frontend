@@ -21,14 +21,13 @@ import {
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
-import { LayoutService } from '../../services/layout/layout.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
-import { SnackbarService } from '@oort-front/ui';
-import { cloneDeep, isNil } from 'lodash';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /**
  * This component is used to display forms
@@ -36,34 +35,33 @@ import { cloneDeep, isNil } from 'lodash';
 @Component({
   selector: 'shared-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form.component.scss'],
 })
 export class FormComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** Form input */
   @Input() form!: Form;
+  /** Record input, optional */
   @Input() record?: RecordModel;
+  /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
   }> = new EventEmitter();
-
-  // === SURVEYJS ===
+  /** Survey model */
   public survey!: SurveyModel;
+  /** Indicates whether the search is active */
   public surveyActive = true;
+  /** Temporary storage for files */
   public temporaryFilesStorage: Record<string, Array<File>> = {};
-
+  /** Reference to the form container element */
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  // === MODIFIED AT ===
+  /** Date when the form was last modified */
   public modifiedAt: Date | null = null;
-
-  // === LOCALE STORAGE ===
-  private storageId = '';
-  public storageDate?: Date;
+  /** indicates whether the data is from the cache */
   public isFromCacheData = false;
-
   /** Selected page index */
   public selectedPageIndex: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
@@ -73,6 +71,17 @@ export class FormComponent
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
   public pages$ = this.pages.asObservable();
+  /** The id of the last draft record that was loaded */
+  public lastDraftRecord?: string;
+  /** Disables the save as draft button */
+  public disableSaveAsDraft = false;
+  /** Timeout for reset survey */
+  private resetTimeoutListener!: NodeJS.Timeout;
+  /** As we save the draft record in the db, the local storage is no longer used */
+  /** ID for local storage */
+  // private storageId = '';
+  /** Date of local storage */
+  // public storageDate?: Date;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -82,7 +91,7 @@ export class FormComponent
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param authService This is the service that handles authentication.
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
@@ -92,14 +101,15 @@ export class FormComponent
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private authService: AuthService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
-    private formHelpersService: FormHelpersService,
+    public formHelpersService: FormHelpersService,
     private translate: TranslateService
   ) {
     super();
   }
 
+  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
     addCustomFunctions(this.authService, this.record);
 
@@ -127,7 +137,10 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onValueChanged.add(this.valueChange.bind(this));
+    this.survey.onValueChanged.add(() => {
+      // Allow user to save as draft
+      this.disableSaveAsDraft = false;
+    });
     this.survey.onComplete.add(this.onComplete);
 
     // Unset readOnly fields if it's the record creation
@@ -139,25 +152,26 @@ export class FormComponent
       });
     }
     // Fetch cached data from local storage
-    this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
-    const storedData = localStorage.getItem(this.storageId);
-    const cachedData = storedData ? JSON.parse(storedData).data : null;
-    this.storageDate = storedData
-      ? new Date(JSON.parse(storedData).date)
-      : undefined;
-    this.isFromCacheData = !!cachedData;
-    if (this.isFromCacheData) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.loadedFromCache', {
-          type: this.translate.instant('common.record.one'),
-        })
-      );
-    }
+    //this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
+    //const storedData = localStorage.getItem(this.storageId);
+    //const cachedData = storedData ? JSON.parse(storedData).data : null;
+    //this.storageDate = storedData
+    //? new Date(JSON.parse(storedData).date)
+    //: undefined;
+    // this.isFromCacheData = !!cachedData;
+    //if (this.isFromCacheData) {
+    //this.snackBar.openSnackBar(
+    //this.translate.instant('common.notifications.loadedFromCache', {
+    //type: this.translate.instant('common.record.one'),
+    //})
+    //);
+    //}
 
-    if (cachedData) {
-      this.survey.data = cachedData;
-      // this.setUserVariables();
-    } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+    //if (cachedData) {
+    //this.survey.data = cachedData;
+    // this.setUserVariables();
+    //}
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
     } else if (this.record && this.record.data) {
@@ -199,26 +213,12 @@ export class FormComponent
     this.survey.fromJSON(this.survey.toJSON());
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
-    setTimeout(() => (this.surveyActive = true), 100);
-  }
-
-  /**
-   * Handles the value change event when the user completes the survey
-   */
-  public valueChange(): void {
-    // Cache the survey data, but remove the files from it
-    // to avoid hitting the local storage limit
-    const data = cloneDeep(this.survey.data);
-    Object.keys(data).forEach((key) => {
-      const question = this.survey.getQuestionByName(key);
-      if (question && question.getType() === 'file') {
-        delete data[key];
-      }
-    });
-
-    localStorage.setItem(
-      this.storageId,
-      JSON.stringify({ data, date: new Date() })
+    if (this.resetTimeoutListener) {
+      clearTimeout(this.resetTimeoutListener);
+    }
+    this.resetTimeoutListener = setTimeout(
+      () => (this.surveyActive = true),
+      100
     );
   }
 
@@ -237,6 +237,24 @@ export class FormComponent
   }
 
   /**
+   * Saves the current data as a draft record
+   */
+  public saveAsDraft(): void {
+    const callback = (details: any) => {
+      this.surveyActive = true;
+      this.lastDraftRecord = details.id;
+      // Updates parent component
+      this.save.emit(details.save);
+    };
+    this.formHelpersService.saveAsDraft(
+      this.survey,
+      this.form.id as string,
+      this.lastDraftRecord,
+      callback
+    );
+  }
+
+  /**
    * Creates the record when it is complete, or update it if provided.
    */
   public onComplete = async () => {
@@ -252,9 +270,7 @@ export class FormComponent
     );
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
-    // await Promise.allSettled(promises);
-    await this.formHelpersService.createCachedRecords(this.survey);
-    // this.survey.data = surveyData;
+    await this.formHelpersService.createTemporaryRecords(this.survey);
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
@@ -286,7 +302,16 @@ export class FormComponent
         this.surveyActive = true;
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
-        localStorage.removeItem(this.storageId);
+        if (this.lastDraftRecord) {
+          const callback = () => {
+            this.lastDraftRecord = undefined;
+          };
+          this.formHelpersService.deleteRecordDraft(
+            this.lastDraftRecord,
+            callback
+          );
+        }
+        // localStorage.removeItem(this.storageId);
         if (data.editRecord || data.addRecord.form.uniqueRecord) {
           this.survey.clear(false, false);
           if (data.addRecord) {
@@ -332,10 +357,6 @@ export class FormComponent
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
     );
-    localStorage.removeItem(this.storageId);
-    this.formHelpersService.cleanCachedRecords(this.survey);
-    this.isFromCacheData = false;
-    this.storageDate = undefined;
   }
 
   /**
@@ -349,9 +370,20 @@ export class FormComponent
           id: this.record.id,
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
+          resizable: true,
         },
       });
     }
+  }
+
+  /**
+   * Handle draft record load .
+   *
+   * @param id if of the draft record loaded
+   */
+  public onLoadDraftRecord(id: string): void {
+    this.lastDraftRecord = id;
+    this.disableSaveAsDraft = true;
   }
 
   /**
@@ -396,10 +428,12 @@ export class FormComponent
     });
   }
 
+  /** It removes the item from local storage, clears cached records, and discards the search. */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    localStorage.removeItem(this.storageId);
-    this.formHelpersService.cleanCachedRecords(this.survey);
+    if (this.resetTimeoutListener) {
+      clearTimeout(this.resetTimeoutListener);
+    }
     this.survey?.dispose();
   }
 }

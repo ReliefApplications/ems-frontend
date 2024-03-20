@@ -1,11 +1,14 @@
-<ui-tabs class="grow" [vertical]="true">
+<ui-tabs class="flex flex-col h-full grow" [vertical]="true">
   <ui-tab>
     <ng-container ngProjectAs="label">
       <ui-icon icon="tab" [size]="24" uiTooltip="Tabs"> </ui-icon>
-      <span>Tabs</span>
+      <span>{{ 'common.tabs' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-main [formGroup]="widgetForm"></shared-tab-main>
+      <shared-tab-main
+        class="flex flex-col h-full"
+        [formGroup]="widgetFormGroup"
+      ></shared-tab-main>
     </ng-template>
   </ui-tab>
   <ui-tab>
@@ -18,7 +21,7 @@
       <span>{{ 'models.widget.display.title' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-display-settings [formGroup]="widgetForm">
+      <shared-display-settings [formGroup]="widgetFormGroup">
       </shared-display-settings>
     </ng-template>
   </ui-tab>

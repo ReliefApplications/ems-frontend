@@ -1,5 +1,3 @@
-export * from './lib/ui.module';
-
 // === TAILWIND COMPONENTS === //
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
@@ -10,6 +8,8 @@ export * from './lib/icon/icon.module';
 export * from './lib/icon/icon.component';
 export * from './lib/table/table.module';
 export * from './lib/tooltip/tooltip.module';
+export * from './lib/tooltip/tooltip.directive';
+export * from './lib/spinner/spinner.component';
 export * from './lib/spinner/spinner.module';
 export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
@@ -19,8 +19,9 @@ export * from './lib/textarea/textarea.component';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/autocomplete/autocomplete.module';
-export * from './lib/select-menu/select-menu.module';
 export * from './lib/select-menu/components/select-option.module';
+export * from './lib/select-menu/select-menu.component';
+export * from './lib/select-menu/select-menu.module';
 export * from './lib/expansion-panel/expansion-panel.module';
 export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
@@ -38,10 +39,13 @@ export * from './lib/date/date.module';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
 export * from './lib/error-message/error-message.module';
+export * from './lib/fixed-wrapper/fixed-wrapper.module';
 export * from './lib/cron-editor/cron-editor.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';
+export * from './lib/sidenav/layout/layout.service';
+export * from './lib/shadow-dom/shadow-dom.service';
 
 // === TYPES === //
 export * from './lib/types/variant';
@@ -53,6 +57,7 @@ export * from './lib/divider/types/divider-position';
 export * from './lib/divider/types/divider-orientation';
 export * from './lib/breadcrumbs/types/breadcrumb-display';
 export * from './lib/breadcrumbs/types/breadcrumb-separator';
+export * from './lib/icon/icon.list';
 
 // === INTERFACES === //
 export * from './lib/table/interfaces/table-column.interface';

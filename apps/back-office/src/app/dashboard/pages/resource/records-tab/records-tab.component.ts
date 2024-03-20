@@ -10,13 +10,11 @@ import {
   ResourceRecordsNodesQueryResponse,
   DeleteRecordMutationResponse,
   RestoreRecordMutationResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../utils/update-queries';
 import { DELETE_RECORD, RESTORE_RECORD } from '../graphql/mutations';
 import { GET_RESOURCE_RECORDS } from './graphql/queries';
 import {
@@ -47,21 +45,51 @@ export class RecordsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Query to get records.
+   */
   private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
+  /**
+   * Data source for records.
+   */
   public dataSource = new Array<Record>();
+  /**
+   * Cached records.
+   */
   private cachedRecords: Record[] = [];
+  /**
+   * Resource.
+   */
   public resource!: Resource;
+  /**
+   * Default columns for records.
+   */
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
+  /**
+   * Columns to display.
+   */
   displayedColumnsRecords: string[] = [];
 
+  /**
+   * Show deleted records.
+   */
   showDeletedRecords = false;
+  /**
+   * Page info.
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
     endCursor: '',
   };
+  /**
+   * Loading state.
+   */
   public loading = true;
+  /**
+   * Upload state.
+   */
   public showUpload = false;
 
   /** @returns True if the records tab is empty */
@@ -103,9 +131,11 @@ export class RecordsTabComponent
           showDeletedRecords: this.showDeletedRecords,
         },
       });
-    this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.recordsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -203,6 +233,7 @@ export class RecordsTabComponent
       this.fetchRecords(true);
     }
   }
+
   /**
    * Restores an archived record.
    *
@@ -275,6 +306,7 @@ export class RecordsTabComponent
       .concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }
+
   /**
    * Downloads the list of records of the resource.
    *
@@ -308,16 +340,6 @@ export class RecordsTabComponent
   }
 
   /**
-   * Detects changes on the file.
-   *
-   * @param event new file event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
    * Calls rest endpoint to upload new records for the resource.
    *
    * @param file File to upload.
@@ -331,8 +353,8 @@ export class RecordsTabComponent
           this.showUpload = false;
         }
       },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
+      error: () => {
+        // The error message has already been handled in DownloadService
         this.showUpload = false;
       },
     });
@@ -399,8 +421,8 @@ export class RecordsTabComponent
   private fetchRecords(refetch?: boolean): void {
     this.loading = true;
     const variables = {
-      id: this.resource.id,
       first: this.pageInfo.pageSize,
+      id: this.resource.id,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       display: false,
       showDeletedRecords: this.showDeletedRecords,

@@ -5,20 +5,16 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import {
   Resource,
   ResourceQueryResponse,
-  ResourcesQueryResponse,
 } from '../../../models/resource.model';
-import { GET_RESOURCES, GET_SHORT_RESOURCE_BY_ID } from './graphql/queries';
+import { GET_SHORT_RESOURCE_BY_ID } from './graphql/queries';
 import { takeUntil } from 'rxjs/operators';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionResourceDropdownModel } from './resource-dropdown.model';
 import { Subject } from 'rxjs';
-
-/** A constant that is used to determine how many items should be on one page. */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * This component is used to create a dropdown where the user can select a resource.
@@ -32,11 +28,14 @@ export class ResourceDropdownComponent
   extends QuestionAngular<QuestionResourceDropdownModel>
   implements OnInit
 {
+  /** Selected resource */
   public selectedResource?: Resource;
+  /** Resource control */
   public resourceControl!: UntypedFormControl;
 
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
@@ -76,34 +75,5 @@ export class ResourceDropdownComponent
           }
         });
     }
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    const variables = this.resourcesQuery.variables;
-    this.resourcesQuery.refetch({
-      ...variables,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
   }
 }

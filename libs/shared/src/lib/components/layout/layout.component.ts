@@ -6,6 +6,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   TemplateRef,
@@ -13,7 +14,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Account, AuthService } from '../../services/auth/auth.service';
-import { LayoutService } from '../../services/layout/layout.service';
 import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,8 +25,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Breadcrumb } from '@oort-front/ui';
+import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
+import { ContextService } from '../../services/context/context.service';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 
 /**
  * Component for the main layout of the platform
@@ -38,38 +40,83 @@ import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service'
 })
 export class LayoutComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit, OnChanges, OnDestroy
 {
   /** Page title ( name of application ) */
   @Input() title = '';
 
+  /**
+   * List of applications
+   */
   @Input() applications: Application[] = [];
 
+  /**
+   * Current application
+   */
   @Input() route?: ActivatedRoute;
 
+  /**
+   * Header template
+   */
   @Input() header?: TemplateRef<any>;
+  /** Should show header */
+  @Input() showHeader = true;
 
+  /**
+   * Left sidenav template
+   */
   @Input() leftSidenav?: TemplateRef<any>;
 
+  /**
+   * Right sidenav template
+   */
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
 
+  /**
+   * Content template
+   */
   @ViewChild('nav')
   nav?: any;
-
+  /**
+   * Content template
+   */
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
-
+  /**
+   * Event emitted when the user reorders the applications
+   */
   @Output() reorder: EventEmitter<any> = new EventEmitter();
-
+  /**
+   * Event emitted when the user clicks on the profile button
+   */
   @Input() profileRoute = '/profile';
-
+  /**
+   * Event emitted when the user clicks on the profile button
+   */
   @Input() sideMenu = true;
 
+  /**
+   * Event emitted when the user clicks on the profile button
+   */
+  @Input() menuOpened = true;
+
+  /**
+   * Languages available
+   */
   languages: string[] = [];
 
   // === NOTIFICATIONS ===
+  /**
+   * Notifications
+   */
   public notifications: Notification[] = [];
+  /**
+   * Boolean to check if there are more notifications
+   */
   public hasMoreNotifications = false;
+  /**
+   * Boolean to check if notifications are loading
+   */
   public loadingNotifications = false;
 
   /** Account information of logged user */
@@ -79,20 +126,33 @@ export class LayoutComponent
 
   /** Is screen large */
   public largeDevice: boolean;
+  /** Theme */
   public theme: any;
 
+  /** Show sidenav */
   public showSidenav = false;
+  /** Show preferences */
   public showPreferences = false;
 
+  /** Other office */
   public otherOffice = '';
+  /** Environment */
   public environment: any;
+  /** Is in application */
   private inApplication = false;
 
   // === APP SEARCH ===
+  /** Show app search */
   public showAppMenu = false;
 
   // === BREADCRUMB ===
+  /** Breadcrumbs */
   public breadcrumbs: Breadcrumb[] = [];
+
+  /** Timeout listeners */
+  // private attachViewFilterTriggerListener!: NodeJS.Timeout;
+  /** Survey shared questions names on web component to track shared values when switching views */
+  // private surveySharedQuestions!: string[];
 
   /**
    * Gets URI of the other office
@@ -146,24 +206,26 @@ export class LayoutComponent
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
    * @param notificationService This is the service that handles the notifications.
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular CDK
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
+   * @param contextService Shared breadcrumb service
    */
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private contextService: ContextService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -201,30 +263,31 @@ export class LayoutComponent
         this.loadingNotifications = false;
       });
 
-    this.layoutService.rightSidenav$.subscribe((view) => {
-      if (view && this.rightSidenav) {
-        // avoid to have multiple right sidenav components at same time
-        this.layoutService.setRightSidenav(null);
-        this.showSidenav = true;
-        const componentRef: ComponentRef<any> =
-          this.rightSidenav.createComponent(view.component);
-        if (view.inputs) {
-          for (const [key, value] of Object.entries(view.inputs)) {
-            componentRef.instance[key] = value;
+    this.layoutService.rightSidenav$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((view) => {
+        if (view && this.rightSidenav) {
+          // avoid to have multiple right sidenav components at same time
+          this.layoutService.setRightSidenav(null);
+          this.showSidenav = true;
+          const componentRef: ComponentRef<any> =
+            this.rightSidenav.createComponent(view.component);
+          if (view.inputs) {
+            for (const [key, value] of Object.entries(view.inputs)) {
+              componentRef.instance[key] = value;
+            }
+          }
+          componentRef.instance.cancel.subscribe(() => {
+            componentRef.destroy();
+            this.layoutService.setRightSidenav(null);
+          });
+        } else {
+          this.showSidenav = false;
+          if (this.rightSidenav) {
+            this.rightSidenav.clear();
           }
         }
-
-        componentRef.instance.cancel.subscribe(() => {
-          componentRef.destroy();
-          this.layoutService.setRightSidenav(null);
-        });
-      } else {
-        this.showSidenav = false;
-        if (this.rightSidenav) {
-          this.rightSidenav.clear();
-        }
-      }
-    });
+      });
 
     this.breadcrumbService.breadcrumbs$
       .pipe(takeUntil(this.destroy$))
@@ -377,5 +440,42 @@ export class LayoutComponent
       this.translate.use(language);
     }
     return language;
+  }
+
+  /**
+   * On attach component ( only used in web elements, with reuse strategy )
+   *
+   * @param e Event thrown in the attach event of the router outlet containing the lastStateOfContextFilters when it was detached
+   */
+  onAttach(e: any) {
+    if (this.contextService.shadowDomService.isShadowRoot) {
+      if (e instanceof DashboardComponent) {
+        // Deactivate the context service filter, reset the value, and enable it again
+        // we need to do that, due to how widgets subscribe to filter changes with pairWise
+        this.contextService.skipFilter = true;
+        this.contextService.filter.next(e.filter);
+        this.contextService.skipFilter = false;
+      }
+    }
+    if (e.onAttach) {
+      e.onAttach();
+    }
+  }
+
+  /**
+   * On attach component ( only used in web elements, with reuse strategy )
+   *
+   * @param e Event thrown in the detach event of the router outlet where we set lastStateOfContextFilters value for next attach to update context filter trigger
+   */
+  onDetach(e: any) {
+    if (this.contextService.shadowDomService.isShadowRoot) {
+      if (e instanceof DashboardComponent) {
+        // Store the current value
+        e.filter = this.contextService.filter.getValue();
+      }
+    }
+    if (e.onDetach) {
+      e.onDetach();
+    }
   }
 }

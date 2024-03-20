@@ -149,28 +149,12 @@ export const routes: Routes = [
           },
         ],
       },
-      // {
-      //   path: 'share',
-      //   children: [
-      //     // Redirect to main page
-      //     {
-      //       path: '',
-      //       redirectTo: '/',
-      //       pathMatch: 'full',
-      //     },
-      //     {
-      //       path: ':id',
-      //       loadChildren: () =>
-      //         import('./pages/share/share.module').then((m) => m.ShareModule),
-      //     },
-      //   ],
-      // },
     ],
   },
 ];
 
 /**
- * Application routing module.
+ * Routing module of the Front-Office main navigation.
  */
 @NgModule({
   imports: [RouterModule.forChild(routes)],

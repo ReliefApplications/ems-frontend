@@ -15,6 +15,8 @@ import {
   FormQueryResponse,
   FormsQueryResponse,
   StatusOptionsComponent,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -31,10 +33,6 @@ import {
   distinctUntilChanged,
 } from 'rxjs';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../../utils/update-queries';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -89,6 +87,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
+  /** Reactive form */
   public formGroup = this.fb.group({
     name: [get(this.data, 'pullJob.name', ''), Validators.required],
     status: [get(this.data, 'pullJob.status', ''), Validators.required],
@@ -121,32 +120,46 @@ export class EditPullJobModalComponent implements OnInit {
     ],
     uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
   });
+  /** Is hardcoded */
   isHardcoded = true;
 
   // === FORMS ===
+  /** Forms query */
   public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === CHANNELS ===
+  /** Applications loading state */
   private applicationsLoading = true;
+  /** Applications */
   public applications = new BehaviorSubject<Application[]>([]);
+  /** Applications observable */
   public applications$!: Observable<Application[]>;
+  /** Cached applications */
   private cachedApplications: Application[] = [];
+  /** Applications query */
   private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
+  /** Applications pagination info */
   private applicationsPageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
 
   // === API ===
+  /** Api configurations */
   public apiConfigurations: ApiConfiguration[] = [];
+  /** Api configurations query */
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   // === DATA ===
+  /** Status choices */
   public statusChoices = Object.values(status);
+  /** Fields array */
   public fields: any[] = [];
+  /** Forms subscription */
   private fieldsSubscription?: Subscription;
 
   // === RAW JSON UTILITY ===
+  /** Open raw JSON */
   public openRawJSON = false;
 
   /** @returns pull job mapping as form array */
@@ -426,6 +439,7 @@ export class EditPullJobModalComponent implements OnInit {
       }
     }
   }
+
   /**
    * Changes the query according to search text
    *

@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /** Authentication configuration */
 const authConfig: AuthConfig = {
@@ -16,7 +17,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: false,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
@@ -25,8 +26,9 @@ export const environment = {
   // subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'webwidgets',
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
+  tinymceBaseUrl: '',
+  i18nUrl: '',
 };

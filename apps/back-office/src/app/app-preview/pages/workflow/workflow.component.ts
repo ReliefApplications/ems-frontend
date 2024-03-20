@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   ContentType,
   Step,
@@ -10,9 +10,10 @@ import {
 } from '@oort-front/shared';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { PreviewService } from '../../../services/preview.service';
+import { Subscription } from 'rxjs';
 
 /**
  * Workflow page component for application preview.
@@ -35,6 +36,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   public activeStep = 0;
   /** Role used for preview */
   public role = '';
+  /** Subscription to change step events */
+  private changeStepSubscription!: Subscription;
 
   /**
    * Workflow page component for application preview
@@ -65,6 +68,21 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((role) => {
         this.role = role;
+      });
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        startWith(this.router), // initialize
+        takeUntil(this.destroy$)
+      )
+      .subscribe((e) => {
+        // If going back or clicking on route in sidenav, go to first step
+        if (
+          e instanceof NavigationEnd &&
+          e.urlAfterRedirects.endsWith(this.id)
+        ) {
+          this.onOpenStep(0);
+        }
       });
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
@@ -116,14 +134,23 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: any) => {
-        if (event > 0) {
-          this.goToNextStep();
-        } else {
-          this.goToPreviousStep();
+      this.changeStepSubscription = elementRef.changeStep.subscribe(
+        (event: any) => {
+          if (event > 0) {
+            this.goToNextStep();
+          } else {
+            this.goToPreviousStep();
+          }
         }
-      });
+      );
     }
+  }
+
+  /**
+   * Clear subscriptions set from the router-outlet
+   */
+  clearSubscriptions() {
+    this.changeStepSubscription?.unsubscribe();
   }
 
   /**

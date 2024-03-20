@@ -1,33 +1,40 @@
-<div class="h-full flex flex-col">
-  <kendo-tilelayout-item-header
-    *ngIf="header"
-    class="widget-header border-b"
-    [ngClass]="{
-      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
-    }"
+<div
+  class="h-full overflow-auto"
+  [ngClass]="{
+    'p-[14px]': usePadding
+  }"
+  (click)="onClick($event)"
+>
+  <div
+    *ngIf="!loading; else loadingTmpl"
+    class="w-full h-fit"
+    (click)="onClick($event)"
   >
-    <span class="widget-title" [title]="settings.title">{{
-      settings.title
-    }}</span>
-    <div class="flex">
-      <!-- Data source button -->
-      <ui-button
-        variant="primary"
-        icon="open_in_new"
-        (click)="openDataSource()"
-        *ngIf="settings.showDataSourceLink || false"
-      >
-        {{ 'components.widget.summaryCard.dataSource' | translate }}
-      </ui-button>
-    </div>
-  </kendo-tilelayout-item-header>
-  <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
-    <div class="w-full h-fit" (click)="onClick($event)">
-      <shared-html-widget-content
-        [html]="formattedHtml"
-        [style]="formattedStyle"
-      ></shared-html-widget-content>
-    </div>
+    <shared-html-widget-content
+      [html]="formattedHtml"
+      [style]="formattedStyle"
+    ></shared-html-widget-content>
   </div>
 </div>
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings.title">{{
+    settings.title
+  }}</span>
+  <div class="flex">
+    <!-- Data source button -->
+    <ui-button
+      variant="primary"
+      icon="open_in_new"
+      (click)="openDataSource()"
+      *ngIf="showDataSourceButton"
+    >
+      {{ 'components.widget.summaryCard.dataSource' | translate }}
+    </ui-button>
+  </div>
+</ng-template>
+
+<ng-template #loadingTmpl>
+  <div class="flex h-full">
+    <ui-spinner class="m-auto"></ui-spinner>
+  </div>
+</ng-template>

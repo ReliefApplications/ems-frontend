@@ -16,12 +16,19 @@ import { TableSort } from './interfaces/table-column.interface';
   selector: '[uiTableHeaderSort]',
 })
 export class TableHeaderSortDirective implements AfterViewInit {
+  /**
+   * Table header sort
+   */
   @Input() uiTableHeaderSort = '';
 
+  /** Descending sort icon */
   private descSortIcon = '↧' as const;
+  /** Ascending sort icon */
   private ascSortIcon = '↥' as const;
 
+  /** Sort indicator element */
   sortIndicatorElement!: HTMLSpanElement;
+  /** Active sort subject */
   activeSort = new BehaviorSubject<TableSort | null>(null);
 
   /**

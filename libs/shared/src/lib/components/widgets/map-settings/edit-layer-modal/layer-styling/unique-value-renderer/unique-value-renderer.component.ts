@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
 import { createUniqueValueInfoForm } from '../../../map-forms';
-import { IconDisplayModule } from '../../../../../../pipes/icon-display/icon-display.module';
 import { Fields } from '../../../../../../models/layer.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   ButtonModule,
@@ -13,9 +12,16 @@ import {
   IconModule,
   SelectMenuModule,
   TooltipModule,
+  getIconDefinition,
 } from '@oort-front/ui';
 import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.type';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  IconName,
+  icon as iconCreator,
+} from '@fortawesome/fontawesome-svg-core';
+import { SanitizeHTMLModule } from '../../../../../../pipes/sanitize-html/sanitize-html.module';
+import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Unique value renderer layer settings.
@@ -29,24 +35,34 @@ import { TranslateModule } from '@ngx-translate/core';
     SimpleRendererComponent,
     ButtonModule,
     FormWrapperModule,
-    IconDisplayModule,
     SelectMenuModule,
     DragDropModule,
     IconModule,
     TranslateModule,
     TooltipModule,
+    SanitizeHTMLModule,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],
 })
-export class UniqueValueRendererComponent implements OnInit {
+export class UniqueValueRendererComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
+  /** Type of layer geometry ( point / polygon ) */
   @Input() geometryType: GeometryType = 'Point';
+  /** Current form group */
   @Input() formGroup!: FormGroup;
+  /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
+  /** All scalar fields */
   private scalarFields = new BehaviorSubject<Fields[]>([]);
+  /** Scalar fields as observable */
   public scalarFields$ = this.scalarFields.asObservable();
-
-  openedIndex = -1;
+  /** Svg icons, one for each unique value info */
+  public svgIcons: { [key: string]: string } = {};
+  /** Currently opened unique vale */
+  public openedIndex = -1;
 
   /** @returns get unique infos settings as form array */
   get uniqueValueInfos(): FormArray {
@@ -56,8 +72,34 @@ export class UniqueValueRendererComponent implements OnInit {
   ngOnInit(): void {
     this.fields$.subscribe((value) => {
       this.scalarFields.next(
-        value.filter((field) => ['string'].includes(field.type.toLowerCase()))
+        value.filter((field) =>
+          ['string', 'datetime', 'number'].includes(field.type.toLowerCase())
+        )
       );
+    });
+    this.createIconsSvgs();
+    this.uniqueValueInfos.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.createIconsSvgs();
+      });
+  }
+
+  /**
+   * Create related svg icons for the given icon list
+   */
+  private createIconsSvgs() {
+    this.svgIcons = {};
+    (this.uniqueValueInfos.value ?? []).forEach((value: any, index: number) => {
+      const iconDef = getIconDefinition(value.symbol.style as IconName);
+      const i = iconCreator(iconDef, {
+        styles: {
+          height: '1rem',
+          width: '1rem',
+          color: value.symbol.color,
+        },
+      });
+      this.svgIcons[index] = i.html[0];
     });
   }
 
@@ -73,10 +115,10 @@ export class UniqueValueRendererComponent implements OnInit {
    * @param index index of form group to remove
    */
   onRemoveInfo(index: number): void {
+    this.uniqueValueInfos.removeAt(index);
     if (index === this.openedIndex) {
       this.openedIndex = -1;
     }
-    this.uniqueValueInfos.removeAt(index);
   }
 
   /**

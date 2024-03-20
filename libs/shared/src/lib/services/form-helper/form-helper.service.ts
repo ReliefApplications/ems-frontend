@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { PageModel, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,12 +8,20 @@ import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set } from 'lodash';
+import { snakeCase, cloneDeep, set, get, isNil } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
-import { AddRecordMutationResponse } from '../../models/record.model';
+import {
+  AddDraftRecordMutationResponse,
+  AddRecordMutationResponse,
+  EditDraftRecordMutationResponse,
+} from '../../models/record.model';
 import { Question } from '../../survey/types';
-
+import {
+  ADD_DRAFT_RECORD,
+  DELETE_DRAFT_RECORD,
+  EDIT_DRAFT_RECORD,
+} from './graphql/mutations';
 /**
  * Shared survey helper service.
  */
@@ -24,6 +32,7 @@ export class FormHelpersService {
   /**
    * Shared survey helper service.
    *
+   * @param environment Environment configuration
    * @param apollo Apollo client
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param confirmService This is the service that will be used to display confirm window.
@@ -32,6 +41,7 @@ export class FormHelpersService {
    * @param downloadService Shared download service
    */
   constructor(
+    @Inject('environment') private environment: any,
     public apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
@@ -77,7 +87,7 @@ export class FormHelpersService {
       if (questions[field]) {
         const key = questions[field].getValueName();
         // If there is no value for this question
-        if (!survey.data[key]) {
+        if (isNil(survey.data[key])) {
           // And is not boolean(false by default, we want to save that), we nullify it
           if (questions[field].getType() !== 'boolean') {
             // survey.data[key] = null;
@@ -225,35 +235,14 @@ export class FormHelpersService {
   }
 
   /**
-   * Clean cached records from passed survey.
-   *
-   * @param survey Survey from which we need to clean cached records.
-   */
-  cleanCachedRecords(survey: SurveyModel): void {
-    if (!survey) return;
-    survey.getAllQuestions().forEach((question) => {
-      if (question.value) {
-        const type = question.getType();
-        if (type === 'resources') {
-          question.value.forEach((recordId: string) =>
-            localForage.removeItem(recordId)
-          );
-        } else if (type === 'resource') {
-          localForage.removeItem(question.value);
-        }
-      }
-    });
-  }
-
-  /**
-   * Create cache records (from resource/s questions) of passed survey.
+   * Create temporary records (from resource/s questions) of passed survey.
    *
    * @param survey Survey to get questions from
    */
-  public async createCachedRecords(survey: SurveyModel): Promise<void> {
+  public async createTemporaryRecords(survey: SurveyModel): Promise<void> {
     const promises: Promise<any>[] = [];
     const questions = survey.getAllQuestions();
-    const nestedRecordsToAdd: string[] = [];
+    const nestedRecordsToAdd: { draftIds: []; question: Question }[] = [];
 
     // Callbacks to update the ids of new records
     const updateIds: {
@@ -261,18 +250,19 @@ export class FormHelpersService {
     } = {};
 
     // Get all nested records to add
-    questions.forEach((question) => {
+    questions.forEach((question: Question) => {
       const type = question.getType();
-      if (!['resource', 'resources'].includes(type)) return;
-      const uuidv4Pattern =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
+      if (!['resource', 'resources'].includes(type) || !question.draftData) {
+        return;
+      }
       const isResource = type === 'resource';
-
       const toAdd = (isResource ? [question.value] : question.value).filter(
-        (x: string) => uuidv4Pattern.test(x)
+        (id: string) => id in question.draftData
       );
-      nestedRecordsToAdd.push(...toAdd);
+      nestedRecordsToAdd.push({
+        draftIds: toAdd,
+        question,
+      });
 
       toAdd.forEach((id: string) => {
         updateIds[id] = (newId: string) => {
@@ -283,31 +273,46 @@ export class FormHelpersService {
       });
     });
 
-    for (const localID of nestedRecordsToAdd) {
-      // load them from localForage and add them to the promises
-      const cache = await localForage.getItem(localID);
-      if (!cache) continue;
+    for (const element of nestedRecordsToAdd) {
+      for (const draftId of element.draftIds) {
+        const data = element.question.draftData[draftId];
+        const template = element.question.template;
 
-      const { template, data } = JSON.parse(cache as string);
-
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: template,
-              data,
-            },
+        promises.push(
+          firstValueFrom(
+            this.apollo.mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: template,
+                data,
+              },
+            })
+          ).then((res) => {
+            // change the draftId to the new recordId
+            const newId = res.data?.addRecord?.id;
+            if (!newId) return;
+            updateIds[draftId](newId);
+            // update question.newCreatedRecords too
+            const isResource = element.question.getType() === 'resource';
+            const draftIndex = (
+              isResource
+                ? [element.question.newCreatedRecords]
+                : element.question.newCreatedRecords
+            ).indexOf(draftId);
+            if (draftIndex !== -1) {
+              if (isResource) {
+                element.question.newCreatedRecords = newId;
+              } else {
+                element.question.newCreatedRecords[draftIndex] = newId;
+              }
+            }
+            // delete old temporary/draft record and data
+            this.deleteRecordDraft(draftId);
+            delete element.question.draftData[draftId];
+            return;
           })
-        ).then((res) => {
-          // change the localID to the new recordId
-          const newId = res.data?.addRecord?.id;
-          if (!newId) return;
-          updateIds[localID](newId);
-          localForage.removeItem(localID);
-          return;
-        })
-      );
+        );
+      }
     }
 
     await Promise.all(promises);
@@ -327,6 +332,14 @@ export class FormHelpersService {
     survey.setVariable('user.firstName', user?.firstName ?? '');
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');
+
+    // Set user attributes
+    for (const attribute of this.environment.user?.attributes || []) {
+      survey.setVariable(
+        `user.${attribute}`,
+        get(user?.attributes, attribute) || ''
+      );
+    }
 
     // Allow us to do some cool stuff like
     // {user.roles} contains '62e3e676c9bcb900656c95c9'
@@ -353,23 +366,29 @@ export class FormHelpersService {
   /**
    * Add tooltip to the survey question if exists
    *
-   * @param _ Default value of afterRenderQuestion callback
+   * @param survey current survey
    * @param options current survey question options
    */
-  public addQuestionTooltips(_: any, options: any): void {
+  public addQuestionTooltips(survey: any, options: any): void {
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
     }
-    options.htmlElement
-      .querySelectorAll('.sv-string-viewer')
-      .forEach((el: any) => {
+    const titleElement = (options.htmlElement as HTMLElement).querySelector(
+      '.sd-question__title'
+    );
+    if (titleElement) {
+      const selector = survey.isDesignMode
+        ? '.svc-string-editor'
+        : '.sv-string-viewer';
+      titleElement.querySelectorAll(selector).forEach((el: any) => {
         const tooltip = document.createElement('span');
         tooltip.title = options.question.tooltip;
         tooltip.innerHTML = '?';
         tooltip.classList.add('survey-title__tooltip');
         el.appendChild(tooltip);
       });
+    }
   }
 
   /**
@@ -428,6 +447,118 @@ export class FormHelpersService {
       }
     }
     return true;
+  }
+
+  /**
+   * Saves the current data as a draft record
+   *
+   * @param survey Survey where to add the callbacks
+   * @param formId Form id of the survey
+   * @param draftId Draft record id
+   * @param callback callback method
+   */
+  public saveAsDraft(
+    survey: SurveyModel,
+    formId: string,
+    draftId?: string,
+    callback?: any
+  ): void {
+    // Check if a draft has already been loaded
+    if (!draftId) {
+      // Add a new draft record to the database
+      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+        mutation: ADD_DRAFT_RECORD,
+        variables: {
+          form: formId,
+          data: survey.data,
+        },
+      });
+      mutation.subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            survey.clear(false, true);
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          } else {
+            // localStorage.removeItem(this.storageId);
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.form.draftRecords.successSave'
+              ),
+              {
+                error: false,
+              }
+            );
+          }
+          // Callback to emit save but stay in record addition mode
+          if (callback) {
+            callback({
+              id: data?.addDraftRecord.id,
+              save: {
+                completed: false,
+                hideNewRecord: true,
+              },
+            });
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
+    } else {
+      // Edit last added draft record in the database
+      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
+        mutation: EDIT_DRAFT_RECORD,
+        variables: {
+          id: draftId,
+          data: survey.data,
+        },
+      });
+      mutation.subscribe(({ errors }: any) => {
+        if (errors) {
+          survey.clear(false, true);
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
+        } else {
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successEdit'),
+            {
+              error: false,
+            }
+          );
+        }
+        // Callback to emit save but stay in record addition mode
+        if (callback) {
+          callback({
+            id: draftId,
+            save: {
+              completed: false,
+              hideNewRecord: true,
+            },
+          });
+        }
+      });
+    }
+  }
+
+  /**
+   * Handles the deletion of a specific draft record
+   *
+   * @param draftId Id of the draft record to delete
+   * @param callback callback method
+   */
+  public deleteRecordDraft(draftId: string, callback?: any): void {
+    this.apollo
+      .mutate<any>({
+        mutation: DELETE_DRAFT_RECORD,
+        variables: {
+          id: draftId,
+        },
+      })
+      .subscribe(() => {
+        if (callback) {
+          callback();
+        }
+      });
   }
 
   /**

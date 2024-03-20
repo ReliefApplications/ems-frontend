@@ -1,7 +1,7 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <app-reference-data-filter
     (filter)="onFilter($event)"
-    [loading]="filterLoading"
+    [loading]="updating"
   ></app-reference-data-filter>
   <!-- Actions -->
   <ui-button
@@ -42,7 +42,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="type">
-        <th uiTableHeaderSort="type" uiCellHeader *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'pages.referenceData.type' | translate }}
           </span>
@@ -51,12 +51,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="apiConfiguration">
-        <th
-          uiTableHeaderSort="apiConfiguration"
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.apiConfiguration.one' | translate }}
           </span>
@@ -67,12 +62,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="modifiedAt">
-        <th
-          uiTableHeaderSort="modifiedAt"
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.modifiedOn' | translate }}
           </span>
@@ -91,7 +81,7 @@
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
-            [uiTooltip]="'common.options' | translate"
+            [uiTooltip]="'common.actions' | translate"
           >
           </ui-button>
           <ui-menu #menu>
@@ -130,7 +120,8 @@
   </div>
 </div>
 <ui-paginator
-  [disabled]="loading"
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"
   [totalItems]="pageInfo.length"

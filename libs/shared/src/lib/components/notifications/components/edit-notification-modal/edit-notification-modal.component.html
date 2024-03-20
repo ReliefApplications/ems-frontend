@@ -1,14 +1,14 @@
 <ui-dialog size="medium">
   <!-- Modal header -->
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         (notification
           ? 'components.customNotifications.edit.update'
           : 'components.customNotifications.edit.new'
         ) | translate
       }}
-    </h1>
+    </h3>
   </ng-container>
   <!-- Modal content -->
   <ng-container ngProjectAs="content">
@@ -79,7 +79,7 @@
                 [isIcon]="true"
                 icon="close"
                 (click)="removeLayout()"
-                [uiTooltip]="'common.delete' | translate"
+                [uiTooltip]="'common.remove' | translate"
               ></ui-button>
             </div>
           </ng-container>
@@ -230,7 +230,7 @@
   </ng-container>
   <!-- Modal actions -->
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose variant="default">
+    <ui-button [uiDialogClose] variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

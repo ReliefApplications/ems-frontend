@@ -20,6 +20,7 @@
       {{ 'components.queryBuilder.filter.newGroup' | translate }}
     </ui-button>
     <ui-button
+      *ngIf="parent"
       [isIcon]="true"
       icon="delete"
       variant="danger"
@@ -41,7 +42,9 @@
           class="filter-group-item"
           [form]="$any(filter)"
           [fields]="fields"
+          [parent]="this"
           (delete)="deleteFilter(i)"
+          [canUseContext]="canUseContext"
         ></shared-filter-group>
       </ng-container>
       <ng-container *ngIf="!filter.value.logic">
@@ -51,6 +54,7 @@
           [form]="$any(filter)"
           [fields]="fields"
           (delete)="deleteFilter(i)"
+          [canUseContext]="canUseContext"
         ></shared-filter-row>
       </ng-container>
     </ng-container>

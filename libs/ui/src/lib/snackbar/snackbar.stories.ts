@@ -25,8 +25,11 @@ import { StorybookTranslateModule } from '../../storybook-translate.module';
   `,
 })
 class LaunchSnackbarComponent implements OnDestroy {
+  /** Default snackbar */
   @Input() default = true;
+  /** Destroy subject */
   destroy$ = new Subject<void>();
+
   /**
    * Constructor for the launch Snackbar component
    *
@@ -99,7 +102,9 @@ class LaunchSnackbarComponent implements OnDestroy {
   `,
 })
 class CustomSnackbarComponent {
+  /** Snackbar data */
   data: SnackBarData;
+
   /**
    * Snackbar child component
    *

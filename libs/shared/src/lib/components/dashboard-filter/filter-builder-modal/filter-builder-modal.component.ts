@@ -13,12 +13,21 @@ import { FormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SnackbarService, TooltipModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
+import 'survey-core/survey.i18n.min.js';
+import {
+  CustomJSONEditorComponent,
+  SurveyCustomJSONEditorPlugin,
+} from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
+import { HttpClient } from '@angular/common/http';
+//import 'survey-creator-core/survey-creator-core.i18n.min.js';
+
 /**
  * Data passed to initialize the filter builder
  */
@@ -47,7 +56,7 @@ const QUESTION_TYPES = [
   // 'imagepicker',
   'boolean',
   // 'image',
-  // 'html',
+  'html',
   // 'signaturepad',
   // 'expression',
   // 'matrix',
@@ -105,16 +114,16 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'readOnly',
   'isRequired',
   'placeHolder',
+  'useSummaryTagMode',
   'enableIf',
   'visibleIf',
   'tooltip',
   'referenceData',
   'referenceDataDisplayField',
   'isPrimitiveValue',
-  'referenceDataFilterFilterFromQuestion',
-  'referenceDataFilterForeignField',
-  'referenceDataFilterFilterCondition',
-  'referenceDataFilterLocalField',
+  'referenceDataVariableMapping',
+  '_referenceData',
+  '_graphQLVariables',
   'showSelectAllItem',
   'showNoneItem',
   'showClearButton',
@@ -129,6 +138,8 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueFalse',
   'valueName',
   'inputType',
+  'html',
+  'calendarType',
 ];
 
 /**
@@ -138,7 +149,10 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   standalone: true,
   selector: 'shared-filter-builder-modal',
   templateUrl: './filter-builder-modal.component.html',
-  styleUrls: ['./filter-builder-modal.component.scss'],
+  styleUrls: [
+    '../../../style/survey.scss',
+    './filter-builder-modal.component.scss',
+  ],
   imports: [
     CommonModule,
     FormBuilderModule,
@@ -147,11 +161,14 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     DialogModule,
     AlertModule,
     SurveyCreatorModule,
+    ButtonModule,
+    CustomJSONEditorComponent,
   ],
 })
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
 
   /**
@@ -163,6 +180,7 @@ export class FilterBuilderModalComponent
    * @param referenceDataService reference data service
    * @param formHelpersService Shared form helper service.
    * @param snackBar Service that will be used to display the snackbar.
+   * @param http Http client
    */
   constructor(
     private formService: FormService,
@@ -170,12 +188,13 @@ export class FilterBuilderModalComponent
     @Inject(DIALOG_DATA) public data: DialogData,
     private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
     // Initialize survey creator instance without custom questions
-    this.formService.setSurveyCreatorInstance({ customQuestions: false });
+    this.formService.initialize({ customQuestions: false });
   }
 
   ngAfterViewInit(): void {
@@ -188,12 +207,14 @@ export class FilterBuilderModalComponent
   private setFormBuilder() {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: true,
+      showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
     };
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
+    new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
     // this.surveyCreator.text = '';
     this.surveyCreator.showToolbox = true;
@@ -202,6 +223,7 @@ export class FilterBuilderModalComponent
     this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
+    this.surveyCreator.allowChangeThemeInPreview = false;
 
     // Block core fields edition
     this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {
@@ -217,22 +239,24 @@ export class FilterBuilderModalComponent
       }
     });
 
-    // add the rendering of custom properties
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService) as any
-    );
-    (this.surveyCreator.onTestSurveyCreated as any).add(
-      (sender: any, opt: any) =>
-        opt.survey.onAfterRenderQuestion.add(
-          renderGlobalProperties(this.referenceDataService)
-        )
-    );
-
     // Set content
     const survey = new SurveyModel(
       this.data?.surveyStructure || DEFAULT_STRUCTURE
     );
     this.surveyCreator.JSON = survey.toJSON();
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService, this.http) as any
+    );
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) =>
+        opt.survey.onAfterRenderQuestion.add(
+          renderGlobalProperties(this.referenceDataService, this.http)
+        )
+    );
+
+    this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }
 
   /**
@@ -274,6 +298,6 @@ export class FilterBuilderModalComponent
 
   ngOnDestroy(): void {
     //Once we destroy the dashboard filter survey, set the survey creator with the custom questions config
-    this.formService.setSurveyCreatorInstance();
+    this.formService.initialize();
   }
 }

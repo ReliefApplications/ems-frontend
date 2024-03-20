@@ -18,7 +18,8 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
-import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
+// import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
+import * as ChoicesByGraphQLProperties from './global-properties/choices-by-graphql';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
@@ -34,6 +35,15 @@ import {
   CustomPropertyGridEditors,
 } from './components/utils/components.enum';
 import { RestService } from '../services/rest/rest.service';
+
+/** Name of the custom components we add to the survey */
+const CUSTOM_COMPONENTS = [
+  'resource',
+  'resources',
+  'owner',
+  'users',
+  'geospatial',
+];
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -59,7 +69,17 @@ export const initCustomSurvey = (
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
     CustomWidgetCollection.Instance.clear();
+
+    // Save default items to be restored later
+    const defaultItems = ComponentCollection.Instance.items.filter(
+      (i) => !CUSTOM_COMPONENTS.includes(i.name)
+    );
+
+    // Clear all items
     ComponentCollection.Instance.clear();
+
+    // Add default items back
+    defaultItems.forEach((item) => ComponentCollection.Instance.add(item.json));
   }
 
   TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
@@ -104,7 +124,7 @@ export const initCustomSurvey = (
       document
     );
     OwnerComponent.init(apollo, ComponentCollection.Instance);
-    UsersComponent.init(apollo, ComponentCollection.Instance);
+    UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
     PeopleComponent.init(
       ComponentCollection.Instance,
@@ -113,12 +133,13 @@ export const initCustomSurvey = (
   }
 
   // load global properties
+  ChoicesByGraphQLProperties.init();
   ReferenceDataProperties.init(referenceDataService);
   TooltipProperty.init();
   OtherProperties.init(environment);
 
   // enables POST requests for choicesByUrl
-  ChoicesByUrlProperties.init();
+  // ChoicesByUrlProperties.init();
 
   // set localization
   initLocalization();

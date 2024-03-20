@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, DividerModule } from '@oort-front/ui';
-import { LayoutService } from '../../../../services/layout/layout.service';
+import { ButtonModule, DividerModule, SpinnerModule } from '@oort-front/ui';
+import { UILayoutService } from '@oort-front/ui';
 import { SidenavControlsMenuComponent } from './sidenav-controls-menu/sidenav-controls-menu.component';
 import { MapComponent } from '../map.component';
 
@@ -12,13 +12,24 @@ import { MapComponent } from '../map.component';
 @Component({
   selector: 'shared-map-sidenav-controls',
   standalone: true,
-  imports: [ButtonModule, CommonModule, DividerModule, TranslateModule],
+  imports: [
+    ButtonModule,
+    CommonModule,
+    DividerModule,
+    TranslateModule,
+    SpinnerModule,
+  ],
   templateUrl: './map-sidenav-controls.component.html',
   styleUrls: ['./map-sidenav-controls.component.scss'],
 })
 export class MapSidenavControlsComponent {
-  private layersTree!: L.Control.Layers.TreeObject[];
+  /** Loading status */
+  public loading = false;
+  /** Layers tree */
+  public layersTree!: L.Control.Layers.TreeObject[];
+  /** Basemaps tree */
   private basemaps!: L.Control.Layers.TreeObject[];
+  /** Map component */
   private mapComponent!: MapComponent;
 
   /**
@@ -26,7 +37,7 @@ export class MapSidenavControlsComponent {
    *
    * @param layoutService shared layout service
    */
-  constructor(private layoutService: LayoutService) {}
+  constructor(private layoutService: UILayoutService) {}
 
   /** Opens the layers menu */
   openLayersMenu() {

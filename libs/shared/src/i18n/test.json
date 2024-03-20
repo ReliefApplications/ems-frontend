@@ -2,8 +2,12 @@
 	"common": {
 		"access": "******",
 		"accessDenied": "******",
+		"account": "******",
+		"actions": "******",
 		"add": "******",
+		"adminField": "******",
 		"aggregation": {
+			"add": "******",
 			"few": "******",
 			"none": "******",
 			"one": "******"
@@ -27,7 +31,6 @@
 					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				},
-				"one": "******",
 				"restore": {
 					"action": "******",
 					"confirmationMessage": "****** {{name}} ******",
@@ -42,6 +45,7 @@
 				"clear": "******"
 			}
 		},
+		"asc": "******",
 		"attribute": {
 			"few": "******",
 			"none": "******",
@@ -76,6 +80,68 @@
 		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
+		"cronEditor": {
+			"advanced": "******",
+			"atTime": "******",
+			"daily": "******",
+			"day": "******",
+			"days": "******",
+			"every": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"firstWeekDay": "******",
+			"hourly": "******",
+			"hours": "******",
+			"lastDay": "******",
+			"lastWeekDay": "******",
+			"minutely": "******",
+			"minutes": "******",
+			"month": "******",
+			"monthly": "******",
+			"months": {
+				"april": "******",
+				"august": "******",
+				"december": "******",
+				"february": "******",
+				"january": "******",
+				"july": "******",
+				"june": "******",
+				"march": "******",
+				"may": "******",
+				"november": "******",
+				"october": "******",
+				"september": "******"
+			},
+			"of": "******",
+			"ofEvery": "******",
+			"onThe": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"seconds": "******",
+			"week": "******",
+			"weekDay": "******",
+			"weekDays": {
+				"friday": "******",
+				"monday": "******",
+				"saturday": "******",
+				"sunday": "******",
+				"thursday": "******",
+				"tuesday": "******",
+				"wednesday": "******"
+			},
+			"weekNumber": {
+				"fifth": "******",
+				"first": "******",
+				"fourth": "******",
+				"last": "******",
+				"second": "******",
+				"third": "******"
+			},
+			"weekly": "******",
+			"yearly": "******"
+		},
 		"customNotification": {
 			"few": "******",
 			"none": "******",
@@ -89,6 +155,7 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
+		"desc": "******",
 		"dismiss": "******",
 		"display": "******",
 		"distributionList": {
@@ -106,6 +173,8 @@
 			"one": "******"
 		},
 		"errors": {
+			"few": "******",
+			"invalidJson": "******",
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"exitFullscreen": "******",
@@ -138,6 +207,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"hide": "******",
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -146,15 +216,20 @@
 			"rawJson": "******"
 		},
 		"label": "******",
-		"layers": "******",
+		"layers": {
+			"few": "******",
+			"none": "******"
+		},
 		"layout": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
 		},
+		"loading": "******",
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noData": "******",
 		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -183,6 +258,7 @@
 				},
 				"upload": {
 					"error": "******",
+					"maxFileSize": "****** {{size}} ******",
 					"processing": "******",
 					"ready": "******"
 				}
@@ -243,6 +319,12 @@
 		"platform": {
 			"backOffice": "******"
 		},
+		"position": {
+			"bottomleft": "******",
+			"bottomright": "******",
+			"topleft": "******",
+			"topright": "******"
+		},
 		"positionAttribute": {
 			"few": "******",
 			"none": "******",
@@ -271,6 +353,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"remove": "******",
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -310,6 +393,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"tabs": "******",
 		"template": {
 			"few": "******",
 			"none": "******",
@@ -317,6 +401,7 @@
 		},
 		"title": "******",
 		"tooltip": {
+			"dragDrop": "******",
 			"editor": {
 				"insert": "******"
 			}
@@ -415,6 +500,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"groupingRules": "******",
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
@@ -443,14 +529,44 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"enterEditMode": "******",
+				"enterPreviewMode": "******",
 				"filter": {
 					"empty": "******",
+					"filterPosition": {
+						"bottom": "******",
+						"left": "******",
+						"right": "******",
+						"top": "******",
+						"unset": "******"
+					},
 					"info": "******",
 					"title": "******"
 				},
 				"filterSettings": "******",
 				"settings": {
-					"defaultPosition": "******"
+					"defaultPosition": "******",
+					"fixedRowHeight": "******",
+					"gridOptions": "******",
+					"gridType": {
+						"fit": "******",
+						"placeholder": "******",
+						"title": "******",
+						"verticalFixed": "******"
+					},
+					"help": {
+						"minCols": "******"
+					},
+					"margin": "******",
+					"minCols": "******",
+					"minimumHeight": "******",
+					"tooltip": {
+						"fixedRowHeight": "******",
+						"margin": "******",
+						"minCols": "******",
+						"minimumHeight": "******",
+						"reset": "******"
+					}
 				}
 			},
 			"delete": {
@@ -473,6 +589,13 @@
 				"reordered": {
 					"plural": "******",
 					"singular": "******"
+				},
+				"settings": {
+					"actions": "******",
+					"selectIcon": "******",
+					"tooltip": {
+						"autoSave": "******"
+					}
 				},
 				"show": "******"
 			},
@@ -507,8 +630,13 @@
 				"title": "******"
 			},
 			"update": {
+				"hideMenu": "******",
 				"placeholder": {
 					"description": "******"
+				},
+				"sideMenu": "******",
+				"tooltip": {
+					"hideMenu": "******"
 				}
 			},
 			"users": {
@@ -599,6 +727,15 @@
 			"subject": "******",
 			"withoutRecords": "******"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "******"
+			},
+			"from": "******",
+			"subject": "******",
+			"title": "******",
+			"to": "******"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -632,6 +769,25 @@
 			"display": {
 				"submissionMessage": "******"
 			},
+			"draftRecords": {
+				"buttonLoad": "******",
+				"confirmModal": {
+					"confirmDelete": "******",
+					"confirmLoad": "******",
+					"delete": "******",
+					"load": "******"
+				},
+				"creationDate": "******",
+				"delete": "******",
+				"load": "******",
+				"noDrafts": "******",
+				"preview": "******",
+				"previewTitle": "******",
+				"save": "******",
+				"select": "******",
+				"successEdit": "******",
+				"successSave": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
@@ -664,6 +820,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
+				"incorrectJSON": "******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
@@ -719,13 +876,32 @@
 				"to": "******",
 				"withValue": "******"
 			},
+			"columns": {
+				"action": "******",
+				"date": "******",
+				"modifiedValue": "******",
+				"originalValue": "******",
+				"person": "******",
+				"time": "******",
+				"variable": "******"
+			},
 			"download": "******",
 			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
 			},
-			"preview": "******"
+			"preview": "******",
+			"range": {
+				"clear": "******"
+			},
+			"useTableMode": "******"
+		},
+		"icon": {
+			"modal": {
+				"select": "******",
+				"use": "******"
+			}
 		},
 		"logout": {
 			"confirmationMessage": "******",
@@ -745,6 +921,10 @@
 						"all": "******",
 						"current": "******"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "******",
+					"viewFullscreen": "******"
 				}
 			}
 		},
@@ -924,6 +1104,7 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"editAs": "******",
 			"paginator": {
 				"ariaLabel": "******"
 			},
@@ -945,7 +1126,9 @@
 				"select": "******"
 			},
 			"fields": {
-				"ariaLabel": "******"
+				"add": "******",
+				"ariaLabel": "******",
+				"new": "******"
 			},
 			"paginator": {
 				"ariaLabel": "******"
@@ -1084,6 +1267,7 @@
 			"invite": {
 				"confirm": "******",
 				"role": {
+					"additionalAttributes": "******",
 					"description": "******"
 				}
 			},
@@ -1139,19 +1323,24 @@
 						"invalid": "******"
 					}
 				},
+				"filters": {
+					"select": "******"
+				},
 				"other": "******"
 			},
 			"expand": "******",
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"goTo": "******",
 					"history": "******"
 				},
 				"errors": {
 					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
-						"frontoffice": "******"
+						"frontoffice": "******",
+						"widgets": "******"
 					},
 					"metaQueryBuildFailed": "******",
 					"metaQueryFetchFailed": "****** {{error}}",
@@ -1192,6 +1381,9 @@
 					"one": "{{count}} ******"
 				},
 				"layout": {
+					"button": {
+						"title": "******"
+					},
 					"reset": "******"
 				},
 				"loading": {
@@ -1205,6 +1397,7 @@
 				"openSettings": "******",
 				"tooltip": {
 					"displayMap": "******",
+					"openPage": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
@@ -1222,6 +1415,12 @@
 					"axes": "******",
 					"categories": "******",
 					"color": "******",
+					"filters": {
+						"add": "******",
+						"delete": "******",
+						"empty": "******",
+						"title": "******"
+					},
 					"grid": {
 						"title": "******",
 						"x": {
@@ -1261,6 +1460,7 @@
 						"title": "******"
 					},
 					"size": "******",
+					"stepSize": "******",
 					"style": "******",
 					"text": "******",
 					"title": {
@@ -1268,7 +1468,8 @@
 						"format": "******"
 					},
 					"tooltip": {
-						"palette": "******"
+						"palette": "******",
+						"stepSize": "******"
 					},
 					"type": "******",
 					"xAxis": "******",
@@ -1287,12 +1488,28 @@
 						"convert": "******",
 						"delete": "******",
 						"export": "******",
+						"goTo": {
+							"column": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"field": {
+								"label": "******",
+								"placeholder": "******"
+							},
+							"label": "******",
+							"target": {
+								"label": "******",
+								"placeholder": "******"
+							}
+						},
 						"inline": "******",
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
-						"update": "******"
+						"update": "******",
+						"useRecordId": "******"
 					},
 					"aggregations": {
 						"add": {
@@ -1329,6 +1546,9 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
+						"placeholder": {
+							"modifyValue": "******"
+						},
 						"title": "******",
 						"tooltip": {
 							"attach": "******",
@@ -1346,6 +1566,7 @@
 							"convert": "******",
 							"delete": "******",
 							"export": "******",
+							"goTo": "******",
 							"inline": "******",
 							"show": "******",
 							"showDetails": "******",
@@ -1371,7 +1592,12 @@
 						"title": "******"
 					},
 					"tooltip": {
-						"template": "******"
+						"template": "******",
+						"useRecordId": "******"
+					},
+					"warnings": {
+						"add": "******",
+						"general": "******"
 					}
 				},
 				"iconPicker": {
@@ -1388,7 +1614,9 @@
 							"autoSizeCluster": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
+							"clustering": "******",
 							"fields": "******",
+							"font": "******",
 							"fontSize": "******",
 							"high": "******",
 							"label": "******",
@@ -1410,6 +1638,7 @@
 						"groupLayers": "******",
 						"labels": "******",
 						"layerDatasource": "******",
+						"layerEdition": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"popup": "******",
@@ -1465,12 +1694,16 @@
 							"title": "******"
 						}
 					},
+					"help": {
+						"geographicExtent": "******"
+					},
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
 						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
+							"fieldMapping": "******",
 							"geoField": "******",
 							"latitude": "******",
 							"longitude": "******"
@@ -1535,6 +1768,9 @@
 						"basemap": "******",
 						"controls": {
 							"download": "******",
+							"lastUpdate": "******",
+							"lastUpdateError": "******",
+							"lastUpdatePosition": "******",
 							"layer": "******",
 							"legend": "******",
 							"measure": "******",
@@ -1542,6 +1778,8 @@
 							"timedimension": "******",
 							"title": "******"
 						},
+						"geographicExtent": "******",
+						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
@@ -1554,6 +1792,7 @@
 						"defaultLabel": "******",
 						"label": "******",
 						"symbol": "******",
+						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
@@ -1567,6 +1806,16 @@
 							"latitude": "******",
 							"longitude": "******",
 							"zoom": "******"
+						},
+						"geographicExtent": {
+							"add": "******",
+							"admin0": "******",
+							"region": "******",
+							"remove": "******",
+							"value": "****** {{context}} ****** {{filter}} ******"
+						},
+						"gradient": {
+							"reverse": "******"
 						}
 					}
 				},
@@ -1578,6 +1827,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "******",
+									"noVariables": "******",
+									"refresh": "******",
+									"title": "******",
+									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+								},
 								"title": "******",
 								"use": "******",
 								"wholeRow": {
@@ -1591,10 +1847,15 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
+							"padding": "******",
 							"title": "******",
 							"tooltip": {
 								"datasource": "******"
 							}
+						},
+						"gridActions": {
+							"title": "******",
+							"tooltip": "******"
 						},
 						"preview": {
 							"title": "******"
@@ -1615,6 +1876,8 @@
 						}
 					},
 					"dynamic": "******",
+					"exportable": "******",
+					"gridMode": "******",
 					"hint": {
 						"dynamic": "******"
 					},
@@ -1627,6 +1890,10 @@
 						"ariaLabel": "******"
 					},
 					"static": "******"
+				},
+				"tabs": {
+					"addNewTab": "******",
+					"deleteTab": "******"
 				}
 			},
 			"styling": "******",
@@ -1637,14 +1904,25 @@
 				},
 				"viewAsCards": "******",
 				"viewAsGrid": "******"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "****** {{aggregation.<id>}} ******",
+					"template": {
+						"add": "******",
+						"edit": "******"
+					}
+				}
 			}
 		}
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "******",
 			"noDataText": "******"
 		},
 		"datepicker": {
+			"dateFormat": "****** {{today}} ****** {{now}} ******",
 			"dateLabel": "******",
 			"endLabel": "******",
 			"startLabel": "******",
@@ -1721,6 +1999,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "******",
+			"invalidMaxFileSize": "******",
 			"select": "******"
 		},
 		"grid": {
@@ -1797,6 +2076,7 @@
 			"unstick": "******"
 		},
 		"multiselect": {
+			"clearTitle": "******",
 			"noDataText": "******"
 		},
 		"pager": {
@@ -1809,7 +2089,8 @@
 			"of": "******",
 			"page": "******",
 			"pageNumberInputTitle": "******",
-			"previousPage": "******"
+			"previousPage": "******",
+			"selectPage": "******"
 		},
 		"tilelayout": {
 			"component": {
@@ -1829,6 +2110,7 @@
 		},
 		"upload": {
 			"dropFilesHere": "******",
+			"invalidMaxFileSize": "******",
 			"select": "******"
 		}
 	},
@@ -1840,8 +2122,12 @@
 		},
 		"application": {
 			"description": "******",
+			"errors": {
+				"style": {
+					"notFound": "******"
+				}
+			},
 			"id": "******",
-			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -1876,6 +2162,7 @@
 				"text": "******",
 				"variant": "******"
 			},
+			"closable": "******",
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -1899,18 +2186,33 @@
 					"element": "******"
 				},
 				"selectDisplayField": "******",
-				"selectOrigin": "******"
+				"selectOrigin": "******",
+				"title": "******",
+				"tooltip": {
+					"useContextEditor": "******",
+					"useDefaultEditor": "******"
+				}
 			},
 			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"filterVariant": {
+				"title": "******",
+				"variantsOptions": {
+					"selectOrigin": "******",
+					"variant_default": "******",
+					"variant_modern": "******"
+				}
+			},
 			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
-				"dashboardFilter": "******",
-				"historicalDate": "****** {{filter.<name>}} ******",
-				"useDashboardFilterEditor": "******",
-				"useDefaultEditor": "******"
+				"filter": {
+					"closable": "******",
+					"fields": "******",
+					"position": "******"
+				},
+				"historicalDate": "****** {{filter.<name>}} ******"
 			}
 		},
 		"form": {
@@ -1942,7 +2244,6 @@
 		"page": {
 			"add": "******",
 			"tooltip": {
-				"drag": "******",
 				"duplicate": "******"
 			}
 		},
@@ -1972,7 +2273,8 @@
 			"select": "******"
 		},
 		"referenceData": {
-			"add": "******"
+			"add": "******",
+			"select": "******"
 		},
 		"resource": {
 			"create": "******",
@@ -2010,6 +2312,10 @@
 			},
 			"display": {
 				"border": "******",
+				"expand": "******",
+				"header": "******",
+				"hideEmpty": "******",
+				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
 				"title": "******"
@@ -2023,6 +2329,7 @@
 			"sorting": {
 				"add": "******",
 				"delete": "******",
+				"empty": "******",
 				"field": "******",
 				"label": "******",
 				"management": "******",
@@ -2031,6 +2338,12 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "******",
+					"help": "******",
+					"restore": "******"
+				},
+				"hideEmpty": "******",
 				"selector": {
 					"collapse": "******",
 					"expand": "******"
@@ -2048,6 +2361,12 @@
 	"pages": {
 		"administration": {
 			"title": "******"
+		},
+		"aggregation": {
+			"preview": {
+				"label": "******",
+				"missingAggregation": "******"
+			}
 		},
 		"apiConfiguration": {
 			"authentication": "******",
@@ -2158,12 +2477,33 @@
 			"csv": "******",
 			"fields": {
 				"fetch": "******",
+				"help": "******",
 				"missingConfig": "****** {{config}}",
 				"noFields": "******",
 				"title": "******"
 			},
 			"graphQLFilter": "******",
-			"path": "******",
+			"pagination": {
+				"cursorPath": "******",
+				"cursorVariable": "******",
+				"offsetVariable": "******",
+				"pageSizeVariable": "******",
+				"pageVariable": "******",
+				"strategy": "******",
+				"totalCountPath": "******",
+				"usePagination": {
+					"hint": "******",
+					"text": "******"
+				}
+			},
+			"path": {
+				"placeholder": "******",
+				"title": "******"
+			},
+			"payload": {
+				"label": "******",
+				"show": "******"
+			},
 			"placeholder": {
 				"csv": "******",
 				"graphQLFilter": "******"

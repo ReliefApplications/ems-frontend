@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   Renderer2,
+  ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -19,6 +20,7 @@ import { DOCUMENT } from '@angular/common';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionOwnerApplicationsDropdownModel } from './application-dropdown.model';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
+import { SelectMenuComponent } from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -37,18 +39,33 @@ export class ApplicationDropdownComponent
   extends QuestionAngular<QuestionOwnerApplicationsDropdownModel>
   implements OnInit, OnDestroy
 {
+  /** Selected applications */
   public selectedApplications: Application[] = [];
+  /** Applications Observable */
   public applications$!: Observable<Application[]>;
+  /** Applications */
   private applications = new BehaviorSubject<Application[]>([]);
+  /** Cached applications */
   private cachedApplications: Application[] = [];
+  /** Applications query */
   private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
+  /** Scroll listener */
   private scrollListener!: any;
+  /** Page info */
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
+  /** Loading */
   private loading = true;
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
+
+  /**
+   * Select menu component
+   */
+  @ViewChild(SelectMenuComponent, { static: true })
+  selectMenu!: SelectMenuComponent;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -72,6 +89,14 @@ export class ApplicationDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
+    // Listen to select menu UI event in order to update UI
+    this.selectMenu.triggerUIChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((hasChanged: boolean) => {
+        if (hasChanged) {
+          this.detectChangesUI();
+        }
+      });
     if (
       Array.isArray(this.model.obj.applications) &&
       this.model.obj.applications.length > 0

@@ -2,8 +2,12 @@
 	"common": {
 		"access": "Accès",
 		"accessDenied": "Accès refusé",
+		"account": "Compte",
+		"actions": "Actions",
 		"add": "Ajouter",
+		"adminField": "Champ administrateur",
 		"aggregation": {
+			"add": "Ajouter une agrégation",
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
 			"one": "Agrégation"
@@ -20,21 +24,20 @@
 		},
 		"archive": {
 			"delete": "Supprimer",
-			"few": "@TODO",
+			"few": "Archives",
 			"modal": {
 				"delete": {
 					"action": "Supprimer",
 					"confirmationMessage": "Voulez-vous supprimer l'archive {{name}}?",
 					"title": "Supprimer?"
 				},
-				"one": "@TODO",
 				"restore": {
 					"action": "Restaurer",
 					"confirmationMessage": "Voulez-vous restaurer {{name}}?",
 					"title": "Restaurer?"
 				}
 			},
-			"none": "@TODO",
+			"none": "Aucun élément archivé",
 			"restore": "Restaurer"
 		},
 		"ariaLabel": {
@@ -42,6 +45,7 @@
 				"clear": "Supprimer la recherche"
 			}
 		},
+		"asc": "Croissant",
 		"attribute": {
 			"few": "Attributs",
 			"none": "Aucun attribut",
@@ -76,6 +80,68 @@
 		"copy": "Copier",
 		"create": "Créer",
 		"createdOn": "Date de création",
+		"cronEditor": {
+			"advanced": "Avancé",
+			"atTime": "À",
+			"daily": "Quotidien",
+			"day": "Jour",
+			"days": "Jour(s)",
+			"every": {
+				"feminine": "Toutes les",
+				"masculine": "Tous les"
+			},
+			"firstWeekDay": "Premier jour de la semaine",
+			"hourly": "Horaire",
+			"hours": "Heure(s)",
+			"lastDay": "Dernier jour",
+			"lastWeekDay": "Dernier jour de la semaine",
+			"minutely": "Chaque minute",
+			"minutes": "Minute(s)",
+			"month": "Mois",
+			"monthly": "Mensuel",
+			"months": {
+				"april": "Avril",
+				"august": "Août",
+				"december": "Décembre",
+				"february": "Février",
+				"january": "Janvier",
+				"july": "Juillet",
+				"june": "Juin",
+				"march": "Mars",
+				"may": "Mai",
+				"november": "Novembre",
+				"october": "Octobre",
+				"september": "Septembre"
+			},
+			"of": "du",
+			"ofEvery": "de chaque",
+			"onThe": {
+				"feminine": "Pendant la",
+				"masculine": "Pendant le"
+			},
+			"seconds": "Seconde(s)",
+			"week": "Semaine",
+			"weekDay": "Jour de la semaine (LUN-VEN)",
+			"weekDays": {
+				"friday": "Vendredi",
+				"monday": "Lundi",
+				"saturday": "Samedi",
+				"sunday": "Dimanche",
+				"thursday": "Jeudi",
+				"tuesday": "Mardi",
+				"wednesday": "Mercredi"
+			},
+			"weekNumber": {
+				"fifth": "Cinquième",
+				"first": "Première",
+				"fourth": "Quatrième",
+				"last": "Dernière",
+				"second": "Deuxième",
+				"third": "Troisième"
+			},
+			"weekly": "Hebdomadaire",
+			"yearly": "Annuel"
+		},
 		"customNotification": {
 			"few": "Notifications",
 			"none": "Aucune notification",
@@ -89,6 +155,7 @@
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
+		"desc": "Décroissant",
 		"dismiss": "Fermer",
 		"display": "Afficher",
 		"distributionList": {
@@ -106,6 +173,8 @@
 			"one": "Email"
 		},
 		"errors": {
+			"few": "Erreurs",
+			"invalidJson": "Veuillez utiliser un JSON valide",
 			"objectDuplicated": "{{type}} {{value}} existe déjà."
 		},
 		"exitFullscreen": "Quitter le mode plein écran",
@@ -138,6 +207,7 @@
 			"none": "Pas de groupes",
 			"one": "Groupe"
 		},
+		"hide": "Cacher",
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -146,15 +216,20 @@
 			"rawJson": "JSON brut"
 		},
 		"label": "Etiquette",
-		"layers": "Couches",
+		"layers": {
+			"few": "Couches",
+			"none": "Pas de couche"
+		},
 		"layout": {
 			"few": "Mises en page",
 			"none": "Aucune mise en page",
 			"one": "Mise en page"
 		},
+		"loading": "Chargement",
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noData": "Aucune donnée disponible",
 		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
@@ -183,6 +258,7 @@
 				},
 				"upload": {
 					"error": "Un problème est survenu lors de l'import",
+					"maxFileSize": "La taille maximale du fichier est de {{size}} Mo.",
 					"processing": "Fichier en cours d'importation...",
 					"ready": "Fichier importé"
 				}
@@ -243,6 +319,12 @@
 		"platform": {
 			"backOffice": "Back-Office"
 		},
+		"position": {
+			"bottomleft": "En bas à gauche",
+			"bottomright": "En bas à droite",
+			"topleft": "En haut à gauche",
+			"topright": "En haut à droite"
+		},
 		"positionAttribute": {
 			"few": "Attributs de position",
 			"none": "Aucun attribut de position",
@@ -271,6 +353,7 @@
 			"none": "Aucune référence de données",
 			"one": "Référence de données"
 		},
+		"remove": "Retirer",
 		"resource": {
 			"few": "Ressources",
 			"none": "Aucune ressource",
@@ -310,6 +393,7 @@
 			"none": "Aucun abonnement",
 			"one": "Abonnement"
 		},
+		"tabs": "Onglets",
 		"template": {
 			"few": "Modèles de notification",
 			"none": "Aucun modèle",
@@ -317,6 +401,7 @@
 		},
 		"title": "Titre",
 		"tooltip": {
+			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
 				"insert": "Tapez '{' pour utiliser des expressions et des variables"
 			}
@@ -401,12 +486,12 @@
 				"week": "Semaine",
 				"year": "Année"
 			},
-			"sourceFields": "Sélectionner les champs",
+			"sourceFields": "Choisissez les champs à inclure dans l'agrégation",
 			"stages": {
 				"addFields": "Ajouter des champs",
 				"custom": "Personnaliser",
 				"filter": "Filtrer",
-				"group": "Grouper",
+				"group": "Grouper & Accumulateur",
 				"sort": "Trier",
 				"unwind": "Dissocier"
 			},
@@ -414,9 +499,10 @@
 				"addFields": "Ajouter de nouveaux champs au document.",
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
-				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"group": "Regroupe les enregistrements en fonction des valeurs de champ et construit des accumulateurs personnalisés.",
+				"groupingRules": "Les règles de regroupement sont facultatives.",
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
-				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
 		},
@@ -443,14 +529,50 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"enterEditMode": "Entrer en mode édition",
+				"enterPreviewMode": "Entrer en mode prévisualisation",
 				"filter": {
 					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"filterPosition": {
+						"bottom": "Afficher le filtre en bas",
+						"left": "Afficher le filtre à gauche",
+						"right": "Afficher le filtre à droite",
+						"top": "Afficher le filtre en haut",
+						"unset": "Position indéfinie, sélectionnez en une"
+					},
 					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
 					"title": "Vous modifiez les filtres du tableau de bord"
 				},
 				"filterSettings": "Paramètres du filtre",
 				"settings": {
-					"defaultPosition": "Position par défaut du filtre"
+					"defaultPosition": "Position par défaut du filtre",
+					"fixedRowHeight": "Hauteur de ligne fixe",
+					"gridOptions": "Options de grille",
+					"gridType": {
+						"fit": "Ajuster",
+						"placeholder": "Sélectionnez un type de grille",
+						"title": "Type de grille",
+						"verticalFixed": "Vertical fixe"
+					},
+					"help": {
+						"minCols": "Réduire le nombre de colonnes peut ne pas avoir un impact direct si les widgets dépassent la limite spécifiée en largeur."
+					},
+					"margin": "Marge entre les widgets",
+					"minCols": "Nombre de colonnes",
+					"minimumHeight": "Hauteur minimum",
+					"tooltip": {
+						"fixedRowHeight": "Taille des lignes en pixels.\nDoit être supérieur ou égal à 50.",
+						"margin": "Marge entre les widgets.\nDoit être un entier positif.",
+						"minCols": "Nombre de colonnes.\nDoit être compris entre 4 et 24.",
+						"minimumHeight": "Taille minimale de la grille en pixels.\nDoit être supérieur ou égal à 0.",
+						"reset": "Réinitialiser la valeur"
+					},
+					"tooltips": {
+						"clear": "Définir les valeurs par défaut",
+						"fixedRowHeight": "Minimum: 50, Par défaut: 200, Pas de max",
+						"margin": "Minimum: 0, Par défaut: 10, Pas de max",
+						"minCols": "Minimum: 4, Par défaut: 8, Maximum: 24"
+					}
 				}
 			},
 			"delete": {
@@ -473,6 +595,13 @@
 				"reordered": {
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
+				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Sélectionnez une icône",
+					"tooltip": {
+						"autoSave": "Les modifications sont automatiquement enregistrées"
+					}
 				},
 				"show": "Afficher la page dans la barre latérale de navigation"
 			},
@@ -507,8 +636,13 @@
 				"title": "Déverrouiller l'édition"
 			},
 			"update": {
+				"hideMenu": "Cacher le menu vertical de navigation par défaut",
 				"placeholder": {
 					"description": "Veuillez entrer une description pour l'application."
+				},
+				"sideMenu": "Afficher le menu sur le côté",
+				"tooltip": {
+					"hideMenu": "Ne s'applique que lorsque le menu est sur le côté"
 				}
 			},
 			"users": {
@@ -646,6 +780,25 @@
 			"display": {
 				"submissionMessage": "Le formulaire a été sauvegardé."
 			},
+			"draftRecords": {
+				"buttonLoad": "Charger un brouillon",
+				"confirmModal": {
+					"confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
+					"confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",
+					"delete": "Supprimer ce brouillon",
+					"load": "Charger ce brouillon"
+				},
+				"creationDate": "Date de création",
+				"delete": "Supprimer ce brouillon",
+				"load": "Charger ce brouillon",
+				"noDrafts": "Aucun enregistrement brouillon disponible",
+				"preview": "Prévisualiser ce brouillon",
+				"previewTitle": "Enregistrement brouillon",
+				"save": "Enregistrer comme brouillon",
+				"select": "Sélectionner le brouillon",
+				"successEdit": "Brouillon modifié avec succès",
+				"successSave": "Enregistré dans les brouillons avec succès"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
@@ -678,6 +831,7 @@
 		"formBuilder": {
 			"errors": {
 				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
+				"incorrectJSON": "Le JSON est invalide dans le JSON Editor, les changements n'ont pas été sauvegardés",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
@@ -733,13 +887,32 @@
 				"to": "à",
 				"withValue": "avec valeur"
 			},
+			"columns": {
+				"action": "Type d'action",
+				"date": "Date",
+				"modifiedValue": "Ancienne valeur",
+				"originalValue": "Nouvelle valeur",
+				"person": "Utilisateur",
+				"time": "Heure",
+				"variable": "Champ"
+			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",
 			"field": {
 				"all": "Tous les champs",
-				"select": "Sélectionner un champ"
+				"select": "Sélectionner les champs"
 			},
-			"preview": "Prévisualiser et revenir"
+			"preview": "Prévisualiser et revenir",
+			"range": {
+				"clear": "Effacer la plage de données"
+			},
+			"useTableMode": "Afficher en table"
+		},
+		"icon": {
+			"modal": {
+				"select": "Sélectionner une icône",
+				"use": "Utiliser l'icône"
+			}
 		},
 		"logout": {
 			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
@@ -759,6 +932,10 @@
 						"all": "Toute la carte",
 						"current": "Vue actuelle"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "Quitter le mode plein écran",
+					"viewFullscreen": "Voir en plein écran"
 				}
 			}
 		},
@@ -938,6 +1115,7 @@
 		"records": {
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
+			"editAs": "Editer en tant que",
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'enregistrements"
 			},
@@ -959,7 +1137,9 @@
 				"select": "Depuis la référence de données"
 			},
 			"fields": {
-				"ariaLabel": "Indiquez les champs de la référence de données"
+				"add": "Ajouter le champ",
+				"ariaLabel": "Indiquez les champs de la référence de données",
+				"new": "Nouveau champ"
 			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de références de données"
@@ -1099,6 +1279,7 @@
 			"invite": {
 				"confirm": "Inviter",
 				"role": {
+					"additionalAttributes": "Définir des attributs supplémentaires",
 					"description": "Sélectionner le rôle à assigner"
 				}
 			},
@@ -1154,12 +1335,16 @@
 						"invalid": "Agrégation invalide"
 					}
 				},
+				"filters": {
+					"select": "Sélectionnez un filtre..."
+				},
 				"other": "Autre"
 			},
 			"expand": "Étendre",
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"goTo": "Aller à la page",
 					"history": "Voir l'historique"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
@@ -1167,7 +1352,8 @@
 					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
-						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
+						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur",
+						"widgets": "Configuration de grille non valide, veuillez contacter votre administrateur"
 					},
 					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
 					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",
@@ -1208,6 +1394,9 @@
 					"one": "{{count}} élément"
 				},
 				"layout": {
+					"button": {
+						"title": "Cela effacera la mise en page actuelle avec la mise en page par défaut"
+					},
 					"reset": "Réinitialiser la mise en page par défaut"
 				},
 				"loading": {
@@ -1221,6 +1410,7 @@
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"displayMap": "Afficher la carte",
+					"openPage": "Aller à la page",
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
@@ -1238,6 +1428,12 @@
 					"axes": "Axes",
 					"categories": "Catégories",
 					"color": "Couleur",
+					"filters": {
+						"add": "Ajouter un filtre",
+						"delete": "Supprimer le filtre",
+						"empty": "Aucun filtre configuré",
+						"title": "Filtres prédéfinis"
+					},
 					"grid": {
 						"title": "Grille",
 						"x": {
@@ -1277,6 +1473,7 @@
 						"title": "Séries"
 					},
 					"size": "Taille",
+					"stepSize": "Intervalle entre les marques",
 					"style": "Style",
 					"text": "Texte",
 					"title": {
@@ -1284,7 +1481,8 @@
 						"format": "Format"
 					},
 					"tooltip": {
-						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie.",
+						"stepSize": "Intervalle entre chaque marque de graduation sur l'axe, lorsque possible"
 					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -1303,12 +1501,28 @@
 						"convert": "Convertir des enregistrements",
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
+						"goTo": {
+							"column": {
+								"label": "Nom de la colonne",
+								"placeholder": "Entrez un nom pour la colonne..."
+							},
+							"field": {
+								"label": "Passer le champ comme paramètre de requête",
+								"placeholder": "Sélectionnez un champ"
+							},
+							"label": "Accédez à la page",
+							"target": {
+								"label": "Naviguez vers la page",
+								"placeholder": "Sélectionnez une page"
+							}
+						},
 						"inline": "Modifier par ligne",
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
-						"update": "Modifier les enregistrements"
+						"update": "Modifier les enregistrements",
+						"useRecordId": "Injecter l'identifiant comme paramètre de navigation"
 					},
 					"aggregations": {
 						"add": {
@@ -1345,6 +1559,9 @@
 						"create": "Ajouter un bouton",
 						"defaultName": "Bouton d'action",
 						"enable": "Activer",
+						"placeholder": {
+							"modifyValue": "Supprimer la valeur"
+						},
 						"title": "Bouton d'action rapide",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
@@ -1362,6 +1579,7 @@
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
@@ -1387,7 +1605,12 @@
 						"title": "Mise en page de la grille"
 					},
 					"tooltip": {
-						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
+						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
+					},
+					"warnings": {
+						"add": "Veuillez sélectionner un modèle",
+						"general": "Attention: les actions contiennent des erreurs"
 					}
 				},
 				"iconPicker": {
@@ -1404,7 +1627,9 @@
 							"autoSizeCluster": "Taille automatique des clusters",
 							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
+							"clustering": "Clustering",
 							"fields": "Champs de groupes",
+							"font": "Police",
 							"fontSize": "Taille de la police",
 							"high": "Haut",
 							"label": "Libellé du groupes",
@@ -1426,6 +1651,7 @@
 						"groupLayers": "Regrouper les calques",
 						"labels": "Étiquettes",
 						"layerDatasource": "Source de données de la couche",
+						"layerEdition": "Edition de couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"popup": "Popup",
@@ -1450,7 +1676,7 @@
 						"styling": {
 							"heatmapOptions": {
 								"blur": "Flou",
-								"gradient": "Gradient",
+								"gradient": "Dégradé",
 								"minOpacity": "Opacité minimum",
 								"radius": "Rayon"
 							}
@@ -1481,12 +1707,16 @@
 							"title": "Styles de calque"
 						}
 					},
+					"help": {
+						"geographicExtent": "Utilisez le filtre et/ou le contexte de la page pour zoomer sur la carte"
+					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"chooseLayer": "Choisir un calque existant",
 						"createGroup": "Créer un nouveau groupe de couches",
 						"createLayer": "Créer un nouveau calque",
 						"dataSource": {
+							"fieldMapping": "Mapping des Champs",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"
@@ -1551,6 +1781,9 @@
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
+							"lastUpdate": "Dernière mise à jour le",
+							"lastUpdateError": "L'heure de la dernière modification n'a pas pu être chargée",
+							"lastUpdatePosition": "Choisissez une position pour afficher l'élément",
 							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",
@@ -1558,6 +1791,8 @@
 							"timedimension": "Dimension temporelle",
 							"title": "Contrôles de la carte"
 						},
+						"geographicExtent": "Type d'étendue",
+						"geographicExtentValue": "Valeur de l'étendue",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
@@ -1570,6 +1805,7 @@
 						"defaultLabel": "Libellé par défaut",
 						"label": "Libellé",
 						"symbol": "Symbole",
+						"uniqueValue": "Valeurs uniques",
 						"value": "Valeur"
 					},
 					"tooltip": {
@@ -1583,6 +1819,16 @@
 							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
 							"longitude": "Définissez la longitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la longitude de la carte d'aperçu.",
 							"zoom": "Sélectionnez un zoom par défaut"
+						},
+						"geographicExtent": {
+							"add": "Ajouter un nouveau type d'étendue",
+							"admin0": "Utiliez le code iso2, le code iso3, ou le nom du pays",
+							"region": "Utilisez le nom de région",
+							"remove": "Supprimer le type d'étendue",
+							"value": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"
+						},
+						"gradient": {
+							"reverse": "Inverser le dégradé"
 						}
 					}
 				},
@@ -1594,6 +1840,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "N'oubliez pas de supprimer les variables non utilisées.",
+									"noVariables": "Aucune variable définie",
+									"refresh": "Afficher toutes les variables graphQL",
+									"title": "Mappage de variables GraphQL",
+									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
+								},
 								"title": "Styles de mise en page",
 								"use": "Utiliser les styles de mise en page",
 								"wholeRow": {
@@ -1607,10 +1860,15 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage",
+							"padding": "Utiliser la marge intérieure",
+							"title": "Affichage de la carte",
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
+						},
+						"gridActions": {
+							"title": "Actions de grille",
+							"tooltip": "Actions de grille activées"
 						},
 						"preview": {
 							"title": "Prévisualisation"
@@ -1631,6 +1889,8 @@
 						}
 					},
 					"dynamic": "Dynamique",
+					"exportable": "Autoriser l'export des cartes",
+					"gridMode": "Peut être affiché en grille",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
 					},
@@ -1643,6 +1903,10 @@
 						"ariaLabel": "***"
 					},
 					"static": "Statique"
+				},
+				"tabs": {
+					"addNewTab": "Ajouter un nouvel onglet",
+					"deleteTab": "Supprimer l'onglet"
 				}
 			},
 			"styling": "Modifier le style",
@@ -1653,14 +1917,25 @@
 				},
 				"viewAsCards": "Afficher en cartes",
 				"viewAsGrid": "Afficher en grille"
+			},
+			"text": {
+				"aggregations": {
+					"alert": "Vous pouvez créer des agrégations personnalisées et les injecter dans l'éditeur à l'aide d'espaces réservés {{aggregation.<id>}}.",
+					"template": {
+						"add": "Ajouter une nouvelle agrégation de modèles",
+						"edit": "Modifier l'agrégation de modèles"
+					}
+				}
 			}
 		}
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "Supprimer la valeur",
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateFormat": "AAAA/MM/JJ ou une expression ({{today}} ou  {{now}})",
 			"dateLabel": "Sélectionnez une date",
 			"endLabel": "Date de fin",
 			"startLabel": "Date de début",
@@ -1737,6 +2012,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "Déposez les fichiers ici pour les sélectionner",
+			"invalidMaxFileSize": "Taille du fichier trop grande.",
 			"select": "Choisir des fichiers..."
 		},
 		"grid": {
@@ -1813,6 +2089,7 @@
 			"unstick": "Désépingler"
 		},
 		"multiselect": {
+			"clearTitle": "Supprimer la valeur",
 			"noDataText": "No available choice"
 		},
 		"pager": {
@@ -1825,7 +2102,8 @@
 			"of": "sur",
 			"page": "Page",
 			"pageNumberInputTitle": "Numéro de page",
-			"previousPage": "Aller à la page précédente"
+			"previousPage": "Aller à la page précédente",
+			"selectPage": "Sélectionez la page"
 		},
 		"tilelayout": {
 			"component": {
@@ -1845,6 +2123,7 @@
 		},
 		"upload": {
 			"dropFilesHere": "Déposez les fichiers ici pour les importer",
+			"invalidMaxFileSize": "Taille du fichier trop grande.",
 			"select": "Sélectionner les fichiers..."
 		}
 	},
@@ -1856,6 +2135,11 @@
 		},
 		"application": {
 			"description": "Description",
+			"errors": {
+				"style": {
+					"notFound": "Le style de l'application n'a pas pu être chargé"
+				}
+			},
 			"id": "ID de l'application",
 			"menu": "Menu latéral",
 			"new": "Nouvelle application",
@@ -1892,6 +2176,7 @@
 				"text": "Texte du bouton",
 				"variant": "Variante de bouton"
 			},
+			"closable": "Peut être fermé",
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -1915,18 +2200,33 @@
 					"element": "Élément"
 				},
 				"selectDisplayField": "Sélectionnez le champ d'affichage",
-				"selectOrigin": "Sélectionnez la source de données"
+				"selectOrigin": "Sélectionnez la source de données",
+				"title": "Contexte",
+				"tooltip": {
+					"useContextEditor": "Utiliser l'éditeur de contexte",
+					"useDefaultEditor": "Utiliser l'éditeur par défaut"
+				}
 			},
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
 			"deactivateFiltering": "Désactiver le filtre",
+			"filterVariant": {
+				"title": "Variante de filtre",
+				"variantsOptions": {
+					"selectOrigin": "Sélectionner une variante de filtre",
+					"variant_default": "Défaut",
+					"variant_modern": "Moderne"
+				}
+			},
 			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
-				"dashboardFilter": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
-				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}.",
-				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
-				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+				"filter": {
+					"closable": "Lorsque la variante est moderne ou que l'application est utilisée comme élément web, un bouton s'affichera pour permettre à l'utilisateur de cacher le filtre",
+					"fields": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
+					"position": "Ne s'applique que lorsque la variant par défaut est active"
+				},
+				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}."
 			}
 		},
 		"form": {
@@ -1958,7 +2258,6 @@
 		"page": {
 			"add": "Ajouter une page",
 			"tooltip": {
-				"drag": "Glissez-déposez pour réorganiser",
 				"duplicate": "Sélectionner l'application où copier la page"
 			}
 		},
@@ -1988,7 +2287,8 @@
 			"select": "Sélectionnez un enregistrement"
 		},
 		"referenceData": {
-			"add": "Ajouter une référence de données"
+			"add": "Ajouter une référence de données",
+			"select": "Sélectionnez une référence de données"
 		},
 		"resource": {
 			"create": "Créer une ressource",
@@ -2026,6 +2326,10 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"expand": "Afficher le bouton pour développer le widget",
+				"header": "Afficher l'en-tête du widget",
+				"hideEmpty": "Masquer si le widget ne contient aucune donnée",
+				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
@@ -2039,6 +2343,7 @@
 			"sorting": {
 				"add": "Ajouter un champ",
 				"delete": "Supprimer le champ de tri",
+				"empty": "Aucun champ de tri défini",
 				"field": "Champ",
 				"label": "Étiquette",
 				"management": "Gestion des champs de tri",
@@ -2047,6 +2352,12 @@
 				"title": "Tri"
 			},
 			"tooltip": {
+				"expandButton": {
+					"expand": "Étendre le widget",
+					"help": "Apparaît uniquement dans le front-office ou en mode prévisualisation.",
+					"restore": "Restaurer la taille"
+				},
+				"hideEmpty": "Se cache uniquement en front-office ou en mode aperçu",
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"
@@ -2064,6 +2375,12 @@
 	"pages": {
 		"administration": {
 			"title": "Administration"
+		},
+		"aggregation": {
+			"preview": {
+				"label": "Aperçu des données d'agrégation",
+				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
+			}
 		},
 		"apiConfiguration": {
 			"authentication": "Paramètres d'authentification",
@@ -2174,12 +2491,33 @@
 			"csv": "Fichier CSV d'entrée",
 			"fields": {
 				"fetch": "Récupérer les champs",
+				"help": "Les champs sont calculés en fonction des attributs du premier élément dans la réponse de l'API",
 				"missingConfig": "Impossible de récupérer les champs. Configuration manquante : {{config}}",
 				"noFields": "Aucun champ trouvé",
 				"title": "Champ"
 			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
-			"path": "Chemin",
+			"pagination": {
+				"cursorPath": "Chemin du curseur",
+				"cursorVariable": "Variable de requête de curseur",
+				"offsetVariable": "Variable de requête de décalage",
+				"pageSizeVariable": "Variable de requête de taille de page",
+				"pageVariable": "Variable de requête de numéro de page",
+				"strategy": "Stratégie de pagination",
+				"totalCountPath": "Chemin du nombre total d'articles",
+				"usePagination": {
+					"hint": "Dépend de la prise en charge de l'API, permet de récupérer des données par page",
+					"text": "Utiliser la pagination"
+				}
+			},
+			"path": {
+				"placeholder": "Entrez un JSONPath valide",
+				"title": "Chemin de données"
+			},
+			"payload": {
+				"label": "Réponse de l'API",
+				"show": "Afficher la réponse de l'API"
+			},
 			"placeholder": {
 				"csv": "Insérer le CSV ici",
 				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"

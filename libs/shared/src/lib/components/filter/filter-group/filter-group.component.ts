@@ -10,9 +10,16 @@ import { FormBuilder, FormGroup, UntypedFormArray } from '@angular/forms';
   styleUrls: ['./filter-group.component.scss'],
 })
 export class FilterGroupComponent {
+  /** Filter reactive form group */
   @Input() form!: FormGroup;
+  /** Available fields */
   @Input() fields: any[] = [];
+  /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
+  /** Reference to parent filter group, if any */
+  @Input() parent: FilterGroupComponent | null = null;
+  /** Can use context variables */
+  @Input() canUseContext = false;
 
   /**
    * Getter for the filters

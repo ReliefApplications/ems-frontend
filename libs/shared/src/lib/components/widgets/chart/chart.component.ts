@@ -1,23 +1,27 @@
 import {
-  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
   SimpleChanges,
   ViewChild,
   Inject,
+  OnInit,
+  OnDestroy,
+  ElementRef,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy, isEqual } from 'lodash';
+import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /**
  * Default file name for chart exports
@@ -25,29 +29,100 @@ import { DOCUMENT } from '@angular/common';
 const DEFAULT_FILE_NAME = 'chart';
 
 /**
- * Chart widget component using KendoUI
+ * Joins context filters and predefined filters
+ *
+ * @param contextFilters Context filters, stringified JSON
+ * @param predefinedFilter Predefined filter coming from the dropdown
+ * @returns The joined filters
+ */
+const joinFilters = (
+  contextFilters: CompositeFilterDescriptor,
+  predefinedFilter: CompositeFilterDescriptor | null
+): CompositeFilterDescriptor => {
+  const res: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
+
+  if (contextFilters) {
+    res.filters.push(contextFilters);
+  }
+
+  if (predefinedFilter) {
+    res.filters.push(predefinedFilter);
+  }
+
+  return res;
+};
+
+/**
+ * Chart widget component.
+ * Use Chartjs.
  */
 @Component({
   selector: 'shared-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class ChartComponent extends UnsubscribeComponent implements OnChanges {
-  // === DATA ===
-  public loading = true;
-  public options: any = null;
-  private dataQuery: any;
-
-  private series = new BehaviorSubject<any[]>([]);
-  public series$ = this.series.asObservable();
-
-  public lastUpdate = '';
-  public hasError = false;
-
-  // === WIDGET CONFIGURATION ===
-  @Input() header = true;
+export class ChartComponent
+  extends BaseWidgetComponent
+  implements OnInit, OnChanges, OnDestroy
+{
+  /** Can chart be exported */
   @Input() export = true;
+  /** Widget settings */
   @Input() settings: any = null;
+  /** Chart component reference */
+  @ViewChild('chartWrapper')
+  private chartWrapper?:
+    | LineChartComponent
+    | PieDonutChartComponent
+    | BarChartComponent;
+  /** Loading indicator */
+  public loading = true;
+  /** Chart options */
+  public options: any = null;
+  /** Graphql query */
+  private dataQuery: any;
+  /** Chart series as behavior subject */
+  private series = new BehaviorSubject<any[]>([]);
+  /** Chart series as observable */
+  public series$ = this.series.asObservable();
+  /** Last update time */
+  public lastUpdate = '';
+  /** Is aggregation broken */
+  public hasError = false;
+  /** Selected predefined filter */
+  public selectedFilter: CompositeFilterDescriptor | null = null;
+  /** Aggregation id */
+  private aggregationId?: string;
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
+
+  /** @returns Context filters array */
+  get contextFilters(): CompositeFilterDescriptor {
+    return this.settings.contextFilters
+      ? JSON.parse(this.settings.contextFilters)
+      : {
+          logic: 'and',
+          filters: [],
+        };
+  }
+
+  /** @returns the graphql query variables object */
+  get graphQLVariables() {
+    try {
+      let mapping = JSON.parse(
+        this.settings.referenceDataVariableMapping || ''
+      );
+      mapping = this.contextService.replaceContext(mapping);
+      mapping = this.contextService.replaceFilter(mapping);
+      this.contextService.removeEmptyPlaceholders(mapping);
+      return mapping;
+    } catch {
+      return null;
+    }
+  }
 
   /**
    * Get filename from the date and widget title
@@ -65,57 +140,84 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
     } ${formatDate}.png`;
   }
 
-  // === CHART ===
-  @ViewChild('chartWrapper')
-  private chartWrapper?:
-    | LineChartComponent
-    | PieDonutChartComponent
-    | BarChartComponent;
+  /**
+   * Get predefined filters from settings
+   *
+   * @returns array of filters
+   */
+  get predefinedFilters(): {
+    label: string;
+    filter: CompositeFilterDescriptor;
+  }[] {
+    return this.settings?.filters ?? [];
+  }
 
   /**
-   * Chart widget using KendoUI.
+   * Chart widget component.
+   * Use Chartjs.
    *
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
-   * @param cdr Angular change detector
+   * @param {ElementRef} el Current components element ref in the DOM
    * @param document document
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private cdr: ChangeDetectorRef,
-    @Inject(DOCUMENT) private document: Document
+    private el: ElementRef,
+    @Inject(DOCUMENT) private document: Document,
+    private dashboardService: DashboardService
   ) {
     super();
+  }
 
+  ngOnInit(): void {
+    // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadChart();
-        this.getOptions();
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ previous, current }) => {
+        if (
+          this.contextService.filterRegex.test(this.settings.contextFilters) ||
+          this.contextService.filterRegex.test(
+            this.settings.referenceDataVariableMapping
+          )
+        ) {
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
+            this.series.next([]);
+            this.loadChart();
+            this.getOptions();
+          }
+        }
       });
-
-    this.contextService.isFilterEnabled$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadChart();
-        this.getOptions();
+    // Listen to series data changes to know when widget is empty and will be hidden
+    if (this.settings.widgetDisplay.hideEmpty) {
+      this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        this.dashboardService.widgetContentRefreshed.next(null);
       });
-
-    // Not entirely sure why the change detection is not happening automatically
-    // when the series are updated, but this forces it to happen
-    this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        this.cdr.detectChanges();
-      }, 100);
-    });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     const previousDatasource = {
       resource: get(changes, 'settings.previousValue.resource'),
+      referenceData: get(changes, 'settings.previousValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -125,6 +227,7 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
     };
     const currentDatasource = {
       resource: get(changes, 'settings.currentValue.resource'),
+      referenceData: get(changes, 'settings.currentValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -133,45 +236,46 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
       },
     };
 
-    if (!isEqual(previousDatasource, currentDatasource)) this.loadChart();
+    if (!isEqual(previousDatasource, currentDatasource)) {
+      const currentAggregationId = get(
+        changes,
+        'settings.currentValue.chart.aggregationId'
+      );
+      this.aggregationId = String(currentAggregationId)
+        ? String(currentAggregationId)
+        : this.aggregationId;
+      this.loadChart();
+    }
     this.getOptions();
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.cancelRefresh$.next();
+    this.cancelRefresh$.complete();
   }
 
   /** Loads chart */
   private loadChart(): void {
+    this.cancelRefresh$.next();
     this.loading = true;
-    if (this.settings.resource) {
-      this.aggregationService
-        .getAggregations(this.settings.resource, {
-          ids: [get(this.settings, 'chart.aggregationId', null)],
-          first: 1,
-        })
-        .then((res) => {
-          const aggregation = res.edges[0]?.node || null;
-          if (aggregation) {
-            this.dataQuery = this.aggregationService.aggregationDataQuery(
-              this.settings.resource,
-              aggregation.id || '',
-              get(this.settings, 'chart.mapping', null),
-              this.settings.contextFilters
-                ? this.contextService.injectDashboardFilterValues(
-                    JSON.parse(this.settings.contextFilters)
-                  )
-                : undefined,
-              this.settings.at
-                ? this.contextService.atArgumentValue(this.settings.at)
-                : undefined
-            );
-            if (this.dataQuery) {
-              this.getData();
-            } else {
-              this.loading = false;
-            }
-          } else {
-            this.loading = false;
-          }
-        })
-        .catch(() => (this.loading = false));
+    if (this.settings.resource || this.settings.referenceData) {
+      this.dataQuery = this.aggregationService.aggregationDataQuery({
+        referenceData: this.settings.referenceData,
+        resource: this.settings.resource,
+        aggregation: this.aggregationId || '',
+        mapping: get(this.settings, 'chart.mapping', null),
+        contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
+        graphQLVariables: this.graphQLVariables,
+        at: this.settings.at
+          ? this.contextService.atArgumentValue(this.settings.at)
+          : undefined,
+      });
+      if (this.dataQuery) {
+        this.getData();
+      } else {
+        this.loading = false;
+      }
     } else {
       this.loading = false;
     }
@@ -181,14 +285,6 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
    * Exports the chart as a png ticket
    */
   public onExport(): void {
-    // {
-    //   width: 1200,
-    //   height: 800,
-    // }
-    // this.chartWrapper?.exportImage();
-    // .then((dataURI: string) => {
-    //   saveAs(dataURI, this.fileName);
-    // });
     const downloadLink = this.document.createElement('a');
     downloadLink.href = this.chartWrapper?.chart?.toBase64Image() as string;
     downloadLink.download = this.fileName;
@@ -211,6 +307,9 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
           max: get(this.settings, 'chart.axes.x.enableMax')
             ? get(this.settings, 'chart.axes.x.max')
             : null,
+          stepSize: get(this.settings, 'chart.axes.x.stepSize')
+            ? get(this.settings, 'chart.axes.x.stepSize')
+            : null,
         },
         y: {
           min: get(this.settings, 'chart.axes.y.enableMin')
@@ -218,6 +317,9 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
             : null,
           max: get(this.settings, 'chart.axes.y.enableMax')
             ? get(this.settings, 'chart.axes.y.max')
+            : null,
+          stepSize: get(this.settings, 'chart.axes.y.stepSize')
+            ? get(this.settings, 'chart.axes.y.stepSize')
             : null,
         },
       },
@@ -246,7 +348,7 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
   /** Load the data, using widget parameters. */
   private getData(): void {
     this.dataQuery
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe(({ errors, data, loading }: any) => {
         if (errors) {
           this.loading = false;
@@ -259,6 +361,7 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
             ('0' + today.getHours()).slice(-2) +
             ':' +
             ('0' + today.getMinutes()).slice(-2);
+
           if (
             [
               'pie',
@@ -270,9 +373,15 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
               'polar',
             ].includes(this.settings.chart.type)
           ) {
-            const aggregationData = JSON.parse(
-              JSON.stringify(data.recordsAggregation)
+            const aggregationData = cloneDeep(
+              this.settings.resource
+                ? data.recordsAggregation
+                : data.referenceDataAggregation
             );
+
+            // Check if we got any data back
+            this.isEmpty =
+              Array.isArray(aggregationData) && aggregationData.length === 0;
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
@@ -308,10 +417,34 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
               ]);
             }
           } else {
-            this.series.next(data.recordsAggregation);
+            this.series.next(
+              this.settings.resource
+                ? data.recordsAggregation
+                : data.referenceData
+            );
+
+            this.isEmpty =
+              Array.isArray(this.series.value) &&
+              this.series.value.length === 0;
           }
           this.loading = loading;
         }
       });
+  }
+
+  /**
+   * Applies selected filter to the query
+   *
+   * @param filter Filter to be applied
+   */
+  onFilterSelected(
+    filter: (typeof this.predefinedFilters)[number] | undefined
+  ) {
+    if (filter) {
+      this.selectedFilter = filter.filter;
+    } else {
+      this.selectedFilter = null;
+    }
+    this.loadChart();
   }
 }

@@ -1,15 +1,15 @@
 OORT Front-end
 =======
-[![Github Pages](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml)
-[![Storybook](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml)
+[![Github Pages](https://github.com/ReliefApplications/ems-frontend/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/github-pages.yml)
+[![Storybook](https://github.com/ReliefApplications/ems-frontend/actions/workflows/storybook.yml/badge.svg)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/storybook.yml)
 
 # Versions
 
 Branch | Version | CI
 --- | --- | ---
-main | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/main) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
-next | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/next?color=6ded5a) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=next)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
-beta | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/beta?color=ecf495) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=beta)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
+main | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/main) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml)
+next | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/next?color=6ded5a) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=next)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml)
+beta | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/beta?color=ecf495) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=beta)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml)
 
 # Introduction
 
@@ -138,29 +138,26 @@ To test web components, you can:
 - execute: `npm i && npm run start`
 You should find under the form widget dropdown some form types in order to test the form web component.
 
-<!-- ## Build the web components
+### Build the web components
 
-We first need to generate the elements, using this command:
+You can use the makefile command:
 ```
-npm run build:elem
+make bundle-widgets
 ```
 
-Then, a bundle can be generated from the files using this command:
+By default, the target is azure-dev project, but you can change it like that:
 ```
-npm run bundle:elem
-``` -->
+make bundle-widgets project=azure-prod
+```
 
-<!-- ## Running unit tests
+The command will generate a file under the `widgets` folder, called `app-builder.js`.
+This is the file you'll need to deploy on Azure blob storage to provide the code.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+If you need to upload files to the blob storage where we store shared assets, you can use the az commands.
+First, build the front-office in production mode ( any environment, but same version ).
+Then, run:
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/). -->
-
-<!-- ## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md). -->
+az storage blob upload-batch --destination {container} --account-name {accountname} --destination-path {path-to-folder-in-container} --source {path-to-folder-locally}
 
 # Common issues
 

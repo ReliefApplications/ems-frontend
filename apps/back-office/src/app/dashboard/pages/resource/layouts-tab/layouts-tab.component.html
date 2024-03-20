@@ -5,17 +5,8 @@
   [dataSource]="layouts"
   [canUpdate]="resource.canUpdate ?? false"
   [displayedColumns]="displayedColumnsLayouts"
+  [pageInfo]="pageInfo"
+  (pageChange)="onPage($event)"
   (itemAction)="handleAction($event)"
 >
-  <ng-container ngProjectAs="pagination">
-    <ui-paginator
-      [disabled]="loading"
-      [pageIndex]="pageInfo.pageIndex"
-      [pageSize]="pageInfo.pageSize"
-      [pageSizeOptions]="[10, 25, 50]"
-      [totalItems]="pageInfo.length"
-      (pageChange)="onPage($event)"
-    >
-    </ui-paginator>
-  </ng-container>
 </app-data-presentation-list>

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapWidgetComponent } from './map.component';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { MapModule } from '../../ui/map/map.module';
 
 /**
@@ -9,7 +8,7 @@ import { MapModule } from '../../ui/map/map.module';
  */
 @NgModule({
   declarations: [MapWidgetComponent],
-  imports: [CommonModule, LayoutModule, MapModule],
+  imports: [CommonModule, MapModule],
   exports: [MapWidgetComponent],
 })
 export class MapWidgetModule {}

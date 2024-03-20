@@ -1,10 +1,8 @@
 import {
   Component,
-  ViewChild,
   OnDestroy,
   Inject,
   OnInit,
-  ViewContainerRef,
   AfterViewInit,
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -14,7 +12,6 @@ import { createLayerForm, LayerFormT } from '../map-forms';
 import {
   takeUntil,
   BehaviorSubject,
-  Subject,
   pairwise,
   startWith,
   distinctUntilChanged,
@@ -33,7 +30,7 @@ import * as L from 'leaflet';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE } from '../graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
 import { get, isEqual } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
@@ -56,16 +53,25 @@ import {
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
-import { FormArray, FormBuilder } from '@angular/forms';
-import { ResourceQueryResponse } from '../../../../models/resource.model';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../../models/resource.model';
+import { Layout } from '../../../../models/layout.model';
+import { Aggregation } from '../../../../models/aggregation.model';
+import { DomPortal, PortalModule } from '@angular/cdk/portal';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../../models/reference-data.model';
 
 /**
  * Interface of dialog input
  */
 interface DialogData {
   layer?: LayerModel;
-  currentMapContainerRef: BehaviorSubject<ViewContainerRef | null>;
-  editingLayer: BehaviorSubject<boolean>;
+  mapPortal?: DomPortal;
   mapComponent: MapComponent;
 }
 
@@ -94,6 +100,7 @@ interface DialogData {
     LayerStylingModule,
     MapLayersModule,
     ContextualFiltersSettingsComponent,
+    PortalModule,
   ],
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
@@ -102,26 +109,37 @@ export class EditLayerModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  /** Current Layer */
   private _layer!: Layer;
-
-  @ViewChild('mapContainer', { read: ViewContainerRef })
-  mapContainerRef!: ViewContainerRef;
-  destroyTab$: Subject<boolean> = new Subject<boolean>();
-
-  public resource: BehaviorSubject<ResourceQueryResponse | null> =
-    new BehaviorSubject<ResourceQueryResponse | null>(null);
+  /** Selected reference data */
+  public referenceData: ReferenceData | null = null;
+  /** Selected resource */
+  public resource: Resource | null = null;
+  /** Selected layout */
+  public layout: Layout | null = null;
+  /** Selected aggregation */
+  public aggregation: Aggregation | null = null;
+  /** Available fields */
   public fields = new BehaviorSubject<Fields[]>([]);
+  /** Available fields as observable */
   public fields$ = this.fields.asObservable();
-
+  /** Form group */
   public form!: LayerFormT;
+  /** Current map zoom */
   public currentZoom!: number;
+  /** Current leaflet layer */
   private currentLayer!: L.Layer;
+  /** Is current datasource valie */
   public isDatasourceValid = false;
-
-  // This property would handle the form change side effects to be triggered once all
-  // layer related updates are done in order to avoid multiple mismatches and duplications between
-  // a property change, layer data retrieval and form update
+  /** Map dom portal */
+  public mapPortal?: DomPortal;
+  /**
+   * This property would handle the form change side effects to be triggered once all
+   * layer related updates are done in order to avoid multiple mismatches and duplications between
+   * a property change, layer data retrieval and form update
+   */
   private triggerFormChange = new BehaviorSubject(true);
+
   /**
    * Get the overlay tree object of the current map
    *
@@ -190,39 +208,29 @@ export class EditLayerModalComponent
       this.currentZoom = this.data.mapComponent.map.getZoom();
       this.setUpLayer(true);
     }
+    this.mapPortal = this.data.mapPortal;
     this.setUpEditLayerListeners();
-    this.getResource();
   }
 
   ngAfterViewInit(): void {
-    this.data.editingLayer.next(true);
-    const currentContainerRef = this.data.currentMapContainerRef.getValue();
-    if (currentContainerRef) {
-      const view = currentContainerRef.detach();
-      if (view) {
-        this.mapContainerRef.insert(view);
-        this.data.currentMapContainerRef.next(this.mapContainerRef);
-      }
-    }
     // If datasource changes, update fields form control
     this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
       fields.forEach((field: Fields) => this.updateFormField(field));
     });
   }
 
-  /**
-   * Change on selected index.
-   */
-  selectedIndexChange(): void {
-    this.destroyTab$.next(true);
-    const currentContainerRef = this.data.currentMapContainerRef.getValue();
-    if (currentContainerRef) {
-      const view = currentContainerRef.detach();
-      if (view) {
-        this.mapContainerRef.insert(view);
-        this.data.currentMapContainerRef.next(this.mapContainerRef);
-        this.destroyTab$.next(false);
-      }
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    const overlays: OverlayLayerTree = {
+      label: this.form.get('name')?.value || '',
+      layer: this.currentLayer,
+    };
+    //Once we exit the layer editor, destroy the layer and related controls
+    if (this.data.mapComponent) {
+      this.data.mapComponent.addOrDeleteLayer = {
+        layerData: overlays,
+        isDelete: true,
+      };
     }
   }
 
@@ -365,25 +373,89 @@ export class EditLayerModalComponent
         },
       });
 
-    this.form
-      .get('datasource')
-      ?.valueChanges.pipe(
-        startWith(this.form.get('datasource')?.value),
-        pairwise(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ([prev, next]) => {
-          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
+    if (this.form.controls.datasource) {
+      // Reference data changes
+      this.getReferenceData();
+      this.form
+        .get('datasource.refData')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          this.clearFields();
+          this.form
+            .get('datasource.aggregation')
+            ?.setValue(null, { emitEvent: false });
+          this.aggregation = null;
+          if (value) {
+            this.form.get('datasource.resource')?.setValue(null);
+            this.getReferenceData();
+          } else {
+            this.referenceData = null;
+          }
+        });
+
+      // Resource changes
+      this.getResource();
+      this.form
+        .get('datasource.resource')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          this.clearFields();
+          const datasourceGroup = this.form.controls.datasource as FormGroup;
+          datasourceGroup.get('layout')?.setValue(null, { emitEvent: false });
+          datasourceGroup
+            .get('aggregation')
+            ?.setValue(null, { emitEvent: false });
+          this.layout = null;
+          this.aggregation = null;
+          if (value) {
+            this.form.get('datasource.referenceData')?.setValue(null);
+            this.getResource();
+          } else {
+            this.resource = null;
+          }
+        });
+      this.form
+        .get('datasource.layout')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          this.clearFields;
+          if (value) {
+            this.getResource();
+          } else {
+            this.layout = null;
+          }
+        });
+      this.form
+        .get('datasource.aggregation')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          this.clearFields();
+          const formValue = this.form.getRawValue();
+          if (!value) {
+            this.aggregation = null;
+          }
+          if (get(formValue, 'datasource.refData')) {
+            //we refetch fields even when aggregation is deleted
+            this.getReferenceData();
+          }
+          if (value && get(formValue, 'datasource.resource')) {
             this.getResource();
           }
-          // else on aggregation implementation add it here
-        },
-      });
+        });
+    }
 
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
       next: (event: MapEvent) => this.handleMapEvent(event),
     });
+  }
+
+  /** Clears the geo, admin, latitude and longitude fields */
+  private clearFields() {
+    const datasourceGroup = this.form.controls.datasource as FormGroup;
+    datasourceGroup.get('geoField')?.setValue(null, { emitEvent: false });
+    datasourceGroup.get('adminField')?.setValue(null, { emitEvent: false });
+    datasourceGroup.get('latitudeField')?.setValue(null, { emitEvent: false });
+    datasourceGroup.get('longitudeField')?.setValue(null, { emitEvent: false });
   }
 
   /**
@@ -408,8 +480,6 @@ export class EditLayerModalComponent
    */
   onSubmit() {
     // this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
-    this.destroyTab$.next(true);
-    this.data.editingLayer.next(false);
     this.dialogRef.close(this.form.getRawValue() as LayerFormData);
   }
 
@@ -419,9 +489,6 @@ export class EditLayerModalComponent
    */
   onCancel(): void {
     if (this.form?.pristine) {
-      // this.layerToSave.emit(undefined);
-      this.destroyTab$.next(true);
-      this.data.editingLayer.next(false);
       this.dialogRef.close();
     } else {
       const confirmDialogRef = this.confirmService.openConfirmModal({
@@ -436,20 +503,22 @@ export class EditLayerModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.destroyTab$.next(true);
-            this.data.editingLayer.next(false);
             this.dialogRef.close();
           }
         });
     }
   }
 
-  /** If the form has a resource, fetch it */
+  /**
+   * Get resource from graphql
+   */
   getResource(): void {
-    const resourceID = this.form.get('datasource')?.value?.resource;
+    this.fields.next([]);
+    const formValue = this.form.getRawValue();
+    const resourceID = get(formValue, 'datasource.resource');
     if (resourceID) {
-      const layoutID = this.form.get('datasource')?.value?.layout;
-      const aggregationID = this.form.get('datasource')?.value?.aggregation;
+      const layoutID = get(formValue, 'datasource.layout');
+      const aggregationID = get(formValue, 'datasource.aggregation');
       this.apollo
         .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
@@ -461,23 +530,23 @@ export class EditLayerModalComponent
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
-          this.resource.next(data);
+          this.resource = data.resource;
           // Update fields
           if (layoutID) {
-            const layout = get(data, 'resource.layouts.edges[0].node', null);
-            this.fields.next(this.mapLayersService.getQueryFields(layout));
+            this.layout = get(data, 'resource.layouts.edges[0].node', null);
+            this.fields.next(this.mapLayersService.getQueryFields(this.layout));
           } else {
             if (aggregationID) {
-              const aggregation = get(
+              this.aggregation = get(
                 data,
                 'resource.aggregations.edges[0].node',
                 null
               );
               this.fields.next(
-                aggregation
+                this.aggregation
                   ? this.mapLayersService.getAggregationFields(
-                      data.resource,
-                      aggregation
+                      data.resource.queryName ?? '',
+                      this.aggregation
                     )
                   : []
               );
@@ -487,18 +556,45 @@ export class EditLayerModalComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    const overlays: OverlayLayerTree = {
-      label: this.form.get('name')?.value || '',
-      layer: this.currentLayer,
-    };
-    //Once we exit the layer editor, destroy the layer and related controls
-    if (this.data.mapComponent) {
-      this.data.mapComponent.addOrDeleteLayer = {
-        layerData: overlays,
-        isDelete: true,
-      };
+  /**
+   * Get reference data from graphql
+   */
+  getReferenceData(): void {
+    this.fields.next([]);
+    const formValue = this.form.getRawValue();
+    const referenceDataId = get(formValue, 'datasource.refData');
+    if (referenceDataId) {
+      const aggregationID = get(formValue, 'datasource.aggregation');
+      this.apollo
+        .query<ReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA,
+          variables: {
+            id: referenceDataId,
+            aggregation: aggregationID ? [aggregationID] : [],
+          },
+        })
+        .subscribe(({ data }) => {
+          this.referenceData = data.referenceData;
+          if (aggregationID) {
+            this.aggregation = get(
+              data,
+              'referenceData.aggregations.edges[0].node',
+              null
+            );
+            this.fields.next(
+              this.aggregation
+                ? this.mapLayersService.getAggregationFields(
+                    data.referenceData.graphQLTypeName ?? '',
+                    this.aggregation
+                  )
+                : []
+            );
+          } else {
+            this.fields.next(
+              this.getFieldsFromRefData(this.referenceData?.fields || [])
+            );
+          }
+        });
     }
   }
 
@@ -545,5 +641,23 @@ export class EditLayerModalComponent
         field.label = control.get('label')?.value ?? '';
       }
     }
+  }
+
+  /**
+   * Extract layer fields from reference data
+   *
+   * @param fields available reference data fields
+   * @returns layer fields
+   */
+  private getFieldsFromRefData(fields: any[]): Fields[] {
+    return fields
+      .filter((field) => field && typeof field !== 'string')
+      .map((field) => {
+        return {
+          label: field.name,
+          name: field.name,
+          type: field.type,
+        } as Fields;
+      });
   }
 }

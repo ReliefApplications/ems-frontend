@@ -32,20 +32,20 @@ const FALLBACK_LAYOUTS: Connection<Layout> = {
 })
 export class GridLayoutService {
   /**
-   * Constructor the GridLayoutService
+   * Shared service to manage grid predefined layouts.
    *
-   * @param apollo The apollo service
+   * @param apollo Apollo service
    */
   constructor(private apollo: Apollo) {}
 
   /**
    * Gets list of layouts from source
    *
-   *
    * @param source source id
    * @param options query options
    * @param options.ids list of layout id
    * @param options.first number of items to get
+   * @returns {Promise<Connection<Layout>>} A promise with a connection layout of the given source
    */
   async getLayouts(
     source: string,

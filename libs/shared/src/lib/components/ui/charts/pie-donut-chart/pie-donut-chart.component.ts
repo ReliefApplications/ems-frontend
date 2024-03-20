@@ -23,28 +23,33 @@ import Color from 'color';
  * Pie/Doughnut/polarArea/Radar chart component, based on chart.js component.
  */
 export class PieDonutChartComponent implements OnChanges {
+  /** Variable to track the sum of the field. */
   private fieldSum = 0;
+  /** Variable to track the display of value labels. */
   private showValueLabels: false | 'percentage' | 'value' = false;
+  /** Boolean to track if category label is shown. */
   private showCategoryLabel = false;
+  /** Array of plugins. */
   public plugins: Plugin[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
     whiteBackgroundPlugin,
   ];
+  /** Input decorator for chartType. */
   @Input() chartType: 'pie' | 'doughnut' | 'polarArea' | 'radar' = 'doughnut';
-
+  /** Input decorator for title. */
   @Input() title: ChartTitle | undefined;
-
+  /** Input decorator for legend. */
   @Input() legend: ChartLegend | undefined;
-
+  /** Input decorator for series. */
   @Input() series: any[] = [];
-
+  /** Input decorator for options.  */
   @Input() options: any = {
     palette: DEFAULT_PALETTE,
   };
-
+  /** ViewChild decorator for chart. */
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
-
+  /** Options for the chart configuration. */
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -52,11 +57,12 @@ export class PieDonutChartComponent implements OnChanges {
       key: 'field',
     },
   };
-
+  /** Data for the chart. */
   public chartData: ChartData<'doughnut' | 'pie' | 'polarArea' | 'radar'> = {
     datasets: [],
   };
 
+  /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.showCategoryLabel = get(this.options, 'labels.showCategory', false);
     if (get(this.options, 'labels.showValue', false))

@@ -2,7 +2,9 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
+  Inject,
   Input,
   NgZone,
   OnChanges,
@@ -11,28 +13,18 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
-import { Dialog } from '@angular/cdk/dialog';
 import { Model, SurveyModel } from 'survey-core';
-import { Apollo } from 'apollo-angular';
-import { ApplicationService } from '../../services/application/application.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import {
-  Application,
-  EditApplicationMutationResponse,
-} from '../../models/application.model';
-import { takeUntil } from 'rxjs/operators';
-import {
-  EDIT_APPLICATION_FILTER,
-  EDIT_APPLICATION_FILTER_POSITION,
-} from './graphql/mutations';
-import { TranslateService } from '@ngx-translate/core';
+import { takeUntil, debounceTime, filter } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
-import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
-import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
-import { renderGlobalProperties } from '../../survey/render-global-properties';
-import { FormBuilderService } from '../../services/form-builder/form-builder.service';
+import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
+import { DOCUMENT } from '@angular/common';
+import { Dashboard } from '../../models/dashboard.model';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Interface for quick filters
@@ -46,21 +38,28 @@ interface QuickFilter {
 @Component({
   selector: 'shared-dashboard-filter',
   templateUrl: './dashboard-filter.component.html',
-  styleUrls: ['./dashboard-filter.component.scss'],
+  styleUrls: ['../../style/survey.scss', './dashboard-filter.component.scss'],
 })
 export class DashboardFilterComponent
   extends UnsubscribeComponent
   implements OnDestroy, OnChanges, AfterViewInit
 {
-  // Filter
-  position!: FilterPosition;
-  public positionList = [
-    FilterPosition.LEFT,
-    FilterPosition.TOP,
-    FilterPosition.BOTTOM,
-    FilterPosition.RIGHT,
-  ] as const;
-  public isDrawerOpen = false;
+  /** Is editable */
+  @Input() editable = false;
+  /** Is fullscreen */
+  @Input() isFullScreen = false;
+  /** Filter variant ( defines style ) */
+  @Input() variant = 'default';
+  /** Is drawer opened */
+  @Input() opened = false;
+  /** Is closable */
+  @Input() closable = true;
+  /** Current dashboard */
+  @Input() dashboard?: Dashboard;
+  /** Filter structure */
+  @Input() structure: any;
+  /** Current position of filter */
+  public position!: FilterPosition;
   /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
   /** computed width of the parent container (or the window size if fullscreen) */
@@ -71,54 +70,40 @@ export class DashboardFilterComponent
   public containerTopOffset!: string;
   /** computed top offset of the parent container (or 0 if fullscreen) */
   public containerLeftOffset!: string;
-  /** Represents the survey's value */
-  private value: Record<string, any> | undefined;
-
+  /** Filter template */
+  public survey: Model = new Model();
+  /** Survey init flag */
+  private surveyInit = true;
+  /** Quick filter display */
+  public quickFilters: QuickFilter[] = [];
+  /** Indicate empty status of filter */
+  public empty = true;
   /** Resize observer for the sidenav container */
   private resizeObserver!: ResizeObserver;
 
-  // Survey
-  public survey: Model = new Model();
-  public surveyStructure: any = {};
-  public quickFilters: QuickFilter[] = [];
-
-  public applicationId?: string;
-
-  /** Indicate empty status of filter */
-  public empty = true;
-
-  @Input() editable = false;
-  @Input() isFullScreen = false;
-
   /**
-   * Class constructor
+   * Dashboard contextual filter component.
    *
-   * @param formBuilderService Form builder service
-   * @param dialog The Dialog service
-   * @param apollo Apollo client
-   * @param applicationService Shared application service
-   * @param snackBar Shared snackbar service
-   * @param translate Angular translate service
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
    * @param dateTranslate Service used for date formatting
+   * @param {ElementRef} el Current components element ref in the DOM
+   * @param document Document
    * @param _host sidenav container host
+   * @param http Http client
    */
   constructor(
-    private formBuilderService: FormBuilderService,
-    private dialog: Dialog,
-    private apollo: Apollo,
-    private applicationService: ApplicationService,
-    private snackBar: SnackbarService,
-    private translate: TranslateService,
-    private contextService: ContextService,
+    public contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
-    @Optional() private _host: SidenavContainerComponent
+    private el: ElementRef,
+    @Inject(DOCUMENT) private document: Document,
+    @Optional() private _host: SidenavContainerComponent,
+    private http: HttpClient
   ) {
     super();
   }
@@ -130,49 +115,65 @@ export class DashboardFilterComponent
       });
       this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
-
+    // Can listen to changes made from widget ( editor & summary cards sending updated filters )
     this.contextService.filter$
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ current }) => {
+        this.survey.data = current;
+        this.survey.setPropertyValue('refreshData', true);
+      });
+    this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.value = value;
-      });
-    this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((application: Application | null) => {
-        if (application) {
-          this.applicationId = application.id;
-        }
-      });
-    this.contextService.filterStructure$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.surveyStructure = value || '';
-        this.initSurvey();
+        this.opened = value;
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: FilterPosition | undefined) => {
-        if (value) {
-          this.position = value as FilterPosition;
-        } else {
-          this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+      .subscribe(
+        (value: { position: FilterPosition; dashboardId: string } | null) => {
+          if (value) {
+            this.position = value.position as FilterPosition;
+          } else {
+            this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+          }
+          this.setFilterContainerDimensions();
         }
-        this.setFilterContainerDimensions();
-      });
+      );
+
+    if (!this.variant) {
+      this.variant = 'default';
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
+    if (changes.structure) {
+      this.initSurvey();
+    }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.resizeObserver.disconnect();
+  /**
+   * Call context service onEditFilter method.
+   */
+  public onEditStructure() {
+    if (this.dashboard) {
+      this.contextService.onEditFilter(this.dashboard);
+    }
   }
-
-  // add ngOnChanges there
 
   /**
    * Set the drawer height and width on resize
@@ -187,7 +188,14 @@ export class DashboardFilterComponent
    */
   @HostListener('document:keydown.escape', ['$event'])
   onEsc() {
-    this.isDrawerOpen = false;
+    if (this.variant === 'default') {
+      this.opened = false;
+    }
+  }
+
+  /** Toggle visibility on click */
+  public onToggleVisibility() {
+    this.contextService.filterOpened.next(!this.opened);
   }
 
   /**
@@ -197,121 +205,31 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
-    this.contextService.filterPosition.next(position);
+    this.contextService.filterPosition.next({
+      position: position,
+      dashboardId: this.contextService.filterPosition.value?.dashboardId ?? '',
+    });
   }
 
-  /**
-   * Opens the modal to edit filters
-   */
-  public onEditFilter() {
-    import('./filter-builder-modal/filter-builder-modal.component').then(
-      ({ FilterBuilderModalComponent }) => {
-        const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
-          data: { surveyStructure: this.surveyStructure },
-          autoFocus: false,
-        });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((newStructure) => {
-            if (newStructure) {
-              this.surveyStructure = newStructure;
-              this.initSurvey();
-              this.saveFilter();
-            }
-          });
-      }
-    );
-  }
-
-  /** Saves the application contextual filter using the editApplication mutation */
-  private saveFilter(): void {
-    this.apollo
-      .mutate<EditApplicationMutationResponse>({
-        mutation: EDIT_APPLICATION_FILTER,
-        variables: {
-          id: this.applicationId,
-          contextualFilter: this.surveyStructure,
-        },
-      })
-      .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors });
-      });
-  }
-
-  /**
-   * Handle filter update mutation response depending of mutation type, for filter structure or position
-   *
-   * @param response Graphql mutation response
-   * @param response.data response data
-   * @param response.errors response errors
-   * @param defaultPosition filter position
-   */
-  private handleFilterMutationResponse(
-    response: { data: any; errors: any },
-    defaultPosition?: FilterPosition
-  ) {
-    const { data, errors } = response;
-    if (errors) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectNotUpdated', {
-          type: this.translate.instant('common.filter.one'),
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
-      );
-    } else {
-      if (defaultPosition) {
-        this.position = defaultPosition;
-        this.contextService.filterPosition.next(defaultPosition);
-      } else {
-        this.contextService.filterStructure.next(this.surveyStructure);
-      }
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.filter.one').toLowerCase(),
-          value: data?.editApplication.name ?? '',
-        })
-      );
-    }
-  }
-
-  /** Render the survey using the saved structure */
+  /** Render the survey using the saved structure*/
   private initSurvey(): void {
-    const surveyStructure = this.surveyStructure;
-
-    this.survey = this.formBuilderService.createSurvey(surveyStructure);
-
-    if (this.value) {
-      this.survey.data = this.value;
-    }
-
-    this.setAvailableFiltersForContext();
+    this.survey = this.contextService.initSurvey(this.structure);
 
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
 
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
-
     // we should render the custom questions somewhere, let's do it here
     this.survey.onAfterRenderQuestion.add((_, options: any) => {
       const parent = options.htmlElement.parentElement;
-      (parent?.style as any)['min-width'] = '0px';
-      renderGlobalProperties(this.referenceDataService);
+      if (parent) {
+        parent.style['min-width'] = '0px';
+      }
+      renderGlobalProperties(this.referenceDataService, this.http);
     });
     this.onValueChange();
-  }
-
-  /**
-   * Set the available filters of dashboard filter in the shared context service
-   */
-  private setAvailableFiltersForContext() {
-    this.contextService.availableFilterFields = this.survey.getAllQuestions()
-      .length
-      ? this.survey
-          .getAllQuestions()
-          .map((question) => ({ name: question.title, value: question.name }))
-      : [];
+    this.surveyInit = false;
   }
 
   /**
@@ -321,26 +239,6 @@ export class DashboardFilterComponent
    */
   public onAfterRenderSurvey(survey: SurveyModel) {
     this.empty = survey.getAllQuestions().length === 0;
-  }
-
-  /**
-   * Opens the settings modal
-   */
-  public openSettings() {
-    import('./filter-settings-modal/filter-settings-modal.component').then(
-      ({ FilterSettingsModalComponent }) => {
-        const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
-          data: { positionList: this.positionList },
-        });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((defaultPosition) => {
-            if (defaultPosition) {
-              this.saveSettings(defaultPosition as FilterPosition);
-            }
-          });
-      }
-    );
   }
 
   /**
@@ -386,25 +284,6 @@ export class DashboardFilterComponent
   }
 
   /**
-   *  Saves the filter settings
-   *
-   * @param defaultPosition default position for the filter to be registered
-   */
-  private saveSettings(defaultPosition: FilterPosition): void {
-    this.apollo
-      .mutate<EditApplicationMutationResponse>({
-        mutation: EDIT_APPLICATION_FILTER_POSITION,
-        variables: {
-          id: this.applicationId,
-          contextualFilterPosition: defaultPosition,
-        },
-      })
-      .subscribe(({ errors, data }) => {
-        this.handleFilterMutationResponse({ data, errors }, defaultPosition);
-      });
-  }
-
-  /**
    * Get survey values whether are primitives or not,
    * if there are not primitives, we have to map them one level from the value property in order to make the filters in the context service work
    *
@@ -444,48 +323,71 @@ export class DashboardFilterComponent
         };
         return acc;
       }, {});
-
-    this.contextService.filter.next(surveyData);
+    const currentSurveyQuestions = this.survey.getAllQuestions();
+    const nextFilterValue: any = surveyData;
+    // Don't merge current context filter values to the filter if survey has init and it's used in web component
+    if (
+      !(this.surveyInit && this.contextService.shadowDomService.isShadowRoot)
+    ) {
+      const currentFilterValue = this.contextService.filter.value;
+      const filterKeys = Object.keys(currentFilterValue);
+      filterKeys
+        .filter((key) => !currentSurveyQuestions.find((sq) => sq.name === key))
+        .forEach((key) => {
+          nextFilterValue[key] = currentFilterValue[key];
+        });
+    }
+    this.contextService.filter.next(nextFilterValue);
     this.ngZone.run(() => {
       this.quickFilters = displayValues
         .filter((question) => !!question.value)
         .map((question) => {
+          // To check if the value used is primitive
+          const isPrimitive =
+            isValuePrimitiveKeys[
+              question.name as keyof typeof isValuePrimitiveKeys
+            ];
           let mappedQuestion;
-          if (question.value instanceof Array && question.value.length > 2) {
-            mappedQuestion = {
-              label: question.title + ` (${question.value.length})`,
-              tooltip: question.displayValue,
-            };
-          } else {
-            // To check if the value used is primitive
-            const isPrimitive =
-              isValuePrimitiveKeys[
-                question.name as keyof typeof isValuePrimitiveKeys
-              ];
-            // If the value used is not primitive, use the text label to display selection in the filter
-            if (!isPrimitive) {
-              // Check if value is a date to format it with the date pipe
-              const checkValue = this.isDate(
-                question.name as string,
-                question.displayValue.text
-              );
-              mappedQuestion = {
-                label: checkValue.isDate
-                  ? checkValue.formattedValue
-                  : question.displayValue.text,
+          if (question.value instanceof Array) {
+            if (question.value.length > 2) {
+              return {
+                label: question.title + ` (${question.value.length})`,
+                tooltip: question.displayValue,
               };
             } else {
-              // else for primitive values, the selected display value
-              const checkValue = this.isDate(
-                question.name as string,
-                question.displayValue
-              );
-              mappedQuestion = {
-                label: checkValue.isDate
-                  ? checkValue.formattedValue
-                  : question.displayValue,
-              };
+              if (!isPrimitive) {
+                // Tagbox question
+                return {
+                  label: question.value.map((x) => x.text),
+                };
+              }
             }
+          }
+          // If the value used is not primitive, use the text label to display selection in the filter
+          if (!isPrimitive) {
+            // Check if value is a date to format it with the date pipe
+            const checkValue = this.isDate(
+              question.name as string,
+              question.displayValue.text
+            );
+            mappedQuestion = {
+              label: checkValue.isDate
+                ? checkValue.formattedValue
+                : question.displayValue.text
+                ? question.displayValue.text
+                : question.displayValue,
+            };
+          } else {
+            // else for primitive values, the selected display value
+            const checkValue = this.isDate(
+              question.name as string,
+              question.displayValue
+            );
+            mappedQuestion = {
+              label: checkValue.isDate
+                ? checkValue.formattedValue
+                : question.displayValue,
+            };
           }
           return mappedQuestion;
         });
@@ -507,8 +409,7 @@ export class DashboardFilterComponent
         if (this._host.showSidenav[0]) {
           // remove width from left sidenav if opened
           this.containerWidth = `${
-            this._host.el.nativeElement.offsetWidth -
-            this._host.sidenav.get(0).nativeElement.offsetWidth
+            this.document.getElementById('appPageContainer')?.offsetWidth
           }px`;
           this.containerHeight = `${this._host.el.nativeElement.offsetHeight}px`;
           // Add width from left sidenav as left offset

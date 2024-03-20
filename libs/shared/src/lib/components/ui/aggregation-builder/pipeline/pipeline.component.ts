@@ -4,10 +4,11 @@ import { AggregationBuilderService } from '../../../../services/aggregation-buil
 import { Observable } from 'rxjs';
 import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
-import { debounceTime } from 'rxjs/operators';
+import { combineLatestWith } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { isEqual } from 'lodash';
 
 /**
  * Aggregation pipeline component.
@@ -18,17 +19,28 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./pipeline.component.scss'],
 })
 export class PipelineComponent extends UnsubscribeComponent implements OnInit {
+  /** Public variable for stage type. */
   public stageType = PipelineStage;
-  public stageList: string[] = Object.values(PipelineStage);
-
-  // === DATA ===
+  /** Input array to hold the list of stages. */
+  @Input() stageList: string[] = Object.values(PipelineStage);
+  /** Input decorator for fields$. */
   @Input() public fields$!: Observable<any[]>;
+  /** Input decorator for metaFields$. */
   @Input() public metaFields$!: Observable<any[]>;
-  public metaFields: any[] = [];
-  public initialFields: any[] = [];
-  public fieldsPerStage: any[] = [];
+  /** Input decorator for filterFields$. */
+  @Input() public filterFields$!: Observable<any[]>;
+  /** Array to hold the filter fields. */
+  public filterFields: any[] = [];
 
-  // === PARENT FORM ===
+  /** Array to hold the meta fields. */
+  public metaFields: any[] = [];
+  /** Array to hold the initial fields. */
+  public initialFields: any[] = [];
+  /** Array to hold the fields per stage. */
+  public fieldsPerStage: any[] = [];
+  /** Enabled drag behavior, needed to set the drag on run time so cdkDragHandle directive works in the table */
+  public dragEnabled = false;
+  /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
 
   /**
@@ -41,18 +53,26 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fields$.subscribe((fields: any[]) => {
-      this.initialFields = [...fields];
-      this.fieldsPerStage = [];
-      this.updateFieldsPerStage(this.pipelineForm.value);
-    });
-    this.metaFields$.subscribe((meta: any) => {
-      this.metaFields = Object.assign({}, meta);
-    });
+    this.fields$
+      .pipe(
+        combineLatestWith(this.metaFields$, this.filterFields$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([fields, metaFields, filterFields]) => {
+          this.initialFields = [...fields];
+          this.metaFields = metaFields;
+          this.filterFields = filterFields;
+          this.fieldsPerStage = [];
+          this.updateFieldsPerStage(this.pipelineForm.value);
+        },
+      });
+
     this.pipelineForm.valueChanges
-      .pipe(debounceTime(500))
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
+      .pipe(distinctUntilChanged(isEqual), takeUntil(this.destroy$))
+      .subscribe((pipeline: any[]) => {
+        this.updateFieldsPerStage(pipeline);
+      });
   }
 
   /**
@@ -62,21 +82,27 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
    */
   private updateFieldsPerStage(pipeline: any[]): void {
     for (let index = 0; index < pipeline.length; index++) {
-      this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
-        this.initialFields,
-        pipeline.slice(0, index)
-      );
-      if (
-        pipeline[index]?.type === PipelineStage.FILTER ||
-        pipeline[index]?.type === PipelineStage.SORT
-      ) {
-        this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
-          (field: any) => field.type.kind === 'SCALAR'
+      if (pipeline[index].type === PipelineStage.FILTER) {
+        this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
+          this.initialFields.map((field: any) => ({
+            ...field,
+            ...(this.filterFields.find(
+              (filterField: any) => filterField.name === field.name
+            ) ?? {}),
+          })),
+          pipeline.slice(0, index)
         );
+      } else {
+        this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
+          this.initialFields,
+          pipeline.slice(0, index)
+        );
+        if (pipeline[index]?.type === PipelineStage.SORT) {
+          this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
+            (field: any) => field.type.kind === 'SCALAR'
+          );
+        }
       }
-      this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
-        (field: any) => field.name
-      );
     }
   }
 

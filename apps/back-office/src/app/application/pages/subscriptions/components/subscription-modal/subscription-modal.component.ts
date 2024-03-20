@@ -9,16 +9,14 @@ import {
   UnsubscribeComponent,
   FormsQueryResponse,
   ApplicationsApplicationNodesQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GET_ROUTING_KEYS, GET_FORM_NAMES } from '../../graphql/queries';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../../utils/update-queries';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule } from '@oort-front/ui';
@@ -117,10 +115,12 @@ export class SubscriptionModalComponent
   get routingKey(): string | null | undefined {
     return this.subscriptionForm.value.routingKey;
   }
+
   /** Set subscription key */
   set routingKey(value: string | null | undefined) {
     this.subscriptionForm.controls.routingKey.setValue(value);
   }
+
   /** @returns default convert to form */
   get defaultForm(): Form | null {
     return get(this.data, 'subscription.convertTo', null);
@@ -196,11 +196,6 @@ export class SubscriptionModalComponent
     } else {
       return this.applications.getValue();
     }
-  }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
   }
 
   /**

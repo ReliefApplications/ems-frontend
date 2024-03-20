@@ -10,6 +10,9 @@ import { RestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
 
+/** Snackbar duration in ms */
+const SNACKBAR_DURATION = 1000;
+
 /**
  * Shared email service.
  * Used by widgets to send request to the back to send emails.
@@ -82,64 +85,81 @@ export class EmailService {
     attachment?: boolean,
     files?: any[]
   ): Promise<void> {
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.email.processing'
-          ),
-          loading: true,
-        },
-      }
-    );
-    let fileFolderId = '';
-    if (files && files.length > 0) {
-      const response = await firstValueFrom(this.sendFiles(files));
-      if (response.id) {
-        fileFolderId = response.id;
-      }
-    }
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    this.restService
-      .post(
-        '/email/',
+    return new Promise<void>((resolve, reject) => {
+      const snackBarRef = this.snackBar.openComponentSnackBar(
+        SnackbarSpinnerComponent,
         {
-          recipient,
-          subject,
-          body,
-          filter,
-          query,
-          fields: this.getFields(query.fields),
-          sortField,
-          sortOrder,
-          attachment,
-          ...(fileFolderId && { files: fileFolderId }),
-        },
-        { headers }
-      )
-      .subscribe({
-        next: () => {
-          (snackBarRef.instance.message = this.translate.instant(
-            'common.notifications.email.sent'
-          )),
-            (snackBarRef.instance.loading = false);
-
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
-        },
-        error: () => {
-          (snackBarRef.instance.message = this.translate.instant(
-            'common.notifications.email.error'
-          )),
-            (snackBarRef.instance.loading = false);
-          snackBarRef.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
-        },
-      });
+          duration: 0,
+          data: {
+            message: this.translate.instant(
+              'common.notifications.email.processing'
+            ),
+            loading: true,
+          },
+        }
+      );
+      const snackBarSpinner = snackBarRef.instance.nestedComponent;
+      let fileFolderId = '';
+      const send = () => {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+        });
+        this.restService
+          .post(
+            '/email/',
+            {
+              recipient,
+              subject,
+              body,
+              filter,
+              query,
+              fields: this.getFields(query.fields),
+              sortField,
+              sortOrder,
+              attachment,
+              ...(fileFolderId && { files: fileFolderId }),
+            },
+            { headers }
+          )
+          .subscribe({
+            next: () => {
+              snackBarSpinner.instance.message = this.translate.instant(
+                'common.notifications.email.sent'
+              );
+              snackBarSpinner.instance.loading = false;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+              resolve();
+            },
+            error: () => {
+              snackBarSpinner.instance.message = this.translate.instant(
+                'common.notifications.email.error'
+              );
+              snackBarSpinner.instance.loading = false;
+              snackBarSpinner.instance.error = true;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+              reject();
+            },
+          });
+      };
+      if (files && files.length > 0) {
+        firstValueFrom(this.sendFiles(files))
+          .then((response) => {
+            if (response.id) {
+              fileFolderId = response.id;
+            }
+            send();
+          })
+          .catch((error) => {
+            snackBarSpinner.instance.message = error.message;
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            reject(error);
+          });
+      } else {
+        send();
+      }
+    });
   }
 
   /**
@@ -182,6 +202,7 @@ export class EmailService {
         },
       }
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
@@ -203,44 +224,57 @@ export class EmailService {
       )
       .subscribe({
         next: async (res) => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.ready'
           );
-          snackBarRef.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
-          const { EmailPreviewComponent } = await import(
-            '../../components/email-preview/email-preview.component'
+          snackBarSpinner.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          const { EmailPreviewModalComponent } = await import(
+            '../../components/email-preview-modal/email-preview-modal.component'
           );
-          const dialogRef = this.dialog.open(EmailPreviewComponent, {
-            data: res,
+          this.dialog.open(EmailPreviewModalComponent, {
+            data: {
+              ...res,
+              onSubmit: (value: any) =>
+                this.sendMail(
+                  value.to,
+                  value.subject,
+                  value.html,
+                  filter,
+                  query,
+                  sortField,
+                  sortOrder,
+                  attachment,
+                  value.files
+                ),
+            },
             autoFocus: false,
             disableClose: true,
             width: '100%',
           });
-          dialogRef.closed.subscribe((value: any) => {
-            if (value) {
-              this.sendMail(
-                value.to,
-                value.subject,
-                value.html,
-                filter,
-                query,
-                sortField,
-                sortOrder,
-                attachment,
-                value.files
-              );
-            }
-          });
+          // dialogRef.closed.subscribe((value: any) => {
+          //   if (value) {
+          //     this.sendMail(
+          //       value.to,
+          //       value.subject,
+          //       value.html,
+          //       filter,
+          //       query,
+          //       sortField,
+          //       sortOrder,
+          //       attachment,
+          //       value.files
+          //     );
+          //   }
+          // });
         },
         error: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
-
-          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }

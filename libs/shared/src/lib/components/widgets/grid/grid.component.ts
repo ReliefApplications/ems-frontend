@@ -18,10 +18,8 @@ import {
   Input,
   Output,
   EventEmitter,
-  Inject,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
-import { AuthService } from '../../../services/auth/auth.service';
 import { EmailService } from '../../../services/email/email.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { CoreGridComponent } from '../../ui/core-grid/core-grid.component';
@@ -29,7 +27,6 @@ import { GridLayoutService } from '../../../services/grid-layout/grid-layout.ser
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
-import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { ApplicationService } from '../../../services/application/application.service';
@@ -38,7 +35,6 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
 import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
 import {
   EditRecordMutationResponse,
@@ -51,6 +47,8 @@ import {
 } from '../../../models/notification.model';
 import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
+import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /** Component for the grid widget */
 @Component({
@@ -59,50 +57,64 @@ import { AggregationGridComponent } from '../../aggregation/aggregation-grid/agg
   styleUrls: ['./grid.component.scss'],
 })
 /** Grid widget using KendoUI. */
-export class GridWidgetComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
-  // === TEMPLATE REFERENCE ===
+export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
+  /** Template reference */
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
+  /** Reference to main grid */
+  @ViewChild(CoreGridComponent)
+  coreGridComponent?: CoreGridComponent;
+  /** Reference to aggregation grid */
+  @ViewChild(AggregationGridComponent)
+  aggregationGridComponent?: AggregationGridComponent;
+  /** Reference to reference data grid */
+  @ViewChild(ReferenceDataGridComponent)
+  referenceDataGridComponent?: ReferenceDataGridComponent;
 
-  // === DATA ===
+  /** Data */
   @Input() widget: any;
 
-  // === PERMISSIONS ===
+  /** Permissions */
   public canCreateRecords = false;
 
-  // === CACHED CONFIGURATION ===
+  /** Cached configuration */
   public layout: Layout | null = null;
+  /** List of layouts */
   public layouts: Layout[] = [];
 
-  // === SORT FIELDS SELECT ===
+  /** Sort fields select */
   public sortFields: any[] = [];
 
-  // === AGGREGATION ===
+  /** Aggregation */
   public aggregation: Aggregation | null = null;
+  /** List of aggregations */
   public aggregations: Aggregation[] = [];
 
-  // === VERIFICATION IF USER IS ADMIN ===
-  public isAdmin: boolean;
+  /** Reference data */
+  public useReferenceData = false;
 
-  // === SETTINGS ===
-  @Input() header = true;
+  /** Settings */
   @Input() settings: any = null;
+  /** Id */
   @Input() id = '';
+  /** Can update */
   @Input() canUpdate = false;
+  /** Grid settings */
   public gridSettings: any = null;
+  /** Grid status */
   public status: {
     message?: string;
     error: boolean;
   } = { error: false };
 
-  // === EMIT STEP CHANGE FOR WORKFLOW ===
+  /** Emit step change for workflow */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
-  // === EMIT EVENT ===
+  /** Emit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   /**
    * Test if the grid uses a layout, and if a layout is used, if any item is currently updated.
@@ -115,19 +127,18 @@ export class GridWidgetComponent
       : true;
   }
 
-  @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
-  @ViewChild(AggregationGridComponent)
-  aggregationGridComponent?: AggregationGridComponent;
+  /** @returns list of active floating buttons */
+  get floatingButtons() {
+    return (this.settings.floatingButtons || []).filter((x: any) => x.show);
+  }
 
   /**
    * Heavy constructor for the grid widget component
    *
-   * @param environment Environment variables
    * @param apollo The apollo client
    * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
-   * @param authService Shared authentication service
    * @param emailService Shared email service
    * @param queryBuilder Shared query builder service
    * @param gridLayoutService Shared grid layout service
@@ -137,12 +148,10 @@ export class GridWidgetComponent
    * @param aggregationService Shared aggregation service
    */
   constructor(
-    @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private workflowService: WorkflowService,
-    private authService: AuthService,
     private emailService: EmailService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: GridLayoutService,
@@ -152,14 +161,14 @@ export class GridWidgetComponent
     private aggregationService: AggregationService
   ) {
     super();
-    this.isAdmin =
-      this.authService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
+    let buildSortFields = false;
     if (this.settings.resource) {
+      this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
 
@@ -197,10 +206,7 @@ export class GridWidgetComponent
                 error: true,
               };
             } else {
-              // Build list of available sort fields
-              this.widget.settings.sortFields?.forEach((sortField: any) => {
-                this.sortFields.push(sortField);
-              });
+              buildSortFields = true;
             }
             this.gridSettings = {
               ...this.settings,
@@ -213,7 +219,8 @@ export class GridWidgetComponent
 
       if (aggregations.length > 0) {
         this.aggregationService
-          .getAggregations(this.settings.resource, {
+          .getAggregations({
+            resource: this.settings.resource,
             ids: aggregations,
             first: aggregations.length,
           })
@@ -230,14 +237,20 @@ export class GridWidgetComponent
               };
             }
             this.aggregation = this.aggregations[0] || null;
-
-            // Build list of available sort fields
-            this.widget.settings.sortFields?.forEach((sortField: any) => {
-              this.sortFields.push(sortField);
-            });
+            buildSortFields = true;
           });
         return;
       }
+    } else if (this.settings.referenceData) {
+      buildSortFields = true;
+      this.useReferenceData = true;
+    }
+
+    if (buildSortFields) {
+      // Build list of available sort fields
+      this.widget.settings.sortFields?.forEach((sortField: any) => {
+        this.sortFields.push(sortField);
+      });
     }
   }
 
@@ -257,6 +270,14 @@ export class GridWidgetComponent
     }
     if (this.aggregationGridComponent) {
       this.aggregationGridComponent.onSortChange([
+        {
+          field: e ? e.field : '',
+          dir: e ? e.order : 'asc',
+        },
+      ]);
+    }
+    if (this.referenceDataGridComponent) {
+      this.referenceDataGridComponent.onSortChange([
         {
           field: e ? e.field : '',
           dir: e ? e.order : 'asc',
@@ -526,16 +547,20 @@ export class GridWidgetComponent
     const update: any = {};
     for (const modification of modifications) {
       if (modification.field) {
-        set(update, modification.field, modification.value);
+        // If no value, set at null
+        if (modification.value === undefined || modification.value === '') {
+          set(update, modification.field, null);
+        } else {
+          set(update, modification.field, modification.value);
+        }
       }
     }
-    const data = cleanRecord(update);
     return firstValueFrom(
       this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: update,
           template: get(this.settings, 'template', null),
         },
       })
@@ -551,6 +576,7 @@ export class GridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @returns Promise resolving when execution done
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],

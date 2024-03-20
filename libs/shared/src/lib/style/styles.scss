@@ -7,26 +7,21 @@ survey-creator {
   --main-color: #{rgb($primary_500)};
   --main-hover-color: #{rgb($primary_600)};
   --primary: #{rgb($primary_500)};
+  --primary-light: #{rgb($primary_100)};
   --secondary: #{rgb($primary_500)};
   --progress-buttons-color: #{rgb($primary_500)};
   --radio-checked-color: #{rgb($primary_500)};
   --header-background-color: transparent;
   --answer-background-color: transparent;
-  // --primary-text-color: #676a6c;
-  // --secondary-text-color: #a7a7a7;
-  // --inverted-text-color: #ffffff;
   --primary-hover: #{rgb($primary_600)};
   --selection-border: #{rgb($primary_500)};
-  // --primary-icon-color: #3d4d5d;
-  // --primary-bg-color: #fff;
-  // --secondary-bg-color: #f4f4f4;
-  // --primary-border-color: #e7eaec;
-  // --secondary-border-color: #ddd;
-  // --error-color: #ed5565;
-}
-
-survey {
-  --sjs-base-unit: 0.66em;
+  --sjs-font-questiontitle-size: 14px;
+  --sjs-font-size: 14px;
+  --sjs-base-unit: 0.5rem;
+  --sjs-font-editorfont-size: 14px;
+  --sjs-font-pagetitle-size: 16px;
+  --sjs-font-surveytitle-size: 16px;
+  --sd-base-vertical-padding: #{10px !important};
 }
 
 // Checkbox
@@ -38,7 +33,9 @@ ui-checkbox {
 
 // === Form builder ===
 .core-question {
-  @apply text-red-400;
+  .sd-question__title {
+    @apply text-red-400 #{!important};
+  }
 }
 
 // .multiline-tooltip {
@@ -50,15 +47,15 @@ ui-checkbox {
   box-sizing: border-box;
   height: 40px;
   position: relative;
-  z-index: 1001;
-  color: black;
+  z-index: 2;
   text-align: left;
   line-height: 40px;
-  padding: 0 40px !important;
+  padding: 0 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  @apply bg-white border-b border-b-gray-300 #{!important};
+  overflow: hidden;
+  @apply bg-white border-b border-b-gray-300 px-3 #{!important};
 
   .widget-title {
     overflow: hidden;
@@ -66,11 +63,31 @@ ui-checkbox {
     text-overflow: ellipsis;
     flex: 1;
     margin: unset;
+    font-size: 14px;
   }
 
   .hide-border & {
     border-bottom: none !important;
   }
+
+  #tab-list {
+    height: 100%;
+    overflow-y: hidden;
+  }
+}
+
+.floating-widget-header {
+  height: 40px;
+  position: absolute !important;
+  z-index: 2 !important;
+  line-height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  left: 0;
+  right: 0;
+  border: unset !important;
+  @apply px-3 #{!important};
 }
 
 // === TINYMCE ===

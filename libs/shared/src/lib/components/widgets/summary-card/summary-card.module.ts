@@ -1,4 +1,3 @@
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,13 +18,13 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SkeletonModule } from '../../../directives/skeleton/skeleton.module';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { EmptyModule } from '../../ui/empty/empty.module';
 
 /** Summary Card Widget Module */
 @NgModule({
   declarations: [SummaryCardComponent],
   imports: [
     CommonModule,
-    LayoutModule,
     PDFExportModule,
     SummaryCardItemModule,
     GridWidgetModule,
@@ -42,6 +41,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
     DropDownsModule,
     SelectMenuModule,
     FormWrapperModule,
+    EmptyModule,
   ],
   exports: [SummaryCardComponent],
 })

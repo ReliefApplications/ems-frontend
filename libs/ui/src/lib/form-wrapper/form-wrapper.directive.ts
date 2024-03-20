@@ -40,33 +40,46 @@ export class FormWrapperDirective
    */
   @Input() defaultMargin = true;
   // === GET THE ELEMENTS ON WHICH SUFFIX/PREFIX ARE APPLIED ===
+  /** Get all suffix directives */
   @ContentChildren(SuffixDirective)
   private allSuffixDirectives: QueryList<SuffixDirective> = new QueryList();
+  /** Get all prefix directives */
   @ContentChildren(PrefixDirective)
   private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
 
+  /** Get autocomplete component */
   @ContentChild(AutocompleteComponent)
   private autocompleteContent!: AutocompleteComponent;
+  /** Get select menu component */
   @ContentChild(SelectMenuComponent, { read: ElementRef })
   private currentSelectElement!: ElementRef;
+  /** Get textarea component */
   @ContentChild(TextareaComponent, { read: ElementRef })
   private currentTextareaElement!: ElementRef;
+  /** Get graphql select component */
   @ContentChild(GraphQLSelectComponent)
   private currentGraphQLSelectComponent!: GraphQLSelectComponent;
+  /** Get chip list component */
   @ContentChild(ChipListDirective, { read: ElementRef })
   private chipListElement!: ElementRef;
+  /** Get date wrapper component */
   @ContentChild(DateWrapperDirective, { read: ElementRef })
   private dateWrapperElement!: ElementRef;
+  /** Get form control component */
   @ContentChild(FormControlComponent, { read: ElementRef })
   private formControlElement!: ElementRef;
-
+  /** Get form control name component */
   @ContentChild(FormControlName) control!: FormControlName;
 
+  /** Current input element */
   private currentInputElement!: HTMLInputElement;
+  /** Current label element */
   private currentLabelElement!: HTMLLabelElement;
+  /** Beyond label container */
   private beyondLabelContainer!: HTMLDivElement;
 
   // === LISTS OF CLASSES TO APPLY TO ELEMENTS ===
+  /** Label classes */
   private labelClasses = [
     'block',
     'text-sm',
@@ -75,6 +88,7 @@ export class FormWrapperDirective
     'text-gray-900',
   ] as const;
 
+  /** Input classes */
   private inputClassesNoOutline = [
     'form-input',
     'bg-transparent',
@@ -92,6 +106,7 @@ export class FormWrapperDirective
     'focus:ring-inset',
   ] as const;
 
+  /** Input classes with outline */
   private inputClassesOutline = [
     'form-input',
     'bg-transparent',
@@ -107,8 +122,10 @@ export class FormWrapperDirective
     'sm:leading-6',
   ] as const;
 
+  /** Select classes with no outline*/
   private selectClassesNoOutline = ['block', 'w-full', 'pr-1'] as const;
 
+  /** Select classes with outline*/
   private selectClassesOutline = [
     'block',
     'w-full',
@@ -117,8 +134,11 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
+  /** Beyond label general classes */
   private beyondLabelGeneral = ['relative', 'flex', 'py-1.5', 'px-2'] as const;
+  /** Beyond label classes with no chiplist */
   private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
+  /** Beyond label classes with no outline */
   private beyondLabelNoOutline = [
     'focus-within:ring-2',
     'focus-within:ring-inset',
@@ -130,7 +150,7 @@ export class FormWrapperDirective
     'ring-inset',
     'ring-gray-300',
   ] as const;
-
+  /** Beyond label classes with outline */
   private beyondLabelOutline = [
     'bg-gray-50',
     'border-0',
@@ -139,7 +159,7 @@ export class FormWrapperDirective
     'focus-within:border-b-2',
     'focus-within:border-b-primary-600',
   ] as const;
-
+  /** Select button classes to remove */
   private selectButtonRemove = [
     'px-3',
     'ring-1',
@@ -149,7 +169,7 @@ export class FormWrapperDirective
     'focus:ring-primary-600',
     'shadow-sm',
   ] as const;
-
+  /** Textarea classes to remove */
   private textareaRemove = [
     'rounded-md',
     'shadow-sm',
@@ -161,8 +181,11 @@ export class FormWrapperDirective
     'focus:ring-primary-600',
   ];
 
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** Element wrapped subject */
   elementWrapped = new BehaviorSubject<boolean>(false);
+
   /**
    * Constructor including a ref to the element on which the directive is applied
    * and the renderer.
@@ -248,8 +271,8 @@ export class FormWrapperDirective
   }
 
   ngAfterContentInit() {
-    // Manage form control status changes
     if (this.control) {
+      // Manage form control status changes
       this.control.control.statusChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -268,9 +291,27 @@ export class FormWrapperDirective
                 this.removeInvalidState();
               }
             }
+            // Required state
+            const isRequired = this.control?.control?.hasValidator(
+              Validators.required
+            );
+            const labelHasRequired =
+              this.currentLabelElement?.textContent?.endsWith(' *');
+
+            if (isRequired && !labelHasRequired) {
+              this.renderer.appendChild(
+                this.currentLabelElement,
+                this.renderer.createText(' *')
+              );
+            } else if (!isRequired && labelHasRequired) {
+              // remove the ' *' from the innerText
+              this.currentLabelElement.innerText =
+                this.currentLabelElement.innerText.replace(' *', '');
+            }
           },
         });
     }
+
     // Get inner input and label elements
     this.currentInputElement =
       this.elementRef.nativeElement.querySelector('input');

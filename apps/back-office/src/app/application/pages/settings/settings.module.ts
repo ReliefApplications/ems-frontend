@@ -10,8 +10,12 @@ import {
   TextareaModule,
   FormWrapperModule,
   ToggleModule,
+  FixedWrapperModule,
+  IconModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Application settings module.
@@ -29,8 +33,12 @@ import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
     SelectMenuModule,
     FormWrapperModule,
     ToggleModule,
+    FixedWrapperModule,
     AccessModule,
     StatusOptionsComponent,
+    AbilityModule,
+    IconModule,
+    TooltipModule,
   ],
 })
 export class SettingsModule {}

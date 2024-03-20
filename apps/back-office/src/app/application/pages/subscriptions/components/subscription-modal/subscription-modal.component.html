@@ -1,12 +1,12 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         data.subscription
           ? ('models.subscription.edit' | translate)
           : ('models.subscription.new' | translate)
       }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="subscriptionForm">
@@ -103,7 +103,9 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()" variant="default">{{ 'common.close' | translate }}</ui-button>
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

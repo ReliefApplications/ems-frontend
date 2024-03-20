@@ -2,7 +2,7 @@ import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
-import { isArray, isObject } from 'lodash';
+import { has, isArray, isEqual, isObject } from 'lodash';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
 
@@ -18,7 +18,6 @@ export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
-  let currentSearchValue = '';
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
@@ -28,24 +27,29 @@ export const init = (
       question: QuestionDropdownModel,
       el: HTMLInputElement
     ): void => {
+      let currentSearchValue = '';
       const defaultDropdown = el.querySelector('sv-ng-dropdown-question');
       if (defaultDropdown) {
         el.removeChild(defaultDropdown);
       }
+      // Remove previous input if already rendered
+      el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
       let dropdownDiv: HTMLDivElement | null = null;
       dropdownDiv = document.createElement('div');
-      dropdownDiv.classList.add('flex', 'min-h-[50px]');
+      dropdownDiv.classList.add('flex', 'min-h-[36px]');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv, question);
+      // Make sure the value is valid
       if (!isObject(question.value) && !isArray(question.value)) {
         dropdownInstance.value = question.value;
       }
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
       dropdownInstance.registerOnChange((value: any) => {
+        // Make sure the value is valid
         if (question.isPrimitiveValue) {
           if (!isObject(value) && !isArray(value)) {
             question.value = value;
@@ -74,8 +78,32 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question.registerFunctionOnPropertyValueChanged(
+        'isPrimitiveValue',
+        (newValue: boolean) => {
+          dropdownInstance.clearValue();
+          dropdownInstance.valuePrimitive = newValue;
+          question.value = null;
+          question.defaultValue = null;
+        }
+      );
       question.registerFunctionOnPropertyValueChanged('value', () => {
-        dropdownInstance.value = question.value;
+        // We need this line for resource select
+        if (question.isPrimitiveValue) {
+          dropdownInstance.value = question.value;
+        } else {
+          if (question.visibleChoices.length > 0) {
+            if (has(question.value, 'text') && has(question.value, 'value')) {
+              dropdownInstance.value = question.visibleChoices.find((choice) =>
+                isEqual(choice.value, question.value.value)
+              );
+            } else {
+              dropdownInstance.value = question.visibleChoices.find((choice) =>
+                isEqual(choice.value, question.value)
+              );
+            }
+          }
+        }
       });
       question.registerFunctionOnPropertyValueChanged(
         'readOnly',
@@ -87,6 +115,7 @@ export const init = (
       if (question.visibleChoices.length) {
         updateChoices(dropdownInstance, question, currentSearchValue);
       }
+      question._instance = dropdownInstance;
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
@@ -97,6 +126,7 @@ export const init = (
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question._instance = undefined;
       question._propertyValueChangedVirtual = undefined;
     },
   };
@@ -127,6 +157,7 @@ export const init = (
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
     dropdownInstance.popupSettings = { appendTo: 'component' };
+    dropdownInstance.fillMode = 'none';
     return dropdownInstance;
   };
 

@@ -2,7 +2,7 @@
   <!-- List of layers -->
   <div class="flex-1 flex flex-col">
     <div class="flex justify-between">
-      <h2>{{ 'common.layers' | translate }}</h2>
+      <h2>{{ 'common.layers.few' | translate }}</h2>
       <ng-container *ngIf="mapLayers.length && !loading">
         <div class="flex justify-end">
           <ng-container *ngTemplateOutlet="newLayer"></ng-container>
@@ -46,7 +46,7 @@
                     icon="more_vert"
                     [uiMenuTriggerFor]="menu"
                     (click)="$event.stopPropagation()"
-                    [uiTooltip]="'common.options' | translate"
+                    [uiTooltip]="'common.actions' | translate"
                   >
                   </ui-button>
                   <ui-menu #menu>
@@ -76,8 +76,8 @@
     </ng-container>
   </div>
   <!-- Map -->
-  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
-    <ng-template #mapContainer></ng-template>
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0 rounded overflow-hidden">
+    <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
   </div>
 </div>
 
@@ -91,8 +91,6 @@
     {{ 'components.widget.settings.map.layers.add' | translate }}
   </ui-button>
 </ng-template>
-
-<ng-template #mapContainer></ng-template>
 
 <!-- Contextual menu for layer addition -->
 <ui-menu #layerMenu>
@@ -121,5 +119,5 @@
 
 <ng-template #emptyTmpl>
   <!-- Empty indicator -->
-  <shared-empty title="No layer" [footerTemplate]="newLayer"></shared-empty>
+  <shared-empty [title]="'common.layers.none' | translate" [footerTemplate]="newLayer"></shared-empty>
 </ng-template>

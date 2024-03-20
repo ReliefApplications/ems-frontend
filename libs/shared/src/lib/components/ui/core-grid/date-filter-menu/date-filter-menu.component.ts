@@ -8,7 +8,10 @@ import {
 } from '@progress/kendo-angular-grid';
 import { PopupSettings } from '@progress/kendo-angular-dateinputs';
 import { takeUntil } from 'rxjs';
-import { FIELD_TYPES, FILTER_OPERATORS } from '../../../filter/filter.const';
+import {
+  FIELD_TYPES,
+  DATE_FILTER_OPERATORS,
+} from '../../../filter/filter.const';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
 
@@ -42,16 +45,27 @@ export class DateFilterMenuComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Field */
   @Input() public field = '';
+  /** Filter */
   @Input() public filter: any;
+  /** Field value */
   @Input() public valueField = '';
+  /** Filter service */
   @Input() public filterService?: FilterService;
+  /** Field format */
+  @Input() public format = 'dd/MM/yy HH:mm';
 
+  /** Form */
   public form!: ReturnType<typeof this.createFormGroup>;
+  /** First date mode */
   public firstDateMode = 'date';
+  /** Second date mode */
   public secondDateMode = 'date';
 
+  /** Operators list */
   public operatorsList: any[] = [];
+  /** Logics */
   public logics = [
     {
       text: this.translate.instant('kendo.grid.filterOrLogic'),
@@ -63,6 +77,7 @@ export class DateFilterMenuComponent
     },
   ];
 
+  /** Popup settings */
   public popupSettings: PopupSettings = {
     popupClass: 'date-range-filter',
   };
@@ -90,7 +105,7 @@ export class DateFilterMenuComponent
   ) {
     super();
     const type = FIELD_TYPES.find((x) => x.editor === 'datetime');
-    this.operatorsList = FILTER_OPERATORS.filter((x) =>
+    this.operatorsList = DATE_FILTER_OPERATORS.filter((x) =>
       type?.operators?.includes(x.value)
     );
     this.operatorsList.forEach((o) => {
@@ -133,7 +148,7 @@ export class DateFilterMenuComponent
           field: this.field,
           operator: this.filter.filters[0]
             ? this.filter.filters[0].operator
-            : 'eq',
+            : 'gte',
           value: this.fb.control(
             this.filter.filters[0] ? this.filter.filters[0].value : ''
           ),
@@ -142,7 +157,7 @@ export class DateFilterMenuComponent
           field: this.field,
           operator: this.filter.filters[1]
             ? this.filter.filters[1].operator
-            : 'eq',
+            : 'lte',
           value: this.fb.control(
             this.filter.filters[1] ? this.filter.filters[1].value : ''
           ),

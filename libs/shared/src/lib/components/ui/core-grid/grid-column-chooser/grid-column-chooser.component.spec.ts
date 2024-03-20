@@ -4,7 +4,7 @@ import { GridColumnChooserComponent } from './grid-column-chooser.component';
 
 describe('GridColumnChooserComponent', () => {
   let component: GridColumnChooserComponent;
-  let fixture: ComponentFixture<sharedGridColumnChooserComponent>;
+  let fixture: ComponentFixture<GridColumnChooserComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

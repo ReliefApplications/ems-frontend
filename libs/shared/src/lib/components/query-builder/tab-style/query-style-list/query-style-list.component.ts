@@ -16,12 +16,18 @@ export class QueryStyleListComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Form array */
   @Input() form!: UntypedFormArray;
+  /** Styles array */
   public styles: any[] = [];
+  /** List of displayed columns */
   columns: string[] = ['name', 'preview', '_actions'];
 
+  /** Event emitter for edit event */
   @Output() edit = new EventEmitter<any>();
+  /** Event emitter for delete event */
   @Output() delete = new EventEmitter<any>();
+
   /**
    * Constructor for the query style list component
    */

@@ -8,13 +8,11 @@ import {
   Resource,
   UnsubscribeComponent,
   ResourceQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../utils/update-queries';
 import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
@@ -31,10 +29,22 @@ export class AggregationsTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /**
+   * Resource
+   */
   public resource!: Resource;
+  /**
+   * Aggregations
+   */
   public aggregations: Aggregation[] = [];
+  /**
+   * Loading state
+   */
   public loading = true;
 
+  /**
+   * Columns to display
+   */
   public displayedColumnsAggregations: string[] = [
     'name',
     'createdAt',
@@ -42,8 +52,17 @@ export class AggregationsTabComponent
   ];
 
   // ==== PAGINATION ====
+  /**
+   * Aggregations query
+   */
   private aggregationsQuery!: QueryRef<ResourceQueryResponse>;
+  /**
+   * Cached aggregations
+   */
   private cachedAggregations: Aggregation[] = [];
+  /**
+   * Page info
+   */
   public pageInfo = {
     pageIndex: 0,
     pageSize: 10,
@@ -169,7 +188,7 @@ export class AggregationsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .addAggregation(value, this.resource.id)
+          .addAggregation(value, { resource: this.resource.id })
           .subscribe(({ data }: any) => {
             if (data.addAggregation) {
               this.aggregations = [...this.aggregations, data?.addAggregation];
@@ -199,7 +218,7 @@ export class AggregationsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .editAggregation(aggregation, value, this.resource.id)
+          .editAggregation(aggregation, value, { resource: this.resource.id })
           .subscribe(({ data }: any) => {
             if (data.editAggregation) {
               this.aggregations = this.aggregations.map((x: any) => {
@@ -236,7 +255,7 @@ export class AggregationsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .deleteAggregation(aggregation, this.resource.id)
+          .deleteAggregation(aggregation, { resource: this.resource.id })
           .subscribe(({ data }: any) => {
             if (data.deleteAggregation) {
               this.aggregations = this.aggregations.filter(

@@ -1,0 +1,31 @@
+<div class="flex flex-row items-center">
+  <div
+    (click)="onOpenSelect()"
+    #trigger="cdkOverlayOrigin"
+    cdkOverlayOrigin
+    class="h-4 flex-1"
+    [ngStyle]="{
+      background: value | sharedGradient
+    }"
+  ></div>
+
+  <ui-button
+    (click)="onReverse()"
+    [isIcon]="true"
+    icon="loop"
+    size="small"
+    [uiTooltip]="
+      'components.widget.settings.map.tooltip.gradient.reverse' | translate
+    "
+  ></ui-button>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="showList"
+>
+  <shared-gradient-picker-popup
+    (close)="setGradient($event)"
+  ></shared-gradient-picker-popup>
+</ng-template>

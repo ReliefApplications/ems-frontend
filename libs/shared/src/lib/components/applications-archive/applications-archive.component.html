@@ -41,13 +41,14 @@
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
+              [uiTooltip]="'common.actions' | translate"
             ></ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onRestore(element)">
                 <ui-icon icon="restore_page" variant="grey"></ui-icon>
                 {{ 'common.archive.restore' | translate }}
               </button>
-              <ui-divider></ui-divider>
+              <ui-divider class="py-1"></ui-divider>
               <button uiMenuItem (click)="onDelete(element)">
                 <ui-icon icon="delete" variant="danger"></ui-icon>
                 {{ 'common.archive.delete' | translate }}

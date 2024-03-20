@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   BaseFilterCellComponent,
   FilterService,
 } from '@progress/kendo-angular-grid';
 import { isEmpty, isNil } from 'lodash';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Shared-grid-filter component
@@ -16,7 +17,7 @@ import { isEmpty, isNil } from 'lodash';
 })
 export class GridFilterComponent
   extends BaseFilterCellComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** @returns selected value */
   public get selectedValue(): any {
@@ -24,11 +25,17 @@ export class GridFilterComponent
     return filter ? filter.value : null;
   }
 
+  /** Field */
   @Input() public field = '';
+  /** Filter */
   @Input() public override filter: any;
+  /** Data */
   @Input() public data: any[] = [];
+  /** Text field */
   @Input() public textField = '';
+  /** Value field */
   @Input() public valueField = '';
+  /** Is not array */
   @Input() isNotArray = false;
 
   /** @returns empty default item */
@@ -40,9 +47,12 @@ export class GridFilterComponent
     };
   }
 
+  /** Choices */
   public choices: any[] = [];
+  /** Operators */
   public op: any[] = [];
 
+  /** Operators translations */
   private operatorsTranslations: { [key: string]: any } = {
     eq: () => this.translate.instant('kendo.grid.filterEqOperator'),
     neq: () => this.translate.instant('kendo.grid.filterNotEqOperator'),
@@ -54,6 +64,7 @@ export class GridFilterComponent
       this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
   } as const;
 
+  /** Main operators */
   mainOperators: any[] = [
     {
       text: '',
@@ -65,6 +76,7 @@ export class GridFilterComponent
     },
   ];
 
+  /** Array operators */
   arrayOperators = [
     {
       text: '',
@@ -84,7 +96,10 @@ export class GridFilterComponent
     },
   ] as const;
 
+  /** Selected operator */
   public selectedOperator!: string;
+  /** Destroy subject */
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * Constructor for shared-grid-filter
@@ -103,7 +118,7 @@ export class GridFilterComponent
     this.selectedOperator = this.isNotArray ? 'eq' : 'contains';
     this.setOperators();
     this.choices = (this.data || []).slice();
-    this.translate.onLangChange.subscribe(() => {
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.setOperators();
     });
   }
@@ -175,5 +190,11 @@ export class GridFilterComponent
       logic: 'and',
     };
     this.applyFilter(this.filter);
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

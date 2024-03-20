@@ -5,24 +5,14 @@ import {
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
-import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  ReferenceData,
-  ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
-} from '../../../models/reference-data.model';
-import {
-  GET_REFERENCE_DATAS,
-  GET_SHORT_REFERENCE_DATA_BY_ID,
-} from './graphql/queries';
+import { Apollo } from 'apollo-angular';
+import { ReferenceData } from '../../../models/reference-data.model';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionReferenceDataDropdownModel } from './reference-data-dropdown.model';
 import { Subject } from 'rxjs';
-
-/** Pagination */
-const ITEMS_PER_PAGE = 10;
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 
 /**
  * Reference data dropdown component.
@@ -36,9 +26,11 @@ export class ReferenceDataDropdownComponent
   extends QuestionAngular<QuestionReferenceDataDropdownModel>
   implements OnInit, OnDestroy
 {
+  /** Control */
   public control = new FormControl<string | null>(null);
+  /** Selected reference data */
   public selectedReferenceData: ReferenceData | null = null;
-  public referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
+  /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
 
   /**
@@ -48,11 +40,13 @@ export class ReferenceDataDropdownComponent
    * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
    * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
    * @param {Apollo} apollo - Apollo - This is the Apollo service that we'll use to make our GraphQL queries.
+   * @param {ReferenceDataService} referenceDataService Shared reference data service
    */
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     viewContainerRef: ViewContainerRef,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private referenceDataService: ReferenceDataService
   ) {
     super(changeDetectorRef, viewContainerRef);
   }
@@ -65,34 +59,35 @@ export class ReferenceDataDropdownComponent
       },
     });
     if (this.model.obj.referenceData) {
-      this.apollo
-        .query<ReferenceDataQueryResponse>({
-          query: GET_SHORT_REFERENCE_DATA_BY_ID,
-          variables: {
-            id: this.model.obj.referenceData,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          this.selectedReferenceData = data.referenceData;
+      this.referenceDataService
+        .loadReferenceData(this.model.obj.referenceData)
+        .then((referenceData) => {
+          this.selectedReferenceData = referenceData;
+          this.model.obj.setPropertyValue('_referenceData', referenceData);
           this.control.setValue(this.model.obj.referenceData, {
             emitEvent: false,
           });
+          this.changeDetectorRef.detectChanges();
         });
     }
-
-    this.referenceDatasQuery =
-      this.apollo.watchQuery<ReferenceDatasQueryResponse>({
-        query: GET_REFERENCE_DATAS,
-        variables: {
-          first: ITEMS_PER_PAGE,
-        },
-      });
   }
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Reset control value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param event click event
+   */
+  clearFormField(event: Event) {
+    if (this.control.value) {
+      this.control.setValue(null);
+    }
+    event.stopPropagation();
   }
 }

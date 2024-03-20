@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GridWidgetComponent } from './grid.component';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
-import { EmailPreviewModule } from '../../email-preview/email-preview.module';
 import { AggregationGridModule } from '../../aggregation/aggregation-grid/aggregation-grid.module';
 import {
   ButtonModule,
@@ -12,6 +10,7 @@ import {
   SelectMenuModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReferenceDataGridModule } from '../../ui/reference-data-grid/reference-data-grid.module';
 
 /** Module for grid widget component */
 @NgModule({
@@ -19,14 +18,13 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     CoreGridModule,
-    LayoutModule,
     DropDownListModule,
-    EmailPreviewModule,
     AggregationGridModule,
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
     TranslateModule,
+    ReferenceDataGridModule,
   ],
   exports: [GridWidgetComponent],
 })

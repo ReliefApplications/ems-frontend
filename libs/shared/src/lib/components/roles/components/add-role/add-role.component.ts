@@ -11,9 +11,11 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
   styleUrls: ['./add-role.component.scss'],
 })
 export class AddRoleComponent {
+  /** Title of the dialog modal */
   title: string;
 
   // === REACTIVE FORM ===
+  /** Reactive form for the role */
   roleForm = this.fb.group({
     title: ['', Validators.required],
   });
@@ -36,12 +38,5 @@ export class AddRoleComponent {
     }
   ) {
     this.title = data.title;
-  }
-
-  /**
-   * Close the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
   }
 }

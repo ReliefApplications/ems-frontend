@@ -27,6 +27,7 @@ import { FormWrapperModule } from '@oort-front/ui';
   styleUrls: ['./add-resource-modal.component.scss'],
 })
 export class AddResourceModalComponent {
+  /** Add form */
   public addForm = this.fb.group({
     name: ['', Validators.required],
   });
@@ -41,11 +42,4 @@ export class AddResourceModalComponent {
     private fb: FormBuilder,
     public dialogRef: DialogRef<AddResourceModalComponent>
   ) {}
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

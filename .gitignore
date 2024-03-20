@@ -2,6 +2,7 @@
 
 # compiled output
 dist
+/widgets
 tmp
 /out-tsc
 
@@ -40,3 +41,13 @@ testem.log
 Thumbs.db
 
 .angular
+
+# Doc generated while running storybook
+libs/shared/documentation.json
+libs/ui/documentation.json
+
+# Widgets build
+/widgets/
+
+# Kendo license
+kendo-ui-license.txt

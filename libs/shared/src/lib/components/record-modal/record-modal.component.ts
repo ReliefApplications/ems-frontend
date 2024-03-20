@@ -61,21 +61,29 @@ interface DialogData {
   ],
   selector: 'shared-record-modal',
   templateUrl: './record-modal.component.html',
-  styleUrls: ['./record-modal.component.scss'],
+  styleUrls: ['../../style/survey.scss', './record-modal.component.scss'],
 })
 export class RecordModalComponent
   extends UnsubscribeComponent
   implements AfterViewInit, OnDestroy
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Form */
   public form?: Form;
+  /** Record */
   public record: Record = {};
+  /** Modified at */
   public modifiedAt: Date | null = null;
+  /** Survey */
   public survey!: SurveyModel;
+  /** Survey next */
   public surveyNext?: SurveyModel;
+  /** Can edit */
   public canEdit: boolean | undefined = false;
 
+  /** Environment */
   environment: any;
 
   /** Selected page index */
@@ -180,9 +188,6 @@ export class RecordModalComponent
           this.form?.metadata
         ));
 
-    addCustomFunctions(this.authService, this.record);
-    this.survey.data = this.record.data;
-
     this.survey.mode = 'display';
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
@@ -190,6 +195,7 @@ export class RecordModalComponent
       this.selectedPageIndex,
       {}
     );
+    this.survey.data = this.record.data;
 
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
@@ -197,16 +203,14 @@ export class RecordModalComponent
         this.form?.metadata,
         this.record
       );
-      if (this.surveyNext) {
-        this.surveyNext.data = this.data.compareTo.data;
-        this.surveyNext.mode = 'display';
-      }
+      this.surveyNext.mode = 'display';
       // After the survey is created we add common callback to survey events
       this.formBuilderService.addEventsCallBacksToSurvey(
         this.surveyNext,
         this.selectedPageIndex,
         {}
       );
+      this.surveyNext.data = this.data.compareTo.data;
 
       // Set list of updated questions
       const updatedQuestions: string[] = [];
@@ -236,6 +240,7 @@ export class RecordModalComponent
         }
       );
     }
+    addCustomFunctions(this.authService, this.record);
     this.loading = false;
   }
 
@@ -259,13 +264,6 @@ export class RecordModalComponent
   }
 
   /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
-
-  /**
    * Opens the history of the record in a modal.
    */
   public async onShowHistory(): Promise<void> {
@@ -278,6 +276,7 @@ export class RecordModalComponent
         revert: (version: any) =>
           this.confirmRevertDialog(this.record, version),
       },
+      panelClass: ['lg:w-4/5', 'w-full'],
       autoFocus: false,
     });
   }

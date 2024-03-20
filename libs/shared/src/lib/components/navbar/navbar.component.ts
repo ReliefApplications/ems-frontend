@@ -1,15 +1,14 @@
 import {
   Component,
   Input,
-  Inject,
   Output,
   EventEmitter,
   HostListener,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 /**
- * The navbar navigator used in the main layout
+ * Navbar used in the main layout.
+ * Can be horizontal or vertical.
  */
 @Component({
   selector: 'shared-navbar',
@@ -17,28 +16,26 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
+  /** Application layout */
   @Input() appLayout = false;
+  /** Does admin has permission to add a page */
   @Input() canAddPage = false;
+  /** Should be displayed vertically or horizontally.*/
   @Input() vertical = true;
-  @Output() reorder: EventEmitter<any> = new EventEmitter();
-
-  // === NAVIGATION GROUP ===
+  /** Navigation groups */
   @Input() navGroups: any[] = [];
+  /** Navigation group selected */
   @Input() nav: any;
-
-  private environment: any;
-
-  // === DISPLAY ===
+  /** Event emitted when the navbar items are reordered. */
+  @Output() reorder: EventEmitter<any> = new EventEmitter();
+  /** Boolean for portview threshold */
   public largeDevice: boolean;
 
   /**
-   * Left sidenav visible in application edition and preview.
-   *
-   * @param environment This is the environment in which we are running the application
-   * @param router The Angular Router service
+   * Navbar used in the main layout.
+   * Can be horizontal or vertical.
    */
-  constructor(@Inject('environment') environment: any, private router: Router) {
-    this.environment = environment;
+  constructor() {
     this.largeDevice = window.innerWidth > 1024;
   }
 
@@ -46,7 +43,7 @@ export class NavbarComponent {
    * Handles the click event
    *
    * @param callback Callback that defines the action to perform on click
-   * @param event Event that happends with the click
+   * @param event Event that happens with the click
    */
   onClick(callback: () => any, event: any): void {
     callback();

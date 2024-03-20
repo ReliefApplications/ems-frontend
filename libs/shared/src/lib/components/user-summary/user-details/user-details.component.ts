@@ -18,9 +18,10 @@ import { RestService } from '../../../services/rest/rest.service';
   styleUrls: ['./user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit {
+  /** User */
   @Input() user!: User;
-  public form!: UntypedFormGroup;
 
+  /** Event emitter for the edit event */
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -33,6 +34,9 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  /** Form */
+  public form!: UntypedFormGroup;
+  /** Attributes */
   public attributes: { text: string; value: string }[] = [];
 
   /**

@@ -31,9 +31,22 @@ const ROUTE_TABS: string[] = [
   styleUrls: ['./resource.component.scss'],
 })
 export class ResourceComponent implements OnInit {
+  // === DATA ===
+  /**
+   * Loading state
+   */
   public loading = true;
+  /**
+   * Resource id
+   */
   public id = '';
+  /**
+   * Resource
+   */
   public resource: any;
+  /**
+   * Selected tab
+   */
   public selectedTab = 0;
 
   /**
@@ -58,7 +71,6 @@ export class ResourceComponent implements OnInit {
   /** Load data from the id of the resource passed as a parameter. */
   ngOnInit(): void {
     const routeTab: string = this.router.url.split('/').pop() || '';
-    console.log(routeTab);
     this.selectedTab = ROUTE_TABS.findIndex((tab) => tab === routeTab);
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {

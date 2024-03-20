@@ -27,6 +27,7 @@ export class ErrorMessageDirective implements OnDestroy {
       }
     }
   }
+
   /**
    * Display or remove error message template by the given condition
    */
@@ -39,16 +40,23 @@ export class ErrorMessageDirective implements OnDestroy {
       }
     }
   }
+
+  /** Current error message */
   private currentErrorMessage = '';
+  /** Error message template */
   private errorMessageTemplate!: HTMLSpanElement;
+  /** Error message classes */
   private errorMessageClasses = [
     'block',
     'text-red-400',
     'py-2',
     'text-xs',
   ] as const;
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+  /** Host is ready */
   private hostIsReady = false;
+
   /**
    * UI Error Message constructor
    *

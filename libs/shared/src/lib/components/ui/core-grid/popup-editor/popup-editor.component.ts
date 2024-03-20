@@ -27,10 +27,12 @@ interface DialogData {
   standalone: true,
   imports: [CommonModule, DialogModule, ButtonModule, TranslateModule],
   templateUrl: './popup-editor.component.html',
-  styleUrls: ['./popup-editor.component.scss'],
+  styleUrls: ['../../../../style/survey.scss', './popup-editor.component.scss'],
 })
 export class PopupEditorComponent implements OnInit, AfterViewInit {
+  /** Survey to edit the field */
   public survey!: SurveyModel;
+  /** Form container */
   @ViewChild('formContainer') formContainer!: ElementRef;
 
   /**

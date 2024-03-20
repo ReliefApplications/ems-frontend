@@ -37,7 +37,9 @@ export type TreeObject = { label: string; layer: L.Layer };
   providedIn: 'root',
 })
 export class ArcgisService {
+  /** ArcGIS API key */
   private esriApiKey!: string;
+  /** ArcGIS session */
   private session!: ApiKeyManager;
 
   /**
@@ -61,17 +63,24 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
+   * @param options additional options
+   * @param options.skipDefaultView skip default view ( map won't change zoom / bounds )
    * @returns basemaps and layers
    */
   public loadWebMap(
     map: L.Map,
-    id: string
+    id: string,
+    options?: {
+      skipDefaultView: boolean;
+    }
   ): Promise<{ basemaps: TreeObject[]; layers: TreeObject[] }> {
     return new Promise((resolve) => {
       getItemData(id, {
         authentication: this.session,
       }).then((webMap: any) => {
-        this.setDefaultView(map, webMap);
+        if (!options?.skipDefaultView) {
+          this.setDefaultView(map, webMap);
+        }
         Promise.all([
           this.loadBaseMap(map, webMap),
           this.loadOperationalLayers(map, webMap),
@@ -134,6 +143,7 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {*} webMap webmap loaded
+   * @returns Layer tree as Promise
    */
   private async loadBaseMap(map: L.Map, webMap: any): Promise<TreeObject[]> {
     // BaseMaps
@@ -251,6 +261,7 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {*} webMap webmap loaded
+   * @returns Layer tree as Promise
    */
   private async loadOperationalLayers(
     map: L.Map,
@@ -269,7 +280,7 @@ export class ArcgisService {
    * @param {L.Map} map to add to
    * @param {*} layer layer
    * @param {any[]} layers array to save the created layers
-   * @param {boolean} [visibility=true] visibility of the layer
+   * @param {boolean} visibility visibility of the layer
    */
   private async addLayer(
     map: L.Map,

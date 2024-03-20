@@ -1,0 +1,91 @@
+<form [formGroup]="formGroup" class="flex gap-4 flex-col">
+  <!-- Filter Variant -->
+  <div uiFormFieldDirective [outline]="false">
+    <label>{{ 'models.dashboard.filterVariant.title' | translate }}</label>
+    <ui-select-menu
+      formControlName="variant"
+      [placeholder]="
+        'models.dashboard.filterVariant.variantsOptions.selectOrigin'
+          | translate
+      "
+    >
+      <ui-select-option
+        *ngFor="let variant of ['modern', 'default']"
+        [value]="variant"
+      >
+        <ng-container
+          *ngTemplateOutlet="variantTmpl; context: { $implicit: variant }"
+        ></ng-container
+      ></ui-select-option>
+    </ui-select-menu>
+  </div>
+  <!-- Filter structure (survey) -->
+  <ui-button class="!contents" variant="default" (click)="onEditStructure()">
+    {{ 'components.application.dashboard.editFilter' | translate }}
+  </ui-button>
+  <!-- Activate filtering -->
+  <ui-toggle formControlName="show">
+    <ng-container ngProjectAs="label">{{
+      'models.dashboard.activateFiltering' | translate
+    }}</ng-container>
+  </ui-toggle>
+  <!-- Closable status -->
+  <ui-toggle formControlName="closable">
+    <ng-container ngProjectAs="label"
+      >{{ 'models.dashboard.closable' | translate
+      }}<ui-icon
+        class="ml-1 cursor-help self-center"
+        variant="grey"
+        [size]="18"
+        icon="info_outline"
+        [uiTooltip]="'models.dashboard.tooltip.filter.closable' | translate"
+      ></ui-icon
+    ></ng-container>
+  </ui-toggle>
+  <div uiFormFieldDirective>
+    <ui-select-menu
+      formControlName="position"
+      [customTemplate]="{
+        template: positionTmpl,
+        context: { $implicit: formGroup.get('position')!.value }
+      }"
+    >
+      <ui-select-option *ngFor="let position of positions" [value]="position">
+        <ng-container
+          *ngTemplateOutlet="positionTmpl; context: { $implicit: position }"
+        ></ng-container>
+      </ui-select-option>
+    </ui-select-menu>
+    <ui-icon
+      class="cursor-help"
+      uiSuffix
+      [uiTooltip]="'models.dashboard.tooltip.filter.position' | translate"
+      variant="grey"
+      [size]="18"
+      icon="info_outline"
+    ></ui-icon>
+  </div>
+</form>
+
+<ng-template #variantTmpl let-variant>
+  {{
+    'models.dashboard.filterVariant.variantsOptions.variant_' + variant
+      | translate
+  }}
+</ng-template>
+
+<ng-template #positionTmpl let-position>
+  <div class="flex items-center gap-1">
+    <ui-icon
+      [icon]="position ? position + '_panel_open' : ''"
+      [isOutlined]="true"
+    ></ui-icon
+    >{{
+      position
+        ? ('components.application.dashboard.filter.filterPosition.' + position
+          | translate)
+        : ('components.application.dashboard.filter.filterPosition.unset'
+          | translate)
+    }}
+  </div>
+</ng-template>

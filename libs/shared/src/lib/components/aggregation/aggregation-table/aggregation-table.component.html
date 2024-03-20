@@ -40,7 +40,7 @@
             icon="more_vert"
             [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
-            [uiTooltip]="'common.options' | translate"
+            [uiTooltip]="'common.actions' | translate"
           >
           </ui-button>
           <ui-menu #resMenu>
@@ -75,7 +75,7 @@
     variant="primary"
     [isBlock]="true"
     (click)="onAdd()"
-    [disabled]="!resource && !form"
+    [disabled]="!resource"
     >{{ 'components.aggregation.add.title' | translate }}</ui-button
   >
 </div>

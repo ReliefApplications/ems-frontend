@@ -63,32 +63,55 @@
       >
       </ui-textarea>
     </div>
+    <!-- Side menu -->
     <div class="mb-6">
       <ui-toggle formControlName="sideMenu">
         <ng-container ngProjectAs="label">
-          {{ 'models.application.menu' | translate }}</ng-container
+          {{
+            'components.application.update.sideMenu' | translate
+          }}</ng-container
         >
       </ui-toggle>
     </div>
+    <!-- Default hide menu -->
+    <div class="mb-6">
+      <ui-toggle
+        formControlName="hideMenu"
+      >
+        <ng-container ngProjectAs="label">
+          {{ 'components.application.update.hideMenu' | translate
+          }}<ui-icon
+            class="ml-1 cursor-help self-center"
+            variant="grey"
+            [size]="18"
+            icon="info_outline"
+            [uiTooltip]="
+              'components.application.update.tooltip.hideMenu' | translate
+            "
+          ></ui-icon
+        ></ng-container>
+      </ui-toggle>
+    </div>
   </div>
-  <ui-button
-    category="secondary"
-    variant="primary"
-    (click)="onSubmit()"
-    [disabled]="settingsForm.invalid || !settingsForm.dirty"
-  >
-    {{ 'common.saveChanges' | translate }}
-  </ui-button>
 </form>
 <!-- Actions -->
 <div
-  *ngIf="application && (application.canUpdate || application.canDelete)"
-  class="mt-8"
+  *ngIf="
+    application &&
+    (application.canUpdate || application.canDelete || 'create'
+      | able : 'Application')
+  "
+  class="mt-2"
 >
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <ui-button category="secondary" variant="primary" (click)="onOpenStyle()">
+    <ui-button
+      *ngIf="application.canUpdate"
+      category="secondary"
+      variant="primary"
+      (click)="onOpenStyle()"
+    >
       {{ 'components.application.customStyling' | translate }}
     </ui-button>
     <ui-button
@@ -96,7 +119,7 @@
       category="tertiary"
       variant="primary"
       (click)="onDuplicate()"
-      *ngIf="application.canUpdate"
+      *ngIf="'create' | able : 'Application'"
     >
       {{ 'common.duplicate' | translate }}
     </ui-button>
@@ -111,7 +134,18 @@
     </ui-button>
   </div>
 </div>
-
+<!-- Floating div for actions buttons -->
+<ui-fixed-wrapper>
+  <!-- Save button -->
+  <ui-button
+    category="secondary"
+    variant="primary"
+    (click)="onSubmit()"
+    [disabled]="settingsForm.invalid || !settingsForm.dirty"
+  >
+    {{ 'common.saveChanges' | translate }}
+  </ui-button>
+</ui-fixed-wrapper>
 <ng-template #statusTemplate let-status>
   <shared-status-options [status]="status"></shared-status-options>
 </ng-template>

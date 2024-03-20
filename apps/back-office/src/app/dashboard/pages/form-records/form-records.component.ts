@@ -1,37 +1,38 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-  GET_FORM_BY_ID,
-  GET_FORM_RECORDS,
-  GET_RECORD_DETAILS,
-} from './graphql/queries';
+import { GET_FORM_RECORDS } from './graphql/queries';
 import {
   EDIT_RECORD,
   DELETE_RECORD,
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  LayoutService,
-  ConfirmService,
-  BreadcrumbService,
   UnsubscribeComponent,
-  DownloadService,
   Record,
   FormRecordsQueryResponse,
-  FormQueryResponse,
   DeleteRecordMutationResponse,
   EditRecordMutationResponse,
-  RecordQueryResponse,
   RestoreRecordMutationResponse,
+  BreadcrumbService,
+  ConfirmService,
+  DownloadService,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/shared';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UIPageChangeEvent,
+  UILayoutService,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
+import { ApolloQueryResult } from '@apollo/client';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -52,21 +53,36 @@ export class FormRecordsComponent
   implements OnInit
 {
   // === DATA ===
+  /** Loading state */
   public loading = true;
+  /** Loading more state */
   public loadingMore = false;
+  /** Records query */
   private recordsQuery!: QueryRef<FormRecordsQueryResponse>;
+  /** Form id */
   public id = '';
+  /** Form */
   public form: any;
+  /** Columns to display */
   displayedColumns: string[] = [];
+  /** Data source array */
   dataSource: any[] = [];
+  /** Show sidenav */
   public showSidenav = true;
+  /** History id */
   private historyId = '';
+  /** Cached records */
   public cachedRecords: Record[] = [];
+  /** Default columns */
   public defaultColumns = DEFAULT_COLUMNS;
+  /** Updating status */
+  public updating = false;
 
   // === DELETED RECORDS VIEW ===
+  /** Show deleted records */
   public showDeletedRecords = false;
 
+  /** Page info */
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
@@ -79,7 +95,11 @@ export class FormRecordsComponent
     return !this.loading && this.dataSource.length === 0;
   }
 
+  /**
+   * File input
+   */
   @ViewChild('xlsxFile') xlsxFile: any;
+  /** Show upload option */
   public showUpload = false;
 
   /**
@@ -88,7 +108,7 @@ export class FormRecordsComponent
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param downloadService Shared download service
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
@@ -99,7 +119,7 @@ export class FormRecordsComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private downloadService: DownloadService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
@@ -129,6 +149,7 @@ export class FormRecordsComponent
       variables: {
         id: this.id,
         first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
         display: false,
         showDeletedRecords: this.showDeletedRecords,
       },
@@ -136,40 +157,9 @@ export class FormRecordsComponent
 
     this.recordsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.cachedRecords.push(
-          ...data.form.records.edges.map((x: any) => x.node)
-        );
-        this.dataSource = this.cachedRecords.slice(
-          ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-          ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = data.form.records.totalCount;
-        this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
-        this.loadingMore = false;
-      });
-
-    // get the form detail
-    this.apollo
-      .watchQuery<FormQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.id,
-          display: true,
-          showDeletedRecords: this.showDeletedRecords,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(({ errors, data, loading }) => {
-        if (data.form) {
-          this.form = data.form;
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          this.setDisplayedColumns();
-          this.loading = loading;
-        }
+        this.updateValues(data, loading, true);
+
         if (errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
@@ -184,28 +174,92 @@ export class FormRecordsComponent
   }
 
   /**
+   * Update Records datas query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchRecordsData(refetch?: boolean): void {
+    this.loading = true;
+    this.updating = true;
+    const variables = {
+      id: this.id,
+      first: ITEMS_PER_PAGE,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      display: false,
+      showDeletedRecords: this.showDeletedRecords,
+    };
+    // get the records linked to the form
+    const cachedValues: FormRecordsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_FORM_RECORDS,
+      variables
+    );
+    if (refetch) {
+      this.cachedRecords = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false, refetch);
+    } else {
+      if (refetch) {
+        this.recordsQuery.refetch(variables);
+      } else {
+        this.recordsQuery
+          .fetchMore({ variables })
+          .then((results: ApolloQueryResult<FormRecordsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
+    }
+  }
+
+  /**
+   * Update records data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   * @param setForm control if form should be set
+   */
+  private updateValues(
+    data: FormRecordsQueryResponse,
+    loading: boolean,
+    setForm?: boolean
+  ) {
+    const mappedValues = data.form.records.edges.map((x) => x.node);
+    this.cachedRecords = updateQueryUniqueValues(
+      this.cachedRecords,
+      mappedValues
+    );
+    this.pageInfo.length = data.form.records.totalCount;
+    this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
+    this.dataSource = this.cachedRecords.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.loading = loading;
+    this.updating = false;
+    if (setForm) {
+      this.form = data.form;
+      this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
+      this.setDisplayedColumns();
+    }
+  }
+
+  /**
    * Handles page event.
    *
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    if (
-      e.pageIndex > e.previousPageIndex &&
-      e.totalItems > this.cachedRecords.length &&
-      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
-    ) {
-      this.loadingMore = true;
-      this.recordsQuery.refetch({
-        id: this.id,
-        first: ITEMS_PER_PAGE,
-        afterCursor: this.pageInfo.endCursor,
-      });
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedRecords
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.dataSource = cachedData;
     } else {
-      this.dataSource = this.cachedRecords.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchRecordsData();
     }
   }
 
@@ -296,7 +350,7 @@ export class FormRecordsComponent
    * Open confirm modal to ask user for reversion of data
    *
    * @param record record to update
-   * @param version version to applu
+   * @param version version to apply
    */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
@@ -348,31 +402,22 @@ export class FormRecordsComponent
   }
 
   /**
-   * Open the history of the record on the right side of the screen.
+   * Opens the history of the record on the right side of the screen.
    *
-   * @param id id of version
+   * @param item item to get history of
    */
-  public onViewHistory(id: string): void {
-    this.apollo
-      .query<RecordQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id,
+  public onViewHistory(item: any): void {
+    import('@oort-front/shared').then(({ RecordHistoryComponent }) => {
+      this.historyId = item.id;
+      this.layoutService.setRightSidenav({
+        component: RecordHistoryComponent,
+        inputs: {
+          id: item.id,
+          revert: (version: any) => this.confirmRevertDialog(item, version),
+          resizable: true,
         },
-      })
-      .subscribe(({ data }) => {
-        this.historyId = id;
-        import('@oort-front/shared').then(({ RecordHistoryComponent }) => {
-          this.layoutService.setRightSidenav({
-            component: RecordHistoryComponent,
-            inputs: {
-              id: data.record.id,
-              revert: (version: any) =>
-                this.confirmRevertDialog(data.record, version),
-            },
-          });
-        });
       });
+    });
   }
 
   /**
@@ -408,16 +453,6 @@ export class FormRecordsComponent
   }
 
   /**
-   * Take file from upload event and call upload method.
-   *
-   * @param event Upload event.
-   */
-  onFileChange(event: any): void {
-    const file = event.files[0].rawFile;
-    this.uploadFileData(file);
-  }
-
-  /**
    * Upload file and indicate status of request.
    *
    * @param file file to upload.
@@ -432,12 +467,12 @@ export class FormRecordsComponent
               'models.record.notifications.uploadSuccessful'
             )
           );
-          this.getFormData();
+          this.fetchRecordsData(true);
           this.showUpload = false;
         }
       },
-      error: (error: any) => {
-        this.snackBar.openSnackBar(error.error, { error: true });
+      error: () => {
+        // The error message has already been handled in DownloadService
         this.showUpload = false;
       },
     });
@@ -451,7 +486,7 @@ export class FormRecordsComponent
   onSwitchView(e: any): void {
     e.stopPropagation();
     this.showDeletedRecords = !this.showDeletedRecords;
-    this.getFormData();
+    this.fetchRecordsData(true);
   }
 
   /**

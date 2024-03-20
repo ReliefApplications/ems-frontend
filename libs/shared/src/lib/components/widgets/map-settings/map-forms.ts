@@ -17,13 +17,15 @@ import {
   PopupElementType,
   UniqueValueInfo,
 } from '../../../models/layer.model';
-import { IconName } from '../../icon-picker/icon-picker.const';
 import {
   GeometryType,
   LayerType,
 } from '../../ui/map/interfaces/layer-settings.type';
 import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
+import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
+import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { createAutomationForm } from '../../../forms/automation.forms';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -46,6 +48,7 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   layers: [],
   controls: DefaultMapControls,
   arcGisWebMap: null,
+  geographicExtents: [],
 };
 
 /** Default gradient for heatmap */
@@ -135,49 +138,62 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
     );
   };
   const canSeeFields = getCanSeeFields(value);
-  const formGroup = fb.group({
-    resource: [get(value, 'resource', null)],
-    layout: [get(value, 'layout', null)],
-    aggregation: [get(value, 'aggregation', null)],
-    refData: [get(value, 'refData', null)],
-    geoField: [
-      {
-        value: get(value, 'geoField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'latitudeField') ||
-          get(value, 'longitudeField'),
-      },
-    ],
-    adminField: [
-      {
-        value: get(value, 'adminField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'latitudeField') ||
-          get(value, 'longitudeField'),
-      },
-    ],
-    latitudeField: [
-      {
-        value: get(value, 'latitudeField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'geoField') ||
-          get(value, 'type') === 'Polygon',
-      },
-    ],
-    longitudeField: [
-      {
-        value: get(value, 'longitudeField', null),
-        disabled:
-          !canSeeFields ||
-          get(value, 'geoField') ||
-          get(value, 'type') === 'Polygon',
-      },
-    ],
-    type: [get(value, 'type', 'Point')],
-  });
+  const formGroup = fb.group(
+    {
+      resource: [get(value, 'resource', null)],
+      layout: [get(value, 'layout', null)],
+      aggregation: [get(value, 'aggregation', null)],
+      refData: [get(value, 'refData', null)],
+      referenceDataVariableMapping: [
+        get<string | null>(value, 'referenceDataVariableMapping', null),
+      ],
+      geoField: [
+        {
+          value: get(value, 'geoField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'latitudeField') ||
+            get(value, 'longitudeField'),
+        },
+      ],
+      adminField: [
+        {
+          value: get(value, 'adminField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'latitudeField') ||
+            get(value, 'longitudeField'),
+        },
+      ],
+      latitudeField: [
+        {
+          value: get(value, 'latitudeField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'geoField') ||
+            get(value, 'type') === 'Polygon',
+        },
+      ],
+      longitudeField: [
+        {
+          value: get(value, 'longitudeField', null),
+          disabled:
+            !canSeeFields ||
+            get(value, 'geoField') ||
+            get(value, 'type') === 'Polygon',
+        },
+      ],
+      type: [get(value, 'type', 'Point')],
+    },
+    {
+      validators: [
+        mutuallyExclusive({
+          required: true,
+          fields: ['resource', 'refData'],
+        }),
+      ],
+    }
+  );
   formGroup.valueChanges.subscribe((value) => {
     const canSeeFields = getCanSeeFields(value);
     if (canSeeFields) {
@@ -287,7 +303,6 @@ export const createLayerFeatureReductionForm = (value: any) => {
       autoSizeCluster: get(value, 'autoSizeCluster', false),
     }),
   });
-  console.log('yea', formGroup);
   return formGroup;
 };
 
@@ -302,13 +317,17 @@ export const createSymbolForm = (
   value: any,
   geometryType: GeometryType = 'Point'
 ): FormGroup => {
+  // If there was any previous configuration using v4 fa icons, we mapped them to the v6 equivalent if so
+  // If there is no need, we keep the original value
+  const style = get(value, 'style', 'location-dot');
+  const styleFinalValue = faV4toV6Mapper[style] ?? style;
   return fb.group({
     color: [
       get(value, 'color', DEFAULT_MARKER_ICON_OPTIONS.color),
       Validators.required,
     ],
     size: [get(value, 'size', 24)],
-    style: new FormControl<IconName>(get(value, 'style', 'location-dot')),
+    style: new FormControl<FaIconName>(styleFinalValue),
     ...(geometryType === 'Polygon' && {
       outline: fb.group({
         color: [
@@ -345,7 +364,7 @@ export const createLayerDrawingInfoForm = (
       }),
       ...(type === 'heatmap' && {
         gradient: [
-          get(value, 'gradient', DEFAULT_GRADIENT),
+          get(value, 'renderer.gradient', DEFAULT_GRADIENT),
           Validators.required,
         ],
         blur: [get<number>(value, 'renderer.blur', 15), Validators.required],
@@ -357,6 +376,7 @@ export const createLayerDrawingInfoForm = (
           get<number>(value, 'renderer.minOpacity', 0.4),
           Validators.required,
         ],
+        field1: [get(value, 'renderer.field1', null)],
       }),
       ...(type === 'uniqueValue' && {
         defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
@@ -475,8 +495,6 @@ export const createClusterForm = (value?: any): FormGroup =>
 
 export type LayerFormT = ReturnType<typeof createLayerForm>;
 
-// === MAP ===
-
 /**
  * Create map controls from value
  *
@@ -491,6 +509,24 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
     measure: [get(value, 'measure', false)],
     layer: [get(value, 'layer', true)],
     search: [get(value, 'search', false)],
+    lastUpdate: [get(value, 'lastUpdate', null)],
+  });
+
+/**
+ * Create geographic extent entry
+ *
+ * @param value geographic extent value
+ * @param value.value geographic extent dynamic value
+ * @param value.extent geographic extent ( admin0 or region )
+ * @returns geographic extent form group
+ */
+export const createGeographicExtent = (value?: {
+  value: string;
+  extent: string;
+}): FormGroup =>
+  fb.group({
+    value: [get(value, 'value', null)],
+    extent: [get(value, 'extent', 'admin0')],
   });
 
 /**
@@ -535,6 +571,11 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
       }),
     }),
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
+    geographicExtents: fb.array(
+      get(value, 'geographicExtents', []).map((x: any) =>
+        createGeographicExtent(x)
+      )
+    ),
     // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
     layers: [get(value, 'layers', [])] as string[],
@@ -542,6 +583,12 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
       get(value, 'controls', DEFAULT_MAP.controls)
     ),
     arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
+    // Automation
+    automationRules: fb.array<ReturnType<typeof createAutomationForm>>(
+      get(value, 'automationRules', []).map((rule: any) =>
+        createAutomationForm(rule)
+      )
+    ),
   });
   if (formGroup.get('arcGisWebMap')?.value) {
     formGroup.get('basemap')?.disable({ emitEvent: false });

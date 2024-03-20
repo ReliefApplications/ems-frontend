@@ -1,9 +1,17 @@
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 import {
   addNewField,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 
 /** Default action name */
 const DEFAULT_ACTION_NAME = 'Action';
@@ -51,7 +59,7 @@ export const createButtonFormGroup = (value: any) => {
         ? value.modifications.map((x: any) =>
             fb.group({
               field: [x.field, Validators.required],
-              value: [x.value, Validators.required],
+              value: [x.value],
             })
           )
         : []
@@ -123,35 +131,117 @@ export const createButtonFormGroup = (value: any) => {
  * @returns form group
  */
 export const createGridWidgetFormGroup = (id: string, configuration: any) => {
+  const formGroup = fb.group(
+    {
+      id,
+      title: [get(configuration, 'title', ''), Validators.required],
+      resource: [get(configuration, 'resource', null), Validators.required],
+      template: [get(configuration, 'template', null)],
+      layouts: [get(configuration, 'layouts', []), Validators.required],
+      aggregations: [
+        get(configuration, 'aggregations', []),
+        Validators.required,
+      ],
+      actions: createGridActionsFormGroup(configuration),
+      floatingButtons: fb.array(
+        configuration.floatingButtons && configuration.floatingButtons.length
+          ? configuration.floatingButtons.map((x: any) =>
+              createButtonFormGroup(x)
+            )
+          : [createButtonFormGroup(null)]
+      ) as FormArray<FormControl<typeof createButtonFormGroup>>,
+      sortFields: new FormArray<any>([]),
+      contextFilters: [
+        get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
+      ],
+      at: get(configuration, 'at', ''),
+    },
+    {
+      validators: [templateRequiredWhenAddRecord],
+    }
+  );
+  const extendedForm = extendWidgetForm(
+    formGroup,
+    configuration?.widgetDisplay
+  );
+  return extendedForm;
+};
+
+/**
+ * Validators for checking that a template is selected when configuring "add record" action.
+ *
+ * @param group form group
+ * @returns validation errors
+ */
+export const templateRequiredWhenAddRecord = (
+  group: AbstractControl
+): ValidationErrors | null => {
+  const templateControl = group.get('template');
+  const addRecordControl = group.get('actions.addRecord');
+
+  if (templateControl && addRecordControl) {
+    const templateValue = templateControl.value;
+    const addRecordValue = addRecordControl.value;
+
+    if (addRecordValue && !templateValue) {
+      addRecordControl.setErrors({
+        missingTemplate: true,
+      });
+      return {
+        actions: {
+          addRecord: {
+            missingTemplate: true,
+          },
+        },
+      };
+    } else {
+      addRecordControl.setErrors(null);
+    }
+  }
+  return null;
+};
+
+/**
+ * Creates a form group for the grid settings with the given grid actions configuration
+ *
+ * @param configuration configuration to build up the grid actions form group
+ * @returns form group with the given grid actions configuration
+ */
+export const createGridActionsFormGroup = (configuration: any) => {
   const formGroup = fb.group({
-    id,
-    title: [get(configuration, 'title', ''), Validators.required],
-    resource: [get(configuration, 'resource', null), Validators.required],
-    template: [get(configuration, 'template', null)],
-    layouts: [get(configuration, 'layouts', []), Validators.required],
-    aggregations: [get(configuration, 'aggregations', []), Validators.required],
-    actions: fb.group({
-      delete: [get(configuration, 'actions.delete', true)],
-      history: [get(configuration, 'actions.history', true)],
-      convert: [get(configuration, 'actions.convert', true)],
-      update: [get(configuration, 'actions.update', true)],
-      inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
-      addRecord: [get(configuration, 'actions.addRecord', false)],
-      export: [get(configuration, 'actions.export', true)],
-      showDetails: [get(configuration, 'actions.showDetails', true)],
+    delete: [get(configuration, 'actions.delete', true)],
+    history: [get(configuration, 'actions.history', true)],
+    convert: [get(configuration, 'actions.convert', true)],
+    update: [get(configuration, 'actions.update', true)],
+    inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
+    addRecord: [get(configuration, 'actions.addRecord', false)],
+    export: [get(configuration, 'actions.export', true)],
+    showDetails: [get(configuration, 'actions.showDetails', true)],
+    navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
+    navigateSettings: fb.group({
+      pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
+      field: [get(configuration, 'actions.navigateSettings.field', '')],
+      title: [
+        get(configuration, 'actions.navigateSettings.title', 'Details view'),
+      ],
     }),
-    floatingButtons: fb.array(
-      configuration.floatingButtons && configuration.floatingButtons.length
-        ? configuration.floatingButtons.map((x: any) =>
-            createButtonFormGroup(x)
-          )
-        : [createButtonFormGroup(null)]
-    ),
-    sortFields: new FormArray([]),
-    contextFilters: [
-      get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
-    ],
-    at: get(configuration, 'at', ''),
+  });
+  // Set validators ot navigate to page title option, based on other params
+  const setValidatorsNavigateToPageTitle = (value: boolean) => {
+    if (value) {
+      formGroup
+        .get('navigateSettings.title')
+        ?.setValidators(Validators.required);
+    } else {
+      formGroup.get('navigateSettings.title')?.clearValidators();
+    }
+    formGroup.get('navigateSettings.title')?.updateValueAndValidity();
+  };
+  // Initialize
+  setValidatorsNavigateToPageTitle(formGroup.get('navigateToPage')?.value);
+  // Subscribe to changes
+  formGroup.get('navigateToPage')?.valueChanges.subscribe((value) => {
+    setValidatorsNavigateToPageTitle(value);
   });
   return formGroup;
 };

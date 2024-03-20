@@ -56,9 +56,4 @@ export class ChoseRoleComponent implements OnInit {
       this.loading = loading;
     });
   }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

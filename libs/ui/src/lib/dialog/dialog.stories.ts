@@ -23,9 +23,13 @@ import { DialogSize, dialogSizes } from './types/dialog-size';
   `,
 })
 class LaunchDialogComponent implements OnDestroy {
+  /** Animal name */
   @Input() animal = '';
+  /** Dialog size */
   @Input() size: DialogSize = 'medium';
+  /** Destroy subject */
   private destroy$ = new Subject<void>();
+
   /**
    * Constructor for the launchDialog component
    *

@@ -1,6 +1,7 @@
-import { Gradient } from '../components/gradient-picker/gradient-picker.component';
-import { IconName } from '../components/icon-picker/icon-picker.const';
+import { FaIconName } from '@oort-front/ui';
+import { Gradient } from '../components/controls/gradient-picker/gradient-picker.component';
 import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
+import { HeatMapOptions as HeatMapOptionsWithoutOpacity } from 'leaflet';
 
 /**
  * Layer types for backend
@@ -17,7 +18,7 @@ export type LayerSymbolOutline = {
 export type LayerSymbol = {
   color: string;
   size: number;
-  style: IconName;
+  style: FaIconName;
   outline?: LayerSymbolOutline;
 };
 
@@ -96,7 +97,8 @@ export interface Fields {
   label: string;
   name: string;
   type: string;
-  [key: string]: string;
+  text?: string;
+  fields?: Fields[];
 }
 
 /** Possible types of Popup element */
@@ -129,6 +131,7 @@ export type LayerDatasourceType = 'Point' | 'Polygon';
 export interface LayerDatasource {
   resource?: string;
   refData?: string;
+  referenceDataVariableMapping?: string;
   layout?: string;
   aggregation?: string;
   geoField?: string;
@@ -180,4 +183,11 @@ export interface LayerQueryResponse {
 /** Model for GetLayersQueryResponse object */
 export interface LayersQueryResponse {
   layers: LayerModel[];
+}
+
+/**
+ * Extend heat map options interface with opacity
+ */
+export interface HeatMapOptions extends HeatMapOptionsWithoutOpacity {
+  opacity?: number | undefined;
 }

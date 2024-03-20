@@ -1,6 +1,11 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  Observable,
+  ReplaySubject,
+} from 'rxjs';
 import { GET_QUERY_META_DATA, GET_QUERY_TYPES } from './graphql/queries';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
@@ -8,7 +13,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Connection } from '../../utils/public-api';
 import {
   QueryMetaDataQueryResponse,
-  QueryTypes,
+  QueryTypesResponse,
 } from '../../models/metadata.model';
 
 /** Interface for the variables of a query */
@@ -87,19 +92,19 @@ export const REFERENCE_DATA_END = 'Ref';
 export class QueryBuilderService {
   /** Available forms / resources queries */
   private availableQueries = new BehaviorSubject<any[]>([]);
+
   /** @returns Available forms / resources queries as observable */
   get availableQueries$(): Observable<any> {
     return this.availableQueries.asObservable();
   }
 
-  /** Available forms / resources types */
-  private availableTypes = new BehaviorSubject<any[]>([]);
-  /** @returns Available forms / resources types as observable */
-  get availableTypes$(): Observable<any> {
-    return this.availableTypes.asObservable();
-  }
+  /** Loading indicator that asserts whether available queries are done loading */
+  private isDoneLoading = new ReplaySubject<boolean>();
+  /** Loading indicator as observable */
+  public isDoneLoading$ = this.isDoneLoading.asObservable();
+
   /** User fields */
-  private userFields = [];
+  private userFields: any[] = [];
 
   /**
    * Shared query builder service. The query builder service is used by the widgets, that creates the query based on their settings.
@@ -108,23 +113,15 @@ export class QueryBuilderService {
    * @param apollo Apollo client
    */
   constructor(private apollo: Apollo) {
+    this.isDoneLoading.next(false);
     this.apollo
-      .query<QueryTypes>({
+      .query<QueryTypesResponse>({
         query: GET_QUERY_TYPES,
       })
       .subscribe(({ data }) => {
-        // eslint-disable-next-line no-underscore-dangle
-        this.availableTypes.next(data.__schema.types);
-        this.availableQueries.next(
-          // eslint-disable-next-line no-underscore-dangle
-          data.__schema.queryType.fields.filter((x: any) =>
-            x.name.startsWith('all')
-          )
-        );
-        // eslint-disable-next-line no-underscore-dangle
-        this.userFields = data.__schema.types
-          .find((x: any) => x.name === 'User')
-          .fields.filter((x: any) => USER_FIELDS.includes(x.name));
+        this.isDoneLoading.next(true);
+        this.availableQueries.next(data.types.availableQueries);
+        this.userFields = data.types.userFields;
       });
   }
 
@@ -180,11 +177,22 @@ export class QueryBuilderService {
     const query = this.availableQueries
       .getValue()
       .find((x) => x.name === queryName);
-    const typeName = query?.type?.name.replace('Connection', '') || '';
-    const type = this.availableTypes
-      .getValue()
-      .find((x) => x.name === typeName);
-    return type ? this.extractFieldsFromType(type) : [];
+    if (query) {
+      if (queryName.endsWith(REFERENCE_DATA_END)) {
+        const type = this.availableQueries
+          .getValue()
+          .find((x) => x.refDataType?.name === queryName);
+        return type ? this.extractFieldsFromType(type.refDataType) : [];
+      } else {
+        const typeName = query?.type?.name.replace('Connection', '') || '';
+        const type = this.availableQueries
+          .getValue()
+          .find((x) => x.resourceType?.name === typeName);
+        return type ? this.extractFieldsFromType(type.resourceType) : [];
+      }
+    } else {
+      return [];
+    }
   }
 
   /**
@@ -197,10 +205,15 @@ export class QueryBuilderService {
     if (typeName === 'User') {
       return this.userFields;
     }
-    const type = this.availableTypes
+    const type = this.availableQueries
       .getValue()
-      .find((x) => x.name === typeName);
-    return type ? this.extractFieldsFromType(type) : [];
+      .find(
+        (x) =>
+          x.resourceType?.name === typeName || x.refDataType?.name === typeName
+      );
+    return type
+      ? this.extractFieldsFromType(type.resourceType ?? type.refDataType)
+      : [];
   }
 
   /**
@@ -519,6 +532,7 @@ export class QueryBuilderService {
    * Format fields for filters.
    *
    * @param query custom query.
+   * @returns filter fields as Promise
    */
   public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {

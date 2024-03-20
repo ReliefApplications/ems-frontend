@@ -49,9 +49,8 @@
             (click)="toggleWorkflow(element)"
             [disabled]="loading"
             [uiTooltip]="
-              'common.' + openedWorkflowId === element.id
-                ? 'close'
-                : ('edit' | translate)
+              'common.' + (openedWorkflowId === element.id ? 'close' : 'edit')
+                | translate
             "
           >
           </ui-button>
@@ -64,6 +63,7 @@
         uiCell
         *cdkCellDef="let element"
         [attr.colspan]="displayedColumns.length"
+        [ngClass]="element.id === openedWorkflowId ? '' : 'hidden'"
       >
         <div
           class="overflow-hidden flex justify-center"
@@ -71,59 +71,76 @@
             element.id === openedWorkflowId ? 'expanded' : 'collapsed'
           "
         >
-          <table
-            class="my-4 mx-0"
-            cdk-table
-            uiTableWrapper
-            [dataSource]="filteredSteps"
-            *ngIf="filteredSteps.length"
+          <!-- Table of steps -->
+          <div
+            *ngIf="filteredSteps.length; else emptyTemplate"
+            class="m-4 w-full overflow-x-auto shadow border pt-2 sm:rounded-lg bg-gray-50"
           >
-            <ng-container cdkColumnDef="name">
-              <th uiCellHeader *cdkHeaderCellDef scope="col">
-                {{ 'common.step.one' | translate }}
-              </th>
-              <td
-                uiCell
-                *cdkCellDef="let element"
-                class="!text-gray-900 !font-medium"
-              >
-                {{ element.name }}
-              </td>
-            </ng-container>
-            <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-              <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
-              <td uiCell *cdkCellDef="let element">
-                <ui-button
-                  [isIcon]="true"
-                  [icon]="
-                    accessibleSteps.includes(element.id)
-                      ? 'visibility'
-                      : 'visibility_off'
-                  "
-                  [variant]="
-                    accessibleSteps.includes(element.id) ? 'primary' : 'grey'
-                  "
-                  (click)="onEditStepAccess(element)"
-                  [disabled]="loading"
-                  [uiTooltip]="
-                    (accessiblePages.includes(element.id)
-                      ? 'components.role.tooltip.hideFeature'
-                      : 'components.role.tooltip.showFeature'
-                    ) | translate : { page: element.name }
-                  "
+            <table
+              class="mx-0 min-w-full divide-y divide-gray-300"
+              cdk-table
+              [dataSource]="filteredSteps"
+              *ngIf="filteredSteps.length"
+            >
+              <ng-container cdkColumnDef="name">
+                <th uiCellHeader *cdkHeaderCellDef scope="col">
+                  {{ 'common.step.one' | translate }}
+                </th>
+                <td
+                  uiCell
+                  *cdkCellDef="let element"
+                  class="!text-gray-900 !font-medium"
                 >
-                </ui-button>
-              </td>
-            </ng-container>
+                  {{ element.name }}
+                </td>
+              </ng-container>
+              <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                <th
+                  uiCellHeader
+                  *cdkHeaderCellDef
+                  scope="col"
+                  class="w-16"
+                ></th>
+                <td uiCell *cdkCellDef="let element">
+                  <ui-button
+                    [isIcon]="true"
+                    [icon]="
+                      accessibleSteps.includes(element.id)
+                        ? 'visibility'
+                        : 'visibility_off'
+                    "
+                    [variant]="
+                      accessibleSteps.includes(element.id) ? 'primary' : 'grey'
+                    "
+                    (click)="onEditStepAccess(element)"
+                    [disabled]="loading"
+                    [uiTooltip]="
+                      (accessiblePages.includes(element.id)
+                        ? 'components.role.tooltip.hideFeature'
+                        : 'components.role.tooltip.showFeature'
+                      ) | translate : { page: element.name }
+                    "
+                  >
+                  </ui-button>
+                </td>
+              </ng-container>
 
-            <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-            <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
-          </table>
-          <shared-empty
-            *ngIf="filteredSteps.length === 0"
-            [title]="'components.role.summary.noSteps' | translate"
-          >
-          </shared-empty>
+              <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+              <tr
+                class="border-gray-200 border-y"
+                *cdkRowDef="let row; columns: displayedColumns"
+                cdk-row
+              ></tr>
+            </table>
+          </div>
+          <!-- When no steps are available -->
+          <ng-template #emptyTemplate>
+            <shared-empty
+              class="py-3"
+              [title]="'components.role.summary.noSteps' | translate"
+            >
+            </shared-empty>
+          </ng-template>
         </div>
       </td>
     </ng-container>

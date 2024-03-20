@@ -16,6 +16,7 @@ export interface Application {
   name?: string;
   description?: string;
   sideMenu?: boolean;
+  hideMenu?: boolean;
   createdAt?: Date;
   modifiedAt?: Date;
   pages?: Page[];
@@ -37,8 +38,6 @@ export interface Application {
   templates?: Template[];
   distributionLists?: DistributionList[];
   customNotifications?: Connection<CustomNotification>;
-  contextualFilter?: any;
-  contextualFilterPosition?: any;
 }
 
 /** Model for application query response object */

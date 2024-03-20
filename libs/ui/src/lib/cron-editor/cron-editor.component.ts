@@ -17,6 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 type CronType =
   | 'minutely'
@@ -151,10 +152,13 @@ export class CronEditorComponent
     expression: ['0 0 0 0 0'],
   });
 
-  /*
+  /**
    * ControlValueAccessor
    */
   public onChange!: (value: any) => void;
+  /**
+   * ControlValueAccessor
+   */
   public onTouched!: () => void;
 
   /** @returns is cron Flavor Quartz */
@@ -186,10 +190,12 @@ export class CronEditorComponent
    * Ui CronEditor constructor
    *
    * @param fb FormBuilder
+   * @param translate angular Translate service
    * @param ngControl Current control
    */
   constructor(
     private fb: FormBuilder,
+    private translate: TranslateService,
     @Optional() @Self() public ngControl: NgControl
   ) {
     if (this.ngControl != null) {
@@ -405,7 +411,7 @@ export class CronEditorComponent
    * @returns Days
    */
   public dayDisplay(day: string): string {
-    return Days[day];
+    return this.translate.instant(Days[day]);
   }
 
   /**
@@ -415,7 +421,7 @@ export class CronEditorComponent
    * @returns MonthWeeks
    */
   public monthWeekDisplay(monthWeekNumber: string): string {
-    return MonthWeeks[monthWeekNumber];
+    return this.translate.instant(MonthWeeks[monthWeekNumber]);
   }
 
   /**
@@ -425,7 +431,7 @@ export class CronEditorComponent
    * @returns Month
    */
   public monthDisplay(month: number): string {
-    return Months[month];
+    return this.translate.instant(Months[month]);
   }
 
   /**
@@ -436,11 +442,11 @@ export class CronEditorComponent
    */
   public monthDayDisplay(month: string): string {
     if (month === 'L') {
-      return 'Last Day';
+      return this.translate.instant('common.cronEditor.lastDay');
     } else if (month === 'LW') {
-      return 'Last Weekday';
+      return this.translate.instant('common.cronEditor.lastWeekDay');
     } else if (month === '1W') {
-      return 'First Weekday';
+      return this.translate.instant('common.cronEditor.firstWeekDay');
     } else {
       return `${month}${this.getOrdinalSuffix(month)}`;
     }

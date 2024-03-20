@@ -9,19 +9,23 @@
     <!-- Resource selection -->
     <div uiFormFieldDirective class="flex-1">
       <label>{{ 'common.resource.one' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="resourcesQuery"
+      <shared-resource-select
         formControlName="resource"
         [selectedElements]="[resource]"
-        (searchChange)="onResourceSearchChange($event)"
-        [filterable]="true"
-      >
-      </ui-graphql-select>
+      ></shared-resource-select>
+      <ui-button
+        *ngIf="formGroup.value.resource"
+        uiSuffix
+        size="small"
+        [isIcon]="true"
+        (click)="clearFormField('resource', $event)"
+        icon="close"
+        variant="danger"
+        [uiTooltip]="'common.remove' | translate"
+      ></ui-button>
     </div>
     <!-- Template selection -->
-    <div uiFormFieldDirective class="flex-1">
+    <div *ngIf="resource" uiFormFieldDirective class="flex-1">
       <label>{{ 'models.form.template' | translate }}</label>
       <ui-select-menu formControlName="template">
         <ui-select-option>-</ui-select-option>
@@ -43,7 +47,7 @@
     </div>
   </div>
 </div>
-<div class="flex flex-col mt-8 gap-8" *ngIf="form || resource">
+<div class="flex flex-col mt-8 gap-8" *ngIf="resource">
   <!-- Aggregations -->
   <div *ngIf="!(formGroup.get('layouts')?.value.length > 0)">
     <h2>
@@ -68,7 +72,6 @@
       {{ 'components.widget.settings.grid.layouts.title' | translate }}
     </h2>
     <shared-layout-table
-      [form]="form"
       [resource]="resource"
       [selectedLayouts]="$any(formGroup).get('layouts')"
     ></shared-layout-table>

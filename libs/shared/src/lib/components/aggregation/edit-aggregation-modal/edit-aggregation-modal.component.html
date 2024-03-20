@@ -1,8 +1,8 @@
-<ui-dialog [closable]="true" size="fullscreen">
+<ui-dialog size="fullscreen">
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{ 'components.aggregation.edit.title' | translate }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup" class="flex flex-col gap-8">
@@ -11,11 +11,19 @@
           <label>{{ 'common.name' | translate }}</label>
           <input formControlName="name" type="string" />
         </div>
-        <div uiFormFieldDirective>
+        <div uiFormFieldDirective *ngIf="resource">
           <label>{{ 'common.resource.one' | translate }}</label>
-          <ui-select-menu [value]="resource.id" [disabled]="true">
-            <ui-select-option [value]="resource.id" [disabled]="true">
+          <ui-select-menu [value]="resource.name" [disabled]="true">
+            <ui-select-option [value]="resource.name" [disabled]="true">
               {{ resource.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective *ngIf="referenceData">
+          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <ui-select-menu [value]="referenceData.name" [disabled]="true">
+            <ui-select-option [value]="referenceData.name" [disabled]="true">
+              {{ referenceData.name }}
             </ui-select-option>
           </ui-select-menu>
         </div>
@@ -23,13 +31,14 @@
       <div class="flex flex-col">
         <shared-aggregation-builder
           [resource]="resource"
+          [referenceData]="referenceData"
           [aggregationForm]="formGroup"
         ></shared-aggregation-builder>
       </div>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose variant="default">
+    <ui-button [uiDialogClose] variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

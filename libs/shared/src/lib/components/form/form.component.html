@@ -1,15 +1,19 @@
 <!-- Form header -->
 <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
   <shared-record-summary
+    *ngIf="record"
     [record]="record"
-    [cacheDate]="storageDate"
-    (clear)="onClear()"
     (showHistory)="onShowHistory()"
   ></shared-record-summary>
   <shared-form-actions
     [survey]="survey"
     [surveyActive]="surveyActive"
   ></shared-form-actions>
+  <!-- <shared-draft-record
+    [survey]="survey"
+    [formId]="form.id ?? ''"
+    (loadDraft)="onLoadDraftRecord($event)"
+  ></shared-draft-record> -->
 </div>
 <!-- Form pages -->
 <ui-tabs
@@ -30,26 +34,34 @@
   </ui-tab>
 </ui-tabs>
 <!-- Form -->
+<div #formContainer></div>
+<!-- Floating div for form buttons actions -->
+<ng-container *ngIf="surveyActive">
+  <ui-fixed-wrapper>
+    <div class="flex justify-end gap-2 flex-wrap">
+      <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
+        <ui-button
+          *ngIf="pages.length > 1"
+          [disabled]="survey.isFirstPage"
+          variant="primary"
+          (click)="survey.prevPage()"
+          >{{ 'common.previous' | translate }}</ui-button
+        >
+        <ui-button
+          *ngIf="pages.length > 1"
+          [disabled]="survey.isLastPage"
+          variant="primary"
+          (click)="survey.nextPage()"
+          >{{ 'common.next' | translate }}</ui-button
+        >
+      </ng-container>
+      <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
+        'components.form.draftRecords.save' | translate
+      }}</ui-button> -->
+      <ui-button variant="primary" category="secondary" (click)="submit()">{{
+        'common.save' | translate
+      }}</ui-button>
+    </div>
+  </ui-fixed-wrapper>
+</ng-container>
 <survey [model]="survey"></survey>
-<!-- Form actions -->
-<div *ngIf="surveyActive" class="flex justify-end gap-2 mt-4 flex-wrap">
-  <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
-    <ui-button
-      *ngIf="pages.length > 1"
-      [disabled]="survey.isFirstPage"
-      variant="primary"
-      (click)="survey.prevPage()"
-      >{{ 'common.previous' | translate }}</ui-button
-    >
-    <ui-button
-      *ngIf="pages.length > 1"
-      [disabled]="survey.isLastPage"
-      variant="primary"
-      (click)="survey.nextPage()"
-      >{{ 'common.next' | translate }}</ui-button
-    >
-  </ng-container>
-  <ui-button variant="primary" category="secondary" (click)="submit()">{{
-    'common.save' | translate
-  }}</ui-button>
-</div>

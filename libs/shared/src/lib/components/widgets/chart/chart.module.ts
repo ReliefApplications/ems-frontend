@@ -4,14 +4,17 @@ import { ChartComponent } from './chart.component';
 import { PieDonutChartModule } from '../../ui/charts/pie-donut-chart/pie-donut-chart.module';
 import { LineChartModule } from '../../ui/charts/line-chart/line-chart.module';
 import { BarChartModule } from '../../ui/charts/bar-chart/bar-chart.module';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
+  FormWrapperModule,
   IconModule,
+  SelectMenuModule,
   SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { FormsModule } from '@angular/forms';
+import { EmptyModule } from '../../ui/empty/empty.module';
 
 /**
  * Module for the chart component
@@ -21,7 +24,6 @@ import {
   imports: [
     CommonModule,
     SpinnerModule,
-    LayoutModule,
     PieDonutChartModule,
     LineChartModule,
     BarChartModule,
@@ -29,6 +31,10 @@ import {
     TranslateModule,
     ButtonModule,
     TooltipModule,
+    SelectMenuModule,
+    FormsModule,
+    FormWrapperModule,
+    EmptyModule,
   ],
   exports: [ChartComponent],
 })

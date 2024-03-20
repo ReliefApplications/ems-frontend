@@ -9,12 +9,16 @@ import {
   DateModule as UiDateModule,
   FormWrapperModule,
   TooltipModule,
+  TableModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateModule } from '../../pipes/date/date.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { ResizableModule } from 'angular-resizable-element';
 
 /**
  * RecordHistoryModule is a class used to manage all the modules and components
@@ -36,6 +40,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     FormWrapperModule,
     TooltipModule,
+    FormsModule,
+    TableModule,
+    ToggleModule,
+    ResizableModule,
   ],
   exports: [RecordHistoryComponent],
 })

@@ -15,6 +15,7 @@ import { delay } from 'rxjs/operators';
 
 export default {
   component: PipelineComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [
@@ -128,7 +129,7 @@ const fb = new UntypedFormBuilder();
  *
  * @returns storybook template
  */
-const TEMPLATE: StoryFn<sharedPipelineComponent> = () => ({
+const TEMPLATE: StoryFn<PipelineComponent> = () => ({
   template:
     '<shared-pipeline [fields$]=fields$ [metaFields$]=metaFields$ [pipelineForm]="pipelineForm"></shared-pipeline>',
   props: {

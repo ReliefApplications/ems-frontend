@@ -13,9 +13,7 @@ import { DomService } from '../dom/dom.service';
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
 import 'esri-leaflet';
-import 'leaflet-fullscreen';
 import 'leaflet-measure';
-import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
 import { MapSidenavControlsComponent } from '../../components/ui/map/map-sidenav-controls/map-sidenav-controls.component';
@@ -23,44 +21,61 @@ import { legendControl } from '../../components/ui/map/controls/legend.control';
 import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
 import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
 import { MapComponent } from '../../components/ui/map';
+import { createFontAwesomeIcon } from '../../components/ui/map/utils/create-div-icon';
+import { DOCUMENT } from '@angular/common';
+import { DatePipe } from '../../pipes/date/date.pipe';
 
 /**
  * Shared map control service.
  */
 @Injectable()
 export class MapControlsService {
-  public addressMarker: any;
-  public measureControls: any = {};
-  public fullscreenControl!: L.Control;
+  /** Current lang */
   public lang!: any;
-  // === THEME ===
+  /** Platform theme */
   private primaryColor = '';
-  // === Time Dimension ===
-  // private timeDimensionLayer!: any | null;
-  // private timeDimensionControl!: L.Control | null;
-  // === Map controls ===
+  /** Current address marker */
+  public addressMarker: any;
+  /** Active measure controls */
+  public measureControls: any = {};
+  /** Active fullscreen control */
+  public fullscreenControl!: L.Control;
+  /** Active download control */
   private downloadControl!: L.Control | null;
+  /** Active legend control */
   private legendControl!: L.Control | null;
-
-  // === Listeners ===
+  /** Angular renderer */
   private renderer!: Renderer2;
+  /** Listener on sidenav control click */
   private sidenavControlClickListener!: any;
+  /** Listener on fullscreen control click */
+  private fullscreenControlClickListener!: any;
+  /** Listener on fullscreen event */
+  private fullScreenChangeListener!: any;
+  /** Listener on sidenav control wheel */
   private sidenavControlWheelListener!: any;
+  /** Listener on download control click */
   private downloadControlClickListener!: any;
+  /** Listener on download control wheel */
   private downloadControlWheelListener!: any;
+
   /**
    * Shared map control service
    *
+   * @param {Document} document current document
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
    * @param _renderer RendererFactory2
+   * @param datePipe Shared date pipe
    */
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private domService: DomService,
-    private _renderer: RendererFactory2
+    private _renderer: RendererFactory2,
+    private datePipe: DatePipe
   ) {
     this.renderer = _renderer.createRenderer(null, null);
     this.lang = this.translate.currentLang;
@@ -83,6 +98,9 @@ export class MapControlsService {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const container = L.DomUtil.create('div');
+      L.DomEvent.disableScrollPropagation(container).disableClickPropagation(
+        container
+      );
       const mapSidenavControlsComponent = this.domService.appendComponentToBody(
         MapSidenavControlsComponent,
         container
@@ -90,43 +108,9 @@ export class MapControlsService {
       mapSidenavControlsComponent.instance.layersTree = layers;
       mapSidenavControlsComponent.instance.mapComponent = mapComponent;
       mapSidenavControlsComponent.instance.basemaps = basemaps;
+      (layerControl as any)._component = mapSidenavControlsComponent.instance;
       return container;
     };
-    layerControl.onRemove = () => {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-        this.sidenavControlClickListener = null;
-      }
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-        this.sidenavControlWheelListener = null;
-      }
-    };
-    const container = layerControl.getContainer();
-    if (container) {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-      }
-      // prevent click events from propagating to the map
-      this.sidenavControlClickListener = this.renderer.listen(
-        container,
-        'click',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        }
-      );
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-      }
-      // prevent mouse wheel events from propagating to the map
-      this.sidenavControlWheelListener = this.renderer.listen(
-        container,
-        'wheel',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        }
-      );
-    }
     return (layerControl as any)?.addTo(mapComponent.map);
   }
 
@@ -196,12 +180,91 @@ export class MapControlsService {
     if (this.fullscreenControl) {
       map.removeControl(this.fullscreenControl);
     }
-    this.fullscreenControl = new (L.Control as any).Fullscreen({
-      title: {
-        false: this.translate.instant('common.viewFullscreen'),
-        true: this.translate.instant('common.exitFullscreen'),
-      },
-    });
+    this.fullscreenControl = new L.Control({ position: 'topleft' });
+    const viewScreenText = this.translate.instant(
+      'components.map.controls.fullScreen.viewFullscreen'
+    );
+    const exitScreenText = this.translate.instant(
+      'components.map.controls.fullScreen.exitFullscreen'
+    );
+    this.fullscreenControl.onAdd = () => {
+      const mapContainer = map.getContainer()?.parentElement;
+      const expandIcon = createFontAwesomeIcon(
+        {
+          icon: 'expand',
+          color: 'none',
+          opacity: 1,
+          size: 18,
+        },
+        this.document
+      );
+      const compressIcon = createFontAwesomeIcon(
+        {
+          icon: 'compress',
+          color: 'none',
+          opacity: 1,
+          size: 18,
+        },
+        this.document
+      );
+      const container = L.DomUtil.create('div');
+      this.renderer.addClass(container, 'fullscreen-control');
+      this.renderer.setProperty(container, 'title', viewScreenText);
+      container?.appendChild(expandIcon);
+      if (this.fullscreenControlClickListener) {
+        this.fullscreenControlClickListener();
+      }
+      let triggerElementUpdate = false;
+      this.fullscreenControlClickListener = this.renderer.listen(
+        container,
+        'click',
+        (e: any) => {
+          // prevent click events from propagating to the map
+          L.DomEvent.stopPropagation(e);
+          if (!this.document.fullscreenElement) {
+            triggerElementUpdate = true;
+            mapContainer?.requestFullscreen();
+            this.renderer.setProperty(container, 'title', exitScreenText);
+            container?.removeChild(expandIcon);
+            container?.appendChild(compressIcon);
+          } else {
+            if (this.document.fullscreenElement) {
+              triggerElementUpdate = false;
+              this.document.exitFullscreen();
+              this.renderer.setProperty(container, 'title', viewScreenText);
+              container?.appendChild(expandIcon);
+              container?.removeChild(compressIcon);
+            }
+          }
+        }
+      );
+      if (this.fullScreenChangeListener) {
+        this.fullScreenChangeListener();
+      }
+      this.fullScreenChangeListener = this.renderer.listen(
+        mapContainer,
+        'fullscreenchange',
+        () => {
+          if (triggerElementUpdate && !this.document.fullscreenElement) {
+            triggerElementUpdate = false;
+            container?.appendChild(expandIcon);
+            container?.removeChild(compressIcon);
+            this.renderer.setProperty(container, 'title', viewScreenText);
+          }
+        }
+      );
+      return container;
+    };
+    this.fullscreenControl.onRemove = () => {
+      if (this.fullscreenControlClickListener) {
+        this.fullscreenControlClickListener();
+        this.fullscreenControlClickListener = null;
+      }
+      if (this.fullScreenChangeListener) {
+        this.fullScreenChangeListener();
+        this.fullScreenChangeListener = null;
+      }
+    };
     this.fullscreenControl?.addTo(map);
   }
 
@@ -451,6 +514,55 @@ export class MapControlsService {
     };
     map.addControl(customZoomControl);
     return customZoomControl;
+  }
+
+  /**
+   * Adds a control for the last time the map was refreshed
+   *
+   * @param map Leaflet map
+   * @param position position of the control
+   * @returns last updated control
+   */
+  public getLastUpdateControl(map: any, position: L.ControlPosition) {
+    const customLastUpdatedControl = new L.Control(<any>{ position });
+    const modifiedAt = new Date();
+    const lastUpdateText = this.translate.instant(
+      'components.widget.settings.map.properties.controls.lastUpdate'
+    );
+    const lastUpdateError = this.translate.instant(
+      'components.widget.settings.map.properties.controls.lastUpdateError'
+    );
+    customLastUpdatedControl.onAdd = () => {
+      const div = L.DomUtil.create('div', 'leaflet-control');
+      const innerIcon = createFontAwesomeIcon(
+        {
+          icon: 'circle-info',
+          color: 'none',
+          opacity: 1,
+          size: 16,
+        },
+        this.document
+      );
+      const spanText = modifiedAt
+        ? `${lastUpdateText} ${this.formatDate(new Date(modifiedAt))}`
+        : `${lastUpdateError}`;
+      const innerSpan = `<span class="pl-1 whitespace-nowrap hidden group-hover/lastUpdate:inline"> ${spanText} </span>`;
+      const innerDiv = `<div class="flex bg-white p-1 rounded-md overflow-hidden h-6 transition-all group/lastUpdate">${innerIcon.innerHTML} ${innerSpan} </div>`;
+      div.innerHTML = innerDiv;
+      return div;
+    };
+    map.addControl(customLastUpdatedControl);
+    return customLastUpdatedControl;
+  }
+
+  /**
+   * Formats the date at the format 'DDsuffix Month Year', supports french and english
+   *
+   * @param date date to format
+   * @returns date at the format '1st November 2023'
+   */
+  private formatDate(date: Date) {
+    return this.datePipe.transform(date, 'medium');
   }
 
   /**

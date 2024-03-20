@@ -9,7 +9,6 @@ import {
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
   AuthService,
-  FormService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
@@ -23,7 +22,7 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
+  /** Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build */
   static declaration = [
     ApplicationDropdownComponent,
     GeofieldsListboxComponent,
@@ -34,19 +33,17 @@ export class AppComponent implements OnInit {
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
   ];
+  /** Application title */
   title = 'front-office';
 
   /**
    * Main component of Front-office.
    *
    * @param authService Shared authentication service
-   * @param formService Shared form service
    * @param translate Angular translate service
    */
   constructor(
     private authService: AuthService,
-    // We need to initialize the service there
-    private formService: FormService,
     private translate: TranslateService
   ) {
     this.translate.addLangs(environment.availableLanguages);

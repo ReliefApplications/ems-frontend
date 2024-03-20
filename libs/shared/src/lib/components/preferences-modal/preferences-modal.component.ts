@@ -44,13 +44,16 @@ interface PreferencesDialogData {
   styleUrls: ['./preferences-modal.component.scss'],
 })
 export class PreferencesModalComponent implements OnInit {
-  // === REACTIVE FORM ===
+  /** Reactive form */
   public preferencesForm!: ReturnType<typeof this.createPreferencesForm>;
-
-  // === DATA ===
+  /** Data */
+  /** List of languages */
   languages: { name: string; value: string }[] = [];
+  /** Current language */
   currLang: string;
+  /** Date formats */
   dateFormats: { name: string | null; value: string }[] = [];
+  /** Current date format */
   currDateFormat: string;
 
   /**

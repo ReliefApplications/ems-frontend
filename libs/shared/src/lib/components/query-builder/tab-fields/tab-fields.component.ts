@@ -27,28 +27,32 @@ import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
   styleUrls: ['./tab-fields.component.scss'],
 })
 export class TabFieldsComponent implements OnInit, OnChanges {
+  /** Current form array */
   @Input() form: UntypedFormArray = new UntypedFormArray([]);
+  /** All fields */
   @Input() fields: any[] = [];
-  @ViewChild('childTemplate', { read: ViewContainerRef })
-  childTemplate?: ViewContainerRef;
-
-  public availableFields: any[] = [];
-  public selectedFields: any[] = [];
-  public fieldForm: UntypedFormGroup | null = null;
-
-  public searchAvailable = '';
-  public searchSelected = '';
-
-  /** tinymce editor */
-  public editor: any = INLINE_EDITOR_CONFIG;
-
+  /** Should show limit input */
   @Input() showLimit = false;
-
   /** Is the column width field displayed */
   @Input() showColumnWidth = false;
+  /** Reference to child template, in order to inject query builder component */
+  @ViewChild('childTemplate', { read: ViewContainerRef })
+  childTemplate?: ViewContainerRef;
+  /** Available fields */
+  public availableFields: any[] = [];
+  /** Selected fields */
+  public selectedFields: any[] = [];
+  /** Current field form group */
+  public fieldForm: UntypedFormGroup | null = null;
+  /** Search on available fields */
+  public searchAvailable = '';
+  /** Search on selected fields */
+  public searchSelected = '';
+  /** Tinymce editor configuration */
+  public editor: any = INLINE_EDITOR_CONFIG;
 
   /**
-   * The constructor function is a special function that is called when a new instance of the class is created.
+   * Component used for the selection of fields to display the fields in tabs.
    *
    * @param editorService Editor service used to get main URL and current language
    */
@@ -203,6 +207,7 @@ export class TabFieldsComponent implements OnInit, OnChanges {
         componentRef.instance.setForm(this.fieldForm);
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
         componentRef.instance.showLimit = this.showLimit;
+        componentRef.instance.showColumnWidth = this.showColumnWidth;
         componentRef.instance.closeField.subscribe(() => {
           this.onCloseField();
           componentRef.destroy();

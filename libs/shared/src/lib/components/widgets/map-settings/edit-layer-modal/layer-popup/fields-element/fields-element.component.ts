@@ -10,7 +10,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { Fields } from '../../../../../../models/layer.model';
 import { Observable, takeUntil } from 'rxjs';
-import { EditorControlComponent } from '../../../../../editor-control/editor-control.component';
+import { EditorControlComponent } from '../../../../../controls/editor-control/editor-control.component';
 import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { EditorService } from '../../../../../../services/editor/editor.service';
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
@@ -51,13 +51,17 @@ export class FieldsElementComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  @Input() fields$!: Observable<Fields[]>;
+  /** Current form group */
   @Input() formGroup!: FormGroup;
-
+  /** Available fields */
+  @Input() fields$!: Observable<Fields[]>;
+  /** Tinymce editor configuration */
   public editorConfig = INLINE_EDITOR_CONFIG;
-
+  /** Available fields as array */
   public availableFields: string[] = [];
+  /** Selected fields */
   public selectedFields: string[] = [];
+  /** Listbox toolbar settings */
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: [
