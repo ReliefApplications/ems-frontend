@@ -55,7 +55,7 @@ import {
   pick,
   clone,
 } from 'lodash';
-import { Subject, filter, from, merge, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
@@ -246,6 +246,7 @@ export class MapComponent
     ) {
       this.contextService.filter$
         .pipe(
+          debounceTime(500),
           filter(({ previous, current }) =>
             this.contextService.shouldRefresh(
               this.layers.map((layer) => {
@@ -475,7 +476,7 @@ export class MapComponent
     if (fieldValue) {
       // Listen to dashboard filters changes to apply getGeographicExtentValue values changes
       this.contextService.filter$
-        .pipe(takeUntil(this.destroy$))
+        .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
           this.zoomOn();
         });
@@ -569,6 +570,26 @@ export class MapComponent
             this.layerControlButtons.remove();
           }
         }
+        // Get layers as a single-level array in the same order as saved in the settings
+        const orderedLayers: any[] = [];
+        const extractLayer = (layers: any[]) => {
+          layers.forEach((layer: any) => {
+            if (layer.children) {
+              extractLayer(layer.children);
+            } else {
+              orderedLayers.push(layer);
+            }
+          });
+        };
+        extractLayer(flatten(this.overlaysTree));
+        orderedLayers.forEach((item, index) => {
+          // Retrieve the layer object to initialize the legend
+          const layer = this.layers.find((layer) => layer.id === item.layer.id);
+          if (layer) {
+            layer.legendIndex = index;
+            layer.onAddLayer(this.map, item.layer);
+          }
+        });
         // When layers are created, filters are then initialized
         this.initFilters();
       });
