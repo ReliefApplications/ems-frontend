@@ -1,7 +1,11 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import { get } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { ActionType, ActionWithValue } from '../models/automation.model';
+import {
+  ActionType,
+  ActionValue,
+  ActionWithValue,
+} from '../models/automation.model';
 
 /** Form builder */
 const fb = new FormBuilder();
@@ -33,7 +37,7 @@ export const createAutomationForm = (value?: any) => {
  */
 export const createAutomationActionComponentForm = (
   type: ActionType,
-  value: any
+  value: ActionValue | null
 ) => {
   switch (type) {
     case ActionType.setContext: {
@@ -81,11 +85,13 @@ export const createAutomationActionComponentForm = (
  */
 export const createAutomationComponentForm = (value: ActionWithValue) => {
   const type = get(value, 'type', null);
+  const relatedName = get(value, 'relatedName', '');
   switch (value.component) {
     case 'trigger': {
       return fb.group({
         component: 'trigger',
         type: [type, Validators.required],
+        relatedName: relatedName,
         value: fb.group({}),
       });
     }
@@ -95,6 +101,7 @@ export const createAutomationComponentForm = (value: ActionWithValue) => {
       return fb.group({
         component: 'action',
         type: [type, Validators.required],
+        relatedName: relatedName,
         value: type
           ? createAutomationActionComponentForm(type, get(value, 'value', null))
           : fb.group({}),

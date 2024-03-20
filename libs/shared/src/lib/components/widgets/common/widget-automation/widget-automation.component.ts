@@ -93,11 +93,7 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.components.removeAt(index);
-        this.components.insert(
-          index,
-          createAutomationComponentForm(value) as any
-        );
-        console.log(value);
+        this.components.insert(index, createAutomationComponentForm(value));
       }
     });
   }

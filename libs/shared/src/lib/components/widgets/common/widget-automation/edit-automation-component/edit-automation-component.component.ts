@@ -12,9 +12,9 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { createAutomationComponentForm } from '../../../../../forms/automation.forms';
 import { DashboardService } from '../../../../../services/dashboard/dashboard.service';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { BehaviorSubject, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, isObservable, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
-import { get, isNil } from 'lodash';
+import { get, isArray, isNil } from 'lodash';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   ActionType,
@@ -71,10 +71,10 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: true,
           choices: this.getChoicesFromWidgets('map'),
-          onValueChanged: (value: any) => {
+          onValueChanged: (value: string) => {
             this.setPropertyChoices(value, 'layers');
           },
-          onInit: (value: any) => {
+          onInit: (value: string) => {
             this.setPropertyChoices(value, 'layers');
           },
         },
@@ -85,6 +85,9 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setRelatedName(value, 'layers');
+          },
         },
       ],
     },
@@ -99,10 +102,10 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: true,
           choices: this.getChoicesFromWidgets('map'),
-          onValueChanged: (value: any) => {
+          onValueChanged: (value: string) => {
             this.setPropertyChoices(value, 'layers');
           },
-          onInit: (value: any) => {
+          onInit: (value: string) => {
             this.setPropertyChoices(value, 'layers');
           },
         },
@@ -113,6 +116,9 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setRelatedName(value, 'layers');
+          },
         },
       ],
     },
@@ -127,10 +133,10 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: true,
           choices: this.getChoicesFromWidgets('tabs'),
-          onValueChanged: (value: any) => {
+          onValueChanged: (value: string) => {
             this.setPropertyChoices(value, 'tabs');
           },
-          onInit: (value: any) => {
+          onInit: (value: string) => {
             this.setPropertyChoices(value, 'tabs');
           },
         },
@@ -141,6 +147,9 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setRelatedName(value, 'tabs');
+          },
         },
       ],
     },
@@ -155,10 +164,10 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: true,
           choices: this.getChoicesFromWidgets('tabs'),
-          onValueChanged: (value: any) => {
+          onValueChanged: (value: string) => {
             this.setPropertyChoices(value, 'tabs');
           },
-          onInit: (value: any) => {
+          onInit: (value: string) => {
             this.setPropertyChoices(value, 'tabs');
           },
         },
@@ -169,6 +178,9 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setRelatedName(value, 'tabs');
+          },
         },
       ],
     },
@@ -183,10 +195,10 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: true,
           choices: this.getChoicesFromWidgets('tabs'),
-          onValueChanged: (value: any) => {
+          onValueChanged: (value: string) => {
             this.setPropertyChoices(value, 'tab');
           },
-          onInit: (value: any) => {
+          onInit: (value: string) => {
             this.setPropertyChoices(value, 'tab');
           },
         },
@@ -197,6 +209,9 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setRelatedName(value, 'tab');
+          },
         },
       ],
     },
@@ -211,6 +226,9 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: true,
           choices: this.getChoicesFromWidgets(),
+          onValueChanged: (value) => {
+            this.setRelatedName(value, 'widget');
+          },
         },
       ],
     },
@@ -225,6 +243,9 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: true,
           choices: this.getChoicesFromWidgets(),
+          onValueChanged: (value) => {
+            this.setRelatedName(value, 'widget');
+          },
         },
       ],
     },
@@ -247,6 +268,52 @@ export class EditAutomationComponentComponent
       ],
     },
   ];
+
+  /**
+   * Edition of automation component.
+   *
+   * @param dashboardService Dashboard service
+   * @param mapLayersService Map layers service
+   * @param data Dialog data, automation component to edit
+   */
+  constructor(
+    private dashboardService: DashboardService,
+    private mapLayersService: MapLayersService,
+    @Inject(DIALOG_DATA) public data: any
+  ) {
+    super();
+    this.formGroup = createAutomationComponentForm(data);
+  }
+
+  ngOnInit(): void {
+    this.dashboardService.widgets$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((widgets: any[]) => {
+        this.widgets.next(widgets || []);
+      });
+    this.editor = this.editors.find(
+      (editor) =>
+        editor.component === this.data.component &&
+        editor.type === this.data.type
+    );
+    if (isNil(this.editor)) {
+      return;
+    }
+    for (const key in this.editor.properties) {
+      const property = get(this.editor.properties, key);
+      if (property.onValueChanged) {
+        (this.formGroup as any)
+          .get(`value.${property.name}`)
+          ?.valueChanges.pipe(takeUntil(this.destroy$))
+          .subscribe((value: string) => property.onValueChanged(value));
+      }
+      if (property.onInit) {
+        property.onInit(
+          (this.formGroup as any).get(`value.${property.name}`).value
+        );
+      }
+    }
+  }
 
   /**
    * Sets the choices for a specific property based on the widget settings.
@@ -314,48 +381,46 @@ export class EditAutomationComponentComponent
   }
 
   /**
-   * Edition of automation component.
+   * Sets the related name for the editor.
    *
-   * @param dashboardService Dashboard service
-   * @param mapLayersService Map layers service
-   * @param data Dialog data, automation component to edit
+   * @param {string[]} idsList - An array of ids.
+   * @param {string} propertyName - The name of the property.
    */
-  constructor(
-    private dashboardService: DashboardService,
-    private mapLayersService: MapLayersService,
-    @Inject(DIALOG_DATA) public data: any
-  ) {
-    super();
-    this.formGroup = createAutomationComponentForm(data);
-  }
-
-  ngOnInit(): void {
-    this.dashboardService.widgets$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((widgets: any[]) => {
-        this.widgets.next(widgets || []);
-      });
-    this.editor = this.editors.find(
-      (editor) =>
-        editor.component === this.data.component &&
-        editor.type === this.data.type
-    );
-    if (isNil(this.editor)) {
+  private setRelatedName(idsList: string[] | string, propertyName: string) {
+    const choices = this.editor?.properties?.find(
+      (x: any) => x.name === propertyName
+    )?.choices;
+    if (!choices) {
       return;
     }
-    for (const key in this.editor.properties) {
-      const property = get(this.editor.properties, key);
-      if (property.onValueChanged) {
-        (this.formGroup as any)
-          .get(`value.${property.name}`)
-          ?.valueChanges.pipe(takeUntil(this.destroy$))
-          .subscribe((value: any) => property.onValueChanged(value));
-      }
-      if (property.onInit) {
-        property.onInit(
-          (this.formGroup as any).get(`value.${property.name}`).value
-        );
-      }
+    const setRelatedName = (
+      choices: {
+        value: string;
+        text: string;
+      }[]
+    ) =>
+      this.formGroup.controls.relatedName.setValue(
+        (isArray(idsList)
+          ? idsList
+              .map((id) => {
+                return choices.find(
+                  (choice: { value: string; text: string }) =>
+                    choice.value === id
+                )?.text;
+              })
+              .join(', ')
+          : choices.find(
+              (choice: { value: string; text: string }) =>
+                choice.value === idsList
+            )?.text) ?? ''
+      );
+
+    if (isObservable(choices)) {
+      choices.subscribe((choicesArray) => {
+        setRelatedName(choicesArray);
+      });
+    } else {
+      setRelatedName(choices);
     }
   }
 }

@@ -19,14 +19,16 @@ export type ActionComponent = {
   type: ActionType;
 };
 
+export type ActionValue = {
+  widget?: any;
+  layers?: any;
+  tab?: any;
+  tabs?: any;
+  mapping?: string;
+};
+
 export type ActionWithValue = ActionComponent & {
-  value?: {
-    widget?: any;
-    layers?: any;
-    tab?: any;
-    tabs?: any;
-    mapping?: string;
-  };
+  value?: ActionValue;
 };
 
 export type ActionWithProperties = ActionComponent & {
