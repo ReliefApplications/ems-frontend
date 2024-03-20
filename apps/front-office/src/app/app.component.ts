@@ -11,6 +11,7 @@ import {
   ResourceDropdownComponent,
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
+  DownloadService,
 } from '@oort-front/shared';
 import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
 import { Router } from '@angular/router';
@@ -67,12 +68,14 @@ export class AppComponent implements OnInit {
    * @param translate Angular translate service
    * @param kendoIntl Kendo Intl Service
    * @param router Angular router service
+   * @param downloadService Shared download service
    */
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
     private kendoIntl: IntlService,
-    private router: Router
+    private router: Router,
+    private downloadService: DownloadService
   ) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
@@ -110,7 +113,12 @@ export class AppComponent implements OnInit {
       const target = event.target.getAttribute('target');
       const openOnSameTab = !target || target === '_self';
 
-      if (
+      if (href?.startsWith('https://pci-reports.azurewebsites.net')) {
+        event.preventDefault(); // Prevent default navigation behavior
+        event.stopImmediatePropagation(); // Stop event propagation
+        // Open snackbar
+        this.downloadService.getFile(href ?? '', 'pdf', 'location report.pdf');
+      } else if (
         href &&
         openOnSameTab &&
         (href.startsWith(environment.frontOfficeUri) || isRelativeUrl(href))
