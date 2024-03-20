@@ -107,7 +107,7 @@ export class SummaryCardItemContentComponent
         !ruleButtonIsClicked
       ) {
         currentNode = this.renderer.parentNode(currentNode);
-        ruleButtonIsClicked = !!currentNode.dataset?.ruleTarget;
+        ruleButtonIsClicked = !!currentNode?.dataset?.ruleTarget;
       }
     }
     if (ruleButtonIsClicked) {

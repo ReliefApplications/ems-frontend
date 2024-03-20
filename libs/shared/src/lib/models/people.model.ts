@@ -7,7 +7,7 @@ export interface PeopleQueryResponse {
 
 /** Model for Person object. */
 export interface Person {
-  id?: string;
+  userid?: string;
   firstname?: string;
   lastname?: string;
   emailaddress?: string;

@@ -34,7 +34,7 @@ export const init = (
     onInit: (): void => {
       Serializer.addProperty('people', {
         name: 'applications',
-        category: 'people properties',
+        category: 'People properties',
         type: 'applicationsDropdown',
         isDynamicChoices: true,
         visibleIndex: 3,
@@ -50,6 +50,7 @@ export const init = (
         .post('proxy/common-services/graphql', {
           query: `query {
               users {
+                  userid
                   firstname
                   lastname
                   emailaddress
@@ -65,7 +66,7 @@ export const init = (
                   ? `${person.firstname}, ${person.lastname}`
                   : person.firstname || person.lastname;
               return {
-                value: person.emailaddress,
+                value: person.userid,
                 text: `${fullname} (${person.emailaddress})`,
               };
             });

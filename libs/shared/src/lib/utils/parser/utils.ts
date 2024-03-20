@@ -379,7 +379,7 @@ const replaceRecordFields = (
           case 'people':
           case 'resources':
             convertedValue = `<span style='${style}'>${
-              value ? value.length : 0
+              value ? get(fieldsValue, field.name).length : 0
             } items</span>`;
             break;
           case 'matrixdropdown':
