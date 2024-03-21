@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import {
-  EDIT_RECORD,
   EDIT_RECORDS,
   PUBLISH,
   PUBLISH_NOTIFICATION,
@@ -37,7 +36,6 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
 import {
-  EditRecordMutationResponse,
   EditRecordsMutationResponse,
   RecordQueryResponse,
 } from '../../../models/record.model';
@@ -617,7 +615,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                     id: value.record,
                   },
                 })
-                .subscribe((getRecord) => {
+                .subscribe(async (getRecord) => {
                   const resourceField = form.fields?.find(
                     (field) =>
                       field.resource &&
@@ -637,61 +635,21 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                       data = { ...data, [key]: selectedRecords };
                     }
                   }
-                  this.apollo
-                    .mutate<EditRecordMutationResponse>({
-                      mutation: EDIT_RECORD,
-                      variables: {
-                        id: value.record,
-                        template: targetForm,
-                        data,
-                      },
-                    })
-                    .subscribe(async (editRecord) => {
-                      if (editRecord.errors) {
-                        this.snackBar.openSnackBar(
-                          this.translate.instant(
-                            'models.record.notifications.rowsNotAdded'
-                          ),
-                          { error: true }
-                        );
-                        resolve(false);
-                      } else {
-                        if (editRecord.data) {
-                          const record = editRecord.data.editRecord;
-                          if (record) {
-                            this.snackBar.openSnackBar(
-                              this.translate.instant(
-                                'models.record.notifications.rowsAdded',
-                                {
-                                  field: record.data[targetFormField],
-                                  length: selectedRecords.length,
-                                  value: key,
-                                }
-                              )
-                            );
-                            const { FormModalComponent } = await import(
-                              '../../form-modal/form-modal.component'
-                            );
-                            const dialogRef2 = this.dialog.open(
-                              FormModalComponent,
-                              {
-                                disableClose: true,
-                                data: {
-                                  recordId: record.id,
-                                  template: targetForm,
-                                },
-                                autoFocus: false,
-                              }
-                            );
-                            dialogRef2.closed
-                              .pipe(takeUntil(this.destroy$))
-                              .subscribe(() => resolve(true));
-                          } else {
-                            resolve(false);
-                          }
-                        }
-                      }
-                    });
+                  const { FormModalComponent } = await import(
+                    '../../form-modal/form-modal.component'
+                  );
+                  const dialogRef2 = this.dialog.open(FormModalComponent, {
+                    disableClose: true,
+                    data: {
+                      recordId: value.record,
+                      template: targetForm,
+                      recordData: { [key]: data[key] },
+                    },
+                    autoFocus: false,
+                  });
+                  dialogRef2.closed
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe((res) => resolve(res ? true : false));
                 });
             } else {
               resolve(false);
