@@ -10,6 +10,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
   DuplicateResourceMutationResponse,
+  EditResourceMutationResponse,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -26,6 +27,7 @@ import {
   ADD_FORM,
   DELETE_RESOURCE,
   DUPLICATE_RESOURCE,
+  EDIT_RESOURCE_ID_SHAPE,
 } from './graphql/mutations';
 
 /**
@@ -382,5 +384,73 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
     this.filterLoading = false;
+  }
+
+  /**
+   * Open modal to update resource incremental Id Shape.
+   *
+   * @param resource Resource to update.
+   */
+  async onUpdateIncrementalIdShape(resource: Resource): Promise<void> {
+    const { IdShapeModalComponent } = await import(
+      './id-shape-modal/id-shape-modal.component'
+    );
+    const dialogRef = this.dialog.open(IdShapeModalComponent, {
+      data: {
+        shape: resource.idShape?.shape,
+        padding: resource.idShape?.padding,
+      },
+    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((idShape: any) => {
+        if (idShape) {
+          this.apollo
+            .mutate<EditResourceMutationResponse>({
+              mutation: EDIT_RESOURCE_ID_SHAPE,
+              variables: {
+                id: resource.id,
+                idShape,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.resource.incrementalIdShape.updateError',
+                      {
+                        error: errors[0].message,
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  if (data) {
+                    this.resources = this.resources.map((x) => {
+                      if (x.id !== resource.id) {
+                        return x;
+                      } else {
+                        return {
+                          ...x,
+                          idShape: data.editResource.idShape,
+                        };
+                      }
+                    });
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.resource.incrementalIdShape.updateSuccess',
+                        { resource: resource.name }
+                      )
+                    );
+                  }
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 }

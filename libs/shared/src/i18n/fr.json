@@ -309,7 +309,7 @@
       "of": "de"
     },
     "placeholder": {
-      "address": "Entrez une adresse exemple : 1 rue de la paix, Paris",
+      "address": "Entrez une adresse",
       "email": "Entrez un email",
       "name": "Entrez un nom",
       "search": "Rechercher...",
@@ -1188,6 +1188,15 @@
         "calculatedFields": "Aucun champ dérivé détecté",
         "layouts": "Aucune mise en page détectée",
         "records": "Aucun enregistrement détecté"
+      },
+      "incrementalIdShape": {
+        "example": "Exemple d'identifiant incrémentiel utilisant l'entrée de forme",
+        "invalidExpression": "Expression de forme d'identifiant non valide",
+        "padding": "Rembourrage",
+        "shape": "Forme",
+        "title": "Forme d'identifiant incrémentiel",
+        "updateError": "Erreur lors de la mise à jour de la forme de l'identifiant incrémentiel de la ressource : {{error}}",
+        "updateSuccess": "La forme de l'identifiant incrémentiel de la ressource '{{resource}}' a été mise à jour avec succès!"
       },
       "paginator": {
         "ariaLabel": "Sélectionnez la page de ressources"

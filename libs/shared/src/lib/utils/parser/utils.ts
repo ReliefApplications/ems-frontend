@@ -209,6 +209,9 @@ const replaceRecordFields = (
                 .map((key) => `${key}: ${obj[key]}`)
                 .join(', ');
             }
+          } else if (typeof obj === 'string') {
+            // If string, we replace new lines with <br> to keep the format
+            return obj.replace(/\n/g, '<br>');
           } else {
             // If not an object, return string representation
             return `${obj}`;

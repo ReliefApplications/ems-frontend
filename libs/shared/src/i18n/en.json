@@ -309,7 +309,7 @@
       "of": "of"
     },
     "placeholder": {
-      "address": "Enter an address or place e.g. 1 York St",
+      "address": "Enter an address or location",
       "email": "Enter email",
       "name": "Enter a name",
       "search": "Search...",
@@ -1177,6 +1177,15 @@
         "calculatedFields": "No calculated fields detected",
         "layouts": "No layout detected",
         "records": "No record detected"
+      },
+      "incrementalIdShape": {
+        "example": "Example of incremental id using the shape input",
+        "invalidExpression": "Invalid id shape expression",
+        "padding": "Padding",
+        "shape": "Shape",
+        "title": "Incremental Id Shape",
+        "updateError": "Error updating resource incremental id shape: {{error}}",
+        "updateSuccess": "Incremental id shape of resource '{{resource}}' updated successfully!"
       },
       "paginator": {
         "ariaLabel": "Select page of resources"

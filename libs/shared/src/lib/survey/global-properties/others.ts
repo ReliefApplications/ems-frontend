@@ -13,89 +13,12 @@ import { SurveyModel, PageModel, surveyLocalization } from 'survey-core';
 import { MatrixManager } from '../controllers/matrixManager';
 
 /**
- * Parse the ID expression and return an example of the expression
- *
- * @param expression The expression to parse
- * @param padding Padding for the incremental id
- * @returns An object with the validity of the expression and an example of the expression
- */
-const parseIDExpression = (
-  expression: string,
-  padding: number
-): { valid: boolean; example: string | null } => {
-  expression = expression.trim();
-  // The expression must include {incremental}
-  if (!expression.includes('{incremental}')) {
-    return {
-      valid: false,
-      example: null,
-    };
-  }
-  let res = expression;
-
-  const randomId = Math.floor(Math.random() * 1000) + 1;
-  const year = new Date().getFullYear();
-  const formInitial = 'F';
-  const formName = 'FORM_NAME';
-
-  // Replace all instances of {incremental} with the randomId padded with 0s
-  res = res.replace(
-    /{incremental}/g,
-    randomId.toString().padStart(padding, '0')
-  );
-
-  // Replace all instances of {year} with the current year
-  res = res.replace(/{year}/g, year.toString());
-
-  // Replace all instances of {formInitial} with the first letter of the form name
-  res = res.replace(/{formInitial}/g, formInitial);
-
-  // Replace all instances of {formName} with the form name
-  res = res.replace(/{formName}/g, formName);
-
-  return {
-    valid: true,
-    example: res,
-  };
-};
-
-/**
  * Add support for custom properties to the survey
  *
  * @param environment Current environment
  */
 export const init = (environment: any): void => {
   const serializer: JsonMetadata = Serializer;
-  // Adds a property to the survey that defines the shape of the incremental id
-  serializer.addProperty('survey', {
-    name: 'incrementalIdShape:text',
-    category: 'Incremental ID',
-    index: 0,
-    default: '{year}-{formInitial}{incremental}',
-    onSetValue: (survey: SurveyModel, newValue: string) => {
-      const padding = survey.getPropertyValue('incrementalIdPadding');
-      const { valid, example } = parseIDExpression(newValue.trim(), padding);
-      if (valid) {
-        survey.setPropertyValue('incrementalIdShape', newValue.trim());
-        console.log('ID Example:', example);
-      }
-    },
-  });
-  serializer.addProperty('survey', {
-    name: 'incrementalIdPadding:number',
-    category: 'Incremental ID',
-    index: 1,
-    default: 8,
-    onSetValue: (survey: SurveyModel, newValue: number) => {
-      const exp = survey.getPropertyValue('incrementalIdShape');
-      const { valid, example } = parseIDExpression(exp, newValue);
-
-      if (valid) {
-        survey.setPropertyValue('incrementalIdPadding', newValue);
-        console.log('ID Example:', example);
-      }
-    },
-  });
   // change the prefix for comments
   settings.commentPrefix = '_comment';
   // override default expression properties

@@ -1,0 +1,49 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.resource.incrementalIdShape.title' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="idShapeForm" class="flex flex-col gap-2 h-full">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.resource.incrementalIdShape.shape' | translate
+        }}</label>
+        <input formControlName="shape" type="string" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.resource.incrementalIdShape.padding' | translate
+        }}</label>
+        <input formControlName="padding" type="number" />
+      </div>
+      <span
+        [uiErrorMessage]="
+          'components.resource.incrementalIdShape.invalidExpression' | translate
+        "
+        [uiErrorMessageIf]="!incrementalIdExample"
+        class="text-xs text-gray-700"
+      >
+        <p *ngIf="incrementalIdExample">
+          {{ 'components.resource.incrementalIdShape.example' | translate }}:
+          {{ incrementalIdExample }}
+        </p>
+      </span>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [disabled]="!idShapeForm.valid || !validShape"
+      [uiDialogClose]="idShapeForm.value"
+      cdkFocusInitial
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>
