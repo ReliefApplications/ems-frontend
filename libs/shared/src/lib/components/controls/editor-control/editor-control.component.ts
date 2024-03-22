@@ -25,6 +25,7 @@ import { EditorService } from '../../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
 import { FormControlComponent } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -54,7 +55,7 @@ export class EditorControlComponent
   public editorContent = '';
 
   /** Tinymce editor configuration */
-  @Input() editorConfig!: RawEditorSettings;
+  @Input() editorConfig: RawEditorSettings = INLINE_EDITOR_CONFIG;
 
   /**
    * Gets the value
@@ -62,7 +63,7 @@ export class EditorControlComponent
    * @returns the value
    */
   @Input() get value(): string | null {
-    return this.ngControl.value;
+    return this.ngControl?.value;
   }
 
   /** Sets the value */
@@ -107,7 +108,7 @@ export class EditorControlComponent
    * @returns if an option is selected
    */
   get empty() {
-    return !this.ngControl.control?.value;
+    return !this.ngControl?.control?.value;
   }
 
   /**
@@ -148,16 +149,16 @@ export class EditorControlComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl.disabled || false;
+    return this.ngControl?.disabled || false;
   }
 
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
     if (isDisabled) {
-      this.ngControl.control?.disable();
+      this.ngControl?.control?.disable();
     } else {
-      this.ngControl.control?.enable();
+      this.ngControl?.control?.enable();
     }
     this.stateChanges.next();
   }
@@ -168,7 +169,7 @@ export class EditorControlComponent
    * @returns whether the input is in an error state
    */
   get errorState(): boolean {
-    return (this.ngControl.invalid && this.touched) || false;
+    return (this.ngControl?.invalid && this.touched) || false;
   }
 
   /** Control type */

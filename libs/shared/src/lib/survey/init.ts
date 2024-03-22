@@ -16,6 +16,7 @@ import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
+import * as EditorComponent from './components/editor';
 import * as OtherProperties from './global-properties/others';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ChoicesByGraphQLProperties from './global-properties/choices-by-graphql';
@@ -124,6 +125,7 @@ export const initCustomSurvey = (
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
+    EditorComponent.init(domService, ComponentCollection.Instance);
   }
 
   // load global properties
