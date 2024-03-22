@@ -46,7 +46,8 @@ export class TabDisplayComponent
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
     28,
   ];
-  public themeColors = THEMES_COLORS;
+  /** Themes colors */
+  public themesColors = THEMES_COLORS;
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -184,6 +185,8 @@ export class TabDisplayComponent
    * @param value value
    */
   themeChanged(value: any) {
-    this.formGroup.get('chart.palette.value')?.setValue(value);
+    if (value) {
+      this.formGroup.get('chart.palette.value')?.setValue(value);
+    }
   }
 }
