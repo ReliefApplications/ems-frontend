@@ -10,6 +10,7 @@ export const MULTISELECT_TYPES: string[] = [
   'tagbox',
   'owner',
   'users',
+  'people',
 ];
 
 /** Settings for pager */
