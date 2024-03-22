@@ -1396,6 +1396,7 @@
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayEditor": "Display editor",
 					"displayMap": "Display map",
 					"openPage": "Navigate to page",
 					"saved": "Changes saved",

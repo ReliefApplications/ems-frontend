@@ -904,6 +904,18 @@ export class GridComponent
   }
 
   /**
+   * Open editor around clicked item
+   *
+   * @param html html string to be parsed
+   */
+  public onOpenEditorModal(html: string) {
+    this.action.emit({
+      action: 'editor',
+      html,
+    });
+  }
+
+  /**
    * Expand the action column so the edit icon fits
    */
   expandActionsColumn() {

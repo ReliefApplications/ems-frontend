@@ -1409,6 +1409,7 @@
 				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
+					"displayEditor": "Afficher l'éditeur",
 					"displayMap": "Afficher la carte",
 					"openPage": "Aller à la page",
 					"saved": "Changements sauvegardés",

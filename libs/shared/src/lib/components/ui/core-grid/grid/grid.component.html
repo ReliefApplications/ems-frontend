@@ -648,6 +648,34 @@
           </div>
         </ng-template>
       </kendo-grid-column>
+      <!-- Editor -->
+      <kendo-grid-column
+        *ngIf="field.meta.type === 'editor'"
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="!field.disabled"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <a
+              class="url-container textbox cursor-pointer"
+              rel="noopener noreferrer"
+              (click)="onOpenEditorModal(dataItem[field.name])"
+              [uiTooltip]="
+                'components.widget.grid.tooltip.displayEditor' | translate
+              "
+            >
+              Open editor modal
+            </a>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="
