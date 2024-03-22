@@ -34,7 +34,6 @@ import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
 } from './components/utils/components.enum';
-import { RestService } from '../services/rest/rest.service';
 
 /** Name of the custom components we add to the survey */
 const CUSTOM_COMPONENTS = [
@@ -126,10 +125,7 @@ export const initCustomSurvey = (
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
-    PeopleComponent.init(
-      ComponentCollection.Instance,
-      injector.get(RestService)
-    );
+    PeopleComponent.init(ComponentCollection.Instance, domService);
   }
 
   // load global properties

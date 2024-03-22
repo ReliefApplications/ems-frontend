@@ -1,18 +1,18 @@
-import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
+import { ComponentCollection, SvgRegistry } from 'survey-core';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { PeopleQueryResponse, Person } from '../../models/people.model';
-import { RestService } from '../../services/rest/rest.service';
+import { PeopleDropdownComponent } from './people-dropdown/people-dropdown.component';
+import { DomService } from '../../services/dom/dom.service';
 
 /**
  * Inits the people component.
  *
  * @param componentCollectionInstance ComponentCollection
- * @param restService RestService
+ * @param domService DOM service
  */
 export const init = (
   componentCollectionInstance: ComponentCollection,
-  restService: RestService
+  domService: DomService
 ): void => {
   // registers icon-people in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
@@ -32,50 +32,56 @@ export const init = (
       choices: [] as any[],
     },
     onInit: (): void => {
-      Serializer.addProperty('people', {
-        name: 'applications',
-        category: 'People properties',
-        type: 'applicationsDropdown',
-        isDynamicChoices: true,
-        visibleIndex: 3,
-        required: true,
-      });
-
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.applicationsDropdown
       );
     },
-    onLoaded: (question: any): void => {
-      restService
-        .post('proxy/common-services/graphql', {
-          query: `query {
-              users {
-                  userid
-                  firstname
-                  lastname
-                  emailaddress
-              }
-            }`,
-        })
-        .subscribe((response: PeopleQueryResponse) => {
-          if (response.data) {
-            //Format data like this "name, surname (email)"
-            const people = response.data.users.map((person: Person) => {
-              const fullname =
-                person.firstname && person.lastname
-                  ? `${person.firstname}, ${person.lastname}`
-                  : person.firstname || person.lastname;
-              return {
-                value: person.userid,
-                text: `${fullname} (${person.emailaddress})`,
-              };
-            });
-            question.contentQuestion.choices = people;
+    onAfterRender: async (question: any, el: HTMLElement) => {
+      // Hides the tagbox element
+      const element =
+        el.getElementsByTagName('kendo-multiselect')[0].parentElement;
+      if (element) {
+        element.style.display = 'none';
+      }
+
+      // People that are already selected
+      const selectedPersonIDs: string[] = Array.isArray(question.value)
+        ? question.value
+        : [];
+
+      // Appends people dropdown to the question html element
+      const personDropdown = domService.appendComponentToBody(
+        PeopleDropdownComponent,
+        el
+      );
+
+      const instance: PeopleDropdownComponent = personDropdown.instance;
+      // Filter by applications
+      instance.applications = question.applications;
+
+      // Initial selection
+      instance.initialSelectionIDs = selectedPersonIDs;
+
+      // Updates the question value when the selection changes
+      instance.selectionChange.subscribe((value: string[]) => {
+        question.value = value;
+      });
+
+      if (question.isReadOnly) {
+        instance.control.disable();
+      }
+
+      question.registerFunctionOnPropertyValueChanged(
+        'readOnly',
+        (value: boolean) => {
+          if (value) {
+            instance.control.disable();
+          } else {
+            instance.control.enable();
           }
-        });
+        }
+      );
     },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onAfterRender: (): void => {},
   };
   componentCollectionInstance.add(component);
 };

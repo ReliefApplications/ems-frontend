@@ -1,14 +1,14 @@
-/** Model for graphql query response */
-export interface PeopleQueryResponse {
-  data: {
-    users: Person[];
-  };
-}
+import { GraphqlNodesResponse } from './graphql-query.model';
 
 /** Model for Person object. */
 export interface Person {
-  userid?: string;
+  id?: string;
   firstname?: string;
   lastname?: string;
   emailaddress?: string;
+}
+
+/** Query response for people using cursor */
+export interface PeopleNodeQueryResponse {
+  people: GraphqlNodesResponse<Person>;
 }

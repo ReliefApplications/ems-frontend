@@ -657,7 +657,7 @@
         [filterable]="true"
         [title]="field.title"
         [editor]="field.editor"
-        [editable]="!field.disabled"
+        [editable]="!field.disabled && field.meta.type !== 'people'"
         [width]="field.width"
         [hidden]="field.hidden"
         [minResizableWidth]="50"
