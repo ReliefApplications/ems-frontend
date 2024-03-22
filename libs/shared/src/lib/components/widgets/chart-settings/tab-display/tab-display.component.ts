@@ -13,7 +13,7 @@ import {
   skip,
   takeUntil,
 } from 'rxjs/operators';
-import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
+import { LEGEND_POSITIONS, TITLE_POSITIONS, THEMES_COLORS } from '../constants';
 import { ChartComponent } from '../../chart/chart.component';
 import { createSerieForm } from '../chart-forms';
 import { isEqual, isNil, get } from 'lodash';
@@ -46,6 +46,7 @@ export class TabDisplayComponent
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
     28,
   ];
+  public themeColors = THEMES_COLORS;
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -175,5 +176,14 @@ export class TabDisplayComponent
       font = font + '; text-decoration: underline;';
     }
     return font;
+  }
+
+  /**
+   * Change the palette theme
+   *
+   * @param value value
+   */
+  themeChanged(value: any) {
+    this.formGroup.get('chart.palette.value')?.setValue(value);
   }
 }
