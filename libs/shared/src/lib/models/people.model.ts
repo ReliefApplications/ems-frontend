@@ -1,5 +1,3 @@
-import { GraphqlNodesResponse } from './graphql-query.model';
-
 /** Model for Person object. */
 export interface Person {
   id?: string;
@@ -8,7 +6,7 @@ export interface Person {
   emailaddress?: string;
 }
 
-/** Query response for people using cursor */
-export interface PeopleNodeQueryResponse {
-  people: GraphqlNodesResponse<Person>;
+/** Query response for people */
+export interface PeopleQueryResponse {
+  people: Array<Person>;
 }

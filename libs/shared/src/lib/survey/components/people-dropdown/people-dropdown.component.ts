@@ -4,10 +4,11 @@ import { UnsubscribeComponent } from '../../../components/utils/unsubscribe/unsu
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { PeopleNodeQueryResponse, Person } from '../../../models/people.model';
+import { PeopleQueryResponse, Person } from '../../../models/people.model';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_PEOPLE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Component to pick people from the list of people
@@ -37,15 +38,21 @@ export class PeopleDropdownComponent
   @Output() selectionChange = new EventEmitter<string[]>();
   /** Initial selection of people */
   public initialSelection: Person[] = [];
-  /** Users query */
-  public query!: QueryRef<PeopleNodeQueryResponse>;
+  /** People query */
+  public query!: QueryRef<PeopleQueryResponse>;
   /** Form control that has selected people */
   public control = new FormControl<string[]>([]);
   /** Store the timeout ID returned by setTimeout */
   private searchTimeout: ReturnType<typeof setTimeout> | null = null;
   /** Store the previous search value */
   private previousSearchValue: string | null = null;
-  /** Display value expression used by the select */
+
+  /**
+   * Display value expression used by the select
+   *
+   * @param person Displayed person
+   * @returns Display value for the select
+   */
   public displayValueExpression = (person: any) => {
     const fullname =
       person.firstname && person.lastname
@@ -66,14 +73,9 @@ export class PeopleDropdownComponent
   ngOnInit(): void {
     this.setupInitialSelection();
 
-    // this.query = this.apollo.watchQuery<PeopleNodeQueryResponse>({
-    //   query: GET_PEOPLE,
-    //   variables: {
-    //     filter: {
-    //       value: 'mater',
-    //     },
-    //   },
-    // });
+    this.query = this.apollo.watchQuery<PeopleQueryResponse>({
+      query: GET_PEOPLE,
+    });
 
     this.control.valueChanges?.subscribe(() => {
       this.selectionChange.emit(this.control.value ?? []);
@@ -90,15 +92,15 @@ export class PeopleDropdownComponent
     this.control.setValue(this.initialSelectionIDs);
 
     this.apollo
-      .query<PeopleNodeQueryResponse>({
+      .query<PeopleQueryResponse>({
         query: GET_PEOPLE,
         variables: {
           filter: {
-            logic: 'and',
+            logic: 'or',
             filters: [
               {
-                field: 'ids',
-                operator: 'eq',
+                field: 'userid',
+                operator: 'in',
                 value: this.initialSelectionIDs,
               },
             ],
@@ -108,9 +110,7 @@ export class PeopleDropdownComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
         if (data.people) {
-          console.log(data);
-
-          // this.initialSelection = data.people.edges.map((x) => x.node);
+          this.initialSelection = data.people;
         }
       });
   }
@@ -130,8 +130,30 @@ export class PeopleDropdownComponent
       this.searchTimeout = setTimeout(() => {
         this.query.refetch({
           filter: {
-            value: searchValue,
-          },
+            logic: 'or',
+            filters: [
+              {
+                field: 'lastname',
+                operator: 'like',
+                value: searchValue,
+              },
+              {
+                field: 'firstname',
+                operator: 'like',
+                value: searchValue,
+              },
+              {
+                field: 'emailaddress',
+                operator: 'like',
+                value: searchValue,
+              },
+              {
+                field: 'userid',
+                operator: 'in',
+                value: this.control.value,
+              },
+            ],
+          } as CompositeFilterDescriptor,
         });
       }, 500);
 
